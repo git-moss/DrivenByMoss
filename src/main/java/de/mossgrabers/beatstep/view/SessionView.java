@@ -1,0 +1,104 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.beatstep.view;
+
+import de.mossgrabers.beatstep.BeatstepConfiguration;
+import de.mossgrabers.beatstep.controller.BeatstepColors;
+import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
+import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.view.AbstractView;
+
+
+/**
+ * The Session view.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class SessionView extends AbstractView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
+{
+    private TrackEditing extensions;
+
+
+    /**
+     * Constructor.
+     *
+     * @param surface The controller
+     * @param model The model
+     */
+    public SessionView (final BeatstepControlSurface surface, final Model model)
+    {
+        super ("Session", surface, model);
+        this.extensions = new TrackEditing (surface, model);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnob (final int index, final int value)
+    {
+        // Knob 12-15 are currently not used
+        if (index < 12)
+        {
+            this.extensions.onTrackKnob (index, value);
+            return;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNote (final int note, final int velocity)
+    {
+        if (velocity == 0)
+            return;
+
+        final int index = note - 36;
+        switch (index)
+        {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                // Not used
+                break;
+
+            case 6:
+                this.model.getCurrentTrackBank ().scrollScenesPageUp ();
+                break;
+
+            case 7:
+                this.model.getCurrentTrackBank ().scrollScenesPageDown ();
+                break;
+
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+                this.model.getCurrentTrackBank ().launchScene (index - 8);
+                break;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void drawGrid ()
+    {
+        final PadGrid padGrid = this.surface.getPadGrid ();
+        for (int i = 0; i < 6; i++)
+            padGrid.light (36 + i, BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
+        for (int i = 6; i < 8; i++)
+            padGrid.light (36 + i, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
+        for (int i = 8; i < 16; i++)
+            padGrid.light (36 + i, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
+    }
+}

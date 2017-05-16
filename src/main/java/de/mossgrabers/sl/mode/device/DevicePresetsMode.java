@@ -1,0 +1,215 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.sl.mode.device;
+
+import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.daw.BrowserProxy;
+import de.mossgrabers.framework.daw.data.BrowserColumnData;
+import de.mossgrabers.framework.daw.data.BrowserColumnItemData;
+import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.sl.SLConfiguration;
+import de.mossgrabers.sl.controller.SLControlSurface;
+import de.mossgrabers.sl.controller.SLDisplay;
+import de.mossgrabers.sl.mode.Modes;
+
+
+/**
+ * Browser mode.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfiguration>
+{
+    /** No selection. */
+    public static final int  SELECTION_OFF    = 0;
+    private static final int SELECTION_PRESET = 1;
+    private static final int SELECTION_FILTER = 2;
+
+    private int              selectionMode;
+    private int              filterColumn;
+
+
+    /**
+     * Constructor.
+     *
+     * @param surface The surface
+     * @param model The model
+     */
+    public DevicePresetsMode (final SLControlSurface surface, final Model model)
+    {
+        super (surface, model);
+        this.isTemporary = false;
+        this.selectionMode = SELECTION_OFF;
+        this.filterColumn = 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onRowButton (final int row, final int index, final ButtonEvent event)
+    {
+        switch (this.selectionMode)
+        {
+            case DevicePresetsMode.SELECTION_OFF:
+                if (index < 2)
+                    this.navigatePresets (index == 1);
+                else
+                {
+                    this.selectionMode = DevicePresetsMode.SELECTION_FILTER;
+                    this.filterColumn = index - 2;
+                }
+                break;
+
+            case DevicePresetsMode.SELECTION_PRESET:
+                switch (index)
+                {
+                    // Down
+                    case 0:
+                        this.navigatePresets (false);
+                        break;
+                    // Up
+                    case 1:
+                        this.navigatePresets (true);
+                        break;
+                    // Commit
+                    case 7:
+                        this.model.getBrowser ().stopBrowsing (true);
+                        this.surface.getModeManager ().setActiveMode (Modes.MODE_TRACK_TOGGLES);
+                        this.selectionMode = DevicePresetsMode.SELECTION_OFF;
+                        break;
+                    // All other buttons return to Browse
+                    default:
+                        this.selectionMode = DevicePresetsMode.SELECTION_OFF;
+                        break;
+                }
+                break;
+
+            case DevicePresetsMode.SELECTION_FILTER:
+                switch (index)
+                {
+                    // Down
+                    case 0:
+                        this.navigateFilters (this.filterColumn, false);
+                        break;
+                    // Up
+                    case 1:
+                        this.navigateFilters (this.filterColumn, true);
+                        break;
+                    // All other buttons return to Browse
+                    default:
+                        this.selectionMode = DevicePresetsMode.SELECTION_OFF;
+                        break;
+                }
+                break;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateDisplay ()
+    {
+        final Display d = this.surface.getDisplay ();
+
+        if (!this.model.hasSelectedDevice ())
+        {
+            d.clearRow (2).done (2).setRow (0, "                       Please select a device...                       ");
+            return;
+        }
+        final BrowserProxy browser = this.model.getBrowser ();
+        if (!browser.isActive ())
+        {
+            d.setRow (0, "                     No active Browsing Session.                       ").setRow (2, "                        Press Browse again...                          ");
+            return;
+        }
+
+        d.clear ();
+
+        String selectedResult;
+        switch (this.selectionMode)
+        {
+            case DevicePresetsMode.SELECTION_OFF:
+                selectedResult = browser.getSelectedResult ();
+                d.setBlock (0, 0, "Preset:").setBlock (2, 0, selectedResult == null ? "None" : selectedResult);
+                for (int i = 0; i < 6; i++)
+                {
+                    final BrowserColumnData column = browser.getFilterColumn (i);
+                    d.setCell (0, 2 + i, this.optimizeName (column.getName () + ":", 8)).setCell (2, 2 + i, column.doesCursorExist () ? column.getCursorName () : "");
+                }
+                break;
+
+            case DevicePresetsMode.SELECTION_PRESET:
+                final BrowserColumnItemData [] results = browser.getResultColumnItems ();
+                for (int i = 0; i < 16; i++)
+                    d.setCell (i % 2 * 2, i / 2, (results[i].isSelected () ? SLDisplay.RIGHT_ARROW : " ") + results[i].getName ());
+                break;
+
+            case DevicePresetsMode.SELECTION_FILTER:
+                final BrowserColumnItemData [] items = browser.getFilterColumn (this.filterColumn).getItems ();
+                for (int i = 0; i < 16; i++)
+                {
+                    final String name = items[i].getName ();
+                    String text = (items[i].isSelected () ? SLDisplay.RIGHT_ARROW : " ") + name + "                ";
+                    if (!name.isEmpty ())
+                    {
+                        final String hitStr = "(" + items[i].getHitCount () + ")";
+                        text = text.substring (0, 17 - hitStr.length ()) + hitStr;
+                    }
+                    d.setCell (i % 2 * 2, i / 2, text);
+                }
+                break;
+        }
+        d.allDone ();
+    }
+
+
+    /**
+     * Navigate to the next or previous result item.
+     *
+     * @param moveUp True to move up
+     */
+    public void navigatePresets (final boolean moveUp)
+    {
+        this.selectionMode = DevicePresetsMode.SELECTION_PRESET;
+        final BrowserProxy browser = this.model.getBrowser ();
+        if (!browser.isActive ())
+            return;
+        if (moveUp)
+            browser.selectNextResult ();
+        else
+            browser.selectPreviousResult ();
+    }
+
+
+    /**
+     * Navigate to the next or previous filter item.
+     *
+     * @param filterNumber The number of the filter column
+     * @param moveUp True to move up
+     */
+    public void navigateFilters (final int filterNumber, final boolean moveUp)
+    {
+        final BrowserProxy browser = this.model.getBrowser ();
+        if (!browser.isActive ())
+            return;
+        if (moveUp)
+            browser.selectNextFilterItem (this.filterColumn);
+        else
+            browser.selectPreviousFilterItem (this.filterColumn);
+    }
+
+
+    /**
+     * Get the current selection mode.
+     *
+     * @return The current selection mode
+     */
+    public int getSelectionMode ()
+    {
+        return this.selectionMode;
+    }
+}

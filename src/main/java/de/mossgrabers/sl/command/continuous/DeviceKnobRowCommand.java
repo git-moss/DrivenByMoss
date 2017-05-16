@@ -1,0 +1,53 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.sl.command.continuous;
+
+import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.sl.SLConfiguration;
+import de.mossgrabers.sl.controller.SLControlSurface;
+import de.mossgrabers.sl.mode.Modes;
+
+
+/**
+ * Command to change a device parameter.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class DeviceKnobRowCommand extends AbstractContinuousCommand<SLControlSurface, SLConfiguration>
+{
+    private int index;
+
+
+    /**
+     * Constructor.
+     *
+     * @param index The index of the button
+     * @param model The model
+     * @param surface The surface
+     */
+    public DeviceKnobRowCommand (final int index, final Model model, final SLControlSurface surface)
+    {
+        super (model, surface);
+        this.index = index;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute (final int value)
+    {
+        if (!this.model.hasSelectedDevice ())
+            return;
+
+        // Convert negative relative value
+        final int v = value > 64 ? 127 - (value - 64) : value;
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (!modeManager.isActiveMode (Modes.MODE_PARAMS))
+            modeManager.setActiveMode (Modes.MODE_PARAMS);
+        modeManager.getMode (Modes.MODE_PARAMS).onValueKnob (this.index, v);
+    }
+}
