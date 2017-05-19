@@ -681,13 +681,13 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
 
         final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
         final TrackData selectedTrack = tb.getSelectedTrack ();
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < tb.getNumTracks (); i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
             tb.setVolumeIndication (i, !isEffect && (isVolume || hasTrackSel));
             tb.setPanIndication (i, !isEffect && (isPan || hasTrackSel));
 
-            for (int j = 0; j < 8; j++)
+            for (int j = 0; j < tb.getNumSends (); j++)
                 tb.setSendIndication (i, j, !isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
 
             tbe.setVolumeIndication (i, isEffect);
