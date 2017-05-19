@@ -9,7 +9,7 @@ import com.bitwig.extension.controller.ControllerExtensionDefinition;
 
 
 /**
- * Some reaccuring functions for the driver definition.
+ * Some reaccuring functions for the extension definition.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
