@@ -128,4 +128,15 @@ public abstract class DrumViewBase extends AbstractDrumView<LaunchpadControlSurf
         for (int i = 4; i < 8; i++)
             this.surface.setButton (this.surface.getSceneButton (i), LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
     }
+
+
+    /**
+     * Get the drum modes.
+     *
+     * @return The drum modes
+     */
+    public static Map<Integer, Pair<Integer, String>> getDrumModes ()
+    {
+        return DRUM_MODES;
+    }
 }

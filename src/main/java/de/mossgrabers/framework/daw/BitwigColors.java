@@ -14,6 +14,13 @@ public class BitwigColors
     /** All Bitwig track colors. */
     private static final Object [] COLORS                    =
     {
+            // Gray - not assigned
+            new double []
+            {
+                    0.5,
+                    0.5,
+                    0.5
+            },
             // Dark Gray
             new double []
             {
@@ -257,6 +264,7 @@ public class BitwigColors
     /** All IDs for the Bitwig track colors. */
     public static final String []  BITWIG_COLORS             = new String []
     {
+            BITWIG_COLOR_GRAY,
             BITWIG_COLOR_DARK_GRAY,
             BITWIG_COLOR_GRAY,
             BITWIG_COLOR_LIGHT_GRAY,

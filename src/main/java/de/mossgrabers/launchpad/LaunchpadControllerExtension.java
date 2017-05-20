@@ -7,6 +7,7 @@ package de.mossgrabers.launchpad;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.SceneCommand;
+import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.NewCommand;
@@ -321,6 +322,9 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
         this.surface.assignContinuousCommand (LaunchpadControlSurface.LAUNCHPAD_FADER_6, Commands.CONT_COMMAND_KNOB6);
         this.surface.assignContinuousCommand (LaunchpadControlSurface.LAUNCHPAD_FADER_7, Commands.CONT_COMMAND_KNOB7);
         this.surface.assignContinuousCommand (LaunchpadControlSurface.LAUNCHPAD_FADER_8, Commands.CONT_COMMAND_KNOB8);
+
+        final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);
+        playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, this.surface));
     }
 
 

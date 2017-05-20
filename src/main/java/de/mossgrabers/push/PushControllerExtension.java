@@ -553,8 +553,11 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         this.surface.assignNoteCommand (PushControlSurface.PUSH_RIBBON_TOUCH, Commands.CONT_COMMAND_CONFIGURE_PITCHBEND);
 
         viewManager.registerPitchbendCommand (new PitchbendCommand (this.model, this.surface));
+
         final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);
         playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, this.surface));
+        final PlayView pianoView = (PlayView) viewManager.getView (Views.VIEW_PIANO);
+        pianoView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (pianoView, this.model, this.surface));
 
         final SessionView sessionView = (SessionView) viewManager.getView (Views.VIEW_SESSION);
         sessionView.registerPitchbendCommand (new PitchbendSessionCommand (this.model, this.surface));
