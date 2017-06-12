@@ -80,6 +80,31 @@ public class MidiOutput
 
 
     /**
+     * Send channel aftertouch to the output on midi channel 1.
+     *
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    public void sendChannelAftertouch (final int data1, final int data2)
+    {
+        this.port.sendMidi (0xD0, data1, data2);
+    }
+
+
+    /**
+     * Send channel aftertouch to the output on the given midi channel.
+     *
+     * @param channel The midi channel
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    public void sendChannelAftertouch (final int channel, final int data1, final int data2)
+    {
+        this.port.sendMidi (0xD0 + channel, data1, data2);
+    }
+
+
+    /**
      * Send pitchbend to the output on midi channel 1.
      *
      * @param data1 First data byte
@@ -88,6 +113,19 @@ public class MidiOutput
     public void sendPitchbend (final int data1, final int data2)
     {
         this.port.sendMidi (0xE0, data1, data2);
+    }
+
+
+    /**
+     * Send pitchbend to the output on the given midi channel.
+     *
+     * @param channel The midi channel
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    public void sendPitchbend (final int channel, final int data1, final int data2)
+    {
+        this.port.sendMidi (0xE0 + channel, data1, data2);
     }
 
 

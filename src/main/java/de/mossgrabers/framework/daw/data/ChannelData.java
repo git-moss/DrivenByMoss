@@ -315,12 +315,7 @@ public class ChannelData
     {
         // Limit value to this.configuration.getMaxParameterValue () due to
         // https://github.com/teotigraphix/Framework4Bitwig/issues/98
-        if (value >= maxParameterValue)
-        {
-            this.vu = maxParameterValue - 1;
-        }
-        else
-            this.vu = value;
+        this.vu = value >= maxParameterValue ? maxParameterValue - 1 : value;
     }
 
 

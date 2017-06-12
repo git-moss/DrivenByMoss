@@ -169,7 +169,7 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (int scene, ButtonEvent event)
+    public void onScene (final int scene, final ButtonEvent event)
     {
         // Intentionally empty
     }
@@ -177,7 +177,7 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
 
     /** {@inheritDoc} */
     @Override
-    public void onSelectTrack (int index, ButtonEvent event)
+    public void onSelectTrack (final int index, final ButtonEvent event)
     {
         // Intentionally empty
     }

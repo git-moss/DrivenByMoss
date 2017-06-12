@@ -109,8 +109,8 @@ public class ViewSelectMode extends BaseMode
         {
             final String menuBottomName = VIEWS[i] == null ? "" : viewManager.getView (VIEWS[i]).getName ();
             final String menuTopName = VIEWS_TOP[i] == null ? "" : viewManager.getView (VIEWS_TOP[i]).getName ();
-            boolean isMenuBottomSelected = VIEWS[i] != null && viewManager.isActiveView (VIEWS[i]);
-            boolean isMenuTopSelected = VIEWS_TOP[i] != null && viewManager.isActiveView (VIEWS_TOP[i]);
+            final boolean isMenuBottomSelected = VIEWS[i] != null && viewManager.isActiveView (VIEWS[i]);
+            final boolean isMenuTopSelected = VIEWS_TOP[i] != null && viewManager.isActiveView (VIEWS_TOP[i]);
             message.addOptionElement ("", menuTopName, isMenuTopSelected, i == 0 ? "Track input" : "", menuBottomName, isMenuBottomSelected, false);
         }
         message.send ();

@@ -96,7 +96,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (int scene, ButtonEvent event)
+    public void onScene (final int scene, final ButtonEvent event)
     {
         // Intentionally empty
     }

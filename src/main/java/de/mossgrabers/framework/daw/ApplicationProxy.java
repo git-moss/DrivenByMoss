@@ -17,7 +17,16 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public class ApplicationProxy
 {
-    private Application application;
+    /** The panel layout Arrange. */
+    public static final String PANEL_LAYOUT_ARRANGE = "ARRANGE";
+    /** The panel layout Mix. */
+    public static final String PANEL_LAYOUT_MIX     = "MIX";
+    /** The panel layout Edit. */
+    public static final String PANEL_LAYOUT_EDIT    = "EDIT";
+    /** The panel layout Play. */
+    public static final String PANEL_LAYOUT_PLAY    = "PLAY";
+
+    private Application        application;
 
 
     /**
@@ -96,7 +105,7 @@ public class ApplicationProxy
      */
     public boolean isArrangeLayout ()
     {
-        return "ARRANGE".equals (this.application.panelLayout ().get ());
+        return PANEL_LAYOUT_ARRANGE.equals (this.application.panelLayout ().get ());
     }
 
 
@@ -107,7 +116,7 @@ public class ApplicationProxy
      */
     public boolean isMixerLayout ()
     {
-        return "MIX".equals (this.application.panelLayout ().get ());
+        return PANEL_LAYOUT_MIX.equals (this.application.panelLayout ().get ());
     }
 
 
@@ -118,7 +127,7 @@ public class ApplicationProxy
      */
     public boolean isEditLayout ()
     {
-        return "EDIT".equals (this.application.panelLayout ().get ());
+        return PANEL_LAYOUT_EDIT.equals (this.application.panelLayout ().get ());
     }
 
 
@@ -129,7 +138,7 @@ public class ApplicationProxy
      */
     public boolean isPlayLayout ()
     {
-        return "PLAY".equals (this.application.panelLayout ().get ());
+        return PANEL_LAYOUT_PLAY.equals (this.application.panelLayout ().get ());
     }
 
 
@@ -344,6 +353,26 @@ public class ApplicationProxy
     public void arrowKeyDown ()
     {
         this.application.arrowKeyDown ();
+    }
+
+
+    /**
+     * Equivalent to an Enter key stroke on the computer keyboard. The concrete functionality
+     * depends on the current keyboard focus in Bitwig Studio.
+     */
+    public void enter ()
+    {
+        this.application.enter ();
+    }
+
+
+    /**
+     * Equivalent to an Escape key stroke on the computer keyboard. The concrete functionality
+     * depends on the current keyboard focus in Bitwig Studio.
+     */
+    public void escape ()
+    {
+        this.application.escape ();
     }
 
 

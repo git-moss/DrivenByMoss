@@ -10,14 +10,13 @@ import com.bitwig.extension.controller.api.NoteInput;
 
 
 /**
- * The Launchpad midi input
+ * The Beatstep midi input
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class BeatstepMidiInput extends MidiInput
 {
-    private final String inputName;
-    private boolean      isPro;
+    private boolean isPro;
 
 
     /**
@@ -28,7 +27,6 @@ public class BeatstepMidiInput extends MidiInput
     public BeatstepMidiInput (final boolean isPro)
     {
         this.isPro = isPro;
-        this.inputName = isPro ? "Novation Launchpad Pro" : "Novation Launchpad MkII";
     }
 
 
@@ -37,7 +35,11 @@ public class BeatstepMidiInput extends MidiInput
     public NoteInput createNoteInput ()
     {
         // Control Mode is expected on channel 3 for Pro
-        final NoteInput noteInput = this.createNoteInputBase (this.inputName, this.isPro ? "Control" : "Beatstep", this.isPro ? "82????" : "80????", this.isPro ? "92????" : "90????", this.isPro ? "A2????" : "A0????", this.isPro ? "B2????" : "B0????");
+        final NoteInput noteInput;
+        if (this.isPro)
+            noteInput = this.createNoteInputBase ("Control", "82????", "92????", "A2????", "B2????");
+        else
+            noteInput = this.createNoteInputBase ("Beatstep", "80????", "90????", "A0????", "B0????");
 
         // Setup the 2 note sequencers and 1 drum sequencer
         if (this.isPro)

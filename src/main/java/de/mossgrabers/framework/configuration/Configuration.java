@@ -237,4 +237,12 @@ public interface Configuration
      * @param value The accent value
      */
     void setAccentValue (double value);
+
+
+    /**
+     * Get the functionality of the footswitch 2.
+     *
+     * @return The functionality of the footswitch 2.
+     */
+    int getFootswitch2 ();
 }

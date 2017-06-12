@@ -8,7 +8,7 @@ import de.mossgrabers.framework.controller.AbstractControllerExtensionDefinition
 
 
 /**
- * Abstract definition class for the Launchpad controllers.
+ * Abstract definition class for the Beatstep controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -34,6 +34,6 @@ public abstract class BaseBeatstepControllerExtensionDefinition extends Abstract
     @Override
     public String getVersion ()
     {
-        return "4.0";
+        return "4.01";
     }
 }

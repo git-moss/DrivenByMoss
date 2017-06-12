@@ -45,7 +45,7 @@ public class APCminiColors
 
 
     /**
-     * Configures all colors for Launchpad controllers.
+     * Configures all colors for APCmini controller.
      *
      * @param colorManager The color manager
      */

@@ -34,4 +34,12 @@ public abstract class AbstractPitchbendCommand<S extends ControlSurface<C>, C ex
         this.model = model;
         this.surface = surface;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateValue ()
+    {
+        // Intentionally empty
+    }
 }

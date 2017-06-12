@@ -19,16 +19,7 @@ import java.util.UUID;
  */
 public class Push2ControllerExtensionDefinition extends PushControllerExtensionDefinition
 {
-    private static final UUID  EXTENSION_ID     = UUID.fromString ("15176AA0-C476-11E6-9598-0800200C9A66");
-
-    /** Push 2 USB Vendor ID. */
-    private static final short VENDOR_ID        = 0x2982;
-    /** Push 2 USB Product ID. */
-    private static final short PRODUCT_ID       = 0x1967;
-    /** Push 2 USB Interface for the display. */
-    private static final byte  INTERFACE_NUMBER = 0;
-    /** Push 2 USB display endpoint. */
-    private static final byte  ENDPOINT_ADDRESS = (byte) 0x01;
+    private static final UUID EXTENSION_ID = UUID.fromString ("15176AA0-C476-11E6-9598-0800200C9A66");
 
 
     /** {@inheritDoc} */

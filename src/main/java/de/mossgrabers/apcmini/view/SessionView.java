@@ -42,7 +42,7 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
 
     /** {@inheritDoc} */
     @Override
-    public void onGridNote (int note, final int velocity)
+    public void onGridNote (final int note, final int velocity)
     {
         if (velocity == 0)
             return;

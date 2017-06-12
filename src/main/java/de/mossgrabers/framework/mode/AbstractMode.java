@@ -140,6 +140,6 @@ public abstract class AbstractMode<S extends ControlSurface<C>, C extends Config
                     return shortened;
             }
         }
-        return shortened;
+        return shortened.length () <= length ? shortened : shortened.substring (0, length);
     }
 }

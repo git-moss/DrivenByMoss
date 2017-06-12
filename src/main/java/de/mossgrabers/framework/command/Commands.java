@@ -223,6 +223,32 @@ public interface Commands
 
     /** Button loop toggle command. */
     Integer COMMAND_LOOP                     = Integer.valueOf (99);
+    /** Button punch in command. */
+    Integer COMMAND_PUNCH_IN                 = Integer.valueOf (100);
+    /** Button punch out command. */
+    Integer COMMAND_PUNCH_OUT                = Integer.valueOf (101);
+
+    /** The automation read command. */
+    Integer COMMAND_AUTOMATION_READ          = Integer.valueOf (110);
+    /** The automation write command. */
+    Integer COMMAND_AUTOMATION_WRITE         = Integer.valueOf (111);
+    /** The automation trim command. */
+    Integer COMMAND_AUTOMATION_TRIM          = Integer.valueOf (112);
+    /** The automation touch command. */
+    Integer COMMAND_AUTOMATION_TOUCH         = Integer.valueOf (113);
+    /** The automation latch command. */
+    Integer COMMAND_AUTOMATION_LATCH         = Integer.valueOf (114);
+    /** The zoom state command. */
+    Integer COMMAND_ZOOM                     = Integer.valueOf (115);
+
+    /** The move bank left command. */
+    Integer COMMAND_MOVE_BANK_LEFT           = Integer.valueOf (116);
+    /** The move bank left command. */
+    Integer COMMAND_MOVE_BANK_RIGHT          = Integer.valueOf (117);
+    /** The move bank left command. */
+    Integer COMMAND_MOVE_TRACK_LEFT          = Integer.valueOf (118);
+    /** The move bank left command. */
+    Integer COMMAND_MOVE_TRACK_RIGHT         = Integer.valueOf (119);
 
     /** Continuous knob 1. */
     Integer CONT_COMMAND_KNOB1               = Integer.valueOf (1);

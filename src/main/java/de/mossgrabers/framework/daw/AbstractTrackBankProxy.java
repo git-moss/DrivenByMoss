@@ -288,6 +288,19 @@ public abstract class AbstractTrackBankProxy
 
 
     /**
+     * Set the volume.
+     *
+     * @param index The index of the track
+     * @param value The new value
+     * @param upperBound The upper bound
+     */
+    public void setVolume (final int index, final double value, final int upperBound)
+    {
+        this.trackBank.getChannel (index).getVolume ().set (Double.valueOf (value), Integer.valueOf (upperBound));
+    }
+
+
+    /**
      * Reset the volume to its default value.
      *
      * @param index The index of the track

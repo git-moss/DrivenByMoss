@@ -82,7 +82,7 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
         int t = index % this.columns;
         int s = this.rows - 1 - index / this.columns;
 
-        C configuration = this.surface.getConfiguration ();
+        final C configuration = this.surface.getConfiguration ();
         if (configuration.isFlipSession ())
         {
             final int dummy = t;

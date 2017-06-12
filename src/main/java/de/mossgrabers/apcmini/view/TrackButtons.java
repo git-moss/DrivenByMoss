@@ -40,7 +40,7 @@ public class TrackButtons
     public void updateTrackButtons ()
     {
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        int trackState = this.surface.getTrackState ();
+        final int trackState = this.surface.getTrackState ();
         for (int i = 0; i < 8; i++)
         {
             switch (trackState)

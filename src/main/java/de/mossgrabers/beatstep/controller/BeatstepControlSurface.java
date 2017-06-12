@@ -74,7 +74,25 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
     public static final int     BEATSTEP_PAD_15      = 0x7E;
     public static final int     BEATSTEP_PAD_16      = 0x7F;
 
-    private static final int [] BEATSTEP_BUTTONS_ALL = {};
+    private static final int [] BEATSTEP_BUTTONS_ALL =
+    {
+            BEATSTEP_PRO_STEP1,
+            BEATSTEP_PRO_STEP2,
+            BEATSTEP_PRO_STEP3,
+            BEATSTEP_PRO_STEP4,
+            BEATSTEP_PRO_STEP5,
+            BEATSTEP_PRO_STEP6,
+            BEATSTEP_PRO_STEP7,
+            BEATSTEP_PRO_STEP8,
+            BEATSTEP_PRO_STEP9,
+            BEATSTEP_PRO_STEP10,
+            BEATSTEP_PRO_STEP11,
+            BEATSTEP_PRO_STEP12,
+            BEATSTEP_PRO_STEP13,
+            BEATSTEP_PRO_STEP14,
+            BEATSTEP_PRO_STEP15,
+            BEATSTEP_PRO_STEP16
+    };
 
     static final String         SYSEX_HEADER         = "F0 00 20 6B 7F 42 02 00 10 ";
     static final String         SYSEX_END            = "F7";
@@ -134,13 +152,15 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
 
     /** {@inheritDoc} */
     @Override
-    protected void handleCC (final int channel, final int cc, final int value)
+    protected void handleMidi (final int status, final int data1, final int data2)
     {
         // Filter all channels except the controller channel
+        final int code = status & 0xF0;
+        final int channel = status & 0xF;
         if (this.isPro && channel != 2)
             return;
 
-        super.handleCC (0, cc, value);
+        super.handleMidi (code, data1, data2);
     }
 
 

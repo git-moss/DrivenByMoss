@@ -48,7 +48,7 @@ public class QuantizeCommand extends AbstractTriggerCommand<PushControlSurface, 
 
         if (event == ButtonEvent.UP)
         {
-            if (modeManager.getActiveModeId () == Modes.MODE_GROOVE)
+            if (Modes.MODE_GROOVE.equals (modeManager.getActiveModeId ()))
             {
                 modeManager.restoreMode ();
                 return;

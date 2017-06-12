@@ -44,7 +44,7 @@ public class APCminiControllerExtensionDefinition extends AbstractControllerExte
     @Override
     public String getVersion ()
     {
-        return "5.0";
+        return "5.01";
     }
 
 
@@ -68,7 +68,7 @@ public class APCminiControllerExtensionDefinition extends AbstractControllerExte
     @Override
     public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
     {
-        this.addDeviceDiscoveryPair ("APC MINI", list);
+        this.createDeviceDiscoveryPairs ("APC MINI", list);
     }
 
 

@@ -11,6 +11,8 @@ import com.bitwig.extension.controller.api.SettableRangedValue;
 import com.bitwig.extension.controller.api.TimeSignatureValue;
 import com.bitwig.extension.controller.api.Transport;
 
+import java.text.DecimalFormat;
+
 
 /**
  * Encapsulates the Transport instance.
@@ -19,28 +21,44 @@ import com.bitwig.extension.controller.api.Transport;
  */
 public class TransportProxy
 {
+    /** The names for automation modes. */
+    public static final String [] AUTOMATION_MODES        =
+    {
+            "Latch",
+            "Touch",
+            "Write"
+    };
+
+    /** The names for automation modes values. */
+    public static final String [] AUTOMATION_MODES_VALUES =
+    {
+            "latch",
+            "touch",
+            "write"
+    };
+
     /** No preroll. */
-    public static final String  PREROLL_NONE           = "none";
+    public static final String    PREROLL_NONE            = "none";
     /** 1 bar preroll. */
-    public static final String  PREROLL_1_BAR          = "one_bar";
+    public static final String    PREROLL_1_BAR           = "one_bar";
     /** 2 bar preroll. */
-    public static final String  PREROLL_2_BARS         = "two_bars";
+    public static final String    PREROLL_2_BARS          = "two_bars";
     /** 4 bar preroll. */
-    public static final String  PREROLL_4_BARS         = "four_bars";
+    public static final String    PREROLL_4_BARS          = "four_bars";
 
     /** 1 beat. */
-    private static final double INC_FRACTION_TIME      = 1.0;
+    private static final double   INC_FRACTION_TIME       = 1.0;
     /** 1/20th of a beat. */
-    private static final double INC_FRACTION_TIME_SLOW = 1.0 / 20;
-    private static final int    TEMPO_MIN              = 20;
-    private static final int    TEMPO_MAX              = 666;
+    private static final double   INC_FRACTION_TIME_SLOW  = 1.0 / 20;
+    private static final int      TEMPO_MIN               = 20;
+    private static final int      TEMPO_MAX               = 666;
 
-    private ControllerHost      host;
-    private ValueChanger        valueChanger;
-    private Transport           transport;
+    private ControllerHost        host;
+    private ValueChanger          valueChanger;
+    private Transport             transport;
 
-    private int                 crossfade              = 0;
-    private double              tempo;
+    private int                   crossfade               = 0;
+    private double                tempo;
 
 
     /**
@@ -67,6 +85,7 @@ public class TransportProxy
         this.transport.isPunchInEnabled ().markInterested ();
         this.transport.isPunchOutEnabled ().markInterested ();
         this.transport.isMetronomeEnabled ().markInterested ();
+        this.transport.isMetronomeTickPlaybackEnabled ().markInterested ();
         this.transport.isMetronomeAudibleDuringPreRoll ().markInterested ();
         this.transport.preRoll ().markInterested ();
         this.transport.tempo ().value ().addRawValueObserver (this::handleTempo);
@@ -103,6 +122,7 @@ public class TransportProxy
         this.transport.isPunchInEnabled ().setIsSubscribed (enable);
         this.transport.isPunchOutEnabled ().setIsSubscribed (enable);
         this.transport.isMetronomeEnabled ().setIsSubscribed (enable);
+        this.transport.isMetronomeTickPlaybackEnabled ().setIsSubscribed (enable);
         this.transport.isMetronomeAudibleDuringPreRoll ().setIsSubscribed (enable);
         this.transport.preRoll ().setIsSubscribed (enable);
         this.transport.tempo ().value ().setIsSubscribed (enable);
@@ -296,6 +316,17 @@ public class TransportProxy
     public void toggleMetronome ()
     {
         this.transport.isMetronomeEnabled ().toggle ();
+    }
+
+
+    /**
+     * Returns true if the metronome ticks option is on.
+     *
+     * @return True if the metronome ticks option is on
+     */
+    public boolean isMetronomeTicksOn ()
+    {
+        return this.transport.isMetronomeTickPlaybackEnabled ().get ();
     }
 
 
@@ -609,6 +640,30 @@ public class TransportProxy
     public double getTempo ()
     {
         return this.tempo;
+    }
+
+
+    /**
+     * Format the tempo with 2 fractions.
+     *
+     * @param tempo The tempo to format
+     * @return The formatted tempo
+     */
+    public String formatTempo (final double tempo)
+    {
+        return new DecimalFormat ("#.00").format (tempo);
+    }
+
+
+    /**
+     * Format the tempo with 2 fractions.
+     *
+     * @param tempo The tempo to format
+     * @return The formatted tempo
+     */
+    public String formatTempoNoFraction (final double tempo)
+    {
+        return new DecimalFormat ("###").format (tempo);
     }
 
 

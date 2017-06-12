@@ -88,17 +88,18 @@ public class SendMode extends AbstractTrackMode
         final Display d = this.surface.getDisplay ();
         final int sendIndex = this.getCurrentSendIndex ();
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
-        TrackData t;
         for (int i = 0; i < 8; i++)
         {
-            t = tb.getTrack (i);
-            d.setCell (0, i, t.doesExist () ? fxTrackBank == null ? t.getSends ()[sendIndex].getName () : fxTrackBank.getTrack (sendIndex).getName () : "");
-            d.setCell (1, i, t.getSends ()[sendIndex].getDisplayedValue (8));
+            final TrackData t = tb.getTrack (i);
             if (t.doesExist ())
-                d.setCell (2, i, t.getSends ()[sendIndex].getValue (), Format.FORMAT_VALUE);
+            {
+                final SendData sendData = t.getSends ()[sendIndex];
+                d.setCell (0, i, sendData.getName ());
+                d.setCell (1, i, sendData.getDisplayedValue (8));
+                d.setCell (2, i, sendData.getValue (), Format.FORMAT_VALUE);
+            }
             else
-                d.clearCell (2, i);
+                d.clearColumn (i);
         }
         d.done (0).done (1).done (2);
 

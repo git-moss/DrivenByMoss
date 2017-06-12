@@ -163,10 +163,10 @@ public abstract class AbstractView<S extends ControlSurface<C>, C extends Config
 
     /** {@inheritDoc} */
     @Override
-    public void executePitchbendCommand (final int data1, final int data2)
+    public void executePitchbendCommand (final int channel, final int data1, final int data2)
     {
         if (this.pitchbendCommand != null)
-            this.pitchbendCommand.onPitchbend (data1, data2);
+            this.pitchbendCommand.onPitchbend (channel, data1, data2);
     }
 
 
@@ -253,6 +253,14 @@ public abstract class AbstractView<S extends ControlSurface<C>, C extends Config
         final TriggerCommand command = this.noteCommands.get (commandID);
         if (command != null)
             command.execute (value == 0 ? ButtonEvent.UP : ButtonEvent.DOWN);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public TriggerCommand getNoteCommand (final Integer commandID)
+    {
+        return this.noteCommands.get (commandID);
     }
 
 

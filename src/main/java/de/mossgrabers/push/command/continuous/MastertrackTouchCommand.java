@@ -4,8 +4,9 @@
 
 package de.mossgrabers.push.command.continuous;
 
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
+import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -17,7 +18,7 @@ import de.mossgrabers.push.mode.Modes;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MastertrackTouchCommand extends AbstractContinuousCommand<PushControlSurface, PushConfiguration>
+public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {
     /**
      * Constructor.
@@ -33,9 +34,9 @@ public class MastertrackTouchCommand extends AbstractContinuousCommand<PushContr
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final int value)
+    public void execute (final ButtonEvent event)
     {
-        final boolean isTouched = value == 127;
+        final boolean isTouched = event == ButtonEvent.DOWN;
 
         // Avoid accidently leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();
@@ -49,7 +50,7 @@ public class MastertrackTouchCommand extends AbstractContinuousCommand<PushContr
             return;
         }
 
-        final boolean isMasterMode = modeManager.getActiveModeId () == Modes.MODE_MASTER;
+        final boolean isMasterMode = modeManager.isActiveMode (Modes.MODE_MASTER);
         if (isTouched && isMasterMode)
             return;
 

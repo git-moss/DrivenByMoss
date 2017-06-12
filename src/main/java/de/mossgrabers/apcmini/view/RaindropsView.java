@@ -59,7 +59,7 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
     {
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, isKeyboardEnabled && i == (7 - this.selectedIndex) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+            this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, isKeyboardEnabled && i == 7 - this.selectedIndex ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
         this.canScrollUp = this.offsetY + AbstractRaindropsView.NUM_OCTAVE <= this.clip.getRowSize () - AbstractRaindropsView.NUM_OCTAVE;
         this.canScrollDown = this.offsetY - AbstractRaindropsView.NUM_OCTAVE >= 0;
@@ -73,7 +73,7 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
 
     /** {@inheritDoc} */
     @Override
-    public void onGridNote (int note, int velocity)
+    public void onGridNote (final int note, final int velocity)
     {
         super.onGridNote (note + 36, velocity);
     }

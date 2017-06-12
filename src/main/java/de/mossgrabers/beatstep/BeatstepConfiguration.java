@@ -11,7 +11,7 @@ import com.bitwig.extension.controller.api.Preferences;
 
 
 /**
- * The configuration settings for Launchpad.
+ * The configuration settings for Beatstep.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

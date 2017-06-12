@@ -5,6 +5,8 @@
 package de.mossgrabers.framework.controller;
 
 import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.command.core.ContinuousCommand;
+import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -140,6 +142,48 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
      * Startup the controller.
      */
     protected abstract void startup ();
+
+
+    /**
+     * Register a (global) trigger command for all views and assign it to a MIDI CC.
+     *
+     * @param commandID The ID of the command to register
+     * @param midiCC The midi CC
+     * @param command The command to register
+     */
+    protected void addTriggerCommand (final Integer commandID, final int midiCC, final TriggerCommand command)
+    {
+        this.surface.getViewManager ().registerTriggerCommand (commandID, command);
+        this.surface.assignTriggerCommand (midiCC, commandID);
+    }
+
+
+    /**
+     * Register a (global) continuous command for all views and assign it to a MIDI CC.
+     *
+     * @param commandID The ID of the command to register
+     * @param midiCC The midi CC
+     * @param command The command to register
+     */
+    protected void addContinuousCommand (final Integer commandID, final int midiCC, final ContinuousCommand command)
+    {
+        this.surface.getViewManager ().registerContinuousCommand (commandID, command);
+        this.surface.assignContinuousCommand (midiCC, commandID);
+    }
+
+
+    /**
+     * Register a (global) note command for all views and assign it to a MIDI CC.
+     *
+     * @param commandID The ID of the command to register
+     * @param midiCC The midi CC
+     * @param command The command to register
+     */
+    protected void addNoteCommand (final Integer commandID, final int midiCC, final TriggerCommand command)
+    {
+        this.surface.getViewManager ().registerNoteCommand (commandID, command);
+        this.surface.assignNoteCommand (midiCC, commandID);
+    }
 
 
     /**

@@ -66,7 +66,7 @@ public class SequencerView extends AbstractNoteSequencerView<APCminiControlSurfa
     {
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, isKeyboardEnabled && i == (7 - this.selectedIndex) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+            this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, isKeyboardEnabled && i == 7 - this.selectedIndex ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
         final int octave = this.scales.getOctave ();
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1, octave < Scales.OCTAVE_RANGE ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
@@ -83,7 +83,7 @@ public class SequencerView extends AbstractNoteSequencerView<APCminiControlSurfa
 
     /** {@inheritDoc} */
     @Override
-    public void onGridNote (int note, int velocity)
+    public void onGridNote (final int note, final int velocity)
     {
         super.onGridNote (note + 36, velocity);
     }

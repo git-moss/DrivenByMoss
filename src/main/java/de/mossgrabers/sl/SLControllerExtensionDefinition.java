@@ -8,7 +8,7 @@ import de.mossgrabers.framework.controller.AbstractControllerExtensionDefinition
 
 
 /**
- * Abstract definition class for the Launchpad controllers.
+ * Abstract definition class for the Remote SL controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

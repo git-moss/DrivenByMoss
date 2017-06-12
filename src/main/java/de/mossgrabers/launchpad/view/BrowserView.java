@@ -202,7 +202,7 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (int scene, ButtonEvent event)
+    public void onScene (final int scene, final ButtonEvent event)
     {
         // Intentionally empty
     }

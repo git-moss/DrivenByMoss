@@ -2,17 +2,20 @@
 // (c) 2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.command.continuous;
+package de.mossgrabers.framework.command.continuous;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
+import de.mossgrabers.framework.command.core.TriggerCommand;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.ApplicationProxy;
 import de.mossgrabers.framework.daw.data.SlotData;
 import de.mossgrabers.framework.daw.data.TrackData;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.PushControlSurface;
 
 import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
 
@@ -20,9 +23,12 @@ import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
 /**
  * Command for different functionalities of a foot switch.
  *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FootswitchCommand extends AbstractContinuousCommand<PushControlSurface, PushConfiguration>
+public class FootswitchCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C> implements TriggerCommand
 {
     /**
      * Constructor.
@@ -30,7 +36,7 @@ public class FootswitchCommand extends AbstractContinuousCommand<PushControlSurf
      * @param model The model
      * @param surface The surface
      */
-    public FootswitchCommand (final Model model, final PushControlSurface surface)
+    public FootswitchCommand (final Model model, final S surface)
     {
         super (model, surface);
     }
@@ -40,40 +46,47 @@ public class FootswitchCommand extends AbstractContinuousCommand<PushControlSurf
     @Override
     public void execute (final int value)
     {
-        final ButtonEvent event = value == 127 ? ButtonEvent.DOWN : ButtonEvent.UP;
-        switch (this.surface.getConfiguration ().getFootswitch2 ())
+        this.execute (value == 127 ? ButtonEvent.DOWN : ButtonEvent.UP);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute (final ButtonEvent event)
+    {
+        switch (this.getSetting ())
         {
-            case PushConfiguration.FOOTSWITCH_2_TOGGLE_PLAY:
+            case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_PLAY:
                 this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_PLAY, event);
                 break;
 
-            case PushConfiguration.FOOTSWITCH_2_TOGGLE_RECORD:
+            case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_RECORD:
                 this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_RECORD, event);
                 break;
 
-            case PushConfiguration.FOOTSWITCH_2_STOP_ALL_CLIPS:
+            case AbstractConfiguration.FOOTSWITCH_2_STOP_ALL_CLIPS:
                 if (event == ButtonEvent.DOWN)
                     this.model.getCurrentTrackBank ().stop ();
                 break;
 
-            case PushConfiguration.FOOTSWITCH_2_TOGGLE_CLIP_OVERDUB:
+            case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_CLIP_OVERDUB:
                 if (event == ButtonEvent.DOWN)
                     this.model.getTransport ().toggleLauncherOverdub ();
                 break;
 
-            case PushConfiguration.FOOTSWITCH_2_UNDO:
+            case AbstractConfiguration.FOOTSWITCH_2_UNDO:
                 this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_UNDO, event);
                 break;
 
-            case PushConfiguration.FOOTSWITCH_2_TAP_TEMPO:
+            case AbstractConfiguration.FOOTSWITCH_2_TAP_TEMPO:
                 this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_TAP_TEMPO, event);
                 break;
 
-            case PushConfiguration.FOOTSWITCH_2_NEW_BUTTON:
+            case AbstractConfiguration.FOOTSWITCH_2_NEW_BUTTON:
                 this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_NEW, event);
                 break;
 
-            case PushConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
+            case AbstractConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
                 final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
                 final TrackData track = tb.getSelectedTrack ();
                 if (track == null)
@@ -110,6 +123,63 @@ public class FootswitchCommand extends AbstractContinuousCommand<PushControlSurf
                 // Start transport if not already playing
                 slots.launch (slot.getIndex ());
                 break;
+
+            case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_ARRANGE:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getApplication ().setPanelLayout (ApplicationProxy.PANEL_LAYOUT_ARRANGE);
+                break;
+
+            case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_MIX:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getApplication ().setPanelLayout (ApplicationProxy.PANEL_LAYOUT_MIX);
+                break;
+
+            case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_EDIT:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getApplication ().setPanelLayout (ApplicationProxy.PANEL_LAYOUT_EDIT);
+                break;
+
+            case AbstractConfiguration.FOOTSWITCH_2_ADD_INSTRUMENT_TRACK:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getApplication ().addInstrumentTrack ();
+                break;
+
+            case AbstractConfiguration.FOOTSWITCH_2_ADD_AUDIO_TRACK:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getApplication ().addAudioTrack ();
+                break;
+
+            case AbstractConfiguration.FOOTSWITCH_2_ADD_EFFECT_TRACK:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getApplication ().addEffectTrack ();
+                break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeNormal (ButtonEvent event)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (ButtonEvent event)
+    {
+        // Intentionally empty
+    }
+
+
+    /**
+     * Get the configuration setting.
+     *
+     * @return The setting
+     */
+    protected int getSetting ()
+    {
+        return this.surface.getConfiguration ().getFootswitch2 ();
     }
 }

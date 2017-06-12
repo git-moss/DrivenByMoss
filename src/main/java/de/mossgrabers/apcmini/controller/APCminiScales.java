@@ -9,7 +9,7 @@ import de.mossgrabers.framework.scale.Scales;
 
 
 /**
- * Changes matrices to different grid note mapping of the Launchpad Pro and MkII..
+ * Changes matrices to different grid note mapping of the APCmini.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

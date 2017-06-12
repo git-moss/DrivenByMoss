@@ -19,9 +19,9 @@ import com.bitwig.extension.controller.api.SettableEnumValue;
 public class APCminiConfiguration extends AbstractConfiguration
 {
     /** Default function of the faders. */
-    public static final Integer    FADER_CTRL         = Integer.valueOf (20);
+    public static final Integer    FADER_CTRL         = Integer.valueOf (30);
     /** Default function of the track buttons. */
-    public static final Integer    SOFT_KEYS          = Integer.valueOf (21);
+    public static final Integer    SOFT_KEYS          = Integer.valueOf (31);
 
     private static final String [] FADER_CTRL_OPTIONS =
     {

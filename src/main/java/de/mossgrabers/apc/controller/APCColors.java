@@ -120,7 +120,7 @@ public class APCColors
 
 
     /**
-     * Configures all colors for Launchpad controllers.
+     * Configures all colors for APC controllers.
      *
      * @param colorManager The color manager
      * @param isMkII True if mkII

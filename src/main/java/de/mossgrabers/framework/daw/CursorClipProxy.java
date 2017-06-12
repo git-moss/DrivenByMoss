@@ -488,7 +488,7 @@ public class CursorClipProxy
 
     /**
      * Value that reports if the note grid if the note grid steps can be scrolled backwards.
-     * 
+     *
      * @return True if it can be scrolled
      */
     public boolean canScrollStepsBackwards ()
@@ -500,7 +500,7 @@ public class CursorClipProxy
 
     /**
      * Value that reports if the note grid if the note grid steps can be scrolled forwards.
-     * 
+     *
      * @return True if it can be scrolled
      */
     public boolean canScrollStepsForwards ()

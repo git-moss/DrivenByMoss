@@ -140,7 +140,7 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
     }
 
 
-    public void setTrackState (int trackState)
+    public void setTrackState (final int trackState)
     {
         this.trackState = trackState;
     }

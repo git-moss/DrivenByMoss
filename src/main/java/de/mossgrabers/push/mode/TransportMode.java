@@ -13,8 +13,6 @@ import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.controller.PushDisplay;
 
-import java.text.DecimalFormat;
-
 
 /**
  * Editing of transport parameters.
@@ -125,8 +123,7 @@ public class TransportMode extends BaseMode
         final TransportProxy transport = this.model.getTransport ();
         final String preroll = transport.getPreroll ();
         final double tempo = transport.getTempo ();
-        final String formattedTempo = formatTempo (tempo);
-        d.clear ().setCell (0, 0, "Tempo").setCell (1, 0, formattedTempo).setCell (2, 0, formatTempoBars (tempo));
+        d.clear ().setCell (0, 0, "Tempo").setCell (1, 0, transport.formatTempo (tempo)).setCell (2, 0, formatTempoBars (tempo));
         d.setCell (0, 2, "Pre-Roll").setCell (2, 2, (preroll == TransportProxy.PREROLL_NONE ? PushDisplay.RIGHT_ARROW : " ") + "None");
         d.setCell (3, 2, (preroll == TransportProxy.PREROLL_1_BAR ? PushDisplay.RIGHT_ARROW : " ") + "1 Bar");
         d.setCell (2, 3, (preroll == TransportProxy.PREROLL_2_BARS ? PushDisplay.RIGHT_ARROW : " ") + "2 Bars");
@@ -142,7 +139,6 @@ public class TransportMode extends BaseMode
         final TransportProxy transport = this.model.getTransport ();
         final String preroll = transport.getPreroll ();
         final double tempo = transport.getTempo ();
-        final String formattedTempo = formatTempo (tempo);
 
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
@@ -154,7 +150,7 @@ public class TransportMode extends BaseMode
         message.addBoolean (false);
         message.addString ("Tempo");
         message.addInteger ((int) this.convertTempo (tempo));
-        message.addString (formattedTempo);
+        message.addString (transport.formatTempo (tempo));
         message.addBoolean (this.isKnobTouched[0]);
         message.addInteger (-1);
 
@@ -187,11 +183,5 @@ public class TransportMode extends BaseMode
     {
         final double v = value - TransportMode.MIN_TEMPO;
         return v * (this.model.getValueChanger ().getUpperBound () - 1) / (TransportMode.MAX_TEMPO - TransportMode.MIN_TEMPO);
-    }
-
-
-    private static String formatTempo (final double tempo)
-    {
-        return new DecimalFormat ("#.00").format (tempo);
     }
 }

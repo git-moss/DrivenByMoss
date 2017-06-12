@@ -205,13 +205,11 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
     @Override
     protected void registerTriggerCommands ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
+        if (!this.isPro)
+            return;
+
         for (int i = 0; i < 16; i++)
-        {
-            final Integer commandID = Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i);
-            viewManager.registerTriggerCommand (commandID, new StepCommand (i, this.model, this.surface));
-            this.surface.assignTriggerCommand (BeatstepControlSurface.BEATSTEP_PRO_STEP1 + i, commandID);
-        }
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), BeatstepControlSurface.BEATSTEP_PRO_STEP1 + i, new StepCommand (i, this.model, this.surface));
     }
 
 
@@ -222,18 +220,10 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
         final ViewManager viewManager = this.surface.getViewManager ();
         for (int i = 0; i < 8; i++)
         {
-            final Integer commandID = Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i);
-            viewManager.registerContinuousCommand (commandID, new KnobRowViewCommand (i, this.model, this.surface));
-            this.surface.assignContinuousCommand (BeatstepControlSurface.BEATSTEP_KNOB_1 + i, commandID);
-
-            final Integer commandID2 = Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i);
-            viewManager.registerContinuousCommand (commandID2, new KnobRowViewCommand (i + 8, this.model, this.surface));
-            this.surface.assignContinuousCommand (BeatstepControlSurface.BEATSTEP_KNOB_9 + i, commandID2);
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_1 + i, new KnobRowViewCommand (i, this.model, this.surface));
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_9 + i, new KnobRowViewCommand (i + 8, this.model, this.surface));
         }
-
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, new BeatstepPlayPositionCommand (this.model, this.surface));
-        this.surface.assignContinuousCommand (BeatstepControlSurface.BEATSTEP_KNOB_MAIN, Commands.CONT_COMMAND_MASTER_KNOB);
-
+        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, new BeatstepPlayPositionCommand (this.model, this.surface));
         final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);
         playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, this.surface));
     }

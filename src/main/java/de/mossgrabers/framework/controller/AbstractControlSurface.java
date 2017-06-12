@@ -324,6 +324,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setKeyTranslationTable (final int [] table)
     {
+        if (this.noteInput == null)
+            return;
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
             t[i] = Integer.valueOf (table[i]);
@@ -335,6 +337,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setVelocityTranslationTable (final int [] table)
     {
+        if (this.noteInput == null)
+            return;
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
             t[i] = Integer.valueOf (table[i]);
@@ -389,6 +393,11 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     {
         if (button == -1)
             return false;
+        if (this.buttonStates[button] == null)
+        {
+            this.errorln ("Unregistered button: " + button);
+            return false;
+        }
         switch (this.buttonStates[button])
         {
             case DOWN:
@@ -629,7 +638,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             case 0xE0:
                 view = this.viewManager.getActiveView ();
                 if (view != null)
-                    view.executePitchbendCommand (data1, data2);
+                    view.executePitchbendCommand (channel, data1, data2);
                 break;
 
             default:

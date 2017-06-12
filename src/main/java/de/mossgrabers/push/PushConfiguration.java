@@ -32,112 +32,62 @@ public class PushConfiguration extends AbstractConfiguration
     }
 
     /** Setting for the ribbon mode. */
-    public static final Integer    RIBBON_MODE                      = Integer.valueOf (20);
+    public static final Integer    RIBBON_MODE                     = Integer.valueOf (30);
     /** Setting for the ribbon mode midi CC. */
-    public static final Integer    RIBBON_MODE_CC_VAL               = Integer.valueOf (21);
+    public static final Integer    RIBBON_MODE_CC_VAL              = Integer.valueOf (31);
     /** Setting for the velocity curve. */
-    public static final Integer    VELOCITY_CURVE                   = Integer.valueOf (22);
+    public static final Integer    VELOCITY_CURVE                  = Integer.valueOf (32);
     /** Setting for the pad threshold. */
-    public static final Integer    PAD_THRESHOLD                    = Integer.valueOf (23);
-    /** Setting for the footswitch functionality. */
-    public static final Integer    FOOTSWITCH_2                     = Integer.valueOf (24);
+    public static final Integer    PAD_THRESHOLD                   = Integer.valueOf (33);
     /** Setting for the display send port. */
-    public static final Integer    SEND_PORT                        = Integer.valueOf (25);
+    public static final Integer    SEND_PORT                       = Integer.valueOf (34);
     /** Setting for the display brightness. */
-    public static final Integer    DISPLAY_BRIGHTNESS               = Integer.valueOf (26);
+    public static final Integer    DISPLAY_BRIGHTNESS              = Integer.valueOf (35);
     /** Setting for the pad LED brightness. */
-    public static final Integer    LED_BRIGHTNESS                   = Integer.valueOf (27);
+    public static final Integer    LED_BRIGHTNESS                  = Integer.valueOf (36);
     /** Setting for the pad sensitivity. */
-    public static final Integer    PAD_SENSITIVITY                  = Integer.valueOf (28);
+    public static final Integer    PAD_SENSITIVITY                 = Integer.valueOf (37);
     /** Setting for the pad gain. */
-    public static final Integer    PAD_GAIN                         = Integer.valueOf (29);
+    public static final Integer    PAD_GAIN                        = Integer.valueOf (38);
     /** Setting for the pad dynamics. */
-    public static final Integer    PAD_DYNAMICS                     = Integer.valueOf (30);
+    public static final Integer    PAD_DYNAMICS                    = Integer.valueOf (39);
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE  = Integer.valueOf (31);
-    /** Setting for displaying browser column 1. */
-    public static final Integer    BROWSER_DISPLAY_FILTER1          = Integer.valueOf (32);
-    /** Setting for displaying browser column 2. */
-    public static final Integer    BROWSER_DISPLAY_FILTER2          = Integer.valueOf (33);
-    /** Setting for displaying browser column 3. */
-    public static final Integer    BROWSER_DISPLAY_FILTER3          = Integer.valueOf (34);
-    /** Setting for displaying browser column 4. */
-    public static final Integer    BROWSER_DISPLAY_FILTER4          = Integer.valueOf (35);
-    /** Setting for displaying browser column 5. */
-    public static final Integer    BROWSER_DISPLAY_FILTER5          = Integer.valueOf (36);
-    /** Setting for displaying browser column 6. */
-    public static final Integer    BROWSER_DISPLAY_FILTER6          = Integer.valueOf (37);
-    /** Setting for displaying browser column 7. */
-    public static final Integer    BROWSER_DISPLAY_FILTER7          = Integer.valueOf (38);
-    /** Setting for displaying browser column 8. */
-    public static final Integer    BROWSER_DISPLAY_FILTER8          = Integer.valueOf (39);
+    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (40);
 
     /** Use ribbon for pitch bend. */
-    public static final int        RIBBON_MODE_PITCH                = 0;
+    public static final int        RIBBON_MODE_PITCH               = 0;
     /** Use ribbon for midi CC. */
-    public static final int        RIBBON_MODE_CC                   = 1;
+    public static final int        RIBBON_MODE_CC                  = 1;
     /** Use ribbon for midi CC and pitch bend. */
-    public static final int        RIBBON_MODE_CC_PB                = 2;
+    public static final int        RIBBON_MODE_CC_PB               = 2;
     /** Use ribbon for pitch bend and midi CC. */
-    public static final int        RIBBON_MODE_PB_CC                = 3;
+    public static final int        RIBBON_MODE_PB_CC               = 3;
     /** Use ribbon as volume fader. */
-    public static final int        RIBBON_MODE_FADER                = 4;
+    public static final int        RIBBON_MODE_FADER               = 4;
 
-    /** Use footswitch 2 for toggling play. */
-    public static final int        FOOTSWITCH_2_TOGGLE_PLAY         = 0;
-    /** Use footswitch 2 for toggling record. */
-    public static final int        FOOTSWITCH_2_TOGGLE_RECORD       = 1;
-    /** Use footswitch 2 for stopping all clips. */
-    public static final int        FOOTSWITCH_2_STOP_ALL_CLIPS      = 2;
-    /** Use footswitch 2 for toggling clip overdub. */
-    public static final int        FOOTSWITCH_2_TOGGLE_CLIP_OVERDUB = 3;
-    /** Use footswitch 2 for undo. */
-    public static final int        FOOTSWITCH_2_UNDO                = 4;
-    /** Use footswitch 2 for tapping tempo. */
-    public static final int        FOOTSWITCH_2_TAP_TEMPO           = 5;
-    /** Use footswitch 2 as the new button. */
-    public static final int        FOOTSWITCH_2_NEW_BUTTON          = 6;
-    /** Use footswitch 2 as clip based looper. */
-    public static final int        FOOTSWITCH_2_CLIP_BASED_LOOPER   = 7;
+    private boolean                isSoloLongPressed               = false;
+    private boolean                isMuteSoloLocked                = false;
 
-    private boolean                isSoloLongPressed                = false;
-    private boolean                isMuteSoloLocked                 = false;
-
-    private static final String    SECTION_HARDWARE_SETUP           = "Hardware Setup";
-    private static final String    SECTION_PADS                     = "Pads";
-    private static final String    SECTION_WORKFLOW                 = "Workflow";
-    private static final String    SECTION_RIBBON                   = "Ribbon";
+    private static final String    CATEGORY_RIBBON                 = "Ribbon";
 
     /** What does the ribbon send? **/
-    private int                    ribbonMode                       = RIBBON_MODE_PITCH;
-    private int                    ribbonModeCCVal                  = 1;
-    private int                    footswitch2                      = FOOTSWITCH_2_NEW_BUTTON;
-    private int                    sendPort                         = 7000;
-    private boolean                stopAutomationOnKnobRelease      = false;
-    private boolean []             browserDisplayFilter             =
-    {
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true
-    };
-    private TrackState             trackState                       = TrackState.MUTE;
+    private int                    ribbonMode                      = RIBBON_MODE_PITCH;
+    private int                    ribbonModeCCVal                 = 1;
+    private int                    sendPort                        = 7000;
+    private boolean                stopAutomationOnKnobRelease     = false;
+    private TrackState             trackState                      = TrackState.MUTE;
 
     // Push 1
-    private int                    velocityCurve                    = 1;
-    private int                    padThreshold                     = 20;
+    private int                    velocityCurve                   = 1;
+    private int                    padThreshold                    = 20;
 
     // Push 2
-    private boolean                sendsAreToggled                  = false;
-    private int                    displayBrightness                = 255;
-    private int                    ledBrightness                    = 127;
-    private int                    padSensitivity                   = 5;
-    private int                    padGain                          = 5;
-    private int                    padDynamics                      = 5;
+    private boolean                sendsAreToggled                 = false;
+    private int                    displayBrightness               = 255;
+    private int                    ledBrightness                   = 127;
+    private int                    padSensitivity                  = 5;
+    private int                    padGain                         = 5;
+    private int                    padDynamics                     = 5;
 
     private boolean                isPush2;
 
@@ -151,43 +101,13 @@ public class PushConfiguration extends AbstractConfiguration
     private SettableEnumValue      velocityCurveSetting;
     private SettableEnumValue      padThresholdSetting;
 
-    private static final String [] BROWSER_FILTER_COLUMN_NAMES      =
-    {
-            "Collection",
-            "Location",
-            "File Type",
-            "Category",
-            "Tags",
-            "Creator",
-            "Device Type",
-            "Device"
-    };
-
-    private static final String [] RIBBON_MODE_VALUES               =
+    private static final String [] RIBBON_MODE_VALUES              =
     {
             "Pitch",
             "CC",
             "CC/Pitch",
             "Pitch/CC",
             "Fader"
-    };
-
-    private static final String [] FOOTSWITCH_VALUES                =
-    {
-            "Toggle Play",
-            "Toggle Record",
-            "Stop All Clips",
-            "Toggle Clip Overdub",
-            "Undo",
-            "Tap Tempo",
-            "New Button",
-            "Clip Based Looper"
-    };
-
-    private static final String [] COLUMN_VALUES                    =
-    {
-            "Hide",
-            "Show"
     };
 
 
@@ -726,28 +646,6 @@ public class PushConfiguration extends AbstractConfiguration
 
 
     /**
-     * Get the browser display filter.
-     *
-     * @return The array with states if a filter column should be displayed
-     */
-    public boolean [] getBrowserDisplayFilter ()
-    {
-        return this.browserDisplayFilter;
-    }
-
-
-    /**
-     * Get the functionality of the footswitch 2.
-     *
-     * @return The functionality of the footswitch 2.
-     */
-    public int getFootswitch2 ()
-    {
-        return this.footswitch2;
-    }
-
-
-    /**
      * Activate the Push 2 hardware settings.
      *
      * @param prefs The preferences
@@ -757,19 +655,19 @@ public class PushConfiguration extends AbstractConfiguration
         if (!this.isPush2)
             return;
 
-        final SettableRangedValue sendPortSetting = prefs.getNumberSetting ("Display Port", SECTION_HARDWARE_SETUP, 1, 65535, 1, "", 7000);
+        final SettableRangedValue sendPortSetting = prefs.getNumberSetting ("Display Port", CATEGORY_HARDWARE_SETUP, 1, 65535, 1, "", 7000);
         sendPortSetting.addValueObserver (65535, value -> {
             this.sendPort = value + 1;
             this.notifyObservers (SEND_PORT);
         });
 
-        this.displayBrightnessSetting = prefs.getNumberSetting ("Display Brightness", SECTION_HARDWARE_SETUP, 0, 100, 1, "%", 100);
+        this.displayBrightnessSetting = prefs.getNumberSetting ("Display Brightness", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
         this.displayBrightnessSetting.addValueObserver (101, value -> {
             this.displayBrightness = value;
             this.notifyObservers (DISPLAY_BRIGHTNESS);
         });
 
-        this.ledBrightnessSetting = prefs.getNumberSetting ("LED Brightness", SECTION_HARDWARE_SETUP, 0, 100, 1, "%", 100);
+        this.ledBrightnessSetting = prefs.getNumberSetting ("LED Brightness", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
         this.ledBrightnessSetting.addValueObserver (101, value -> {
             this.ledBrightness = value;
             this.notifyObservers (LED_BRIGHTNESS);
@@ -784,7 +682,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     private void activateRibbonSettings (final Preferences prefs)
     {
-        this.ribbonModeSetting = prefs.getEnumSetting ("Mode", SECTION_RIBBON, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES[0]);
+        this.ribbonModeSetting = prefs.getEnumSetting ("Mode", CATEGORY_RIBBON, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES[0]);
         this.ribbonModeSetting.addValueObserver (value -> {
             for (int i = 0; i < RIBBON_MODE_VALUES.length; i++)
             {
@@ -794,48 +692,10 @@ public class PushConfiguration extends AbstractConfiguration
             this.notifyObservers (RIBBON_MODE);
         });
 
-        this.ribbonModeCCSetting = prefs.getNumberSetting ("CC", SECTION_RIBBON, 0, 127, 1, "", 1);
+        this.ribbonModeCCSetting = prefs.getNumberSetting ("CC", CATEGORY_RIBBON, 0, 127, 1, "", 1);
         this.ribbonModeCCSetting.addValueObserver (128, value -> {
             this.ribbonModeCCVal = value;
             this.notifyObservers (RIBBON_MODE_CC_VAL);
-        });
-    }
-
-
-    /**
-     * Activate the browser settings.
-     *
-     * @param prefs The preferences
-     */
-    private void activateBrowserSettings (final Preferences prefs)
-    {
-        for (int i = 0; i < BROWSER_FILTER_COLUMN_NAMES.length; i++)
-        {
-            final SettableEnumValue browserDisplayFilterSetting = prefs.getEnumSetting (BROWSER_FILTER_COLUMN_NAMES[i], "Browser", COLUMN_VALUES, COLUMN_VALUES[1]);
-            final int index = i;
-            browserDisplayFilterSetting.addValueObserver (value -> {
-                this.browserDisplayFilter[index] = COLUMN_VALUES[1].equals (value);
-                this.notifyObservers (Integer.valueOf (BROWSER_DISPLAY_FILTER1.intValue () + index));
-            });
-        }
-    }
-
-
-    /**
-     * Activate the footwswitch setting.
-     *
-     * @param prefs The preferences
-     */
-    private void activateFootswitchSetting (final Preferences prefs)
-    {
-        final SettableEnumValue footswitch2Setting = prefs.getEnumSetting ("Footswitch 2", SECTION_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
-        footswitch2Setting.addValueObserver (value -> {
-            for (int i = 0; i < FOOTSWITCH_VALUES.length; i++)
-            {
-                if (FOOTSWITCH_VALUES[i].equals (value))
-                    this.footswitch2 = i;
-            }
-            this.notifyObservers (FOOTSWITCH_2);
         });
     }
 
@@ -847,7 +707,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     private void activateStopAutomationOnKnobReleaseSetting (final Preferences prefs)
     {
-        final SettableEnumValue stopAutomationOnKnobReleaseSetting = prefs.getEnumSetting ("Stop automation recording on knob release", SECTION_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final SettableEnumValue stopAutomationOnKnobReleaseSetting = prefs.getEnumSetting ("Stop automation recording on knob release", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         stopAutomationOnKnobReleaseSetting.addValueObserver (value -> {
             this.stopAutomationOnKnobRelease = "On".equals (value);
             this.notifyObservers (STOP_AUTOMATION_ON_KNOB_RELEASE);
@@ -862,7 +722,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     private void activatePush1PadSettings (final Preferences prefs)
     {
-        this.velocityCurveSetting = prefs.getEnumSetting ("Velocity Curve", SECTION_PADS, PushControlSurface.PUSH_PAD_CURVES_NAME, PushControlSurface.PUSH_PAD_CURVES_NAME[1]);
+        this.velocityCurveSetting = prefs.getEnumSetting ("Velocity Curve", CATEGORY_PADS, PushControlSurface.PUSH_PAD_CURVES_NAME, PushControlSurface.PUSH_PAD_CURVES_NAME[1]);
         this.velocityCurveSetting.addValueObserver (value -> {
             for (int i = 0; i < PushControlSurface.PUSH_PAD_CURVES_NAME.length; i++)
             {
@@ -875,7 +735,7 @@ public class PushConfiguration extends AbstractConfiguration
             this.notifyObservers (VELOCITY_CURVE);
         });
 
-        this.padThresholdSetting = prefs.getEnumSetting ("Pad Threshold", SECTION_PADS, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[20]);
+        this.padThresholdSetting = prefs.getEnumSetting ("Pad Threshold", CATEGORY_PADS, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[20]);
         this.padThresholdSetting.addValueObserver (value -> {
             for (int i = 0; i < PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length; i++)
             {
@@ -897,19 +757,19 @@ public class PushConfiguration extends AbstractConfiguration
      */
     private void activatePush2PadSettings (final Preferences prefs)
     {
-        this.padSensitivitySetting = prefs.getNumberSetting ("Sensitivity", SECTION_PADS, 0, 10, 1, "", 5);
+        this.padSensitivitySetting = prefs.getNumberSetting ("Sensitivity", CATEGORY_PADS, 0, 10, 1, "", 5);
         this.padSensitivitySetting.addValueObserver (11, value -> {
             this.padSensitivity = value;
             this.notifyObservers (PAD_SENSITIVITY);
         });
 
-        this.padGainSetting = prefs.getNumberSetting ("Gain", SECTION_PADS, 0, 10, 1, "", 5);
+        this.padGainSetting = prefs.getNumberSetting ("Gain", CATEGORY_PADS, 0, 10, 1, "", 5);
         this.padGainSetting.addValueObserver (11, value -> {
             this.padGain = value;
             this.notifyObservers (PAD_GAIN);
         });
 
-        this.padDynamicsSetting = prefs.getNumberSetting ("Dynamics", SECTION_PADS, 0, 10, 1, "", 5);
+        this.padDynamicsSetting = prefs.getNumberSetting ("Dynamics", CATEGORY_PADS, 0, 10, 1, "", 5);
         this.padDynamicsSetting.addValueObserver (11, value -> {
             this.padDynamics = value;
             this.notifyObservers (PAD_DYNAMICS);

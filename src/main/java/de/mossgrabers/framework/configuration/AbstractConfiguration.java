@@ -27,56 +27,104 @@ import java.util.Set;
 public abstract class AbstractConfiguration implements Configuration
 {
     /** ID for scale setting. */
-    public static final Integer   SCALES_SCALE               = Integer.valueOf (0);
+    public static final Integer   SCALES_SCALE                      = Integer.valueOf (0);
     /** ID for scale base note setting. */
-    public static final Integer   SCALES_BASE                = Integer.valueOf (1);
+    public static final Integer   SCALES_BASE                       = Integer.valueOf (1);
     /** ID for scale in-key setting. */
-    public static final Integer   SCALES_IN_KEY              = Integer.valueOf (2);
+    public static final Integer   SCALES_IN_KEY                     = Integer.valueOf (2);
     /** ID for scale layout setting. */
-    public static final Integer   SCALES_LAYOUT              = Integer.valueOf (3);
+    public static final Integer   SCALES_LAYOUT                     = Integer.valueOf (3);
     /** ID for enabling VU meters setting. */
-    public static final Integer   ENABLE_VU_METERS           = Integer.valueOf (4);
+    public static final Integer   ENABLE_VU_METERS                  = Integer.valueOf (4);
     /** ID for behaviour on stop setting. */
-    public static final Integer   BEHAVIOUR_ON_STOP          = Integer.valueOf (5);
+    public static final Integer   BEHAVIOUR_ON_STOP                 = Integer.valueOf (5);
     /** ID for displaying the crossfader in tracks setting. */
-    public static final Integer   DISPLAY_CROSSFADER         = Integer.valueOf (6);
+    public static final Integer   DISPLAY_CROSSFADER                = Integer.valueOf (6);
     /** ID for flipping the session grid setting. */
-    public static final Integer   FLIP_SESSION               = Integer.valueOf (7);
+    public static final Integer   FLIP_SESSION                      = Integer.valueOf (7);
     /** ID for locking the flip the session grid setting. */
-    public static final Integer   LOCK_FLIP_SESSION          = Integer.valueOf (8);
+    public static final Integer   LOCK_FLIP_SESSION                 = Integer.valueOf (8);
     /** ID for selecting the clip on launch setting. */
-    public static final Integer   SELECT_CLIP_ON_LAUNCH      = Integer.valueOf (9);
+    public static final Integer   SELECT_CLIP_ON_LAUNCH             = Integer.valueOf (9);
     /** ID for drawing record stripes setting. */
-    public static final Integer   DRAW_RECORD_STRIPE         = Integer.valueOf (10);
+    public static final Integer   DRAW_RECORD_STRIPE                = Integer.valueOf (10);
     /** ID for converting the aftertouch data setting. */
-    public static final Integer   CONVERT_AFTERTOUCH         = Integer.valueOf (11);
+    public static final Integer   CONVERT_AFTERTOUCH                = Integer.valueOf (11);
     /** ID for activating the fixed accent setting. */
-    public static final Integer   ACTIVATE_FIXED_ACCENT      = Integer.valueOf (12);
+    public static final Integer   ACTIVATE_FIXED_ACCENT             = Integer.valueOf (12);
     /** ID for the value of the fixed accent setting. */
-    public static final Integer   FIXED_ACCENT_VALUE         = Integer.valueOf (13);
+    public static final Integer   FIXED_ACCENT_VALUE                = Integer.valueOf (13);
     /** ID for the quantize amount setting. */
-    public static final Integer   QUANTIZE_AMOUNT            = Integer.valueOf (14);
+    public static final Integer   QUANTIZE_AMOUNT                   = Integer.valueOf (14);
     /** ID for the flip recording setting. */
-    public static final Integer   FLIP_RECORD                = Integer.valueOf (15);
+    public static final Integer   FLIP_RECORD                       = Integer.valueOf (15);
     /** Setting for automatic selecting the drum channel. */
-    public static final Integer   AUTO_SELECT_DRUM           = Integer.valueOf (16);
+    public static final Integer   AUTO_SELECT_DRUM                  = Integer.valueOf (16);
     /** Setting for new clip length. */
-    public static final Integer   NEW_CLIP_LENGTH            = Integer.valueOf (17);
+    public static final Integer   NEW_CLIP_LENGTH                   = Integer.valueOf (17);
     /** Setting for turning off empty drum pads (otherwise orange). */
-    public static final Integer   TURN_OFF_EMPTY_DRUM_PADS   = Integer.valueOf (18);
+    public static final Integer   TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (18);
     /** Setting for action for rec armed pad. */
-    public static final Integer   ACTION_FOR_REC_ARMED_PAD   = Integer.valueOf (19);
+    public static final Integer   ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (19);
+    /** Setting for the footswitch functionality. */
+    public static final Integer   FOOTSWITCH_2                      = Integer.valueOf (20);
+    /** Setting for displaying browser column 1. */
+    public static final Integer   BROWSER_DISPLAY_FILTER1           = Integer.valueOf (21);
+    /** Setting for displaying browser column 2. */
+    public static final Integer   BROWSER_DISPLAY_FILTER2           = Integer.valueOf (22);
+    /** Setting for displaying browser column 3. */
+    public static final Integer   BROWSER_DISPLAY_FILTER3           = Integer.valueOf (23);
+    /** Setting for displaying browser column 4. */
+    public static final Integer   BROWSER_DISPLAY_FILTER4           = Integer.valueOf (24);
+    /** Setting for displaying browser column 5. */
+    public static final Integer   BROWSER_DISPLAY_FILTER5           = Integer.valueOf (25);
+    /** Setting for displaying browser column 6. */
+    public static final Integer   BROWSER_DISPLAY_FILTER6           = Integer.valueOf (26);
+    /** Setting for displaying browser column 7. */
+    public static final Integer   BROWSER_DISPLAY_FILTER7           = Integer.valueOf (27);
+    /** Setting for displaying browser column 8. */
+    public static final Integer   BROWSER_DISPLAY_FILTER8           = Integer.valueOf (28);
 
-    protected static final String CATEGORY_DRUMS             = "Drum Sequencer";
-    protected static final String CATEGORY_SCALES            = "Scales";
-    protected static final String CATEGORY_SESSION           = "Session";
-    protected static final String CATEGORY_TRANSPORT         = "Transport";
-    protected static final String CATEGORY_WORKFLOW          = "Workflow";
-    protected static final String CATEGORY_PADS              = "Pads";
-    protected static final String CATEGORY_PLAY_AND_SEQUENCE = "Play and Sequence";
+    protected static final String CATEGORY_DRUMS                    = "Drum Sequencer";
+    protected static final String CATEGORY_SCALES                   = "Scales";
+    protected static final String CATEGORY_SESSION                  = "Session";
+    protected static final String CATEGORY_TRANSPORT                = "Transport";
+    protected static final String CATEGORY_WORKFLOW                 = "Workflow";
+    protected static final String CATEGORY_PADS                     = "Pads";
+    protected static final String CATEGORY_PLAY_AND_SEQUENCE        = "Play and Sequence";
+    protected static final String CATEGORY_HARDWARE_SETUP           = "Hardware Setup";
 
-    private static final String   SCALE_IN_KEY               = "In Key";
-    private static final String   SCALE_CHROMATIC            = "Chromatic";
+    private static final String   SCALE_IN_KEY                      = "In Key";
+    private static final String   SCALE_CHROMATIC                   = "Chromatic";
+
+    /** Use footswitch 2 for toggling play. */
+    public static final int       FOOTSWITCH_2_TOGGLE_PLAY          = 0;
+    /** Use footswitch 2 for toggling record. */
+    public static final int       FOOTSWITCH_2_TOGGLE_RECORD        = 1;
+    /** Use footswitch 2 for stopping all clips. */
+    public static final int       FOOTSWITCH_2_STOP_ALL_CLIPS       = 2;
+    /** Use footswitch 2 for toggling clip overdub. */
+    public static final int       FOOTSWITCH_2_TOGGLE_CLIP_OVERDUB  = 3;
+    /** Use footswitch 2 for undo. */
+    public static final int       FOOTSWITCH_2_UNDO                 = 4;
+    /** Use footswitch 2 for tapping tempo. */
+    public static final int       FOOTSWITCH_2_TAP_TEMPO            = 5;
+    /** Use footswitch 2 as the new button. */
+    public static final int       FOOTSWITCH_2_NEW_BUTTON           = 6;
+    /** Use footswitch 2 as clip based looper. */
+    public static final int       FOOTSWITCH_2_CLIP_BASED_LOOPER    = 7;
+    /** Use footswitch 2 to trigger the arrange layout. */
+    public static final int       FOOTSWITCH_2_PANEL_LAYOUT_ARRANGE = 8;
+    /** Use footswitch 2 to trigger the mix layout. */
+    public static final int       FOOTSWITCH_2_PANEL_LAYOUT_MIX     = 9;
+    /** Use footswitch 2 to trigger the edit layout. */
+    public static final int       FOOTSWITCH_2_PANEL_LAYOUT_EDIT    = 10;
+    /** Use footswitch 2 to add a new instrument track. */
+    public static final int       FOOTSWITCH_2_ADD_INSTRUMENT_TRACK = 11;
+    /** Use footswitch 2 to add a new audio track. */
+    public static final int       FOOTSWITCH_2_ADD_AUDIO_TRACK      = 12;
+    /** Use footswitch 2 to add a new effect track. */
+    public static final int       FOOTSWITCH_2_ADD_EFFECT_TRACK     = 13;
 
     /** The behaviour when the stop button is pressed. */
     public enum BehaviourOnStop
@@ -100,7 +148,7 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
     /** The names for clip lengths. */
-    public static final String []                    NEW_CLIP_LENGTH_VALUES   =
+    public static final String []                    NEW_CLIP_LENGTH_VALUES      =
     {
             "1 Beat",
             "2 Beat",
@@ -112,21 +160,57 @@ public abstract class AbstractConfiguration implements Configuration
             "32 Bars"
     };
 
-    private static final String []                   BEHAVIOUR_ON_STOP_VALUES =
+    private static final String []                   BEHAVIOUR_ON_STOP_VALUES    =
     {
             "Move play cursor",
             "Return to Zero",
             "Pause"
     };
 
-    private static final String []                   ACTIONS_REC_ARMED_PADS   =
+    private static final String []                   ACTIONS_REC_ARMED_PADS      =
     {
             "Start recording",
             "Create new clip",
             "Do nothing"
     };
 
-    protected static final String []                 ON_OFF_OPTIONS           =
+    protected static final String []                 FOOTSWITCH_VALUES           =
+    {
+            "Toggle Play",
+            "Toggle Record",
+            "Stop All Clips",
+            "Toggle Clip Overdub",
+            "Undo",
+            "Tap Tempo",
+            "New Button",
+            "Clip Based Looper",
+            "Panel layout arrange",
+            "Panel layout mix",
+            "Panel layout edit",
+            "Add instrument track",
+            "Add audio track",
+            "Add effect track"
+    };
+
+    private static final String []                   BROWSER_FILTER_COLUMN_NAMES =
+    {
+            "Collection",
+            "Location",
+            "File Type",
+            "Category",
+            "Tags",
+            "Creator",
+            "Device Type",
+            "Device"
+    };
+
+    private static final String []                   COLUMN_VALUES               =
+    {
+            "Hide",
+            "Show"
+    };
+
+    protected static final String []                 ON_OFF_OPTIONS              =
     {
             "Off",
             "On"
@@ -145,32 +229,43 @@ public abstract class AbstractConfiguration implements Configuration
     private SettableRangedValue                      quantizeAmountSetting;
     private SettableEnumValue                        newClipLengthSetting;
 
-    private final Map<Integer, Set<SettingObserver>> observers                = new HashMap<> ();
+    private final Map<Integer, Set<SettingObserver>> observers                   = new HashMap<> ();
     protected ValueChanger                           valueChanger;
 
-    private String                                   scale                    = "Major";
-    private String                                   scaleBase                = "C";
-    private boolean                                  scaleInKey               = true;
-    private String                                   scaleLayout              = "4th ^";
-    private boolean                                  enableVUMeters           = false;
-    private BehaviourOnStop                          behaviourOnStop          = BehaviourOnStop.MOVE_PLAY_CURSOR;
-    private boolean                                  displayCrossfader        = true;
-    private boolean                                  flipSession              = false;
-    private boolean                                  lockFlipSession          = false;
-    private boolean                                  selectClipOnLaunch       = true;
-    private boolean                                  drawRecordStripe         = true;
-    private int                                      convertAftertouch        = 0;
+    private String                                   scale                       = "Major";
+    private String                                   scaleBase                   = "C";
+    private boolean                                  scaleInKey                  = true;
+    private String                                   scaleLayout                 = "4th ^";
+    private boolean                                  enableVUMeters              = false;
+    private BehaviourOnStop                          behaviourOnStop             = BehaviourOnStop.MOVE_PLAY_CURSOR;
+    private boolean                                  displayCrossfader           = true;
+    private boolean                                  flipSession                 = false;
+    private boolean                                  lockFlipSession             = false;
+    private boolean                                  selectClipOnLaunch          = true;
+    private boolean                                  drawRecordStripe            = true;
+    private int                                      convertAftertouch           = 0;
     /** Accent button active. */
-    private boolean                                  accentActive             = false;
+    private boolean                                  accentActive                = false;
     /** Fixed velocity value for accent. */
-    private int                                      fixedAccentValue         = 127;
-    private int                                      quantizeAmount           = 1;
-
-    private boolean                                  flipRecord               = false;
-    private int                                      newClipLength            = 2;
-    private boolean                                  autoSelectDrum           = false;
-    private boolean                                  turnOffEmptyDrumPads     = false;
-    private int                                      actionForRecArmedPad     = 0;
+    private int                                      fixedAccentValue            = 127;
+    private int                                      quantizeAmount              = 1;
+    private boolean                                  flipRecord                  = false;
+    private int                                      newClipLength               = 2;
+    private boolean                                  autoSelectDrum              = false;
+    private boolean                                  turnOffEmptyDrumPads        = false;
+    private int                                      actionForRecArmedPad        = 0;
+    private int                                      footswitch2                 = FOOTSWITCH_2_NEW_BUTTON;
+    private boolean []                               browserDisplayFilter        =
+    {
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+    };
 
 
     /**
@@ -495,6 +590,25 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public int getFootswitch2 ()
+    {
+        return this.footswitch2;
+    }
+
+
+    /**
+     * Get the browser display filter.
+     *
+     * @return The array with states if a filter column should be displayed
+     */
+    public boolean [] getBrowserDisplayFilter ()
+    {
+        return this.browserDisplayFilter;
+    }
+
+
     /**
      * Activate the scale setting.
      *
@@ -568,7 +682,19 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateEnableVUMetersSetting (final Preferences prefs)
     {
-        this.enableVUMetersSetting = prefs.getEnumSetting ("VU Meters", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.activateEnableVUMetersSetting (prefs, CATEGORY_WORKFLOW);
+    }
+
+
+    /**
+     * Activate the VU meters setting.
+     *
+     * @param prefs The preferences
+     * @param category The name for the category
+     */
+    protected void activateEnableVUMetersSetting (final Preferences prefs, final String category)
+    {
+        this.enableVUMetersSetting = prefs.getEnumSetting ("VU Meters", category, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         this.enableVUMetersSetting.addValueObserver (value -> {
             this.enableVUMeters = "On".equals (value);
             this.notifyObservers (AbstractConfiguration.ENABLE_VU_METERS);
@@ -821,6 +947,44 @@ public abstract class AbstractConfiguration implements Configuration
             this.turnOffEmptyDrumPads = "On".equals (value);
             this.notifyObservers (TURN_OFF_EMPTY_DRUM_PADS);
         });
+    }
+
+
+    /**
+     * Activate the footwswitch setting.
+     *
+     * @param prefs The preferences
+     */
+    protected void activateFootswitchSetting (final Preferences prefs)
+    {
+        final SettableEnumValue footswitch2Setting = prefs.getEnumSetting ("Footswitch 2", CATEGORY_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
+        footswitch2Setting.addValueObserver (value -> {
+            for (int i = 0; i < FOOTSWITCH_VALUES.length; i++)
+            {
+                if (FOOTSWITCH_VALUES[i].equals (value))
+                    this.footswitch2 = i;
+            }
+            this.notifyObservers (FOOTSWITCH_2);
+        });
+    }
+
+
+    /**
+     * Activate the browser settings.
+     *
+     * @param prefs The preferences
+     */
+    protected void activateBrowserSettings (final Preferences prefs)
+    {
+        for (int i = 0; i < BROWSER_FILTER_COLUMN_NAMES.length; i++)
+        {
+            final SettableEnumValue browserDisplayFilterSetting = prefs.getEnumSetting (BROWSER_FILTER_COLUMN_NAMES[i], "Browser", COLUMN_VALUES, COLUMN_VALUES[1]);
+            final int index = i;
+            browserDisplayFilterSetting.addValueObserver (value -> {
+                this.browserDisplayFilter[index] = COLUMN_VALUES[1].equals (value);
+                this.notifyObservers (Integer.valueOf (BROWSER_DISPLAY_FILTER1.intValue () + index));
+            });
+        }
     }
 
 

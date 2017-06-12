@@ -112,6 +112,15 @@ public interface View
 
 
     /**
+     * Get a registered note command.
+     *
+     * @param commandID The ID of the command
+     * @return The command or null if not registered
+     */
+    TriggerCommand getNoteCommand (Integer commandID);
+
+
+    /**
      * Registers the aftertouch command.
      *
      * @param command The command
@@ -139,10 +148,11 @@ public interface View
     /**
      * Execute the pitchbend command which has been registered before.
      *
+     * @param channel The midi channel
      * @param data1 The first pitchbend byte
      * @param data2 The second pitchbend byte
      */
-    void executePitchbendCommand (int data1, int data2);
+    void executePitchbendCommand (int channel, int data1, int data2);
 
 
     /**

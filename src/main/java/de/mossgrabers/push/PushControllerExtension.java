@@ -8,6 +8,7 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
+import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
@@ -44,7 +45,7 @@ import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.command.continuous.ConfigurePitchbendCommand;
-import de.mossgrabers.push.command.continuous.FootswitchCommand;
+import de.mossgrabers.push.command.continuous.MastertrackTouchCommand;
 import de.mossgrabers.push.command.continuous.SmallKnobTouchCommand;
 import de.mossgrabers.push.command.pitchbend.PitchbendCommand;
 import de.mossgrabers.push.command.pitchbend.PitchbendSessionCommand;
@@ -351,147 +352,62 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     protected void registerTriggerCommands ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.registerTriggerCommand (Commands.COMMAND_PLAY, new PlayCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_RECORD, new RecordCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_NEW, new NewCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_DUPLICATE, new DuplicateCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_AUTOMATION, new AutomationCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_FIXED_LENGTH, new FixedLengthCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_QUANTIZE, new QuantizeCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_DELETE, new DeleteCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_DOUBLE, new DoubleCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_UNDO, new UndoCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_DEVICE, new DeviceCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_BROWSE, new BrowseCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_TRACK, new TrackCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_CLIP, new ClipCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_VOLUME, new VolumeCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_PAN_SEND, new PanSendCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW1_1, new ButtonRowModeCommand<> (0, 0, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW1_2, new ButtonRowModeCommand<> (0, 1, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW1_3, new ButtonRowModeCommand<> (0, 2, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW1_4, new ButtonRowModeCommand<> (0, 3, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW1_5, new ButtonRowModeCommand<> (0, 4, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW1_6, new ButtonRowModeCommand<> (0, 5, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW1_7, new ButtonRowModeCommand<> (0, 6, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW1_8, new ButtonRowModeCommand<> (0, 7, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW2_1, new ButtonRowModeCommand<> (1, 0, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW2_2, new ButtonRowModeCommand<> (1, 1, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW2_3, new ButtonRowModeCommand<> (1, 2, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW2_4, new ButtonRowModeCommand<> (1, 3, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW2_5, new ButtonRowModeCommand<> (1, 4, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW2_6, new ButtonRowModeCommand<> (1, 5, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW2_7, new ButtonRowModeCommand<> (1, 6, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ROW2_8, new ButtonRowModeCommand<> (1, 7, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SHIFT, new ShiftCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_LAYOUT, new LayoutCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SELECT, new SelectCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_TAP_TEMPO, new TapTempoCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_METRONOME, new MetronomeCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_MASTERTRACK, new MastertrackCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_STOP_CLIP, new StopClipCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_PAGE_LEFT, new PageLeftCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_PAGE_RIGHT, new PageRightCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_MUTE, new MuteCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SOLO, new SoloCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCALES, new ScalesCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ACCENT, new AccentCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ADD_EFFECT, new AddEffectCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ADD_TRACK, new AddTrackCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, new SelectPlayViewCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, new SelectSessionViewCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE1, new SceneCommand<> (0, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE2, new SceneCommand<> (1, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE3, new SceneCommand<> (2, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE4, new SceneCommand<> (3, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE5, new SceneCommand<> (4, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE6, new SceneCommand<> (5, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE7, new SceneCommand<> (6, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE8, new SceneCommand<> (7, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_DOWN, new PushCursorCommand (Direction.DOWN, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_UP, new PushCursorCommand (Direction.UP, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_LEFT, new PushCursorCommand (Direction.LEFT, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_RIGHT, new PushCursorCommand (Direction.RIGHT, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_OCTAVE_DOWN, new OctaveCommand (false, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_OCTAVE_UP, new OctaveCommand (true, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_PLAY, PushControlSurface.PUSH_BUTTON_PLAY, new PlayCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_RECORD, PushControlSurface.PUSH_BUTTON_RECORD, new RecordCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_NEW, PushControlSurface.PUSH_BUTTON_NEW, new NewCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_DUPLICATE, PushControlSurface.PUSH_BUTTON_DUPLICATE, new DuplicateCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_AUTOMATION, PushControlSurface.PUSH_BUTTON_AUTOMATION, new AutomationCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_FIXED_LENGTH, PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, new FixedLengthCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_QUANTIZE, PushControlSurface.PUSH_BUTTON_QUANTIZE, new QuantizeCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_DELETE, PushControlSurface.PUSH_BUTTON_DELETE, new DeleteCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_DOUBLE, PushControlSurface.PUSH_BUTTON_DOUBLE, new DoubleCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_UNDO, PushControlSurface.PUSH_BUTTON_UNDO, new UndoCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_DEVICE, PushControlSurface.PUSH_BUTTON_DEVICE, new DeviceCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_BROWSE, PushControlSurface.PUSH_BUTTON_BROWSE, new BrowseCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_TRACK, PushControlSurface.PUSH_BUTTON_TRACK, new TrackCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_CLIP, PushControlSurface.PUSH_BUTTON_CLIP, new ClipCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_VOLUME, PushControlSurface.PUSH_BUTTON_VOLUME, new VolumeCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_PAN_SEND, PushControlSurface.PUSH_BUTTON_PAN_SEND, new PanSendCommand (this.model, this.surface));
 
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_PLAY, Commands.COMMAND_PLAY);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_RECORD, Commands.COMMAND_RECORD);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_NEW, Commands.COMMAND_NEW);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_DUPLICATE, Commands.COMMAND_DUPLICATE);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_AUTOMATION, Commands.COMMAND_AUTOMATION);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, Commands.COMMAND_FIXED_LENGTH);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_QUANTIZE, Commands.COMMAND_QUANTIZE);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_DELETE, Commands.COMMAND_DELETE);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_DOUBLE, Commands.COMMAND_DOUBLE);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_UNDO, Commands.COMMAND_UNDO);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_DEVICE, Commands.COMMAND_DEVICE);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_BROWSE, Commands.COMMAND_BROWSE);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_TRACK, Commands.COMMAND_TRACK);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_CLIP, Commands.COMMAND_CLIP);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_VOLUME, Commands.COMMAND_VOLUME);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_PAN_SEND, Commands.COMMAND_PAN_SEND);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW1_1, Commands.COMMAND_ROW1_1);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW1_2, Commands.COMMAND_ROW1_2);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW1_3, Commands.COMMAND_ROW1_3);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW1_4, Commands.COMMAND_ROW1_4);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW1_5, Commands.COMMAND_ROW1_5);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW1_6, Commands.COMMAND_ROW1_6);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW1_7, Commands.COMMAND_ROW1_7);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW1_8, Commands.COMMAND_ROW1_8);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW2_1, Commands.COMMAND_ROW2_1);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW2_2, Commands.COMMAND_ROW2_2);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW2_3, Commands.COMMAND_ROW2_3);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW2_4, Commands.COMMAND_ROW2_4);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW2_5, Commands.COMMAND_ROW2_5);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW2_6, Commands.COMMAND_ROW2_6);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW2_7, Commands.COMMAND_ROW2_7);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ROW2_8, Commands.COMMAND_ROW2_8);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SHIFT, Commands.COMMAND_SHIFT);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_LAYOUT, Commands.COMMAND_LAYOUT);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SELECT, Commands.COMMAND_SELECT);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_TAP, Commands.COMMAND_TAP_TEMPO);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_METRONOME, Commands.COMMAND_METRONOME);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_MASTER, Commands.COMMAND_MASTERTRACK);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_CLIP_STOP, Commands.COMMAND_STOP_CLIP);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, Commands.COMMAND_PAGE_LEFT);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_DEVICE_RIGHT, Commands.COMMAND_PAGE_RIGHT);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_MUTE, Commands.COMMAND_MUTE);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SOLO, Commands.COMMAND_SOLO);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SCALES, Commands.COMMAND_SCALES);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ACCENT, Commands.COMMAND_ACCENT);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ADD_EFFECT, Commands.COMMAND_ADD_EFFECT);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_ADD_TRACK, Commands.COMMAND_ADD_TRACK);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_NOTE, Commands.COMMAND_SELECT_PLAY_VIEW);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SESSION, Commands.COMMAND_SELECT_SESSION_VIEW);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SCENE1, Commands.COMMAND_SCENE1);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SCENE2, Commands.COMMAND_SCENE2);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SCENE3, Commands.COMMAND_SCENE3);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SCENE4, Commands.COMMAND_SCENE4);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SCENE5, Commands.COMMAND_SCENE5);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SCENE6, Commands.COMMAND_SCENE6);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SCENE7, Commands.COMMAND_SCENE7);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SCENE8, Commands.COMMAND_SCENE8);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_DOWN, Commands.COMMAND_ARROW_DOWN);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_UP, Commands.COMMAND_ARROW_UP);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_LEFT, Commands.COMMAND_ARROW_LEFT);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_RIGHT, Commands.COMMAND_ARROW_RIGHT);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, Commands.COMMAND_OCTAVE_DOWN);
-        this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, Commands.COMMAND_OCTAVE_UP);
+        for (int i = 0; i < 8; i++)
+        {
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), PushControlSurface.PUSH_BUTTON_ROW1_1 + i, new ButtonRowModeCommand<> (0, i, this.model, this.surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), PushControlSurface.PUSH_BUTTON_ROW2_1 + i, new ButtonRowModeCommand<> (1, i, this.model, this.surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_SCENE1.intValue () + i), PushControlSurface.PUSH_BUTTON_SCENE1 + i, new SceneCommand<> (0, this.model, this.surface));
+        }
+
+        this.addTriggerCommand (Commands.COMMAND_SHIFT, PushControlSurface.PUSH_BUTTON_SHIFT, new ShiftCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_LAYOUT, PushControlSurface.PUSH_BUTTON_LAYOUT, new LayoutCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SELECT, PushControlSurface.PUSH_BUTTON_SELECT, new SelectCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_TAP_TEMPO, PushControlSurface.PUSH_BUTTON_TAP, new TapTempoCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_METRONOME, PushControlSurface.PUSH_BUTTON_METRONOME, new MetronomeCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, PushControlSurface.PUSH_BUTTON_MASTER, new MastertrackCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_STOP_CLIP, PushControlSurface.PUSH_BUTTON_CLIP_STOP, new StopClipCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_PAGE_LEFT, PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, new PageLeftCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_PAGE_RIGHT, PushControlSurface.PUSH_BUTTON_DEVICE_RIGHT, new PageRightCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_MUTE, PushControlSurface.PUSH_BUTTON_MUTE, new MuteCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SOLO, PushControlSurface.PUSH_BUTTON_SOLO, new SoloCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SCALES, PushControlSurface.PUSH_BUTTON_SCALES, new ScalesCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ACCENT, PushControlSurface.PUSH_BUTTON_ACCENT, new AccentCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ADD_EFFECT, PushControlSurface.PUSH_BUTTON_ADD_EFFECT, new AddEffectCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ADD_TRACK, PushControlSurface.PUSH_BUTTON_ADD_TRACK, new AddTrackCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, PushControlSurface.PUSH_BUTTON_NOTE, new SelectPlayViewCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, PushControlSurface.PUSH_BUTTON_SESSION, new SelectSessionViewCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, PushControlSurface.PUSH_BUTTON_DOWN, new PushCursorCommand (Direction.DOWN, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, PushControlSurface.PUSH_BUTTON_UP, new PushCursorCommand (Direction.UP, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, PushControlSurface.PUSH_BUTTON_LEFT, new PushCursorCommand (Direction.LEFT, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, PushControlSurface.PUSH_BUTTON_RIGHT, new PushCursorCommand (Direction.RIGHT, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_OCTAVE_DOWN, PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, new OctaveCommand (false, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_OCTAVE_UP, PushControlSurface.PUSH_BUTTON_OCTAVE_UP, new OctaveCommand (true, this.model, this.surface));
 
         viewManager.registerTriggerCommand (Commands.COMMAND_SETUP, new SetupCommand (this.isPush2, this.model, this.surface));
-
         if (this.isPush2)
         {
-            viewManager.registerTriggerCommand (Commands.COMMAND_CONVERT, new ConvertCommand (this.model, this.surface));
-
             this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SETUP, Commands.COMMAND_SETUP);
-            this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_CONVERT, Commands.COMMAND_CONVERT);
+            this.addTriggerCommand (Commands.COMMAND_CONVERT, PushControlSurface.PUSH_BUTTON_CONVERT, new ConvertCommand (this.model, this.surface));
         }
         else
-        {
             this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_USER_MODE, Commands.COMMAND_SETUP);
-        }
     }
 
 
@@ -499,59 +415,28 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     @Override
     protected void registerContinuousCommands ()
     {
+        for (int i = 0; i < 8; i++)
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), PushControlSurface.PUSH_KNOB1 + i, new KnobRowModeCommand<> (i, this.model, this.surface));
+
+        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, PushControlSurface.PUSH_KNOB9, new MasterVolumeCommand<> (this.model, this.surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO, PushControlSurface.PUSH_SMALL_KNOB1, new TempoCommand<> (this.model, this.surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_PLAY_POSITION, PushControlSurface.PUSH_SMALL_KNOB2, new PlayPositionCommand<> (this.model, this.surface));
+        this.addContinuousCommand (Commands.COMMAND_FOOTSWITCH, PushControlSurface.PUSH_FOOTSWITCH2, new FootswitchCommand<> (this.model, this.surface));
+
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB1_TOUCH, PushControlSurface.PUSH_KNOB1_TOUCH, new KnobRowTouchModeCommand<> (0, this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB2_TOUCH, PushControlSurface.PUSH_KNOB2_TOUCH, new KnobRowTouchModeCommand<> (1, this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB3_TOUCH, PushControlSurface.PUSH_KNOB3_TOUCH, new KnobRowTouchModeCommand<> (2, this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB4_TOUCH, PushControlSurface.PUSH_KNOB4_TOUCH, new KnobRowTouchModeCommand<> (3, this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB5_TOUCH, PushControlSurface.PUSH_KNOB5_TOUCH, new KnobRowTouchModeCommand<> (4, this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB6_TOUCH, PushControlSurface.PUSH_KNOB6_TOUCH, new KnobRowTouchModeCommand<> (5, this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB7_TOUCH, PushControlSurface.PUSH_KNOB7_TOUCH, new KnobRowTouchModeCommand<> (6, this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB8_TOUCH, PushControlSurface.PUSH_KNOB8_TOUCH, new KnobRowTouchModeCommand<> (7, this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, PushControlSurface.PUSH_SMALL_KNOB1_TOUCH, new SmallKnobTouchCommand (this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_PLAYCURSOR_TOUCH, PushControlSurface.PUSH_SMALL_KNOB2_TOUCH, new SmallKnobTouchCommand (this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_CONFIGURE_PITCHBEND, PushControlSurface.PUSH_RIBBON_TOUCH, new ConfigurePitchbendCommand (this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_MASTERTRACK_TOUCH, PushControlSurface.PUSH_KNOB9_TOUCH, new MastertrackTouchCommand (this.model, this.surface));
+
         final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB1, new KnobRowModeCommand<> (0, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB2, new KnobRowModeCommand<> (1, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB3, new KnobRowModeCommand<> (2, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB4, new KnobRowModeCommand<> (3, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB5, new KnobRowModeCommand<> (4, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB6, new KnobRowModeCommand<> (5, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB7, new KnobRowModeCommand<> (6, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB8, new KnobRowModeCommand<> (7, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, new MasterVolumeCommand<> (this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_TEMPO, new TempoCommand<> (this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_PLAY_POSITION, new PlayPositionCommand<> (this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.COMMAND_FOOTSWITCH, new FootswitchCommand (this.model, this.surface));
-
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_KNOB1, Commands.CONT_COMMAND_KNOB1);
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_KNOB2, Commands.CONT_COMMAND_KNOB2);
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_KNOB3, Commands.CONT_COMMAND_KNOB3);
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_KNOB4, Commands.CONT_COMMAND_KNOB4);
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_KNOB5, Commands.CONT_COMMAND_KNOB5);
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_KNOB6, Commands.CONT_COMMAND_KNOB6);
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_KNOB7, Commands.CONT_COMMAND_KNOB7);
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_KNOB8, Commands.CONT_COMMAND_KNOB8);
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_KNOB9, Commands.CONT_COMMAND_MASTER_KNOB);
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_SMALL_KNOB1, Commands.CONT_COMMAND_TEMPO);
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_SMALL_KNOB2, Commands.CONT_COMMAND_PLAY_POSITION);
-        this.surface.assignContinuousCommand (PushControlSurface.PUSH_FOOTSWITCH2, Commands.COMMAND_FOOTSWITCH);
-
-        viewManager.registerNoteCommand (Commands.CONT_COMMAND_KNOB1_TOUCH, new KnobRowTouchModeCommand<> (0, this.model, this.surface));
-        viewManager.registerNoteCommand (Commands.CONT_COMMAND_KNOB2_TOUCH, new KnobRowTouchModeCommand<> (1, this.model, this.surface));
-        viewManager.registerNoteCommand (Commands.CONT_COMMAND_KNOB3_TOUCH, new KnobRowTouchModeCommand<> (2, this.model, this.surface));
-        viewManager.registerNoteCommand (Commands.CONT_COMMAND_KNOB4_TOUCH, new KnobRowTouchModeCommand<> (3, this.model, this.surface));
-        viewManager.registerNoteCommand (Commands.CONT_COMMAND_KNOB5_TOUCH, new KnobRowTouchModeCommand<> (4, this.model, this.surface));
-        viewManager.registerNoteCommand (Commands.CONT_COMMAND_KNOB6_TOUCH, new KnobRowTouchModeCommand<> (5, this.model, this.surface));
-        viewManager.registerNoteCommand (Commands.CONT_COMMAND_KNOB7_TOUCH, new KnobRowTouchModeCommand<> (6, this.model, this.surface));
-        viewManager.registerNoteCommand (Commands.CONT_COMMAND_KNOB8_TOUCH, new KnobRowTouchModeCommand<> (7, this.model, this.surface));
-        final SmallKnobTouchCommand smallKnobTouchCommand = new SmallKnobTouchCommand (this.model, this.surface);
-        viewManager.registerNoteCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, smallKnobTouchCommand);
-        viewManager.registerNoteCommand (Commands.CONT_COMMAND_PLAYCURSOR_TOUCH, new SmallKnobTouchCommand (this.model, this.surface));
-        viewManager.registerNoteCommand (Commands.CONT_COMMAND_CONFIGURE_PITCHBEND, new ConfigurePitchbendCommand (this.model, this.surface));
-
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_KNOB1_TOUCH, Commands.CONT_COMMAND_KNOB1_TOUCH);
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_KNOB2_TOUCH, Commands.CONT_COMMAND_KNOB2_TOUCH);
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_KNOB3_TOUCH, Commands.CONT_COMMAND_KNOB3_TOUCH);
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_KNOB4_TOUCH, Commands.CONT_COMMAND_KNOB4_TOUCH);
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_KNOB5_TOUCH, Commands.CONT_COMMAND_KNOB5_TOUCH);
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_KNOB6_TOUCH, Commands.CONT_COMMAND_KNOB6_TOUCH);
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_KNOB7_TOUCH, Commands.CONT_COMMAND_KNOB7_TOUCH);
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_KNOB8_TOUCH, Commands.CONT_COMMAND_KNOB8_TOUCH);
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_KNOB9_TOUCH, Commands.CONT_COMMAND_MASTERTRACK_TOUCH);
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_SMALL_KNOB1_TOUCH, Commands.CONT_COMMAND_TEMPO_TOUCH);
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_SMALL_KNOB2_TOUCH, Commands.CONT_COMMAND_PLAYCURSOR_TOUCH);
-        this.surface.assignNoteCommand (PushControlSurface.PUSH_RIBBON_TOUCH, Commands.CONT_COMMAND_CONFIGURE_PITCHBEND);
-
         viewManager.registerPitchbendCommand (new PitchbendCommand (this.model, this.surface));
 
         final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);

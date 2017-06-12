@@ -36,7 +36,7 @@ public class PitchbendCommand extends AbstractPitchbendCommand<PushControlSurfac
 
     /** {@inheritDoc} */
     @Override
-    public void onPitchbend (final int data1, final int data2)
+    public void onPitchbend (final int channel, final int data1, final int data2)
     {
         // Don't get in the way of configuration
         if (this.surface.isShiftPressed ())

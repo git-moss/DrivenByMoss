@@ -13,7 +13,7 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Launchpad 1 controller extension.
+ * Definition class for the Beatstep controller extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

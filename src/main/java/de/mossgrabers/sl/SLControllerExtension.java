@@ -240,57 +240,26 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     @Override
     protected void registerTriggerCommands ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-
         for (int i = 0; i < 8; i++)
         {
-            final Integer commandID = Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i);
-            viewManager.registerTriggerCommand (commandID, new ButtonRowViewCommand<> (0, i, this.model, this.surface));
-            this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_ROW1_1 + i, commandID);
-
-            final Integer commandID2 = Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i);
-            viewManager.registerTriggerCommand (commandID2, new ButtonRowViewCommand<> (1, i, this.model, this.surface));
-            this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_ROW2_1 + i, commandID2);
-
-            final Integer commandID3 = Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i);
-            viewManager.registerTriggerCommand (commandID3, new ButtonRowViewCommand<> (2, i, this.model, this.surface));
-            this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_ROW3_1 + i, commandID3);
-
-            final Integer commandID4 = Integer.valueOf (Commands.COMMAND_ROW4_1.intValue () + i);
-            viewManager.registerTriggerCommand (commandID4, new ButtonRowViewCommand<> (3, i, this.model, this.surface));
-            this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_ROW4_1 + i, commandID4);
-
-            final Integer commandID5 = Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i);
-            viewManager.registerTriggerCommand (commandID5, new ButtonRowSelectCommand<> (i, this.model, this.surface));
-            this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_ROWSEL1 + i, commandID5);
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW1_1 + i, new ButtonRowViewCommand<> (0, i, this.model, this.surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW2_1 + i, new ButtonRowViewCommand<> (1, i, this.model, this.surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW3_1 + i, new ButtonRowViewCommand<> (2, i, this.model, this.surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW4_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW4_1 + i, new ButtonRowViewCommand<> (3, i, this.model, this.surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROWSEL1 + i, new ButtonRowSelectCommand<> (i, this.model, this.surface));
         }
 
-        viewManager.registerTriggerCommand (Commands.COMMAND_REWIND, new ButtonRowViewCommand<> (4, 0, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_FORWARD, new ButtonRowViewCommand<> (4, 1, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_STOP, new ButtonRowViewCommand<> (4, 2, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_PLAY, new ButtonRowViewCommand<> (4, 3, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_LOOP, new ButtonRowViewCommand<> (4, 4, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_RECORD, new ButtonRowViewCommand<> (4, 6, this.model, this.surface));
-
-        this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_REWIND, Commands.COMMAND_REWIND);
-        this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_FORWARD, Commands.COMMAND_FORWARD);
-        this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_STOP, Commands.COMMAND_STOP);
-        this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_PLAY, Commands.COMMAND_PLAY);
-        this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_LOOP, Commands.COMMAND_LOOP);
-        this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_RECORD, Commands.COMMAND_RECORD);
-
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_LEFT, new P1ButtonCommand (true, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_RIGHT, new P1ButtonCommand (false, this.model, this.surface));
-        this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_P1_UP, Commands.COMMAND_ARROW_LEFT);
-        this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_P1_DOWN, Commands.COMMAND_ARROW_RIGHT);
-
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_UP, new P2ButtonCommand (true, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_DOWN, new P2ButtonCommand (false, this.model, this.surface));
-        this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_P2_UP, Commands.COMMAND_ARROW_UP);
-        this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_P2_DOWN, Commands.COMMAND_ARROW_DOWN);
-
-        viewManager.registerTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, new TransportButtonCommand (this.model, this.surface));
-        this.surface.assignTriggerCommand (SLControlSurface.MKII_BUTTON_TRANSPORT, Commands.COMMAND_SELECT_PLAY_VIEW);
+        this.addTriggerCommand (Commands.COMMAND_REWIND, SLControlSurface.MKII_BUTTON_REWIND, new ButtonRowViewCommand<> (4, 0, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_FORWARD, SLControlSurface.MKII_BUTTON_FORWARD, new ButtonRowViewCommand<> (4, 1, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_STOP, SLControlSurface.MKII_BUTTON_STOP, new ButtonRowViewCommand<> (4, 2, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_PLAY, SLControlSurface.MKII_BUTTON_PLAY, new ButtonRowViewCommand<> (4, 3, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_LOOP, SLControlSurface.MKII_BUTTON_LOOP, new ButtonRowViewCommand<> (4, 4, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_RECORD, SLControlSurface.MKII_BUTTON_RECORD, new ButtonRowViewCommand<> (4, 6, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, SLControlSurface.MKII_BUTTON_P1_UP, new P1ButtonCommand (true, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, SLControlSurface.MKII_BUTTON_P1_DOWN, new P1ButtonCommand (false, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, SLControlSurface.MKII_BUTTON_P2_UP, new P2ButtonCommand (true, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, SLControlSurface.MKII_BUTTON_P2_DOWN, new P2ButtonCommand (false, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, SLControlSurface.MKII_BUTTON_TRANSPORT, new TransportButtonCommand (this.model, this.surface));
     }
 
 
@@ -298,31 +267,16 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     @Override
     protected void registerContinuousCommands ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
         for (int i = 0; i < 8; i++)
         {
-            final Integer faderCommand = Integer.valueOf (Commands.CONT_COMMAND_FADER1.intValue () + i);
-            viewManager.registerContinuousCommand (faderCommand, new FaderCommand (i, this.model, this.surface));
-            this.surface.assignContinuousCommand (SLControlSurface.MKII_SLIDER1 + i, faderCommand);
-
-            final Integer deviceKnobCommand = Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i);
-            viewManager.registerContinuousCommand (deviceKnobCommand, new DeviceKnobRowCommand (i, this.model, this.surface));
-            this.surface.assignContinuousCommand (SLControlSurface.MKII_KNOB_ROW1_1 + i, deviceKnobCommand);
-
-            final Integer trackKnobCommand = Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i);
-            viewManager.registerContinuousCommand (trackKnobCommand, new TrackKnobRowCommand (i, this.model, this.surface));
-            this.surface.assignContinuousCommand (SLControlSurface.MKII_KNOB_ROW2_1 + i, trackKnobCommand);
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_FADER1.intValue () + i), SLControlSurface.MKII_SLIDER1 + i, new FaderCommand (i, this.model, this.surface));
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i), SLControlSurface.MKII_KNOB_ROW1_1 + i, new DeviceKnobRowCommand (i, this.model, this.surface));
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), SLControlSurface.MKII_KNOB_ROW2_1 + i, new TrackKnobRowCommand (i, this.model, this.surface));
         }
-
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_X, new TouchpadCommand (true, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_Y, new TouchpadCommand (false, this.model, this.surface));
-        this.surface.assignContinuousCommand (SLControlSurface.MKII_TOUCHPAD_X, Commands.CONT_COMMAND_TOUCHPAD_X);
-        this.surface.assignContinuousCommand (SLControlSurface.MKII_TOUCHPAD_Y, Commands.CONT_COMMAND_TOUCHPAD_Y);
-
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, new TapTempoInitMkICommand (this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_TEMPO, new TapTempoMkICommand (this.model, this.surface));
-        this.surface.assignContinuousCommand (SLControlSurface.MKI_BUTTON_TAP_TEMPO, Commands.CONT_COMMAND_TEMPO_TOUCH);
-        this.surface.assignContinuousCommand (SLControlSurface.MKI_BUTTON_TAP_TEMPO_VALUE, Commands.CONT_COMMAND_TEMPO);
+        this.addContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_X, SLControlSurface.MKII_TOUCHPAD_X, new TouchpadCommand (true, this.model, this.surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_Y, SLControlSurface.MKII_TOUCHPAD_Y, new TouchpadCommand (false, this.model, this.surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, SLControlSurface.MKI_BUTTON_TAP_TEMPO, new TapTempoInitMkICommand (this.model, this.surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO, SLControlSurface.MKI_BUTTON_TAP_TEMPO_VALUE, new TapTempoMkICommand (this.model, this.surface));
     }
 
 

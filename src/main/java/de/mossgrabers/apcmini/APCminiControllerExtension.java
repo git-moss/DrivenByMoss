@@ -202,19 +202,11 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     @Override
     protected void registerTriggerCommands ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.registerNoteCommand (Commands.COMMAND_SHIFT, new ShiftCommand (this.model, this.surface));
-        this.surface.assignNoteCommand (APCminiControlSurface.APC_BUTTON_SHIFT, Commands.COMMAND_SHIFT);
-
+        this.addNoteCommand (Commands.COMMAND_SHIFT, APCminiControlSurface.APC_BUTTON_SHIFT, new ShiftCommand (this.model, this.surface));
         for (int i = 0; i < 8; i++)
         {
-            final Integer selectCommand = Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i);
-            viewManager.registerNoteCommand (selectCommand, new TrackSelectCommand (i, this.model, this.surface));
-            this.surface.assignNoteCommand (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, selectCommand);
-
-            final Integer sceneCommand = Integer.valueOf (Commands.COMMAND_SCENE1.intValue () + i);
-            viewManager.registerNoteCommand (sceneCommand, new SceneCommand<> (7 - i, this.model, this.surface));
-            this.surface.assignNoteCommand (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, sceneCommand);
+            this.addNoteCommand (Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, new TrackSelectCommand (i, this.model, this.surface));
+            this.addNoteCommand (Integer.valueOf (Commands.COMMAND_SCENE1.intValue () + i), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, new SceneCommand<> (7 - i, this.model, this.surface));
         }
     }
 
@@ -223,15 +215,12 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     @Override
     protected void registerContinuousCommands ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, new MasterFaderAbsoluteCommand<> (this.model, this.surface));
-        this.surface.assignContinuousCommand (APCminiControlSurface.APC_KNOB_MASTER_LEVEL, Commands.CONT_COMMAND_MASTER_KNOB);
+        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, APCminiControlSurface.APC_KNOB_MASTER_LEVEL, new MasterFaderAbsoluteCommand<> (this.model, this.surface));
 
         for (int i = 0; i < 8; i++)
         {
             final Integer knobCommand = Integer.valueOf (Commands.CONT_COMMAND_FADER1.intValue () + i);
-            viewManager.registerContinuousCommand (knobCommand, new KnobRowModeCommand<> (i, this.model, this.surface));
-            this.surface.assignContinuousCommand (APCminiControlSurface.APC_KNOB_TRACK_LEVEL1 + i, knobCommand);
+            this.addContinuousCommand (knobCommand, APCminiControlSurface.APC_KNOB_TRACK_LEVEL1 + i, new KnobRowModeCommand<> (i, this.model, this.surface));
         }
     }
 

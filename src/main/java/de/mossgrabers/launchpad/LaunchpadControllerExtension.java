@@ -204,97 +204,58 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
     {
         final ViewManager viewManager = this.surface.getViewManager ();
         viewManager.registerTriggerCommand (Commands.COMMAND_SHIFT, new ShiftCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_METRONOME, new ClickCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_UNDO, new UndoCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_DELETE, new DeleteCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_QUANTIZE, new QuantizeCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_DUPLICATE, new DuplicateCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_DOUBLE, new DoubleCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_RECORD, new RecordCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_PLAY, new PlayCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_NEW, new NewCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, new SelectSessionViewCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, new SelectNoteViewCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_DEVICE, new SelectDeviceViewCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_REC_ARM, new RecordArmCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_TRACK, new TrackSelectCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_MUTE, new MuteCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SOLO, new SoloCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_VOLUME, new VolumeCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_PAN_SEND, new PanCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SENDS, new SendsCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_STOP_CLIP, new StopClipCommand (this.model, this.surface));
-
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_DOWN, new LaunchpadCursorCommand (Direction.DOWN, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_UP, new LaunchpadCursorCommand (Direction.UP, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_LEFT, new LaunchpadCursorCommand (Direction.LEFT, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_RIGHT, new LaunchpadCursorCommand (Direction.RIGHT, this.model, this.surface));
-
         this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SHIFT, Commands.COMMAND_SHIFT);
         this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_MKII_BUTTON_USER, Commands.COMMAND_SHIFT);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_CLICK, Commands.COMMAND_METRONOME);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_UNDO, Commands.COMMAND_UNDO);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DELETE, Commands.COMMAND_DELETE);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_QUANTIZE, Commands.COMMAND_QUANTIZE);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE, Commands.COMMAND_DUPLICATE);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DOUBLE, Commands.COMMAND_DOUBLE);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_RECORD, Commands.COMMAND_RECORD);
-        this.surface.assignTriggerCommand (this.surface.getSessionButton (), Commands.COMMAND_SELECT_SESSION_VIEW);
-        this.surface.assignTriggerCommand (this.surface.getNoteButton (), Commands.COMMAND_SELECT_PLAY_VIEW);
-        this.surface.assignTriggerCommand (this.surface.getDeviceButton (), Commands.COMMAND_DEVICE);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_REC_ARM, Commands.COMMAND_REC_ARM);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_TRACK, Commands.COMMAND_TRACK);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_MUTE, Commands.COMMAND_MUTE);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SOLO, Commands.COMMAND_SOLO);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_VOLUME, Commands.COMMAND_VOLUME);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_PAN, Commands.COMMAND_PAN_SEND);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SENDS, Commands.COMMAND_SENDS);
-        this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_STOP_CLIP, Commands.COMMAND_STOP_CLIP);
 
-        this.surface.assignTriggerCommand (this.surface.getDownButtonId (), Commands.COMMAND_ARROW_DOWN);
-        this.surface.assignTriggerCommand (this.surface.getUpButtonId (), Commands.COMMAND_ARROW_UP);
-        this.surface.assignTriggerCommand (this.surface.getLeftButtonId (), Commands.COMMAND_ARROW_LEFT);
-        this.surface.assignTriggerCommand (this.surface.getRightButtonId (), Commands.COMMAND_ARROW_RIGHT);
+        this.addTriggerCommand (Commands.COMMAND_METRONOME, LaunchpadControlSurface.LAUNCHPAD_BUTTON_CLICK, new ClickCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_UNDO, LaunchpadControlSurface.LAUNCHPAD_BUTTON_UNDO, new UndoCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_DELETE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DELETE, new DeleteCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_QUANTIZE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_QUANTIZE, new QuantizeCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_DUPLICATE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE, new DuplicateCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_DOUBLE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DOUBLE, new DoubleCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_RECORD, LaunchpadControlSurface.LAUNCHPAD_BUTTON_RECORD, new RecordCommand<> (this.model, this.surface));
+
+        viewManager.registerTriggerCommand (Commands.COMMAND_PLAY, new PlayCommand<> (this.model, this.surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_NEW, new NewCommand<> (this.model, this.surface));
+
+        this.addTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, this.surface.getSessionButton (), new SelectSessionViewCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, this.surface.getNoteButton (), new SelectNoteViewCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_DEVICE, this.surface.getDeviceButton (), new SelectDeviceViewCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_REC_ARM, LaunchpadControlSurface.LAUNCHPAD_BUTTON_REC_ARM, new RecordArmCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_TRACK, LaunchpadControlSurface.LAUNCHPAD_BUTTON_TRACK, new TrackSelectCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_MUTE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_MUTE, new MuteCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SOLO, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SOLO, new SoloCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_VOLUME, LaunchpadControlSurface.LAUNCHPAD_BUTTON_VOLUME, new VolumeCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_PAN_SEND, LaunchpadControlSurface.LAUNCHPAD_BUTTON_PAN, new PanCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SENDS, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SENDS, new SendsCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_STOP_CLIP, LaunchpadControlSurface.LAUNCHPAD_BUTTON_STOP_CLIP, new StopClipCommand (this.model, this.surface));
+
+        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, this.surface.getDownButtonId (), new LaunchpadCursorCommand (Direction.DOWN, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, this.surface.getUpButtonId (), new LaunchpadCursorCommand (Direction.UP, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, this.surface.getLeftButtonId (), new LaunchpadCursorCommand (Direction.LEFT, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, this.surface.getRightButtonId (), new LaunchpadCursorCommand (Direction.RIGHT, this.model, this.surface));
 
         if (this.isPro)
         {
-            viewManager.registerTriggerCommand (Commands.COMMAND_SCENE1, new SceneCommand<> (7, this.model, this.surface));
-            viewManager.registerTriggerCommand (Commands.COMMAND_SCENE2, new SceneCommand<> (6, this.model, this.surface));
-            viewManager.registerTriggerCommand (Commands.COMMAND_SCENE3, new SceneCommand<> (5, this.model, this.surface));
-            viewManager.registerTriggerCommand (Commands.COMMAND_SCENE4, new SceneCommand<> (4, this.model, this.surface));
-            viewManager.registerTriggerCommand (Commands.COMMAND_SCENE5, new SceneCommand<> (3, this.model, this.surface));
-            viewManager.registerTriggerCommand (Commands.COMMAND_SCENE6, new SceneCommand<> (2, this.model, this.surface));
-            viewManager.registerTriggerCommand (Commands.COMMAND_SCENE7, new SceneCommand<> (1, this.model, this.surface));
-            viewManager.registerTriggerCommand (Commands.COMMAND_SCENE8, new SceneCommand<> (0, this.model, this.surface));
-
-            this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, Commands.COMMAND_SCENE1);
-            this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, Commands.COMMAND_SCENE2);
-            this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, Commands.COMMAND_SCENE3);
-            this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, Commands.COMMAND_SCENE4);
-            this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, Commands.COMMAND_SCENE5);
-            this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, Commands.COMMAND_SCENE6);
-            this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, Commands.COMMAND_SCENE7);
-            this.surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, Commands.COMMAND_SCENE8);
+            this.addTriggerCommand (Commands.COMMAND_SCENE1, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, new SceneCommand<> (7, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE2, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, new SceneCommand<> (6, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE3, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, new SceneCommand<> (5, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE4, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, new SceneCommand<> (4, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE5, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, new SceneCommand<> (3, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE6, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, new SceneCommand<> (2, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE7, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, new SceneCommand<> (1, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE8, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, new SceneCommand<> (0, this.model, this.surface));
         }
         else
         {
-            viewManager.registerNoteCommand (Commands.COMMAND_SCENE1, new SceneCommand<> (7, this.model, this.surface));
-            viewManager.registerNoteCommand (Commands.COMMAND_SCENE2, new SceneCommand<> (6, this.model, this.surface));
-            viewManager.registerNoteCommand (Commands.COMMAND_SCENE3, new SceneCommand<> (5, this.model, this.surface));
-            viewManager.registerNoteCommand (Commands.COMMAND_SCENE4, new SceneCommand<> (4, this.model, this.surface));
-            viewManager.registerNoteCommand (Commands.COMMAND_SCENE5, new SceneCommand<> (3, this.model, this.surface));
-            viewManager.registerNoteCommand (Commands.COMMAND_SCENE6, new SceneCommand<> (2, this.model, this.surface));
-            viewManager.registerNoteCommand (Commands.COMMAND_SCENE7, new SceneCommand<> (1, this.model, this.surface));
-            viewManager.registerNoteCommand (Commands.COMMAND_SCENE8, new SceneCommand<> (0, this.model, this.surface));
-
-            this.surface.assignNoteCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, Commands.COMMAND_SCENE1);
-            this.surface.assignNoteCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, Commands.COMMAND_SCENE2);
-            this.surface.assignNoteCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, Commands.COMMAND_SCENE3);
-            this.surface.assignNoteCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, Commands.COMMAND_SCENE4);
-            this.surface.assignNoteCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, Commands.COMMAND_SCENE5);
-            this.surface.assignNoteCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, Commands.COMMAND_SCENE6);
-            this.surface.assignNoteCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, Commands.COMMAND_SCENE7);
-            this.surface.assignNoteCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, Commands.COMMAND_SCENE8);
+            this.addNoteCommand (Commands.COMMAND_SCENE1, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, new SceneCommand<> (7, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE2, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, new SceneCommand<> (6, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE3, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, new SceneCommand<> (5, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE4, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, new SceneCommand<> (4, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE5, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, new SceneCommand<> (3, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE6, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, new SceneCommand<> (2, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE7, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, new SceneCommand<> (1, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE8, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, new SceneCommand<> (0, this.model, this.surface));
         }
     }
 
@@ -303,27 +264,9 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
     @Override
     protected void registerContinuousCommands ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB1, new FaderCommand (0, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB2, new FaderCommand (1, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB3, new FaderCommand (2, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB4, new FaderCommand (3, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB5, new FaderCommand (4, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB6, new FaderCommand (5, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB7, new FaderCommand (6, this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_KNOB8, new FaderCommand (7, this.model, this.surface));
-
-        this.surface.assignContinuousCommand (LaunchpadControlSurface.LAUNCHPAD_FADER_1, Commands.CONT_COMMAND_KNOB1);
-        this.surface.assignContinuousCommand (LaunchpadControlSurface.LAUNCHPAD_FADER_2, Commands.CONT_COMMAND_KNOB2);
-        this.surface.assignContinuousCommand (LaunchpadControlSurface.LAUNCHPAD_FADER_3, Commands.CONT_COMMAND_KNOB3);
-        this.surface.assignContinuousCommand (LaunchpadControlSurface.LAUNCHPAD_FADER_4, Commands.CONT_COMMAND_KNOB4);
-        this.surface.assignContinuousCommand (LaunchpadControlSurface.LAUNCHPAD_FADER_5, Commands.CONT_COMMAND_KNOB5);
-        this.surface.assignContinuousCommand (LaunchpadControlSurface.LAUNCHPAD_FADER_6, Commands.CONT_COMMAND_KNOB6);
-        this.surface.assignContinuousCommand (LaunchpadControlSurface.LAUNCHPAD_FADER_7, Commands.CONT_COMMAND_KNOB7);
-        this.surface.assignContinuousCommand (LaunchpadControlSurface.LAUNCHPAD_FADER_8, Commands.CONT_COMMAND_KNOB8);
-
-        final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);
+        for (int i = 0; i < 8; i++)
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, new FaderCommand (i, this.model, this.surface));
+        final PlayView playView = (PlayView) this.surface.getViewManager ().getView (Views.VIEW_PLAY);
         playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, this.surface));
     }
 

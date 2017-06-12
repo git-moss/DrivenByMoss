@@ -22,9 +22,10 @@ public abstract class AbstractDisplay implements Display
     protected ControllerHost host;
     protected MidiOutput     output;
 
-    private int              noOfLines;
+    protected int            noOfLines;
     protected int            noOfCells;
-    private int              noOfCharacters;
+    protected int            noOfCharacters;
+
     private final String     emptyLine;
     private String           notificationMessage;
     protected boolean        isNotificationActive;
@@ -185,7 +186,7 @@ public abstract class AbstractDisplay implements Display
         for (int row = 0; row < this.noOfLines; row++)
         {
             // Has anything changed?
-            if (this.currentMessage[row] == this.message[row])
+            if (this.currentMessage[row] != null && this.currentMessage[row].equals (this.message[row]))
                 continue;
             this.currentMessage[row] = this.message[row];
             if (this.currentMessage[row] != null)

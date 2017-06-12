@@ -31,7 +31,7 @@ public class PitchbendSessionCommand extends AbstractPitchbendCommand<PushContro
 
     /** {@inheritDoc} */
     @Override
-    public void onPitchbend (final int data1, final int data2)
+    public void onPitchbend (final int channel, final int data1, final int data2)
     {
         final int value = this.surface.isShiftPressed () ? 63 : data2;
         this.model.getTransport ().setCrossfade (this.model.getValueChanger ().toDAWValue (value));

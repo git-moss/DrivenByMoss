@@ -28,7 +28,6 @@ import de.mossgrabers.apc.command.trigger.ShiftCommand;
 import de.mossgrabers.apc.command.trigger.SoloCommand;
 import de.mossgrabers.apc.command.trigger.StopAllClipsCommand;
 import de.mossgrabers.apc.command.trigger.StopClipCommand;
-import de.mossgrabers.apc.command.trigger.StopCommand;
 import de.mossgrabers.apc.command.trigger.ToggleDeviceFrameCommand;
 import de.mossgrabers.apc.controller.APCColors;
 import de.mossgrabers.apc.controller.APCControlSurface;
@@ -57,6 +56,7 @@ import de.mossgrabers.framework.command.trigger.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.NewCommand;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
+import de.mossgrabers.framework.command.trigger.StopCommand;
 import de.mossgrabers.framework.command.trigger.TapTempoCommand;
 import de.mossgrabers.framework.controller.AbstractControllerExtension;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
@@ -205,20 +205,16 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
     protected void registerTriggerCommands ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.registerTriggerCommand (Commands.COMMAND_SHIFT, new ShiftCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_PLAY, new PlayCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_RECORD, new APCRecordCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_CLIP, new SessionRecordCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_METRONOME, new MetronomeCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_TAP_TEMPO, new TapTempoCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_NUDGE_PLUS, new NudgeCommand (false, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_NUDGE_MINUS, new NudgeCommand (true, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_QUANTIZE, new QuantizeCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_LAYOUT, new PanelLayoutCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_DEVICE_ON_OFF, new DeviceOnOffCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_PAN_SEND, new ModeSelectCommand<> (Modes.MODE_PAN, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_MASTERTRACK, new MasterCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_STOP_ALL_CLIPS, new StopAllClipsCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SHIFT, APCControlSurface.APC_BUTTON_SHIFT, new ShiftCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_PLAY, APCControlSurface.APC_BUTTON_PLAY, new PlayCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_RECORD, APCControlSurface.APC_BUTTON_RECORD, new APCRecordCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_TAP_TEMPO, APCControlSurface.APC_BUTTON_TAP_TEMPO, new TapTempoCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_QUANTIZE, APCControlSurface.APC_BUTTON_REC_QUANT, new QuantizeCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_PAN_SEND, APCControlSurface.APC_BUTTON_PAN, new ModeSelectCommand<> (Modes.MODE_PAN, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, APCControlSurface.APC_BUTTON_MASTER, new MasterCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_STOP_ALL_CLIPS, APCControlSurface.APC_BUTTON_STOP_ALL_CLIPS, new StopAllClipsCommand (this.model, this.surface));
+        this.addTriggerCommand (Integer.valueOf (COMMAND_SEND), APCControlSurface.APC_BUTTON_SEND_A, new SendCommand (0, this.model, this.surface));
+        this.addTriggerCommand (Integer.valueOf (COMMAND_SEND + 1), APCControlSurface.APC_BUTTON_SEND_B, new SendCommand (1, this.model, this.surface));
 
         for (int i = 0; i < 8; i++)
         {
@@ -235,7 +231,6 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
             viewManager.registerTriggerCommand (recArmCommand, new RecArmCommand (i, this.model, this.surface));
             viewManager.registerTriggerCommand (crossfadeCommand, new CrossfadeCommand (i, this.model, this.surface));
             viewManager.registerTriggerCommand (stopClipCommand, new StopClipCommand (i, this.model, this.surface));
-
             this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_TRACK_SELECTION, i, selectCommand);
             this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SOLO, i, soloCommand);
             this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_ACTIVATOR, i, muteCommand);
@@ -244,28 +239,15 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
             this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_CLIP_STOP, i, stopClipCommand);
         }
 
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SHIFT, Commands.COMMAND_SHIFT);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_PLAY, Commands.COMMAND_PLAY);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_RECORD, Commands.COMMAND_RECORD);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_TAP_TEMPO, Commands.COMMAND_TAP_TEMPO);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_REC_QUANT, Commands.COMMAND_QUANTIZE);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_PAN, Commands.COMMAND_PAN_SEND);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_MASTER, Commands.COMMAND_MASTERTRACK);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_STOP_ALL_CLIPS, Commands.COMMAND_STOP_ALL_CLIPS);
-
-        final Integer sendACommand = Integer.valueOf (COMMAND_SEND);
-        final Integer sendBCommand = Integer.valueOf (COMMAND_SEND + 1);
-        viewManager.registerTriggerCommand (sendACommand, new SendCommand (0, this.model, this.surface));
-        viewManager.registerTriggerCommand (sendBCommand, new SendCommand (1, this.model, this.surface));
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SEND_A, sendACommand);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SEND_B, sendBCommand);
-
         viewManager.registerTriggerCommand (COMMAND_DEVICE_LEFT, new DeviceLeftCommand (this.model, this.surface));
         viewManager.registerTriggerCommand (COMMAND_DEVICE_RIGHT, new DeviceRightCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (COMMAND_BANK_LEFT, new BankLeftCommand (this.model, this.surface));
-        viewManager.registerTriggerCommand (COMMAND_BANK_RIGHT, new BankRightCommand (this.model, this.surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_CLIP, new SessionRecordCommand (this.model, this.surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_METRONOME, new MetronomeCommand<> (this.model, this.surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_NUDGE_MINUS, new NudgeCommand (true, this.model, this.surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_NUDGE_PLUS, new NudgeCommand (false, this.model, this.surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_LAYOUT, new PanelLayoutCommand (this.model, this.surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_DEVICE_ON_OFF, new DeviceOnOffCommand (this.model, this.surface));
         viewManager.registerTriggerCommand (COMMAND_TOGGLE_DEVICES, new ToggleDeviceFrameCommand (this.model, this.surface));
-
         if (this.isMkII)
         {
             this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SESSION, Commands.COMMAND_CLIP);
@@ -290,42 +272,23 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
             this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_DEVICE_ON_OFF, Commands.COMMAND_DEVICE_ON_OFF);
             this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_CLIP_TRACK, COMMAND_TOGGLE_DEVICES);
 
-            viewManager.registerTriggerCommand (Commands.COMMAND_STOP, new StopCommand (this.model, this.surface));
-            this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_STOP, Commands.COMMAND_STOP);
-
-            final Integer sendCCommand = Integer.valueOf (COMMAND_SEND + 2);
-            viewManager.registerTriggerCommand (sendCCommand, new SendCommand (2, this.model, this.surface));
-            this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SEND_C, sendCCommand);
-
-            viewManager.registerTriggerCommand (Commands.COMMAND_NEW, new NewCommand<> (this.model, this.surface));
-            this.surface.assignTriggerCommand (APCControlSurface.APC_FOOTSWITCH_2, Commands.COMMAND_NEW);
+            this.addTriggerCommand (Commands.COMMAND_STOP, APCControlSurface.APC_BUTTON_STOP, new StopCommand<> (this.model, this.surface));
+            this.addTriggerCommand (Integer.valueOf (COMMAND_SEND + 2), APCControlSurface.APC_BUTTON_SEND_C, new SendCommand (2, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_NEW, APCControlSurface.APC_FOOTSWITCH_2, new NewCommand<> (this.model, this.surface));
         }
 
-        viewManager.registerTriggerCommand (Commands.COMMAND_BROWSE, new BrowserCommand (this.model, this.surface));
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_BANK, Commands.COMMAND_BROWSE);
-
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_DEVICE_LEFT, COMMAND_BANK_LEFT);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_DEVICE_RIGHT, COMMAND_BANK_RIGHT);
-
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_DOWN, new APCCursorCommand (Direction.DOWN, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_UP, new APCCursorCommand (Direction.UP, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_LEFT, new APCCursorCommand (Direction.LEFT, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_ARROW_RIGHT, new APCCursorCommand (Direction.RIGHT, this.model, this.surface));
-        this.surface.assignTriggerCommand (this.surface.getDownButtonId (), Commands.COMMAND_ARROW_DOWN);
-        this.surface.assignTriggerCommand (this.surface.getUpButtonId (), Commands.COMMAND_ARROW_UP);
-        this.surface.assignTriggerCommand (this.surface.getLeftButtonId (), Commands.COMMAND_ARROW_LEFT);
-        this.surface.assignTriggerCommand (this.surface.getRightButtonId (), Commands.COMMAND_ARROW_RIGHT);
-
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE1, new SceneCommand<> (7, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE2, new SceneCommand<> (6, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE3, new SceneCommand<> (5, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE4, new SceneCommand<> (4, this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_SCENE5, new SceneCommand<> (3, this.model, this.surface));
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, Commands.COMMAND_SCENE1);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, Commands.COMMAND_SCENE2);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, Commands.COMMAND_SCENE3);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, Commands.COMMAND_SCENE4);
-        this.surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, Commands.COMMAND_SCENE5);
+        this.addTriggerCommand (Commands.COMMAND_BROWSE, APCControlSurface.APC_BUTTON_BANK, new BrowserCommand (this.model, this.surface));
+        this.addTriggerCommand (COMMAND_BANK_LEFT, APCControlSurface.APC_BUTTON_DEVICE_LEFT, new BankLeftCommand (this.model, this.surface));
+        this.addTriggerCommand (COMMAND_BANK_RIGHT, APCControlSurface.APC_BUTTON_DEVICE_RIGHT, new BankRightCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, this.surface.getDownButtonId (), new APCCursorCommand (Direction.DOWN, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, this.surface.getUpButtonId (), new APCCursorCommand (Direction.UP, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, this.surface.getLeftButtonId (), new APCCursorCommand (Direction.LEFT, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, this.surface.getRightButtonId (), new APCCursorCommand (Direction.RIGHT, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SCENE1, APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, new SceneCommand<> (7, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SCENE2, APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, new SceneCommand<> (6, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SCENE3, APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, new SceneCommand<> (5, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SCENE4, APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, new SceneCommand<> (4, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SCENE5, APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, new SceneCommand<> (3, this.model, this.surface));
     }
 
 
@@ -335,13 +298,9 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
     {
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, new MasterFaderAbsoluteCommand<> (this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_PLAY_POSITION, new PlayPositionCommand<> (this.model, this.surface));
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_CROSSFADER, new CrossfaderCommand (this.model, this.surface));
-
-        this.surface.assignContinuousCommand (APCControlSurface.APC_KNOB_MASTER_LEVEL, Commands.CONT_COMMAND_MASTER_KNOB);
-        this.surface.assignContinuousCommand (APCControlSurface.APC_KNOB_CUE_LEVEL, Commands.CONT_COMMAND_PLAY_POSITION);
-        this.surface.assignContinuousCommand (APCControlSurface.APC_KNOB_CROSSFADER, Commands.CONT_COMMAND_CROSSFADER);
+        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, APCControlSurface.APC_KNOB_MASTER_LEVEL, new MasterFaderAbsoluteCommand<> (this.model, this.surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_PLAY_POSITION, APCControlSurface.APC_KNOB_CUE_LEVEL, new PlayPositionCommand<> (this.model, this.surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_CROSSFADER, APCControlSurface.APC_KNOB_CROSSFADER, new CrossfaderCommand (this.model, this.surface));
 
         for (int i = 0; i < 8; i++)
         {
@@ -359,10 +318,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         }
 
         if (this.isMkII)
-        {
-            viewManager.registerContinuousCommand (Commands.CONT_COMMAND_TEMPO, new TempoCommand<> (this.model, this.surface));
-            this.surface.assignContinuousCommand (APCControlSurface.APC_KNOB_TEMPO, Commands.CONT_COMMAND_TEMPO);
-        }
+            this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO, APCControlSurface.APC_KNOB_TEMPO, new TempoCommand<> (this.model, this.surface));
     }
 
 
