@@ -90,12 +90,13 @@ import de.mossgrabers.push.mode.GrooveMode;
 import de.mossgrabers.push.mode.InfoMode;
 import de.mossgrabers.push.mode.Modes;
 import de.mossgrabers.push.mode.NoteMode;
+import de.mossgrabers.push.mode.NoteViewSelectMode;
 import de.mossgrabers.push.mode.RibbonMode;
 import de.mossgrabers.push.mode.ScaleLayoutMode;
 import de.mossgrabers.push.mode.ScalesMode;
+import de.mossgrabers.push.mode.SessionViewSelectMode;
 import de.mossgrabers.push.mode.SetupMode;
 import de.mossgrabers.push.mode.TransportMode;
-import de.mossgrabers.push.mode.ViewSelectMode;
 import de.mossgrabers.push.mode.device.DeviceBrowserMode;
 import de.mossgrabers.push.mode.device.DeviceLayerMode;
 import de.mossgrabers.push.mode.device.DeviceLayerModePan;
@@ -121,6 +122,7 @@ import de.mossgrabers.push.view.PianoView;
 import de.mossgrabers.push.view.PlayView;
 import de.mossgrabers.push.view.PrgChangeView;
 import de.mossgrabers.push.view.RaindropsView;
+import de.mossgrabers.push.view.ScenePlayView;
 import de.mossgrabers.push.view.SequencerView;
 import de.mossgrabers.push.view.SessionView;
 import de.mossgrabers.push.view.Views;
@@ -240,7 +242,9 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         modeManager.registerMode (Modes.MODE_FIXED, new FixedMode (this.surface, this.model));
         modeManager.registerMode (Modes.MODE_RIBBON, new RibbonMode (this.surface, this.model));
         modeManager.registerMode (Modes.MODE_GROOVE, new GrooveMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_VIEW_SELECT, new ViewSelectMode (this.surface, this.model));
+        modeManager.registerMode (Modes.MODE_VIEW_SELECT, new NoteViewSelectMode (this.surface, this.model));
+        modeManager.registerMode (Modes.MODE_SESSION_VIEW_SELECT, new SessionViewSelectMode (this.surface, this.model));
+
         modeManager.registerMode (Modes.MODE_AUTOMATION, new AutomationMode (this.surface, this.model));
         modeManager.registerMode (Modes.MODE_TRANSPORT, new TransportMode (this.surface, this.model));
 
@@ -344,6 +348,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         viewManager.registerView (Views.VIEW_PRG_CHANGE, new PrgChangeView (this.surface, this.model));
         viewManager.registerView (Views.VIEW_CLIP, new ClipView (this.surface, this.model));
         viewManager.registerView (Views.VIEW_COLOR, new ColorView (this.surface, this.model));
+        viewManager.registerView (Views.VIEW_SCENE_PLAY, new ScenePlayView (this.surface, this.model));
     }
 
 
@@ -507,7 +512,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         }
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        final boolean isSessionView = viewManager.isActiveView (Views.VIEW_SESSION);
+        final boolean isSessionView = Views.isSessionView (viewManager.getActiveViewId ());
         this.surface.updateButton (PushControlSurface.PUSH_BUTTON_NOTE, isSessionView ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_HI);
         this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SESSION, isSessionView ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
         this.surface.updateButton (PushControlSurface.PUSH_BUTTON_ACCENT, config.isAccentActive () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);

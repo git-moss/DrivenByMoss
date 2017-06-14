@@ -92,6 +92,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         // Duplicate a clip
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
         {
+            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
             if (tb.getTrack (t).doesExist ())
                 tb.getClipLauncherSlots (t).duplicateClip (s);
             return;
@@ -100,6 +101,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         // Stop clip
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
         {
+            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_CLIP_STOP);
             tb.stop (t);
             return;
         }
@@ -107,9 +109,9 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         // Browse for clips
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_BROWSE))
         {
+            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
             if (!tb.getTrack (t).doesExist ())
                 return;
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
             tb.getClipLauncherSlots (t).getItemAt (s).browseToInsertClip ();
             final ModeManager modeManager = this.surface.getModeManager ();
             if (!modeManager.isActiveMode (Modes.MODE_BROWSER))

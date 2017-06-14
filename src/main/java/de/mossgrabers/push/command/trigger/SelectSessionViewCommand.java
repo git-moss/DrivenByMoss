@@ -7,10 +7,11 @@ package de.mossgrabers.push.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.mode.Modes;
 import de.mossgrabers.push.view.Views;
 
 
@@ -41,11 +42,13 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<PushControl
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (viewManager.isActiveView (Views.VIEW_SESSION))
+        if (Views.isSessionView (viewManager.getActiveViewId ()))
         {
-            final Configuration configuration = this.surface.getConfiguration ();
-            if (!configuration.isLockFlipSession ())
-                configuration.setFlipSession (!configuration.isFlipSession ());
+            final ModeManager modeManager = this.surface.getModeManager ();
+            if (modeManager.isActiveMode (Modes.MODE_SESSION_VIEW_SELECT))
+                modeManager.restoreMode ();
+            else
+                modeManager.setActiveMode (Modes.MODE_SESSION_VIEW_SELECT);
         }
         else
             viewManager.setActiveView (Views.VIEW_SESSION);

@@ -159,7 +159,7 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (ButtonEvent event)
+    public void executeNormal (final ButtonEvent event)
     {
         // Intentionally empty
     }
@@ -167,7 +167,7 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
 
     /** {@inheritDoc} */
     @Override
-    public void executeShifted (ButtonEvent event)
+    public void executeShifted (final ButtonEvent event)
     {
         // Intentionally empty
     }

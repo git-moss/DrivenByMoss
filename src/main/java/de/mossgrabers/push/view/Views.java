@@ -39,8 +39,11 @@ public class Views
     public static final Integer       VIEW_DRUM64     = Integer.valueOf (10);
     /** View for selecting a color. */
     public static final Integer       VIEW_COLOR      = Integer.valueOf (11);
+    /** View for playing scenes. */
+    public static final Integer       VIEW_SCENE_PLAY = Integer.valueOf (12);
 
     private static final Set<Integer> SEQUENCER_VIEWS = new HashSet<> ();
+    private static final Set<Integer> SESSION_VIEWS   = new HashSet<> ();
 
     static
     {
@@ -49,6 +52,9 @@ public class Views
         SEQUENCER_VIEWS.add (VIEW_DRUM);
         SEQUENCER_VIEWS.add (VIEW_DRUM4);
         SEQUENCER_VIEWS.add (VIEW_DRUM8);
+
+        SESSION_VIEWS.add (VIEW_SESSION);
+        SESSION_VIEWS.add (VIEW_SCENE_PLAY);
     }
 
 
@@ -70,5 +76,17 @@ public class Views
     public static boolean isSequencerView (final Integer viewId)
     {
         return SEQUENCER_VIEWS.contains (viewId);
+    }
+
+
+    /**
+     * Returns true if the given view ID is one of the session views.
+     *
+     * @param viewId The view ID to test
+     * @return True if it is a session view
+     */
+    public static boolean isSessionView (final Integer viewId)
+    {
+        return SESSION_VIEWS.contains (viewId);
     }
 }

@@ -94,6 +94,29 @@ public abstract class AbstractTrackBankProxy
 
 
     /**
+     * Dis-/Enable all attributes. They are enabled by default. Use this function if values are
+     * currently not needed to improve performance.
+     *
+     * @param enable True to enable
+     */
+    public void enableObservers (final boolean enable)
+    {
+        for (final TrackData track: this.tracks)
+        {
+            track.enableObservers (enable);
+            this.trackBank.getChannel (track.getIndex ()).playingNotes ().setIsSubscribed (enable);
+        }
+
+        this.trackBank.channelCount ().setIsSubscribed (enable);
+        this.trackBank.scrollPosition ().setIsSubscribed (enable);
+        this.trackBank.canScrollChannelsUp ().setIsSubscribed (enable);
+        this.trackBank.canScrollChannelsDown ().setIsSubscribed (enable);
+
+        this.sceneBankProxy.enableObservers (enable);
+    }
+
+
+    /**
      * Get the number of all tracks.
      *
      * @return The number of all tracks

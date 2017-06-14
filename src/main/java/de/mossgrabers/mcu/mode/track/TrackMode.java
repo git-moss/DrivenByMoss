@@ -84,7 +84,7 @@ public class TrackMode extends AbstractTrackMode
         final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
         final TrackData selectedTrack = currentTrackBank.getSelectedTrack ();
 
-        boolean displayTrackNames = this.surface.getConfiguration ().isDisplayTrackNames ();
+        final boolean displayTrackNames = this.surface.getConfiguration ().isDisplayTrackNames ();
         if (!displayTrackNames)
         {
             d.setCell (0, 0, "Volume");

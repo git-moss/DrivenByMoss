@@ -7,6 +7,7 @@ package de.mossgrabers.push.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.mode.Modes;
@@ -35,7 +36,13 @@ public class ClipCommand extends AbstractTriggerCommand<PushControlSurface, Push
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_CLIP);
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (modeManager.isActiveMode (Modes.MODE_CLIP))
+            modeManager.restoreMode ();
+        else
+            modeManager.setActiveMode (Modes.MODE_CLIP);
     }
 }

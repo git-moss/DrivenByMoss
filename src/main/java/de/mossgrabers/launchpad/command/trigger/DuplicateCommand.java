@@ -6,7 +6,6 @@ package de.mossgrabers.launchpad.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
@@ -16,7 +15,7 @@ import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DuplicateCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
+public class DuplicateCommand extends de.mossgrabers.framework.command.trigger.DuplicateCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     /**
      * Constructor.

@@ -78,41 +78,39 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final Integer activeModeId = modeManager.getActiveModeId ();
-        if (activeModeId == null)
-        {
-            if (this.surface.isShiftPressed ())
-                this.onGridNoteBankSelection (note, velocity, false);
-            else
-                super.onGridNote (note, velocity);
-            return;
-        }
-
         // Block 1st row if mode is active
-        if (note >= 44)
+        final boolean isNotRow1 = note >= 44;
+        if (activeModeId == null || isNotRow1)
         {
-            // Translate the 7 other rows down
             if (this.surface.isShiftPressed ())
-                this.onGridNoteBankSelection (note, velocity, true);
-            else
-                super.onGridNote (note - 8, velocity);
+            {
+                this.onGridNoteBankSelection (note, velocity, isNotRow1);
+                return;
+            }
+
+            int n = note - (activeModeId != null ? 8 : 0);
+            final int index = n - 36;
+            int t = index % this.columns;
+
+            // Duplicate a clip
+            if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
+            {
+                this.surface.setButtonConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
+                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+                if (tb.getTrack (t).doesExist ())
+                {
+                    int s = this.rows - 1 - index / this.columns;
+                    tb.getClipLauncherSlots (t).duplicateClip (s);
+                }
+                return;
+            }
+
+            super.onGridNote (n, velocity);
             return;
         }
 
-        if (velocity == 0)
-            return;
-
-        final int index = note - 36;
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
-            tb.toggleArm (index);
-        else if (modeManager.isActiveMode (Modes.MODE_TRACK_SELECT))
-            this.selectTrack (index);
-        else if (modeManager.isActiveMode (Modes.MODE_MUTE))
-            tb.toggleMute (index);
-        else if (modeManager.isActiveMode (Modes.MODE_SOLO))
-            tb.toggleSolo (index);
-        else if (modeManager.isActiveMode (Modes.MODE_STOP_CLIP))
-            tb.stop (index);
+        if (velocity != 0)
+            this.handleFirstRowModes (note, modeManager);
     }
 
 
@@ -235,5 +233,31 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final int offsetY = selY / padsY * padsY;
         tb.scrollToChannel (offsetX * tb.getNumTracks () + (flip ? y : x) * padsX);
         tb.scrollToScene (offsetY * tb.getNumScenes () + (flip ? x : y) * padsY);
+    }
+
+
+    private void handleFirstRowModes (final int note, final ModeManager modeManager)
+    {
+        // First row mode handling
+        final int index = note - 36;
+        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+
+        if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
+        {
+            this.surface.setButtonConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
+            tb.duplicate (index);
+            return;
+        }
+
+        if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
+            tb.toggleArm (index);
+        else if (modeManager.isActiveMode (Modes.MODE_TRACK_SELECT))
+            this.selectTrack (index);
+        else if (modeManager.isActiveMode (Modes.MODE_MUTE))
+            tb.toggleMute (index);
+        else if (modeManager.isActiveMode (Modes.MODE_SOLO))
+            tb.toggleSolo (index);
+        else if (modeManager.isActiveMode (Modes.MODE_STOP_CLIP))
+            tb.stop (index);
     }
 }

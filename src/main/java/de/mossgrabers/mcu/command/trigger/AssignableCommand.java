@@ -22,7 +22,7 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
 
     /**
      * Constructor.
-     * 
+     *
      * @param index The index of the assignable button
      * @param model The model
      * @param surface The surface

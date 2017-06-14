@@ -25,7 +25,7 @@ public class TemporaryNewCommand<S extends ControlSurface<C>, C extends Configur
 
     /**
      * Constructor.
-     * 
+     *
      * @param clipLength The length of the new clip
      * @param model The model
      * @param surface The surface

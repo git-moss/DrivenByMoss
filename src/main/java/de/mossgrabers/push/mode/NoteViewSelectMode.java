@@ -22,7 +22,7 @@ import de.mossgrabers.push.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ViewSelectMode extends BaseMode
+public class NoteViewSelectMode extends BaseMode
 {
     /** The views to choose from. */
     private static final Integer [] VIEWS     =
@@ -57,7 +57,7 @@ public class ViewSelectMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public ViewSelectMode (final PushControlSurface surface, final Model model)
+    public NoteViewSelectMode (final PushControlSurface surface, final Model model)
     {
         super (surface, model);
     }
@@ -87,7 +87,7 @@ public class ViewSelectMode extends BaseMode
     {
         final Display d = this.surface.getDisplay ();
         final ViewManager viewManager = this.surface.getViewManager ();
-        d.clear ().setBlock (1, 0, "Track input:");
+        d.clear ().setBlock (1, 0, "Note view:");
         for (int i = 0; i < VIEWS.length; i++)
         {
             if (VIEWS[i] != null)
@@ -111,7 +111,7 @@ public class ViewSelectMode extends BaseMode
             final String menuTopName = VIEWS_TOP[i] == null ? "" : viewManager.getView (VIEWS_TOP[i]).getName ();
             final boolean isMenuBottomSelected = VIEWS[i] != null && viewManager.isActiveView (VIEWS[i]);
             final boolean isMenuTopSelected = VIEWS_TOP[i] != null && viewManager.isActiveView (VIEWS_TOP[i]);
-            message.addOptionElement ("", menuTopName, isMenuTopSelected, i == 0 ? "Track input" : "", menuBottomName, isMenuBottomSelected, false);
+            message.addOptionElement ("", menuTopName, isMenuTopSelected, i == 0 ? "Note view" : "", menuBottomName, isMenuBottomSelected, false);
         }
         message.send ();
     }

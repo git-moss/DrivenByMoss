@@ -43,7 +43,8 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.surface.getViewManager ().isActiveView (Views.VIEW_SESSION))
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (Views.isSessionView (viewManager.getActiveViewId ()))
         {
             final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
             final TrackData selectedTrack = tb.getSelectedTrack ();
@@ -53,7 +54,6 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
                 return;
             }
 
-            final ViewManager viewManager = this.surface.getViewManager ();
             final Integer preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
             viewManager.setActiveView (preferredView == null ? Views.VIEW_PLAY : preferredView);
             return;

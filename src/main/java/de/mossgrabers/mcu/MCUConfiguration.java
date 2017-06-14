@@ -221,7 +221,7 @@ public class MCUConfiguration extends AbstractConfiguration
         for (int i = 0; i < this.assignableFunctions.length; i++)
         {
             final int pos = i;
-            SettableEnumValue setting = prefs.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], "Assignable buttons", FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
+            final SettableEnumValue setting = prefs.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], "Assignable buttons", FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
             setting.addValueObserver (value -> {
                 for (int f = 0; f < FOOTSWITCH_VALUES.length; f++)
                 {
@@ -373,7 +373,7 @@ public class MCUConfiguration extends AbstractConfiguration
      * @param index The index of the assignable
      * @return The function
      */
-    public int getAssignable (int index)
+    public int getAssignable (final int index)
     {
         return this.assignableFunctions[index];
     }

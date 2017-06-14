@@ -20,7 +20,7 @@ public class ToggleDisplayCommand extends AbstractTriggerCommand<MCUControlSurfa
 {
     /**
      * Constructor.
-     * 
+     *
      * @param model The model
      * @param surface The surface
      */

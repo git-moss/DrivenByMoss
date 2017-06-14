@@ -9,6 +9,9 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.data.SlotData;
+import de.mossgrabers.framework.daw.data.TrackData;
 
 
 /**
@@ -35,11 +38,33 @@ public class DuplicateCommand<S extends ControlSurface<C>, C extends Configurati
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
-        if (this.surface.isShiftPressed ())
+
+        // Is there a selected track?
+        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final TrackData trackData = tb.getSelectedTrack ();
+        if (trackData == null || !trackData.doesExist ())
+            return;
+
+        // Is there a selected slot?
+        final int trackIndex = trackData.getIndex ();
+        final SlotData slotData = tb.getSelectedSlot (trackIndex);
+        if (slotData == null)
+            return;
+
+        // Duplicate the clip in the selected slot
+        tb.getClipLauncherSlots (trackIndex).duplicateClip (slotData.getIndex ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.UP)
             this.model.getProject ().createSceneFromPlayingLauncherClips ();
     }
 }
