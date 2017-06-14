@@ -110,4 +110,20 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
         for (int i = 0; i < 8; i++)
             this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, black);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNote (final int note, final int velocity)
+    {
+        if (this.surface.isDeletePressed ())
+        {
+            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            final SequencerView view = (SequencerView) this.surface.getViewManager ().getView (Views.VIEW_SEQUENCER);
+            view.getClip ().clearRow (this.noteMap[note]);
+            return;
+        }
+
+        super.onGridNote (note, velocity);
+    }
 }

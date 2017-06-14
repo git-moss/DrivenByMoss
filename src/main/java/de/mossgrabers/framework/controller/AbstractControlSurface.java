@@ -402,7 +402,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         {
             case DOWN:
             case LONG:
-                return !this.buttonConsumed[button];
+                return true;
             default:
                 return false;
         }

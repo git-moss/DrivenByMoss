@@ -78,7 +78,7 @@ public class NewCommand<S extends ControlSurface<C>, C extends Configuration> ex
         }
 
         final int index = slot.getIndex ();
-        this.createClip (trackIndex, index);
+        this.model.createClip (trackIndex, index, this.getClipLength ());
         final ClipLauncherSlotBank slots = tb.getClipLauncherSlots (trackIndex);
         if (slotIndex != index)
             slots.select (index);
@@ -88,11 +88,8 @@ public class NewCommand<S extends ControlSurface<C>, C extends Configuration> ex
     }
 
 
-    private void createClip (final int trackIndex, final int slotIndex)
+    protected int getClipLength ()
     {
-        final int quartersPerMeasure = this.model.getQuartersPerMeasure ();
-        final int newCLipLength = this.surface.getConfiguration ().getNewClipLength ();
-        final int beats = (int) (newCLipLength < 2 ? Math.pow (2, newCLipLength) : Math.pow (2, newCLipLength - 2) * quartersPerMeasure);
-        this.model.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).createEmptyClip (slotIndex, beats);
+        return this.surface.getConfiguration ().getNewClipLength ();
     }
 }

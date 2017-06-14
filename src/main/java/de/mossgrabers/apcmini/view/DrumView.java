@@ -45,14 +45,6 @@ public class DrumView extends AbstractDrumView<APCminiControlSurface, APCminiCon
 
     /** {@inheritDoc} */
     @Override
-    protected void playNote (final int note, final int velocity)
-    {
-        this.surface.sendMidiEvent (0x90, note, velocity);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onSelectTrack (final int index, final ButtonEvent event)
     {
         if (event != ButtonEvent.DOWN)

@@ -13,6 +13,7 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.EffectTrackBankProxy;
 import de.mossgrabers.framework.daw.TransportProxy;
 import de.mossgrabers.framework.daw.data.SlotData;
@@ -135,6 +136,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         if (velocity == 0)
             return;
 
+        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
         switch (note)
         {
             // Flip views
@@ -199,22 +201,22 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
             // Device Parameters up/down
             case 24:
-                this.model.getCursorDevice ().previousParameterPage ();
-                this.surface.getDisplay ().notify ("Previous Parameter Page");
+                cursorDevice.previousParameterPage ();
+                this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getSelectedParameterPageName ());
                 break;
             case 25:
-                this.model.getCursorDevice ().nextParameterPage ();
-                this.surface.getDisplay ().notify ("Next Parameter Page");
+                cursorDevice.nextParameterPage ();
+                this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getSelectedParameterPageName ());
                 break;
 
             // Device up/down
             case 32:
-                this.model.getCursorDevice ().selectPrevious ();
-                this.surface.getDisplay ().notify ("Previous Device");
+                cursorDevice.selectPrevious ();
+                this.surface.getDisplay ().notify ("Device: " + cursorDevice.getName ());
                 break;
             case 33:
-                this.model.getCursorDevice ().selectNext ();
-                this.surface.getDisplay ().notify ("Next Device");
+                cursorDevice.selectNext ();
+                this.surface.getDisplay ().notify ("Device: " + cursorDevice.getName ());
                 break;
 
             // Change the scale

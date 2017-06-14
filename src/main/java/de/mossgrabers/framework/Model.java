@@ -360,6 +360,21 @@ public class Model
 
 
     /**
+     * Creates a new clip at the given track and slot index.
+     *
+     * @param trackIndex The index of the track on which to create the clip
+     * @param slotIndex The index of the slot (scene) in which to create the clip
+     * @param newCLipLength The length of the new clip
+     */
+    public void createClip (final int trackIndex, final int slotIndex, final int newCLipLength)
+    {
+        final int quartersPerMeasure = this.getQuartersPerMeasure ();
+        final int beats = (int) (newCLipLength < 2 ? Math.pow (2, newCLipLength) : Math.pow (2, newCLipLength - 2.0) * quartersPerMeasure);
+        this.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).createEmptyClip (slotIndex, beats);
+    }
+
+
+    /**
      * Returns true if session recording is enabled, a clip is recording or overdub is enabled.
      *
      * @return True if recording

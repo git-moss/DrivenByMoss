@@ -52,7 +52,10 @@ public class BrowseCommand extends AbstractTriggerCommand<PushControlSurface, Pu
         }
 
         // Browse for presets
-        browser.browseForPresets ();
+        if (this.model.getCursorDevice ().hasSelectedDevice ())
+            browser.browseForPresets ();
+        else
+            browser.browseToInsertAfterDevice ();
         modeManager.setActiveMode (Modes.MODE_BROWSER);
     }
 }

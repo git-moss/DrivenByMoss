@@ -293,7 +293,7 @@ public class DeviceLayerMode extends BaseMode
         final CursorDeviceProxy cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
-            d.clear ().setBlock (1, 1, "    Please select").setBlock (1, 2, "a Device...    ").clearRow (3).allDone ();
+            d.clear ().setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
             return;
         }
 
@@ -354,7 +354,7 @@ public class DeviceLayerMode extends BaseMode
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         if (!cd.hasSelectedDevice ())
         {
-            message.setMessage (3, "Please select a device...").send ();
+            message.setMessage (3, "Please select a device or press 'Add Device'...").send ();
             return;
         }
 
@@ -362,7 +362,7 @@ public class DeviceLayerMode extends BaseMode
         if (l == null)
         {
             final boolean noLayers = cd.hasLayers () && cd.hasZeroLayers ();
-            message.setMessage (3, "Please " + (noLayers ? "create" : "select") + " a " + (cd.hasDrumPads () ? "Drum Pad..." : "Device Layer...")).send ();
+            message.setMessage (2, "Please " + (noLayers ? "create" : "select") + " a " + (cd.hasDrumPads () ? "Drum Pad..." : "Device Layer...")).send ();
             return;
         }
 

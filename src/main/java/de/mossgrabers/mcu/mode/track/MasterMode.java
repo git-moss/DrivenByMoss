@@ -70,6 +70,14 @@ public class MasterMode extends BaseMode
         final ApplicationProxy application = this.model.getApplication ();
         switch (index)
         {
+            case 0:
+                this.model.getMasterTrack ().resetVolume ();
+                break;
+
+            case 1:
+                this.model.getMasterTrack ().resetPan ();
+                break;
+
             case 2:
             case 3:
             case 4:

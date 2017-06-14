@@ -36,17 +36,15 @@ public class BeatstepMidiInput extends MidiInput
     {
         // Control Mode is expected on channel 3 for Pro
         final NoteInput noteInput;
-        if (this.isPro)
-            noteInput = this.createNoteInputBase ("Control", "82????", "92????", "A2????", "B2????");
-        else
-            noteInput = this.createNoteInputBase ("Beatstep", "80????", "90????", "A0????", "B0????");
+        noteInput = this.createNoteInputBase ("Control", "82????", "92????", "A2????", "B2????");
+
+        // Sequencer 1 is on channel 1
+        final NoteInput seq1Port = this.createNoteInputBase ("Seq. 1", "90????", "80????");
+        seq1Port.setShouldConsumeEvents (false);
 
         // Setup the 2 note sequencers and 1 drum sequencer
         if (this.isPro)
         {
-            // Sequencer 1 is on channel 1
-            final NoteInput seq1Port = this.createNoteInputBase ("Seq. 1", "90????", "80????");
-            seq1Port.setShouldConsumeEvents (false);
             // Sequencer 2 is on channel 2
             final NoteInput seq2Port = this.createNoteInputBase ("Seq. 2", "91????", "81????");
             seq2Port.setShouldConsumeEvents (false);

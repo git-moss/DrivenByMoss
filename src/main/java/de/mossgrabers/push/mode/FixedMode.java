@@ -6,6 +6,7 @@ package de.mossgrabers.push.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.command.trigger.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -49,6 +50,17 @@ public class FixedMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
+    public void onSecondRow (final int index, final ButtonEvent event)
+    {
+        if (event != ButtonEvent.UP)
+            return;
+        new TemporaryNewCommand<> (index, this.model, this.surface).execute (ButtonEvent.DOWN);
+        this.surface.getModeManager ().restoreMode ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void updateFirstRow ()
     {
         final ColorManager colorManager = this.model.getColorManager ();
@@ -60,13 +72,27 @@ public class FixedMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
+    public void updateSecondRow ()
+    {
+        final ColorManager colorManager = this.model.getColorManager ();
+        for (int i = 0; i < 8; i++)
+            this.surface.updateButton (102 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_ON));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
+        d.clear ().setBlock (1, 0, "Create Clip (leng").setBlock (1, 1, "th not stored):");
         final int newClipLength = this.surface.getConfiguration ().getNewClipLength ();
-        d.clear ().setBlock (1, 0, "New Clip Length:");
+        d.setBlock (2, 0, "New Clip Length:");
         for (int i = 0; i < 8; i++)
+        {
+            d.setCell (0, i, AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i]);
             d.setCell (3, i, (newClipLength == i ? PushDisplay.RIGHT_ARROW : "") + AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i]);
+        }
         d.allDone ();
     }
 
@@ -78,7 +104,7 @@ public class FixedMode extends BaseMode
         final int newClipLength = this.surface.getConfiguration ().getNewClipLength ();
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         for (int i = 0; i < 8; i++)
-            message.addOptionElement ("", "", false, i == 0 ? "New Clip Length" : "", AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i], newClipLength == i, false);
+            message.addOptionElement (i == 0 ? "Create Clip (length not stored)" : "", AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i], false, i == 0 ? "New Clip Length" : "", AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i], newClipLength == i, false);
         message.send ();
     }
 }

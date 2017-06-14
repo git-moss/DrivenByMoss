@@ -436,7 +436,7 @@ public class DrumView64 extends AbstractView<PushControlSurface, PushConfigurati
         this.noteMap = Scales.getEmptyMatrix ();
         for (int i = 0; i < 64; i++)
         {
-            final int n = matrix[i] == -1 ? -1 : matrix[i] + DrumView64.DRUM_START_KEY + this.drumOctave * 64;
+            final int n = matrix[i] == -1 ? -1 : matrix[i] + DrumView64.DRUM_START_KEY + this.drumOctave * 16;
             this.noteMap[DrumView64.DRUM_START_KEY + i] = n < 0 || n > 127 ? -1 : n;
         }
         return this.noteMap;
