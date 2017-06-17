@@ -49,8 +49,8 @@ public class BeatstepPadGrid extends PadGridImpl
         final int pad = n < this.columns ? BeatstepControlSurface.BEATSTEP_PAD_9 + n : BeatstepControlSurface.BEATSTEP_PAD_1 + n - this.columns;
         final String data = BeatstepControlSurface.SYSEX_HEADER + MidiOutput.toHexStr (new int []
         {
-                pad,
-                color
+            pad,
+            color
         }) + BeatstepControlSurface.SYSEX_END;
         this.output.sendSysex (data);
     }

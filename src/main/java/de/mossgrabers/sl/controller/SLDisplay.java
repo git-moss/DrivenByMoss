@@ -24,16 +24,16 @@ public class SLDisplay extends AbstractDisplay
 
     private static final String [] SPACES      =
     {
-            "",
-            " ",
-            "  ",
-            "   ",
-            "    ",
-            "     ",
-            "      ",
-            "       ",
-            "        ",
-            "         "
+        "",
+        " ",
+        "  ",
+        "   ",
+        "    ",
+        "     ",
+        "      ",
+        "       ",
+        "        ",
+        "         "
     };
 
 

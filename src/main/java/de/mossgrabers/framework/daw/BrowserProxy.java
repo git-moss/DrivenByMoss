@@ -62,14 +62,14 @@ public class BrowserProxy
 
         this.filterColumns = new BrowserFilterColumn []
         {
-                this.browser.smartCollectionColumn (),
-                this.browser.locationColumn (),
-                this.browser.fileTypeColumn (),
-                this.browser.categoryColumn (),
-                this.browser.tagColumn (),
-                this.browser.creatorColumn (),
-                this.browser.deviceTypeColumn (),
-                this.browser.deviceColumn ()
+            this.browser.smartCollectionColumn (),
+            this.browser.locationColumn (),
+            this.browser.fileTypeColumn (),
+            this.browser.categoryColumn (),
+            this.browser.tagColumn (),
+            this.browser.creatorColumn (),
+            this.browser.deviceTypeColumn (),
+            this.browser.deviceColumn ()
         };
 
         this.columnData = this.createFilterColumns (this.filterColumns.length, numFilterColumnEntries);

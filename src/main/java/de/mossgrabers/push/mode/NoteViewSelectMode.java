@@ -27,27 +27,27 @@ public class NoteViewSelectMode extends BaseMode
     /** The views to choose from. */
     private static final Integer [] VIEWS     =
     {
-            Views.VIEW_PLAY,
-            Views.VIEW_PIANO,
-            Views.VIEW_SEQUENCER,
-            Views.VIEW_RAINDROPS,
-            Views.VIEW_DRUM,
-            Views.VIEW_DRUM4,
-            Views.VIEW_DRUM8,
-            Views.VIEW_DRUM64
+        Views.VIEW_PLAY,
+        Views.VIEW_PIANO,
+        Views.VIEW_SEQUENCER,
+        Views.VIEW_RAINDROPS,
+        Views.VIEW_DRUM,
+        Views.VIEW_DRUM4,
+        Views.VIEW_DRUM8,
+        Views.VIEW_DRUM64
     };
 
     /** More views to choose from. */
     private static final Integer [] VIEWS_TOP =
     {
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            Views.VIEW_CLIP,
-            Views.VIEW_PRG_CHANGE
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        Views.VIEW_CLIP,
+        Views.VIEW_PRG_CHANGE
     };
 
 

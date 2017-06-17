@@ -32,12 +32,12 @@ public abstract class AbstractMode<S extends ControlSurface<C>, C extends Config
 
     private static final char [] REMOVABLE_CHARS  =
     {
-            ' ',
-            'e',
-            'a',
-            'u',
-            'i',
-            'o'
+        ' ',
+        'e',
+        'a',
+        'u',
+        'i',
+        'o'
     };
 
     protected S                  surface;

@@ -36,9 +36,9 @@ public class PushMidiInput extends MidiInput
     {
         return this.createNoteInputBase (this.inputName, new String []
         {
-                "80????", // Note off
-                "90????", // Note on
-                "B040??" // Sustainpedal
+            "80????", // Note off
+            "90????", // Note on
+            "B040??" // Sustainpedal
         });
     }
 }

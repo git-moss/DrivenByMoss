@@ -43,28 +43,28 @@ public class MCUConfiguration extends AbstractConfiguration
 
     private static final String [] DEVICE_OPTIONS              = new String []
     {
-            DEVICE_SELECT,
-            DEVICE_ICON_PLATFORM_M,
-            DEVICE_ICON_QCON_PRO_X,
-            DEVICE_MACKIE_MCU_PRO,
-            DEVICE_ZOOM_R16
+        DEVICE_SELECT,
+        DEVICE_ICON_PLATFORM_M,
+        DEVICE_ICON_QCON_PRO_X,
+        DEVICE_MACKIE_MCU_PRO,
+        DEVICE_ZOOM_R16
     };
 
     private static final String [] ASSIGNABLE_BUTTON_NAMES     = new String []
     {
-            "Footswitch 1",
-            "Footswitch 2",
-            "F1",
-            "F2",
-            "F3",
-            "F4",
-            "F5"
+        "Footswitch 1",
+        "Footswitch 2",
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5"
     };
 
     private static final String [] TEMPO_OR_TICKS_OPTIONS      = new String []
     {
-            "Ticks",
-            "Tempo"
+        "Ticks",
+        "Tempo"
     };
 
     private SettableEnumValue      zoomStateSetting;

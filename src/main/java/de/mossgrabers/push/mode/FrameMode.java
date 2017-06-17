@@ -33,69 +33,69 @@ public class FrameMode extends BaseMode
 
     private static final String [] LAYOUTS1      =
     {
-            "Layouts",
-            "",
-            "",
-            "Panels",
-            "",
-            "",
-            "",
-            ""
+        "Layouts",
+        "",
+        "",
+        "Panels",
+        "",
+        "",
+        "",
+        ""
     };
     private static final String [] LAYOUTS2      =
     {
-            "Arrange",
-            "Mix",
-            "Edit",
-            "Notes",
-            "Automate",
-            "Device",
-            "Mixer",
-            "Inspector"
+        "Arrange",
+        "Mix",
+        "Edit",
+        "Notes",
+        "Automate",
+        "Device",
+        "Mixer",
+        "Inspector"
     };
     private static final String [] ARRANGER1     =
     {
-            "Arranger",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
+        "Arranger",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
     };
     private static final String [] ARRANGER2     =
     {
-            "Clip Launcher",
-            "I/O",
-            "Markers",
-            "Timeline",
-            "FX Tracks",
-            "Follow",
-            "Track Height",
-            "Fullscreen"
+        "Clip Launcher",
+        "I/O",
+        "Markers",
+        "Timeline",
+        "FX Tracks",
+        "Follow",
+        "Track Height",
+        "Fullscreen"
     };
     private static final String [] MIXER1        =
     {
-            "Mixer",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
+        "Mixer",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
     };
     private static final String [] MIXER2        =
     {
-            "Clip Launcher",
-            "I/O",
-            "Crossfader",
-            "Device",
-            "Meters",
-            "Sends",
-            "",
-            "Fullscreen"
+        "Clip Launcher",
+        "I/O",
+        "Crossfader",
+        "Device",
+        "Meters",
+        "Sends",
+        "",
+        "Fullscreen"
     };
 
 

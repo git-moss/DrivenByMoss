@@ -183,9 +183,9 @@ public class EmptyTrackData extends TrackData
     {
         return new double []
         {
-                0.0,
-                0.0,
-                0.0
+            0.0,
+            0.0,
+            0.0
         };
     }
 

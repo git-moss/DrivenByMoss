@@ -48,14 +48,14 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
         final int greenSpring = isPush2 ? PushColors.PUSH2_COLOR2_GREEN_SPRING : PushColors.PUSH1_COLOR2_GREEN_SPRING;
         this.greens = new int []
         {
-                greenHi,
-                green,
-                greenLo,
-                greenSpring,
-                greenHi,
-                green,
-                greenLo,
-                greenSpring
+            greenHi,
+            green,
+            greenLo,
+            greenSpring,
+            greenHi,
+            green,
+            greenLo,
+            greenSpring
         };
 
         final int yellowHi = isPush2 ? PushColors.PUSH2_COLOR2_YELLOW_HI : PushColors.PUSH1_COLOR2_YELLOW_HI;
@@ -64,14 +64,14 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
         final int yellowLime = isPush2 ? PushColors.PUSH2_COLOR2_YELLOW_LIME : PushColors.PUSH1_COLOR2_YELLOW_LIME;
         this.yellows = new int []
         {
-                yellowHi,
-                yellow,
-                yellowLo,
-                yellowLime,
-                yellowHi,
-                yellow,
-                yellowLo,
-                yellowLime
+            yellowHi,
+            yellow,
+            yellowLo,
+            yellowLime,
+            yellowHi,
+            yellow,
+            yellowLo,
+            yellowLime
         };
     }
 

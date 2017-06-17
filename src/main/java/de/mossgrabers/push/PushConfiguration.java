@@ -103,11 +103,11 @@ public class PushConfiguration extends AbstractConfiguration
 
     private static final String [] RIBBON_MODE_VALUES              =
     {
-            "Pitch",
-            "CC",
-            "CC/Pitch",
-            "Pitch/CC",
-            "Fader"
+        "Pitch",
+        "CC",
+        "CC/Pitch",
+        "Pitch/CC",
+        "Fader"
     };
 
 

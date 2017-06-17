@@ -76,22 +76,22 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
 
     private static final int [] BEATSTEP_BUTTONS_ALL =
     {
-            BEATSTEP_PRO_STEP1,
-            BEATSTEP_PRO_STEP2,
-            BEATSTEP_PRO_STEP3,
-            BEATSTEP_PRO_STEP4,
-            BEATSTEP_PRO_STEP5,
-            BEATSTEP_PRO_STEP6,
-            BEATSTEP_PRO_STEP7,
-            BEATSTEP_PRO_STEP8,
-            BEATSTEP_PRO_STEP9,
-            BEATSTEP_PRO_STEP10,
-            BEATSTEP_PRO_STEP11,
-            BEATSTEP_PRO_STEP12,
-            BEATSTEP_PRO_STEP13,
-            BEATSTEP_PRO_STEP14,
-            BEATSTEP_PRO_STEP15,
-            BEATSTEP_PRO_STEP16
+        BEATSTEP_PRO_STEP1,
+        BEATSTEP_PRO_STEP2,
+        BEATSTEP_PRO_STEP3,
+        BEATSTEP_PRO_STEP4,
+        BEATSTEP_PRO_STEP5,
+        BEATSTEP_PRO_STEP6,
+        BEATSTEP_PRO_STEP7,
+        BEATSTEP_PRO_STEP8,
+        BEATSTEP_PRO_STEP9,
+        BEATSTEP_PRO_STEP10,
+        BEATSTEP_PRO_STEP11,
+        BEATSTEP_PRO_STEP12,
+        BEATSTEP_PRO_STEP13,
+        BEATSTEP_PRO_STEP14,
+        BEATSTEP_PRO_STEP15,
+        BEATSTEP_PRO_STEP16
     };
 
     static final String         SYSEX_HEADER         = "F0 00 20 6B 7F 42 02 00 10 ";

@@ -26,81 +26,81 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     private static final int        PUSH1_IDENTITY_MIN_LENGTH = 35;
     private static final int []     PUSH1_ID                  = new int []
     {
-            0xF0,
-            0x7E,
-            0x00,
-            0x06,
-            0x02,
-            0x47,
-            0x15
+        0xF0,
+        0x7E,
+        0x00,
+        0x06,
+        0x02,
+        0x47,
+        0x15
     };
 
     private static final int        PUSH2_IDENTITY_MIN_LENGTH = 21;
     private static final int []     PUSH2_ID                  = new int []
     {
-            0xF0,
-            0x7E,
-            0x01,
-            0x06,
-            0x02,
-            0x00
+        0xF0,
+        0x7E,
+        0x01,
+        0x06,
+        0x02,
+        0x00
     };
 
     /** The names for the dynamic curves. */
     public static final String []   PUSH_PAD_CURVES_NAME      =
     {
-            "Linear",
-            "Log 1 (Default)",
-            "Log 2",
-            "Log 3",
-            "Log 4",
-            "Log 5"
+        "Linear",
+        "Log 1 (Default)",
+        "Log 2",
+        "Log 3",
+        "Log 4",
+        "Log 5"
     };
 
     /** The names for the pad thresholds. */
     public static final String []   PUSH_PAD_THRESHOLDS_NAME  =
     {
-            "-20",
-            "-19",
-            "-18",
-            "-17",
-            "-16",
-            "-15",
-            "-14",
-            "-13",
-            "-12",
-            "-11",
-            "-10",
-            "-9",
-            "-8",
-            "-7",
-            "-6",
-            "-5",
-            "-4",
-            "-3",
-            "-2",
-            "-1",
-            "0 (Default)",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20"
+        "-20",
+        "-19",
+        "-18",
+        "-17",
+        "-16",
+        "-15",
+        "-14",
+        "-13",
+        "-12",
+        "-11",
+        "-10",
+        "-9",
+        "-8",
+        "-7",
+        "-6",
+        "-5",
+        "-4",
+        "-3",
+        "-2",
+        "-1",
+        "0 (Default)",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20"
     };
 
     /** The tap button. */
@@ -289,73 +289,73 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
     private static final int []     PUSH_BUTTONS_ALL          =
     {
-            PUSH_BUTTON_TAP,
-            PUSH_BUTTON_METRONOME,
-            PUSH_BUTTON_MASTER,
-            PUSH_BUTTON_CLIP_STOP,
-            PUSH_BUTTON_LEFT,
-            PUSH_BUTTON_RIGHT,
-            PUSH_BUTTON_UP,
-            PUSH_BUTTON_DOWN,
-            PUSH_BUTTON_SELECT,
-            PUSH_BUTTON_SHIFT,
-            PUSH_BUTTON_NOTE,
-            PUSH_BUTTON_SESSION,
-            PUSH_BUTTON_ADD_EFFECT,
-            PUSH_BUTTON_ADD_TRACK,
-            PUSH_BUTTON_OCTAVE_DOWN,
-            PUSH_BUTTON_OCTAVE_UP,
-            PUSH_BUTTON_REPEAT,
-            PUSH_BUTTON_ACCENT,
-            PUSH_BUTTON_SCALES,
-            PUSH_BUTTON_USER_MODE,
-            PUSH_BUTTON_MUTE,
-            PUSH_BUTTON_SOLO,
-            PUSH_BUTTON_DEVICE_LEFT,
-            PUSH_BUTTON_DEVICE_RIGHT,
-            PUSH_BUTTON_PLAY,
-            PUSH_BUTTON_RECORD,
-            PUSH_BUTTON_NEW,
-            PUSH_BUTTON_DUPLICATE,
-            PUSH_BUTTON_AUTOMATION,
-            PUSH_BUTTON_FIXED_LENGTH,
-            PUSH_BUTTON_DEVICE,
-            PUSH_BUTTON_BROWSE,
-            PUSH_BUTTON_TRACK,
-            PUSH_BUTTON_CLIP,
-            PUSH_BUTTON_VOLUME,
-            PUSH_BUTTON_PAN_SEND,
-            PUSH_BUTTON_QUANTIZE,
-            PUSH_BUTTON_DOUBLE,
-            PUSH_BUTTON_DELETE,
-            PUSH_BUTTON_UNDO,
-            PUSH_BUTTON_SETUP,
-            PUSH_BUTTON_LAYOUT,
-            PUSH_BUTTON_CONVERT,
-            PUSH_BUTTON_SCENE1,
-            PUSH_BUTTON_SCENE2,
-            PUSH_BUTTON_SCENE3,
-            PUSH_BUTTON_SCENE4,
-            PUSH_BUTTON_SCENE5,
-            PUSH_BUTTON_SCENE6,
-            PUSH_BUTTON_SCENE7,
-            PUSH_BUTTON_SCENE8,
-            PUSH_BUTTON_ROW1_1,
-            PUSH_BUTTON_ROW1_2,
-            PUSH_BUTTON_ROW1_3,
-            PUSH_BUTTON_ROW1_4,
-            PUSH_BUTTON_ROW1_5,
-            PUSH_BUTTON_ROW1_6,
-            PUSH_BUTTON_ROW1_7,
-            PUSH_BUTTON_ROW1_8,
-            PUSH_BUTTON_ROW2_1,
-            PUSH_BUTTON_ROW2_2,
-            PUSH_BUTTON_ROW2_3,
-            PUSH_BUTTON_ROW2_4,
-            PUSH_BUTTON_ROW2_5,
-            PUSH_BUTTON_ROW2_6,
-            PUSH_BUTTON_ROW2_7,
-            PUSH_BUTTON_ROW2_8
+        PUSH_BUTTON_TAP,
+        PUSH_BUTTON_METRONOME,
+        PUSH_BUTTON_MASTER,
+        PUSH_BUTTON_CLIP_STOP,
+        PUSH_BUTTON_LEFT,
+        PUSH_BUTTON_RIGHT,
+        PUSH_BUTTON_UP,
+        PUSH_BUTTON_DOWN,
+        PUSH_BUTTON_SELECT,
+        PUSH_BUTTON_SHIFT,
+        PUSH_BUTTON_NOTE,
+        PUSH_BUTTON_SESSION,
+        PUSH_BUTTON_ADD_EFFECT,
+        PUSH_BUTTON_ADD_TRACK,
+        PUSH_BUTTON_OCTAVE_DOWN,
+        PUSH_BUTTON_OCTAVE_UP,
+        PUSH_BUTTON_REPEAT,
+        PUSH_BUTTON_ACCENT,
+        PUSH_BUTTON_SCALES,
+        PUSH_BUTTON_USER_MODE,
+        PUSH_BUTTON_MUTE,
+        PUSH_BUTTON_SOLO,
+        PUSH_BUTTON_DEVICE_LEFT,
+        PUSH_BUTTON_DEVICE_RIGHT,
+        PUSH_BUTTON_PLAY,
+        PUSH_BUTTON_RECORD,
+        PUSH_BUTTON_NEW,
+        PUSH_BUTTON_DUPLICATE,
+        PUSH_BUTTON_AUTOMATION,
+        PUSH_BUTTON_FIXED_LENGTH,
+        PUSH_BUTTON_DEVICE,
+        PUSH_BUTTON_BROWSE,
+        PUSH_BUTTON_TRACK,
+        PUSH_BUTTON_CLIP,
+        PUSH_BUTTON_VOLUME,
+        PUSH_BUTTON_PAN_SEND,
+        PUSH_BUTTON_QUANTIZE,
+        PUSH_BUTTON_DOUBLE,
+        PUSH_BUTTON_DELETE,
+        PUSH_BUTTON_UNDO,
+        PUSH_BUTTON_SETUP,
+        PUSH_BUTTON_LAYOUT,
+        PUSH_BUTTON_CONVERT,
+        PUSH_BUTTON_SCENE1,
+        PUSH_BUTTON_SCENE2,
+        PUSH_BUTTON_SCENE3,
+        PUSH_BUTTON_SCENE4,
+        PUSH_BUTTON_SCENE5,
+        PUSH_BUTTON_SCENE6,
+        PUSH_BUTTON_SCENE7,
+        PUSH_BUTTON_SCENE8,
+        PUSH_BUTTON_ROW1_1,
+        PUSH_BUTTON_ROW1_2,
+        PUSH_BUTTON_ROW1_3,
+        PUSH_BUTTON_ROW1_4,
+        PUSH_BUTTON_ROW1_5,
+        PUSH_BUTTON_ROW1_6,
+        PUSH_BUTTON_ROW1_7,
+        PUSH_BUTTON_ROW1_8,
+        PUSH_BUTTON_ROW2_1,
+        PUSH_BUTTON_ROW2_2,
+        PUSH_BUTTON_ROW2_3,
+        PUSH_BUTTON_ROW2_4,
+        PUSH_BUTTON_ROW2_5,
+        PUSH_BUTTON_ROW2_6,
+        PUSH_BUTTON_ROW2_7,
+        PUSH_BUTTON_ROW2_8
     };
 
     private static final boolean [] PUSH_BUTTON_UPDATE;
@@ -393,157 +393,157 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
     private static final String [] PUSH_PAD_CURVES_DATA          =
     {
-            "00 00 00 01 08 06 0A 00 00 00 00 00 0A 0F 0C 08 00 00 00 00 00 00 00 00",
-            "00 00 00 01 04 0C 00 08 00 00 00 01 0D 04 0C 00 00 00 00 00 0E 0A 06 00",
-            "00 00 00 01 04 0C 00 08 00 00 00 01 0D 04 0C 00 00 00 00 00 0C 03 05 00",
-            "00 00 00 01 08 06 0A 00 00 00 00 01 0D 04 0C 00 00 00 00 00 0C 03 05 00",
-            "00 00 00 01 0F 0B 0D 00 00 00 00 01 0D 04 0C 00 00 00 00 00 0C 03 05 00",
-            "00 00 00 02 02 02 0E 00 00 00 00 01 0D 04 0C 00 00 00 00 00 00 00 00 00"
+        "00 00 00 01 08 06 0A 00 00 00 00 00 0A 0F 0C 08 00 00 00 00 00 00 00 00",
+        "00 00 00 01 04 0C 00 08 00 00 00 01 0D 04 0C 00 00 00 00 00 0E 0A 06 00",
+        "00 00 00 01 04 0C 00 08 00 00 00 01 0D 04 0C 00 00 00 00 00 0C 03 05 00",
+        "00 00 00 01 08 06 0A 00 00 00 00 01 0D 04 0C 00 00 00 00 00 0C 03 05 00",
+        "00 00 00 01 0F 0B 0D 00 00 00 00 01 0D 04 0C 00 00 00 00 00 0C 03 05 00",
+        "00 00 00 02 02 02 0E 00 00 00 00 01 0D 04 0C 00 00 00 00 00 00 00 00 00"
     };
 
     private static final String [] PUSH_PAD_THRESHOLDS_DATA      =
     {
-            // 4 Byte: peak_sampling_time, 4 Byte: aftertouch_gate_time
-            "00 00 00 0A 00 00 00 0A",
-            "00 00 01 03 00 00 01 04",
-            "00 00 01 0C 00 00 01 0E",
-            "00 00 02 05 00 00 02 08",
-            "00 00 02 0E 00 00 03 02",
-            "00 00 03 07 00 00 03 0C",
-            "00 00 04 00 00 00 04 06",
-            "00 00 04 09 00 00 05 00",
-            "00 00 05 02 00 00 05 0A",
-            "00 00 05 0B 00 00 06 04",
-            "00 00 06 04 00 00 06 0E",
-            "00 00 06 0D 00 00 07 08",
-            "00 00 07 06 00 00 08 02",
-            "00 00 07 0F 00 00 08 0C",
-            "00 00 08 08 00 00 09 06",
-            "00 00 09 01 00 00 0A 00",
-            "00 00 09 0A 00 00 0A 0A",
-            "00 00 0A 03 00 00 0B 04",
-            "00 00 0A 0C 00 00 0B 0E",
-            "00 00 0B 05 00 00 0C 08",
-            "00 00 0B 0E 00 00 0D 02",
-            "00 00 0C 07 00 00 0D 0C",
-            "00 00 0D 00 00 00 0E 06",
-            "00 00 0D 08 00 00 0E 0F",
-            "00 00 0E 02 00 00 0F 0A",
-            "00 00 0E 0B 00 01 00 04",
-            "00 00 0F 04 00 01 00 0E",
-            "00 00 0F 0D 00 01 01 08",
-            "00 01 00 06 00 01 02 02",
-            "00 01 00 0F 00 01 02 0C",
-            "00 01 01 08 00 01 03 06",
-            "00 01 02 01 00 01 04 00",
-            "00 01 02 0A 00 01 04 0A",
-            "00 01 03 03 00 01 05 04",
-            "00 01 03 0C 00 01 05 0E",
-            "00 01 04 05 00 01 06 08",
-            "00 01 04 0E 00 01 07 02",
-            "00 01 05 07 00 01 07 0C",
-            "00 01 06 00 00 01 08 06",
-            "00 01 06 09 00 01 09 00",
-            "00 01 07 02 00 01 09 0A"
+        // 4 Byte: peak_sampling_time, 4 Byte: aftertouch_gate_time
+        "00 00 00 0A 00 00 00 0A",
+        "00 00 01 03 00 00 01 04",
+        "00 00 01 0C 00 00 01 0E",
+        "00 00 02 05 00 00 02 08",
+        "00 00 02 0E 00 00 03 02",
+        "00 00 03 07 00 00 03 0C",
+        "00 00 04 00 00 00 04 06",
+        "00 00 04 09 00 00 05 00",
+        "00 00 05 02 00 00 05 0A",
+        "00 00 05 0B 00 00 06 04",
+        "00 00 06 04 00 00 06 0E",
+        "00 00 06 0D 00 00 07 08",
+        "00 00 07 06 00 00 08 02",
+        "00 00 07 0F 00 00 08 0C",
+        "00 00 08 08 00 00 09 06",
+        "00 00 09 01 00 00 0A 00",
+        "00 00 09 0A 00 00 0A 0A",
+        "00 00 0A 03 00 00 0B 04",
+        "00 00 0A 0C 00 00 0B 0E",
+        "00 00 0B 05 00 00 0C 08",
+        "00 00 0B 0E 00 00 0D 02",
+        "00 00 0C 07 00 00 0D 0C",
+        "00 00 0D 00 00 00 0E 06",
+        "00 00 0D 08 00 00 0E 0F",
+        "00 00 0E 02 00 00 0F 0A",
+        "00 00 0E 0B 00 01 00 04",
+        "00 00 0F 04 00 01 00 0E",
+        "00 00 0F 0D 00 01 01 08",
+        "00 01 00 06 00 01 02 02",
+        "00 01 00 0F 00 01 02 0C",
+        "00 01 01 08 00 01 03 06",
+        "00 01 02 01 00 01 04 00",
+        "00 01 02 0A 00 01 04 0A",
+        "00 01 03 03 00 01 05 04",
+        "00 01 03 0C 00 01 05 0E",
+        "00 01 04 05 00 01 06 08",
+        "00 01 04 0E 00 01 07 02",
+        "00 01 05 07 00 01 07 0C",
+        "00 01 06 00 00 01 08 06",
+        "00 01 06 09 00 01 09 00",
+        "00 01 07 02 00 01 09 0A"
     };
 
     private static final int []    MAXW                          =
     {
-            1700,
-            1660,
-            1590,
-            1510,
-            1420,
-            1300,
-            1170,
-            1030,
-            860,
-            640,
-            400
+        1700,
+        1660,
+        1590,
+        1510,
+        1420,
+        1300,
+        1170,
+        1030,
+        860,
+        640,
+        400
     };
     private static final int []    PUSH2_CPMIN                   =
     {
-            1650,
-            1580,
-            1500,
-            1410,
-            1320,
-            1220,
-            1110,
-            1000,
-            900,
-            800,
-            700
+        1650,
+        1580,
+        1500,
+        1410,
+        1320,
+        1220,
+        1110,
+        1000,
+        900,
+        800,
+        700
     };
     private static final int []    PUSH2_CPMAX                   =
     {
-            2050,
-            1950,
-            1850,
-            1750,
-            1650,
-            1570,
-            1490,
-            1400,
-            1320,
-            1240,
-            1180
+        2050,
+        1950,
+        1850,
+        1750,
+        1650,
+        1570,
+        1490,
+        1400,
+        1320,
+        1240,
+        1180
     };
     private static final double [] GAMMA                         =
     {
-            0.7,
-            0.64,
-            0.58,
-            0.54,
-            0.5,
-            0.46,
-            0.43,
-            0.4,
-            0.36,
-            0.32,
-            0.25
+        0.7,
+        0.64,
+        0.58,
+        0.54,
+        0.5,
+        0.46,
+        0.43,
+        0.4,
+        0.36,
+        0.32,
+        0.25
     };
     private static final int []    MINV                          =
     {
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            3,
-            6,
-            12,
-            24,
-            36
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        6,
+        12,
+        24,
+        36
     };
     private static final int []    MAXV                          =
     {
-            96,
-            102,
-            116,
-            121,
-            124,
-            127,
-            127,
-            127,
-            127,
-            127,
-            127
+        96,
+        102,
+        116,
+        121,
+        124,
+        127,
+        127,
+        127,
+        127,
+        127,
+        127
     };
     private static final int []    ALPHA                         =
     {
-            90,
-            70,
-            54,
-            40,
-            28,
-            20,
-            10,
-            -5,
-            -25,
-            -55,
-            -90
+        90,
+        70,
+        54,
+        40,
+        28,
+        20,
+        10,
+        -5,
+        -25,
+        -55,
+        -90
     };
 
     private static final int       PAD_VELOCITY_CURVE_CHUNK_SIZE = 16;
@@ -676,8 +676,8 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             }
             this.sendPush2SysEx (new int []
             {
-                    23,
-                    status
+                23,
+                status
             });
         }
         else
@@ -791,15 +791,15 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             if (xt >= x)
                 return new double []
                 {
-                        s3 * p0y + 3 * tl * s2 * p1y + 3 * t2 * s * p2y + t3 * p3y,
-                        tl
+                    s3 * p0y + 3 * tl * s2 * p1y + 3 * t2 * s * p2y + t3 * p3y,
+                    tl
                 };
             tl += 0.0001;
         }
         return new double []
         {
-                1.0,
-                tl
+            1.0,
+            tl
         };
     }
 
@@ -811,10 +811,10 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         final double r = 0.4;
         return new double []
         {
-                0.5 + r * Math.cos (a1),
-                0.5 + r * Math.sin (a1),
-                0.5 + r * Math.cos (a2),
-                0.5 + r * Math.sin (a2)
+            0.5 + r * Math.cos (a1),
+            0.5 + r * Math.sin (a1),
+            0.5 + r * Math.cos (a2),
+            0.5 + r * Math.sin (a2)
         };
     }
 
@@ -856,9 +856,9 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         final int brightness = this.configuration.getDisplayBrightness () * 255 / 100;
         this.sendPush2SysEx (new int []
         {
-                8,
-                brightness & 127,
-                brightness >> 7 & 1
+            8,
+            brightness & 127,
+            brightness >> 7 & 1
         });
     }
 
@@ -871,8 +871,8 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         final int brightness = this.configuration.getLedBrightness () * 127 / 100;
         this.sendPush2SysEx (new int []
         {
-                6,
-                brightness
+            6,
+            brightness
         });
     }
 
@@ -886,8 +886,8 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     {
         this.sendPush2SysEx (new int []
         {
-                30,
-                mode
+            30,
+            mode
         });
     }
 

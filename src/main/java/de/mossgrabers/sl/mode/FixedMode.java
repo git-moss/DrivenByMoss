@@ -22,14 +22,14 @@ public class FixedMode extends AbstractMode<SLControlSurface, SLConfiguration>
 {
     private static final String [] CLIP_LENGTHS =
     {
-            "1 Beat",
-            "2 Beats",
-            "1 Bar",
-            "2 Bars",
-            "4 Bars",
-            "8 Bars",
-            "16 Bars",
-            "32 Bars"
+        "1 Beat",
+        "2 Beats",
+        "1 Bar",
+        "2 Bars",
+        "4 Bars",
+        "8 Bars",
+        "16 Bars",
+        "32 Bars"
     };
 
 

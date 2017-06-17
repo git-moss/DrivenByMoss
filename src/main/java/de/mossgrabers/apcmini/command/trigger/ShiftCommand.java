@@ -37,7 +37,7 @@ public class ShiftCommand extends AbstractTriggerCommand<APCminiControlSurface, 
     public void execute (final ButtonEvent event)
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.DOWN && !viewManager.isActiveView (Views.VIEW_SHIFT))
             viewManager.setActiveView (Views.VIEW_SHIFT);
         else if (event == ButtonEvent.UP && viewManager.isActiveView (Views.VIEW_SHIFT))
             viewManager.restoreView ();

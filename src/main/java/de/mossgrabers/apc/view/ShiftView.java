@@ -28,22 +28,22 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
 {
     private static final int [] TRANSLATE =
     {
-            0,
-            2,
-            4,
-            6,
-            1,
-            3,
-            5,
-            -1,
-            -1,
-            10,
-            8,
-            -1,
-            11,
-            9,
-            7,
-            -1
+        0,
+        2,
+        4,
+        6,
+        1,
+        3,
+        5,
+        -1,
+        -1,
+        10,
+        8,
+        -1,
+        11,
+        9,
+        7,
+        -1
     };
 
 

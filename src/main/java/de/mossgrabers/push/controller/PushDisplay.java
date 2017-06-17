@@ -33,42 +33,42 @@ public class PushDisplay extends AbstractDisplay
 
     private static final String [] SPACES        =
     {
-            "",
-            " ",
-            "  ",
-            "   ",
-            "    ",
-            "     ",
-            "      ",
-            "       ",
-            "        ",
-            "         ",
-            "          ",
-            "           ",
-            "            ",
-            "             "
+        "",
+        " ",
+        "  ",
+        "   ",
+        "    ",
+        "     ",
+        "      ",
+        "       ",
+        "        ",
+        "         ",
+        "          ",
+        "           ",
+        "            ",
+        "             "
     };
 
     private static final String [] DASHES        =
     {
-            "",
-            BARS_NON,
-            BARS_NON + BARS_NON,
-            BARS_NON + BARS_NON + BARS_NON,
-            BARS_NON + BARS_NON + BARS_NON + BARS_NON,
-            BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
-            BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
-            BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
-            BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
-            BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON
+        "",
+        BARS_NON,
+        BARS_NON + BARS_NON,
+        BARS_NON + BARS_NON + BARS_NON,
+        BARS_NON + BARS_NON + BARS_NON + BARS_NON,
+        BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
+        BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
+        BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
+        BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
+        BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON
     };
 
     private static final String [] SYSEX_MESSAGE =
     {
-            "F0 47 7F 15 18 00 45 00 ",
-            "F0 47 7F 15 19 00 45 00 ",
-            "F0 47 7F 15 1A 00 45 00 ",
-            "F0 47 7F 15 1B 00 45 00 "
+        "F0 47 7F 15 18 00 45 00 ",
+        "F0 47 7F 15 19 00 45 00 ",
+        "F0 47 7F 15 1A 00 45 00 ",
+        "F0 47 7F 15 1B 00 45 00 "
     };
 
     private int                    maxParameterValue;

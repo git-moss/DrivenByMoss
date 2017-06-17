@@ -24,17 +24,17 @@ public class TransportProxy
     /** The names for automation modes. */
     public static final String [] AUTOMATION_MODES        =
     {
-            "Latch",
-            "Touch",
-            "Write"
+        "Latch",
+        "Touch",
+        "Write"
     };
 
     /** The names for automation modes values. */
     public static final String [] AUTOMATION_MODES_VALUES =
     {
-            "latch",
-            "touch",
-            "write"
+        "latch",
+        "touch",
+        "write"
     };
 
     /** No preroll. */

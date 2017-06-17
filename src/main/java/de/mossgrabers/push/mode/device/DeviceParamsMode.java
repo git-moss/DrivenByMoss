@@ -32,14 +32,14 @@ public class DeviceParamsMode extends BaseMode
 {
     private static final String [] MENU =
     {
-            "On",
-            null,
-            null,
-            null,
-            null,
-            "Expanded",
-            "Parameters",
-            "Window"
+        "On",
+        null,
+        null,
+        null,
+        null,
+        "Expanded",
+        "Parameters",
+        "Window"
     };
 
     private boolean                showDevices;

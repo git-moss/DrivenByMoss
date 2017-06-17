@@ -32,14 +32,14 @@ public abstract class AbstractTrackMode extends BaseMode
 {
     protected final String [] menu =
     {
-            "Volume",
-            "Pan",
-            "Crossfader",
-            "Sends 1-4",
-            "Send 1",
-            "Send 2",
-            "Send 3",
-            "Send 4"
+        "Volume",
+        "Pan",
+        "Crossfader",
+        "Sends 1-4",
+        "Send 1",
+        "Send 2",
+        "Send 3",
+        "Send 4"
     };
 
 

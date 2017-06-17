@@ -27,8 +27,8 @@ public class SLConfiguration extends AbstractConfiguration
     public static final String     TOUCHPAD_MODE_PARAMETER  = "Remote Parameter 1&2";
     private static final String [] TOUCHPAD_OPTIONS         = new String []
     {
-            TOUCHPAD_MODE_CROSSFADER,
-            TOUCHPAD_MODE_PARAMETER
+        TOUCHPAD_MODE_CROSSFADER,
+        TOUCHPAD_MODE_PARAMETER
     };
 
     private String                 touchpadMode;

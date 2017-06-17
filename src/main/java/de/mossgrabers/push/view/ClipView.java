@@ -24,9 +24,9 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     private int    loopPadPressed = -1;
     private int [] padResolutions =
     {
-            1,
-            4,
-            16
+        1,
+        4,
+        16
     };
     private int    padResolution  = 0;
 

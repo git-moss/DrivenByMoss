@@ -85,14 +85,14 @@ public class LaunchpadColors
 
     public static final int [] BITWIG_INDICATOR_COLORS          =
     {
-            LAUNCHPAD_COLOR_RED,
-            LAUNCHPAD_COLOR_AMBER,
-            LAUNCHPAD_COLOR_YELLOW,
-            LAUNCHPAD_COLOR_SPRING,
-            LAUNCHPAD_COLOR_CYAN,
-            LAUNCHPAD_COLOR_OCEAN,
-            LAUNCHPAD_COLOR_MAGENTA,
-            LAUNCHPAD_COLOR_PINK
+        LAUNCHPAD_COLOR_RED,
+        LAUNCHPAD_COLOR_AMBER,
+        LAUNCHPAD_COLOR_YELLOW,
+        LAUNCHPAD_COLOR_SPRING,
+        LAUNCHPAD_COLOR_CYAN,
+        LAUNCHPAD_COLOR_OCEAN,
+        LAUNCHPAD_COLOR_MAGENTA,
+        LAUNCHPAD_COLOR_PINK
     };
 
 

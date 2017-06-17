@@ -8,7 +8,6 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.controller.DisplayMessage;
@@ -27,27 +26,27 @@ public class SessionViewSelectMode extends BaseMode
     /** The views to choose from. */
     private static final Integer [] VIEWS      =
     {
-            Views.VIEW_SESSION,
-            Views.VIEW_SESSION,
-            Views.VIEW_SCENE_PLAY,
-            null,
-            null,
-            null,
-            null,
-            null
+        Views.VIEW_SESSION,
+        Views.VIEW_SESSION,
+        Views.VIEW_SCENE_PLAY,
+        null,
+        null,
+        null,
+        null,
+        null
     };
 
     /** The views to choose from. */
     private static final String []  VIEW_NAMES =
     {
-            "Session",
-            "Flipped",
-            "Scenes",
-            "",
-            "",
-            "",
-            "",
-            ""
+        "Session",
+        "Flipped",
+        "Scenes",
+        "",
+        "",
+        "",
+        "",
+        ""
     };
 
 
@@ -87,15 +86,15 @@ public class SessionViewSelectMode extends BaseMode
         for (int i = 0; i < VIEWS.length; i++)
         {
             if (VIEWS[i] != null)
-                d.setCell (3, i, (isSelected (viewManager, i) ? PushDisplay.RIGHT_ARROW : "") + VIEW_NAMES[i]);
+                d.setCell (3, i, (this.isSelected (viewManager, i) ? PushDisplay.RIGHT_ARROW : "") + VIEW_NAMES[i]);
         }
         d.allDone ();
     }
 
 
-    private boolean isSelected (final ViewManager viewManager, int index)
+    private boolean isSelected (final ViewManager viewManager, final int index)
     {
-        boolean activeView = viewManager.isActiveView (VIEWS[index]);
+        final boolean activeView = viewManager.isActiveView (VIEWS[index]);
         switch (index)
         {
             case 0:
@@ -118,7 +117,7 @@ public class SessionViewSelectMode extends BaseMode
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         for (int i = 0; i < VIEWS.length; i++)
         {
-            final boolean isMenuBottomSelected = VIEWS[i] != null && isSelected (viewManager, i);
+            final boolean isMenuBottomSelected = VIEWS[i] != null && this.isSelected (viewManager, i);
             message.addOptionElement ("", "", false, i == 0 ? "Session view" : "", VIEW_NAMES[i], isMenuBottomSelected, false);
         }
         message.send ();
@@ -132,7 +131,7 @@ public class SessionViewSelectMode extends BaseMode
         final ColorManager colorManager = this.model.getColorManager ();
         final ViewManager viewManager = this.surface.getViewManager ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (20 + i, colorManager.getColor (VIEWS[i] == null ? AbstractMode.BUTTON_COLOR_OFF : isSelected (viewManager, i) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+            this.surface.updateButton (20 + i, colorManager.getColor (VIEWS[i] == null ? AbstractMode.BUTTON_COLOR_OFF : this.isSelected (viewManager, i) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
     }
 
 
@@ -144,7 +143,6 @@ public class SessionViewSelectMode extends BaseMode
         final ViewManager viewManager = this.surface.getViewManager ();
         viewManager.setActiveView (viewID);
 
-        final TrackData selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
         this.surface.getModeManager ().restoreMode ();
     }
 }

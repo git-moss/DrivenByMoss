@@ -24,16 +24,16 @@ public class MCUDisplay extends AbstractDisplay
 
     private static final String [] SPACES                =
     {
-            "",
-            " ",
-            "  ",
-            "   ",
-            "    ",
-            "     ",
-            "      ",
-            "       ",
-            "        ",
-            "         "
+        "",
+        " ",
+        "  ",
+        "   ",
+        "    ",
+        "     ",
+        "      ",
+        "       ",
+        "        ",
+        "         "
     };
 
     private boolean                isFirst;

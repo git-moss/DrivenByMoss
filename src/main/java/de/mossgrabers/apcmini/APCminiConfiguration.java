@@ -25,27 +25,27 @@ public class APCminiConfiguration extends AbstractConfiguration
 
     private static final String [] FADER_CTRL_OPTIONS =
     {
-            "Volume",
-            "Pan",
-            "Send 1",
-            "Send 2",
-            "Send 3",
-            "Send 4",
-            "Send 5",
-            "Send 6",
-            "Send 7",
-            "Send 8",
-            "Device"
+        "Volume",
+        "Pan",
+        "Send 1",
+        "Send 2",
+        "Send 3",
+        "Send 4",
+        "Send 5",
+        "Send 6",
+        "Send 7",
+        "Send 8",
+        "Device"
     };
 
     /** The names of the track button functions. */
     public static final String []  SOFT_KEYS_OPTIONS  =
     {
-            "Clip Stop",
-            "Solo",
-            "Rec Arm",
-            "Mute",
-            "Select"
+        "Clip Stop",
+        "Solo",
+        "Rec Arm",
+        "Mute",
+        "Select"
     };
 
     private String                 faderCtrl          = FADER_CTRL_OPTIONS[0];

@@ -161,9 +161,9 @@ public class MasterMode extends BaseMode
             message.addString ("");
             message.addColor (new double []
             {
-                    0.0,
-                    0.0,
-                    0.0
+                0.0,
+                0.0,
+                0.0
             });
             message.addByte (0);
         }

@@ -34,14 +34,14 @@ public class DeviceLayerMode extends BaseMode
 {
     protected String [] menu =
     {
-            "Volume",
-            "Pan",
-            "",
-            "Sends 1-4",
-            "Send 1",
-            "Send 2",
-            "Send 3",
-            "Send 4"
+        "Volume",
+        "Pan",
+        "",
+        "Sends 1-4",
+        "Send 1",
+        "Send 2",
+        "Send 3",
+        "Send 4"
     };
 
 

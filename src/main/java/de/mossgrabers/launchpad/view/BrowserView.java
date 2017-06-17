@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.BrowserProxy;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
+import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
@@ -24,24 +25,24 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
 {
     private static final int [] COLUMN_ORDER  =
     {
-            0,
-            1,
-            2,
-            3,
-            4,
-            5
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
     };
 
     private static final int [] COLUMN_COLORS =
     {
-            LaunchpadColors.LAUNCHPAD_COLOR_WHITE,
-            LaunchpadColors.LAUNCHPAD_COLOR_GREY_MD,
-            LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO,
-            LaunchpadColors.LAUNCHPAD_COLOR_ROSE,
-            LaunchpadColors.LAUNCHPAD_COLOR_SPRING,
-            LaunchpadColors.LAUNCHPAD_COLOR_OCEAN,
-            LaunchpadColors.LAUNCHPAD_COLOR_BLACK,
-            LaunchpadColors.LAUNCHPAD_COLOR_YELLOW
+        LaunchpadColors.LAUNCHPAD_COLOR_WHITE,
+        LaunchpadColors.LAUNCHPAD_COLOR_GREY_MD,
+        LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO,
+        LaunchpadColors.LAUNCHPAD_COLOR_ROSE,
+        LaunchpadColors.LAUNCHPAD_COLOR_SPRING,
+        LaunchpadColors.LAUNCHPAD_COLOR_OCEAN,
+        LaunchpadColors.LAUNCHPAD_COLOR_BLACK,
+        LaunchpadColors.LAUNCHPAD_COLOR_YELLOW
     };
 
 
@@ -112,7 +113,12 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
     {
         final BrowserProxy browser = this.model.getBrowser ();
         if (!browser.isActive ())
+        {
+            final ViewManager viewManager = this.surface.getViewManager ();
+            if (viewManager.isActiveView (Views.VIEW_BROWSER))
+                viewManager.restoreView ();
             return;
+        }
 
         switch (note)
         {

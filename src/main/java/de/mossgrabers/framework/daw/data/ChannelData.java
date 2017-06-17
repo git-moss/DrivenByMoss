@@ -254,9 +254,9 @@ public class ChannelData
         final SettableColorValue color = this.channel.color ();
         return new double []
         {
-                color.red (),
-                color.green (),
-                color.blue ()
+            color.red (),
+            color.green (),
+            color.blue ()
         };
     }
 

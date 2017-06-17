@@ -21,14 +21,14 @@ public class FrameMode extends AbstractMode<SLControlSurface, SLConfiguration>
 {
     private static final String [] COMMANDS =
     {
-            "Arrange ",
-            "  Mix   ",
-            "  Edit  ",
-            "NoteEdit",
-            "Automate",
-            " Device ",
-            "  Mixer ",
-            "   Full "
+        "Arrange ",
+        "  Mix   ",
+        "  Edit  ",
+        "NoteEdit",
+        "Automate",
+        " Device ",
+        "  Mixer ",
+        "   Full "
     };
 
 

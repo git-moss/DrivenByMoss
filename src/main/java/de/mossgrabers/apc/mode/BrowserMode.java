@@ -18,13 +18,13 @@ public class BrowserMode extends BaseMode
 {
     private static final int [] COLUMN_ORDER =
     {
-            0,
-            6,
-            1,
-            2,
-            3,
-            4,
-            5
+        0,
+        6,
+        1,
+        2,
+        3,
+        4,
+        5
     };
     private int                 lastValue;
 

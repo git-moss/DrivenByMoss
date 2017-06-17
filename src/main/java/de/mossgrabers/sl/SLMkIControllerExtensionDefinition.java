@@ -44,11 +44,11 @@ public class SLMkIControllerExtensionDefinition extends SLControllerExtensionDef
     {
         list.add (new String []
         {
-                "ReMOTE SL Port 2",
-                "ReMOTE SL Port 1"
+            "ReMOTE SL Port 2",
+            "ReMOTE SL Port 1"
         }, new String []
         {
-                "ReMOTE SL Port 2"
+            "ReMOTE SL Port 2"
         });
     }
 

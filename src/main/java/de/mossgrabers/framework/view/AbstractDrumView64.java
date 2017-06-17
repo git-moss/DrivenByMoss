@@ -31,79 +31,25 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
     protected static final int    DRUM_START_KEY = 36;
     protected static final int    GRID_COLUMNS   = 8;
 
+    // @formatter:off
     protected static final int [] DRUM_MATRIX    =
     {
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-            24,
-            25,
-            26,
-            27,
-            28,
-            29,
-            30,
-            31,
-            32,
-            33,
-            34,
-            35,
-            36,
-            37,
-            38,
-            39,
-            40,
-            41,
-            42,
-            43,
-            44,
-            45,
-            46,
-            47,
-            48,
-            49,
-            50,
-            51,
-            52,
-            53,
-            54,
-            55,
-            56,
-            57,
-            58,
-            59,
-            60,
-            61,
-            62,
-            63
+        0,  1,  2,  3, 32, 33, 34, 35,      // 1st row        
+        4,  5,  6,  7, 36, 37, 38, 39, 
+        8,  9, 10, 11, 40, 41, 42, 43, 
+       12, 13, 14, 15, 44, 45, 46, 47,        
+       16, 17, 18, 19, 48, 49, 50, 51,        
+       20, 21, 22, 23, 52, 53, 54, 55,        
+       24, 25, 26, 27, 56, 57, 58, 59, 
+       28, 29, 30, 31, 60, 61, 62, 63      // 8th row
     };
+    // @formatter:on
 
     protected int                 offsetY;
     protected int                 selectedPad    = 0;
     protected int []              pressedKeys    = new int [128];
-    protected int                 halfColumns;
-    protected int                 playLines;
+    protected int                 columns;
+    protected int                 rows;
     protected int                 drumOctave;
     protected CursorDeviceProxy   primaryDevice;
 
@@ -126,8 +72,8 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
         this.scales = this.model.getScales ();
         this.noteMap = Scales.getEmptyMatrix ();
 
-        this.halfColumns = 8;
-        this.playLines = 8;
+        this.columns = 8;
+        this.rows = 8;
 
         this.drumOctave = 0;
 
@@ -179,24 +125,19 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
             return;
 
         final int index = note - 36;
-        final int x = index % GRID_COLUMNS;
-        final int y = index / GRID_COLUMNS;
+        final int x = index % this.columns;
+        final int y = index / this.columns;
+        this.selectedPad = (x >= 4 ? 32 : 0) + y * 4 + x % 4;
 
-        if (x < this.halfColumns)
-        {
-            // halfColumns x playLines Drum Pad Grid
+        final int playedPad = velocity == 0 ? -1 : this.selectedPad;
 
-            this.selectedPad = this.halfColumns * y + x;
-            final int playedPad = velocity == 0 ? -1 : this.selectedPad;
+        // Mark selected note
+        this.pressedKeys[this.offsetY + this.selectedPad] = velocity;
 
-            // Mark selected note
-            this.pressedKeys[this.offsetY + this.selectedPad] = velocity;
+        if (playedPad < 0)
+            return;
 
-            if (playedPad < 0)
-                return;
-
-            this.handleButtonCombinations (playedPad);
-        }
+        this.handleButtonCombinations (playedPad);
     }
 
 
@@ -213,9 +154,10 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
         // halfColumns x playLines Drum Pad Grid
         final boolean hasDrumPads = this.primaryDevice.hasDrumPads ();
         boolean isSoloed = false;
+        final int numPads = this.rows * this.columns;
         if (hasDrumPads)
         {
-            for (int i = 0; i < this.halfColumns * this.playLines; i++)
+            for (int i = 0; i < numPads; i++)
             {
                 if (this.primaryDevice.getDrumPad (i).isSolo ())
                 {
@@ -225,13 +167,11 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
             }
         }
         final boolean isRecording = this.model.hasRecordingState ();
-        for (int y = 0; y < this.playLines; y++)
+        for (int index = 0; index < numPads; index++)
         {
-            for (int x = 0; x < this.halfColumns; x++)
-            {
-                final int index = this.halfColumns * y + x;
-                this.surface.getPadGrid ().lightEx (x, 7 - y, this.getPadColor (index, this.primaryDevice, isSoloed, isRecording));
-            }
+            final int x = index / 32 * 4 + index % 4;
+            final int y = index / 4 % 8;
+            this.surface.getPadGrid ().lightEx (x, 7 - y, this.getPadColor (index, this.primaryDevice, isSoloed, isRecording));
         }
     }
 
@@ -331,28 +271,24 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
         {
             // Delete all of the notes on that "pad"
             this.handleDeleteButton (playedPad);
-            return;
         }
-
-        if (this.surface.isMutePressed ())
+        else if (this.surface.isMutePressed ())
         {
             // Mute that "pad"
             this.handleMuteButton (playedPad);
-            return;
         }
-
-        if (this.surface.isSoloPressed ())
+        else if (this.surface.isSoloPressed ())
         {
             // Solo that "pad"
             this.handleSoloButton (playedPad);
-            return;
         }
-
-        if (this.surface.isSelectPressed () || this.surface.getConfiguration ().isAutoSelectDrum ())
+        else if (this.surface.isSelectPressed () || this.surface.getConfiguration ().isAutoSelectDrum ())
         {
             // Also select the matching device layer channel of the pad
             this.handleSelectButton (playedPad);
         }
+
+        this.updateNoteMapping ();
     }
 
 

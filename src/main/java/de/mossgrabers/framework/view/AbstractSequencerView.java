@@ -38,26 +38,26 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
 
     protected static final double [] RESOLUTIONS                  =
     {
-            1,
-            2.0 / 3.0,
-            1.0 / 2.0,
-            1.0 / 3.0,
-            1.0 / 4.0,
-            1.0 / 6.0,
-            1.0 / 8.0,
-            1.0 / 12.0
+        1,
+        2.0 / 3.0,
+        1.0 / 2.0,
+        1.0 / 3.0,
+        1.0 / 4.0,
+        1.0 / 6.0,
+        1.0 / 8.0,
+        1.0 / 12.0
     };
 
     protected static final String [] RESOLUTION_TEXTS             =
     {
-            "1/4",
-            "1/4t",
-            "1/8",
-            "1/8t",
-            "1/16",
-            "1/16t",
-            "1/32",
-            "1/32t"
+        "1/4",
+        "1/4t",
+        "1/8",
+        "1/8t",
+        "1/16",
+        "1/16t",
+        "1/32",
+        "1/32t"
     };
 
     protected int                    numSequencerRows;

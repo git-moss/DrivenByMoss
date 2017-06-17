@@ -20,37 +20,37 @@ public class OSCColors
     /** Black. */
     public static final double []               COLOR_BLACK      =
     {
-            0,
-            0,
-            0
+        0,
+        0,
+        0
     };
     /** White. */
     public static final double []               COLOR_WHITE      =
     {
-            1,
-            1,
-            1
+        1,
+        1,
+        1
     };
     /** Green. */
     public static final double []               COLOR_GREEN      =
     {
-            0,
-            1,
-            0
+        0,
+        1,
+        0
     };
     /** Red. */
     public static final double []               COLOR_RED        =
     {
-            1,
-            0,
-            0
+        1,
+        0,
+        0
     };
     /** Ocean blue. */
     public static final double []               COLOR_OCEAN_BLUE =
     {
-            0.2666666805744171,
-            0.7843137383460999,
-            1
+        0.2666666805744171,
+        0.7843137383460999,
+        1
     };
 
     private static final Map<String, double []> COLORS           = new HashMap<> (4);

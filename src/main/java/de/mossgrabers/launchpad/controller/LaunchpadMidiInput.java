@@ -36,8 +36,8 @@ public class LaunchpadMidiInput extends MidiInput
     {
         return this.createNoteInputBase (this.inputName, new String []
         {
-                "80????", // Note off
-                "90????" // Note on
+            "80????", // Note off
+            "90????" // Note on
         });
     }
 }

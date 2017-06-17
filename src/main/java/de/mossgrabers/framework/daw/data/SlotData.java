@@ -175,9 +175,9 @@ public class SlotData
         final ColorValue color = this.slot.color ();
         return new double []
         {
-                color.red (),
-                color.green (),
-                color.blue ()
+            color.red (),
+            color.green (),
+            color.blue ()
         };
     }
 

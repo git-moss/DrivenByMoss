@@ -47,5 +47,7 @@ public class DrumView extends DrumViewBase
 
         this.surface.getModeManager ().setActiveMode (Modes.MODE_DEVICE_LAYER);
         primary.selectDrumPad (playedPad);
+
+        this.updateNoteMapping ();
     }
 }

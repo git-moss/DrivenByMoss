@@ -23,38 +23,38 @@ public class RibbonMode extends BaseMode
 {
     private static final int []    MIDI_CCS        =
     {
-            1,
-            11,
-            7,
-            64
+        1,
+        11,
+        7,
+        64
     };
     private static final String [] CC_QUICK_SELECT =
     {
-            "Modulation",
-            "Expression",
-            "Volume",
-            "Sustain",
-            "",
-            "",
-            ""
+        "Modulation",
+        "Expression",
+        "Volume",
+        "Sustain",
+        "",
+        "",
+        ""
     };
     private static final String [] FUNCTION        =
     {
-            "Pitchbend",
-            "CC",
-            "CC/Pitch",
-            "Pitch/CC",
-            "Fader",
-            "",
-            ""
+        "Pitchbend",
+        "CC",
+        "CC/Pitch",
+        "Pitch/CC",
+        "Fader",
+        "",
+        ""
     };
     private static final int []    FUNCTION_IDS    =
     {
-            PushConfiguration.RIBBON_MODE_PITCH,
-            PushConfiguration.RIBBON_MODE_CC,
-            PushConfiguration.RIBBON_MODE_CC_PB,
-            PushConfiguration.RIBBON_MODE_PB_CC,
-            PushConfiguration.RIBBON_MODE_FADER
+        PushConfiguration.RIBBON_MODE_PITCH,
+        PushConfiguration.RIBBON_MODE_CC,
+        PushConfiguration.RIBBON_MODE_CC_PB,
+        PushConfiguration.RIBBON_MODE_PB_CC,
+        PushConfiguration.RIBBON_MODE_FADER
     };
 
 

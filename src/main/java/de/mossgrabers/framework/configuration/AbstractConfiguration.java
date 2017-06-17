@@ -150,70 +150,70 @@ public abstract class AbstractConfiguration implements Configuration
     /** The names for clip lengths. */
     public static final String []                    NEW_CLIP_LENGTH_VALUES      =
     {
-            "1 Beat",
-            "2 Beat",
-            "1 Bar",
-            "2 Bars",
-            "4 Bars",
-            "8 Bars",
-            "16 Bars",
-            "32 Bars"
+        "1 Beat",
+        "2 Beat",
+        "1 Bar",
+        "2 Bars",
+        "4 Bars",
+        "8 Bars",
+        "16 Bars",
+        "32 Bars"
     };
 
     private static final String []                   BEHAVIOUR_ON_STOP_VALUES    =
     {
-            "Move play cursor",
-            "Return to Zero",
-            "Pause"
+        "Move play cursor",
+        "Return to Zero",
+        "Pause"
     };
 
     private static final String []                   ACTIONS_REC_ARMED_PADS      =
     {
-            "Start recording",
-            "Create new clip",
-            "Do nothing"
+        "Start recording",
+        "Create new clip",
+        "Do nothing"
     };
 
     protected static final String []                 FOOTSWITCH_VALUES           =
     {
-            "Toggle Play",
-            "Toggle Record",
-            "Stop All Clips",
-            "Toggle Clip Overdub",
-            "Undo",
-            "Tap Tempo",
-            "New Button",
-            "Clip Based Looper",
-            "Panel layout arrange",
-            "Panel layout mix",
-            "Panel layout edit",
-            "Add instrument track",
-            "Add audio track",
-            "Add effect track"
+        "Toggle Play",
+        "Toggle Record",
+        "Stop All Clips",
+        "Toggle Clip Overdub",
+        "Undo",
+        "Tap Tempo",
+        "New Button",
+        "Clip Based Looper",
+        "Panel layout arrange",
+        "Panel layout mix",
+        "Panel layout edit",
+        "Add instrument track",
+        "Add audio track",
+        "Add effect track"
     };
 
     private static final String []                   BROWSER_FILTER_COLUMN_NAMES =
     {
-            "Collection",
-            "Location",
-            "File Type",
-            "Category",
-            "Tags",
-            "Creator",
-            "Device Type",
-            "Device"
+        "Collection",
+        "Location",
+        "File Type",
+        "Category",
+        "Tags",
+        "Creator",
+        "Device Type",
+        "Device"
     };
 
     private static final String []                   COLUMN_VALUES               =
     {
-            "Hide",
-            "Show"
+        "Hide",
+        "Show"
     };
 
     protected static final String []                 ON_OFF_OPTIONS              =
     {
-            "Off",
-            "On"
+        "Off",
+        "On"
     };
 
     private SettableEnumValue                        scaleBaseSetting;
@@ -257,14 +257,14 @@ public abstract class AbstractConfiguration implements Configuration
     private int                                      footswitch2                 = FOOTSWITCH_2_NEW_BUTTON;
     private boolean []                               browserDisplayFilter        =
     {
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
     };
 
 
@@ -649,8 +649,8 @@ public abstract class AbstractConfiguration implements Configuration
     {
         this.scaleInKeySetting = prefs.getEnumSetting (SCALE_IN_KEY, CATEGORY_SCALES, new String []
         {
-                SCALE_IN_KEY,
-                SCALE_CHROMATIC
+            SCALE_IN_KEY,
+            SCALE_CHROMATIC
         }, SCALE_IN_KEY);
         this.scaleInKeySetting.addValueObserver (value -> {
             this.scaleInKey = SCALE_IN_KEY.equals (value);
@@ -925,8 +925,8 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final SettableEnumValue autoSelectDrumSetting = prefs.getEnumSetting ("Auto-select drum settings", CATEGORY_DRUMS, new String []
         {
-                "Off",
-                "Channel"
+            "Off",
+            "Channel"
         }, "Off");
         autoSelectDrumSetting.addValueObserver (value -> {
             this.autoSelectDrum = "Channel".equals (value);

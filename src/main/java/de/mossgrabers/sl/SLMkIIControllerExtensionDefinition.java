@@ -46,11 +46,11 @@ public class SLMkIIControllerExtensionDefinition extends SLControllerExtensionDe
         {
             list.add (new String []
             {
-                    "SL MkII MIDI 2",
-                    "SL MkII MIDI 1"
+                "SL MkII MIDI 2",
+                "SL MkII MIDI 1"
             }, new String []
             {
-                    "SL MkII MIDI 2"
+                "SL MkII MIDI 2"
             });
         }
         else
@@ -58,11 +58,11 @@ public class SLMkIIControllerExtensionDefinition extends SLControllerExtensionDe
             // WINDOWS + MAC
             list.add (new String []
             {
-                    "MIDIIN2 (SL MkII)",
-                    "SL MkII"
+                "MIDIIN2 (SL MkII)",
+                "SL MkII"
             }, new String []
             {
-                    "MIDIOUT2 (SL MkII)"
+                "MIDIOUT2 (SL MkII)"
             });
         }
     }

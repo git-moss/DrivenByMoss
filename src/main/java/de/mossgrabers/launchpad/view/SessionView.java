@@ -88,9 +88,9 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
                 return;
             }
 
-            int n = note - (activeModeId != null ? 8 : 0);
+            final int n = note - (activeModeId != null ? 8 : 0);
             final int index = n - 36;
-            int t = index % this.columns;
+            final int t = index % this.columns;
 
             // Duplicate a clip
             if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
@@ -99,7 +99,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
                 final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
                 if (tb.getTrack (t).doesExist ())
                 {
-                    int s = this.rows - 1 - index / this.columns;
+                    final int s = this.rows - 1 - index / this.columns;
                     tb.getClipLauncherSlots (t).duplicateClip (s);
                 }
                 return;
