@@ -379,6 +379,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.surface.updateButton (MCUControlSurface.MCU_CLICK, (isShift ? t.isMetronomeTicksOn () : t.isMetronomeOn ()) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         this.surface.updateButton (MCUControlSurface.MCU_SOLO, this.model.getGroove ().getParameters ()[0].getValue () > 0 ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         this.surface.updateButton (MCUControlSurface.MCU_REPLACE, (isShift ? t.isLauncherOverdub () : t.isArrangerOverdub ()) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        this.surface.updateButton (MCUControlSurface.MCU_FLIP, this.model.isEffectTrackBankActive () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         this.surface.updateButton (MCUControlSurface.MCU_SMPTE_BEATS, this.configuration.isDisplayTicks () ? MCU_BUTTON_STATE_OFF : MCU_BUTTON_STATE_ON);
     }
