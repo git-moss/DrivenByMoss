@@ -19,7 +19,7 @@ import de.mossgrabers.push.mode.Modes;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowseCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
+public class BrowserCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {
     /**
      * Constructor.
@@ -27,7 +27,7 @@ public class BrowseCommand extends AbstractTriggerCommand<PushControlSurface, Pu
      * @param model The model
      * @param surface The surface
      */
-    public BrowseCommand (final Model model, final PushControlSurface surface)
+    public BrowserCommand (final Model model, final PushControlSurface surface)
     {
         super (model, surface);
     }
@@ -56,6 +56,10 @@ public class BrowseCommand extends AbstractTriggerCommand<PushControlSurface, Pu
             browser.browseForPresets ();
         else
             browser.browseToInsertAfterDevice ();
-        modeManager.setActiveMode (Modes.MODE_BROWSER);
+
+        this.surface.scheduleTask ( () -> {
+            if (this.model.getBrowser ().isActive ())
+                this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
+        }, 200);
     }
 }

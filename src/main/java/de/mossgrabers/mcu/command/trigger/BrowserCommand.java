@@ -45,16 +45,15 @@ public class BrowserCommand extends AbstractTriggerCommand<MCUControlSurface, MC
             browser.browseToInsertBeforeDevice ();
         else if (this.surface.isSelectPressed ())
             browser.browseToInsertAfterDevice ();
-        else
+        else if (this.model.getCursorDevice ().hasSelectedDevice ())
             browser.browseForPresets ();
+        else
+            browser.browseToInsertAfterDevice ();
 
-        this.surface.scheduleTask (this::switchToBrowseView, 200);
+        this.surface.scheduleTask ( () -> {
+            if (this.model.getBrowser ().isActive ())
+                this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
+        }, 200);
     }
 
-
-    private void switchToBrowseView ()
-    {
-        if (this.model.getBrowser ().isActive ())
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
-    }
 }

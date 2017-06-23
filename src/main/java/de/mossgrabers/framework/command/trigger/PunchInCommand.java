@@ -37,6 +37,7 @@ public class PunchInCommand<S extends ControlSurface<C>, C extends Configuration
     @Override
     public void execute (final ButtonEvent event)
     {
-        this.model.getTransport ().togglePunchIn ();
+        if (event == ButtonEvent.DOWN)
+            this.model.getTransport ().togglePunchIn ();
     }
 }

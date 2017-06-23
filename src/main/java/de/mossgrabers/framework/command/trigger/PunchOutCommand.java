@@ -37,6 +37,7 @@ public class PunchOutCommand<S extends ControlSurface<C>, C extends Configuratio
     @Override
     public void execute (final ButtonEvent event)
     {
-        this.model.getTransport ().togglePunchOut ();
+        if (event == ButtonEvent.DOWN)
+            this.model.getTransport ().togglePunchOut ();
     }
 }

@@ -76,16 +76,18 @@ public class BrowserCommand extends AbstractTriggerCommand<APCControlSurface, AP
                 browser.browseToInsertBeforeDevice ();
             else
                 browser.browseToInsertAfterDevice ();
+            return;
         }
-        else
+
+        // Browse for presets
+        if (this.model.getCursorDevice ().hasSelectedDevice ())
             browser.browseForPresets ();
-        this.surface.scheduleTask (this::switchToBrowseView, 200);
-    }
+        else
+            browser.browseToInsertAfterDevice ();
 
-
-    private void switchToBrowseView ()
-    {
-        if (this.model.getBrowser ().isActive ())
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
+        this.surface.scheduleTask ( () -> {
+            if (this.model.getBrowser ().isActive ())
+                this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
+        }, 200);
     }
 }

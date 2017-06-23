@@ -94,7 +94,7 @@ public class PanMode extends AbstractTrackMode
         for (int i = 0; i < 8; i++)
         {
             final TrackData t = tb.getTrack (i);
-            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_BOOST_CUT, t.doesExist () ? Math.max (t.getPan (), 1) : 0, upperBound);
+            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_BOOST_CUT, t.doesExist () ? Math.max (t.getPan (), 1) : upperBound / 2, upperBound);
         }
     }
 

@@ -13,12 +13,14 @@ import de.mossgrabers.framework.command.trigger.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.ModeMultiSelectCommand;
 import de.mossgrabers.framework.command.trigger.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.MoveTrackBankCommand;
+import de.mossgrabers.framework.command.trigger.NewCommand;
 import de.mossgrabers.framework.command.trigger.NopCommand;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
 import de.mossgrabers.framework.command.trigger.PunchInCommand;
 import de.mossgrabers.framework.command.trigger.PunchOutCommand;
 import de.mossgrabers.framework.command.trigger.RecordCommand;
 import de.mossgrabers.framework.command.trigger.StopCommand;
+import de.mossgrabers.framework.command.trigger.TapTempoCommand;
 import de.mossgrabers.framework.command.trigger.ToggleTrackBanksCommand;
 import de.mossgrabers.framework.command.trigger.UndoCommand;
 import de.mossgrabers.framework.command.trigger.WindCommand;
@@ -307,6 +309,10 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         }
         this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, MCUControlSurface.MCU_FADER_MASTER, new SelectCommand (8, this.model, this.surface));
 
+        // Additional commands for footcontrollers
+        viewManager.registerTriggerCommand (Commands.COMMAND_NEW, new NewCommand<> (this.model, this.surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_TAP_TEMPO, new TapTempoCommand<> (this.model, this.surface));
+
         viewManager.registerPitchbendCommand (new PitchbendVolumeCommand (this.model, this.surface));
     }
 
@@ -361,7 +367,9 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.surface.updateButton (MCUControlSurface.MCU_PLAY, t.isPlaying () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         this.surface.updateButton (MCUControlSurface.MCU_RECORD, isRecordShifted ? t.isLauncherOverdub () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF : t.isRecording () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
+        this.surface.updateButton (MCUControlSurface.MCU_NAME_VALUE, this.surface.getConfiguration ().isDisplayTrackNames () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         this.surface.updateButton (MCUControlSurface.MCU_ZOOM, this.surface.getConfiguration ().isZoomState () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        this.surface.updateButton (MCUControlSurface.MCU_SCRUB, this.surface.getModeManager ().isActiveMode (Modes.MODE_DEVICE_PARAMS) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         this.surface.updateButton (MCUControlSurface.MCU_MIDI_TRACKS, MCU_BUTTON_STATE_OFF);
         this.surface.updateButton (MCUControlSurface.MCU_INPUTS, MCU_BUTTON_STATE_OFF);
@@ -487,6 +495,10 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         final TransportProxy transport = this.model.getTransport ();
         final String automationWriteMode = transport.getAutomationWriteMode ();
         final boolean writingArrangerAutomation = transport.isWritingArrangerAutomation ();
+
+        this.surface.updateButton (MCUControlSurface.MCU_F6, transport.isPunchInEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        this.surface.updateButton (MCUControlSurface.MCU_F7, transport.isPunchOutEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+
         this.surface.updateButton (MCUControlSurface.MCU_READ, !writingArrangerAutomation ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         this.surface.updateButton (MCUControlSurface.MCU_WRITE, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[2].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         this.surface.updateButton (MCUControlSurface.MCU_TRIM, transport.isWritingClipLauncherAutomation () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
