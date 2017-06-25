@@ -102,8 +102,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.VIEW_DEVICE))
         {
             final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
-            this.canScrollUp = false;
-            this.canScrollDown = false;
+            this.canScrollUp = cursorDevice.canSelectNextFX ();
+            this.canScrollDown = cursorDevice.canSelectPreviousFX ();
             this.canScrollLeft = cursorDevice.hasPreviousParameterPage ();
             this.canScrollRight = cursorDevice.hasNextParameterPage ();
             return;
@@ -299,6 +299,12 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
+        if (viewManager.isActiveView (Views.VIEW_DEVICE))
+        {
+            this.model.getCursorDevice ().selectNext ();
+            return;
+        }
+
         if (viewManager.isActiveView (Views.VIEW_BROWSER) || viewManager.isActiveView (Views.VIEW_SHIFT) || viewManager.isActiveView (Views.VIEW_DRUM4) || viewManager.isActiveView (Views.VIEW_DRUM8))
             return;
 
@@ -343,6 +349,12 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.VIEW_RAINDROPS))
         {
             ((RaindropsView) viewManager.getView (Views.VIEW_RAINDROPS)).onOctaveDown (ButtonEvent.DOWN);
+            return;
+        }
+
+        if (viewManager.isActiveView (Views.VIEW_DEVICE))
+        {
+            this.model.getCursorDevice ().selectPrevious ();
             return;
         }
 

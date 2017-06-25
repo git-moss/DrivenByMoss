@@ -8,6 +8,7 @@ import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.apc.mode.Modes;
 import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.command.trigger.BrowserCommand;
 
 
 /**

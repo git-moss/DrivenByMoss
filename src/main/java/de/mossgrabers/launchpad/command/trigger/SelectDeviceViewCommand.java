@@ -20,6 +20,9 @@ import de.mossgrabers.launchpad.view.Views;
  */
 public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
+    protected int startRetries;
+
+
     /**
      * Constructor.
      *
@@ -49,11 +52,13 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
 
         if (viewManager.isActiveView (Views.VIEW_DEVICE))
         {
-            if (this.surface.isShiftPressed ())
+            if (this.surface.isShiftPressed () || !this.model.getCursorDevice ().hasSelectedDevice ())
                 this.model.getBrowser ().browseToInsertAfterDevice ();
             else
                 this.model.getBrowser ().browseForPresets ();
-            this.surface.scheduleTask (this::switchToBrowseView, 150);
+
+            this.startRetries = 0;
+            this.activateBrowserView ();
             return;
         }
 
@@ -61,9 +66,17 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
     }
 
 
-    private void switchToBrowseView ()
+    /**
+     * Tries to activate the view 20 times.
+     */
+    protected void activateBrowserView ()
     {
         if (this.model.getBrowser ().isActive ())
             this.surface.getViewManager ().setActiveView (Views.VIEW_BROWSER);
+        else if (this.startRetries < 20)
+        {
+            this.startRetries++;
+            this.surface.scheduleTask (this::activateBrowserView, 200);
+        }
     }
 }

@@ -4,10 +4,10 @@
 
 package de.mossgrabers.mcu;
 
-import de.mossgrabers.apc.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
+import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.LoopCommand;
 import de.mossgrabers.framework.command.trigger.MetronomeCommand;
