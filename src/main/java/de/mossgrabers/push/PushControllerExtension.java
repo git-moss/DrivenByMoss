@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push;
 
+import de.mossgrabers.apc.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.SceneCommand;
@@ -53,7 +54,6 @@ import de.mossgrabers.push.command.trigger.AccentCommand;
 import de.mossgrabers.push.command.trigger.AddEffectCommand;
 import de.mossgrabers.push.command.trigger.AddTrackCommand;
 import de.mossgrabers.push.command.trigger.AutomationCommand;
-import de.mossgrabers.push.command.trigger.BrowserCommand;
 import de.mossgrabers.push.command.trigger.ClipCommand;
 import de.mossgrabers.push.command.trigger.ConvertCommand;
 import de.mossgrabers.push.command.trigger.DeviceCommand;
@@ -368,7 +368,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         this.addTriggerCommand (Commands.COMMAND_DOUBLE, PushControlSurface.PUSH_BUTTON_DOUBLE, new DoubleCommand (this.model, this.surface));
         this.addTriggerCommand (Commands.COMMAND_UNDO, PushControlSurface.PUSH_BUTTON_UNDO, new UndoCommand<> (this.model, this.surface));
         this.addTriggerCommand (Commands.COMMAND_DEVICE, PushControlSurface.PUSH_BUTTON_DEVICE, new DeviceCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_BROWSE, PushControlSurface.PUSH_BUTTON_BROWSE, new BrowserCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_BROWSE, PushControlSurface.PUSH_BUTTON_BROWSE, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, this.surface));
         this.addTriggerCommand (Commands.COMMAND_TRACK, PushControlSurface.PUSH_BUTTON_TRACK, new TrackCommand (this.model, this.surface));
         this.addTriggerCommand (Commands.COMMAND_CLIP, PushControlSurface.PUSH_BUTTON_CLIP, new ClipCommand (this.model, this.surface));
         this.addTriggerCommand (Commands.COMMAND_VOLUME, PushControlSurface.PUSH_BUTTON_VOLUME, new VolumeCommand (this.model, this.surface));

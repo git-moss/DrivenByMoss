@@ -5,7 +5,7 @@
 package de.mossgrabers.apc.view;
 
 import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.command.trigger.BrowserCommand;
+import de.mossgrabers.apc.command.trigger.APCBrowserCommand;
 import de.mossgrabers.apc.controller.APCColors;
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
@@ -116,7 +116,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
                     break;
                 case 35:
                 case 36:
-                    final BrowserCommand browseCommand = (BrowserCommand) this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_BROWSE);
+                    final APCBrowserCommand browseCommand = (APCBrowserCommand) this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_BROWSE);
                     browseCommand.startBrowser (true, index == 35);
                     break;
                 case 38:

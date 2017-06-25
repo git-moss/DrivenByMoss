@@ -4,6 +4,7 @@
 
 package de.mossgrabers.mcu;
 
+import de.mossgrabers.apc.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
@@ -42,7 +43,6 @@ import de.mossgrabers.mcu.command.continuous.PlayPositionTempoCommand;
 import de.mossgrabers.mcu.command.pitchbend.PitchbendVolumeCommand;
 import de.mossgrabers.mcu.command.trigger.AssignableCommand;
 import de.mossgrabers.mcu.command.trigger.AutomationCommand;
-import de.mossgrabers.mcu.command.trigger.BrowserCommand;
 import de.mossgrabers.mcu.command.trigger.CursorCommand;
 import de.mossgrabers.mcu.command.trigger.CursorCommand.Direction;
 import de.mossgrabers.mcu.command.trigger.GrooveCommand;
@@ -278,7 +278,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.addTriggerCommand (COMMAND_AUTOMATION_EDITOR, MCUControlSurface.MCU_INPUTS, new PaneCommand (1, this.model, this.surface));
         this.addTriggerCommand (COMMAND_TOGGLE_DEVICE, MCUControlSurface.MCU_AUDIO_TRACKS, new PaneCommand (2, this.model, this.surface));
         this.addTriggerCommand (COMMAND_MIXER, MCUControlSurface.MCU_AUDIO_INSTR, new PaneCommand (3, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_BROWSE, MCUControlSurface.MCU_USER, new BrowserCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_BROWSE, MCUControlSurface.MCU_USER, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, this.surface));
         this.addTriggerCommand (Commands.COMMAND_METRONOME, MCUControlSurface.MCU_CLICK, new MetronomeCommand<> (this.model, this.surface));
         this.addTriggerCommand (COMMAND_GROOVE, MCUControlSurface.MCU_SOLO, new GrooveCommand (this.model, this.surface));
         this.addTriggerCommand (COMMAND_OVERDUB, MCUControlSurface.MCU_REPLACE, new OverdubCommand (this.model, this.surface));

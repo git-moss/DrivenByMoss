@@ -10,7 +10,7 @@ import de.mossgrabers.apc.command.trigger.APCCursorCommand;
 import de.mossgrabers.apc.command.trigger.APCRecordCommand;
 import de.mossgrabers.apc.command.trigger.BankLeftCommand;
 import de.mossgrabers.apc.command.trigger.BankRightCommand;
-import de.mossgrabers.apc.command.trigger.BrowserCommand;
+import de.mossgrabers.apc.command.trigger.APCBrowserCommand;
 import de.mossgrabers.apc.command.trigger.CrossfadeCommand;
 import de.mossgrabers.apc.command.trigger.DeviceLeftCommand;
 import de.mossgrabers.apc.command.trigger.DeviceOnOffCommand;
@@ -277,7 +277,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
             this.addTriggerCommand (Commands.COMMAND_NEW, APCControlSurface.APC_FOOTSWITCH_2, new NewCommand<> (this.model, this.surface));
         }
 
-        this.addTriggerCommand (Commands.COMMAND_BROWSE, APCControlSurface.APC_BUTTON_BANK, new BrowserCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_BROWSE, APCControlSurface.APC_BUTTON_BANK, new APCBrowserCommand (this.model, this.surface));
         this.addTriggerCommand (COMMAND_BANK_LEFT, APCControlSurface.APC_BUTTON_DEVICE_LEFT, new BankLeftCommand (this.model, this.surface));
         this.addTriggerCommand (COMMAND_BANK_RIGHT, APCControlSurface.APC_BUTTON_DEVICE_RIGHT, new BankRightCommand (this.model, this.surface));
         this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, this.surface.getDownButtonId (), new APCCursorCommand (Direction.DOWN, this.model, this.surface));
