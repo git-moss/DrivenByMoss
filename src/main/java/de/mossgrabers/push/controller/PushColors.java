@@ -322,8 +322,9 @@ public class PushColors
         colorManager.registerColor (AbstractSequencerView.COLOR_NO_CONTENT, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
         colorManager.registerColor (AbstractSequencerView.COLOR_CONTENT, isPush2 ? PUSH2_COLOR2_BLUE_HI : PUSH1_COLOR2_BLUE_HI);
         colorManager.registerColor (AbstractSequencerView.COLOR_CONTENT_CONT, isPush2 ? PUSH2_COLOR2_BLUE_LO : PUSH1_COLOR2_BLUE_LO);
-        colorManager.registerColor (AbstractSequencerView.COLOR_MEASURE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
-        colorManager.registerColor (AbstractSequencerView.COLOR_ACTIVE_MEASURE, isPush2 ? PUSH2_COLOR2_GREEN : PUSH1_COLOR2_GREEN);
+        colorManager.registerColor (AbstractSequencerView.COLOR_PAGE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
+        colorManager.registerColor (AbstractSequencerView.COLOR_ACTIVE_PAGE, isPush2 ? PUSH2_COLOR2_GREEN : PUSH1_COLOR2_GREEN);
+        colorManager.registerColor (AbstractSequencerView.COLOR_SELECTED_PAGE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
 
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_OFF, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_RECORD, isPush2 ? PUSH2_COLOR2_RED_HI : PUSH1_COLOR2_RED_HI);

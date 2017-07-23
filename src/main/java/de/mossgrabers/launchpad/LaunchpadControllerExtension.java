@@ -6,7 +6,6 @@ package de.mossgrabers.launchpad;
 
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
-import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.DeleteCommand;
@@ -34,6 +33,7 @@ import de.mossgrabers.launchpad.command.continuous.FaderCommand;
 import de.mossgrabers.launchpad.command.trigger.ClickCommand;
 import de.mossgrabers.launchpad.command.trigger.DoubleCommand;
 import de.mossgrabers.launchpad.command.trigger.DuplicateCommand;
+import de.mossgrabers.launchpad.command.trigger.LPSceneCommand;
 import de.mossgrabers.launchpad.command.trigger.LaunchpadCursorCommand;
 import de.mossgrabers.launchpad.command.trigger.MuteCommand;
 import de.mossgrabers.launchpad.command.trigger.PanCommand;
@@ -237,25 +237,25 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
 
         if (this.isPro)
         {
-            this.addTriggerCommand (Commands.COMMAND_SCENE1, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, new SceneCommand<> (7, this.model, this.surface));
-            this.addTriggerCommand (Commands.COMMAND_SCENE2, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, new SceneCommand<> (6, this.model, this.surface));
-            this.addTriggerCommand (Commands.COMMAND_SCENE3, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, new SceneCommand<> (5, this.model, this.surface));
-            this.addTriggerCommand (Commands.COMMAND_SCENE4, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, new SceneCommand<> (4, this.model, this.surface));
-            this.addTriggerCommand (Commands.COMMAND_SCENE5, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, new SceneCommand<> (3, this.model, this.surface));
-            this.addTriggerCommand (Commands.COMMAND_SCENE6, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, new SceneCommand<> (2, this.model, this.surface));
-            this.addTriggerCommand (Commands.COMMAND_SCENE7, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, new SceneCommand<> (1, this.model, this.surface));
-            this.addTriggerCommand (Commands.COMMAND_SCENE8, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, new SceneCommand<> (0, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE1, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, new LPSceneCommand (7, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE2, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, new LPSceneCommand (6, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE3, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, new LPSceneCommand (5, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE4, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, new LPSceneCommand (4, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE5, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, new LPSceneCommand (3, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE6, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, new LPSceneCommand (2, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE7, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, new LPSceneCommand (1, this.model, this.surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE8, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, new LPSceneCommand (0, this.model, this.surface));
         }
         else
         {
-            this.addNoteCommand (Commands.COMMAND_SCENE1, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, new SceneCommand<> (7, this.model, this.surface));
-            this.addNoteCommand (Commands.COMMAND_SCENE2, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, new SceneCommand<> (6, this.model, this.surface));
-            this.addNoteCommand (Commands.COMMAND_SCENE3, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, new SceneCommand<> (5, this.model, this.surface));
-            this.addNoteCommand (Commands.COMMAND_SCENE4, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, new SceneCommand<> (4, this.model, this.surface));
-            this.addNoteCommand (Commands.COMMAND_SCENE5, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, new SceneCommand<> (3, this.model, this.surface));
-            this.addNoteCommand (Commands.COMMAND_SCENE6, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, new SceneCommand<> (2, this.model, this.surface));
-            this.addNoteCommand (Commands.COMMAND_SCENE7, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, new SceneCommand<> (1, this.model, this.surface));
-            this.addNoteCommand (Commands.COMMAND_SCENE8, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, new SceneCommand<> (0, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE1, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, new LPSceneCommand (7, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE2, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, new LPSceneCommand (6, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE3, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, new LPSceneCommand (5, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE4, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, new LPSceneCommand (4, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE5, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, new LPSceneCommand (3, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE6, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, new LPSceneCommand (2, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE7, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, new LPSceneCommand (1, this.model, this.surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE8, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, new LPSceneCommand (0, this.model, this.surface));
         }
     }
 

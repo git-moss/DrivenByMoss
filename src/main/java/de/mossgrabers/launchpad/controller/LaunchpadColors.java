@@ -122,8 +122,9 @@ public class LaunchpadColors
         colorManager.registerColor (AbstractSequencerView.COLOR_NO_CONTENT, LAUNCHPAD_COLOR_BLACK);
         colorManager.registerColor (AbstractSequencerView.COLOR_CONTENT, LAUNCHPAD_COLOR_BLUE_HI);
         colorManager.registerColor (AbstractSequencerView.COLOR_CONTENT_CONT, LAUNCHPAD_COLOR_BLUE_ORCHID);
-        colorManager.registerColor (AbstractSequencerView.COLOR_MEASURE, LAUNCHPAD_COLOR_WHITE);
-        colorManager.registerColor (AbstractSequencerView.COLOR_ACTIVE_MEASURE, LAUNCHPAD_COLOR_GREEN);
+        colorManager.registerColor (AbstractSequencerView.COLOR_PAGE, LAUNCHPAD_COLOR_WHITE);
+        colorManager.registerColor (AbstractSequencerView.COLOR_ACTIVE_PAGE, LAUNCHPAD_COLOR_GREEN);
+        colorManager.registerColor (AbstractSequencerView.COLOR_SELECTED_PAGE, LAUNCHPAD_COLOR_BLUE_ORCHID);
 
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_OFF, LAUNCHPAD_COLOR_BLACK);
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_RECORD, LAUNCHPAD_COLOR_RED_HI);

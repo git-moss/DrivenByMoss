@@ -34,6 +34,6 @@ public abstract class LaunchpadControllerExtensionDefinition extends AbstractCon
     @Override
     public String getVersion ()
     {
-        return "3.0";
+        return "3.20";
     }
 }

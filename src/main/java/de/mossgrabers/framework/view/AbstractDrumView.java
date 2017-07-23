@@ -8,6 +8,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.TrackBankProxy;
@@ -157,25 +158,38 @@ public abstract class AbstractDrumView<S extends ControlSurface<C>, C extends Co
 
         // Clip length/loop area
         final int pad = (this.playLines - 1 - y) * this.halfColumns + x - this.halfColumns;
-        if (velocity > 0) // Button pressed
+
+        // Button pressed?
+        if (velocity > 0)
         {
-            if (this.loopPadPressed == -1) // Not yet a button pressed, store it
+            // Not yet a button pressed, store it
+            if (this.loopPadPressed == -1)
                 this.loopPadPressed = pad;
+            return;
         }
-        else if (this.loopPadPressed != -1)
+
+        if (this.loopPadPressed == -1)
+            return;
+
+        if (pad == this.loopPadPressed && pad != this.clip.getEditPage ())
+        {
+            // Only single pad pressed -> page selection
+            this.clip.scrollToPage (pad);
+        }
+        else
         {
             final int start = this.loopPadPressed < pad ? this.loopPadPressed : pad;
             final int end = (this.loopPadPressed < pad ? pad : this.loopPadPressed) + 1;
-            final int quartersPerPad = this.model.getQuartersPerMeasure ();
+            final int lengthOfOnePad = this.getLengthOfOnePage (this.sequencerSteps);
 
             // Set a new loop between the 2 selected pads
-            final int newStart = start * quartersPerPad;
+            final int newStart = start * lengthOfOnePad;
             this.clip.setLoopStart (newStart);
-            this.clip.setLoopLength ((end - start) * quartersPerPad);
-            this.clip.setPlayRange (newStart, (double) end * quartersPerPad);
-
-            this.loopPadPressed = -1;
+            this.clip.setLoopLength ((end - start) * lengthOfOnePad);
+            this.clip.setPlayRange (newStart, (double) end * lengthOfOnePad);
         }
+
+        this.loopPadPressed = -1;
     }
 
 
@@ -183,9 +197,10 @@ public abstract class AbstractDrumView<S extends ControlSurface<C>, C extends Co
     @Override
     public void drawGrid ()
     {
+        final PadGrid padGrid = this.surface.getPadGrid ();
         if (!this.model.canSelectedTrackHoldNotes ())
         {
-            this.surface.getPadGrid ().turnOff ();
+            padGrid.turnOff ();
             return;
         }
 
@@ -210,7 +225,7 @@ public abstract class AbstractDrumView<S extends ControlSurface<C>, C extends Co
             for (int x = 0; x < this.halfColumns; x++)
             {
                 final int index = this.halfColumns * y + x;
-                this.surface.getPadGrid ().lightEx (x, this.allLines - 1 - y, this.getPadColor (index, primary, isSoloed, isRecording));
+                padGrid.lightEx (x, this.allLines - 1 - y, this.getPadColor (index, primary, isSoloed, isRecording));
             }
         }
 
@@ -420,18 +435,20 @@ public abstract class AbstractDrumView<S extends ControlSurface<C>, C extends Co
     {
         // Clip length/loop area
         final int step = this.clip.getCurrentStep ();
-        final int quartersPerPad = this.model.getQuartersPerMeasure ();
-        final int stepsPerMeasure = (int) Math.floor (quartersPerPad / RESOLUTIONS[this.selectedIndex]);
-        final int currentMeasure = step / stepsPerMeasure;
-        final int maxQuarters = quartersPerPad * this.halfColumns * this.playLines;
-        final double start = this.clip.getLoopStart ();
-        final double loopStartPad = Math.floor (Math.max (0, start) / quartersPerPad);
-        final double loopEndPad = Math.ceil (Math.min (maxQuarters, start + this.clip.getLoopLength ()) / quartersPerPad);
-        for (int pad = 0; pad < this.halfColumns * this.playLines; pad++)
+
+        final int lengthOfOnePad = this.getLengthOfOnePage (this.sequencerSteps);
+        final double loopStart = this.clip.getLoopStart ();
+        final int loopStartPad = (int) Math.ceil (loopStart / lengthOfOnePad);
+        final int loopEndPad = (int) Math.ceil ((loopStart + this.clip.getLoopLength ()) / lengthOfOnePad);
+        int currentPage = step / this.sequencerSteps;
+
+        final int numOfPages = this.halfColumns * this.playLines;
+        final PadGrid padGrid = this.surface.getPadGrid ();
+        for (int pad = 0; pad < numOfPages; pad++)
         {
             final int x = this.halfColumns + pad % this.halfColumns;
             final int y = this.sequencerLines + pad / this.halfColumns;
-            this.surface.getPadGrid ().lightEx (x, y, pad >= loopStartPad && pad < loopEndPad ? pad == currentMeasure ? AbstractSequencerView.COLOR_ACTIVE_MEASURE : AbstractSequencerView.COLOR_MEASURE : AbstractSequencerView.COLOR_NO_CONTENT);
+            padGrid.lightEx (x, y, this.getPageColor (loopStartPad, loopEndPad, currentPage, this.clip.getEditPage (), pad));
         }
 
         // Paint the sequencer steps
@@ -442,7 +459,7 @@ public abstract class AbstractDrumView<S extends ControlSurface<C>, C extends Co
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;
-            this.surface.getPadGrid ().lightEx (x, y, this.getStepColor (isSet, hilite));
+            padGrid.lightEx (x, y, this.getStepColor (isSet, hilite));
         }
     }
 }

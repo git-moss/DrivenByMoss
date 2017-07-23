@@ -443,21 +443,9 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     {
         final boolean isInc = value >= 65;
         if (isInc)
-        {
-            this.offsetX = this.offsetX + this.clip.getStepSize ();
             this.clip.scrollStepsPageForward ();
-        }
         else
-        {
-            final int newOffset = this.offsetX - this.clip.getStepSize ();
-            if (newOffset < 0)
-                this.offsetX = 0;
-            else
-            {
-                this.offsetX = newOffset;
-                this.clip.scrollStepsPageBackwards ();
-            }
-        }
+            this.clip.scrollStepsPageBackwards ();
     }
 
 

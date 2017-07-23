@@ -164,7 +164,11 @@ public abstract class AbstractPlayView<S extends ControlSurface<C>, C extends Co
      */
     public int getMidiNoteFromGrid (final int note)
     {
-        return this.noteMap[this.surface.getPadGrid ().translateToGrid (note)];
+        final PadGrid padGrid = this.surface.getPadGrid ();
+        if (padGrid == null)
+            return -1;
+        final int translated = padGrid.translateToGrid (note);
+        return translated < 0 ? -1 : this.noteMap[translated];
     }
 
 

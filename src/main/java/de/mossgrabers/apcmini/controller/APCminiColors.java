@@ -61,8 +61,9 @@ public class APCminiColors
         colorManager.registerColor (AbstractSequencerView.COLOR_NO_CONTENT, APC_COLOR_BLACK);
         colorManager.registerColor (AbstractSequencerView.COLOR_CONTENT, APC_COLOR_RED);
         colorManager.registerColor (AbstractSequencerView.COLOR_CONTENT_CONT, APC_COLOR_RED);
-        colorManager.registerColor (AbstractSequencerView.COLOR_MEASURE, APC_COLOR_YELLOW);
-        colorManager.registerColor (AbstractSequencerView.COLOR_ACTIVE_MEASURE, APC_COLOR_GREEN);
+        colorManager.registerColor (AbstractSequencerView.COLOR_PAGE, APC_COLOR_YELLOW);
+        colorManager.registerColor (AbstractSequencerView.COLOR_ACTIVE_PAGE, APC_COLOR_GREEN);
+        colorManager.registerColor (AbstractSequencerView.COLOR_SELECTED_PAGE, APC_COLOR_RED);
 
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_OFF, APC_COLOR_BLACK);
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_RECORD, APC_COLOR_RED);

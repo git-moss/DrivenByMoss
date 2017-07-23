@@ -44,7 +44,7 @@ public class APCminiControllerExtensionDefinition extends AbstractControllerExte
     @Override
     public String getVersion ()
     {
-        return "5.01";
+        return "5.02";
     }
 
 

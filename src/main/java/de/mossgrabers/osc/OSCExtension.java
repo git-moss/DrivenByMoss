@@ -68,10 +68,23 @@ public class OSCExtension extends ControllerExtension
 
         final String receiveHost = this.configuration.getReceiveHost ();
         final int receivePort = this.configuration.getReceivePort ();
-        host.addDatagramPacketObserver (receiveHost, receivePort, (data) -> this.dispatcher.dispatchPacket (this.converter.convert (data, data.length)));
+        host.addDatagramPacketObserver (receiveHost, receivePort, this::handleOSCMessage);
 
         host.scheduleTask ( () -> this.writer.flush (true), 1000);
         host.println ("Initialized.");
+    }
+
+
+    private void handleOSCMessage (byte [] data)
+    {
+        try
+        {
+            this.dispatcher.dispatchPacket (this.converter.convert (data, data.length));
+        }
+        catch (final IllegalArgumentException ex)
+        {
+            this.getHost ().errorln (ex.getLocalizedMessage ());
+        }
     }
 
 

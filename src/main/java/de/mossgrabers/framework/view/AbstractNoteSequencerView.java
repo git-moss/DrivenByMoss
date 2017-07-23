@@ -63,7 +63,7 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
         this.numDisplayCols = numDisplayCols;
         this.offsetY = this.startKey;
 
-        this.getClip ().scrollTo (0, this.startKey);
+        this.clip.scrollTo (0, this.startKey);
     }
 
 
@@ -98,31 +98,43 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
         if (y < this.numSequencerRows)
         {
             if (velocity != 0)
-                this.getClip ().toggleStep (x, this.noteMap[y], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                this.clip.toggleStep (x, this.noteMap[y], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
             return;
         }
 
         // Clip length/loop area
         final int pad = x;
-        if (velocity > 0) // Button pressed
+
+        // Button pressed?
+        if (velocity > 0)
         {
-            if (this.loopPadPressed == -1) // Not yet a button pressed, store it
+            // Not yet a button pressed, store it
+            if (this.loopPadPressed == -1)
                 this.loopPadPressed = pad;
+            return;
         }
-        else if (this.loopPadPressed != -1)
+
+        if (this.loopPadPressed == -1)
+            return;
+
+        if (pad == this.loopPadPressed && pad != this.clip.getEditPage ())
         {
+            // Only single pad pressed -> page selection
+            this.clip.scrollToPage (pad);
+        }
+        else
+        {
+            // Set a new loop between the 2 selected pads
             final int start = this.loopPadPressed < pad ? this.loopPadPressed : pad;
             final int end = (this.loopPadPressed < pad ? pad : this.loopPadPressed) + 1;
-            final int quartersPerPad = this.model.getQuartersPerMeasure () / 2;
-
-            // Set a new loop between the 2 selected pads
-            final int newStart = start * quartersPerPad;
-            this.getClip ().setLoopStart (newStart);
-            this.getClip ().setLoopLength ((end - start) * quartersPerPad);
-            this.getClip ().setPlayRange (newStart, (double) end * quartersPerPad);
-
-            this.loopPadPressed = -1;
+            final int lengthOfOnePad = this.getLengthOfOnePage (this.numDisplayCols);
+            final double newStart = start * lengthOfOnePad;
+            this.clip.setLoopStart (newStart);
+            this.clip.setLoopLength ((end - start) * lengthOfOnePad);
+            this.clip.setPlayRange (newStart, (double) end * lengthOfOnePad);
         }
+
+        this.loopPadPressed = -1;
     }
 
 
@@ -130,59 +142,53 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
     @Override
     public void drawGrid ()
     {
+        final PadGrid gridPad = this.surface.getPadGrid ();
+        if (!this.model.canSelectedTrackHoldNotes ())
+        {
+            gridPad.turnOff ();
+            return;
+        }
+
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final TrackData selectedTrack = tb.getSelectedTrack ();
 
-        final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
-        final int step = this.getClip ().getCurrentStep ();
+        // Steps with notes
+        final int step = this.clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % this.numDisplayCols : -1;
-        final PadGrid gridPad = this.surface.getPadGrid ();
         for (int x = 0; x < this.numDisplayCols; x++)
         {
             for (int y = 0; y < this.numSequencerRows; y++)
             {
                 // 0: not set, 1: note continues playing, 2: start of note
-                final int isSet = this.getClip ().getStep (x, this.noteMap[y]);
-                gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (isKeyboardEnabled, isSet, x == hiStep, y, selectedTrack));
+                final int isSet = this.clip.getStep (x, this.noteMap[y]);
+                gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (isSet, x == hiStep, y, selectedTrack));
             }
         }
 
         if (this.numDisplayRows - this.numSequencerRows <= 0)
             return;
 
-        // Clip length/loop area
-        final int quartersPerPad = this.model.getQuartersPerMeasure () / 2;
-        final int stepsPerMeasure = (int) Math.round (quartersPerPad / AbstractSequencerView.RESOLUTIONS[this.selectedIndex]);
-        final int currentMeasure = step / stepsPerMeasure;
-        final int maxQuarters = quartersPerPad * 8;
-        final double start = this.getClip ().getLoopStart ();
-        final double loopStartPad = Math.floor (Math.max (0, start) / quartersPerPad);
-        final double loopEndPad = Math.ceil (Math.min (maxQuarters, start + this.getClip ().getLoopLength ()) / quartersPerPad);
+        final int lengthOfOnePad = this.getLengthOfOnePage (this.numDisplayCols);
+        final double loopStart = this.clip.getLoopStart ();
+        final int loopStartPad = (int) Math.ceil (loopStart / lengthOfOnePad);
+        final int loopEndPad = (int) Math.ceil ((loopStart + this.clip.getLoopLength ()) / lengthOfOnePad);
+        int currentPage = step / this.numDisplayCols;
         for (int pad = 0; pad < 8; pad++)
-        {
-            if (isKeyboardEnabled)
-                gridPad.lightEx (pad, 0, pad >= loopStartPad && pad < loopEndPad ? pad == currentMeasure ? AbstractSequencerView.COLOR_ACTIVE_MEASURE : AbstractSequencerView.COLOR_MEASURE : AbstractSequencerView.COLOR_NO_CONTENT);
-            else
-                gridPad.lightEx (pad, 0, AbstractSequencerView.COLOR_NO_CONTENT);
-        }
+            gridPad.lightEx (pad, 0, this.getPageColor (loopStartPad, loopEndPad, currentPage, this.clip.getEditPage (), pad));
     }
 
 
     /**
      * Get the color for a step.
      *
-     * @param isKeyboardEnabled Can we play?
      * @param isSet The step has content
      * @param hilite The step should be highlighted
      * @param note The note of the step
      * @param track A track from which to use the color
      * @return The color
      */
-    protected String getStepColor (final boolean isKeyboardEnabled, final int isSet, final boolean hilite, final int note, final TrackData track)
+    protected String getStepColor (final int isSet, final boolean hilite, final int note, final TrackData track)
     {
-        if (!isKeyboardEnabled)
-            return COLOR_NO_CONTENT;
-
         switch (isSet)
         {
             // Note continues
@@ -214,7 +220,7 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
         if (event != ButtonEvent.DOWN)
             return;
         final int offset = this.getScrollOffset ();
-        if (this.offsetY + offset < this.getClip ().getRowSize ())
+        if (this.offsetY + offset < this.clip.getRowSize ())
             this.updateOctave (this.offsetY + offset);
     }
 

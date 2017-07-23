@@ -23,7 +23,7 @@ import de.mossgrabers.framework.view.SceneView;
  */
 public class SceneCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C> implements ContinuousCommand
 {
-    private int scene;
+    protected int scene;
 
 
     /**

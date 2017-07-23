@@ -31,10 +31,12 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     public static final String       COLOR_CONTENT                = "COLOR_CONTENT";
     /** The color for a step with content which is not the start of the note. */
     public static final String       COLOR_CONTENT_CONT           = "COLOR_CONTENT_CONT";
-    /** The color for a measure. */
-    public static final String       COLOR_MEASURE                = "COLOR_MEASURE";
-    /** The color for an active measure. */
-    public static final String       COLOR_ACTIVE_MEASURE         = "COLOR_ACTIVE_MEASURE";
+    /** The color for a page. */
+    public static final String       COLOR_PAGE                   = "COLOR_PAGE";
+    /** The color for an active page. */
+    public static final String       COLOR_ACTIVE_PAGE            = "COLOR_ACTIVE_PAGE";
+    /** The color for a selected page. */
+    public static final String       COLOR_SELECTED_PAGE          = "COLOR_SELECTED_PAGE";
 
     protected static final double [] RESOLUTIONS                  =
     {
@@ -62,7 +64,6 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
 
     protected int                    numSequencerRows;
     protected int                    selectedIndex;
-    protected int                    offsetX;
     protected int                    offsetY;
     protected CursorClipProxy        clip;
     protected final Configuration    configuration;
@@ -101,7 +102,6 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
         this.selectedIndex = 4;
         this.scales = this.model.getScales ();
 
-        this.offsetX = 0;
         this.offsetY = 0;
 
         this.numSequencerRows = numSequencerRows;
@@ -147,16 +147,8 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      */
     public void onLeft (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        final int newOffset = this.offsetX - this.clip.getStepSize ();
-        if (newOffset < 0)
-            this.offsetX = 0;
-        else
-        {
-            this.offsetX = newOffset;
+        if (event == ButtonEvent.DOWN)
             this.clip.scrollStepsPageBackwards ();
-        }
     }
 
 
@@ -167,10 +159,8 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      */
     public void onRight (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        this.offsetX = this.offsetX + this.clip.getStepSize ();
-        this.clip.scrollStepsPageForward ();
+        if (event == ButtonEvent.DOWN)
+            this.clip.scrollStepsPageForward ();
     }
 
 
@@ -193,7 +183,9 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      */
     protected boolean isInXRange (final int x)
     {
-        return x >= this.offsetX && x < this.offsetX + this.clip.getStepSize ();
+        int stepSize = this.clip.getStepSize ();
+        final int start = this.clip.getEditPage () * stepSize;
+        return x >= start && x < start + stepSize;
     }
 
 
@@ -210,12 +202,39 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
 
 
     /**
-     * Get the offset in x direction.
-     *
-     * @return The offset
+     * Calculates the length of one sequencer page which is the number of displayed steps multiplied
+     * with the current grid resolution.
+     * 
+     * @param numOfSteps The number of displayed steps
+     * @return The floor of the length
      */
-    public int getOffsetX ()
+    protected int getLengthOfOnePage (final int numOfSteps)
     {
-        return this.offsetX;
+        return (int) Math.floor (numOfSteps * AbstractSequencerView.RESOLUTIONS[this.selectedIndex]);
+    }
+
+
+    /**
+     * Get the color for a sequencer page.
+     *
+     * @param loopStartPage The page where the loop starts
+     * @param loopEndPage The page where the loop ends
+     * @param playPage The page which contains the currently played step
+     * @param selectedPage The page selected fpr editing
+     * @param page The page for which to get the color
+     * @return The color to use
+     */
+    protected String getPageColor (final int loopStartPage, final int loopEndPage, final int playPage, final int selectedPage, final int page)
+    {
+        if (page == playPage)
+            return AbstractSequencerView.COLOR_ACTIVE_PAGE;
+
+        if (page == selectedPage)
+            return AbstractSequencerView.COLOR_SELECTED_PAGE;
+
+        if (page < loopStartPage || page >= loopEndPage)
+            return AbstractSequencerView.COLOR_NO_CONTENT;
+
+        return AbstractSequencerView.COLOR_PAGE;
     }
 }

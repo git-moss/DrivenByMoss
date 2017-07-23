@@ -25,6 +25,7 @@ public class CursorClipProxy
     private final int [] [] data;
     private Clip            clip;
     private ValueChanger    valueChanger;
+    private int             editPage = 0;
 
 
     /**
@@ -469,11 +470,37 @@ public class CursorClipProxy
 
 
     /**
+     * Scroll the clip view to the given page. Depends on the number of the steps of a page.
+     *
+     * @param page The page to select
+     */
+    public void scrollToPage (int page)
+    {
+        this.clip.scrollToStep (page * this.stepSize);
+        this.editPage = page;
+    }
+
+
+    /**
+     * Get the edit page.
+     *
+     * @return The edit page
+     */
+    public int getEditPage ()
+    {
+        return this.editPage;
+    }
+
+
+    /**
      * Scroll the steps one page backwards.
      */
     public void scrollStepsPageBackwards ()
     {
+        if (this.editPage <= 0)
+            return;
         this.clip.scrollStepsPageBackwards ();
+        this.editPage--;
     }
 
 
@@ -483,6 +510,7 @@ public class CursorClipProxy
     public void scrollStepsPageForward ()
     {
         this.clip.scrollStepsPageForward ();
+        this.editPage++;
     }
 
 

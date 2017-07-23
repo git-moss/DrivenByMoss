@@ -137,8 +137,9 @@ public class APCColors
         colorManager.registerColor (AbstractSequencerView.COLOR_NO_CONTENT, isMkII ? APC_MKII_COLOR_BLACK : APC_COLOR_BLACK);
         colorManager.registerColor (AbstractSequencerView.COLOR_CONTENT, isMkII ? APC_MKII_COLOR_BLUE_HI : APC_COLOR_RED);
         colorManager.registerColor (AbstractSequencerView.COLOR_CONTENT_CONT, isMkII ? APC_MKII_COLOR_BLUE_LO : APC_COLOR_RED);
-        colorManager.registerColor (AbstractSequencerView.COLOR_MEASURE, isMkII ? APC_MKII_COLOR_WHITE : APC_COLOR_GREEN);
-        colorManager.registerColor (AbstractSequencerView.COLOR_ACTIVE_MEASURE, isMkII ? APC_MKII_COLOR_GREEN_HI : APC_COLOR_YELLOW);
+        colorManager.registerColor (AbstractSequencerView.COLOR_PAGE, isMkII ? APC_MKII_COLOR_WHITE : APC_COLOR_GREEN);
+        colorManager.registerColor (AbstractSequencerView.COLOR_ACTIVE_PAGE, isMkII ? APC_MKII_COLOR_GREEN_HI : APC_COLOR_YELLOW);
+        colorManager.registerColor (AbstractSequencerView.COLOR_SELECTED_PAGE, isMkII ? APC_MKII_COLOR_BLUE_LO : APC_COLOR_RED);
 
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_OFF, isMkII ? APC_MKII_COLOR_BLACK : APC_COLOR_BLACK);
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_RECORD, isMkII ? APC_MKII_COLOR_RED_HI : APC_COLOR_RED);
