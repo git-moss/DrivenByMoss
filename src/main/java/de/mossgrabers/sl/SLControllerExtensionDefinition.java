@@ -34,7 +34,7 @@ public abstract class SLControllerExtensionDefinition extends AbstractController
     @Override
     public String getVersion ()
     {
-        return "5.0";
+        return "5.10";
     }
 
 

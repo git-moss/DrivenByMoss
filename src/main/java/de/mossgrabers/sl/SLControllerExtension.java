@@ -176,8 +176,11 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
 
         this.model.getTrackBank ().addTrackSelectionObserver (this::handleTrackChange);
         this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
+            if (!isSelected)
+                return;
             final ModeManager modeManager = this.surface.getModeManager ();
-            modeManager.setActiveMode (isSelected ? Modes.MODE_MASTER : modeManager.getPreviousModeId ());
+            if (!modeManager.isActiveMode (Modes.MODE_VOLUME))
+                modeManager.setActiveMode (Modes.MODE_MASTER);
         });
     }
 

@@ -9,8 +9,7 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.MasterTrackProxy;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.sl.mode.Modes;
@@ -27,8 +26,7 @@ import de.mossgrabers.sl.view.SLView;
  */
 public class ButtonRowSelectCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private int     row;
-    private boolean isMasterMode;
+    private int row;
 
 
     /**
@@ -96,45 +94,66 @@ public class ButtonRowSelectCommand<S extends ControlSurface<C>, C extends Confi
     private void onKnobRow2Select ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveModeId ();
-        if (activeModeId == Modes.MODE_MASTER)
-        {
-            modeManager.setActiveMode (Modes.MODE_TRACK);
-            this.isMasterMode = false;
-            if (this.model.isEffectTrackBankActive ())
-                this.model.toggleCurrentTrackBank ();
-            this.surface.getDisplay ().notify ("Tracks");
-        }
-        else if (activeModeId == Modes.MODE_TRACK)
-        {
-            if (this.model.isEffectTrackBankActive ())
-            {
-                modeManager.setActiveMode (Modes.MODE_MASTER);
-                this.surface.getDisplay ().notify ("Master");
-                this.isMasterMode = true;
-            }
-            else
-            {
-                this.model.toggleCurrentTrackBank ();
-                this.surface.getDisplay ().notify ("Effects");
-            }
-        }
-        else
-            modeManager.setActiveMode (this.isMasterMode ? Modes.MODE_MASTER : Modes.MODE_TRACK);
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData track = tb.getSelectedTrack ();
-        if (track == null)
+        if (modeManager.isActiveMode (Modes.MODE_MASTER))
+        {
+            this.activateTrackMode (true, false);
+            return;
+        }
+
+        if (modeManager.isActiveMode (Modes.MODE_TRACK))
+        {
+            if (this.model.isEffectTrackBankActive ())
+                this.activateMasterMode (true);
+            else
+                this.activateTrackMode (true, true);
+            return;
+        }
+
+        this.activateTrackMode (true, this.model.isEffectTrackBankActive ());
+    }
+
+
+    private void activateTrackMode (final boolean activateMode, final boolean isEffect)
+    {
+        final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
+        if (isEffect != isEffectTrackBankActive)
+            this.model.toggleCurrentTrackBank ();
+        if (activateMode)
+            this.surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
+        this.surface.getDisplay ().notify (isEffect ? "Effects" : "Tracks");
+        if (this.model.getCurrentTrackBank ().getSelectedTrack () == null)
             this.selectTrack (0);
+    }
+
+
+    private void activateMasterMode (final boolean activateMode)
+    {
+        final MasterTrackProxy masterTrack = this.model.getMasterTrack ();
+        masterTrack.select ();
+        masterTrack.makeVisible ();
+        if (activateMode)
+            this.surface.getModeManager ().setActiveMode (Modes.MODE_MASTER);
+        this.surface.getDisplay ().notify ("Master");
     }
 
 
     private void onSliderRowSelect ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.getActiveModeId () == Modes.MODE_VOLUME)
-            this.model.toggleCurrentTrackBank ();
-        else
+
+        if (!modeManager.isActiveMode (Modes.MODE_VOLUME))
+        {
             modeManager.setActiveMode (Modes.MODE_VOLUME);
+            this.activateTrackMode (false, false);
+            return;
+        }
+
+        if (this.model.getMasterTrack ().isSelected ())
+            this.activateTrackMode (false, false);
+        else if (this.model.isEffectTrackBankActive ())
+            this.activateMasterMode (false);
+        else
+            this.activateTrackMode (false, true);
     }
 }

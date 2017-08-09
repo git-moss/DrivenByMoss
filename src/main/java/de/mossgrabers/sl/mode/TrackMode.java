@@ -47,48 +47,47 @@ public class TrackMode extends AbstractMode<SLControlSurface, SLConfiguration>
         if (t == null)
         {
             d.setRow (0, "                        Please select a track...                       ").clearRow (2).done (2);
+            return;
+        }
+
+        d.setCell (0, 0, "Volume").setCell (2, 0, t.getVolumeStr (8)).setCell (0, 1, "Pan").setCell (2, 1, t.getPanStr (8));
+
+        int sendStart = 2;
+        int sendCount = 6;
+        if (this.surface.getConfiguration ().isDisplayCrossfader ())
+        {
+            sendStart = 3;
+            sendCount = 5;
+            final String crossfadeMode = t.getCrossfadeMode ();
+            d.setCell (0, 2, "Crossfdr").setCell (2, 2, "A".equals (crossfadeMode) ? "A" : "B".equals (crossfadeMode) ? "       B" : "   <> ");
+        }
+
+        final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+        int pos;
+        if (fxTrackBank != null)
+        {
+            final boolean isFX = this.model.isEffectTrackBankActive ();
+            for (int i = 0; i < sendCount; i++)
+            {
+                final TrackData fxTrack = fxTrackBank.getTrack (i);
+                final boolean isEmpty = isFX || !fxTrack.doesExist ();
+                pos = sendStart + i;
+                d.setCell (0, pos, isEmpty ? "" : fxTrack.getName ()).setCell (2, pos, isEmpty ? "" : t.getSends ()[i].getDisplayedValue (8));
+            }
+
+            if (isFX)
+                d.setCell (0, 7, t.getName ());
         }
         else
         {
-            d.setCell (0, 0, "Volume").setCell (2, 0, t.getVolumeStr (8)).setCell (0, 1, "Pan").setCell (2, 1, t.getPanStr (8));
-
-            int sendStart = 2;
-            int sendCount = 6;
-            if (this.surface.getConfiguration ().isDisplayCrossfader ())
+            for (int i = 0; i < sendCount; i++)
             {
-                sendStart = 3;
-                sendCount = 5;
-                final String crossfadeMode = t.getCrossfadeMode ();
-                d.setCell (0, 2, "Crossfdr").setCell (2, 2, "A".equals (crossfadeMode) ? "A" : "B".equals (crossfadeMode) ? "       B" : "   <> ");
+                pos = sendStart + i;
+                final SendData sendData = t.getSends ()[i];
+                d.setCell (0, pos, sendData.getName (8)).setCell (2, pos, sendData.getDisplayedValue (8));
             }
-
-            final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
-            int pos;
-            if (fxTrackBank != null)
-            {
-                final boolean isFX = this.model.isEffectTrackBankActive ();
-                for (int i = 0; i < sendCount; i++)
-                {
-                    final TrackData fxTrack = fxTrackBank.getTrack (i);
-                    final boolean isEmpty = isFX || !fxTrack.doesExist ();
-                    pos = sendStart + i;
-                    d.setCell (0, pos, isEmpty ? "" : fxTrack.getName ()).setCell (2, pos, isEmpty ? "" : t.getSends ()[i].getDisplayedValue (8));
-                }
-
-                if (isFX)
-                    d.setCell (0, 7, t.getName ());
-            }
-            else
-            {
-                for (int i = 0; i < sendCount; i++)
-                {
-                    pos = sendStart + i;
-                    final SendData sendData = t.getSends ()[i];
-                    d.setCell (0, pos, sendData.getName (8)).setCell (2, pos, sendData.getDisplayedValue (8));
-                }
-            }
-            d.done (0).done (2);
         }
+        d.done (0).done (2);
     }
 
 

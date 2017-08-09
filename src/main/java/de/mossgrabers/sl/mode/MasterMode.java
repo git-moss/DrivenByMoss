@@ -6,7 +6,6 @@ package de.mossgrabers.sl.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.MasterTrackProxy;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.sl.SLConfiguration;
@@ -40,10 +39,8 @@ public class MasterMode extends AbstractMode<SLControlSurface, SLConfiguration>
     @Override
     public void updateDisplay ()
     {
-        final Display d = this.surface.getDisplay ();
         final MasterTrackProxy master = this.model.getMasterTrack ();
-
-        d.setRow (0, MasterMode.PARAM_NAMES).clearRow (2).setCell (2, 0, master.getVolumeStr ()).setCell (2, 1, master.getPanStr ()).done (2);
+        this.surface.getDisplay ().setRow (0, MasterMode.PARAM_NAMES).clearRow (2).setCell (2, 0, master.getVolumeStr (8)).setCell (2, 1, master.getPanStr (8)).done (2);
     }
 
 

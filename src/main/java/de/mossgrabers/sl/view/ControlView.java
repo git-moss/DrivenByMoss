@@ -240,7 +240,8 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     @Override
     public void onButtonRow3 (final int index, final ButtonEvent event)
     {
-        this.selectTrack (index);
+        if (!this.model.getMasterTrack ().isSelected ())
+            this.selectTrack (index);
     }
 
 

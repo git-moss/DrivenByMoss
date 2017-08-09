@@ -253,8 +253,10 @@ public abstract class AbstractTrackBankProxy
     public void select (final int index)
     {
         final Track t = this.trackBank.getChannel (index);
-        if (t != null)
-            t.selectInEditor ();
+        if (t == null)
+            return;
+        t.selectInEditor ();
+        t.selectInMixer ();
     }
 
 

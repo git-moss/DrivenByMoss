@@ -8,6 +8,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.MasterTrackProxy;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.sl.SLConfiguration;
@@ -39,11 +40,21 @@ public class VolumeMode extends AbstractMode<SLControlSurface, SLConfiguration>
     @Override
     public void updateDisplay ()
     {
+        final Display d = this.surface.getDisplay ();
+
+        final MasterTrackProxy masterTrack = this.model.getMasterTrack ();
+        if (masterTrack.isSelected ())
+        {
+            d.clear ();
+            final String n = this.optimizeName (fixASCII (masterTrack.getName ()), 7);
+            d.setCell (1, 0, SLDisplay.RIGHT_ARROW + n).setCell (3, 0, masterTrack.getVolumeStr (8)).done (1).done (3);
+            return;
+        }
+
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final TrackData selTrack = tb.getSelectedTrack ();
 
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
-        final Display d = this.surface.getDisplay ();
         for (int i = 0; i < 8; i++)
         {
             final boolean isSel = i == selIndex;

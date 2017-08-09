@@ -300,6 +300,17 @@ public class MasterTrackProxy extends TrackData
     public void select ()
     {
         this.track.selectInEditor ();
+        this.track.selectInMixer ();
+    }
+
+
+    /**
+     * Make the master track visible (scrolls to the track in Bitwig).
+     */
+    public void makeVisible ()
+    {
+        this.track.makeVisibleInArranger ();
+        this.track.makeVisibleInMixer ();
     }
 
 
