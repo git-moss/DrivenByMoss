@@ -307,8 +307,8 @@ public class DeviceLayerMode extends BaseMode
         }
         else
         {
-            d.setCell (0, 0, "Volume").setCell (1, 0, l.getVolumeStr ()).setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? l.getVu () : l.getVolume (), Format.FORMAT_VALUE);
-            d.setCell (0, 1, "Pan").setCell (1, 1, l.getPanStr ()).setCell (2, 1, l.getPan (), Format.FORMAT_PAN);
+            d.setCell (0, 0, "Volume").setCell (1, 0, l.getVolumeStr (8)).setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? l.getVu () : l.getVolume (), Format.FORMAT_VALUE);
+            d.setCell (0, 1, "Pan").setCell (1, 1, l.getPanStr (8)).setCell (2, 1, l.getPan (), Format.FORMAT_PAN);
 
             final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
             if (fxTrackBank == null)
@@ -317,7 +317,7 @@ public class DeviceLayerMode extends BaseMode
                 {
                     final int pos = 2 + i;
                     final SendData sendData = l.getSends ()[i];
-                    d.setCell (0, pos, sendData.getName ()).setCell (1, pos, sendData.getDisplayedValue ()).setCell (2, pos, sendData.getValue (), Format.FORMAT_VALUE);
+                    d.setCell (0, pos, sendData.getName ()).setCell (1, pos, sendData.getDisplayedValue (8)).setCell (2, pos, sendData.getValue (), Format.FORMAT_VALUE);
                 }
             }
             else
@@ -335,7 +335,7 @@ public class DeviceLayerMode extends BaseMode
                     }
                     else
                     {
-                        d.setCell (0, pos, fxTrack.getName ()).setCell (1, pos, l.getSends ()[i].getDisplayedValue ());
+                        d.setCell (0, pos, fxTrack.getName ()).setCell (1, pos, l.getSends ()[i].getDisplayedValue (8));
                         d.setCell (2, pos, l.getSends ()[i].getValue (), Format.FORMAT_VALUE);
                     }
                 }

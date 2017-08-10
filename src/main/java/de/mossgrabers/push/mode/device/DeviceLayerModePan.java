@@ -89,7 +89,7 @@ public class DeviceLayerModePan extends DeviceLayerMode
         for (int i = 0; i < 8; i++)
         {
             final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
-            d.setCell (0, i, layer.doesExist () ? "Pan" : "").setCell (1, i, layer.getPanStr ());
+            d.setCell (0, i, layer.doesExist () ? "Pan" : "").setCell (1, i, layer.getPanStr (8));
             if (layer.doesExist ())
                 d.setCell (2, i, layer.getPan (), Format.FORMAT_VALUE);
             else

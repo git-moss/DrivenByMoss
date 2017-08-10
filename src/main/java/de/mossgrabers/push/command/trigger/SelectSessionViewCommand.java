@@ -22,6 +22,9 @@ import de.mossgrabers.push.view.Views;
  */
 public class SelectSessionViewCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {
+    private boolean isTemporary;
+
+
     /**
      * Constructor.
      *
@@ -34,23 +37,39 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<PushControl
     }
 
 
+    /**
+     * Activate temporary display of session view.
+     */
+    public void setTemporary ()
+    {
+        this.isTemporary = true;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        final ViewManager viewManager = this.surface.getViewManager ();
-        if (Views.isSessionView (viewManager.getActiveViewId ()))
+        if (event == ButtonEvent.DOWN)
         {
-            final ModeManager modeManager = this.surface.getModeManager ();
-            if (modeManager.isActiveMode (Modes.MODE_SESSION_VIEW_SELECT))
-                modeManager.restoreMode ();
+            this.isTemporary = false;
+
+            final ViewManager viewManager = this.surface.getViewManager ();
+            if (Views.isSessionView (viewManager.getActiveViewId ()))
+            {
+                final ModeManager modeManager = this.surface.getModeManager ();
+                if (modeManager.isActiveMode (Modes.MODE_SESSION_VIEW_SELECT))
+                    modeManager.restoreMode ();
+                else
+                    modeManager.setActiveMode (Modes.MODE_SESSION_VIEW_SELECT);
+            }
             else
-                modeManager.setActiveMode (Modes.MODE_SESSION_VIEW_SELECT);
+                viewManager.setActiveView (Views.VIEW_SESSION);
+
+            return;
         }
-        else
-            viewManager.setActiveView (Views.VIEW_SESSION);
+
+        if (event == ButtonEvent.UP && this.isTemporary)
+            this.surface.getViewManager ().restoreView ();
     }
 }

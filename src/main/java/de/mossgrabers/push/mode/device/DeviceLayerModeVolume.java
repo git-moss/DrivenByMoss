@@ -91,7 +91,7 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
         for (int i = 0; i < 8; i++)
         {
             final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
-            d.setCell (0, i, layer.doesExist () ? "Volume" : "").setCell (1, i, layer.getVolumeStr ());
+            d.setCell (0, i, layer.doesExist () ? "Volume" : "").setCell (1, i, layer.getVolumeStr (8));
             if (layer.doesExist ())
                 d.setCell (2, i, config.isEnableVUMeters () ? layer.getVu () : layer.getVolume (), Format.FORMAT_VALUE);
             else

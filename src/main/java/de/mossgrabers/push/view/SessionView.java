@@ -5,6 +5,8 @@
 package de.mossgrabers.push.view;
 
 import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.SceneBankProxy;
@@ -12,6 +14,7 @@ import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
 import de.mossgrabers.push.PushConfiguration;
+import de.mossgrabers.push.command.trigger.SelectSessionViewCommand;
 import de.mossgrabers.push.controller.PushColors;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.mode.Modes;
@@ -56,7 +59,11 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     public void onGridNote (final int note, final int velocity)
     {
         if (velocity == 0)
+        {
+            final TriggerCommand triggerCommand = this.surface.getViewManager ().getView (Views.VIEW_SESSION).getTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW);
+            ((SelectSessionViewCommand) triggerCommand).setTemporary ();
             return;
+        }
 
         final int index = note - 36;
         int t = index % this.columns;

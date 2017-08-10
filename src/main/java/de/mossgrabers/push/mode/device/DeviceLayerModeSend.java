@@ -100,7 +100,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
         {
             final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
             final boolean exists = layer.doesExist ();
-            d.setCell (0, i, exists ? layer.getSends ()[sendIndex].getName () : "").setCell (1, i, layer.getSends ()[sendIndex].getDisplayedValue ());
+            d.setCell (0, i, exists ? layer.getSends ()[sendIndex].getName () : "").setCell (1, i, layer.getSends ()[sendIndex].getDisplayedValue (8));
             if (exists)
                 d.setCell (2, i, layer.getSends ()[sendIndex].getValue (), Format.FORMAT_VALUE);
             else
