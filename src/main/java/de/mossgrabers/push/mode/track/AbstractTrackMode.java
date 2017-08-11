@@ -195,6 +195,8 @@ public abstract class AbstractTrackMode extends BaseMode
                 }
                 break;
         }
+
+        config.setCurrentMixMode (modeManager.getActiveModeId ());
     }
 
 
@@ -216,27 +218,23 @@ public abstract class AbstractTrackMode extends BaseMode
         final PushConfiguration config = this.surface.getConfiguration ();
         if (this.isPush2)
         {
+            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
+            {
+                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+                for (int i = 0; i < 8; i++)
+                {
+                    final TrackData track = tb.getTrack (i);
+                    this.surface.updateButton (102 + i, track.doesExist () && track.isPlaying () ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH2_COLOR_BLACK);
+                }
+                return;
+            }
+
             if (config.isMuteLongPressed () || config.isSoloLongPressed () || config.isMuteSoloLocked ())
             {
                 final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
                 final boolean muteState = config.isMuteState ();
                 for (int i = 0; i < 8; i++)
-                {
-                    final TrackData t = tb.getTrack (i);
-                    int color = PushColors.PUSH2_COLOR_BLACK;
-                    if (t.doesExist ())
-                    {
-                        if (muteState)
-                        {
-                            if (t.isMute ())
-                                color = PushColors.PUSH2_COLOR2_AMBER_LO;
-                        }
-                        else if (t.isSolo ())
-                            color = PushColors.PUSH2_COLOR2_YELLOW_HI;
-                    }
-
-                    this.surface.updateButton (102 + i, color);
-                }
+                    this.surface.updateButton (102 + i, this.getTrackStateColor (muteState, tb.getTrack (i)));
                 return;
             }
 
@@ -272,6 +270,23 @@ public abstract class AbstractTrackMode extends BaseMode
 
             this.surface.updateButton (102 + i, color);
         }
+    }
+
+
+    protected int getTrackStateColor (final boolean muteState, final TrackData t)
+    {
+        if (!t.doesExist ())
+            return PushColors.PUSH2_COLOR_BLACK;
+
+        if (muteState)
+        {
+            if (t.isMute ())
+                return PushColors.PUSH2_COLOR2_AMBER_LO;
+        }
+        else if (t.isSolo ())
+            return PushColors.PUSH2_COLOR2_YELLOW_HI;
+
+        return PushColors.PUSH2_COLOR_BLACK;
     }
 
 
@@ -329,7 +344,12 @@ public abstract class AbstractTrackMode extends BaseMode
             message.addByte (selectedMenu);
 
             // The menu item
-            if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
+            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
+            {
+                message.addString (t.doesExist () ? "Stop Clip" : "");
+                message.addBoolean (t.isPlaying ());
+            }
+            else if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
             {
                 message.addString (t.doesExist () ? "Mute" : "");
                 message.addBoolean (t.isMute ());

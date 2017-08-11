@@ -327,7 +327,12 @@ public class TrackMode extends AbstractTrackMode
                 message.addByte (t.isSelected () ? DisplayMessage.GRID_ELEMENT_CHANNEL_ALL : DisplayMessage.GRID_ELEMENT_CHANNEL_SELECTION);
 
             // The menu item
-            if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
+            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
+            {
+                message.addString (t.doesExist () ? "Stop Clip" : "");
+                message.addBoolean (t.isPlaying ());
+            }
+            else if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
             {
                 message.addString (t.doesExist () ? "Mute" : "");
                 message.addBoolean (t.isMute ());

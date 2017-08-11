@@ -46,6 +46,7 @@ public class TrackData extends ChannelData
         track.getCrossFadeMode ().markInterested ();
         track.getCanHoldNoteData ().markInterested ();
         track.getCanHoldAudioData ().markInterested ();
+        track.isStopped ().markInterested ();
 
         this.slots = new SlotData [numScenes];
         final ClipLauncherSlotBank cs = track.clipLauncherSlotBank ();
@@ -74,6 +75,7 @@ public class TrackData extends ChannelData
         this.track.getCrossFadeMode ().setIsSubscribed (enable);
         this.track.getCanHoldNoteData ().setIsSubscribed (enable);
         this.track.getCanHoldAudioData ().setIsSubscribed (enable);
+        this.track.isStopped ().setIsSubscribed (enable);
 
         for (final SlotData slot: this.slots)
             slot.enableObservers (enable);
@@ -187,5 +189,16 @@ public class TrackData extends ChannelData
     public SlotData [] getSlots ()
     {
         return this.slots;
+    }
+
+
+    /**
+     * Returns true if a clip is playing on the track.
+     *
+     * @return True if a clip is playing on the track.
+     */
+    public boolean isPlaying ()
+    {
+        return !this.track.isStopped ().get ();
     }
 }

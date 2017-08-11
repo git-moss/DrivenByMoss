@@ -130,7 +130,12 @@ public class SendMode extends AbstractTrackMode
                 message.addByte (DisplayMessage.GRID_ELEMENT_CHANNEL_SENDS);
 
                 // The menu item
-                if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
+                if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
+                {
+                    message.addString (t.doesExist () ? "Stop Clip" : "");
+                    message.addBoolean (t.isPlaying ());
+                }
+                else if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
                 {
                     message.addString (t.doesExist () ? "Mute" : "");
                     message.addBoolean (t.isMute ());

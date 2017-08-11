@@ -7,6 +7,7 @@ package de.mossgrabers.push;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.mode.Modes;
 
 import com.bitwig.extension.controller.api.Preferences;
 import com.bitwig.extension.controller.api.SettableEnumValue;
@@ -66,6 +67,7 @@ public class PushConfiguration extends AbstractConfiguration
     public static final int        RIBBON_MODE_FADER               = 4;
 
     private boolean                isSoloLongPressed               = false;
+    private boolean                isMuteLongPressed               = false;
     private boolean                isMuteSoloLocked                = false;
 
     private static final String    CATEGORY_RIBBON                 = "Ribbon";
@@ -90,6 +92,8 @@ public class PushConfiguration extends AbstractConfiguration
     private int                    padDynamics                     = 5;
 
     private boolean                isPush2;
+
+    private Integer                currentMixMode                  = Modes.MODE_TRACK;
 
     private SettableRangedValue    displayBrightnessSetting;
     private SettableRangedValue    ledBrightnessSetting;
@@ -465,7 +469,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public boolean isMuteLongPressed ()
     {
-        return this.isSoloLongPressed;
+        return this.isMuteLongPressed;
     }
 
 
@@ -476,7 +480,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void setIsMuteLongPressed (final boolean isMuteLongPressed)
     {
-        this.isSoloLongPressed = isMuteLongPressed;
+        this.isMuteLongPressed = isMuteLongPressed;
     }
 
 
@@ -642,6 +646,28 @@ public class PushConfiguration extends AbstractConfiguration
     public void setTrackState (final TrackState state)
     {
         this.trackState = state;
+    }
+
+
+    /**
+     * Set the current mode which is selected for mixing.
+     *
+     * @return The ID of the current mode which is selected for mixing.
+     */
+    public Integer getCurrentMixMode ()
+    {
+        return this.currentMixMode;
+    }
+
+
+    /**
+     * Get the current mode which is selected for mixing.
+     * 
+     * @param currentMixMode The ID of the current mode which is selected for mixing.
+     */
+    public void setCurrentMixMode (final Integer currentMixMode)
+    {
+        this.currentMixMode = currentMixMode;
     }
 
 

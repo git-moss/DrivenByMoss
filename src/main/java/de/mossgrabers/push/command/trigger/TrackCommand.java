@@ -64,7 +64,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
                 this.model.toggleCurrentTrackBank ();
             }
             else
-                modeManager.setActiveMode (Modes.MODE_TRACK);
+                modeManager.setActiveMode (config.getCurrentMixMode ());
         }
         else
         {
@@ -80,6 +80,8 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
             else
                 modeManager.setActiveMode (Modes.MODE_TRACK);
         }
+
+        config.setCurrentMixMode (modeManager.getActiveModeId ());
 
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final TrackData track = tb.getSelectedTrack ();

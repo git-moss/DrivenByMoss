@@ -112,7 +112,7 @@ public abstract class AbstractDisplay implements Display
     public AbstractDisplay clearColumn (final int column)
     {
         for (int i = 0; i < this.noOfLines; i++)
-            this.clearBlock (i, column);
+            this.clearCell (i, column);
         return this;
     }
 

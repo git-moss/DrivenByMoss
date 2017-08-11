@@ -47,7 +47,7 @@ public class ScaleGrid
         final int len = intervals.length;
 
         final boolean isUp = orientation == Orientation.ORIENT_UP;
-        final int shiftedNote = shift == rows ? rows : shift == 7 ? 12 : intervals[shift % len];
+        final int shiftedNote = shift == rows ? rows : shift == 7 ? 12 : (cols - shift);
         final int centerOffset = layout == ScaleLayout.EIGHT_UP_CENTER || layout == ScaleLayout.EIGHT_RIGHT_CENTER ? -3 : 0;
 
         for (int row = 0; row < rows; row++)

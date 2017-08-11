@@ -43,7 +43,8 @@ public class VolumeCommand extends AbstractTriggerCommand<PushControlSurface, Pu
         final Integer currentMode = modeManager.getActiveModeId ();
 
         // Layer mode selection for Push 1
-        if (!this.surface.getConfiguration ().isPush2 () && this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
+        final PushConfiguration config = this.surface.getConfiguration ();
+        if (!config.isPush2 () && this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
         {
             modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER_VOLUME);
             return;

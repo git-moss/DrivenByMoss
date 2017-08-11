@@ -46,7 +46,8 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
 
         // Layer mode selection for Push 1
         Integer mode;
-        if (!this.surface.getConfiguration ().isPush2 () && this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
+        final PushConfiguration config = this.surface.getConfiguration ();
+        if (!config.isPush2 () && this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
         {
             if (this.model.isEffectTrackBankActive ())
             {

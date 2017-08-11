@@ -83,7 +83,7 @@ public class SetupMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onFirstRow (final int index, final ButtonEvent event)
+    public void onSecondRow (final int index, final ButtonEvent event)
     {
         if (event != ButtonEvent.UP)
             return;

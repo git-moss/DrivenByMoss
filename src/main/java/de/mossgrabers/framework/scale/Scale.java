@@ -89,7 +89,7 @@ public enum Scale
         0,
         1,
         3,
-        4,
+        5,
         6,
         8,
         10
@@ -104,7 +104,8 @@ public enum Scale
         4,
         6,
         7,
-        9
+        9,
+        10
     }),
 
     /** The Whole-half scale. */
@@ -237,10 +238,10 @@ public enum Scale
     HIROJOSHI("Hirojoshi", new int []
     {
         0,
-        4,
-        6,
+        2,
+        3,
         7,
-        11
+        8
     }),
 
     /** The In-Sen scale. */
@@ -279,6 +280,7 @@ public enum Scale
         0,
         1,
         3,
+        4,
         7,
         8
     }),
