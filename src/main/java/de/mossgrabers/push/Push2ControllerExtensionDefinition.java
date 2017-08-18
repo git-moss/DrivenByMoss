@@ -7,8 +7,10 @@ package de.mossgrabers.push;
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.ControllerExtension;
+import com.bitwig.extension.controller.UsbEndpointInfo;
 import com.bitwig.extension.controller.api.ControllerHost;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -19,7 +21,16 @@ import java.util.UUID;
  */
 public class Push2ControllerExtensionDefinition extends PushControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("15176AA0-C476-11E6-9598-0800200C9A66");
+    private static final UUID  EXTENSION_ID     = UUID.fromString ("15176AA0-C476-11E6-9598-0800200C9A66");
+
+    /** Push 2 USB Vendor ID. */
+    private static final short VENDOR_ID        = 0x2982;
+    /** Push 2 USB Product ID. */
+    private static final short PRODUCT_ID       = 0x1967;
+    /** Push 2 USB Interface for the display. */
+    private static final byte  INTERFACE_NUMBER = 0;
+    /** Push 2 USB display endpoint. */
+    private static final byte  ENDPOINT_ADDRESS = (byte) 0x01;
 
 
     /** {@inheritDoc} */
@@ -56,6 +67,15 @@ public class Push2ControllerExtensionDefinition extends PushControllerExtensionD
                 this.addDeviceDiscoveryPair ("Ableton Push 2 Live Port", list);
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void listUsbOutputEndpoints (final List<UsbEndpointInfo> endpoints)
+    {
+        // endpoints.add (new UsbEndpointInfo (VENDOR_ID, PRODUCT_ID, INTERFACE_NUMBER,
+        // ENDPOINT_ADDRESS));
     }
 
 

@@ -1,7 +1,11 @@
 package de.mossgrabers.push.controller;
 
-import com.bitwig.extension.controller.api.ControllerHost;
+import de.mossgrabers.push.controller.display.model.DisplayModel;
+import de.mossgrabers.push.controller.display.model.ProtocolParser;
+import de.mossgrabers.push.controller.display.model.grid.GridElement;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,55 +18,57 @@ import java.util.List;
 public class DisplayMessage
 {
     /** Display only a channel name for selection. */
-    public static final int GRID_ELEMENT_CHANNEL_SELECTION  = 0;
+    public static final int      GRID_ELEMENT_CHANNEL_SELECTION  = 0;
     /** Display a channel, edit volume. */
-    public static final int GRID_ELEMENT_CHANNEL_VOLUME     = 1;
+    public static final int      GRID_ELEMENT_CHANNEL_VOLUME     = 1;
     /** Display a channel, edit panorama. */
-    public static final int GRID_ELEMENT_CHANNEL_PAN        = 2;
+    public static final int      GRID_ELEMENT_CHANNEL_PAN        = 2;
     /** Display a channel, edit crossfader. */
-    public static final int GRID_ELEMENT_CHANNEL_CROSSFADER = 3;
+    public static final int      GRID_ELEMENT_CHANNEL_CROSSFADER = 3;
     /** Display a channel sends. */
-    public static final int GRID_ELEMENT_CHANNEL_SENDS      = 4;
+    public static final int      GRID_ELEMENT_CHANNEL_SENDS      = 4;
     /** Display a channel, edit all parameters. */
-    public static final int GRID_ELEMENT_CHANNEL_ALL        = 5;
+    public static final int      GRID_ELEMENT_CHANNEL_ALL        = 5;
     /** Display a parameter with name and value. */
-    public static final int GRID_ELEMENT_PARAMETERS         = 6;
+    public static final int      GRID_ELEMENT_PARAMETERS         = 6;
     /** Display options on top and bottom. */
-    public static final int GRID_ELEMENT_OPTIONS            = 7;
+    public static final int      GRID_ELEMENT_OPTIONS            = 7;
     /** Display a list. */
-    public static final int GRID_ELEMENT_LIST               = 8;
+    public static final int      GRID_ELEMENT_LIST               = 8;
 
     /** The grid command. */
-    public static final int DISPLAY_COMMAND_GRID            = 10;
+    public static final int      DISPLAY_COMMAND_GRID            = 10;
 
-    private int             command;
-    private List<Integer>   array;
-    private ControllerHost  host;
-    private int             port;
+    private int                  command;
+    private List<Integer>        array;
+    private int                  port;
+
+    private final ProtocolParser parser                          = new ProtocolParser ();
+    private DisplayModel         model;
 
 
     /**
      * Constructor. Uses the grid command.
      *
-     * @param host The host
+     * @param model The display model
      * @param port The communication port
      */
-    public DisplayMessage (final ControllerHost host, final int port)
+    public DisplayMessage (final DisplayModel model, final int port)
     {
-        this (host, port, DISPLAY_COMMAND_GRID);
+        this (model, port, DISPLAY_COMMAND_GRID);
     }
 
 
     /**
      * Constructor.
      *
-     * @param host The host
+     * @param model The display model
      * @param port The communication port
      * @param command The command to send
      */
-    public DisplayMessage (final ControllerHost host, final int port, final int command)
+    public DisplayMessage (final DisplayModel model, final int port, final int command)
     {
-        this.host = host;
+        this.model = model;
         this.port = port;
         this.command = command;
         this.array = new ArrayList<> ();
@@ -223,6 +229,41 @@ public class DisplayMessage
 
     private void sendToDisplay (final byte [] data)
     {
-        this.host.sendDatagramPacket ("127.0.0.1", this.port, data);
+        // this.host.sendDatagramPacket ("127.0.0.1", this.port, data);
+        this.handleData (data, data.length);
+    }
+
+
+    /**
+     * Handle the received data.
+     *
+     * @param data The data buffer with the received data
+     * @param length The length of usable data in the buffer
+     */
+    public void handleData (final byte [] data, final int length)
+    {
+        // -16 == 0xF0, -9 == 0xF7
+        if (data[0] != -16 || data[length - 1] != -9)
+        {
+            // this.model.addLogMessage ("Unformatted messaged received.");
+            return;
+        }
+
+        switch (data[1])
+        {
+            case DISPLAY_COMMAND_GRID:
+                try (final ByteArrayInputStream in = new ByteArrayInputStream (data, 2, length - 3))
+                {
+                    final List<GridElement> elements = this.parser.parse (in);
+                    if (elements != null)
+                        this.model.setGridElements (elements);
+                }
+                catch (final IOException ex)
+                {
+                    // this.model.addLogMessage ("Unparsable grid element message: " +
+                    // ex.getLocalizedMessage ());
+                }
+                break;
+        }
     }
 }

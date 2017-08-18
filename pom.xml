@@ -6,9 +6,17 @@
 	<artifactId>DrivenByMoss</artifactId>
 	<packaging>jar</packaging>
 	<name>DrivenByMoss</name>
-	<version>LOCAL-21</version>
+	<version>LOCAL</version>
 
 	<!-- https://mvnrepository.com/artifact/com.illposed.osc/javaosc-core -->
+
+	<repositories>
+		<repository>
+			<id>bitwig</id>
+			<name>Bitwig Maven Repository</name>
+			<url>https://maven.bitwig.com</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -17,18 +25,10 @@
 			<version>0.4</version>
 		</dependency>
 
-<!--	<repositories>
-       <repository>
-         <id>bitwig</id>
-         <name>Bitwig Maven Repository</name>
-         <url>https://maven.bitwig.com</url>
-       </repository>
-   </repositories> -->
-
 		<dependency>
 			<groupId>com.bitwig</groupId>
 			<artifactId>extension-api</artifactId>
-			<version>2</version>
+			<version>5</version>
 		</dependency>
 	</dependencies>
 
