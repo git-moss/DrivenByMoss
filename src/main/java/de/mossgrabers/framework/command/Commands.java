@@ -249,6 +249,10 @@ public interface Commands
     Integer COMMAND_MOVE_TRACK_LEFT          = Integer.valueOf (118);
     /** The move bank left command. */
     Integer COMMAND_MOVE_TRACK_RIGHT         = Integer.valueOf (119);
+    /** The command to save the current project. */
+    Integer COMMAND_SAVE                     = Integer.valueOf (120);
+    /** The command to toggle markers. */
+    Integer COMMAND_MARKER                   = Integer.valueOf (121);
 
     /** Continuous knob 1. */
     Integer CONT_COMMAND_KNOB1               = Integer.valueOf (1);

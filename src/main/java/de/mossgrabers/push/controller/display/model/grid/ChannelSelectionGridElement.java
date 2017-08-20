@@ -2,10 +2,13 @@ package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.controller.display.model.ChannelType;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
+import de.mossgrabers.push.controller.display.model.ResourceHandler;
 
 import com.bitwig.extension.api.GraphicsOutput;
+import com.bitwig.extension.api.Image;
 
 import java.awt.Color;
+import java.awt.Label;
 import java.io.IOException;
 import java.util.EnumMap;
 
@@ -25,13 +28,13 @@ public class ChannelSelectionGridElement extends AbstractGridElement
 
     static
     {
-        ICONS.put (ChannelType.AUDIO, "/images/track/audio_track.svg");
-        ICONS.put (ChannelType.INSTRUMENT, "/images/track/instrument_track.svg");
-        ICONS.put (ChannelType.GROUP, "/images/track/group_track.svg");
-        ICONS.put (ChannelType.EFFECT, "/images/track/return_track.svg");
-        ICONS.put (ChannelType.HYBRID, "/images/track/hybrid_track.svg");
-        ICONS.put (ChannelType.MASTER, "/images/track/master_track.svg");
-        ICONS.put (ChannelType.LAYER, "/images/track/multi_layer.svg");
+        ICONS.put (ChannelType.AUDIO, "track/audio_track.svg");
+        ICONS.put (ChannelType.INSTRUMENT, "track/instrument_track.svg");
+        ICONS.put (ChannelType.GROUP, "track/group_track.svg");
+        ICONS.put (ChannelType.EFFECT, "track/return_track.svg");
+        ICONS.put (ChannelType.HYBRID, "track/hybrid_track.svg");
+        ICONS.put (ChannelType.MASTER, "track/master_track.svg");
+        ICONS.put (ChannelType.LAYER, "track/multi_layer.svg");
     }
 
     private final ChannelType type;
@@ -114,17 +117,15 @@ public class ChannelSelectionGridElement extends AbstractGridElement
         if (iconName != null)
         {
             final Color textColor = layoutSettings.getTextColor ();
-            // TODO
-            // final BufferedImage icon = SVGImage.getSVGImage (iconName, textColor);
-            // gc.drawImage (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height -
-            // TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2, null);
-            // setColor (gc, textColor);
-            // TODO gc.setFont (layoutSettings.getTextFont ((int) (1.2 * UNIT)));
+            // TODO use textColor
+            final Image icon = ResourceHandler.getSVGImage (iconName);
+            gc.drawImage (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2);
 
+            // TODO gc.setFont (layoutSettings.getTextFont ((int) (1.2 * UNIT)));
             // gc.clipRect (left + DOUBLE_UNIT, trackRowTop, width - DOUBLE_UNIT - INSET,
             // TRACK_ROW_HEIGHT);
-            // drawTextInBounds (gc, name, left + DOUBLE_UNIT, trackRowTop, width, TRACK_ROW_HEIGHT,
-            // Label.LEFT);
+            gc.setFontSize (1.2 * UNIT);
+            drawTextInBounds (gc, name, left + DOUBLE_UNIT, trackRowTop, width, TRACK_ROW_HEIGHT, Label.LEFT, textColor);
             // gc.clip (null);
         }
 

@@ -68,13 +68,13 @@ public class OptionsGridElement extends AbstractGridElement
 
         final double headerHeight = (DISPLAY_HEIGHT - 2 * menuHeight) / 2;
 
-        // gc.setColor (layoutSettings.getTextColor ());
+        Color textColor = layoutSettings.getTextColor ();
         // TODO gc.setFont (layoutSettings.getTextFont (headerHeight / 2));
 
         if (hasTopHeader)
-            drawTextInHeight (gc, this.headerTop, left, menuHeight, headerHeight);
+            drawTextInHeight (gc, this.headerTop, left, menuHeight, headerHeight, textColor);
         if (hasBottomHeader)
-            drawTextInHeight (gc, this.headerBottom, left, menuHeight + headerHeight, headerHeight);
+            drawTextInHeight (gc, this.headerBottom, left, menuHeight + headerHeight, headerHeight, textColor);
     }
 
 
@@ -101,8 +101,7 @@ public class OptionsGridElement extends AbstractGridElement
         gc.rectangle (left, top, width, height);
         gc.fill ();
 
-        // gc.setColor (isSelected ? layoutSettings.getBorderColor () : textColor);
         // TODO gc.setFont (layoutSettings.getTextFont (height / 2));
-        drawTextInBounds (gc, menu, left, top, width, height, Label.CENTER);
+        drawTextInBounds (gc, menu, left, top, width, height, Label.CENTER, isSelected ? layoutSettings.getBorderColor () : textColor);
     }
 }

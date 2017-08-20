@@ -128,8 +128,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
             if (this.sendNames[i].length () == 0)
                 break;
 
-            setColor (gc, textColor);
-            drawTextInBounds (gc, this.sendNames[i], faderLeft, topy + SEPARATOR_SIZE, width, sendRowHeight, Label.LEFT);
+            drawTextInBounds (gc, this.sendNames[i], faderLeft, topy + SEPARATOR_SIZE, width, sendRowHeight, Label.LEFT, textColor);
             topy += sendRowHeight;
             setColor (gc, borderColor);
             gc.rectangle (faderLeft, topy + SEPARATOR_SIZE, sliderWidth, sliderHeight);
@@ -174,8 +173,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
                 gc.rectangle (boxLeft, volumeTextTop, boxWidth - 1, UNIT);
                 gc.stroke ();
                 // TODO gc.setFont (textFont);
-                setColor (gc, textColor);
-                drawTextInBounds (gc, this.sendTexts[i], boxLeft, volumeTextTop, boxWidth, UNIT, Label.CENTER);
+                drawTextInBounds (gc, this.sendTexts[i], boxLeft, volumeTextTop, boxWidth, UNIT, Label.CENTER, textColor);
             }
 
             topy += sendRowHeight;

@@ -107,9 +107,9 @@ public abstract class AbstractGridElement implements GridElement
      * @param height The height position of the boundary
      * @param alignment The alignment of the text: Label.LEFT or Label.CENTER
      */
-    public static void drawTextInBounds (final GraphicsOutput g, final String text, final double x, final double y, final double width, final double height, final int alignment)
+    public static void drawTextInBounds (final GraphicsOutput g, final String text, final double x, final double y, final double width, final double height, final int alignment, final Color color)
     {
-        drawTextInBounds (g, text, x, y, width, height, alignment, getTextDescent (g, "Hg"));
+        drawTextInBounds (g, text, x, y, width, height, alignment, getTextDescent (g, "Hg"), color);
     }
 
 
@@ -125,7 +125,7 @@ public abstract class AbstractGridElement implements GridElement
      * @param alignment The alignment of the text: Label.LEFT or Label.CENTER
      * @param textDescent Text text descent
      */
-    public static void drawTextInBounds (final GraphicsOutput g, final String text, final double x, final double y, final double width, final double height, final int alignment, final int textDescent)
+    public static void drawTextInBounds (final GraphicsOutput g, final String text, final double x, final double y, final double width, final double height, final int alignment, final int textDescent, final Color color)
     {
         if (text == null || text.length () == 0)
             return;
@@ -144,7 +144,7 @@ public abstract class AbstractGridElement implements GridElement
                 pos = x + (width - dim.width) / 2.0;
                 break;
         }
-        // TODO g.drawString (text, pos, y + height - (height - dim.height) / 2 - textDescent);
+        g.drawText (pos, y + height - (height - dim.height) / 2 - textDescent, text, color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
         // g.setClip (null);
     }
 
@@ -158,13 +158,12 @@ public abstract class AbstractGridElement implements GridElement
      * @param y The y position of the boundary
      * @param height The height position of the boundary
      */
-    public static void drawTextInHeight (final GraphicsOutput g, final String text, final double x, final double y, final double height)
+    public static void drawTextInHeight (final GraphicsOutput g, final String text, final double x, final double y, final double height, final Color color)
     {
         if (text == null || text.length () == 0)
             return;
         final Dimension dim = getTextDims (g, text);
-        // TODO g.drawString (text, x, y + height - (height - dim.height) / 2 - getTextDescent (g,
-        // "Hg"));
+        g.drawText (x, y + height - (height - dim.height) / 2 - getTextDescent (g, "Hg"), text, color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
     }
 
 
@@ -177,6 +176,9 @@ public abstract class AbstractGridElement implements GridElement
      */
     public static Dimension getTextDims (final GraphicsOutput g, final String text)
     {
+        // TODO CAN ONLY BE CALLED DURING INIT
+        // TextExtents textExtents = g.getTextExtents (text);
+
         // TODO
         // final FontMetrics fm = g.getFontMetrics ();
         // final Rectangle2D bounds = fm.getStringBounds (text, g);
@@ -184,6 +186,10 @@ public abstract class AbstractGridElement implements GridElement
         // final double width = bounds.getWidth ();
         // bounds.setRect (bounds.getX (), bounds.getY (), width, lm.getHeight ());
         // return new Dimension ((int) Math.round (width), (int) Math.round (bounds.getHeight ()));
+
+        // return new Dimension ((int) Math.round (textExtents.getWidth ()), (int) Math.round
+        // (textExtents.getHeight ()));
+
         return new Dimension (100, 20);
     }
 
@@ -235,9 +241,9 @@ public abstract class AbstractGridElement implements GridElement
         // fill
         gc.rectangle (left, MENU_HEIGHT - 2.0, width + SEPARATOR_SIZE, 1);
 
-        setColor (gc, this.isMenuSelected ? borderColor : textColor);
+        // setColor (gc, this.isMenuSelected ? borderColor : textColor);
         // TODO gc.setFont (layoutSettings.getTextFont (UNIT));
-        drawTextInBounds (gc, this.menuName, left, 0, width, UNIT + SEPARATOR_SIZE, Label.CENTER);
+        drawTextInBounds (gc, this.menuName, left, 0, width, UNIT + SEPARATOR_SIZE, Label.CENTER, this.isMenuSelected ? borderColor : textColor);
     }
 
 

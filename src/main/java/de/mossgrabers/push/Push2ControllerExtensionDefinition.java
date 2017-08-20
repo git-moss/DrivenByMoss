@@ -74,8 +74,7 @@ public class Push2ControllerExtensionDefinition extends PushControllerExtensionD
     @Override
     public void listUsbOutputEndpoints (final List<UsbEndpointInfo> endpoints)
     {
-        // endpoints.add (new UsbEndpointInfo (VENDOR_ID, PRODUCT_ID, INTERFACE_NUMBER,
-        // ENDPOINT_ADDRESS));
+        endpoints.add (new UsbEndpointInfo (VENDOR_ID, PRODUCT_ID, INTERFACE_NUMBER, ENDPOINT_ADDRESS));
     }
 
 

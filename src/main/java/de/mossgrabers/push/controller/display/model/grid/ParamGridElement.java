@@ -82,10 +82,9 @@ public class ParamGridElement extends ChannelSelectionGridElement
 
         // Draw the name and value texts
         final Color textColor = layoutSettings.getTextColor ();
-        setColor (gc, textColor);
         // TODO gc.setFont (layoutSettings.getTextFont (elementHeight * 2 / 3));
-        drawTextInBounds (gc, this.paramName, left + INSET - 1, CONTROLS_TOP - INSET, elementWidth, elementHeight, Label.CENTER);
-        drawTextInBounds (gc, this.paramValueText, left + INSET - 1, CONTROLS_TOP - INSET + elementHeight, elementWidth, elementHeight, Label.CENTER);
+        drawTextInBounds (gc, this.paramName, left + INSET - 1, CONTROLS_TOP - INSET, elementWidth, elementHeight, Label.CENTER, textColor);
+        drawTextInBounds (gc, this.paramValueText, left + INSET - 1, CONTROLS_TOP - INSET + elementHeight, elementWidth, elementHeight, Label.CENTER, textColor);
 
         // Value slider
         if (isValueMissing)

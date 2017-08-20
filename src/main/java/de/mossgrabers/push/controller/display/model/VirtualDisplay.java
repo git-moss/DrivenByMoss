@@ -6,7 +6,6 @@ import com.bitwig.extension.api.Bitmap;
 import com.bitwig.extension.api.BitmapFormat;
 import com.bitwig.extension.api.GraphicsOutput;
 import com.bitwig.extension.api.GraphicsOutput.AntialiasMode;
-import com.bitwig.extension.api.Image;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.awt.Color;
@@ -47,6 +46,22 @@ public class VirtualDisplay
     {
         this.model = model;
 
+        ResourceHandler.init (host);
+        ResourceHandler.addSVGImage ("channel/mute.svg");
+        ResourceHandler.addSVGImage ("channel/record_arm.svg");
+        ResourceHandler.addSVGImage ("channel/solo.svg");
+        ResourceHandler.addSVGImage ("channel/solo.svg");
+        ResourceHandler.addSVGImage ("track/audio_track.svg");
+        ResourceHandler.addSVGImage ("track/crossfade_a.svg");
+        ResourceHandler.addSVGImage ("track/crossfade_ab.svg");
+        ResourceHandler.addSVGImage ("track/crossfade_b.svg");
+        ResourceHandler.addSVGImage ("track/group_track.svg");
+        ResourceHandler.addSVGImage ("track/hybrid_track.svg");
+        ResourceHandler.addSVGImage ("track/instrument_track.svg");
+        ResourceHandler.addSVGImage ("track/master_track.svg");
+        ResourceHandler.addSVGImage ("track/multi_layer.svg");
+        ResourceHandler.addSVGImage ("track/return_track.svg");
+
         this.image1 = host.createBitmap (DISPLAY_WIDTH, DISPLAY_HEIGHT, BitmapFormat.ARGB32);
         this.image2 = host.createBitmap (DISPLAY_WIDTH, DISPLAY_HEIGHT, BitmapFormat.ARGB32);
         this.currentImage = this.image1;
@@ -59,9 +74,6 @@ public class VirtualDisplay
 
         this.model.addGridElementChangeListener (this::redrawGrid);
         this.layoutSettings = layoutSettings;
-
-        Image loadSVG = host.loadSVG ("mute.svg", 1);
-        host.println (loadSVG == null ? "null" : loadSVG.toString ());
 
         // TODO
         // this.layoutSettings.addFontChangeListener ( (observable, oldValue, newValue) ->
@@ -108,7 +120,7 @@ public class VirtualDisplay
         final Color borderColor = this.layoutSettings.getBorderColor ();
         gc.setColor (borderColor.getRed () / 255.0, borderColor.getGreen () / 255.0, borderColor.getBlue () / 255.0);
 
-        // gc.setColor (1, 1, 1);
+        // gc.setColor (0.6, 0.6, 0.6, 1);
 
         gc.paint ();
 

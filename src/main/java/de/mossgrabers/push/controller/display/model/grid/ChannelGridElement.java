@@ -2,8 +2,10 @@ package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.controller.display.model.ChannelType;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
+import de.mossgrabers.push.controller.display.model.ResourceHandler;
 
 import com.bitwig.extension.api.GraphicsOutput;
+import com.bitwig.extension.api.Image;
 
 import java.awt.Color;
 import java.awt.Label;
@@ -146,26 +148,17 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         {
             // Crossfader A|B
             // TODO
-            // final double crossWidth = controlWidth / 3;
-            // final Color selColor = this.editType == EDIT_TYPE_CROSSFADER || this.editType ==
-            // EDIT_TYPE_ALL ? editColor : textColor;
-            // final BufferedImage crossfaderAIcon = SVGImage.getSVGImage
-            // ("/images/track/crossfade_a.svg", this.crossfadeMode == 0 ? selColor :
-            // backgroundDarker);
-            // gc.drawImage (crossfaderAIcon, left + INSET + (crossWidth - crossfaderAIcon.getWidth
-            // ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2, null);
-            // final BufferedImage crossfaderABIcon = SVGImage.getSVGImage
-            // ("/images/track/crossfade_ab.svg", this.crossfadeMode == 1 ? selColor :
-            // backgroundDarker);
-            // gc.drawImage (crossfaderABIcon, crossWidth + left + INSET + (crossWidth -
-            // crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight -
-            // crossfaderAIcon.getHeight ()) / 2, null);
-            // final BufferedImage crossfaderBIcon = SVGImage.getSVGImage
-            // ("/images/track/crossfade_b.svg", this.crossfadeMode == 2 ? selColor :
-            // backgroundDarker);
-            // gc.drawImage (crossfaderBIcon, 2 * crossWidth + left + INSET + (crossWidth -
-            // crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight -
-            // crossfaderAIcon.getHeight ()) / 2, null);
+            final double crossWidth = controlWidth / 3;
+            final Color selColor = this.editType == EDIT_TYPE_CROSSFADER || this.editType == EDIT_TYPE_ALL ? editColor : textColor;
+            // TODO this.crossfadeMode == 0 ? selColor : backgroundDarker
+            final Image crossfaderAIcon = ResourceHandler.getSVGImage ("track/crossfade_a.svg");
+            gc.drawImage (crossfaderAIcon, left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
+            // TODO this.crossfadeMode == 1 ? selColor : backgroundDarker
+            final Image crossfaderABIcon = ResourceHandler.getSVGImage ("track/crossfade_ab.svg");
+            gc.drawImage (crossfaderABIcon, crossWidth + left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
+            // TODO this.crossfadeMode == 2 ? selColor : backgroundDarker
+            final Image crossfaderBIcon = ResourceHandler.getSVGImage ("track/crossfade_b.svg");
+            gc.drawImage (crossfaderBIcon, 2 * crossWidth + left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
         }
 
         // Panorama
@@ -204,7 +197,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         // Volume slider
         // Ensure that maximum value is reached even if rounding errors happen
         final double volumeWidth = controlWidth - 2 * SEPARATOR_SIZE - faderOffset;
-        final double volumeHeight = (double) (this.volumeValue >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.volumeValue / maxValue);
+        final double volumeHeight = this.volumeValue >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.volumeValue / maxValue;
         final boolean isVolumeModulated = this.modulatedVolumeValue != 16383; // == -1
         final double modulatedVolumeHeight = isVolumeModulated ? (double) (this.modulatedVolumeValue >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.modulatedVolumeValue / maxValue) : volumeHeight;
         final double volumeTop = faderTop + SEPARATOR_SIZE + faderInnerHeight - volumeHeight;
@@ -223,7 +216,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
 
         // VU
         setColor (gc, backgroundDarker);
-        final double vuHeight = (double) (this.vuValue >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.vuValue / maxValue);
+        final double vuHeight = this.vuValue >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.vuValue / maxValue;
         final double vuOffset = faderInnerHeight - vuHeight;
         gc.rectangle (controlStart + SEPARATOR_SIZE, faderTop + SEPARATOR_SIZE, faderOffset - SEPARATOR_SIZE, faderInnerHeight);
         gc.fill ();
@@ -236,16 +229,16 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         if (type != ChannelType.LAYER)
         {
             // Rec Arm
-            drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, Color.RED, textColor, this.isArm, "/images/channel/record_arm.svg", layoutSettings);
+            drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, Color.RED, textColor, this.isArm, "channel/record_arm.svg", layoutSettings);
         }
 
         // Solo
         buttonTop += buttonHeight + 2 * SEPARATOR_SIZE;
-        drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, Color.YELLOW, textColor, this.isSolo, "/images/channel/solo.svg", layoutSettings);
+        drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, Color.YELLOW, textColor, this.isSolo, "channel/solo.svg", layoutSettings);
 
         // Mute
         buttonTop += buttonHeight + 2 * SEPARATOR_SIZE;
-        drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, new Color (245, 129, 17), textColor, this.isMute, "/images/channel/mute.svg", layoutSettings);
+        drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, new Color (245, 129, 17), textColor, this.isMute, "channel/mute.svg", layoutSettings);
 
         // Draw panorama text on top if set
         if (isPanTouched)
@@ -257,8 +250,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
             gc.rectangle (controlStart, panTextTop, controlWidth - 1, UNIT);
             gc.stroke ();
             // TODO gc.setFont (layoutSettings.getTextFont (UNIT));
-            setColor (gc, textColor);
-            drawTextInBounds (gc, this.panText, controlStart, panTextTop, controlWidth, UNIT, Label.CENTER);
+            drawTextInBounds (gc, this.panText, controlStart, panTextTop, controlWidth, UNIT, Label.CENTER, textColor);
         }
 
         // Draw volume text on top if set
@@ -272,8 +264,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
             gc.rectangle (volumeTextLeft, volumeTextTop, volumeTextWidth - 1, UNIT);
             gc.stroke ();
             // TODO gc.setFont (layoutSettings.getTextFont (UNIT));
-            setColor (gc, textColor);
-            drawTextInBounds (gc, this.volumeText, volumeTextLeft, volumeTextTop, volumeTextWidth, UNIT, Label.CENTER);
+            drawTextInBounds (gc, this.volumeText, volumeTextLeft, volumeTextTop, volumeTextWidth, UNIT, Label.CENTER, textColor);
         }
     }
 
@@ -300,30 +291,47 @@ public class ChannelGridElement extends ChannelSelectionGridElement
 
         // setColor (gc, borderColor);
         // gc.drawRoundRect (left, top, width, height, 5, 5);
-        //
-        // if (isOn)
-        // {
-        // setColor (gc, isOnColor);
-        // gc.fillRoundRect (left + 1, top + 1, width - 1, height - 1, 5, 5);
-        // }
-        // else
-        // {
-        // final Color brighter = backgroundColor.brighter ();
-        // setColor (gc, brighter.brighter ());
-        // gc.drawRoundRect (left + 1, top + 1, width - 2, height - 2, 5, 5);
-        //
-        // final Paint oldPaint = gc.getPaint ();
-        // final GradientPaint gp = new GradientPaint (left, top + 1, backgroundColor, left, top +
-        // height, brighter);
-        // gc.setPaint (gp);
-        // gc.fillRoundRect (left + 2, top + 2, width - 2, height - 2, 5, 5);
-        // gc.setPaint (oldPaint);
-        // }
 
-        // TODO
-        // final BufferedImage icon = SVGImage.getSVGImage (iconName, isOn ? borderColor :
-        // textColor);
-        // gc.drawImage (icon, left + (width - icon.getWidth ()) / 2, top + (height - icon.getHeight
-        // ()) / 2, null);
+        if (isOn)
+        {
+            // setColor (gc, isOnColor);
+            // gc.fillRoundRect (left + 1, top + 1, width - 1, height - 1, 5, 5);
+
+            drawRoundedRect (gc, left + 1, top + 1, width - 1, height - 1, 5, isOnColor);
+        }
+        else
+        {
+            final Color brighter = backgroundColor.brighter ();
+            // setColor (gc, brighter.brighter ());
+            // gc.drawRoundRect (left + 1, top + 1, width - 2, height - 2, 5, 5);
+            drawRoundedRect (gc, left + 1, top + 1, width - 2, height - 2, 5, brighter.brighter ());
+
+            // final Paint oldPaint = gc.getPaint ();
+            // final GradientPaint gp = new GradientPaint (left, top + 1, backgroundColor, left, top
+            // + height, brighter);
+            // gc.setPaint (gp);
+            // gc.fillRoundRect (left + 2, top + 2, width - 2, height - 2, 5, 5);
+            // gc.setPaint (oldPaint);
+        }
+
+        // TODO use color isOn ? borderColor : textColor
+        final Image icon = ResourceHandler.getSVGImage (iconName);
+        gc.drawImage (icon, left + (width - icon.getWidth ()) / 2, top + (height - icon.getHeight ()) / 2);
+    }
+
+
+    private static void drawRoundedRect (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final double radius, final Color backgroundColor)
+    {
+        setColor (gc, backgroundColor);
+
+        double degrees = Math.PI / 180.0;
+
+        gc.newSubPath ();
+        gc.arc (left + width - radius, top + radius, radius, -90 * degrees, 0 * degrees);
+        gc.arc (left + width - radius, top + height - radius, radius, 0 * degrees, 90 * degrees);
+        gc.arc (left + radius, top + height - radius, radius, 90 * degrees, 180 * degrees);
+        gc.arc (left + radius, top + radius, radius, 180 * degrees, 270 * degrees);
+        gc.closePath ();
+        gc.fill ();
     }
 }

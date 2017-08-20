@@ -57,9 +57,8 @@ public class ListGridElement extends AbstractGridElement
             gc.rectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE);
             gc.fill ();
 
-            // gc.setColor (isSelected ? borderColor : textColor);
             // TODO gc.setFont (layoutSettings.getTextFont (itemHeight / 2));
-            drawTextInBounds (gc, item.getKey (), itemLeft + INSET, itemTop, itemWidth - 2 * INSET, itemHeight, Label.LEFT);
+            drawTextInBounds (gc, item.getKey (), itemLeft + INSET, itemTop, itemWidth - 2 * INSET, itemHeight, Label.LEFT, isSelected ? borderColor : textColor);
         }
     }
 }
