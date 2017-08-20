@@ -98,7 +98,7 @@ public class DeviceBrowserMode extends BaseMode
                     d.setCell (0, i, name).setCell (1, i, value);
                 }
                 final String selectedResult = browser.getSelectedResult ();
-                d.setCell (0, 7, isPresetSession ? "Preset" : "").setCell (1, 7, isPresetSession ? selectedResult == null || selectedResult.length () == 0 ? "None" : selectedResult : "");
+                d.setCell (0, 7, browser.getSelectedContentType ()).setCell (1, 7, selectedResult == null || selectedResult.length () == 0 ? "-" : selectedResult);
                 break;
 
             case SELECTION_PRESET:

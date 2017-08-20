@@ -30,10 +30,12 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final Integer    HAS_DISPLAY2                = Integer.valueOf (33);
     /** Has a segment display. */
     public static final Integer    HAS_SEGMENT_DISPLAY         = Integer.valueOf (34);
+    /** Has an assignment display. */
+    public static final Integer    HAS_ASSIGNMENT_DISPLAY      = Integer.valueOf (35);
     /** Has motor faders. */
-    public static final Integer    HAS_MOTOR_FADERS            = Integer.valueOf (35);
+    public static final Integer    HAS_MOTOR_FADERS            = Integer.valueOf (36);
     /** Display track names in 1st display. */
-    public static final Integer    DISPLAY_TRACK_NAMES         = Integer.valueOf (36);
+    public static final Integer    DISPLAY_TRACK_NAMES         = Integer.valueOf (37);
 
     private static final String    DEVICE_SELECT               = "<Select a profile>";
     private static final String    DEVICE_ICON_PLATFORM_M      = "icon Platform M";
@@ -72,6 +74,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private SettableEnumValue      hasDisplay1Setting;
     private SettableEnumValue      hasDisplay2Setting;
     private SettableEnumValue      hasSegmentDisplaySetting;
+    private SettableEnumValue      hasAssignmentDisplaySetting;
     private SettableEnumValue      hasMotorFadersSetting;
     private SettableEnumValue      displayTrackNamesSetting;
 
@@ -80,6 +83,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                hasDisplay1;
     private boolean                hasDisplay2;
     private boolean                hasSegmentDisplay;
+    private boolean                hasAssignmentDisplay;
     private boolean                hasMotorFaders;
     private boolean                displayTrackNames;
     private int []                 assignableFunctions         = new int [7];
@@ -148,6 +152,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasDisplay1Setting.set (ON_OFF_OPTIONS[0]);
                     this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
                     this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
+                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (false);
@@ -157,6 +162,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
                     this.hasDisplay2Setting.set (ON_OFF_OPTIONS[1]);
                     this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
@@ -166,6 +172,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
                     this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
                     this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
                     this.setVUMetersEnabled (true);
@@ -175,6 +182,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasDisplay1Setting.set (ON_OFF_OPTIONS[0]);
                     this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
                     this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
+                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (false);
@@ -200,6 +208,12 @@ public class MCUConfiguration extends AbstractConfiguration
         this.hasSegmentDisplaySetting.addValueObserver (value -> {
             this.hasSegmentDisplay = "On".equals (value);
             this.notifyObservers (HAS_SEGMENT_DISPLAY);
+        });
+
+        this.hasAssignmentDisplaySetting = prefs.getEnumSetting ("Has an assignment display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.hasAssignmentDisplaySetting.addValueObserver (value -> {
+            this.hasAssignmentDisplay = "On".equals (value);
+            this.notifyObservers (HAS_ASSIGNMENT_DISPLAY);
         });
 
         this.hasMotorFadersSetting = prefs.getEnumSetting ("Has motor faders", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
@@ -333,6 +347,17 @@ public class MCUConfiguration extends AbstractConfiguration
     public boolean hasSegmentDisplay ()
     {
         return this.hasSegmentDisplay;
+    }
+
+
+    /**
+     * Returns true if it has an assignment display for modes.
+     *
+     * @return True if it has an assignment display.
+     */
+    public boolean hasAssignmentDisplay ()
+    {
+        return this.hasAssignmentDisplay;
     }
 
 

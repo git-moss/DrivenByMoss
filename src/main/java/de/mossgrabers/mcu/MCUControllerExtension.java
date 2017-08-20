@@ -10,6 +10,7 @@ import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.LoopCommand;
+import de.mossgrabers.framework.command.trigger.MarkerCommand;
 import de.mossgrabers.framework.command.trigger.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.ModeMultiSelectCommand;
 import de.mossgrabers.framework.command.trigger.ModeSelectCommand;
@@ -20,6 +21,7 @@ import de.mossgrabers.framework.command.trigger.PlayCommand;
 import de.mossgrabers.framework.command.trigger.PunchInCommand;
 import de.mossgrabers.framework.command.trigger.PunchOutCommand;
 import de.mossgrabers.framework.command.trigger.RecordCommand;
+import de.mossgrabers.framework.command.trigger.SaveCommand;
 import de.mossgrabers.framework.command.trigger.StopCommand;
 import de.mossgrabers.framework.command.trigger.TapTempoCommand;
 import de.mossgrabers.framework.command.trigger.ToggleTrackBanksCommand;
@@ -76,6 +78,8 @@ import de.mossgrabers.mcu.view.Views;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -86,32 +90,52 @@ import java.util.Arrays;
 public class MCUControllerExtension extends AbstractControllerExtension<MCUControlSurface, MCUConfiguration>
 {
     /** State for button LED on. */
-    public static final int      MCU_BUTTON_STATE_ON       = 127;
+    public static final int                   MCU_BUTTON_STATE_ON       = 127;
     /** State for button LED off. */
-    public static final int      MCU_BUTTON_STATE_OFF      = 0;
+    public static final int                   MCU_BUTTON_STATE_OFF      = 0;
 
-    private static final Integer COMMAND_NOTE_EDITOR       = Integer.valueOf (150);
-    private static final Integer COMMAND_AUTOMATION_EDITOR = Integer.valueOf (151);
-    private static final Integer COMMAND_TOGGLE_DEVICE     = Integer.valueOf (152);
-    private static final Integer COMMAND_MIXER             = Integer.valueOf (153);
-    private static final Integer COMMAND_TEMPO_TICKS       = Integer.valueOf (154);
-    private static final Integer COMMAND_ENTER             = Integer.valueOf (155);
-    private static final Integer COMMAND_CANCEL            = Integer.valueOf (156);
-    private static final Integer COMMAND_FLIP              = Integer.valueOf (157);
-    private static final Integer COMMAND_GROOVE            = Integer.valueOf (158);
-    private static final Integer COMMAND_OVERDUB           = Integer.valueOf (159);
-    private static final Integer COMMAND_SCRUB             = Integer.valueOf (160);
-    private static final Integer COMMAND_FOOTSWITCH1       = Integer.valueOf (161);
-    private static final Integer COMMAND_FOOTSWITCH2       = Integer.valueOf (162);
-    private static final Integer COMMAND_F1                = Integer.valueOf (163);
-    private static final Integer COMMAND_F2                = Integer.valueOf (164);
-    private static final Integer COMMAND_F3                = Integer.valueOf (165);
-    private static final Integer COMMAND_F4                = Integer.valueOf (166);
-    private static final Integer COMMAND_F5                = Integer.valueOf (167);
-    private static final Integer COMMAND_TOGGLE_DISPLAY    = Integer.valueOf (168);
+    private static final Integer              COMMAND_NOTE_EDITOR       = Integer.valueOf (150);
+    private static final Integer              COMMAND_AUTOMATION_EDITOR = Integer.valueOf (151);
+    private static final Integer              COMMAND_TOGGLE_DEVICE     = Integer.valueOf (152);
+    private static final Integer              COMMAND_MIXER             = Integer.valueOf (153);
+    private static final Integer              COMMAND_TEMPO_TICKS       = Integer.valueOf (154);
+    private static final Integer              COMMAND_ENTER             = Integer.valueOf (155);
+    private static final Integer              COMMAND_CANCEL            = Integer.valueOf (156);
+    private static final Integer              COMMAND_FLIP              = Integer.valueOf (157);
+    private static final Integer              COMMAND_GROOVE            = Integer.valueOf (158);
+    private static final Integer              COMMAND_OVERDUB           = Integer.valueOf (159);
+    private static final Integer              COMMAND_SCRUB             = Integer.valueOf (160);
+    private static final Integer              COMMAND_FOOTSWITCH1       = Integer.valueOf (161);
+    private static final Integer              COMMAND_FOOTSWITCH2       = Integer.valueOf (162);
+    private static final Integer              COMMAND_F1                = Integer.valueOf (163);
+    private static final Integer              COMMAND_F2                = Integer.valueOf (164);
+    private static final Integer              COMMAND_F3                = Integer.valueOf (165);
+    private static final Integer              COMMAND_F4                = Integer.valueOf (166);
+    private static final Integer              COMMAND_F5                = Integer.valueOf (167);
+    private static final Integer              COMMAND_TOGGLE_DISPLAY    = Integer.valueOf (168);
 
-    private final int []         vuValues                  = new int [10];
-    private final int []         faderValues               = new int [9];
+    private static final Map<Integer, String> MODE_ACRONYMS             = new HashMap<> ();
+
+    static
+    {
+        MODE_ACRONYMS.put (Modes.MODE_TRACK, "TR");
+        MODE_ACRONYMS.put (Modes.MODE_VOLUME, "VL");
+        MODE_ACRONYMS.put (Modes.MODE_PAN, "PN");
+        MODE_ACRONYMS.put (Modes.MODE_SEND1, "S1");
+        MODE_ACRONYMS.put (Modes.MODE_SEND2, "S2");
+        MODE_ACRONYMS.put (Modes.MODE_SEND3, "S3");
+        MODE_ACRONYMS.put (Modes.MODE_SEND4, "S4");
+        MODE_ACRONYMS.put (Modes.MODE_SEND5, "S5");
+        MODE_ACRONYMS.put (Modes.MODE_SEND6, "S6");
+        MODE_ACRONYMS.put (Modes.MODE_SEND7, "S7");
+        MODE_ACRONYMS.put (Modes.MODE_SEND8, "S8");
+        MODE_ACRONYMS.put (Modes.MODE_MASTER, "MT");
+        MODE_ACRONYMS.put (Modes.MODE_DEVICE_PARAMS, "DC");
+        MODE_ACRONYMS.put (Modes.MODE_BROWSER, "BR");
+    }
+
+    private final int [] vuValues    = new int [10];
+    private final int [] faderValues = new int [9];
 
 
     /**
@@ -313,6 +337,9 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         viewManager.registerTriggerCommand (Commands.COMMAND_NEW, new NewCommand<> (this.model, this.surface));
         viewManager.registerTriggerCommand (Commands.COMMAND_TAP_TEMPO, new TapTempoCommand<> (this.model, this.surface));
 
+        this.addTriggerCommand (Commands.COMMAND_SAVE, MCUControlSurface.MCU_SAVE, new SaveCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_MARKER, MCUControlSurface.MCU_MARKER, new MarkerCommand<> (this.model, this.surface));
+
         viewManager.registerPitchbendCommand (new PitchbendVolumeCommand (this.model, this.surface));
     }
 
@@ -381,7 +408,12 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.surface.updateButton (MCUControlSurface.MCU_REPLACE, (isShift ? t.isLauncherOverdub () : t.isArrangerOverdub ()) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         this.surface.updateButton (MCUControlSurface.MCU_FLIP, this.model.isEffectTrackBankActive () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
-        this.surface.updateButton (MCUControlSurface.MCU_SMPTE_BEATS, this.configuration.isDisplayTicks () ? MCU_BUTTON_STATE_OFF : MCU_BUTTON_STATE_ON);
+        final boolean displayTicks = this.configuration.isDisplayTicks ();
+        this.surface.updateButton (MCUControlSurface.MCU_SMPTE_BEATS, displayTicks ? MCU_BUTTON_STATE_OFF : MCU_BUTTON_STATE_ON);
+        this.surface.updateButton (MCUControlSurface.MCU_SMPTE_LED, displayTicks ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        this.surface.updateButton (MCUControlSurface.MCU_BEATS_LED, displayTicks ? MCU_BUTTON_STATE_OFF : MCU_BUTTON_STATE_ON);
+
+        this.surface.updateButton (MCUControlSurface.MCU_MARKER, this.model.getArranger ().areCueMarkersVisible () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
     }
 
 
@@ -392,7 +424,9 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
 
         final TransportProxy t = this.model.getTransport ();
         String positionText = t.getPositionText ();
-        if (!this.configuration.isDisplayTicks ())
+        if (this.configuration.isDisplayTicks ())
+            positionText += " ";
+        else
         {
             final String tempoStr = t.formatTempoNoFraction (t.getTempo ());
             final int pos = positionText.lastIndexOf (':');
@@ -505,6 +539,9 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.surface.updateButton (MCUControlSurface.MCU_TRIM, transport.isWritingClipLauncherAutomation () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         this.surface.updateButton (MCUControlSurface.MCU_TOUCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         this.surface.updateButton (MCUControlSurface.MCU_LATCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+
+        if (this.configuration.hasAssignmentDisplay ())
+            this.surface.getSegmentDisplay ().setAssignmentDisplay (MODE_ACRONYMS.get (mode));
     }
 
 

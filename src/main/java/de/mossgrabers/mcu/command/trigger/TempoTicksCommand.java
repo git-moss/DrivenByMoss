@@ -34,7 +34,11 @@ public class TempoTicksCommand extends AbstractTriggerCommand<MCUControlSurface,
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.surface.getConfiguration ().toggleDisplayTicks ();
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final MCUConfiguration configuration = this.surface.getConfiguration ();
+        configuration.toggleDisplayTicks ();
+        this.surface.getDisplay ().notify (configuration.isDisplayTicks () ? "BEATS" : "SMPTE");
     }
 }

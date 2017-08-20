@@ -17,7 +17,8 @@ import com.bitwig.extension.controller.api.ControllerHost;
 public class MCUSegmentDisplay
 {
     private MidiOutput output;
-    private int []     buffer = new int [10];
+    private int []     transportBuffer  = new int [10];
+    private int []     assignmentBuffer = new int [2];
 
 
     /**
@@ -61,10 +62,10 @@ public class MCUSegmentDisplay
                     c += 0x40;
             }
 
-            if (c != this.buffer[i])
+            if (c != this.transportBuffer[i])
             {
                 this.output.sendCC (0x40 + i, c);
-                this.buffer[i] = c;
+                this.transportBuffer[i] = c;
             }
             i++;
             addDot = false;
@@ -73,11 +74,31 @@ public class MCUSegmentDisplay
 
 
     /**
-     * Clear the display.
+     * Sets the assignment (mode) string. Must only contain 2 upper case letters.
+     *
+     * @param mode The string
+     */
+    public void setAssignmentDisplay (final String mode)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            char c = mode.charAt (i);
+            if (this.assignmentBuffer[i] != c)
+            {
+                int value = c >= 0x40 ? c - 0x40 : c;
+                this.output.sendCC (0x4B - i, value);
+                this.assignmentBuffer[i] = c;
+            }
+        }
+    }
+
+
+    /**
+     * Clear the 7-digit displays.
      */
     public void shutdown ()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 12; i++)
             this.output.sendCC (0x40 + i, 0x20);
     }
 }
