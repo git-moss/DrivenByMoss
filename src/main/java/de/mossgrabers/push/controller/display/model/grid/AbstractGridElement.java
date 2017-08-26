@@ -3,10 +3,9 @@ package de.mossgrabers.push.controller.display.model.grid;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
 import com.bitwig.extension.api.GraphicsOutput;
+import com.bitwig.extension.api.TextExtents;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Label;
 
 
 /**
@@ -19,7 +18,7 @@ import java.awt.Label;
 public abstract class AbstractGridElement implements GridElement
 {
     /** The maximum possible value for a parameter. */
-    private static double   maxValue = 1024;
+    private static double   MAX_VALUE = 1024;
 
     private final String    name;
     private final String    icon;
@@ -28,6 +27,13 @@ public abstract class AbstractGridElement implements GridElement
 
     protected final boolean isMenuSelected;
     protected final String  menuName;
+
+    protected enum Align
+    {
+        LEFT,
+        RIGHT,
+        CENTER
+    }
 
 
     /**
@@ -106,10 +112,11 @@ public abstract class AbstractGridElement implements GridElement
      * @param width The width position of the boundary
      * @param height The height position of the boundary
      * @param alignment The alignment of the text: Label.LEFT or Label.CENTER
+     * @param color The color of the text
      */
-    public static void drawTextInBounds (final GraphicsOutput g, final String text, final double x, final double y, final double width, final double height, final int alignment, final Color color)
+    public static void drawTextInBounds (final GraphicsOutput g, final String text, final double x, final double y, final double width, final double height, final Align alignment, final Color color)
     {
-        drawTextInBounds (g, text, x, y, width, height, alignment, getTextDescent (g, "Hg"), color);
+        drawTextInBounds (g, text, x, y, width, height, alignment, getTextDescent (g), color);
     }
 
 
@@ -124,28 +131,29 @@ public abstract class AbstractGridElement implements GridElement
      * @param height The height position of the boundary
      * @param alignment The alignment of the text: Label.LEFT or Label.CENTER
      * @param textDescent Text text descent
+     * @param color The color of the text
      */
-    public static void drawTextInBounds (final GraphicsOutput g, final String text, final double x, final double y, final double width, final double height, final int alignment, final int textDescent, final Color color)
+    public static void drawTextInBounds (final GraphicsOutput g, final String text, final double x, final double y, final double width, final double height, final Align alignment, final double textDescent, final Color color)
     {
         if (text == null || text.length () == 0)
             return;
-        final Dimension dim = getTextDims (g, text);
-        // TODO
-        // g.clipRect (x, y, width, height);
+        final TextExtents textExtents = g.getTextExtents (text);
         final double pos;
         switch (alignment)
         {
-            case Label.LEFT:
+            case LEFT:
                 pos = x;
                 break;
 
-            case Label.CENTER:
+            case CENTER:
             default:
-                pos = x + (width - dim.width) / 2.0;
+                pos = x + (width - textExtents.getWidth ()) / 2.0;
                 break;
         }
-        g.drawText (pos, y + height - (height - dim.height) / 2 - textDescent, text, color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
-        // g.setClip (null);
+        // g.rectangle (pos, y, width - pos, 2 * height);
+        // g.clip ();
+        g.drawText (pos, y + height - (height - textExtents.getHeight ()) / 2 - textDescent, text, color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
+        // g.resetClip ();
     }
 
 
@@ -157,56 +165,26 @@ public abstract class AbstractGridElement implements GridElement
      * @param x The x position of the boundary
      * @param y The y position of the boundary
      * @param height The height position of the boundary
+     * @param color The color of the text
      */
     public static void drawTextInHeight (final GraphicsOutput g, final String text, final double x, final double y, final double height, final Color color)
     {
         if (text == null || text.length () == 0)
             return;
-        final Dimension dim = getTextDims (g, text);
-        g.drawText (x, y + height - (height - dim.height) / 2 - getTextDescent (g, "Hg"), text, color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
-    }
-
-
-    /**
-     * Get the width and the height of a text string.
-     *
-     * @param g The graphics context in which to draw
-     * @param text The text to draw
-     * @return The dimension of the text string
-     */
-    public static Dimension getTextDims (final GraphicsOutput g, final String text)
-    {
-        // TODO CAN ONLY BE CALLED DURING INIT
-        // TextExtents textExtents = g.getTextExtents (text);
-
-        // TODO
-        // final FontMetrics fm = g.getFontMetrics ();
-        // final Rectangle2D bounds = fm.getStringBounds (text, g);
-        // final LineMetrics lm = fm.getFont ().getLineMetrics (text, g.getFontRenderContext ());
-        // final double width = bounds.getWidth ();
-        // bounds.setRect (bounds.getX (), bounds.getY (), width, lm.getHeight ());
-        // return new Dimension ((int) Math.round (width), (int) Math.round (bounds.getHeight ()));
-
-        // return new Dimension ((int) Math.round (textExtents.getWidth ()), (int) Math.round
-        // (textExtents.getHeight ()));
-
-        return new Dimension (100, 20);
+        final TextExtents textExtents = g.getTextExtents (text);
+        g.drawText (x, y + height - (height - textExtents.getHeight ()) / 2 - getTextDescent (g), text, color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
     }
 
 
     /**
      * Get the distance from the text's baseline to its bottom edge.
      *
-     * @param g The graphics context in which to draw
-     * @param text The text to draw
+     * @param gc The graphics context in which to draw
      * @return The distance from the text's baseline to its bottom edge
      */
-    public static int getTextDescent (final GraphicsOutput g, final String text)
+    public static double getTextDescent (final GraphicsOutput gc)
     {
-        // final float descent = g.getFont ().getLineMetrics (text, g.getFontRenderContext
-        // ()).getDescent ();
-        // return Math.round (descent);
-        return 10;
+        return gc.getFontExtents ().getDescent ();
     }
 
 
@@ -231,19 +209,17 @@ public abstract class AbstractGridElement implements GridElement
         }
 
         final Color textColor = layoutSettings.getTextColor ();
-
-        // TODO
         setColor (gc, this.isMenuSelected ? textColor : borderColor);
-        // fill
         gc.rectangle (left, 0, width, MENU_HEIGHT - 1.0);
+        gc.fill ();
 
         setColor (gc, textColor);
-        // fill
         gc.rectangle (left, MENU_HEIGHT - 2.0, width + SEPARATOR_SIZE, 1);
+        gc.fill ();
 
-        // setColor (gc, this.isMenuSelected ? borderColor : textColor);
-        // TODO gc.setFont (layoutSettings.getTextFont (UNIT));
-        drawTextInBounds (gc, this.menuName, left, 0, width, UNIT + SEPARATOR_SIZE, Label.CENTER, this.isMenuSelected ? borderColor : textColor);
+        setColor (gc, this.isMenuSelected ? borderColor : textColor);
+        gc.setFontSize (UNIT);
+        drawTextInBounds (gc, this.menuName, left, 1, width, UNIT + SEPARATOR_SIZE, Align.CENTER, this.isMenuSelected ? borderColor : textColor);
     }
 
 
@@ -254,7 +230,7 @@ public abstract class AbstractGridElement implements GridElement
      */
     public static double getMaxValue ()
     {
-        return maxValue;
+        return MAX_VALUE;
     }
 
 
@@ -265,7 +241,7 @@ public abstract class AbstractGridElement implements GridElement
      */
     public static void setMaxValue (final double maxValue)
     {
-        AbstractGridElement.maxValue = maxValue;
+        AbstractGridElement.MAX_VALUE = maxValue;
     }
 
 

@@ -4,8 +4,6 @@ import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
 import com.bitwig.extension.api.GraphicsOutput;
 
-import java.io.IOException;
-
 
 /**
  * An element in the grid.
@@ -45,7 +43,6 @@ public interface GridElement
      * @param width The width of the drawing area of the element
      * @param height The height of the drawing area of the element
      * @param layoutSettings The layout settings to use
-     * @throws IOException Could not load a SVG image
      */
-    void draw (final GraphicsOutput graphicsOutput, final double left, final double width, final double height, final LayoutSettings layoutSettings) throws IOException;
+    void draw (final GraphicsOutput graphicsOutput, final double left, final double width, final double height, final LayoutSettings layoutSettings);
 }

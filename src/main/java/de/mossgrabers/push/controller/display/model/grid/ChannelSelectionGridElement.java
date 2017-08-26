@@ -8,8 +8,6 @@ import com.bitwig.extension.api.GraphicsOutput;
 import com.bitwig.extension.api.Image;
 
 import java.awt.Color;
-import java.awt.Label;
-import java.io.IOException;
 import java.util.EnumMap;
 
 
@@ -78,7 +76,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings) throws IOException
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings)
     {
         this.drawMenu (gc, left, width, layoutSettings);
 
@@ -102,9 +100,8 @@ public class ChannelSelectionGridElement extends AbstractGridElement
      * @param trackRowTop The top of the drawing area
      * @param name The name of the track
      * @param layoutSettings The layout settings
-     * @throws IOException Could not load a SVG image
      */
-    protected void drawTrackInfo (final GraphicsOutput gc, final double left, final double width, final double height, final double trackRowTop, final String name, final LayoutSettings layoutSettings) throws IOException
+    protected void drawTrackInfo (final GraphicsOutput gc, final double left, final double width, final double height, final double trackRowTop, final String name, final LayoutSettings layoutSettings)
     {
         // Draw the background
         final Color backgroundColor = layoutSettings.getBackgroundColor ();
@@ -117,16 +114,20 @@ public class ChannelSelectionGridElement extends AbstractGridElement
         if (iconName != null)
         {
             final Color textColor = layoutSettings.getTextColor ();
-            // TODO use textColor
             final Image icon = ResourceHandler.getSVGImage (iconName);
+
+            // TODO find a solution to draw icons
+            // setColor (gc, textColor);
+            // gc.setOperator (Operator.IN);
+            // gc.rectangle (left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT
+            // - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2, icon.getWidth (), icon.getHeight
+            // ());
+            // gc.fill ();
+            // gc.setOperator (Operator.SOURCE);
             gc.drawImage (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2);
 
-            // TODO gc.setFont (layoutSettings.getTextFont ((int) (1.2 * UNIT)));
-            // gc.clipRect (left + DOUBLE_UNIT, trackRowTop, width - DOUBLE_UNIT - INSET,
-            // TRACK_ROW_HEIGHT);
             gc.setFontSize (1.2 * UNIT);
-            drawTextInBounds (gc, name, left + DOUBLE_UNIT, trackRowTop, width, TRACK_ROW_HEIGHT, Label.LEFT, textColor);
-            // gc.clip (null);
+            drawTextInBounds (gc, name, left + DOUBLE_UNIT, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - gc.getFontExtents ().getHeight ()) / 2, width, TRACK_ROW_HEIGHT, Align.LEFT, textColor);
         }
 
         // The track color section

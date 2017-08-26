@@ -6,8 +6,6 @@ import de.mossgrabers.push.controller.display.model.LayoutSettings;
 import com.bitwig.extension.api.GraphicsOutput;
 
 import java.awt.Color;
-import java.awt.Label;
-import java.io.IOException;
 
 
 /**
@@ -91,7 +89,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings) throws IOException
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings)
     {
         super.draw (gc, left, width, height, layoutSettings);
 
@@ -117,7 +115,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
 
         double topy = MENU_HEIGHT + (this.isExMode ? 0 : SEPARATOR_SIZE);
 
-        // TODO gc.setFont (layoutSettings.getTextFont (sendRowHeight));
+        gc.setFontSize (sendRowHeight);
         final Color textColor = layoutSettings.getTextColor ();
         final Color borderColor = layoutSettings.getBorderColor ();
         final Color faderColor = layoutSettings.getFaderColor ();
@@ -128,12 +126,12 @@ public class SendsGridElement extends ChannelSelectionGridElement
             if (this.sendNames[i].length () == 0)
                 break;
 
-            drawTextInBounds (gc, this.sendNames[i], faderLeft, topy + SEPARATOR_SIZE, width, sendRowHeight, Label.LEFT, textColor);
+            drawTextInBounds (gc, this.sendNames[i], faderLeft, topy + SEPARATOR_SIZE, width, sendRowHeight, Align.LEFT, textColor);
             topy += sendRowHeight;
             setColor (gc, borderColor);
             gc.rectangle (faderLeft, topy + SEPARATOR_SIZE, sliderWidth, sliderHeight);
             gc.fill ();
-            final double valueWidth = (double) (this.sendValues[i] * sliderWidth / getMaxValue ());
+            final double valueWidth = this.sendValues[i] * sliderWidth / getMaxValue ();
             final boolean isSendModulated = this.modulatedSendValues[i] != 16383; // == -1
             final double modulatedValueWidth = isSendModulated ? (double) (this.modulatedSendValues[i] * sliderWidth / getMaxValue ()) : valueWidth;
             setColor (gc, faderColor);
@@ -158,7 +156,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
         final double boxLeft = faderLeft + sliderWidth - boxWidth;
         topy = MENU_HEIGHT;
         final Color backgroundDarker = backgroundColor.darker ();
-        // TODO final Font textFont = layoutSettings.getTextFont (UNIT);
+        gc.setFontSize (UNIT);
         for (int i = 0; i < 4; i++)
         {
             topy += sendRowHeight;
@@ -172,8 +170,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
                 setColor (gc, borderColor);
                 gc.rectangle (boxLeft, volumeTextTop, boxWidth - 1, UNIT);
                 gc.stroke ();
-                // TODO gc.setFont (textFont);
-                drawTextInBounds (gc, this.sendTexts[i], boxLeft, volumeTextTop, boxWidth, UNIT, Label.CENTER, textColor);
+                drawTextInBounds (gc, this.sendTexts[i], boxLeft, volumeTextTop, boxWidth, UNIT, Align.CENTER, textColor);
             }
 
             topy += sendRowHeight;

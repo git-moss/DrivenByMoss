@@ -6,7 +6,6 @@ import de.mossgrabers.push.controller.display.model.LayoutSettings;
 import com.bitwig.extension.api.GraphicsOutput;
 
 import java.awt.Color;
-import java.awt.Label;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +56,8 @@ public class ListGridElement extends AbstractGridElement
             gc.rectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE);
             gc.fill ();
 
-            // TODO gc.setFont (layoutSettings.getTextFont (itemHeight / 2));
-            drawTextInBounds (gc, item.getKey (), itemLeft + INSET, itemTop, itemWidth - 2 * INSET, itemHeight, Label.LEFT, isSelected ? borderColor : textColor);
+            gc.setFontSize (itemHeight / 2);
+            drawTextInBounds (gc, item.getKey (), itemLeft + INSET, itemTop, itemWidth - 2 * INSET, itemHeight, Align.LEFT, isSelected ? borderColor : textColor);
         }
     }
 }

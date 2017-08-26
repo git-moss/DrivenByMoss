@@ -6,8 +6,6 @@ import de.mossgrabers.push.controller.display.model.LayoutSettings;
 import com.bitwig.extension.api.GraphicsOutput;
 
 import java.awt.Color;
-import java.awt.Label;
-import java.io.IOException;
 
 
 /**
@@ -55,7 +53,7 @@ public class ParamGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings) throws IOException
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings)
     {
         this.drawMenu (gc, left, width, layoutSettings);
 
@@ -82,9 +80,9 @@ public class ParamGridElement extends ChannelSelectionGridElement
 
         // Draw the name and value texts
         final Color textColor = layoutSettings.getTextColor ();
-        // TODO gc.setFont (layoutSettings.getTextFont (elementHeight * 2 / 3));
-        drawTextInBounds (gc, this.paramName, left + INSET - 1, CONTROLS_TOP - INSET, elementWidth, elementHeight, Label.CENTER, textColor);
-        drawTextInBounds (gc, this.paramValueText, left + INSET - 1, CONTROLS_TOP - INSET + elementHeight, elementWidth, elementHeight, Label.CENTER, textColor);
+        gc.setFontSize (elementHeight * 2 / 3);
+        drawTextInBounds (gc, this.paramName, left + INSET - 1, CONTROLS_TOP - INSET, elementWidth, elementHeight, Align.CENTER, textColor);
+        drawTextInBounds (gc, this.paramValueText, left + INSET - 1, CONTROLS_TOP - INSET + elementHeight, elementWidth, elementHeight, Align.CENTER, textColor);
 
         // Value slider
         if (isValueMissing)

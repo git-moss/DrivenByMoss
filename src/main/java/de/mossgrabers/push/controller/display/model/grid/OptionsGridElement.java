@@ -5,7 +5,6 @@ import de.mossgrabers.push.controller.display.model.LayoutSettings;
 import com.bitwig.extension.api.GraphicsOutput;
 
 import java.awt.Color;
-import java.awt.Label;
 
 
 /**
@@ -101,7 +100,7 @@ public class OptionsGridElement extends AbstractGridElement
         gc.rectangle (left, top, width, height);
         gc.fill ();
 
-        // TODO gc.setFont (layoutSettings.getTextFont (height / 2));
-        drawTextInBounds (gc, menu, left, top, width, height, Label.CENTER, isSelected ? layoutSettings.getBorderColor () : textColor);
+        gc.setFontSize (height / 2);
+        drawTextInBounds (gc, menu, left, top, width, height, Align.CENTER, isSelected ? layoutSettings.getBorderColor () : textColor);
     }
 }

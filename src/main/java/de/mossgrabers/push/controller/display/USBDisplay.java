@@ -72,67 +72,34 @@ public class USBDisplay
         if (this.usbOut == null)
             return;
 
-        final ByteBuffer byteBuffer = image.getByteBuffer ();
-
         synchronized (this.imageBuffer)
         {
             this.imageBuffer.clear ();
 
-            int [] xOrMasks =
-            {
-                0xf3e7,
-                0xffe7
-            };
-
+            final ByteBuffer byteBuffer = image.getByteBuffer ();
             for (int y = 0; y < HEIGHT; y++)
             {
                 for (int x = 0; x < WIDTH; x++)
                 {
-                    int index = 4 * (x + y * WIDTH);
-
-                    // Blue and red have 32 values, green has 64 values
-                    final int blue = scaleTo256 (byteBuffer.get (index));// * 31 / 127;
-                    final int green = scaleTo256 (byteBuffer.get (index + 1));// * 63 / 127;
-                    final int red = scaleTo256 (byteBuffer.get (index + 2));// * 31 / 127;
-                    // Note: Next byte is alpha value, which is not used
-                    final int alpha = scaleTo256 (byteBuffer.get (index + 3));
+                    final int blue = byteBuffer.get ();
+                    final int green = byteBuffer.get ();
+                    final int red = byteBuffer.get ();
+                    byteBuffer.get (); // Drop unused Alpha
 
                     int pixel = SPixelFromRGB (red, green, blue);
-
-                    // 16 bit color - 3b(low) green - 5b red / 5b blue - 3b (high) green, e.g.
-                    // gggRRRRR BBBBBGGG
-                    // this.imageBuffer.put ((byte) ((green & 0x07) << 5 | red & 0x1F));
-                    // this.imageBuffer.put ((byte) ((blue & 0x1F) << 3 | (green & 0x38) >> 3));
-
-                    int value = pixel ^ xOrMasks[x % 2];
-
-                    int byte1 = (pixel & 0xFF00) >> 8;
-                    int byte2 = pixel & 0x00FF;
-
-                    this.imageBuffer.put ((byte) byte2);
-                    this.imageBuffer.put ((byte) byte1);
-                    // this.imageBuffer.putShort ((short) value);
+                    this.imageBuffer.put ((byte) (pixel & 0x00FF));
+                    this.imageBuffer.put ((byte) ((pixel & 0xFF00) >> 8));
                 }
 
                 for (int x = 0; x < 128; x++)
                     this.imageBuffer.put ((byte) 0x00);
             }
 
+            byteBuffer.rewind ();
+
             this.usbOut.write (this.headerBuffer);
             this.usbOut.write (this.imageBuffer);
         }
-    }
-
-
-    /**
-     * Scales values in the range of [-128 ... -1, 0 ... 127] to the range of [0 ... 255].
-     *
-     * @param b The value to scale
-     * @return The scaled value
-     */
-    private static int scaleTo256 (final byte b)
-    {
-        return (b < 0 ? b + 128 : b);
     }
 
 

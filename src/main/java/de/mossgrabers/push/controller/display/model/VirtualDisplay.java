@@ -9,7 +9,6 @@ import com.bitwig.extension.api.GraphicsOutput.AntialiasMode;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.util.List;
 
 
@@ -22,17 +21,12 @@ import java.util.List;
  */
 public class VirtualDisplay
 {
-    private static final int     DISPLAY_WIDTH     = 960;
-    private static final int     DISPLAY_HEIGHT    = 160;
+    private static final int     DISPLAY_WIDTH  = 960;
+    private static final int     DISPLAY_HEIGHT = 160;
 
     private final DisplayModel   model;
-    private final Bitmap         image1;
-    private final Bitmap         image2;
-    private Bitmap               currentImage;
-    private final Object         imageExchangeLock = new Object ();
+    private final Bitmap         image;
     private final LayoutSettings layoutSettings;
-    private final GraphicsOutput graphicsOutput1;
-    private final GraphicsOutput graphicsOutput2;
 
 
     /**
@@ -62,15 +56,7 @@ public class VirtualDisplay
         ResourceHandler.addSVGImage ("track/multi_layer.svg");
         ResourceHandler.addSVGImage ("track/return_track.svg");
 
-        this.image1 = host.createBitmap (DISPLAY_WIDTH, DISPLAY_HEIGHT, BitmapFormat.ARGB32);
-        this.image2 = host.createBitmap (DISPLAY_WIDTH, DISPLAY_HEIGHT, BitmapFormat.ARGB32);
-        this.currentImage = this.image1;
-
-        this.graphicsOutput1 = this.image1.createGraphicsOutput ();
-        this.graphicsOutput2 = this.image2.createGraphicsOutput ();
-
-        configureGraphics (this.graphicsOutput1);
-        configureGraphics (this.graphicsOutput2);
+        this.image = host.createBitmap (DISPLAY_WIDTH, DISPLAY_HEIGHT, BitmapFormat.ARGB32);
 
         this.model.addGridElementChangeListener (this::redrawGrid);
         this.layoutSettings = layoutSettings;
@@ -88,13 +74,7 @@ public class VirtualDisplay
      */
     public void redrawGrid ()
     {
-        synchronized (this.imageExchangeLock)
-        {
-            final boolean isOne = this.currentImage == this.image1;
-            final Bitmap drawImage = isOne ? this.image2 : this.image1;
-            this.drawGrid (isOne ? this.graphicsOutput1 : this.graphicsOutput2);
-            this.currentImage = drawImage;
-        }
+        this.drawGrid (this.image);
     }
 
 
@@ -105,43 +85,38 @@ public class VirtualDisplay
      */
     public Bitmap getImage ()
     {
-        return this.currentImage;
+        return this.image;
     }
 
 
     /**
      * Draws the N grid elements of the grid.
      *
-     * @param gc The graphics context to draw into
+     * @param image The image to draw to
      */
-    public void drawGrid (final GraphicsOutput gc)
+    public void drawGrid (final Bitmap image)
     {
-        // Clear display
-        final Color borderColor = this.layoutSettings.getBorderColor ();
-        gc.setColor (borderColor.getRed () / 255.0, borderColor.getGreen () / 255.0, borderColor.getBlue () / 255.0);
+        image.render (gc -> {
 
-        // gc.setColor (0.6, 0.6, 0.6, 1);
+            configureGraphics (gc);
 
-        gc.paint ();
+            // Clear display
+            final Color borderColor = this.layoutSettings.getBorderColor ();
+            gc.setColor (borderColor.getRed () / 255.0, borderColor.getGreen () / 255.0, borderColor.getBlue () / 255.0);
+            gc.rectangle (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+            gc.fill ();
 
-        final List<GridElement> elements = this.model.getGridElements ();
-        final int size = elements.size ();
-        if (size == 0)
-            return;
-        final int gridWidth = DISPLAY_WIDTH / size;
-        final double paintWidth = gridWidth - GridElement.SEPARATOR_SIZE;
-        final double offsetX = GridElement.SEPARATOR_SIZE / 2.0;
+            final List<GridElement> elements = this.model.getGridElements ();
+            final int size = elements.size ();
+            if (size == 0)
+                return;
+            final int gridWidth = DISPLAY_WIDTH / size;
+            final double paintWidth = gridWidth - GridElement.SEPARATOR_SIZE;
+            final double offsetX = GridElement.SEPARATOR_SIZE / 2.0;
 
-        try
-        {
             for (int i = 0; i < size; i++)
                 elements.get (i).draw (gc, i * gridWidth + offsetX, paintWidth, DISPLAY_HEIGHT, this.layoutSettings);
-        }
-        catch (final IOException ex)
-        {
-            // TODO
-            // this.model.addLogMessage ("Could not load SVG image: " + ex.getLocalizedMessage ());
-        }
+        });
     }
 
 
@@ -153,9 +128,5 @@ public class VirtualDisplay
     private static void configureGraphics (final GraphicsOutput graphicsOutput)
     {
         graphicsOutput.setAntialias (AntialiasMode.BEST);
-        // TODO
-        // g.setRenderingHint (RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        // g.setRenderingHint (RenderingHints.KEY_FRACTIONALMETRICS,
-        // RenderingHints.VALUE_FRACTIONALMETRICS_ON);
     }
 }

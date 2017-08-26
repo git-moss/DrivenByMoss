@@ -4,12 +4,12 @@ import de.mossgrabers.push.controller.display.model.ChannelType;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 import de.mossgrabers.push.controller.display.model.ResourceHandler;
 
+import com.bitwig.extension.api.GradientPattern;
 import com.bitwig.extension.api.GraphicsOutput;
 import com.bitwig.extension.api.Image;
+import com.bitwig.extension.api.Pattern;
 
 import java.awt.Color;
-import java.awt.Label;
-import java.io.IOException;
 
 
 /**
@@ -87,7 +87,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings) throws IOException
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings)
     {
         final double halfWidth = width / 2;
 
@@ -147,7 +147,6 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         if (type != ChannelType.MASTER && type != ChannelType.LAYER && this.crossfadeMode != -1)
         {
             // Crossfader A|B
-            // TODO
             final double crossWidth = controlWidth / 3;
             final Color selColor = this.editType == EDIT_TYPE_CROSSFADER || this.editType == EDIT_TYPE_ALL ? editColor : textColor;
             // TODO this.crossfadeMode == 0 ? selColor : backgroundDarker
@@ -240,6 +239,8 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         buttonTop += buttonHeight + 2 * SEPARATOR_SIZE;
         drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, new Color (245, 129, 17), textColor, this.isMute, "channel/mute.svg", layoutSettings);
 
+        final double descent = gc.getFontExtents ().getDescent ();
+
         // Draw panorama text on top if set
         if (isPanTouched)
         {
@@ -249,8 +250,8 @@ public class ChannelGridElement extends ChannelSelectionGridElement
             setColor (gc, borderColor);
             gc.rectangle (controlStart, panTextTop, controlWidth - 1, UNIT);
             gc.stroke ();
-            // TODO gc.setFont (layoutSettings.getTextFont (UNIT));
-            drawTextInBounds (gc, this.panText, controlStart, panTextTop, controlWidth, UNIT, Label.CENTER, textColor);
+            gc.setFontSize (UNIT);
+            drawTextInBounds (gc, this.panText, controlStart, panTextTop + descent, controlWidth, UNIT, Align.CENTER, textColor);
         }
 
         // Draw volume text on top if set
@@ -263,8 +264,8 @@ public class ChannelGridElement extends ChannelSelectionGridElement
             setColor (gc, borderColor);
             gc.rectangle (volumeTextLeft, volumeTextTop, volumeTextWidth - 1, UNIT);
             gc.stroke ();
-            // TODO gc.setFont (layoutSettings.getTextFont (UNIT));
-            drawTextInBounds (gc, this.volumeText, volumeTextLeft, volumeTextTop, volumeTextWidth, UNIT, Label.CENTER, textColor);
+            gc.setFontSize (UNIT);
+            drawTextInBounds (gc, this.volumeText, volumeTextLeft, volumeTextTop + descent, volumeTextWidth, UNIT, Align.CENTER, textColor);
         }
     }
 
@@ -283,35 +284,22 @@ public class ChannelGridElement extends ChannelSelectionGridElement
      * @param isOn True if the button is on
      * @param iconName The name of the buttons icon
      * @param layoutSettings The layout settings
-     * @throws IOException Could not load a SVG image
      */
-    private static void drawButton (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final Color backgroundColor, final Color isOnColor, final Color textColor, final boolean isOn, final String iconName, final LayoutSettings layoutSettings) throws IOException
+    private static void drawButton (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final Color backgroundColor, final Color isOnColor, final Color textColor, final boolean isOn, final String iconName, final LayoutSettings layoutSettings)
     {
         final Color borderColor = layoutSettings.getBorderColor ();
 
-        // setColor (gc, borderColor);
-        // gc.drawRoundRect (left, top, width, height, 5, 5);
+        drawRoundedRect (gc, left, top, width, height, 5.0, borderColor);
 
         if (isOn)
-        {
-            // setColor (gc, isOnColor);
-            // gc.fillRoundRect (left + 1, top + 1, width - 1, height - 1, 5, 5);
-
-            drawRoundedRect (gc, left + 1, top + 1, width - 1, height - 1, 5, isOnColor);
-        }
+            drawFilledRoundedRect (gc, left + 1, top + 1, width - 2, height - 2, 5.0, isOnColor);
         else
         {
             final Color brighter = backgroundColor.brighter ();
-            // setColor (gc, brighter.brighter ());
-            // gc.drawRoundRect (left + 1, top + 1, width - 2, height - 2, 5, 5);
-            drawRoundedRect (gc, left + 1, top + 1, width - 2, height - 2, 5, brighter.brighter ());
-
-            // final Paint oldPaint = gc.getPaint ();
-            // final GradientPaint gp = new GradientPaint (left, top + 1, backgroundColor, left, top
-            // + height, brighter);
-            // gc.setPaint (gp);
-            // gc.fillRoundRect (left + 2, top + 2, width - 2, height - 2, 5, 5);
-            // gc.setPaint (oldPaint);
+            final GradientPattern linearGradient = gc.createLinearGradient (left, top + 1, left, top + height);
+            linearGradient.addColorStop (0, backgroundColor.getRed () / 255.0, backgroundColor.getGreen () / 255.0, backgroundColor.getBlue () / 255.0);
+            linearGradient.addColorStop (1, brighter.getRed () / 255.0, brighter.getGreen () / 255.0, brighter.getBlue () / 255.0);
+            drawPatternFilledRoundedRect (gc, left + 1, top + 1, width - 2, height - 2, 5, linearGradient);
         }
 
         // TODO use color isOn ? borderColor : textColor
@@ -323,15 +311,35 @@ public class ChannelGridElement extends ChannelSelectionGridElement
     private static void drawRoundedRect (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final double radius, final Color backgroundColor)
     {
         setColor (gc, backgroundColor);
+        drawRoundedRectInternal (gc, left, top, width, height, radius);
+        gc.fill ();
+    }
 
+
+    private static void drawFilledRoundedRect (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final double radius, final Color backgroundColor)
+    {
+        setColor (gc, backgroundColor);
+        drawRoundedRectInternal (gc, left, top, width, height, radius);
+        gc.fill ();
+    }
+
+
+    private static void drawPatternFilledRoundedRect (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final double radius, final Pattern pattern)
+    {
+        gc.setPattern (pattern);
+        drawRoundedRectInternal (gc, left, top, width, height, radius);
+        gc.fill ();
+    }
+
+
+    private static void drawRoundedRectInternal (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final double radius)
+    {
         double degrees = Math.PI / 180.0;
-
         gc.newSubPath ();
         gc.arc (left + width - radius, top + radius, radius, -90 * degrees, 0 * degrees);
         gc.arc (left + width - radius, top + height - radius, radius, 0 * degrees, 90 * degrees);
         gc.arc (left + radius, top + height - radius, radius, 90 * degrees, 180 * degrees);
         gc.arc (left + radius, top + radius, radius, 180 * degrees, 270 * degrees);
         gc.closePath ();
-        gc.fill ();
     }
 }

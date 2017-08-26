@@ -285,6 +285,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     }
 
 
+    /** {@inheritDoc} */
     @Override
     public void gridHasChanged ()
     {
