@@ -10,20 +10,20 @@
 
 	<!-- https://mvnrepository.com/artifact/com.illposed.osc/javaosc-core -->
 
+	<repositories>
+	  <repository>
+            <id>bitwig</id>
+            <name>Bitwig Maven Repository</name>
+            <url>https://maven.bitwig.com</url>
+	  </repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.illposed.osc</groupId>
 			<artifactId>javaosc-core</artifactId>
 			<version>0.4</version>
 		</dependency>
-
-<!--	<repositories>
-       <repository>
-         <id>bitwig</id>
-         <name>Bitwig Maven Repository</name>
-         <url>https://maven.bitwig.com</url>
-       </repository>
-   </repositories> -->
 
 		<dependency>
 			<groupId>com.bitwig</groupId>
