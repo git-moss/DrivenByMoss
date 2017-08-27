@@ -117,7 +117,21 @@ public enum Scale
         5,
         6,
         8,
-        9
+        9,
+	11
+    }),
+
+    /** The Half-whole scale. */
+    HALF_WHOLE("Half-whole", new int []
+    {
+        0,
+        1,
+        3,
+        4,
+        6,
+        7,
+        9,
+	10
     }),
 
     /** The Whole Tone scale. */
