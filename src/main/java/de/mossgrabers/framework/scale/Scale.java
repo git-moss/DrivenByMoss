@@ -118,7 +118,7 @@ public enum Scale
         6,
         8,
         9,
-	11
+        11
     }),
 
     /** The Half-whole scale. */
@@ -131,7 +131,7 @@ public enum Scale
         6,
         7,
         9,
-	10
+        10
     }),
 
     /** The Whole Tone scale. */

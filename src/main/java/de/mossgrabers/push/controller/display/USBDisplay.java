@@ -1,3 +1,7 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.push.controller.display;
 
 import com.bitwig.extension.api.Bitmap;
@@ -86,7 +90,7 @@ public class USBDisplay
                     final int red = byteBuffer.get ();
                     byteBuffer.get (); // Drop unused Alpha
 
-                    int pixel = SPixelFromRGB (red, green, blue);
+                    final int pixel = SPixelFromRGB (red, green, blue);
                     this.imageBuffer.put ((byte) (pixel & 0x00FF));
                     this.imageBuffer.put ((byte) ((pixel & 0xFF00) >> 8));
                 }
@@ -103,7 +107,7 @@ public class USBDisplay
     }
 
 
-    private static int SPixelFromRGB (int r, int g, int b)
+    private static int SPixelFromRGB (final int r, final int g, final int b)
     {
         int pixel = (b & 0xF8) >> 3;
         pixel <<= 6;

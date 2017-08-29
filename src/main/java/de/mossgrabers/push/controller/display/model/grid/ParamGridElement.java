@@ -1,11 +1,14 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.controller.display.model.ChannelType;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
-
-import java.awt.Color;
 
 
 /**
@@ -74,7 +77,7 @@ public class ParamGridElement extends ChannelSelectionGridElement
 
         // Draw the background
         final Color backgroundColor = layoutSettings.getBackgroundColor ();
-        setColor (gc, this.isTouched ? backgroundColor.brighter () : backgroundColor);
+        gc.setColor (this.isTouched ? ColorEx.brighter (backgroundColor) : backgroundColor);
         gc.rectangle (left, MENU_HEIGHT + 1, width, trackRowTop - (isValueMissing ? CONTROLS_TOP + elementHeight : MENU_HEIGHT + 1));
         gc.fill ();
 
@@ -93,13 +96,13 @@ public class ParamGridElement extends ChannelSelectionGridElement
         final double valueSliderWidth = value >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * value / maxValue;
         final double innerTop = CONTROLS_TOP + 2 * elementHeight + 1;
         final Color borderColor = layoutSettings.getBorderColor ();
-        setColor (gc, borderColor);
+        gc.setColor (borderColor);
         gc.rectangle (left + INSET - 1, CONTROLS_TOP + 2 * elementHeight, elementWidth, elementHeight);
         gc.fill ();
-        setColor (gc, layoutSettings.getFaderColor ());
+        gc.setColor (layoutSettings.getFaderColor ());
         gc.rectangle (left + INSET, innerTop, valueSliderWidth, elementHeight - 2);
         gc.fill ();
-        setColor (gc, layoutSettings.getEditColor ());
+        gc.setColor (layoutSettings.getEditColor ());
         final double w = this.isTouched ? 3 : 1;
         final double valueWidth = this.paramValue >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * this.paramValue / maxValue;
         gc.rectangle (left + INSET + Math.max (0, valueWidth - w), innerTop, w, elementHeight - 2);

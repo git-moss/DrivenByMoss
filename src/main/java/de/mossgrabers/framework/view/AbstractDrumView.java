@@ -440,7 +440,7 @@ public abstract class AbstractDrumView<S extends ControlSurface<C>, C extends Co
         final double loopStart = this.clip.getLoopStart ();
         final int loopStartPad = (int) Math.ceil (loopStart / lengthOfOnePad);
         final int loopEndPad = (int) Math.ceil ((loopStart + this.clip.getLoopLength ()) / lengthOfOnePad);
-        int currentPage = step / this.sequencerSteps;
+        final int currentPage = step / this.sequencerSteps;
 
         final int numOfPages = this.halfColumns * this.playLines;
         final PadGrid padGrid = this.surface.getPadGrid ();

@@ -24,7 +24,7 @@ public class BrowserCommand<S extends ControlSurface<C>, C extends Configuration
 
     /**
      * Constructor.
-     * 
+     *
      * @param browserMode The ID of the mode to activate for browsing
      * @param model The model
      * @param surface The surface

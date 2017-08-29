@@ -1,11 +1,15 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.framework.Pair;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +56,7 @@ public class ListGridElement extends AbstractGridElement
             final double itemTop = i * itemHeight;
             final double itemWidth = width - SEPARATOR_SIZE;
 
-            setColor (gc, isSelected ? textColor : borderColor);
+            gc.setColor (isSelected ? textColor : borderColor);
             gc.rectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE);
             gc.fill ();
 

@@ -1,75 +1,30 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.push.controller.display.model;
 
-import java.awt.Color;
-import java.awt.Font;
+import de.mossgrabers.push.controller.display.model.grid.ColorEx;
+
+import com.bitwig.extension.api.Color;
 
 
 /**
  * Manages the settings of the layout (color and fonts).
  *
- * Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
- *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class LayoutSettings
 {
-    private static final Color DEFAULT_COLOR_TEXT       = Color.WHITE;
-    private static final Color DEFAULT_COLOR_BACKGROUND = new Color (83, 83, 83);
-    private static final Color DEFAULT_COLOR_BORDER     = Color.BLACK;
-    private static final Color DEFAULT_COLOR_FADER      = new Color (69, 44, 19);
-    private static final Color DEFAULT_COLOR_VU         = Color.GREEN;
-    private static final Color DEFAULT_COLOR_EDIT       = new Color (240, 127, 17);
-
-    private FontCache          textFont                 = new FontCache ();
-
-    // private final SimpleObjectProperty<FontCache> textFontProperty = new SimpleObjectProperty<>
-    // (new FontCache ());
-    // private final SimpleObjectProperty<Color> textColorProperty = new SimpleObjectProperty<>
-    // (DEFAULT_COLOR_TEXT);
-    // private final SimpleObjectProperty<Color> backgroundColorProperty = new
-    // SimpleObjectProperty<> (DEFAULT_COLOR_BACKGROUND);
-    // private final SimpleObjectProperty<Color> borderColorProperty = new SimpleObjectProperty<>
-    // (DEFAULT_COLOR_BORDER);
-    // private final SimpleObjectProperty<Color> faderColorProperty = new SimpleObjectProperty<>
-    // (DEFAULT_COLOR_FADER);
-    // private final SimpleObjectProperty<Color> vuColorProperty = new SimpleObjectProperty<>
-    // (DEFAULT_COLOR_VU);
-    // private final SimpleObjectProperty<Color> editColorProperty = new SimpleObjectProperty<>
-    // (DEFAULT_COLOR_EDIT);
-
-
-    /**
-     * Set a new font.
-     *
-     * @param fontName The name of the font
-     */
-    public void setTextFont (final String fontName)
-    {
-        this.textFont = new FontCache (fontName);
-    }
-
-
-    /**
-     * Get the currently selected font.
-     *
-     * @return The font
-     */
-    public Font getTextFont ()
-    {
-        return this.textFont.getBaseFont ();
-    }
-
-
-    /**
-     * Get the currently selected font with the preferred size.
-     *
-     * @param size The size of the font
-     * @return The font
-     */
-    public Font getTextFont (final int size)
-    {
-        return this.textFont.getFont (size);
-    }
+    private static final Color DEFAULT_COLOR_TEXT       = ColorEx.WHITE;
+    private static final Color DEFAULT_COLOR_BACKGROUND = Color.fromRGB255 (83, 83, 83);
+    private static final Color DEFAULT_COLOR_BORDER     = ColorEx.BLACK;
+    private static final Color DEFAULT_COLOR_FADER      = Color.fromRGB255 (69, 44, 19);
+    private static final Color DEFAULT_COLOR_VU         = ColorEx.GREEN;
+    private static final Color DEFAULT_COLOR_EDIT       = Color.fromRGB255 (240, 127, 17);
+    private static final Color DEFAULT_COLOR_RECORD     = ColorEx.RED;
+    private static final Color DEFAULT_COLOR_SOLO       = ColorEx.YELLOW;
+    private static final Color DEFAULT_COLOR_MUTE       = Color.fromRGB255 (245, 129, 17);
 
 
     /**
@@ -204,12 +159,29 @@ public class LayoutSettings
     }
 
 
+    public Color getRecordColor ()
+    {
+        return DEFAULT_COLOR_RECORD;
+    }
+
+
+    public Color getSoloColor ()
+    {
+        return DEFAULT_COLOR_SOLO;
+    }
+
+
+    public Color getMuteColor ()
+    {
+        return DEFAULT_COLOR_MUTE;
+    }
+
+
     /**
      * Reset the font and color settings.
      */
     public void reset ()
     {
-        // this.textFontProperty.set (new FontCache ());
         // this.textColorProperty.set (DEFAULT_COLOR_TEXT);
         // this.backgroundColorProperty.set (DEFAULT_COLOR_BACKGROUND);
         // this.borderColorProperty.set (DEFAULT_COLOR_BORDER);

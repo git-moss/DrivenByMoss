@@ -75,7 +75,7 @@ public class OSCExtension extends ControllerExtension
     }
 
 
-    private void handleOSCMessage (byte [] data)
+    private void handleOSCMessage (final byte [] data)
     {
         try
         {

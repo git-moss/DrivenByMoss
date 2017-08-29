@@ -1,17 +1,18 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
 import com.bitwig.extension.api.TextExtents;
-
-import java.awt.Color;
 
 
 /**
  * Abstract base class for an element in the grid.
- *
- * Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -151,13 +152,13 @@ public abstract class AbstractGridElement implements GridElement
                 break;
         }
 
-        g.save();
+        g.save ();
         // g.rectangle (pos, y, width - pos, 2 * height);
         // g.clip ();
-        g.setColor(color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
-        g.moveTo(pos, y + height - (height - textExtents.getHeight ()) / 2 - textDescent);
-        g.showText(text);
-        g.restore();
+        g.setColor (color);
+        g.moveTo (pos, y + height - (height - textExtents.getHeight ()) / 2 - textDescent);
+        g.showText (text);
+        g.restore ();
     }
 
 
@@ -177,11 +178,11 @@ public abstract class AbstractGridElement implements GridElement
             return;
         final TextExtents textExtents = g.getTextExtents (text);
 
-        g.save();
-        g.setColor(color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
-        g.moveTo(x, y + height - (height - textExtents.getHeight ()) / 2 - getTextDescent (g));
-        g.showText(text);
-        g.restore();
+        g.save ();
+        g.setColor (color);
+        g.moveTo (x, y + height - (height - textExtents.getHeight ()) / 2 - getTextDescent (g));
+        g.showText (text);
+        g.restore ();
     }
 
 
@@ -211,22 +212,22 @@ public abstract class AbstractGridElement implements GridElement
         if (this.menuName == null || this.menuName.length () == 0)
         {
             // Remove the 2 pixels of the previous menus border line
-            setColor (gc, borderColor);
+            gc.setColor (borderColor);
             gc.rectangle (left - SEPARATOR_SIZE, MENU_HEIGHT - 2, SEPARATOR_SIZE, 1);
             gc.fill ();
             return;
         }
 
         final Color textColor = layoutSettings.getTextColor ();
-        setColor (gc, this.isMenuSelected ? textColor : borderColor);
+        gc.setColor (this.isMenuSelected ? textColor : borderColor);
         gc.rectangle (left, 0, width, MENU_HEIGHT - 1.0);
         gc.fill ();
 
-        setColor (gc, textColor);
+        gc.setColor (textColor);
         gc.rectangle (left, MENU_HEIGHT - 2.0, width + SEPARATOR_SIZE, 1);
         gc.fill ();
 
-        setColor (gc, this.isMenuSelected ? borderColor : textColor);
+        gc.setColor (this.isMenuSelected ? borderColor : textColor);
         gc.setFontSize (UNIT);
         drawTextInBounds (gc, this.menuName, left, 1, width, UNIT + SEPARATOR_SIZE, Align.CENTER, this.isMenuSelected ? borderColor : textColor);
     }
@@ -251,11 +252,5 @@ public abstract class AbstractGridElement implements GridElement
     public static void setMaxValue (final double maxValue)
     {
         AbstractGridElement.MAX_VALUE = maxValue;
-    }
-
-
-    protected static void setColor (final GraphicsOutput gc, final Color color)
-    {
-        gc.setColor (color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0);
     }
 }

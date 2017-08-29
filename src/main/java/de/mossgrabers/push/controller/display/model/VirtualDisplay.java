@@ -1,3 +1,7 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.push.controller.display.model;
 
 import de.mossgrabers.push.controller.display.model.grid.GridElement;
@@ -8,14 +12,11 @@ import com.bitwig.extension.api.GraphicsOutput;
 import com.bitwig.extension.api.GraphicsOutput.AntialiasMode;
 import com.bitwig.extension.controller.api.ControllerHost;
 
-import java.awt.Color;
 import java.util.List;
 
 
 /**
  * Draws the content of the display based on the model into a bitmap.
- *
- * Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -31,7 +32,7 @@ public class VirtualDisplay
 
     /**
      * Constructor.
-     * 
+     *
      * @param host The controller host
      * @param model Stores the data for drawing the display
      * @param layoutSettings The layout settings to use for drawing
@@ -60,12 +61,6 @@ public class VirtualDisplay
 
         this.model.addGridElementChangeListener (this::redrawGrid);
         this.layoutSettings = layoutSettings;
-
-        // TODO
-        // this.layoutSettings.addFontChangeListener ( (observable, oldValue, newValue) ->
-        // this.redrawGrid ());
-        // this.layoutSettings.addColorChangeListener ( (observable, oldValue, newValue) ->
-        // this.redrawGrid ());
     }
 
 
@@ -97,12 +92,10 @@ public class VirtualDisplay
     public void drawGrid (final Bitmap image)
     {
         image.render (gc -> {
-
             configureGraphics (gc);
 
             // Clear display
-            final Color borderColor = this.layoutSettings.getBorderColor ();
-            gc.setColor (borderColor.getRed () / 255.0, borderColor.getGreen () / 255.0, borderColor.getBlue () / 255.0);
+            gc.setColor (this.layoutSettings.getBorderColor ());
             gc.rectangle (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
             gc.fill ();
 

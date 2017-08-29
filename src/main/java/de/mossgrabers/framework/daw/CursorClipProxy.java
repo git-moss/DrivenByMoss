@@ -474,7 +474,7 @@ public class CursorClipProxy
      *
      * @param page The page to select
      */
-    public void scrollToPage (int page)
+    public void scrollToPage (final int page)
     {
         this.clip.scrollToStep (page * this.stepSize);
         this.editPage = page;

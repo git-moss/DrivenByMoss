@@ -183,7 +183,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      */
     protected boolean isInXRange (final int x)
     {
-        int stepSize = this.clip.getStepSize ();
+        final int stepSize = this.clip.getStepSize ();
         final int start = this.clip.getEditPage () * stepSize;
         return x >= start && x < start + stepSize;
     }
@@ -204,7 +204,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     /**
      * Calculates the length of one sequencer page which is the number of displayed steps multiplied
      * with the current grid resolution.
-     * 
+     *
      * @param numOfSteps The number of displayed steps
      * @return The floor of the length
      */

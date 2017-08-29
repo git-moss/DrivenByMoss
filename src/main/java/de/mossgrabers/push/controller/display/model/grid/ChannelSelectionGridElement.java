@@ -1,20 +1,22 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.controller.display.model.ChannelType;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 import de.mossgrabers.push.controller.display.model.ResourceHandler;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
 import com.bitwig.extension.api.Image;
 
-import java.awt.Color;
 import java.util.EnumMap;
 
 
 /**
  * An element in the grid which contains a menu and a channels' icon, name and color.
- *
- * Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -105,7 +107,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
     {
         // Draw the background
         final Color backgroundColor = layoutSettings.getBackgroundColor ();
-        setColor (gc, this.isSelected () ? backgroundColor.brighter () : backgroundColor);
+        gc.setColor (this.isSelected () ? ColorEx.brighter (backgroundColor) : backgroundColor);
         gc.rectangle (left, trackRowTop + 1, width, height - UNIT - 1);
         gc.fill ();
 
@@ -117,7 +119,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
             final Image icon = ResourceHandler.getSVGImage (iconName);
 
             // TODO find a solution to draw icons
-            // setColor (gc, textColor);
+            // gc.setColor (textColor);
             // gc.setOperator (Operator.IN);
             // gc.rectangle (left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT
             // - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2, icon.getWidth (), icon.getHeight
@@ -131,7 +133,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
         }
 
         // The track color section
-        setColor (gc, this.getColor ());
+        gc.setColor (this.getColor ());
         gc.rectangle (left, height - UNIT, width, UNIT);
         gc.fill ();
     }

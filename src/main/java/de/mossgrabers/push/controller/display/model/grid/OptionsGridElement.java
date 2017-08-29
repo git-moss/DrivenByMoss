@@ -1,18 +1,19 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
-
-import java.awt.Color;
 
 
 /**
  * An element in the grid which can display on option on top and on the bottom of the element. In
  * the middle two texts can be displayed. The texts are not clipped horizontally and can reach into
  * the next elements.
- *
- * Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -67,8 +68,7 @@ public class OptionsGridElement extends AbstractGridElement
 
         final double headerHeight = (DISPLAY_HEIGHT - 2 * menuHeight) / 2;
 
-        Color textColor = layoutSettings.getTextColor ();
-        // TODO gc.setFont (layoutSettings.getTextFont (headerHeight / 2));
+        final Color textColor = layoutSettings.getTextColor ();
 
         if (hasTopHeader)
             drawTextInHeight (gc, this.headerTop, left, menuHeight, headerHeight, textColor);
@@ -96,7 +96,7 @@ public class OptionsGridElement extends AbstractGridElement
 
         final Color textColor = layoutSettings.getTextColor ();
 
-        setColor (gc, isSelected ? textColor : layoutSettings.getBackgroundColor ());
+        gc.setColor (isSelected ? textColor : layoutSettings.getBackgroundColor ());
         gc.rectangle (left, top, width, height);
         gc.fill ();
 

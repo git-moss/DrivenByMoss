@@ -1,3 +1,7 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.push.controller.display.model;
 
 import com.bitwig.extension.api.Image;
@@ -21,7 +25,7 @@ public class ResourceHandler
 
     /**
      * TODO
-     * 
+     *
      * Get a SVG image as a buffered image. The image is expected to be monochrome: 1 color and the
      * a transparent background. The given color replaces the color of the image. The images are
      * cached by name and color.

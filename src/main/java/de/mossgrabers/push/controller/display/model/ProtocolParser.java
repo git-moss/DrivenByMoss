@@ -1,15 +1,21 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.push.controller.display.model;
 
 import de.mossgrabers.framework.Pair;
 import de.mossgrabers.push.controller.display.model.grid.ChannelGridElement;
 import de.mossgrabers.push.controller.display.model.grid.ChannelSelectionGridElement;
+import de.mossgrabers.push.controller.display.model.grid.ColorEx;
 import de.mossgrabers.push.controller.display.model.grid.GridElement;
 import de.mossgrabers.push.controller.display.model.grid.ListGridElement;
 import de.mossgrabers.push.controller.display.model.grid.OptionsGridElement;
 import de.mossgrabers.push.controller.display.model.grid.ParamGridElement;
 import de.mossgrabers.push.controller.display.model.grid.SendsGridElement;
 
-import java.awt.Color;
+import com.bitwig.extension.api.Color;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +23,6 @@ import java.util.List;
 
 /**
  * Parses the communication protocol coming from the Push4Bitwig script.
- *
- * Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -307,6 +311,6 @@ public class ProtocolParser
         final int r = parseInteger (in);
         final int g = parseInteger (in);
         final int b = parseInteger (in);
-        return r == 0 && g == 0 && b == 0 ? Color.GRAY : new Color (r, g, b);
+        return r == 0 && g == 0 && b == 0 ? ColorEx.GRAY : Color.fromRGB255 (r, g, b);
     }
 }

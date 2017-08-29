@@ -662,7 +662,7 @@ public class PushConfiguration extends AbstractConfiguration
 
     /**
      * Get the current mode which is selected for mixing.
-     * 
+     *
      * @param currentMixMode The ID of the current mode which is selected for mixing.
      */
     public void setCurrentMixMode (final Integer currentMixMode)
