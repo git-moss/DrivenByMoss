@@ -152,6 +152,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
         }
 
         // Draw volume text on top if set
+        final double descent = gc.getFontExtents ().getDescent ();
         final double boxWidth = sliderWidth / 2;
         final double boxLeft = faderLeft + sliderWidth - boxWidth;
         topy = MENU_HEIGHT;
@@ -170,7 +171,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
                 setColor (gc, borderColor);
                 gc.rectangle (boxLeft, volumeTextTop, boxWidth - 1, UNIT);
                 gc.stroke ();
-                drawTextInBounds (gc, this.sendTexts[i], boxLeft, volumeTextTop, boxWidth, UNIT, Align.CENTER, textColor);
+                drawTextInBounds (gc, this.sendTexts[i], boxLeft, volumeTextTop + descent, boxWidth, UNIT, Align.CENTER, textColor);
             }
 
             topy += sendRowHeight;

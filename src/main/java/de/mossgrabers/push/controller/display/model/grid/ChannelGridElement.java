@@ -136,7 +136,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         // Background of pan and slider area
         final Color borderColor = layoutSettings.getBorderColor ();
         setColor (gc, borderColor);
-        gc.rectangle (controlStart, CONTROLS_TOP, halfWidth - UNIT + HALF_UNIT / 2 + 1, UNIT);
+        gc.rectangle (controlStart, CONTROLS_TOP, halfWidth - UNIT + HALF_UNIT / 2, UNIT);
         gc.rectangle (controlStart, faderTop, controlWidth, faderHeight);
         gc.fill ();
 
