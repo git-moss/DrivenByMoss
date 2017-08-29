@@ -150,10 +150,14 @@ public abstract class AbstractGridElement implements GridElement
                 pos = x + (width - textExtents.getWidth ()) / 2.0;
                 break;
         }
+
+        g.save();
         // g.rectangle (pos, y, width - pos, 2 * height);
         // g.clip ();
-        g.drawText (pos, y + height - (height - textExtents.getHeight ()) / 2 - textDescent, text, color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
-        // g.resetClip ();
+        g.setColor(color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
+        g.moveTo(pos, y + height - (height - textExtents.getHeight ()) / 2 - textDescent);
+        g.showText(text);
+        g.restore();
     }
 
 
@@ -172,7 +176,12 @@ public abstract class AbstractGridElement implements GridElement
         if (text == null || text.length () == 0)
             return;
         final TextExtents textExtents = g.getTextExtents (text);
-        g.drawText (x, y + height - (height - textExtents.getHeight ()) / 2 - getTextDescent (g), text, color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
+
+        g.save();
+        g.setColor(color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0, color.getAlpha () / 255.0);
+        g.moveTo(x, y + height - (height - textExtents.getHeight ()) / 2 - getTextDescent (g));
+        g.showText(text);
+        g.restore();
     }
 
 
