@@ -163,20 +163,7 @@ public class RibbonMode extends BaseMode
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         for (int i = 0; i < 7; i++)
             message.addOptionElement (i == 0 ? "CC Quick Select" : "", RibbonMode.CC_QUICK_SELECT[i], false, i == 0 ? "Function" : "", RibbonMode.FUNCTION[i], i < RibbonMode.FUNCTION_IDS.length && ribbonMode == RibbonMode.FUNCTION_IDS[i], false);
-
-        message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
-        message.addString ("");
-        message.addBoolean (false);
-        message.addString ("");
-        message.addString ("");
-        message.addColor (null);
-        message.addBoolean (false);
-        message.addString ("Midi CC");
-        message.addInteger (-1);
-        message.addString (ribbonModeCC);
-        message.addBoolean (this.isKnobTouched[5]);
-        message.addInteger (-1);
-
+        message.addParameterElement ("Midi CC", -1, ribbonModeCC, this.isKnobTouched[5], -1);
         message.send ();
         return;
     }

@@ -81,41 +81,11 @@ public class GrooveMode extends BaseMode
         final GrooveProxy groove = this.model.getGroove ();
         final ParameterData [] parameters = groove.getParameters ();
         final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
-
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
-        message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
-        message.addString ("");
-        message.addBoolean (false);
-        message.addString ("");
-        message.addString ("");
-        message.addColor (null);
-        message.addBoolean (false);
-
-        message.addString ("Quant Amnt");
-        message.addInteger (quantizeAmount * 1023 / 100);
-        message.addString (quantizeAmount + "%");
-        message.addBoolean (this.isKnobTouched[0]);
-        message.addInteger (-1);
-
+        message.addParameterElement ("Quant Amnt", quantizeAmount * 1023 / 100, quantizeAmount + "%", this.isKnobTouched[0], -1);
         message.addOptionElement ("     Groove", "", false, "", "", false, false);
-
         for (int i = 0; i < 6; i++)
-        {
-            message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
-            message.addString ("");
-            message.addBoolean (false);
-            message.addString ("");
-            message.addString ("");
-            message.addColor (null);
-            message.addBoolean (false);
-
-            message.addString (parameters[i].getName (10));
-            message.addInteger (parameters[i].getValue ());
-            message.addString (parameters[i].getDisplayedValue (8));
-            message.addBoolean (this.isKnobTouched[i]);
-            message.addInteger (-1);
-        }
-
+            message.addParameterElement (parameters[i].getName (10), parameters[i].getValue (), parameters[i].getDisplayedValue (8), this.isKnobTouched[i], -1);
         message.send ();
     }
 

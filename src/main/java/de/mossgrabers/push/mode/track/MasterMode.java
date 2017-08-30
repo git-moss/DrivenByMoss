@@ -129,48 +129,20 @@ public class MasterMode extends BaseMode
         final ValueChanger valueChanger = this.model.getValueChanger ();
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
 
-        message.addByte (DisplayMessage.GRID_ELEMENT_CHANNEL_ALL);
-        message.addString ("Volume");
-        message.addBoolean (false);
-
-        // Channel info
-        message.addString (master.getName ());
-        message.addString ("master");
-        message.addColor (master.getColor ());
-        message.addByte (master.isSelected () ? 1 : 0);
-        message.addInteger (valueChanger.toDisplayValue (master.getVolume ()));
-        message.addInteger (valueChanger.toDisplayValue (master.getModulatedVolume ()));
-        message.addString (this.isKnobTouched[0] ? master.getVolumeStr (8) : "");
-        message.addInteger (valueChanger.toDisplayValue (master.getPan ()));
-        message.addInteger (valueChanger.toDisplayValue (master.getModulatedPan ()));
-        message.addString (this.isKnobTouched[1] ? master.getPanStr (8) : "");
-        message.addInteger (valueChanger.toDisplayValue (this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : 0));
-        message.addBoolean (master.isMute ());
-        message.addBoolean (master.isSolo ());
-        message.addBoolean (master.isRecarm ());
-        message.addByte (0);
+        message.addChannelElement ("Volume", false, master.getName (), "master", master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", valueChanger.toDisplayValue (this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : 0), master.isMute (), master.isSolo (), master.isRecarm (), 0);
 
         for (int i = 1; i < 4; i++)
         {
-            message.addByte (DisplayMessage.GRID_ELEMENT_CHANNEL_SELECTION);
-            message.addString (i == 1 ? "Pan" : "");
-            message.addBoolean (false);
-
-            // Channel info
-            message.addString ("");
-            message.addString ("");
-            message.addColor (new double []
+            message.addChannelSelectorElement (i == 1 ? "Pan" : "", false, "", "", new double []
             {
                 0.0,
                 0.0,
                 0.0
-            });
-            message.addByte (0);
+            }, false);
         }
 
         message.addOptionElement ("", "", false, "Audio Engine", application.isEngineActive () ? "Turn off" : "Turn on", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
-
         message.addOptionElement ("Project:", "", false, application.getProjectName (), "Previous", false, false);
         message.addOptionElement ("", "", false, "", "Next", false, false);
 

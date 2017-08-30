@@ -108,62 +108,12 @@ public class SetupMode extends BaseMode
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         message.addOptionElement ("", "Setup", true, "", "", false, true);
         message.addOptionElement ("Brightness", "Info", false, "", "", false, true);
-        for (int i = 2; i < 8; i++)
-        {
-            if (i == 4)
-            {
-                message.addOptionElement ("        Pads", "", false, "", "", false, false);
-                continue;
-            }
-
-            message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
-
-            // The menu item
-            message.addString ("");
-            message.addBoolean (i == 0);
-
-            message.addString ("");
-            message.addString ("");
-            message.addColor (null);
-            message.addBoolean (false);
-
-            switch (i)
-            {
-                case 2:
-                    message.addString ("Display");
-                    message.addInteger (config.getDisplayBrightness () * 1023 / 100);
-                    message.addString (config.getDisplayBrightness () + "%");
-                    break;
-                case 3:
-                    message.addString ("LEDs");
-                    message.addInteger (config.getLedBrightness () * 1023 / 100);
-                    message.addString (config.getLedBrightness () + "%");
-                    break;
-                case 5:
-                    message.addString ("Sensitivity");
-                    message.addInteger (config.getPadSensitivity () * 1023 / 10);
-                    message.addString (Integer.toString (config.getPadSensitivity ()));
-                    break;
-                case 6:
-                    message.addString ("Gain");
-                    message.addInteger (config.getPadGain () * 1023 / 10);
-                    message.addString (Integer.toString (config.getPadGain ()));
-                    break;
-                case 7:
-                    message.addString ("Dynamics");
-                    message.addInteger (config.getPadDynamics () * 1023 / 10);
-                    message.addString (Integer.toString (config.getPadDynamics ()));
-                    break;
-                default:
-                    message.addString ("");
-                    message.addInteger (-1);
-                    message.addString ("");
-                    break;
-            }
-
-            message.addBoolean (this.isKnobTouched[i]);
-            message.addInteger (-1);
-        }
+        message.addParameterElement ("Display", config.getDisplayBrightness () * 1023 / 100, config.getDisplayBrightness () + "%", this.isKnobTouched[2], -1);
+        message.addParameterElement ("LEDs", config.getLedBrightness () * 1023 / 100, config.getLedBrightness () + "%", this.isKnobTouched[3], -1);
+        message.addOptionElement ("        Pads", "", false, "", "", false, false);
+        message.addParameterElement ("Sensitivity", config.getPadSensitivity () * 1023 / 10, Integer.toString (config.getPadSensitivity ()), this.isKnobTouched[5], -1);
+        message.addParameterElement ("Gain", config.getPadGain () * 1023 / 10, Integer.toString (config.getPadGain ()), this.isKnobTouched[6], -1);
+        message.addParameterElement ("Dynamics", config.getPadDynamics () * 1023 / 10, Integer.toString (config.getPadDynamics ()), this.isKnobTouched[7], -1);
         message.send ();
     }
 }

@@ -244,43 +244,43 @@ public class DeviceBrowserMode extends BaseMode
                 break;
 
             case DeviceBrowserMode.SELECTION_PRESET:
+            {
                 final BrowserColumnItemData [] results = browser.getResultColumnItems ();
                 for (int i = 0; i < 8; i++)
                 {
-                    message.addByte (DisplayMessage.GRID_ELEMENT_LIST);
+                    final String [] items = new String [6];
+                    final boolean [] selected = new boolean [6];
                     for (int item = 0; item < 6; item++)
                     {
                         final int pos = i * 6 + item;
-                        if (pos < results.length)
-                        {
-                            message.addString (results[pos].getName ());
-                            message.addBoolean (results[pos].isSelected ());
-                        }
-                        else
-                        {
-                            message.addString ("");
-                            message.addBoolean (false);
-                        }
+                        items[item] = pos < results.length ? results[pos].getName () : "";
+                        selected[item] = pos < results.length ? results[pos].isSelected () : false;
                     }
+                    message.addListElement (items, selected);
                 }
                 break;
+            }
 
             case DeviceBrowserMode.SELECTION_FILTER:
-                final BrowserColumnItemData [] items = browser.getFilterColumn (this.filterColumn).getItems ();
+            {
+                final BrowserColumnItemData [] itemData = browser.getFilterColumn (this.filterColumn).getItems ();
                 for (int i = 0; i < 8; i++)
                 {
-                    message.addByte (DisplayMessage.GRID_ELEMENT_LIST);
+                    final String [] items = new String [6];
+                    final boolean [] selected = new boolean [6];
                     for (int item = 0; item < 6; item++)
                     {
                         final int pos = i * 6 + item;
-                        String text = this.optimizeName (items[pos].getName (), 10);
+                        String text = this.optimizeName (itemData[pos].getName (), 10);
                         if (!text.isEmpty ())
-                            text = text + " (" + items[pos].getHitCount () + ")";
-                        message.addString (text);
-                        message.addBoolean (items[pos].isSelected ());
+                            text = text + " (" + itemData[pos].getHitCount () + ")";
+                        items[item] = text;
+                        selected[item] = itemData[pos].isSelected ();
                     }
+                    message.addListElement (items, selected);
                 }
                 break;
+            }
         }
 
         message.send ();

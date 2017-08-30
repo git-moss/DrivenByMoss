@@ -109,74 +109,24 @@ public class ClipMode extends AbstractTrackMode
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final CursorClipProxy clip = this.getClip ();
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
-        for (int i = 0; i < 8; i++)
-        {
-            final TrackData t = tb.getTrack (i);
 
-            message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
-            message.addString (i == 7 ? "Select color" : "");
-            message.addBoolean (false);
+        final TrackData t0 = tb.getTrack (0);
+        final TrackData t1 = tb.getTrack (1);
+        final TrackData t2 = tb.getTrack (2);
+        final TrackData t3 = tb.getTrack (3);
+        final TrackData t4 = tb.getTrack (4);
+        final TrackData t5 = tb.getTrack (5);
+        final TrackData t6 = tb.getTrack (6);
+        final TrackData t7 = tb.getTrack (7);
 
-            // Channel info
-            message.addString (t.getName ());
-            message.addString (t.getType ());
-            message.addColor (tb.getTrackColorEntry (i));
-            message.addByte (t.isSelected () ? 1 : 0);
-
-            switch (i)
-            {
-                case 0:
-                    message.addString ("Play Start");
-                    message.addInteger (-1);
-                    message.addString (this.formatMeasures (clip.getPlayStart ()));
-                    message.addBoolean (this.isKnobTouched[i]);
-                    break;
-                case 1:
-                    message.addString ("Play End");
-                    message.addInteger (-1);
-                    message.addString (this.formatMeasures (clip.getPlayEnd ()));
-                    message.addBoolean (this.isKnobTouched[i]);
-                    break;
-                case 2:
-                    message.addString ("Loop Start");
-                    message.addInteger (-1);
-                    message.addString (this.formatMeasures (clip.getLoopStart ()));
-                    message.addBoolean (this.isKnobTouched[i]);
-                    break;
-                case 3:
-                    message.addString ("Loop Lngth");
-                    message.addInteger (-1);
-                    message.addString (this.formatMeasures (clip.getLoopLength ()));
-                    message.addBoolean (this.isKnobTouched[i]);
-                    break;
-                case 4:
-                    message.addString ("Loop");
-                    message.addInteger (-1);
-                    message.addString (clip.isLoopEnabled () ? "On" : "Off");
-                    message.addBoolean (this.isKnobTouched[i]);
-                    break;
-                case 6:
-                    message.addString ("Shuffle");
-                    message.addInteger (-1);
-                    message.addString (clip.isShuffleEnabled () ? "On" : "Off");
-                    message.addBoolean (this.isKnobTouched[i]);
-                    break;
-                case 7:
-                    message.addString ("Accent");
-                    message.addInteger (-1);
-                    message.addString (clip.getFormattedAccent ());
-                    message.addBoolean (this.isKnobTouched[i]);
-                    break;
-                default:
-                    message.addString ("");
-                    message.addInteger (-1);
-                    message.addString ("");
-                    message.addBoolean (false);
-                    break;
-            }
-            message.addInteger (-1);
-        }
-
+        message.addParameterElement ("", false, t0.getName (), t0.getType (), tb.getTrackColorEntry (0), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart ()), this.isKnobTouched[0], -1);
+        message.addParameterElement ("", false, t1.getName (), t1.getType (), tb.getTrackColorEntry (1), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd ()), this.isKnobTouched[1], -1);
+        message.addParameterElement ("", false, t2.getName (), t2.getType (), tb.getTrackColorEntry (2), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart ()), this.isKnobTouched[2], -1);
+        message.addParameterElement ("", false, t3.getName (), t3.getType (), tb.getTrackColorEntry (3), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength ()), this.isKnobTouched[3], -1);
+        message.addParameterElement ("", false, t4.getName (), t4.getType (), tb.getTrackColorEntry (4), t4.isSelected (), "Loop", -1, clip.isLoopEnabled () ? "On" : "Off", this.isKnobTouched[4], -1);
+        message.addParameterElement ("", false, t5.getName (), t5.getType (), tb.getTrackColorEntry (5), t5.isSelected (), "", -1, "", false, -1);
+        message.addParameterElement ("", false, t6.getName (), t6.getType (), tb.getTrackColorEntry (6), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
+        message.addParameterElement ("Select color", false, t7.getName (), t7.getType (), tb.getTrackColorEntry (7), t7.isSelected (), "Accent", -1, clip.getFormattedAccent (), this.isKnobTouched[7], -1);
         message.send ();
     }
 

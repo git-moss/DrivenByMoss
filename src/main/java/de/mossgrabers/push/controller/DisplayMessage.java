@@ -1,3 +1,7 @@
+// Written by J�rgen Mo�graber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.push.controller;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -113,6 +117,206 @@ public class DisplayMessage
 
 
     /**
+     * Adds a channel selector element.
+     *
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param bottomMenuIcon An icon identifier for the menu
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     */
+    public void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn)
+    {
+        this.addByte (DisplayMessage.GRID_ELEMENT_CHANNEL_SELECTION);
+
+        // Top Menu
+        this.addString (topMenu);
+        this.addBoolean (isTopMenuOn);
+
+        // Bottom Menu
+        this.addString (bottomMenu);
+        this.addString (bottomMenuIcon);
+        this.addColor (bottomMenuColor);
+        this.addBoolean (isBottomMenuOn);
+    }
+
+
+    /**
+     * Adds a channel element.
+     *
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param bottomMenuIcon An icon identifier for the menu
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     * @param volume The volume value
+     * @param modulatedVolume The modulated volume value
+     * @param volumeStr The volume as string
+     * @param pan The panorama
+     * @param modulatedPan The modulated panorama
+     * @param panStr The panorama as string
+     * @param vu The VU meter value
+     * @param mute The mute state
+     * @param solo The solo state
+     * @param recarm Therecording armed state
+     * @param crossfadeMode Crossfae mode (0-2)
+     */
+    public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
+    {
+        this.addChannelElement (DisplayMessage.GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vu, mute, solo, recarm, crossfadeMode);
+    }
+
+
+    /**
+     * Adds a channel element.
+     *
+     * @param channelType The type of the channel
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param bottomMenuIcon An icon identifier for the menu
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     * @param volume The volume value
+     * @param modulatedVolume The modulated volume value
+     * @param volumeStr The volume as string
+     * @param pan The panorama
+     * @param modulatedPan The modulated panorama
+     * @param panStr The panorama as string
+     * @param vu The VU meter value
+     * @param mute The mute state
+     * @param solo The solo state
+     * @param recarm Therecording armed state
+     * @param crossfadeMode Crossfae mode (0-2)
+     */
+    public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
+    {
+        this.addByte (channelType);
+
+        // Top Menu
+        this.addString (topMenu);
+        this.addBoolean (isTopMenuOn);
+
+        // Bottom Menu
+        this.addString (bottomMenu);
+        this.addString (bottomMenuIcon);
+        this.addColor (bottomMenuColor);
+        this.addBoolean (isBottomMenuOn);
+
+        // Channel
+        this.addInteger (volume);
+        this.addInteger (modulatedVolume);
+        this.addString (volumeStr);
+        this.addInteger (pan);
+        this.addInteger (modulatedPan);
+        this.addString (panStr);
+        this.addInteger (vu);
+        this.addBoolean (mute);
+        this.addBoolean (solo);
+        this.addBoolean (recarm);
+        this.addByte (crossfadeMode);
+    }
+
+
+    /**
+     * Adds a channel with 4 sends element.
+     *
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param bottomMenuIcon An icon identifier for the menu
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     * @param sendName The names of the sends
+     * @param valueStr The volumes as string
+     * @param value The volumes as values
+     * @param modulatedValue The modulated volumes as values
+     * @param selected The selected state of sends
+     * @param isTrackMode True if track mode otherwise send mode
+     */
+    public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String [] sendName, final String [] valueStr, final int [] value, final int [] modulatedValue, final boolean [] selected, final boolean isTrackMode)
+    {
+        this.addByte (DisplayMessage.GRID_ELEMENT_CHANNEL_SENDS);
+
+        // Top Menu
+        this.addString (topMenu);
+        this.addBoolean (isTopMenuOn);
+
+        // Bottom Menu
+        this.addString (bottomMenu);
+        this.addString (bottomMenuIcon);
+        this.addColor (bottomMenuColor);
+        this.addBoolean (isBottomMenuOn);
+
+        for (int i = 0; i < 4; i++)
+        {
+            this.addString (sendName[i]);
+            this.addString (valueStr[i]);
+            this.addInteger (value[i]);
+            this.addInteger (modulatedValue[i]);
+            this.addByte (selected[i] ? 1 : 0);
+        }
+
+        this.addBoolean (isTrackMode);
+    }
+
+
+    /**
+     * Adds a parameter element without top and bottom menu.
+     *
+     * @param parameterName The name to display for the parameter
+     * @param parameterValue The numeric value of the parameter
+     * @param parameterValueStr The textual form of the parameter
+     * @param parameterIsActive The parameter is currently edited
+     * @param parameterModulatedValue The modulated numeric value
+     */
+    public void addParameterElement (final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    {
+        this.addParameterElement ("", false, "", "", null, false, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+    }
+
+
+    /**
+     * Adds a parameter element.
+     *
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param bottomMenuIcon An icon identifier for the menu
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     * @param parameterName The name to display for the parameter
+     * @param parameterValue The numeric value of the parameter
+     * @param parameterValueStr The textual form of the parameter
+     * @param parameterIsActive The parameter is currently edited
+     * @param parameterModulatedValue The modulated numeric value
+     */
+    public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    {
+        this.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
+
+        // Top Menu
+        this.addString (topMenu);
+        this.addBoolean (isTopMenuOn);
+
+        // Bottom Menu
+        this.addString (bottomMenu);
+        this.addString (bottomMenuIcon);
+        this.addColor (bottomMenuColor);
+        this.addBoolean (isBottomMenuOn);
+
+        // Parameter
+        this.addString (parameterName);
+        this.addInteger (parameterValue);
+        this.addString (parameterValueStr);
+        this.addBoolean (parameterIsActive);
+        this.addInteger (parameterModulatedValue);
+    }
+
+
+    /**
      * Add an options element to the message.
      *
      * @param headerTopName A text on the top
@@ -137,11 +341,31 @@ public class DisplayMessage
 
 
     /**
+     * Add a list element to the message.
+     *
+     * @param items Must contain 6 texts
+     * @param selected Must contain 6 states
+     */
+    public void addListElement (final String [] items, final boolean [] selected)
+    {
+        if (items.length != selected.length || items.length != 6)
+            throw new IllegalArgumentException ("List array must contain 6 elements but contain " + items.length);
+
+        this.addByte (DisplayMessage.GRID_ELEMENT_LIST);
+        for (int i = 0; i < 6; i++)
+        {
+            this.addString (items[i]);
+            this.addBoolean (selected[i]);
+        }
+    }
+
+
+    /**
      * Adds a string to the message.
      *
      * @param text The text to add
      */
-    public void addString (final String text)
+    private void addString (final String text)
     {
         if (text != null)
         {
@@ -167,7 +391,7 @@ public class DisplayMessage
      *
      * @param value The text to add
      */
-    public void addInteger (final int value)
+    private void addInteger (final int value)
     {
         this.array.add (Integer.valueOf (value & 0x7F));
         this.array.add (Integer.valueOf (value >> 7 & 0x7F));
@@ -179,7 +403,7 @@ public class DisplayMessage
      *
      * @param value The boolean to add
      */
-    public void addBoolean (final boolean value)
+    private void addBoolean (final boolean value)
     {
         this.array.add (Integer.valueOf (value ? 1 : 0));
     }
@@ -190,7 +414,7 @@ public class DisplayMessage
      *
      * @param color The color in RGB to add
      */
-    public void addColor (final double [] color)
+    private void addColor (final double [] color)
     {
         if (color != null)
         {
@@ -215,7 +439,7 @@ public class DisplayMessage
      *
      * @param value The byte to add
      */
-    public void addByte (final int value)
+    private void addByte (final int value)
     {
         this.array.add (Integer.valueOf (value));
     }
