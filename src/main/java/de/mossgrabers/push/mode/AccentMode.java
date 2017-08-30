@@ -72,25 +72,7 @@ public class AccentMode extends BaseMode
         final ValueChanger valueChanger = this.model.getValueChanger ();
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         for (int i = 0; i < 8; i++)
-        {
-            message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
-
-            // The menu item
-            message.addString ("");
-            message.addBoolean (false);
-
-            message.addString ("");
-            message.addString ("");
-            message.addColor (null);
-            message.addBoolean (false);
-
-            message.addString (i == 7 ? "Accent" : "");
-            message.addInteger (i == 7 ? valueChanger.toDisplayValue (valueChanger.toDAWValue (fixedAccentValue)) : 0);
-            message.addString (i == 7 ? Integer.toString (fixedAccentValue) : "");
-            message.addBoolean (this.isKnobTouched[i]);
-
-            message.addInteger (-1);
-        }
+            message.addParameterElement (i == 7 ? "Accent" : "", i == 7 ? valueChanger.toDisplayValue (valueChanger.toDAWValue (fixedAccentValue)) : 0, i == 7 ? Integer.toString (fixedAccentValue) : "", this.isKnobTouched[i], -1);
         message.send ();
     }
 }

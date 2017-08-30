@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.ChannelType;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
@@ -90,9 +91,9 @@ public class SendsGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings)
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration)
     {
-        super.draw (gc, left, width, height, layoutSettings);
+        super.draw (gc, left, width, height, layoutSettings, configuration);
 
         final String name = this.getName ();
         // Element is off if the name is empty

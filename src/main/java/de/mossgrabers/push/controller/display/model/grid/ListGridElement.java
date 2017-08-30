@@ -5,6 +5,7 @@
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.framework.Pair;
+import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
 import com.bitwig.extension.api.Color;
@@ -40,7 +41,7 @@ public class ListGridElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings)
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration)
     {
         final int size = this.items.size ();
         final double itemHeight = DISPLAY_HEIGHT / size;

@@ -4,12 +4,19 @@
 
 package de.mossgrabers.push.controller;
 
+import de.mossgrabers.framework.Pair;
+import de.mossgrabers.push.controller.display.model.ChannelType;
 import de.mossgrabers.push.controller.display.model.DisplayModel;
-import de.mossgrabers.push.controller.display.model.ProtocolParser;
+import de.mossgrabers.push.controller.display.model.grid.ChannelGridElement;
+import de.mossgrabers.push.controller.display.model.grid.ChannelSelectionGridElement;
 import de.mossgrabers.push.controller.display.model.grid.GridElement;
+import de.mossgrabers.push.controller.display.model.grid.ListGridElement;
+import de.mossgrabers.push.controller.display.model.grid.OptionsGridElement;
+import de.mossgrabers.push.controller.display.model.grid.ParamGridElement;
+import de.mossgrabers.push.controller.display.model.grid.SendsGridElement;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import com.bitwig.extension.api.Color;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,60 +29,36 @@ import java.util.List;
 public class DisplayMessage
 {
     /** Display only a channel name for selection. */
-    public static final int      GRID_ELEMENT_CHANNEL_SELECTION  = 0;
+    public static final int         GRID_ELEMENT_CHANNEL_SELECTION  = 0;
     /** Display a channel, edit volume. */
-    public static final int      GRID_ELEMENT_CHANNEL_VOLUME     = 1;
+    public static final int         GRID_ELEMENT_CHANNEL_VOLUME     = 1;
     /** Display a channel, edit panorama. */
-    public static final int      GRID_ELEMENT_CHANNEL_PAN        = 2;
+    public static final int         GRID_ELEMENT_CHANNEL_PAN        = 2;
     /** Display a channel, edit crossfader. */
-    public static final int      GRID_ELEMENT_CHANNEL_CROSSFADER = 3;
+    public static final int         GRID_ELEMENT_CHANNEL_CROSSFADER = 3;
     /** Display a channel sends. */
-    public static final int      GRID_ELEMENT_CHANNEL_SENDS      = 4;
+    public static final int         GRID_ELEMENT_CHANNEL_SENDS      = 4;
     /** Display a channel, edit all parameters. */
-    public static final int      GRID_ELEMENT_CHANNEL_ALL        = 5;
+    public static final int         GRID_ELEMENT_CHANNEL_ALL        = 5;
     /** Display a parameter with name and value. */
-    public static final int      GRID_ELEMENT_PARAMETERS         = 6;
+    public static final int         GRID_ELEMENT_PARAMETERS         = 6;
     /** Display options on top and bottom. */
-    public static final int      GRID_ELEMENT_OPTIONS            = 7;
+    public static final int         GRID_ELEMENT_OPTIONS            = 7;
     /** Display a list. */
-    public static final int      GRID_ELEMENT_LIST               = 8;
+    public static final int         GRID_ELEMENT_LIST               = 8;
 
-    /** The grid command. */
-    public static final int      DISPLAY_COMMAND_GRID            = 10;
-
-    private int                  command;
-    private List<Integer>        array;
-    private int                  port;
-
-    private final ProtocolParser parser                          = new ProtocolParser ();
-    private DisplayModel         model;
+    private DisplayModel            model;
+    private final List<GridElement> elements                        = new ArrayList<> (8);
 
 
     /**
      * Constructor. Uses the grid command.
      *
      * @param model The display model
-     * @param port The communication port
      */
-    public DisplayMessage (final DisplayModel model, final int port)
-    {
-        this (model, port, DISPLAY_COMMAND_GRID);
-    }
-
-
-    /**
-     * Constructor.
-     *
-     * @param model The display model
-     * @param port The communication port
-     * @param command The command to send
-     */
-    public DisplayMessage (final DisplayModel model, final int port, final int command)
+    public DisplayMessage (final DisplayModel model)
     {
         this.model = model;
-        this.port = port;
-        this.command = command;
-        this.array = new ArrayList<> ();
     }
 
 
@@ -84,17 +67,7 @@ public class DisplayMessage
      */
     public void send ()
     {
-        if (this.port < 1)
-            return;
-
-        final int size = this.array.size ();
-        final byte [] data = new byte [3 + size];
-        data[0] = -16; // -16 = 0xF0
-        data[1] = (byte) this.command;
-        for (int i = 0; i < size; i++)
-            data[2 + i] = this.array.get (i).byteValue ();
-        data[size + 2] = -9; // -9 = 0xF7
-        this.sendToDisplay (data);
+        this.model.setGridElements (this.elements);
     }
 
 
@@ -123,6 +96,161 @@ public class DisplayMessage
 
 
     /**
+     * Adds a channel selector element.
+     *
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param bottomMenuIcon An icon identifier for the menu
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     */
+    public void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn)
+    {
+        final ChannelType type = bottomMenuIcon.length () == 0 ? null : ChannelType.valueOf (bottomMenuIcon.toUpperCase ());
+        this.elements.add (new ChannelSelectionGridElement (topMenu, isTopMenuOn, bottomMenu, Color.fromRGB (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type));
+    }
+
+
+    /**
+     * Adds a channel element.
+     *
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param bottomMenuIcon An icon identifier for the menu
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     * @param volume The volume value
+     * @param modulatedVolume The modulated volume value
+     * @param volumeStr The volume as string
+     * @param pan The panorama
+     * @param modulatedPan The modulated panorama
+     * @param panStr The panorama as string
+     * @param vu The VU meter value
+     * @param mute The mute state
+     * @param solo The solo state
+     * @param recarm Therecording armed state
+     * @param crossfadeMode Crossfae mode (0-2)
+     */
+    public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
+    {
+        this.addChannelElement (DisplayMessage.GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vu, mute, solo, recarm, crossfadeMode);
+    }
+
+
+    /**
+     * Adds a channel element.
+     *
+     * @param channelType The type of the channel
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param bottomMenuIcon An icon identifier for the menu
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     * @param volume The volume value
+     * @param modulatedVolume The modulated volume value
+     * @param volumeStr The volume as string
+     * @param pan The panorama
+     * @param modulatedPan The modulated panorama
+     * @param panStr The panorama as string
+     * @param vu The VU meter value
+     * @param mute The mute state
+     * @param solo The solo state
+     * @param recarm Therecording armed state
+     * @param crossfadeMode Crossfae mode (0-2)
+     */
+    public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
+    {
+        int editType;
+
+        switch (channelType)
+        {
+            case GRID_ELEMENT_CHANNEL_VOLUME:
+                editType = ChannelGridElement.EDIT_TYPE_VOLUME;
+                break;
+            case GRID_ELEMENT_CHANNEL_PAN:
+                editType = ChannelGridElement.EDIT_TYPE_PAN;
+                break;
+            case GRID_ELEMENT_CHANNEL_CROSSFADER:
+                editType = ChannelGridElement.EDIT_TYPE_CROSSFADER;
+                break;
+            default:
+                editType = ChannelGridElement.EDIT_TYPE_ALL;
+                break;
+        }
+
+        final ChannelType type = bottomMenuIcon.length () == 0 ? null : ChannelType.valueOf (bottomMenuIcon.toUpperCase ());
+        this.elements.add (new ChannelGridElement (editType, topMenu, isTopMenuOn, bottomMenu, Color.fromRGB (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vu, mute, solo, recarm, crossfadeMode));
+    }
+
+
+    /**
+     * Adds a channel with 4 sends element.
+     *
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param bottomMenuIcon An icon identifier for the menu
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     * @param sendName The names of the sends
+     * @param valueStr The volumes as string
+     * @param value The volumes as values
+     * @param modulatedValue The modulated volumes as values
+     * @param selected The selected state of sends
+     * @param isTrackMode True if track mode otherwise send mode
+     */
+    public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String [] sendName, final String [] valueStr, final int [] value, final int [] modulatedValue, final boolean [] selected, final boolean isTrackMode)
+    {
+        final ChannelType type = bottomMenuIcon.length () == 0 ? null : ChannelType.valueOf (bottomMenuIcon.toUpperCase ());
+        this.elements.add (new SendsGridElement (sendName, valueStr, value, modulatedValue, selected, topMenu, isTopMenuOn, bottomMenu, Color.fromRGB (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, isTrackMode));
+
+    }
+
+
+    /**
+     * Adds a parameter element without top and bottom menu.
+     *
+     * @param parameterName The name to display for the parameter
+     * @param parameterValue The numeric value of the parameter
+     * @param parameterValueStr The textual form of the parameter
+     * @param parameterIsActive The parameter is currently edited
+     * @param parameterModulatedValue The modulated numeric value
+     */
+    public void addParameterElement (final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    {
+        this.addParameterElement ("", false, "", "", null, false, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+    }
+
+
+    /**
+     * Adds a parameter element.
+     *
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param bottomMenuIcon An icon identifier for the menu
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     * @param parameterName The name to display for the parameter
+     * @param parameterValue The numeric value of the parameter
+     * @param parameterValueStr The textual form of the parameter
+     * @param parameterIsActive The parameter is currently edited
+     * @param parameterModulatedValue The modulated numeric value
+     */
+    public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    {
+        ChannelType type = bottomMenuIcon.length () == 0 ? null : ChannelType.valueOf (bottomMenuIcon.toUpperCase ());
+        if (type == null)
+            type = ChannelType.EFFECT;
+        this.elements.add (new ParamGridElement (topMenu, isTopMenuOn, bottomMenu, type, Color.fromRGB (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+
+    }
+
+
+    /**
      * Add an options element to the message.
      *
      * @param headerTopName A text on the top
@@ -135,139 +263,21 @@ public class DisplayMessage
      */
     public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final boolean useSmallTopMenu)
     {
-        this.addByte (DisplayMessage.GRID_ELEMENT_OPTIONS);
-        this.addString (headerTopName);
-        this.addString (menuTopName);
-        this.addBoolean (isMenuTopSelected);
-        this.addString (headerBottomName);
-        this.addString (menuBottomName);
-        this.addBoolean (isMenuBottomSelected);
-        this.addBoolean (useSmallTopMenu);
+        this.elements.add (new OptionsGridElement (headerTopName, menuTopName, isMenuTopSelected, headerBottomName, menuBottomName, isMenuBottomSelected, useSmallTopMenu));
     }
 
 
     /**
-     * Adds a string to the message.
+     * Add a list element to the message.
      *
-     * @param text The text to add
+     * @param items Must contain 6 texts
+     * @param selected Must contain 6 states
      */
-    public void addString (final String text)
+    public void addListElement (final String [] items, final boolean [] selected)
     {
-        if (text != null)
-        {
-            for (int i = 0; i < text.length (); i++)
-            {
-                final char character = text.charAt (i);
-                if (character < 128)
-                    this.array.add (Integer.valueOf (character));
-                else
-                {
-                    // Split up non-ASII characters into 3 bytes
-                    this.array.add (Integer.valueOf (-1));
-                    this.addInteger (character);
-                }
-            }
-        }
-        this.array.add (Integer.valueOf (0));
-    }
-
-
-    /**
-     * Adds an integer to the message.
-     *
-     * @param value The text to add
-     */
-    public void addInteger (final int value)
-    {
-        this.array.add (Integer.valueOf (value & 0x7F));
-        this.array.add (Integer.valueOf (value >> 7 & 0x7F));
-    }
-
-
-    /**
-     * Adds an boolean to the message.
-     *
-     * @param value The boolean to add
-     */
-    public void addBoolean (final boolean value)
-    {
-        this.array.add (Integer.valueOf (value ? 1 : 0));
-    }
-
-
-    /**
-     * Adds an color to the message.
-     *
-     * @param color The color in RGB to add
-     */
-    public void addColor (final double [] color)
-    {
-        if (color != null)
-        {
-            this.addInteger ((int) Math.round (color[0] * 255));
-            this.addInteger ((int) Math.round (color[1] * 255));
-            this.addInteger ((int) Math.round (color[2] * 255));
-        }
-        else
-        {
-            this.array.add (Integer.valueOf (0));
-            this.array.add (Integer.valueOf (0));
-            this.array.add (Integer.valueOf (0));
-            this.array.add (Integer.valueOf (0));
-            this.array.add (Integer.valueOf (0));
-            this.array.add (Integer.valueOf (0));
-        }
-    }
-
-
-    /**
-     * Adds a byte to the message.
-     *
-     * @param value The byte to add
-     */
-    public void addByte (final int value)
-    {
-        this.array.add (Integer.valueOf (value));
-    }
-
-
-    private void sendToDisplay (final byte [] data)
-    {
-        // this.host.sendDatagramPacket ("127.0.0.1", this.port, data);
-        this.handleData (data, data.length);
-    }
-
-
-    /**
-     * Handle the received data.
-     *
-     * @param data The data buffer with the received data
-     * @param length The length of usable data in the buffer
-     */
-    public void handleData (final byte [] data, final int length)
-    {
-        // -16 == 0xF0, -9 == 0xF7
-        if (data[0] != -16 || data[length - 1] != -9)
-        {
-            // this.model.addLogMessage ("Unformatted messaged received.");
-            return;
-        }
-
-        switch (data[1])
-        {
-            case DISPLAY_COMMAND_GRID:
-                try (final ByteArrayInputStream in = new ByteArrayInputStream (data, 2, length - 3))
-                {
-                    final List<GridElement> elements = this.parser.parse (in);
-                    if (elements != null)
-                        this.model.setGridElements (elements);
-                }
-                catch (final IOException ex)
-                {
-                    // this.model.addLogMessage ("Unparsable grid element message: " +
-                    // ex.getLocalizedMessage ());
-                }
-                break;
-        }
+        final List<Pair<String, Boolean>> menu = new ArrayList<> ();
+        for (int i = 0; i < 6; i++)
+            menu.add (new Pair<> (items[i], Boolean.valueOf (selected[i])));
+        this.elements.add (new ListGridElement (menu));
     }
 }

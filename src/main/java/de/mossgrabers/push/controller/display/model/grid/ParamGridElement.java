@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.ChannelType;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
@@ -56,7 +57,7 @@ public class ParamGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings)
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration)
     {
         this.drawMenu (gc, left, width, layoutSettings);
 
@@ -66,7 +67,7 @@ public class ParamGridElement extends ChannelSelectionGridElement
         final double trackRowTop = height - TRACK_ROW_HEIGHT - UNIT - SEPARATOR_SIZE;
         final String name = this.getName ();
         if (name != null && name.length () > 0)
-            this.drawTrackInfo (gc, left, width, height, trackRowTop, name, layoutSettings);
+            this.drawTrackInfo (gc, left, width, height, trackRowTop, name, layoutSettings, configuration);
 
         // Element is off if the name is empty
         if (this.paramName == null || this.paramName.length () == 0)

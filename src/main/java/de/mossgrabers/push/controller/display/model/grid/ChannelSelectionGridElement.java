@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.ChannelType;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 import de.mossgrabers.push.controller.display.model.ResourceHandler;
@@ -78,7 +79,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings)
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration)
     {
         this.drawMenu (gc, left, width, layoutSettings);
 
@@ -88,7 +89,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
             return;
 
         final double trackRowTop = height - TRACK_ROW_HEIGHT - UNIT - SEPARATOR_SIZE;
-        this.drawTrackInfo (gc, left, width, height, trackRowTop, name, layoutSettings);
+        this.drawTrackInfo (gc, left, width, height, trackRowTop, name, layoutSettings, configuration);
     }
 
 
@@ -103,10 +104,10 @@ public class ChannelSelectionGridElement extends AbstractGridElement
      * @param name The name of the track
      * @param layoutSettings The layout settings
      */
-    protected void drawTrackInfo (final GraphicsOutput gc, final double left, final double width, final double height, final double trackRowTop, final String name, final LayoutSettings layoutSettings)
+    protected void drawTrackInfo (final GraphicsOutput gc, final double left, final double width, final double height, final double trackRowTop, final String name, final LayoutSettings layoutSettings, final PushConfiguration configuration)
     {
         // Draw the background
-        final Color backgroundColor = layoutSettings.getBackgroundColor ();
+        final Color backgroundColor = configuration.getColorBackground ();
         gc.setColor (this.isSelected () ? ColorEx.brighter (backgroundColor) : backgroundColor);
         gc.rectangle (left, trackRowTop + 1, width, height - UNIT - 1);
         gc.fill ();

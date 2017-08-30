@@ -394,67 +394,60 @@ public class DeviceLayerMode extends BaseMode
         {
             final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
 
-            if (sendsIndex == i)
-                message.addByte (DisplayMessage.GRID_ELEMENT_CHANNEL_SENDS);
-            else
-                message.addByte (layer.isSelected () ? DisplayMessage.GRID_ELEMENT_CHANNEL_ALL : DisplayMessage.GRID_ELEMENT_CHANNEL_SELECTION);
-
             // The menu
+            String topMenu;
+            boolean topMenuSelected;
             if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
             {
-                message.addString (layer.doesExist () ? "Mute" : "");
-                message.addBoolean (layer.isMute ());
+                topMenu = layer.doesExist () ? "Mute" : "";
+                topMenuSelected = layer.isMute ();
             }
             else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
             {
-                message.addString (layer.doesExist () ? "Solo" : "");
-                message.addBoolean (layer.isSolo ());
+                topMenu = layer.doesExist () ? "Solo" : "";
+                topMenuSelected = layer.isSolo ();
             }
             else
             {
-                message.addString (this.menu[i]);
-                message.addBoolean (false);
+                topMenu = this.menu[i];
+                topMenuSelected = false;
             }
 
             // Channel info
-            message.addString (layer.getName ());
-            message.addString ("layer");
-            message.addColor (layer.getColor ());
-            message.addByte (layer.isSelected () ? 1 : 0);
+            final String bottomMenu = layer.doesExist () ? layer.getName () : "";
+            final String bottomMenuIcon = "layer";
+            final double [] bottomMenuColor = layer.getColor ();
+            final boolean isBottomMenuOn = layer.isSelected ();
 
             if (layer.isSelected ())
             {
                 final ValueChanger valueChanger = this.model.getValueChanger ();
-                message.addInteger (valueChanger.toDisplayValue (layer.getVolume ()));
-                message.addInteger (valueChanger.toDisplayValue (layer.getModulatedVolume ()));
-                message.addString (this.isKnobTouched[0] ? layer.getVolumeStr () : "");
-                message.addInteger (valueChanger.toDisplayValue (layer.getPan ()));
-                message.addInteger (valueChanger.toDisplayValue (layer.getModulatedPan ()));
-                message.addString (this.isKnobTouched[1] ? layer.getPanStr () : "");
-                message.addInteger (valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0));
-                message.addBoolean (layer.isMute ());
-                message.addBoolean (layer.isSolo ());
-                message.addBoolean (false);
-                message.addByte (0);
+                message.addChannelElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), this.isKnobTouched[0] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), this.isKnobTouched[1] ? layer.getPanStr (8) : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
             }
             else if (sendsIndex == i && l != null)
             {
                 final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+                final String [] sendName = new String [4];
+                final String [] valueStr = new String [4];
+                final int [] value = new int [4];
+                final int [] modulatedValue = new int [4];
+                final boolean [] selected = new boolean [4];
                 for (int j = 0; j < 4; j++)
                 {
                     final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
                     final int sendPos = sendOffset + j;
                     final SendData send = l.getSends ()[sendPos];
-                    message.addString (fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ());
+                    sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
                     final boolean doesExist = send.doesExist ();
-                    message.addString (doesExist && this.isKnobTouched[4 + j] ? send.getDisplayedValue () : "");
-                    message.addInteger (doesExist ? send.getValue () : 0);
-                    message.addInteger (doesExist ? send.getModulatedValue () : 0);
-                    message.addByte (1);
+                    valueStr[j] = doesExist && this.isKnobTouched[4 + j] ? send.getDisplayedValue () : "";
+                    value[j] = doesExist ? send.getValue () : 0;
+                    modulatedValue[j] = doesExist ? send.getModulatedValue () : 0;
+                    selected[j] = true;
                 }
-                // Signal Track mode
-                message.addBoolean (true);
+                message.addSendsElement (topMenu, topMenuSelected, layer.doesExist () ? layer.getName () : "", "layer", cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, true);
             }
+            else
+                message.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn);
         }
 
         message.send ();
@@ -476,41 +469,25 @@ public class DeviceLayerMode extends BaseMode
         {
             final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
 
-            message.addByte (selectedMenu);
-
             // The menu item
+            String topMenu;
+            boolean isTopMenuOn;
             if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
             {
-                message.addString (layer.doesExist () ? "Mute" : "");
-                message.addBoolean (layer.isMute ());
+                topMenu = layer.doesExist () ? "Mute" : "";
+                isTopMenuOn = layer.isMute ();
             }
             else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
             {
-                message.addString (layer.doesExist () ? "Solo" : "");
-                message.addBoolean (layer.isSolo ());
+                topMenu = layer.doesExist () ? "Solo" : "";
+                isTopMenuOn = layer.isSolo ();
             }
             else
             {
-                message.addString (this.menu[i]);
-                message.addBoolean (i == selectedMenu - 1);
+                topMenu = this.menu[i];
+                isTopMenuOn = i == selectedMenu - 1;
             }
-
-            // Channel info
-            message.addString (layer.getName ());
-            message.addString ("layer");
-            message.addColor (cd.getLayerOrDrumPad (offset + i).getColor ());
-            message.addByte (layer.isSelected () ? 1 : 0);
-            message.addInteger (valueChanger.toDisplayValue (layer.getVolume ()));
-            message.addInteger (valueChanger.toDisplayValue (layer.getModulatedVolume ()));
-            message.addString (isVolume && this.isKnobTouched[i] ? layer.getVolumeStr () : "");
-            message.addInteger (valueChanger.toDisplayValue (layer.getPan ()));
-            message.addInteger (valueChanger.toDisplayValue (layer.getModulatedPan ()));
-            message.addString (isPan && this.isKnobTouched[i] ? layer.getPanStr () : "");
-            message.addInteger (valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0));
-            message.addBoolean (layer.isMute ());
-            message.addBoolean (layer.isSolo ());
-            message.addBoolean (false);
-            message.addByte (0);
+            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", "layer", cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), isPan && this.isKnobTouched[i] ? layer.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
         }
 
         message.send ();

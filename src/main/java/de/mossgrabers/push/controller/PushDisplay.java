@@ -7,6 +7,7 @@ package de.mossgrabers.push.controller;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.USBDisplay;
 import de.mossgrabers.push.controller.display.model.DisplayModel;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
@@ -24,19 +25,19 @@ import com.bitwig.extension.controller.api.ControllerHost;
 public class PushDisplay extends AbstractDisplay implements GridChangeListener
 {
     /** Push character codes for value bars - a dash. */
-    public static final String     BARS_NON       = Character.toString ((char) 6);
+    public static final String     BARS_NON      = Character.toString ((char) 6);
     /** Push character codes for value bars - one bar. */
-    public static final String     BARS_ONE       = Character.toString ((char) 3);
+    public static final String     BARS_ONE      = Character.toString ((char) 3);
     /** Push character codes for value bars - two bars. */
-    public static final String     BARS_TWO       = Character.toString ((char) 5);
+    public static final String     BARS_TWO      = Character.toString ((char) 5);
     /** Push character codes for value bars - one bar to the left. */
-    private static final String    BARS_ONE_L     = Character.toString ((char) 4);
+    private static final String    BARS_ONE_L    = Character.toString ((char) 4);
     /** Push character codes for value bars - four dashes. */
-    private static final String    NON_4          = BARS_NON + BARS_NON + BARS_NON + BARS_NON;
+    private static final String    NON_4         = BARS_NON + BARS_NON + BARS_NON + BARS_NON;
     /** Push character codes for value bars - the right arrow. */
-    public static final String     RIGHT_ARROW    = Character.toString ((char) 127);
+    public static final String     RIGHT_ARROW   = Character.toString ((char) 127);
 
-    private static final String [] SPACES         =
+    private static final String [] SPACES        =
     {
         "",
         " ",
@@ -54,7 +55,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
         "             "
     };
 
-    private static final String [] DASHES         =
+    private static final String [] DASHES        =
     {
         "",
         BARS_NON,
@@ -68,7 +69,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
         BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON
     };
 
-    private static final String [] SYSEX_MESSAGE  =
+    private static final String [] SYSEX_MESSAGE =
     {
         "F0 47 7F 15 18 00 45 00 ",
         "F0 47 7F 15 19 00 45 00 ",
@@ -77,11 +78,9 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     };
 
     private int                    maxParameterValue;
-    private int                    port;
     private boolean                isPush2;
     private DisplayModel           model;
 
-    private final LayoutSettings   layoutSettings = new LayoutSettings ();
     private final VirtualDisplay   virtualDisplay;
     private final USBDisplay       usbDisplay;
 
@@ -93,28 +92,18 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
      * @param host The host
      * @param isPush2 True if Push 2
      * @param maxParameterValue
-     * @param output
+     * @param output The midi output
+     * @param configuration The configuration
      */
-    public PushDisplay (final ControllerHost host, final boolean isPush2, final int maxParameterValue, final MidiOutput output)
+    public PushDisplay (final ControllerHost host, final boolean isPush2, final int maxParameterValue, final MidiOutput output, final PushConfiguration configuration)
     {
         super (host, output, 4 /* No of rows */, 8 /* No of cells */, 68 /* No of characters */);
         this.maxParameterValue = maxParameterValue;
         this.isPush2 = isPush2;
         this.model = new DisplayModel ();
         this.model.addGridElementChangeListener (this);
-        this.virtualDisplay = new VirtualDisplay (host, this.model, this.layoutSettings);
+        this.virtualDisplay = new VirtualDisplay (host, this.model, new LayoutSettings (), configuration);
         this.usbDisplay = new USBDisplay (host);
-    }
-
-
-    /**
-     * Set the communication port.
-     *
-     * @param port The port
-     */
-    public void setCommunicationPort (final int port)
-    {
-        this.port = port;
     }
 
 
@@ -125,7 +114,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
      */
     public DisplayMessage createMessage ()
     {
-        return new DisplayMessage (this.model, this.port);
+        return new DisplayMessage (this.model);
     }
 
 

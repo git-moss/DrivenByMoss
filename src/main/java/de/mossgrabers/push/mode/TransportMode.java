@@ -141,19 +141,7 @@ public class TransportMode extends BaseMode
         final double tempo = transport.getTempo ();
 
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
-        message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
-        message.addString ("");
-        message.addBoolean (false);
-        message.addString ("");
-        message.addString ("");
-        message.addColor (null);
-        message.addBoolean (false);
-        message.addString ("Tempo");
-        message.addInteger ((int) this.convertTempo (tempo));
-        message.addString (transport.formatTempo (tempo));
-        message.addBoolean (this.isKnobTouched[0]);
-        message.addInteger (-1);
-
+        message.addParameterElement ("Tempo", (int) this.convertTempo (tempo), transport.formatTempo (tempo), this.isKnobTouched[0], -1);
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("Pre-", "1 Bar", preroll == TransportProxy.PREROLL_1_BAR, "Roll", "None", preroll == TransportProxy.PREROLL_NONE, false);
         message.addOptionElement ("", "4 Bars", preroll == TransportProxy.PREROLL_4_BARS, "", "2 Bars", preroll == TransportProxy.PREROLL_2_BARS, false);
@@ -161,7 +149,6 @@ public class TransportMode extends BaseMode
         message.addOptionElement ("", "", false, "", transport.isPrerollMetronomeEnabled () ? "Yes" : "No", transport.isPrerollMetronomeEnabled (), false);
         message.addOptionElement ("        Play Position", "", false, "        " + transport.getPositionText (), "", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
-
         message.send ();
     }
 

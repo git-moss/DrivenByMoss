@@ -202,8 +202,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         final MidiOutput output = new MidiOutput (host);
         final MidiInput input = new PushMidiInput (this.isPush2);
         this.surface = new PushControlSurface (host, this.colorManager, this.configuration, output, input);
-        final PushDisplay display = new PushDisplay (host, this.isPush2, this.valueChanger.getUpperBound (), output);
-        display.setCommunicationPort (this.configuration.getSendPort ());
+        final PushDisplay display = new PushDisplay (host, this.isPush2, this.valueChanger.getUpperBound (), output, this.configuration);
         this.surface.setDisplay (display);
         this.surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
     }
@@ -325,7 +324,6 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         });
 
         this.configuration.addSettingObserver (PushConfiguration.RIBBON_MODE, this::updateRibbonMode);
-        this.configuration.addSettingObserver (PushConfiguration.SEND_PORT, () -> ((PushDisplay) this.surface.getDisplay ()).setCommunicationPort (this.configuration.getSendPort ()));
 
         this.createScaleObservers (this.configuration);
     }

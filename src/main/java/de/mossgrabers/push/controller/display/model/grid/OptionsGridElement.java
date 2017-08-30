@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
 import com.bitwig.extension.api.Color;
@@ -51,7 +52,7 @@ public class OptionsGridElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings)
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration)
     {
         final double menuHeight = MENU_HEIGHT * 2;
 

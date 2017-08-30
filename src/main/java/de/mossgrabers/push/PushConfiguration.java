@@ -7,9 +7,12 @@ package de.mossgrabers.push;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.controller.display.model.grid.ColorEx;
 import de.mossgrabers.push.mode.Modes;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.Preferences;
+import com.bitwig.extension.controller.api.SettableColorValue;
 import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.SettableRangedValue;
 
@@ -40,20 +43,21 @@ public class PushConfiguration extends AbstractConfiguration
     public static final Integer    VELOCITY_CURVE                  = Integer.valueOf (32);
     /** Setting for the pad threshold. */
     public static final Integer    PAD_THRESHOLD                   = Integer.valueOf (33);
-    /** Setting for the display send port. */
-    public static final Integer    SEND_PORT                       = Integer.valueOf (34);
     /** Setting for the display brightness. */
-    public static final Integer    DISPLAY_BRIGHTNESS              = Integer.valueOf (35);
+    public static final Integer    DISPLAY_BRIGHTNESS              = Integer.valueOf (34);
     /** Setting for the pad LED brightness. */
-    public static final Integer    LED_BRIGHTNESS                  = Integer.valueOf (36);
+    public static final Integer    LED_BRIGHTNESS                  = Integer.valueOf (35);
     /** Setting for the pad sensitivity. */
-    public static final Integer    PAD_SENSITIVITY                 = Integer.valueOf (37);
+    public static final Integer    PAD_SENSITIVITY                 = Integer.valueOf (36);
     /** Setting for the pad gain. */
-    public static final Integer    PAD_GAIN                        = Integer.valueOf (38);
+    public static final Integer    PAD_GAIN                        = Integer.valueOf (37);
     /** Setting for the pad dynamics. */
-    public static final Integer    PAD_DYNAMICS                    = Integer.valueOf (39);
+    public static final Integer    PAD_DYNAMICS                    = Integer.valueOf (38);
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (40);
+    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (39);
+
+    // TODO
+    public static final Integer    COLOR_BACKGROUND                = Integer.valueOf (40);
 
     /** Use ribbon for pitch bend. */
     public static final int        RIBBON_MODE_PITCH               = 0;
@@ -70,12 +74,12 @@ public class PushConfiguration extends AbstractConfiguration
     private boolean                isMuteLongPressed               = false;
     private boolean                isMuteSoloLocked                = false;
 
+    private static final String    CATEGORY_COLORS                 = "Display Colors";
     private static final String    CATEGORY_RIBBON                 = "Ribbon";
 
     /** What does the ribbon send? **/
     private int                    ribbonMode                      = RIBBON_MODE_PITCH;
     private int                    ribbonModeCCVal                 = 1;
-    private int                    sendPort                        = 7000;
     private boolean                stopAutomationOnKnobRelease     = false;
     private TrackState             trackState                      = TrackState.MUTE;
 
@@ -91,6 +95,8 @@ public class PushConfiguration extends AbstractConfiguration
     private int                    padGain                         = 5;
     private int                    padDynamics                     = 5;
 
+    private Color                  colorBackground                 = ColorEx.BLACK;
+
     private boolean                isPush2;
 
     private Integer                currentMixMode                  = Modes.MODE_TRACK;
@@ -104,6 +110,7 @@ public class PushConfiguration extends AbstractConfiguration
     private SettableRangedValue    padDynamicsSetting;
     private SettableEnumValue      velocityCurveSetting;
     private SettableEnumValue      padThresholdSetting;
+    private SettableColorValue     colorBackgroundSetting;
 
     private static final String [] RIBBON_MODE_VALUES              =
     {
@@ -202,6 +209,7 @@ public class PushConfiguration extends AbstractConfiguration
         // Push 2 Hardware
 
         this.activatePush2HardwareSettings (preferences);
+        this.activatePush2DisplayColors (preferences);
     }
 
 
@@ -529,28 +537,6 @@ public class PushConfiguration extends AbstractConfiguration
 
 
     /**
-     * Get the send port
-     *
-     * @return The send port
-     */
-    public int getSendPort ()
-    {
-        return this.sendPort;
-    }
-
-
-    /**
-     * Set the send port
-     *
-     * @param sendPort The send port
-     */
-    public void setSendPort (final int sendPort)
-    {
-        this.sendPort = sendPort;
-    }
-
-
-    /**
      * Get the pad sensitivity.
      *
      * @return The pad sensitivity
@@ -671,6 +657,12 @@ public class PushConfiguration extends AbstractConfiguration
     }
 
 
+    public Color getColorBackground ()
+    {
+        return this.colorBackground;
+    }
+
+
     /**
      * Activate the Push 2 hardware settings.
      *
@@ -680,12 +672,6 @@ public class PushConfiguration extends AbstractConfiguration
     {
         if (!this.isPush2)
             return;
-
-        final SettableRangedValue sendPortSetting = prefs.getNumberSetting ("Display Port", CATEGORY_HARDWARE_SETUP, 1, 65535, 1, "", 7000);
-        sendPortSetting.addValueObserver (65535, value -> {
-            this.sendPort = value + 1;
-            this.notifyObservers (SEND_PORT);
-        });
 
         this.displayBrightnessSetting = prefs.getNumberSetting ("Display Brightness", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
         this.displayBrightnessSetting.addValueObserver (101, value -> {
@@ -697,6 +683,19 @@ public class PushConfiguration extends AbstractConfiguration
         this.ledBrightnessSetting.addValueObserver (101, value -> {
             this.ledBrightness = value;
             this.notifyObservers (LED_BRIGHTNESS);
+        });
+    }
+
+
+    private void activatePush2DisplayColors (final Preferences prefs)
+    {
+        if (!this.isPush2)
+            return;
+
+        this.colorBackgroundSetting = prefs.getColorSetting ("Background", CATEGORY_COLORS, ColorEx.BLACK);
+        this.colorBackgroundSetting.addValueObserver ( (red, green, blue) -> {
+            this.colorBackground = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_BACKGROUND);
         });
     }
 

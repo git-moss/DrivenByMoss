@@ -341,46 +341,31 @@ public abstract class AbstractTrackMode extends BaseMode
         {
             final TrackData t = tb.getTrack (i);
 
-            message.addByte (selectedMenu);
-
             // The menu item
+            String topMenu;
+            boolean isTopMenuOn;
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
             {
-                message.addString (t.doesExist () ? "Stop Clip" : "");
-                message.addBoolean (t.isPlaying ());
+                topMenu = t.doesExist () ? "Stop Clip" : "";
+                isTopMenuOn = t.isPlaying ();
             }
             else if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
             {
-                message.addString (t.doesExist () ? "Mute" : "");
-                message.addBoolean (t.isMute ());
+                topMenu = t.doesExist () ? "Mute" : "";
+                isTopMenuOn = t.isMute ();
             }
             else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
             {
-                message.addString (t.doesExist () ? "Solo" : "");
-                message.addBoolean (t.isSolo ());
+                topMenu = t.doesExist () ? "Solo" : "";
+                isTopMenuOn = t.isSolo ();
             }
             else
             {
-                message.addString (this.menu[i]);
-                message.addBoolean (i == selectedMenu - 1);
+                topMenu = this.menu[i];
+                isTopMenuOn = i == selectedMenu - 1;
             }
 
-            // Channel info
-            message.addString (t.doesExist () ? t.getName () : "");
-            message.addString (t.getType ());
-            message.addColor (tb.getTrackColorEntry (i));
-            message.addByte (t.isSelected () ? 1 : 0);
-            message.addInteger (valueChanger.toDisplayValue (t.getVolume ()));
-            message.addInteger (valueChanger.toDisplayValue (t.getModulatedVolume ()));
-            message.addString (isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "");
-            message.addInteger (valueChanger.toDisplayValue (t.getPan ()));
-            message.addInteger (valueChanger.toDisplayValue (t.getModulatedPan ()));
-            message.addString (isPan && this.isKnobTouched[i] ? t.getPanStr () : "");
-            message.addInteger (valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0));
-            message.addBoolean (t.isMute ());
-            message.addBoolean (t.isSolo ());
-            message.addBoolean (t.isRecarm ());
-            message.addByte ("A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
+            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", t.getType (), tb.getTrackColorEntry (i), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecarm (), "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
         }
 
         message.send ();

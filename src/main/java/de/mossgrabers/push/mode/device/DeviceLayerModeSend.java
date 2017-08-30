@@ -130,44 +130,43 @@ public class DeviceLayerModeSend extends DeviceLayerMode
         {
             final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
 
-            message.addByte (DisplayMessage.GRID_ELEMENT_CHANNEL_SENDS);
-
             // The menu item
+            String topMenu;
+            boolean topMenuSelected;
             if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
             {
-                message.addString (layer.doesExist () ? "Mute" : "");
-                message.addBoolean (layer.isMute ());
+                topMenu = layer.doesExist () ? "Mute" : "";
+                topMenuSelected = layer.isMute ();
             }
             else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
             {
-                message.addString (layer.doesExist () ? "Solo" : "");
-                message.addBoolean (layer.isSolo ());
+                topMenu = layer.doesExist () ? "Solo" : "";
+                topMenuSelected = layer.isSolo ();
             }
             else
             {
-                message.addString (this.menu[i]);
-                message.addBoolean (i > 3 && i - 4 + sendOffset == sendIndex);
+                topMenu = this.menu[i];
+                topMenuSelected = i > 3 && i - 4 + sendOffset == sendIndex;
             }
 
             // Channel info
-            message.addString (layer.getName ());
-            message.addString ("layer");
-            message.addColor (cd.getLayerOrDrumPad (offset + i).getColor ());
-            message.addByte (layer.isSelected () ? 1 : 0);
-
+            final String [] sendName = new String [4];
+            final String [] valueStr = new String [4];
+            final int [] value = new int [4];
+            final int [] modulatedValue = new int [4];
+            final boolean [] selected = new boolean [4];
             for (int j = 0; j < 4; j++)
             {
                 final int sendPos = sendOffset + j;
                 final SendData send = layer.getSends ()[sendPos];
-                message.addString (fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ());
-                message.addString (send.doesExist () && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue () : "");
-                message.addInteger (send.doesExist () ? send.getValue () : 0);
-                message.addInteger (send.doesExist () ? send.getModulatedValue () : 0);
-                message.addByte (sendIndex == sendPos ? 1 : 0);
+                sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
+                valueStr[j] = send.doesExist () && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue () : "";
+                value[j] = send.doesExist () ? send.getValue () : 0;
+                modulatedValue[j] = send.doesExist () ? send.getModulatedValue () : 0;
+                selected[j] = sendIndex == sendPos;
             }
 
-            // Signal Track mode off
-            message.addBoolean (false);
+            message.addSendsElement (topMenu, topMenuSelected, layer.doesExist () ? layer.getName () : "", "layer", cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
         }
 
         message.send ();

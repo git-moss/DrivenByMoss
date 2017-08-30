@@ -127,50 +127,48 @@ public class SendMode extends AbstractTrackMode
             {
                 t = tb.getTrack (i);
 
-                message.addByte (DisplayMessage.GRID_ELEMENT_CHANNEL_SENDS);
-
                 // The menu item
+                String topMenu;
+                boolean topMenuSelected;
                 if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
                 {
-                    message.addString (t.doesExist () ? "Stop Clip" : "");
-                    message.addBoolean (t.isPlaying ());
+                    topMenu = t.doesExist () ? "Stop Clip" : "";
+                    topMenuSelected = t.isPlaying ();
                 }
                 else if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
                 {
-                    message.addString (t.doesExist () ? "Mute" : "");
-                    message.addBoolean (t.isMute ());
+                    topMenu = t.doesExist () ? "Mute" : "";
+                    topMenuSelected = t.isMute ();
                 }
                 else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
                 {
-                    message.addString (t.doesExist () ? "Solo" : "");
-                    message.addBoolean (t.isSolo ());
+                    topMenu = t.doesExist () ? "Solo" : "";
+                    topMenuSelected = t.isSolo ();
                 }
                 else
                 {
-                    message.addString (this.menu[i]);
-                    message.addBoolean (i > 3 && i - 4 + sendOffset == sendIndex);
+                    topMenu = this.menu[i];
+                    topMenuSelected = i > 3 && i - 4 + sendOffset == sendIndex;
                 }
 
-                // Channel info
-                message.addString (t.doesExist () ? t.getName () : "");
-                message.addString (t.getType ());
-                message.addColor (tb.getTrackColorEntry (i));
-                message.addByte (t.isSelected () ? 1 : 0);
-
                 final ValueChanger valueChanger = this.model.getValueChanger ();
+                final String [] sendName = new String [4];
+                final String [] valueStr = new String [4];
+                final int [] value = new int [4];
+                final int [] modulatedValue = new int [4];
+                final boolean [] selected = new boolean [4];
                 for (int j = 0; j < 4; j++)
                 {
                     final int sendPos = sendOffset + j;
                     final SendData send = t.getSends ()[sendPos];
-                    message.addString (fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ());
-                    message.addString (send != null && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue (8) : "");
-                    message.addInteger (valueChanger.toDisplayValue (send != null ? send.getValue () : -1));
-                    message.addInteger (valueChanger.toDisplayValue (send != null ? send.getModulatedValue () : -1));
-                    message.addByte (sendIndex == sendPos ? 1 : 0);
+                    sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
+                    valueStr[j] = send != null && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue (8) : "";
+                    value[j] = valueChanger.toDisplayValue (send != null ? send.getValue () : -1);
+                    modulatedValue[j] = valueChanger.toDisplayValue (send != null ? send.getModulatedValue () : -1);
+                    selected[j] = sendIndex == sendPos;
                 }
 
-                // Signal Track mode off
-                message.addBoolean (false);
+                message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", t.getType (), tb.getTrackColorEntry (i), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
             }
 
             message.send ();

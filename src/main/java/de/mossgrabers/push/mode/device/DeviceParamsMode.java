@@ -338,75 +338,69 @@ public class DeviceParamsMode extends BaseMode
             return;
         }
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final String color = tb.getSelectedTrackColorEntry ();
 
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         final ValueChanger valueChanger = this.model.getValueChanger ();
 
+        final CursorDeviceProxy cd = this.model.getCursorDevice ();
         final String [] pages = cd.getParameterPageNames ();
         final int page = Math.min (Math.max (0, cd.getSelectedParameterPage ()), pages.length - 1);
         final int start = page / 8 * 8;
 
         for (int i = 0; i < 8; i++)
         {
-            message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
+            final String topMenu = i == 7 && !cd.isPlugin () ? null : MENU[i];
 
-            // The menu item
-            message.addString (i == 7 && !cd.isPlugin () ? null : MENU[i]);
-
+            boolean isTopMenuOn;
             switch (i)
             {
                 case 0:
-                    message.addBoolean (cd.isEnabled ());
-                    break;
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    // Not used
-                    message.addBoolean (false);
+                    isTopMenuOn = cd.isEnabled ();
                     break;
                 case 5:
-                    message.addBoolean (cd.isExpanded ());
+                    isTopMenuOn = cd.isExpanded ();
                     break;
                 case 6:
-                    message.addBoolean (cd.isParameterPageSectionVisible ());
+                    isTopMenuOn = cd.isParameterPageSectionVisible ();
                     break;
                 case 7:
-                    message.addBoolean (cd.isPlugin () && cd.isWindowOpen ());
+                    isTopMenuOn = cd.isPlugin () && cd.isWindowOpen ();
+                    break;
+                default:
+                    // Not used
+                    isTopMenuOn = false;
                     break;
             }
 
+            String bottomMenu;
+            // TODO API extension required, add an icon if the type of the plugin is known
+            // https://github.com/teotigraphix/Framework4Bitwig/issues/138
+            final String bottomMenuIcon = "";
+            final double [] bottomMenuColor = BitwigColors.getColorEntry (color);
+            boolean isBottomMenuOn;
             if (this.showDevices)
             {
-                message.addString (cd.doesSiblingExist (i) ? cd.getSiblingDeviceName (i) : "");
-                // TODO API extension required, add an icon if the type of the plugin is known
-                // https://github.com/teotigraphix/Framework4Bitwig/issues/138
-                message.addString ("");
-                message.addColor (BitwigColors.getColorEntry (color));
-                message.addBoolean (i == cd.getPositionInBank ());
+                bottomMenu = cd.doesSiblingExist (i) ? cd.getSiblingDeviceName (i) : "";
+                isBottomMenuOn = i == cd.getPositionInBank ();
             }
             else
             {
                 final int index = start + i;
-                message.addString (index < pages.length ? pages[index] : "");
-                // TODO API extension required, add an icon if the type of the plugin is known
-                // https://github.com/teotigraphix/Framework4Bitwig/issues/138
-                message.addString ("");
-                message.addColor (BitwigColors.getColorEntry (color));
-                message.addBoolean (index == page);
+                bottomMenu = index < pages.length ? pages[index] : "";
+                isBottomMenuOn = index == page;
             }
 
             final ParameterData param = this.model.getCursorDevice ().getFXParam (i);
-
             final boolean exists = param.doesExist ();
-            message.addString (exists ? param.getName () : "");
-            message.addInteger (valueChanger.toDisplayValue (exists ? param.getValue () : 0));
-            message.addString (exists ? param.getDisplayedValue (8) : "");
-            message.addBoolean (this.isKnobTouched[i]);
-            message.addInteger (valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1));
+            final String parameterName = exists ? param.getName () : "";
+            final int parameterValue = valueChanger.toDisplayValue (exists ? param.getValue () : 0);
+            final String parameterValueStr = exists ? param.getDisplayedValue (8) : "";
+            final boolean parameterIsActive = this.isKnobTouched[i];
+            final int parameterModulatedValue = valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1);
+
+            message.addParameterElement (topMenu, isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
 
         message.send ();

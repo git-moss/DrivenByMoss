@@ -103,45 +103,9 @@ public class NoteMode extends BaseMode
         final int fine = (int) Math.floor (this.noteLength * 100) % 100;
 
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
-        message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
-        message.addString ("");
-        message.addBoolean (false);
-        message.addString ("");
-        message.addString ("");
-        message.addColor (null);
-        message.addBoolean (false);
-        message.addString ("Quarters");
-        message.addInteger (quarters);
-        message.addString (Integer.toString (quarters));
-        message.addBoolean (this.isKnobTouched[0]);
-        message.addInteger (-1);
-
-        message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
-        message.addString ("");
-        message.addBoolean (false);
-        message.addString ("");
-        message.addString ("");
-        message.addColor (null);
-        message.addBoolean (false);
-        message.addString ("Fine");
-        message.addInteger (fine);
-        message.addString (Integer.toString (fine));
-        message.addBoolean (this.isKnobTouched[1]);
-        message.addInteger (-1);
-
-        message.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
-        message.addString ("");
-        message.addBoolean (false);
-        message.addString ("");
-        message.addString ("");
-        message.addColor (null);
-        message.addBoolean (false);
-        message.addString ("Velocity");
-        message.addInteger (this.noteVelocity * 1023 / 127);
-        message.addString (Integer.toString (this.noteVelocity));
-        message.addBoolean (this.isKnobTouched[2]);
-        message.addInteger (-1);
-
+        message.addParameterElement ("Quarters", quarters, Integer.toString (quarters), this.isKnobTouched[0], -1);
+        message.addParameterElement ("Fine", fine, Integer.toString (fine), this.isKnobTouched[1], -1);
+        message.addParameterElement ("Velocity", this.noteVelocity * 1023 / 127, Integer.toString (this.noteVelocity), this.isKnobTouched[2], -1);
         for (int i = 3; i < 8; i++)
             message.addOptionElement ("", "", false, "", "", false, false);
         message.send ();

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.ChannelType;
 import de.mossgrabers.push.controller.display.model.LayoutSettings;
 import de.mossgrabers.push.controller.display.model.ResourceHandler;
@@ -88,7 +89,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings)
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration)
     {
         final double halfWidth = width / 2;
 
@@ -127,7 +128,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
             return;
 
         final Color backgroundColor = layoutSettings.getBackgroundColor ();
-        this.drawTrackInfo (gc, left, width, height, trackRowTop, name, layoutSettings);
+        this.drawTrackInfo (gc, left, width, height, trackRowTop, name, layoutSettings, configuration);
 
         // Draw the background
         gc.setColor (this.isSelected () ? ColorEx.brighter (backgroundColor) : backgroundColor);

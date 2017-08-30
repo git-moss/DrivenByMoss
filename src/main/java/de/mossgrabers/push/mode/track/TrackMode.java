@@ -321,72 +321,66 @@ public class TrackMode extends AbstractTrackMode
         {
             final TrackData t = tb.getTrack (i);
 
-            if (sendsIndex == i)
-                message.addByte (DisplayMessage.GRID_ELEMENT_CHANNEL_SENDS);
-            else
-                message.addByte (t.isSelected () ? DisplayMessage.GRID_ELEMENT_CHANNEL_ALL : DisplayMessage.GRID_ELEMENT_CHANNEL_SELECTION);
-
             // The menu item
+            String topMenu;
+            boolean topMenuSelected;
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
             {
-                message.addString (t.doesExist () ? "Stop Clip" : "");
-                message.addBoolean (t.isPlaying ());
+                topMenu = t.doesExist () ? "Stop Clip" : "";
+                topMenuSelected = t.isPlaying ();
             }
             else if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
             {
-                message.addString (t.doesExist () ? "Mute" : "");
-                message.addBoolean (t.isMute ());
+                topMenu = t.doesExist () ? "Mute" : "";
+                topMenuSelected = t.isMute ();
             }
             else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
             {
-                message.addString (t.doesExist () ? "Solo" : "");
-                message.addBoolean (t.isSolo ());
+                topMenu = t.doesExist () ? "Solo" : "";
+                topMenuSelected = t.isSolo ();
             }
             else
             {
-                message.addString (this.menu[i]);
-                message.addBoolean (false);
+                topMenu = this.menu[i];
+                topMenuSelected = false;
             }
 
             // Channel info
-            message.addString (t.doesExist () ? t.getName () : "");
-            message.addString (t.getType ());
-            message.addColor (tb.getTrackColorEntry (i));
-            message.addByte (t.isSelected () ? 1 : 0);
+            final String bottomMenu = t.doesExist () ? t.getName () : "";
+            final String bottomMenuIcon = t.getType ();
+            final double [] bottomMenuColor = tb.getTrackColorEntry (i);
+            final boolean isBottomMenuOn = t.isSelected ();
 
             final ValueChanger valueChanger = this.model.getValueChanger ();
             if (t.isSelected ())
             {
-                message.addInteger (valueChanger.toDisplayValue (t.getVolume ()));
-                message.addInteger (valueChanger.toDisplayValue (t.getModulatedVolume ()));
-                message.addString (this.isKnobTouched[0] ? t.getVolumeStr (8) : "");
-                message.addInteger (valueChanger.toDisplayValue (t.getPan ()));
-                message.addInteger (valueChanger.toDisplayValue (t.getModulatedPan ()));
-                message.addString (this.isKnobTouched[1] ? t.getPanStr (8) : "");
-                message.addInteger (valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0));
-                message.addBoolean (t.isMute ());
-                message.addBoolean (t.isSolo ());
-                message.addBoolean (t.isRecarm ());
-                message.addByte ("A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
+                final int crossfadeMode = "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1;
+                message.addChannelElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), this.isKnobTouched[0] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), this.isKnobTouched[1] ? t.getPanStr (8) : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecarm (), crossfadeMode);
             }
             else if (sendsIndex == i)
             {
                 final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
                 final TrackData selTrack = tb.getTrack (selectedIndex);
+                final String [] sendName = new String [4];
+                final String [] valueStr = new String [4];
+                final int [] value = new int [4];
+                final int [] modulatedValue = new int [4];
+                final boolean [] selected = new boolean [4];
                 for (int j = 0; j < 4; j++)
                 {
                     final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
                     final int sendPos = sendOffset + j;
                     final SendData send = selTrack.getSends ()[sendPos];
-                    message.addString (fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ());
-                    message.addString (send.doesExist () && this.isKnobTouched[4 + j] ? send.getDisplayedValue (8) : "");
-                    message.addInteger (valueChanger.toDisplayValue (send.doesExist () ? send.getValue () : 0));
-                    message.addInteger (valueChanger.toDisplayValue (send.doesExist () ? send.getModulatedValue () : 0));
-                    message.addByte (1);
+                    sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
+                    valueStr[j] = send.doesExist () && this.isKnobTouched[4 + j] ? send.getDisplayedValue (8) : "";
+                    value[j] = valueChanger.toDisplayValue (send.doesExist () ? send.getValue () : 0);
+                    modulatedValue[j] = valueChanger.toDisplayValue (send.doesExist () ? send.getModulatedValue () : 0);
+                    selected[j] = true;
                 }
-                // Signal Track mode
-                message.addBoolean (true);
+                message.addSendsElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, sendName, valueStr, value, modulatedValue, selected, true);
             }
+            else
+                message.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn);
         }
 
         message.send ();

@@ -11,12 +11,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ResourceHandler
+/**
+ * Get and cache some resources like SVG images.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public final class ResourceHandler
 {
     private static final Map<String, Image> CACHE = new HashMap<> ();
     private static ControllerHost           theHost;
 
 
+    /**
+     * Initialise the handler.
+     *
+     * @param host The controller host
+     */
     public static void init (final ControllerHost host)
     {
         theHost = host;
@@ -24,13 +34,9 @@ public class ResourceHandler
 
 
     /**
-     * TODO
+     * Get a SVG image as an Image object.
      *
-     * Get a SVG image as a buffered image. The image is expected to be monochrome: 1 color and the
-     * a transparent background. The given color replaces the color of the image. The images are
-     * cached by name and color.
-     *
-     * @param imageName The name (absolute path) of the image
+     * @param imageName The name of the image
      * @return The buffered image
      */
     public static Image getSVGImage (final String imageName)
@@ -39,14 +45,22 @@ public class ResourceHandler
     }
 
 
+    /**
+     * Load and cache an image.
+     *
+     * @param imageName The name (absolute path) of the image
+     */
     public static void addSVGImage (final String imageName)
     {
-        final Image image = theHost.loadSVG (imageName, 1);
-        CACHE.put (imageName, image);
+        CACHE.put (imageName, theHost.loadSVG (imageName, 1));
     }
 
 
+    /**
+     * Private due to helper class.
+     */
     private ResourceHandler ()
     {
+        // Intentionally empty
     }
 }

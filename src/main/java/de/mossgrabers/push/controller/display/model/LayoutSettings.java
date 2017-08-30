@@ -159,18 +159,33 @@ public class LayoutSettings
     }
 
 
+    /**
+     * Get the current color for indicating recording.
+     *
+     * @return The color
+     */
     public Color getRecordColor ()
     {
         return DEFAULT_COLOR_RECORD;
     }
 
 
+    /**
+     * Get the current color for indicating the solo state.
+     *
+     * @return The color
+     */
     public Color getSoloColor ()
     {
         return DEFAULT_COLOR_SOLO;
     }
 
 
+    /**
+     * Get the current color for indicating the mute state.
+     *
+     * @return The color
+     */
     public Color getMuteColor ()
     {
         return DEFAULT_COLOR_MUTE;

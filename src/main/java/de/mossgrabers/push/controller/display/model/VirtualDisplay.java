@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push.controller.display.model;
 
+import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.grid.GridElement;
 
 import com.bitwig.extension.api.Bitmap;
@@ -22,12 +23,13 @@ import java.util.List;
  */
 public class VirtualDisplay
 {
-    private static final int     DISPLAY_WIDTH  = 960;
-    private static final int     DISPLAY_HEIGHT = 160;
+    private static final int        DISPLAY_WIDTH  = 960;
+    private static final int        DISPLAY_HEIGHT = 160;
 
-    private final DisplayModel   model;
-    private final Bitmap         image;
-    private final LayoutSettings layoutSettings;
+    private final DisplayModel      model;
+    private final Bitmap            image;
+    private final LayoutSettings    layoutSettings;
+    private final PushConfiguration configuration;
 
 
     /**
@@ -37,7 +39,7 @@ public class VirtualDisplay
      * @param model Stores the data for drawing the display
      * @param layoutSettings The layout settings to use for drawing
      */
-    public VirtualDisplay (final ControllerHost host, final DisplayModel model, final LayoutSettings layoutSettings)
+    public VirtualDisplay (final ControllerHost host, final DisplayModel model, final LayoutSettings layoutSettings, final PushConfiguration configuration)
     {
         this.model = model;
 
@@ -58,9 +60,12 @@ public class VirtualDisplay
         ResourceHandler.addSVGImage ("track/return_track.svg");
 
         this.image = host.createBitmap (DISPLAY_WIDTH, DISPLAY_HEIGHT, BitmapFormat.ARGB32);
+        this.image.setDisplayWindowTitle ("Push 2 Display");
+        this.image.showDisplayWindow ();
 
         this.model.addGridElementChangeListener (this::redrawGrid);
         this.layoutSettings = layoutSettings;
+        this.configuration = configuration;
     }
 
 
@@ -108,7 +113,7 @@ public class VirtualDisplay
             final double offsetX = GridElement.SEPARATOR_SIZE / 2.0;
 
             for (int i = 0; i < size; i++)
-                elements.get (i).draw (gc, i * gridWidth + offsetX, paintWidth, DISPLAY_HEIGHT, this.layoutSettings);
+                elements.get (i).draw (gc, i * gridWidth + offsetX, paintWidth, DISPLAY_HEIGHT, this.layoutSettings, this.configuration);
         });
     }
 
