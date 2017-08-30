@@ -6,11 +6,11 @@ package de.mossgrabers.apc;
 
 import de.mossgrabers.apc.command.continuous.CrossfaderCommand;
 import de.mossgrabers.apc.command.continuous.DeviceKnobRowCommand;
+import de.mossgrabers.apc.command.trigger.APCBrowserCommand;
 import de.mossgrabers.apc.command.trigger.APCCursorCommand;
 import de.mossgrabers.apc.command.trigger.APCRecordCommand;
 import de.mossgrabers.apc.command.trigger.BankLeftCommand;
 import de.mossgrabers.apc.command.trigger.BankRightCommand;
-import de.mossgrabers.apc.command.trigger.APCBrowserCommand;
 import de.mossgrabers.apc.command.trigger.CrossfadeCommand;
 import de.mossgrabers.apc.command.trigger.DeviceLeftCommand;
 import de.mossgrabers.apc.command.trigger.DeviceOnOffCommand;

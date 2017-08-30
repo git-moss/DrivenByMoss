@@ -172,7 +172,7 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
         final double loopStart = this.clip.getLoopStart ();
         final int loopStartPad = (int) Math.ceil (loopStart / lengthOfOnePad);
         final int loopEndPad = (int) Math.ceil ((loopStart + this.clip.getLoopLength ()) / lengthOfOnePad);
-        int currentPage = step / this.numDisplayCols;
+        final int currentPage = step / this.numDisplayCols;
         for (int pad = 0; pad < 8; pad++)
             gridPad.lightEx (pad, 0, this.getPageColor (loopStartPad, loopEndPad, currentPage, this.clip.getEditPage (), pad));
     }

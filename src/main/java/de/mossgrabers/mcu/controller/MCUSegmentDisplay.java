@@ -82,10 +82,10 @@ public class MCUSegmentDisplay
     {
         for (int i = 0; i < 2; i++)
         {
-            char c = mode.charAt (i);
+            final char c = mode.charAt (i);
             if (this.assignmentBuffer[i] != c)
             {
-                int value = c >= 0x40 ? c - 0x40 : c;
+                final int value = c >= 0x40 ? c - 0x40 : c;
                 this.output.sendCC (0x4B - i, value);
                 this.assignmentBuffer[i] = c;
             }
