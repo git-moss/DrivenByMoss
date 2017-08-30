@@ -34,6 +34,6 @@ public abstract class PushControllerExtensionDefinition extends AbstractControll
     @Override
     public String getVersion ()
     {
-        return "9.21";
+        return "9.22";
     }
 }
