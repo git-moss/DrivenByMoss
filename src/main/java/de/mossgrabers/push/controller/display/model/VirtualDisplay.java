@@ -61,7 +61,6 @@ public class VirtualDisplay
 
         this.image = host.createBitmap (DISPLAY_WIDTH, DISPLAY_HEIGHT, BitmapFormat.ARGB32);
         this.image.setDisplayWindowTitle ("Push 2 Display");
-        this.image.showDisplayWindow ();
 
         this.model.addGridElementChangeListener (this::redrawGrid);
         this.layoutSettings = layoutSettings;

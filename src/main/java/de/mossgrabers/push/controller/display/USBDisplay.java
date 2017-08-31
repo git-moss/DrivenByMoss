@@ -46,7 +46,7 @@ public class USBDisplay
         0
     };
 
-    private final UsbOut         usbOut;
+    private UsbOut               usbOut;
     private final ByteBuffer     headerBuffer;
     private final ByteBuffer     imageBuffer;
 
@@ -58,7 +58,15 @@ public class USBDisplay
      */
     public USBDisplay (final ControllerHost host)
     {
-        this.usbOut = host.getUsbOut (0);
+        try
+        {
+            this.usbOut = host.getUsbOut (0);
+        }
+        catch (final RuntimeException ex)
+        {
+            this.usbOut = null;
+            host.errorln ("Could not open USB output.");
+        }
 
         this.headerBuffer = host.createByteBuffer (DISPLAY_HEADER.length);
         this.headerBuffer.put (DISPLAY_HEADER);

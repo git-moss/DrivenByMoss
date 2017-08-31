@@ -68,9 +68,8 @@ public class OptionsGridElement extends AbstractGridElement
             return;
 
         final double headerHeight = (DISPLAY_HEIGHT - 2 * menuHeight) / 2;
-
         final Color textColor = layoutSettings.getTextColor ();
-
+        gc.setFontSize (headerHeight / 2.0);
         if (hasTopHeader)
             drawTextInHeight (gc, this.headerTop, left, menuHeight, headerHeight, textColor);
         if (hasBottomHeader)

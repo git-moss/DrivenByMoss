@@ -221,7 +221,12 @@ public class DisplayMessage
      */
     public void addParameterElement (final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        this.addParameterElement ("", false, "", "", null, false, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+        this.addParameterElement ("", false, "", "", new double []
+        {
+            0,
+            0,
+            0
+        }, false, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
     }
 
 

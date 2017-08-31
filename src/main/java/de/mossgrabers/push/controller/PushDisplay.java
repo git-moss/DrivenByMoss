@@ -274,6 +274,20 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     }
 
 
+    /**
+     * Show or hide the display debug window.
+     *
+     * @param show True to show otherwise hide
+     */
+    public void showDebugWindow (final boolean show)
+    {
+        if (show)
+            this.virtualDisplay.getImage ().showDisplayWindow ();
+        else
+            this.virtualDisplay.getImage ().hideDisplayWindow ();
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void gridHasChanged ()

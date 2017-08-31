@@ -130,7 +130,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
             gc.drawImage (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2);
 
             gc.setFontSize (1.2 * UNIT);
-            drawTextInBounds (gc, name, left + DOUBLE_UNIT, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - gc.getFontExtents ().getHeight ()) / 2, width, TRACK_ROW_HEIGHT, Align.LEFT, textColor);
+            drawTextInBounds (gc, name, left + DOUBLE_UNIT, height - TRACK_ROW_HEIGHT - UNIT, width - DOUBLE_UNIT, TRACK_ROW_HEIGHT, Align.LEFT, textColor);
         }
 
         // The track color section

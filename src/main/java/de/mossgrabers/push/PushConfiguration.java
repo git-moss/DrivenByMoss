@@ -7,14 +7,14 @@ package de.mossgrabers.push;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.controller.display.model.grid.ColorEx;
 import de.mossgrabers.push.mode.Modes;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.Preferences;
-import com.bitwig.extension.controller.api.SettableColorValue;
 import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.SettableRangedValue;
+
+import java.util.Set;
 
 
 /**
@@ -55,9 +55,13 @@ public class PushConfiguration extends AbstractConfiguration
     public static final Integer    PAD_DYNAMICS                    = Integer.valueOf (38);
     /** Setting for stopping automation recording on knob release. */
     public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (39);
+    /** Mode debug. */
+    public static final Integer    DEBUG_MODE                      = Integer.valueOf (40);
+    /** Push 2 display debug window. */
+    public static final Integer    DEBUG_WINDOW                    = Integer.valueOf (41);
 
     // TODO
-    public static final Integer    COLOR_BACKGROUND                = Integer.valueOf (40);
+    public static final Integer    COLOR_BACKGROUND                = Integer.valueOf (50);
 
     /** Use ribbon for pitch bend. */
     public static final int        RIBBON_MODE_PITCH               = 0;
@@ -74,32 +78,42 @@ public class PushConfiguration extends AbstractConfiguration
     private boolean                isMuteLongPressed               = false;
     private boolean                isMuteSoloLocked                = false;
 
-    private static final String    CATEGORY_COLORS                 = "Display Colors";
     private static final String    CATEGORY_RIBBON                 = "Ribbon";
+    private static final String    CATEGORY_COLORS                 = "Display Colors";
+    private static final String    CATEGORY_DEBUG                  = "Debug - keep your hands off";
+
+    private static final String [] RIBBON_MODE_VALUES              =
+    {
+        "Pitch",
+        "CC",
+        "CC/Pitch",
+        "Pitch/CC",
+        "Fader"
+    };
 
     /** What does the ribbon send? **/
     private int                    ribbonMode                      = RIBBON_MODE_PITCH;
     private int                    ribbonModeCCVal                 = 1;
     private boolean                stopAutomationOnKnobRelease     = false;
     private TrackState             trackState                      = TrackState.MUTE;
+    private Integer                debugMode                       = Modes.MODE_TRACK;
+    private boolean                isDisplayWindowVisible          = false;
+    private Integer                currentMixMode                  = Modes.MODE_TRACK;
 
-    // Push 1
+    // Only Push 1
     private int                    velocityCurve                   = 1;
     private int                    padThreshold                    = 20;
 
-    // Push 2
+    // Only Push 2
     private boolean                sendsAreToggled                 = false;
     private int                    displayBrightness               = 255;
     private int                    ledBrightness                   = 127;
     private int                    padSensitivity                  = 5;
     private int                    padGain                         = 5;
     private int                    padDynamics                     = 5;
-
-    private Color                  colorBackground                 = ColorEx.BLACK;
+    private Color                  colorBackground                 = Color.fromRGB255 (83, 83, 83);
 
     private boolean                isPush2;
-
-    private Integer                currentMixMode                  = Modes.MODE_TRACK;
 
     private SettableRangedValue    displayBrightnessSetting;
     private SettableRangedValue    ledBrightnessSetting;
@@ -110,16 +124,6 @@ public class PushConfiguration extends AbstractConfiguration
     private SettableRangedValue    padDynamicsSetting;
     private SettableEnumValue      velocityCurveSetting;
     private SettableEnumValue      padThresholdSetting;
-    private SettableColorValue     colorBackgroundSetting;
-
-    private static final String [] RIBBON_MODE_VALUES              =
-    {
-        "Pitch",
-        "CC",
-        "CC/Pitch",
-        "Pitch/CC",
-        "Fader"
-    };
 
 
     /**
@@ -209,7 +213,12 @@ public class PushConfiguration extends AbstractConfiguration
         // Push 2 Hardware
 
         this.activatePush2HardwareSettings (preferences);
-        this.activatePush2DisplayColors (preferences);
+        this.activatePush2DisplayColorsSettings (preferences);
+
+        ///////////////////////////
+        // Debugging
+
+        this.activateDebugSettings (preferences);
     }
 
 
@@ -664,6 +673,28 @@ public class PushConfiguration extends AbstractConfiguration
 
 
     /**
+     * Get the selected display mode for debugging.
+     *
+     * @return The ID of a mode
+     */
+    public Integer getDebugMode ()
+    {
+        return this.debugMode;
+    }
+
+
+    /**
+     * Is the Push 2 display window visible?
+     *
+     * @return True if the window is visible
+     */
+    public boolean isDisplayWindowVisible ()
+    {
+        return this.isDisplayWindowVisible;
+    }
+
+
+    /**
      * Activate the Push 2 hardware settings.
      *
      * @param prefs The preferences
@@ -683,19 +714,6 @@ public class PushConfiguration extends AbstractConfiguration
         this.ledBrightnessSetting.addValueObserver (101, value -> {
             this.ledBrightness = value;
             this.notifyObservers (LED_BRIGHTNESS);
-        });
-    }
-
-
-    private void activatePush2DisplayColors (final Preferences prefs)
-    {
-        if (!this.isPush2)
-            return;
-
-        this.colorBackgroundSetting = prefs.getColorSetting ("Background", CATEGORY_COLORS, ColorEx.BLACK);
-        this.colorBackgroundSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorBackground = Color.fromRGB (red, green, blue);
-            this.notifyObservers (COLOR_BACKGROUND);
         });
     }
 
@@ -732,8 +750,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     private void activateStopAutomationOnKnobReleaseSetting (final Preferences prefs)
     {
-        final SettableEnumValue stopAutomationOnKnobReleaseSetting = prefs.getEnumSetting ("Stop automation recording on knob release", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        stopAutomationOnKnobReleaseSetting.addValueObserver (value -> {
+        prefs.getEnumSetting ("Stop automation recording on knob release", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]).addValueObserver (value -> {
             this.stopAutomationOnKnobRelease = "On".equals (value);
             this.notifyObservers (STOP_AUTOMATION_ON_KNOB_RELEASE);
         });
@@ -798,6 +815,56 @@ public class PushConfiguration extends AbstractConfiguration
         this.padDynamicsSetting.addValueObserver (11, value -> {
             this.padDynamics = value;
             this.notifyObservers (PAD_DYNAMICS);
+        });
+    }
+
+
+    /**
+     * Activate the color settings for the Push 2 display.
+     *
+     * @param prefs The preferences
+     */
+    private void activatePush2DisplayColorsSettings (final Preferences prefs)
+    {
+        if (!this.isPush2)
+            return;
+
+        prefs.getColorSetting ("Background", CATEGORY_COLORS, Color.fromRGB255 (83, 83, 83)).addValueObserver ( (red, green, blue) -> {
+            this.colorBackground = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_BACKGROUND);
+        });
+
+        // TODO add all colors
+    }
+
+
+    /**
+     * Activate the debug settings.
+     *
+     * @param prefs The preferences
+     */
+    private void activateDebugSettings (final Preferences prefs)
+    {
+        final Set<Integer> allModes = Modes.ALL_MODES;
+        final String [] modes = new String [allModes.size ()];
+        int i = 0;
+        for (final Integer mode: allModes)
+        {
+            modes[i] = mode.toString ();
+            i++;
+        }
+
+        prefs.getEnumSetting ("Display Mode", CATEGORY_DEBUG, modes, Modes.MODE_TRACK.toString ()).addValueObserver (value -> {
+            this.debugMode = Integer.valueOf (value);
+            this.notifyObservers (DEBUG_MODE);
+        });
+
+        if (!this.isPush2)
+            return;
+
+        prefs.getEnumSetting ("Display window", CATEGORY_DEBUG, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]).addValueObserver (value -> {
+            this.isDisplayWindowVisible = "On".equals (value);
+            this.notifyObservers (DEBUG_WINDOW);
         });
     }
 }

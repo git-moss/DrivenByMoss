@@ -296,6 +296,8 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
                 this.surface.sendPadVelocityCurve ();
                 this.surface.sendPadThreshold ();
             });
+
+            this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, () -> ((PushDisplay) this.surface.getDisplay ()).showDebugWindow (this.configuration.isDisplayWindowVisible ()));
         }
         else
         {
@@ -324,6 +326,14 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         });
 
         this.configuration.addSettingObserver (PushConfiguration.RIBBON_MODE, this::updateRibbonMode);
+        this.configuration.addSettingObserver (PushConfiguration.DEBUG_MODE, () -> {
+            final ModeManager modeManager = this.surface.getModeManager ();
+            final Integer debugMode = this.configuration.getDebugMode ();
+            if (modeManager.getMode (debugMode) != null)
+                modeManager.setActiveMode (debugMode);
+            else
+                this.getHost ().errorln ("Mode " + debugMode + " not registered.");
+        });
 
         this.createScaleObservers (this.configuration);
     }
