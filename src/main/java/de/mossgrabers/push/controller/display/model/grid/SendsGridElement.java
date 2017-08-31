@@ -6,7 +6,6 @@ package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.ChannelType;
-import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
@@ -91,9 +90,9 @@ public class SendsGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration)
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
-        super.draw (gc, left, width, height, layoutSettings, configuration);
+        super.draw (gc, left, width, height, configuration);
 
         final String name = this.getName ();
         // Element is off if the name is empty
@@ -110,7 +109,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
         final double sliderHeight = sendRowHeight - 2 * SEPARATOR_SIZE;
 
         // Background of slider area
-        final Color backgroundColor = layoutSettings.getBackgroundColor ();
+        final Color backgroundColor = configuration.getColorBackground ();
         gc.setColor (this.isSelected () || this.isExMode ? ColorEx.brighter (backgroundColor) : backgroundColor);
         gc.rectangle (this.isExMode ? left - SEPARATOR_SIZE : left, t, this.isExMode ? width + SEPARATOR_SIZE : width, this.isExMode ? h - 2 : h);
         gc.fill ();
@@ -118,10 +117,10 @@ public class SendsGridElement extends ChannelSelectionGridElement
         double topy = MENU_HEIGHT + (this.isExMode ? 0 : SEPARATOR_SIZE);
 
         gc.setFontSize (sendRowHeight);
-        final Color textColor = layoutSettings.getTextColor ();
-        final Color borderColor = layoutSettings.getBorderColor ();
-        final Color faderColor = layoutSettings.getFaderColor ();
-        final Color editColor = layoutSettings.getEditColor ();
+        final Color textColor = configuration.getColorText ();
+        final Color borderColor = configuration.getColorBorder ();
+        final Color faderColor = configuration.getColorFader ();
+        final Color editColor = configuration.getColorEdit ();
         final double faderLeft = left + INSET;
         for (int i = 0; i < 4; i++)
         {

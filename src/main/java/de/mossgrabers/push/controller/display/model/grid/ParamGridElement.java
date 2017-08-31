@@ -6,7 +6,6 @@ package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.ChannelType;
-import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
@@ -57,9 +56,9 @@ public class ParamGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration)
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
-        this.drawMenu (gc, left, width, layoutSettings);
+        this.drawMenu (gc, left, width, configuration);
 
         final boolean isValueMissing = this.paramValue == 16383; // == -1
         final boolean isModulated = this.modulatedParamValue != 16383; // == -1
@@ -67,7 +66,7 @@ public class ParamGridElement extends ChannelSelectionGridElement
         final double trackRowTop = height - TRACK_ROW_HEIGHT - UNIT - SEPARATOR_SIZE;
         final String name = this.getName ();
         if (name != null && name.length () > 0)
-            this.drawTrackInfo (gc, left, width, height, trackRowTop, name, layoutSettings, configuration);
+            this.drawTrackInfo (gc, left, width, height, trackRowTop, name, configuration);
 
         // Element is off if the name is empty
         if (this.paramName == null || this.paramName.length () == 0)
@@ -77,13 +76,13 @@ public class ParamGridElement extends ChannelSelectionGridElement
         final double elementHeight = (trackRowTop - CONTROLS_TOP - INSET) / 3;
 
         // Draw the background
-        final Color backgroundColor = layoutSettings.getBackgroundColor ();
+        final Color backgroundColor = configuration.getColorBackground ();
         gc.setColor (this.isTouched ? ColorEx.brighter (backgroundColor) : backgroundColor);
         gc.rectangle (left, MENU_HEIGHT + 1, width, trackRowTop - (isValueMissing ? CONTROLS_TOP + elementHeight : MENU_HEIGHT + 1));
         gc.fill ();
 
         // Draw the name and value texts
-        final Color textColor = layoutSettings.getTextColor ();
+        final Color textColor = configuration.getColorText ();
         gc.setFontSize (elementHeight * 2 / 3);
         drawTextInBounds (gc, this.paramName, left + INSET - 1, CONTROLS_TOP - INSET, elementWidth, elementHeight, Align.CENTER, textColor);
         drawTextInBounds (gc, this.paramValueText, left + INSET - 1, CONTROLS_TOP - INSET + elementHeight, elementWidth, elementHeight, Align.CENTER, textColor);
@@ -96,14 +95,14 @@ public class ParamGridElement extends ChannelSelectionGridElement
         final double value = isModulated ? this.modulatedParamValue : this.paramValue;
         final double valueSliderWidth = value >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * value / maxValue;
         final double innerTop = CONTROLS_TOP + 2 * elementHeight + 1;
-        final Color borderColor = layoutSettings.getBorderColor ();
+        final Color borderColor = configuration.getColorBorder ();
         gc.setColor (borderColor);
         gc.rectangle (left + INSET - 1, CONTROLS_TOP + 2 * elementHeight, elementWidth, elementHeight);
         gc.fill ();
-        gc.setColor (layoutSettings.getFaderColor ());
+        gc.setColor (configuration.getColorFader ());
         gc.rectangle (left + INSET, innerTop, valueSliderWidth, elementHeight - 2);
         gc.fill ();
-        gc.setColor (layoutSettings.getEditColor ());
+        gc.setColor (configuration.getColorEdit ());
         final double w = this.isTouched ? 3 : 1;
         final double valueWidth = this.paramValue >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * this.paramValue / maxValue;
         gc.rectangle (left + INSET + Math.max (0, valueWidth - w), innerTop, w, elementHeight - 2);

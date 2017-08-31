@@ -5,7 +5,6 @@
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
@@ -52,15 +51,15 @@ public class OptionsGridElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration)
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
         final double menuHeight = MENU_HEIGHT * 2;
 
         if (this.useSmallTopMenu)
-            this.drawMenu (gc, left, width, layoutSettings);
+            this.drawMenu (gc, left, width, configuration);
         else
-            drawLargeMenu (gc, left, 0, width, menuHeight, this.menuName, this.isMenuSelected, layoutSettings);
-        drawLargeMenu (gc, left, DISPLAY_HEIGHT - 2 * MENU_HEIGHT, width, menuHeight, this.menuBottomName, this.isMenuBottomSelected, layoutSettings);
+            drawLargeMenu (gc, left, 0, width, menuHeight, this.menuName, this.isMenuSelected, configuration);
+        drawLargeMenu (gc, left, DISPLAY_HEIGHT - 2 * MENU_HEIGHT, width, menuHeight, this.menuBottomName, this.isMenuBottomSelected, configuration);
 
         final boolean hasTopHeader = this.headerTop != null && this.headerTop.length () > 0;
         final boolean hasBottomHeader = this.headerBottom != null && this.headerBottom.length () > 0;
@@ -68,7 +67,7 @@ public class OptionsGridElement extends AbstractGridElement
             return;
 
         final double headerHeight = (DISPLAY_HEIGHT - 2 * menuHeight) / 2;
-        final Color textColor = layoutSettings.getTextColor ();
+        final Color textColor = configuration.getColorText ();
         gc.setFontSize (headerHeight / 2.0);
         if (hasTopHeader)
             drawTextInHeight (gc, this.headerTop, left, menuHeight, headerHeight, textColor);
@@ -87,20 +86,20 @@ public class OptionsGridElement extends AbstractGridElement
      * @param height The height of the menu
      * @param menu The menu text
      * @param isSelected True if the menu is selected
-     * @param layoutSettings The layout settings to use
+     * @param configuration The layout settings to use
      */
-    protected static void drawLargeMenu (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final String menu, final boolean isSelected, final LayoutSettings layoutSettings)
+    protected static void drawLargeMenu (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final String menu, final boolean isSelected, final PushConfiguration configuration)
     {
         if (menu == null || menu.length () == 0)
             return;
 
-        final Color textColor = layoutSettings.getTextColor ();
+        final Color textColor = configuration.getColorText ();
 
-        gc.setColor (isSelected ? textColor : layoutSettings.getBackgroundColor ());
+        gc.setColor (isSelected ? textColor : configuration.getColorBackground ());
         gc.rectangle (left, top, width, height);
         gc.fill ();
 
         gc.setFontSize (height / 2);
-        drawTextInBounds (gc, menu, left, top, width, height, Align.CENTER, isSelected ? layoutSettings.getBorderColor () : textColor);
+        drawTextInBounds (gc, menu, left, top, width, height, Align.CENTER, isSelected ? configuration.getColorBorder () : textColor);
     }
 }

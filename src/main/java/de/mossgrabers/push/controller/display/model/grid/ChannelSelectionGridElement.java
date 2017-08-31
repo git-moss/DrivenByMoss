@@ -6,7 +6,6 @@ package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.ChannelType;
-import de.mossgrabers.push.controller.display.model.LayoutSettings;
 import de.mossgrabers.push.controller.display.model.ResourceHandler;
 
 import com.bitwig.extension.api.Color;
@@ -79,9 +78,9 @@ public class ChannelSelectionGridElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration)
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
-        this.drawMenu (gc, left, width, layoutSettings);
+        this.drawMenu (gc, left, width, configuration);
 
         final String name = this.getName ();
         // Element is off if the name is empty
@@ -89,7 +88,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
             return;
 
         final double trackRowTop = height - TRACK_ROW_HEIGHT - UNIT - SEPARATOR_SIZE;
-        this.drawTrackInfo (gc, left, width, height, trackRowTop, name, layoutSettings, configuration);
+        this.drawTrackInfo (gc, left, width, height, trackRowTop, name, configuration);
     }
 
 
@@ -102,9 +101,9 @@ public class ChannelSelectionGridElement extends AbstractGridElement
      * @param height The height of the drawing area
      * @param trackRowTop The top of the drawing area
      * @param name The name of the track
-     * @param layoutSettings The layout settings
+     * @param configuration The layout settings
      */
-    protected void drawTrackInfo (final GraphicsOutput gc, final double left, final double width, final double height, final double trackRowTop, final String name, final LayoutSettings layoutSettings, final PushConfiguration configuration)
+    protected void drawTrackInfo (final GraphicsOutput gc, final double left, final double width, final double height, final double trackRowTop, final String name, final PushConfiguration configuration)
     {
         // Draw the background
         final Color backgroundColor = configuration.getColorBackground ();
@@ -116,7 +115,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
         final String iconName = this.getIcon ();
         if (iconName != null)
         {
-            final Color textColor = layoutSettings.getTextColor ();
+            final Color textColor = configuration.getColorText ();
             final Image icon = ResourceHandler.getSVGImage (iconName);
 
             // TODO find a solution to draw icons

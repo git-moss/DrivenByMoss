@@ -28,7 +28,6 @@ public class VirtualDisplay
 
     private final DisplayModel      model;
     private final Bitmap            image;
-    private final LayoutSettings    layoutSettings;
     private final PushConfiguration configuration;
 
 
@@ -37,9 +36,9 @@ public class VirtualDisplay
      *
      * @param host The controller host
      * @param model Stores the data for drawing the display
-     * @param layoutSettings The layout settings to use for drawing
+     * @param configuration The configuration to use for drawing, e.g. colors
      */
-    public VirtualDisplay (final ControllerHost host, final DisplayModel model, final LayoutSettings layoutSettings, final PushConfiguration configuration)
+    public VirtualDisplay (final ControllerHost host, final DisplayModel model, final PushConfiguration configuration)
     {
         this.model = model;
 
@@ -63,7 +62,6 @@ public class VirtualDisplay
         this.image.setDisplayWindowTitle ("Push 2 Display");
 
         this.model.addGridElementChangeListener (this::redrawGrid);
-        this.layoutSettings = layoutSettings;
         this.configuration = configuration;
     }
 
@@ -99,7 +97,7 @@ public class VirtualDisplay
             configureGraphics (gc);
 
             // Clear display
-            gc.setColor (this.layoutSettings.getBorderColor ());
+            gc.setColor (this.configuration.getColorBorder ());
             gc.rectangle (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
             gc.fill ();
 
@@ -112,7 +110,7 @@ public class VirtualDisplay
             final double offsetX = GridElement.SEPARATOR_SIZE / 2.0;
 
             for (int i = 0; i < size; i++)
-                elements.get (i).draw (gc, i * gridWidth + offsetX, paintWidth, DISPLAY_HEIGHT, this.layoutSettings, this.configuration);
+                elements.get (i).draw (gc, i * gridWidth + offsetX, paintWidth, DISPLAY_HEIGHT, this.configuration);
         });
     }
 

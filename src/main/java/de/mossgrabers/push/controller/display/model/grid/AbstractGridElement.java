@@ -4,7 +4,7 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
-import de.mossgrabers.push.controller.display.model.LayoutSettings;
+import de.mossgrabers.push.PushConfiguration;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
@@ -170,11 +170,11 @@ public abstract class AbstractGridElement implements GridElement
      * @param gc The graphics context
      * @param left The left bound of the menus drawing area
      * @param width The width of the menu
-     * @param layoutSettings The layout settings to use
+     * @param configuration The layout settings to use
      */
-    protected void drawMenu (final GraphicsOutput gc, final double left, final double width, final LayoutSettings layoutSettings)
+    protected void drawMenu (final GraphicsOutput gc, final double left, final double width, final PushConfiguration configuration)
     {
-        final Color borderColor = layoutSettings.getBorderColor ();
+        final Color borderColor = configuration.getColorBorder ();
         if (this.menuName == null || this.menuName.length () == 0)
         {
             // Remove the 2 pixels of the previous menus border line
@@ -184,7 +184,7 @@ public abstract class AbstractGridElement implements GridElement
             return;
         }
 
-        final Color textColor = layoutSettings.getTextColor ();
+        final Color textColor = configuration.getColorText ();
         gc.setColor (this.isMenuSelected ? textColor : borderColor);
         gc.rectangle (left, 0, width, MENU_HEIGHT - 1.0);
         gc.fill ();

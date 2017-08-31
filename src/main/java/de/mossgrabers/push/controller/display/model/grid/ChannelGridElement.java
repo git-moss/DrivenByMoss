@@ -6,7 +6,6 @@ package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.ChannelType;
-import de.mossgrabers.push.controller.display.model.LayoutSettings;
 import de.mossgrabers.push.controller.display.model.ResourceHandler;
 
 import com.bitwig.extension.api.Color;
@@ -89,7 +88,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration)
+    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
         final double halfWidth = width / 2;
 
@@ -119,16 +118,16 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         // Drawing
         //
 
-        final Color textColor = layoutSettings.getTextColor ();
-        this.drawMenu (gc, left, width, layoutSettings);
+        final Color textColor = configuration.getColorText ();
+        this.drawMenu (gc, left, width, configuration);
 
         final String name = this.getName ();
         // Element is off if the name is empty
         if (name == null || name.length () == 0)
             return;
 
-        final Color backgroundColor = layoutSettings.getBackgroundColor ();
-        this.drawTrackInfo (gc, left, width, height, trackRowTop, name, layoutSettings, configuration);
+        final Color backgroundColor = configuration.getColorBackground ();
+        this.drawTrackInfo (gc, left, width, height, trackRowTop, name, configuration);
 
         // Draw the background
         gc.setColor (this.isSelected () ? ColorEx.brighter (backgroundColor) : backgroundColor);
@@ -136,14 +135,14 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         gc.fill ();
 
         // Background of pan and slider area
-        final Color borderColor = layoutSettings.getBorderColor ();
+        final Color borderColor = configuration.getColorBorder ();
         gc.setColor (borderColor);
         gc.rectangle (controlStart, CONTROLS_TOP, halfWidth - UNIT + HALF_UNIT / 2, UNIT);
         gc.rectangle (controlStart, faderTop, controlWidth, faderHeight);
         gc.fill ();
 
         final Color backgroundDarker = ColorEx.darker (backgroundColor);
-        final Color editColor = layoutSettings.getEditColor ();
+        final Color editColor = configuration.getColorEdit ();
 
         final ChannelType type = this.getType ();
         if (type != ChannelType.MASTER && type != ChannelType.LAYER && this.crossfadeMode != -1)
@@ -174,7 +173,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         gc.stroke ();
         final double maxValue = getMaxValue ();
         final double halfMax = maxValue / 2;
-        final Color faderColor = layoutSettings.getFaderColor ();
+        final Color faderColor = configuration.getColorFader ();
         gc.setColor (faderColor);
         final boolean isPanTouched = this.panText.length () > 0;
 
@@ -221,7 +220,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         final double vuOffset = faderInnerHeight - vuHeight;
         gc.rectangle (controlStart + SEPARATOR_SIZE, faderTop + SEPARATOR_SIZE, faderOffset - SEPARATOR_SIZE, faderInnerHeight);
         gc.fill ();
-        gc.setColor (layoutSettings.getVuColor ());
+        gc.setColor (configuration.getColorVu ());
         gc.rectangle (controlStart + SEPARATOR_SIZE, faderTop + SEPARATOR_SIZE + vuOffset, faderOffset - SEPARATOR_SIZE, vuHeight);
         gc.fill ();
 
@@ -230,16 +229,16 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         if (type != ChannelType.LAYER)
         {
             // Rec Arm
-            drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, layoutSettings.getRecordColor (), textColor, this.isArm, "channel/record_arm.svg", layoutSettings);
+            drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, configuration.getColorRecord (), textColor, this.isArm, "channel/record_arm.svg", configuration);
         }
 
         // Solo
         buttonTop += buttonHeight + 2 * SEPARATOR_SIZE;
-        drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, layoutSettings.getSoloColor (), textColor, this.isSolo, "channel/solo.svg", layoutSettings);
+        drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, configuration.getColorSolo (), textColor, this.isSolo, "channel/solo.svg", configuration);
 
         // Mute
         buttonTop += buttonHeight + 2 * SEPARATOR_SIZE;
-        drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, layoutSettings.getMuteColor (), textColor, this.isMute, "channel/mute.svg", layoutSettings);
+        drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, configuration.getColorMute (), textColor, this.isMute, "channel/mute.svg", configuration);
 
         final double descent = gc.getFontExtents ().getDescent ();
 
@@ -285,11 +284,11 @@ public class ChannelGridElement extends ChannelSelectionGridElement
      * @param textColor The color of the buttons text
      * @param isOn True if the button is on
      * @param iconName The name of the buttons icon
-     * @param layoutSettings The layout settings
+     * @param configuration The layout settings
      */
-    private static void drawButton (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final Color backgroundColor, final Color isOnColor, final Color textColor, final boolean isOn, final String iconName, final LayoutSettings layoutSettings)
+    private static void drawButton (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final Color backgroundColor, final Color isOnColor, final Color textColor, final boolean isOn, final String iconName, final PushConfiguration configuration)
     {
-        final Color borderColor = layoutSettings.getBorderColor ();
+        final Color borderColor = configuration.getColorBorder ();
 
         drawRoundedRect (gc, left, top, width, height, 5.0, borderColor);
 

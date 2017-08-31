@@ -5,7 +5,6 @@
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.display.model.LayoutSettings;
 
 import com.bitwig.extension.api.GraphicsOutput;
 
@@ -45,8 +44,7 @@ public interface GridElement
      * @param left The left bound of the drawing area of the element
      * @param width The width of the drawing area of the element
      * @param height The height of the drawing area of the element
-     * @param layoutSettings The layout settings to use
-     * @param configuration TODO
+     * @param configuration The layout settings to use
      */
-    void draw (final GraphicsOutput graphicsOutput, final double left, final double width, final double height, final LayoutSettings layoutSettings, PushConfiguration configuration);
+    void draw (final GraphicsOutput graphicsOutput, final double left, final double width, final double height, final PushConfiguration configuration);
 }

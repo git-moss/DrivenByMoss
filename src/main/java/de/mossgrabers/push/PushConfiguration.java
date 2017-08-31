@@ -7,6 +7,7 @@ package de.mossgrabers.push;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.controller.display.model.grid.ColorEx;
 import de.mossgrabers.push.mode.Modes;
 
 import com.bitwig.extension.api.Color;
@@ -59,9 +60,34 @@ public class PushConfiguration extends AbstractConfiguration
     public static final Integer    DEBUG_MODE                      = Integer.valueOf (40);
     /** Push 2 display debug window. */
     public static final Integer    DEBUG_WINDOW                    = Integer.valueOf (41);
-
-    // TODO
+    /** Background color of an element. */
     public static final Integer    COLOR_BACKGROUND                = Integer.valueOf (50);
+    /** Border color of an element. */
+    public static final Integer    COLOR_BORDER                    = Integer.valueOf (51);
+    /** Text color of an element. */
+    public static final Integer    COLOR_TEXT                      = Integer.valueOf (52);
+    /** Fader color of an element. */
+    public static final Integer    COLOR_FADER                     = Integer.valueOf (53);
+    /** VU color of an element. */
+    public static final Integer    COLOR_VU                        = Integer.valueOf (54);
+    /** Edit color of an element. */
+    public static final Integer    COLOR_EDIT                      = Integer.valueOf (55);
+    /** Record color of an element. */
+    public static final Integer    COLOR_RECORD                    = Integer.valueOf (56);
+    /** Solo color of an element. */
+    public static final Integer    COLOR_SOLO                      = Integer.valueOf (57);
+    /** Mute color of an element. */
+    public static final Integer    COLOR_MUTE                      = Integer.valueOf (58);
+
+    private static final Color     DEFAULT_COLOR_BACKGROUND        = Color.fromRGB255 (83, 83, 83);
+    private static final Color     DEFAULT_COLOR_BORDER            = ColorEx.BLACK;
+    private static final Color     DEFAULT_COLOR_TEXT              = ColorEx.WHITE;
+    private static final Color     DEFAULT_COLOR_FADER             = Color.fromRGB255 (69, 44, 19);
+    private static final Color     DEFAULT_COLOR_VU                = ColorEx.GREEN;
+    private static final Color     DEFAULT_COLOR_EDIT              = Color.fromRGB255 (240, 127, 17);
+    private static final Color     DEFAULT_COLOR_RECORD            = ColorEx.RED;
+    private static final Color     DEFAULT_COLOR_SOLO              = ColorEx.YELLOW;
+    private static final Color     DEFAULT_COLOR_MUTE              = Color.fromRGB255 (245, 129, 17);
 
     /** Use ribbon for pitch bend. */
     public static final int        RIBBON_MODE_PITCH               = 0;
@@ -111,7 +137,15 @@ public class PushConfiguration extends AbstractConfiguration
     private int                    padSensitivity                  = 5;
     private int                    padGain                         = 5;
     private int                    padDynamics                     = 5;
-    private Color                  colorBackground                 = Color.fromRGB255 (83, 83, 83);
+    private Color                  colorBackground                 = DEFAULT_COLOR_BACKGROUND;
+    private Color                  colorBorder                     = DEFAULT_COLOR_BORDER;
+    private Color                  colorText                       = DEFAULT_COLOR_TEXT;
+    private Color                  colorFader                      = DEFAULT_COLOR_FADER;
+    private Color                  colorVU                         = DEFAULT_COLOR_VU;
+    private Color                  colorEdit                       = DEFAULT_COLOR_EDIT;
+    private Color                  colorRecord                     = DEFAULT_COLOR_RECORD;
+    private Color                  colorSolo                       = DEFAULT_COLOR_SOLO;
+    private Color                  colorMute                       = DEFAULT_COLOR_MUTE;
 
     private boolean                isPush2;
 
@@ -666,9 +700,102 @@ public class PushConfiguration extends AbstractConfiguration
     }
 
 
+    /**
+     * Get the background color of an element.
+     *
+     * @return The background color of an element.
+     */
     public Color getColorBackground ()
     {
         return this.colorBackground;
+    }
+
+
+    /**
+     * Get the border color of an element.
+     *
+     * @return The border color of an element.
+     */
+    public Color getColorBorder ()
+    {
+        return this.colorBorder;
+    }
+
+
+    /**
+     * Get the text color of an element.
+     *
+     * @return The text color of an element.
+     */
+    public Color getColorText ()
+    {
+        return this.colorText;
+    }
+
+
+    /**
+     * Get the edit color of an element.
+     *
+     * @return The edit color of an element.
+     */
+    public Color getColorEdit ()
+    {
+        return this.colorEdit;
+    }
+
+
+    /**
+     * Get the fader color of an element.
+     *
+     * @return The fader color of an element.
+     */
+    public Color getColorFader ()
+    {
+        return this.colorFader;
+    }
+
+
+    /**
+     * Get the VU color of an element.
+     *
+     * @return The VU color of an element.
+     */
+    public Color getColorVu ()
+    {
+        return this.colorVU;
+    }
+
+
+    /**
+     * Get the record color of an element.
+     *
+     * @return The record color of an element.
+     */
+    public Color getColorRecord ()
+    {
+        return this.colorRecord;
+    }
+
+
+    /**
+     * Get the solo color of an element.
+     *
+     * @return The solo color of an element.
+     */
+    public Color getColorSolo ()
+    {
+        return this.colorSolo;
+    }
+
+
+    /**
+     * Get the mute color of an element.
+     *
+     * @return The border mute of an element.
+     */
+    public Color getColorMute ()
+    {
+        return this.colorMute;
     }
 
 
@@ -829,12 +956,50 @@ public class PushConfiguration extends AbstractConfiguration
         if (!this.isPush2)
             return;
 
-        prefs.getColorSetting ("Background", CATEGORY_COLORS, Color.fromRGB255 (83, 83, 83)).addValueObserver ( (red, green, blue) -> {
+        prefs.getColorSetting ("Background", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND).addValueObserver ( (red, green, blue) -> {
             this.colorBackground = Color.fromRGB (red, green, blue);
             this.notifyObservers (COLOR_BACKGROUND);
         });
 
-        // TODO add all colors
+        prefs.getColorSetting ("Border", CATEGORY_COLORS, DEFAULT_COLOR_BORDER).addValueObserver ( (red, green, blue) -> {
+            this.colorBorder = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_BORDER);
+        });
+
+        prefs.getColorSetting ("Text", CATEGORY_COLORS, DEFAULT_COLOR_TEXT).addValueObserver ( (red, green, blue) -> {
+            this.colorText = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_TEXT);
+        });
+
+        prefs.getColorSetting ("Fader", CATEGORY_COLORS, DEFAULT_COLOR_FADER).addValueObserver ( (red, green, blue) -> {
+            this.colorFader = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_FADER);
+        });
+
+        prefs.getColorSetting ("VU", CATEGORY_COLORS, DEFAULT_COLOR_VU).addValueObserver ( (red, green, blue) -> {
+            this.colorVU = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_VU);
+        });
+
+        prefs.getColorSetting ("Edit", CATEGORY_COLORS, DEFAULT_COLOR_EDIT).addValueObserver ( (red, green, blue) -> {
+            this.colorVU = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_EDIT);
+        });
+
+        prefs.getColorSetting ("Record", CATEGORY_COLORS, DEFAULT_COLOR_RECORD).addValueObserver ( (red, green, blue) -> {
+            this.colorRecord = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_RECORD);
+        });
+
+        prefs.getColorSetting ("Solo", CATEGORY_COLORS, DEFAULT_COLOR_SOLO).addValueObserver ( (red, green, blue) -> {
+            this.colorSolo = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_SOLO);
+        });
+
+        prefs.getColorSetting ("Mute", CATEGORY_COLORS, DEFAULT_COLOR_MUTE).addValueObserver ( (red, green, blue) -> {
+            this.colorMute = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_MUTE);
+        });
     }
 
 
