@@ -19,7 +19,7 @@ import com.bitwig.extension.api.TextExtents;
 public abstract class AbstractGridElement implements GridElement
 {
     /** The maximum possible value for a parameter. */
-    private static double   MAX_VALUE = 1024;
+    private static double   maxValue = 1024;
 
     private final String    name;
     private final String    icon;
@@ -206,7 +206,7 @@ public abstract class AbstractGridElement implements GridElement
      */
     public static double getMaxValue ()
     {
-        return MAX_VALUE;
+        return maxValue;
     }
 
 
@@ -217,6 +217,6 @@ public abstract class AbstractGridElement implements GridElement
      */
     public static void setMaxValue (final double maxValue)
     {
-        AbstractGridElement.MAX_VALUE = maxValue;
+        AbstractGridElement.maxValue = maxValue;
     }
 }

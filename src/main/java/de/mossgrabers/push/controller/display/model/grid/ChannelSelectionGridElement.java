@@ -118,15 +118,9 @@ public class ChannelSelectionGridElement extends AbstractGridElement
             final Color textColor = configuration.getColorText ();
             final Image icon = ResourceHandler.getSVGImage (iconName);
 
-            // TODO find a solution to draw icons
-            // gc.setColor (textColor);
-            // gc.setOperator (Operator.IN);
-            // gc.rectangle (left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT
-            // - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2, icon.getWidth (), icon.getHeight
-            // ());
-            // gc.fill ();
-            // gc.setOperator (Operator.SOURCE);
-            gc.drawImage (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2);
+            gc.setColor (textColor);
+            gc.mask (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2.0);
+            gc.fill ();
 
             gc.setFontSize (1.2 * UNIT);
             drawTextInBounds (gc, name, left + DOUBLE_UNIT, height - TRACK_ROW_HEIGHT - UNIT, width - DOUBLE_UNIT, TRACK_ROW_HEIGHT, Align.LEFT, textColor);

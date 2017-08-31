@@ -150,15 +150,18 @@ public class ChannelGridElement extends ChannelSelectionGridElement
             // Crossfader A|B
             final double crossWidth = controlWidth / 3;
             final Color selColor = this.editType == EDIT_TYPE_CROSSFADER || this.editType == EDIT_TYPE_ALL ? editColor : textColor;
-            // TODO this.crossfadeMode == 0 ? selColor : backgroundDarker
+            gc.setColor (this.crossfadeMode == 0 ? selColor : backgroundDarker);
             final Image crossfaderAIcon = ResourceHandler.getSVGImage ("track/crossfade_a.svg");
-            gc.drawImage (crossfaderAIcon, left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
-            // TODO this.crossfadeMode == 1 ? selColor : backgroundDarker
+            gc.mask (crossfaderAIcon, left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
+            gc.fill ();
+            gc.setColor (this.crossfadeMode == 1 ? selColor : backgroundDarker);
             final Image crossfaderABIcon = ResourceHandler.getSVGImage ("track/crossfade_ab.svg");
-            gc.drawImage (crossfaderABIcon, crossWidth + left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
-            // TODO this.crossfadeMode == 2 ? selColor : backgroundDarker
+            gc.mask (crossfaderABIcon, crossWidth + left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
+            gc.fill ();
+            gc.setColor (this.crossfadeMode == 2 ? selColor : backgroundDarker);
             final Image crossfaderBIcon = ResourceHandler.getSVGImage ("track/crossfade_b.svg");
-            gc.drawImage (crossfaderBIcon, 2 * crossWidth + left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
+            gc.mask (crossfaderBIcon, 2 * crossWidth + left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
+            gc.fill ();
         }
 
         // Panorama
@@ -303,9 +306,10 @@ public class ChannelGridElement extends ChannelSelectionGridElement
             drawPatternFilledRoundedRect (gc, left + 1, top + 1, width - 2, height - 2, 5, linearGradient);
         }
 
-        // TODO use color isOn ? borderColor : textColor
+        gc.setColor (isOn ? borderColor : textColor);
         final Image icon = ResourceHandler.getSVGImage (iconName);
-        gc.drawImage (icon, left + (width - icon.getWidth ()) / 2, top + (height - icon.getHeight ()) / 2);
+        gc.mask (icon, left + (width - icon.getWidth ()) / 2, top + (height - icon.getHeight ()) / 2);
+        gc.fill ();
     }
 
 
