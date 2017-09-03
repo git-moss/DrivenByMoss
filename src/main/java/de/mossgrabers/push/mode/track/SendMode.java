@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.EffectTrackBankProxy;
 import de.mossgrabers.framework.daw.TrackBankProxy;
 import de.mossgrabers.framework.daw.data.SendData;
 import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -168,7 +169,9 @@ public class SendMode extends AbstractTrackMode
                     selected[j] = sendIndex == sendPos;
                 }
 
-                message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", t.getType (), tb.getTrackColorEntry (i), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
+                final String typeID = t.getType ();
+                final ChannelType type = typeID.isEmpty () ? null : ChannelType.valueOf (typeID.toUpperCase ());
+                message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", type, tb.getTrackColorEntry (i), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
             }
 
             message.send ();

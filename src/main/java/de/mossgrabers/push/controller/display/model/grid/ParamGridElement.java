@@ -4,11 +4,14 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.daw.resource.DeviceTypes;
+import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.display.model.ChannelType;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
+import com.bitwig.extension.api.Image;
 
 
 /**
@@ -25,6 +28,7 @@ public class ParamGridElement extends ChannelSelectionGridElement
     private final int     paramValue;
     private int           modulatedParamValue;
     private final boolean isTouched;
+    private final String  deviceName;
 
 
     /**
@@ -44,8 +48,52 @@ public class ParamGridElement extends ChannelSelectionGridElement
      */
     public ParamGridElement (final String menuName, final boolean isMenuSelected, final String name, final ChannelType type, final Color color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
     {
+        this (menuName, isMenuSelected, name, null, type, color, isSelected, paramName, paramValue, modulatedParamValue, paramValueText, isTouched);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param menuName The text for the menu
+     * @param isMenuSelected True if the menu is selected
+     * @param name The name of the grid element (track name, parameter name, etc.)
+     * @param deviceName The name of the device
+     * @param color The color to use for the header, may be null
+     * @param isSelected True if the grid element is selected
+     * @param paramName The name of the parameter
+     * @param paramValue The value of the fader
+     * @param modulatedParamValue The modulated value of the fader, -1 if not modulated
+     * @param paramValueText The textual form of the faders value
+     * @param isTouched True if touched
+     */
+    public ParamGridElement (final String menuName, final boolean isMenuSelected, final String name, final String deviceName, final Color color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
+    {
+        this (menuName, isMenuSelected, name, deviceName, null, color, isSelected, paramName, paramValue, modulatedParamValue, paramValueText, isTouched);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param menuName The text for the menu
+     * @param isMenuSelected True if the menu is selected
+     * @param name The of the grid element (track name, parameter name, etc.)
+     * @param deviceName The name of the device
+     * @param type The channel type if any
+     * @param color The color to use for the header, may be null
+     * @param isSelected True if the grid element is selected
+     * @param paramName The name of the parameter
+     * @param paramValue The value of the fader
+     * @param modulatedParamValue The modulated value of the fader, -1 if not modulated
+     * @param paramValueText The textual form of the faders value
+     * @param isTouched True if touched
+     */
+    private ParamGridElement (final String menuName, final boolean isMenuSelected, final String name, final String deviceName, final ChannelType type, final Color color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
+    {
         super (menuName, isMenuSelected, name, color, isSelected, type);
 
+        this.deviceName = deviceName;
         this.paramName = paramName;
         this.paramValue = paramValue;
         this.modulatedParamValue = modulatedParamValue;
@@ -77,7 +125,7 @@ public class ParamGridElement extends ChannelSelectionGridElement
 
         // Draw the background
         final Color backgroundColor = configuration.getColorBackground ();
-        gc.setColor (this.isTouched ? ColorEx.brighter (backgroundColor) : backgroundColor);
+        gc.setColor (this.isTouched ? configuration.getColorBackgroundLighter () : backgroundColor);
         gc.rectangle (left, MENU_HEIGHT + 1, width, trackRowTop - (isValueMissing ? CONTROLS_TOP + elementHeight : MENU_HEIGHT + 1));
         gc.fill ();
 
@@ -106,6 +154,44 @@ public class ParamGridElement extends ChannelSelectionGridElement
         final double w = this.isTouched ? 3 : 1;
         final double valueWidth = this.paramValue >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * this.paramValue / maxValue;
         gc.rectangle (left + INSET + Math.max (0, valueWidth - w), innerTop, w, elementHeight - 2);
+        gc.fill ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getIcon ()
+    {
+        if (this.deviceName != null)
+            return DeviceTypes.getIconId (this.deviceName);
+        return super.getIcon ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void drawTrackInfo (final GraphicsOutput gc, final double left, final double width, final double height, final double trackRowTop, final String name, final PushConfiguration configuration)
+    {
+        // Draw the background
+        final Color backgroundColor = configuration.getColorBackground ();
+        gc.setColor (this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
+        gc.rectangle (left, trackRowTop + 1, width, height - UNIT - 1);
+        gc.fill ();
+
+        // The tracks icon and name
+        final String iconName = this.getIcon ();
+        if (iconName != null)
+        {
+            final Color textColor = configuration.getColorText ();
+            final Image icon = ResourceHandler.getSVGImage (iconName);
+            gc.drawImage (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2.0);
+            gc.setFontSize (1.2 * UNIT);
+            drawTextInBounds (gc, name, left + DOUBLE_UNIT, height - TRACK_ROW_HEIGHT - UNIT, width - DOUBLE_UNIT, TRACK_ROW_HEIGHT, Align.LEFT, textColor);
+        }
+
+        // The track color section
+        gc.setColor (this.getColor ());
+        gc.rectangle (left, height - UNIT, width, UNIT);
         gc.fill ();
     }
 }

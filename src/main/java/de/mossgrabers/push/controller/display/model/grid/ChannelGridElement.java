@@ -4,9 +4,9 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.display.model.ChannelType;
-import de.mossgrabers.push.controller.display.model.ResourceHandler;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GradientPattern;
@@ -130,7 +130,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         this.drawTrackInfo (gc, left, width, height, trackRowTop, name, configuration);
 
         // Draw the background
-        gc.setColor (this.isSelected () ? ColorEx.brighter (backgroundColor) : backgroundColor);
+        gc.setColor (this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
         gc.rectangle (left, MENU_HEIGHT + 1, width, trackRowTop - (MENU_HEIGHT + 1));
         gc.fill ();
 
@@ -141,7 +141,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         gc.rectangle (controlStart, faderTop, controlWidth, faderHeight);
         gc.fill ();
 
-        final Color backgroundDarker = ColorEx.darker (backgroundColor);
+        final Color backgroundDarker = configuration.getColorBackgroundDarker ();
         final Color editColor = configuration.getColorEdit ();
 
         final ChannelType type = this.getType ();
@@ -243,8 +243,6 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         buttonTop += buttonHeight + 2 * SEPARATOR_SIZE;
         drawButton (gc, left + INSET - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, configuration.getColorMute (), textColor, this.isMute, "channel/mute.svg", configuration);
 
-        final double descent = gc.getFontExtents ().getDescent ();
-
         // Draw panorama text on top if set
         if (isPanTouched)
         {
@@ -255,7 +253,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
             gc.rectangle (controlStart, panTextTop, controlWidth - 1, UNIT);
             gc.stroke ();
             gc.setFontSize (UNIT);
-            drawTextInBounds (gc, this.panText, controlStart, panTextTop + descent, controlWidth, UNIT, Align.CENTER, textColor);
+            drawTextInBounds (gc, this.panText, controlStart, panTextTop, controlWidth, UNIT, Align.CENTER, textColor);
         }
 
         // Draw volume text on top if set
@@ -269,7 +267,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
             gc.rectangle (volumeTextLeft, volumeTextTop, volumeTextWidth - 1, UNIT);
             gc.stroke ();
             gc.setFontSize (UNIT);
-            drawTextInBounds (gc, this.volumeText, volumeTextLeft, volumeTextTop + descent, volumeTextWidth, UNIT, Align.CENTER, textColor);
+            drawTextInBounds (gc, this.volumeText, volumeTextLeft, volumeTextTop, volumeTextWidth, UNIT, Align.CENTER, textColor);
         }
     }
 

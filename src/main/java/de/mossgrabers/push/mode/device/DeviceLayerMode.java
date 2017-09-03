@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.EffectTrackBankProxy;
 import de.mossgrabers.framework.daw.data.ChannelData;
 import de.mossgrabers.framework.daw.data.SendData;
 import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
@@ -415,14 +416,13 @@ public class DeviceLayerMode extends BaseMode
 
             // Channel info
             final String bottomMenu = layer.doesExist () ? layer.getName () : "";
-            final String bottomMenuIcon = "layer";
             final double [] bottomMenuColor = layer.getColor ();
             final boolean isBottomMenuOn = layer.isSelected ();
 
             if (layer.isSelected ())
             {
                 final ValueChanger valueChanger = this.model.getValueChanger ();
-                message.addChannelElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), this.isKnobTouched[0] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), this.isKnobTouched[1] ? layer.getPanStr (8) : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
+                message.addChannelElement (topMenu, topMenuSelected, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), this.isKnobTouched[0] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), this.isKnobTouched[1] ? layer.getPanStr (8) : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
             }
             else if (sendsIndex == i && l != null)
             {
@@ -444,10 +444,10 @@ public class DeviceLayerMode extends BaseMode
                     modulatedValue[j] = doesExist ? send.getModulatedValue () : 0;
                     selected[j] = true;
                 }
-                message.addSendsElement (topMenu, topMenuSelected, layer.doesExist () ? layer.getName () : "", "layer", cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, true);
+                message.addSendsElement (topMenu, topMenuSelected, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, true);
             }
             else
-                message.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn);
+                message.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn);
         }
 
         message.send ();
@@ -487,7 +487,7 @@ public class DeviceLayerMode extends BaseMode
                 topMenu = this.menu[i];
                 isTopMenuOn = i == selectedMenu - 1;
             }
-            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", "layer", cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), isPan && this.isKnobTouched[i] ? layer.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
+            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), isPan && this.isKnobTouched[i] ? layer.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
         }
 
         message.send ();

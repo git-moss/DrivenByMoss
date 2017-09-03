@@ -4,9 +4,9 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.display.model.ChannelType;
-import de.mossgrabers.push.controller.display.model.ResourceHandler;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
@@ -72,7 +72,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
     @Override
     public String getIcon ()
     {
-        return ICONS.get (this.type);
+        return this.type == null ? null : ICONS.get (this.type);
     }
 
 
@@ -107,7 +107,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
     {
         // Draw the background
         final Color backgroundColor = configuration.getColorBackground ();
-        gc.setColor (this.isSelected () ? ColorEx.brighter (backgroundColor) : backgroundColor);
+        gc.setColor (this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
         gc.rectangle (left, trackRowTop + 1, width, height - UNIT - 1);
         gc.fill ();
 

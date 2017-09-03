@@ -375,14 +375,12 @@ public class DeviceParamsMode extends BaseMode
             }
 
             String bottomMenu;
-            // TODO API extension required, add an icon if the type of the plugin is known
-            // https://github.com/teotigraphix/Framework4Bitwig/issues/138
-            final String bottomMenuIcon = "";
-            final double [] bottomMenuColor = BitwigColors.getColorEntry (color);
+            String bottomMenuIcon = "";
             boolean isBottomMenuOn;
             if (this.showDevices)
             {
                 bottomMenu = cd.doesSiblingExist (i) ? cd.getSiblingDeviceName (i) : "";
+                bottomMenuIcon = bottomMenu;
                 isBottomMenuOn = i == cd.getPositionInBank ();
             }
             else
@@ -392,6 +390,7 @@ public class DeviceParamsMode extends BaseMode
                 isBottomMenuOn = index == page;
             }
 
+            final double [] bottomMenuColor = BitwigColors.getColorEntry (color);
             final ParameterData param = this.model.getCursorDevice ().getFXParam (i);
             final boolean exists = param.doesExist ();
             final String parameterName = exists ? param.getName () : "";
@@ -399,7 +398,6 @@ public class DeviceParamsMode extends BaseMode
             final String parameterValueStr = exists ? param.getDisplayedValue (8) : "";
             final boolean parameterIsActive = this.isKnobTouched[i];
             final int parameterModulatedValue = valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1);
-
             message.addParameterElement (topMenu, isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
 

@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.EffectTrackBankProxy;
 import de.mossgrabers.framework.daw.TrackBankProxy;
 import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
@@ -365,7 +366,9 @@ public abstract class AbstractTrackMode extends BaseMode
                 isTopMenuOn = i == selectedMenu - 1;
             }
 
-            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", t.getType (), tb.getTrackColorEntry (i), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecarm (), "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
+            final String typeID = t.getType ();
+            final ChannelType type = typeID.isEmpty () ? null : ChannelType.valueOf (typeID.toUpperCase ());
+            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", type, tb.getTrackColorEntry (i), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecarm (), "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
         }
 
         message.send ();

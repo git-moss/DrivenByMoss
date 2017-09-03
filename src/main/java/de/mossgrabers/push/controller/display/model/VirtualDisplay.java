@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push.controller.display.model;
 
+import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.grid.GridElement;
 
@@ -43,20 +44,6 @@ public class VirtualDisplay
         this.model = model;
 
         ResourceHandler.init (host);
-        ResourceHandler.addSVGImage ("channel/mute.svg");
-        ResourceHandler.addSVGImage ("channel/record_arm.svg");
-        ResourceHandler.addSVGImage ("channel/solo.svg");
-        ResourceHandler.addSVGImage ("channel/solo.svg");
-        ResourceHandler.addSVGImage ("track/audio_track.svg");
-        ResourceHandler.addSVGImage ("track/crossfade_a.svg");
-        ResourceHandler.addSVGImage ("track/crossfade_ab.svg");
-        ResourceHandler.addSVGImage ("track/crossfade_b.svg");
-        ResourceHandler.addSVGImage ("track/group_track.svg");
-        ResourceHandler.addSVGImage ("track/hybrid_track.svg");
-        ResourceHandler.addSVGImage ("track/instrument_track.svg");
-        ResourceHandler.addSVGImage ("track/master_track.svg");
-        ResourceHandler.addSVGImage ("track/multi_layer.svg");
-        ResourceHandler.addSVGImage ("track/return_track.svg");
 
         this.image = host.createBitmap (DISPLAY_WIDTH, DISPLAY_HEIGHT, BitmapFormat.ARGB32);
         this.image.setDisplayWindowTitle ("Push 2 Display");

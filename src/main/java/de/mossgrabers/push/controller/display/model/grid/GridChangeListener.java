@@ -4,8 +4,16 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+/**
+ * Callback interface for when the display grid has changed.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
 @FunctionalInterface
 public interface GridChangeListener
 {
+    /**
+     * The display grid has changed.
+     */
     void gridHasChanged ();
 }

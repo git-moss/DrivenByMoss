@@ -2,7 +2,7 @@
 // (c) 2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.controller.display.model;
+package de.mossgrabers.framework.daw.resource;
 
 import com.bitwig.extension.api.Image;
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -30,6 +30,33 @@ public final class ResourceHandler
     public static void init (final ControllerHost host)
     {
         theHost = host;
+
+        addSVGImage ("channel/mute.svg");
+        addSVGImage ("channel/record_arm.svg");
+        addSVGImage ("channel/solo.svg");
+        addSVGImage ("channel/solo.svg");
+
+        addSVGImage ("track/audio_track.svg");
+        addSVGImage ("track/crossfade_a.svg");
+        addSVGImage ("track/crossfade_ab.svg");
+        addSVGImage ("track/crossfade_b.svg");
+        addSVGImage ("track/group_track.svg");
+        addSVGImage ("track/hybrid_track.svg");
+        addSVGImage ("track/instrument_track.svg");
+        addSVGImage ("track/master_track.svg");
+        addSVGImage ("track/multi_layer.svg");
+        addSVGImage ("track/return_track.svg");
+
+        addSVGImage ("device/device_analysis.svg");
+        addSVGImage ("device/device_audio.svg");
+        addSVGImage ("device/device_container.svg");
+        addSVGImage ("device/device_drum_machine.svg");
+        addSVGImage ("device/device_drum_module.svg");
+        addSVGImage ("device/device_generic.svg");
+        addSVGImage ("device/device_instrument.svg");
+        addSVGImage ("device/device_io.svg");
+        addSVGImage ("device/device_note.svg");
+        addSVGImage ("device/device_plugin.svg");
     }
 
 

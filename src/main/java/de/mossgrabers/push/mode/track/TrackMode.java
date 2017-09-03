@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.EffectTrackBankProxy;
 import de.mossgrabers.framework.daw.TrackBankProxy;
 import de.mossgrabers.framework.daw.data.SendData;
 import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -347,7 +348,8 @@ public class TrackMode extends AbstractTrackMode
 
             // Channel info
             final String bottomMenu = t.doesExist () ? t.getName () : "";
-            final String bottomMenuIcon = t.getType ();
+            final String typeID = t.getType ();
+            final ChannelType type = typeID.isEmpty () ? null : ChannelType.valueOf (typeID.toUpperCase ());
             final double [] bottomMenuColor = tb.getTrackColorEntry (i);
             final boolean isBottomMenuOn = t.isSelected ();
 
@@ -355,7 +357,7 @@ public class TrackMode extends AbstractTrackMode
             if (t.isSelected ())
             {
                 final int crossfadeMode = "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1;
-                message.addChannelElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), this.isKnobTouched[0] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), this.isKnobTouched[1] ? t.getPanStr (8) : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecarm (), crossfadeMode);
+                message.addChannelElement (topMenu, topMenuSelected, bottomMenu, type, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), this.isKnobTouched[0] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), this.isKnobTouched[1] ? t.getPanStr (8) : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecarm (), crossfadeMode);
             }
             else if (sendsIndex == i)
             {
@@ -377,10 +379,10 @@ public class TrackMode extends AbstractTrackMode
                     modulatedValue[j] = valueChanger.toDisplayValue (send.doesExist () ? send.getModulatedValue () : 0);
                     selected[j] = true;
                 }
-                message.addSendsElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, sendName, valueStr, value, modulatedValue, selected, true);
+                message.addSendsElement (topMenu, topMenuSelected, bottomMenu, type, bottomMenuColor, isBottomMenuOn, sendName, valueStr, value, modulatedValue, selected, true);
             }
             else
-                message.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn);
+                message.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, type, bottomMenuColor, isBottomMenuOn);
         }
 
         message.send ();

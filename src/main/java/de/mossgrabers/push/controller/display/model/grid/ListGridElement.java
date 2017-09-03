@@ -43,7 +43,7 @@ public class ListGridElement extends AbstractGridElement
     public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
         final int size = this.items.size ();
-        final double itemHeight = DISPLAY_HEIGHT / size;
+        final double itemHeight = DISPLAY_HEIGHT / (double) size;
 
         final Color textColor = configuration.getColorText ();
         final Color borderColor = configuration.getColorBorder ();

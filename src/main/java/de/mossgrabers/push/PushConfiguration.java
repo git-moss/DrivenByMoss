@@ -12,6 +12,7 @@ import de.mossgrabers.push.mode.Modes;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.Preferences;
+import com.bitwig.extension.controller.api.SettableColorValue;
 import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.SettableRangedValue;
 
@@ -37,78 +38,84 @@ public class PushConfiguration extends AbstractConfiguration
     }
 
     /** Setting for the ribbon mode. */
-    public static final Integer    RIBBON_MODE                     = Integer.valueOf (30);
+    public static final Integer    RIBBON_MODE                      = Integer.valueOf (30);
     /** Setting for the ribbon mode midi CC. */
-    public static final Integer    RIBBON_MODE_CC_VAL              = Integer.valueOf (31);
+    public static final Integer    RIBBON_MODE_CC_VAL               = Integer.valueOf (31);
     /** Setting for the velocity curve. */
-    public static final Integer    VELOCITY_CURVE                  = Integer.valueOf (32);
+    public static final Integer    VELOCITY_CURVE                   = Integer.valueOf (32);
     /** Setting for the pad threshold. */
-    public static final Integer    PAD_THRESHOLD                   = Integer.valueOf (33);
+    public static final Integer    PAD_THRESHOLD                    = Integer.valueOf (33);
     /** Setting for the display brightness. */
-    public static final Integer    DISPLAY_BRIGHTNESS              = Integer.valueOf (34);
+    public static final Integer    DISPLAY_BRIGHTNESS               = Integer.valueOf (34);
     /** Setting for the pad LED brightness. */
-    public static final Integer    LED_BRIGHTNESS                  = Integer.valueOf (35);
+    public static final Integer    LED_BRIGHTNESS                   = Integer.valueOf (35);
     /** Setting for the pad sensitivity. */
-    public static final Integer    PAD_SENSITIVITY                 = Integer.valueOf (36);
+    public static final Integer    PAD_SENSITIVITY                  = Integer.valueOf (36);
     /** Setting for the pad gain. */
-    public static final Integer    PAD_GAIN                        = Integer.valueOf (37);
+    public static final Integer    PAD_GAIN                         = Integer.valueOf (37);
     /** Setting for the pad dynamics. */
-    public static final Integer    PAD_DYNAMICS                    = Integer.valueOf (38);
+    public static final Integer    PAD_DYNAMICS                     = Integer.valueOf (38);
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (39);
+    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE  = Integer.valueOf (39);
     /** Mode debug. */
-    public static final Integer    DEBUG_MODE                      = Integer.valueOf (40);
+    public static final Integer    DEBUG_MODE                       = Integer.valueOf (40);
     /** Push 2 display debug window. */
-    public static final Integer    DEBUG_WINDOW                    = Integer.valueOf (41);
+    public static final Integer    DEBUG_WINDOW                     = Integer.valueOf (41);
     /** Background color of an element. */
-    public static final Integer    COLOR_BACKGROUND                = Integer.valueOf (50);
+    public static final Integer    COLOR_BACKGROUND                 = Integer.valueOf (50);
     /** Border color of an element. */
-    public static final Integer    COLOR_BORDER                    = Integer.valueOf (51);
+    public static final Integer    COLOR_BORDER                     = Integer.valueOf (51);
     /** Text color of an element. */
-    public static final Integer    COLOR_TEXT                      = Integer.valueOf (52);
+    public static final Integer    COLOR_TEXT                       = Integer.valueOf (52);
     /** Fader color of an element. */
-    public static final Integer    COLOR_FADER                     = Integer.valueOf (53);
+    public static final Integer    COLOR_FADER                      = Integer.valueOf (53);
     /** VU color of an element. */
-    public static final Integer    COLOR_VU                        = Integer.valueOf (54);
+    public static final Integer    COLOR_VU                         = Integer.valueOf (54);
     /** Edit color of an element. */
-    public static final Integer    COLOR_EDIT                      = Integer.valueOf (55);
+    public static final Integer    COLOR_EDIT                       = Integer.valueOf (55);
     /** Record color of an element. */
-    public static final Integer    COLOR_RECORD                    = Integer.valueOf (56);
+    public static final Integer    COLOR_RECORD                     = Integer.valueOf (56);
     /** Solo color of an element. */
-    public static final Integer    COLOR_SOLO                      = Integer.valueOf (57);
+    public static final Integer    COLOR_SOLO                       = Integer.valueOf (57);
     /** Mute color of an element. */
-    public static final Integer    COLOR_MUTE                      = Integer.valueOf (58);
+    public static final Integer    COLOR_MUTE                       = Integer.valueOf (58);
+    /** Background color darker of an element. */
+    public static final Integer    COLOR_BACKGROUND_DARKER          = Integer.valueOf (59);
+    /** Background color lighter of an element. */
+    public static final Integer    COLOR_BACKGROUND_LIGHTER         = Integer.valueOf (60);
 
-    private static final Color     DEFAULT_COLOR_BACKGROUND        = Color.fromRGB255 (83, 83, 83);
-    private static final Color     DEFAULT_COLOR_BORDER            = ColorEx.BLACK;
-    private static final Color     DEFAULT_COLOR_TEXT              = ColorEx.WHITE;
-    private static final Color     DEFAULT_COLOR_FADER             = Color.fromRGB255 (69, 44, 19);
-    private static final Color     DEFAULT_COLOR_VU                = ColorEx.GREEN;
-    private static final Color     DEFAULT_COLOR_EDIT              = Color.fromRGB255 (240, 127, 17);
-    private static final Color     DEFAULT_COLOR_RECORD            = ColorEx.RED;
-    private static final Color     DEFAULT_COLOR_SOLO              = ColorEx.YELLOW;
-    private static final Color     DEFAULT_COLOR_MUTE              = Color.fromRGB255 (245, 129, 17);
+    private static final Color     DEFAULT_COLOR_BACKGROUND         = Color.fromRGB255 (83, 83, 83);
+    private static final Color     DEFAULT_COLOR_BORDER             = ColorEx.BLACK;
+    private static final Color     DEFAULT_COLOR_TEXT               = ColorEx.WHITE;
+    private static final Color     DEFAULT_COLOR_FADER              = Color.fromRGB255 (69, 44, 19);
+    private static final Color     DEFAULT_COLOR_VU                 = ColorEx.GREEN;
+    private static final Color     DEFAULT_COLOR_EDIT               = Color.fromRGB255 (240, 127, 17);
+    private static final Color     DEFAULT_COLOR_RECORD             = ColorEx.RED;
+    private static final Color     DEFAULT_COLOR_SOLO               = ColorEx.YELLOW;
+    private static final Color     DEFAULT_COLOR_MUTE               = Color.fromRGB255 (245, 129, 17);
+    private static final Color     DEFAULT_COLOR_BACKGROUND_DARKER  = Color.fromRGB255 (58, 58, 58);
+    private static final Color     DEFAULT_COLOR_BACKGROUND_LIGHTER = Color.fromRGB255 (118, 118, 118);
 
     /** Use ribbon for pitch bend. */
-    public static final int        RIBBON_MODE_PITCH               = 0;
+    public static final int        RIBBON_MODE_PITCH                = 0;
     /** Use ribbon for midi CC. */
-    public static final int        RIBBON_MODE_CC                  = 1;
+    public static final int        RIBBON_MODE_CC                   = 1;
     /** Use ribbon for midi CC and pitch bend. */
-    public static final int        RIBBON_MODE_CC_PB               = 2;
+    public static final int        RIBBON_MODE_CC_PB                = 2;
     /** Use ribbon for pitch bend and midi CC. */
-    public static final int        RIBBON_MODE_PB_CC               = 3;
+    public static final int        RIBBON_MODE_PB_CC                = 3;
     /** Use ribbon as volume fader. */
-    public static final int        RIBBON_MODE_FADER               = 4;
+    public static final int        RIBBON_MODE_FADER                = 4;
 
-    private boolean                isSoloLongPressed               = false;
-    private boolean                isMuteLongPressed               = false;
-    private boolean                isMuteSoloLocked                = false;
+    private boolean                isSoloLongPressed                = false;
+    private boolean                isMuteLongPressed                = false;
+    private boolean                isMuteSoloLocked                 = false;
 
-    private static final String    CATEGORY_RIBBON                 = "Ribbon";
-    private static final String    CATEGORY_COLORS                 = "Display Colors";
-    private static final String    CATEGORY_DEBUG                  = "Debug - keep your hands off";
+    private static final String    CATEGORY_RIBBON                  = "Ribbon";
+    private static final String    CATEGORY_COLORS                  = "Display Colors";
+    private static final String    CATEGORY_DEBUG                   = "Debug - keep your hands off";
 
-    private static final String [] RIBBON_MODE_VALUES              =
+    private static final String [] RIBBON_MODE_VALUES               =
     {
         "Pitch",
         "CC",
@@ -118,34 +125,36 @@ public class PushConfiguration extends AbstractConfiguration
     };
 
     /** What does the ribbon send? **/
-    private int                    ribbonMode                      = RIBBON_MODE_PITCH;
-    private int                    ribbonModeCCVal                 = 1;
-    private boolean                stopAutomationOnKnobRelease     = false;
-    private TrackState             trackState                      = TrackState.MUTE;
-    private Integer                debugMode                       = Modes.MODE_TRACK;
-    private boolean                isDisplayWindowVisible          = false;
-    private Integer                currentMixMode                  = Modes.MODE_TRACK;
+    private int                    ribbonMode                       = RIBBON_MODE_PITCH;
+    private int                    ribbonModeCCVal                  = 1;
+    private boolean                stopAutomationOnKnobRelease      = false;
+    private TrackState             trackState                       = TrackState.MUTE;
+    private Integer                debugMode                        = Modes.MODE_TRACK;
+    private boolean                isDisplayWindowVisible           = false;
+    private Integer                currentMixMode                   = Modes.MODE_TRACK;
 
     // Only Push 1
-    private int                    velocityCurve                   = 1;
-    private int                    padThreshold                    = 20;
+    private int                    velocityCurve                    = 1;
+    private int                    padThreshold                     = 20;
 
     // Only Push 2
-    private boolean                sendsAreToggled                 = false;
-    private int                    displayBrightness               = 255;
-    private int                    ledBrightness                   = 127;
-    private int                    padSensitivity                  = 5;
-    private int                    padGain                         = 5;
-    private int                    padDynamics                     = 5;
-    private Color                  colorBackground                 = DEFAULT_COLOR_BACKGROUND;
-    private Color                  colorBorder                     = DEFAULT_COLOR_BORDER;
-    private Color                  colorText                       = DEFAULT_COLOR_TEXT;
-    private Color                  colorFader                      = DEFAULT_COLOR_FADER;
-    private Color                  colorVU                         = DEFAULT_COLOR_VU;
-    private Color                  colorEdit                       = DEFAULT_COLOR_EDIT;
-    private Color                  colorRecord                     = DEFAULT_COLOR_RECORD;
-    private Color                  colorSolo                       = DEFAULT_COLOR_SOLO;
-    private Color                  colorMute                       = DEFAULT_COLOR_MUTE;
+    private boolean                sendsAreToggled                  = false;
+    private int                    displayBrightness                = 255;
+    private int                    ledBrightness                    = 127;
+    private int                    padSensitivity                   = 5;
+    private int                    padGain                          = 5;
+    private int                    padDynamics                      = 5;
+    private Color                  colorBackground                  = DEFAULT_COLOR_BACKGROUND;
+    private Color                  colorBorder                      = DEFAULT_COLOR_BORDER;
+    private Color                  colorText                        = DEFAULT_COLOR_TEXT;
+    private Color                  colorFader                       = DEFAULT_COLOR_FADER;
+    private Color                  colorVU                          = DEFAULT_COLOR_VU;
+    private Color                  colorEdit                        = DEFAULT_COLOR_EDIT;
+    private Color                  colorRecord                      = DEFAULT_COLOR_RECORD;
+    private Color                  colorSolo                        = DEFAULT_COLOR_SOLO;
+    private Color                  colorMute                        = DEFAULT_COLOR_MUTE;
+    private Color                  colorBackgroundDarker            = DEFAULT_COLOR_BACKGROUND_DARKER;
+    private Color                  colorBackgroundLighter           = DEFAULT_COLOR_BACKGROUND_LIGHTER;
 
     private boolean                isPush2;
 
@@ -158,6 +167,18 @@ public class PushConfiguration extends AbstractConfiguration
     private SettableRangedValue    padDynamicsSetting;
     private SettableEnumValue      velocityCurveSetting;
     private SettableEnumValue      padThresholdSetting;
+
+    private SettableColorValue     colorBackgroundSetting;
+    private SettableColorValue     colorBackgroundDarkerSetting;
+    private SettableColorValue     colorBackgroundLighterSetting;
+    private SettableColorValue     colorBorderSetting;
+    private SettableColorValue     colorTextSetting;
+    private SettableColorValue     colorFaderSetting;
+    private SettableColorValue     colorVUSetting;
+    private SettableColorValue     colorEditSetting;
+    private SettableColorValue     colorRecordSetting;
+    private SettableColorValue     colorSoloSetting;
+    private SettableColorValue     colorMuteSetting;
 
 
     /**
@@ -712,6 +733,28 @@ public class PushConfiguration extends AbstractConfiguration
 
 
     /**
+     * Get the background darker color of an element.
+     *
+     * @return The background color of an element.
+     */
+    public Color getColorBackgroundDarker ()
+    {
+        return this.colorBackgroundDarker;
+    }
+
+
+    /**
+     * Get the background lighter color of an element.
+     *
+     * @return The background color of an element.
+     */
+    public Color getColorBackgroundLighter ()
+    {
+        return this.colorBackgroundLighter;
+    }
+
+
+    /**
      * Get the border color of an element.
      *
      * @return The border color of an element.
@@ -956,47 +999,82 @@ public class PushConfiguration extends AbstractConfiguration
         if (!this.isPush2)
             return;
 
-        prefs.getColorSetting ("Background", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND).addValueObserver ( (red, green, blue) -> {
+        prefs.getSignalSetting ("Reset colors to default", CATEGORY_COLORS, "Reset").addSignalObserver ( () -> {
+            this.colorBackgroundSetting.set ((float) DEFAULT_COLOR_BACKGROUND.getRed (), (float) DEFAULT_COLOR_BACKGROUND.getGreen (), (float) DEFAULT_COLOR_BACKGROUND.getBlue ());
+            this.colorBackgroundDarkerSetting.set ((float) DEFAULT_COLOR_BACKGROUND_DARKER.getRed (), (float) DEFAULT_COLOR_BACKGROUND_DARKER.getGreen (), (float) DEFAULT_COLOR_BACKGROUND_DARKER.getBlue ());
+            this.colorBackgroundLighterSetting.set ((float) DEFAULT_COLOR_BACKGROUND_LIGHTER.getRed (), (float) DEFAULT_COLOR_BACKGROUND_LIGHTER.getGreen (), (float) DEFAULT_COLOR_BACKGROUND_LIGHTER.getBlue ());
+            this.colorBorderSetting.set ((float) DEFAULT_COLOR_BORDER.getRed (), (float) DEFAULT_COLOR_BORDER.getGreen (), (float) DEFAULT_COLOR_BORDER.getBlue ());
+            this.colorTextSetting.set ((float) DEFAULT_COLOR_TEXT.getRed (), (float) DEFAULT_COLOR_TEXT.getGreen (), (float) DEFAULT_COLOR_TEXT.getBlue ());
+            this.colorFaderSetting.set ((float) DEFAULT_COLOR_FADER.getRed (), (float) DEFAULT_COLOR_FADER.getGreen (), (float) DEFAULT_COLOR_FADER.getBlue ());
+            this.colorVUSetting.set ((float) DEFAULT_COLOR_VU.getRed (), (float) DEFAULT_COLOR_VU.getGreen (), (float) DEFAULT_COLOR_VU.getBlue ());
+            this.colorEditSetting.set ((float) DEFAULT_COLOR_EDIT.getRed (), (float) DEFAULT_COLOR_EDIT.getGreen (), (float) DEFAULT_COLOR_EDIT.getBlue ());
+            this.colorRecordSetting.set ((float) DEFAULT_COLOR_RECORD.getRed (), (float) DEFAULT_COLOR_RECORD.getGreen (), (float) DEFAULT_COLOR_RECORD.getBlue ());
+            this.colorSoloSetting.set ((float) DEFAULT_COLOR_SOLO.getRed (), (float) DEFAULT_COLOR_SOLO.getGreen (), (float) DEFAULT_COLOR_SOLO.getBlue ());
+            this.colorMuteSetting.set ((float) DEFAULT_COLOR_MUTE.getRed (), (float) DEFAULT_COLOR_MUTE.getGreen (), (float) DEFAULT_COLOR_MUTE.getBlue ());
+        });
+
+        this.colorBackgroundSetting = prefs.getColorSetting ("Background", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND);
+        this.colorBackgroundSetting.addValueObserver ( (red, green, blue) -> {
             this.colorBackground = Color.fromRGB (red, green, blue);
             this.notifyObservers (COLOR_BACKGROUND);
         });
 
-        prefs.getColorSetting ("Border", CATEGORY_COLORS, DEFAULT_COLOR_BORDER).addValueObserver ( (red, green, blue) -> {
+        this.colorBackgroundDarkerSetting = prefs.getColorSetting ("Background Darker", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND_DARKER);
+        this.colorBackgroundDarkerSetting.addValueObserver ( (red, green, blue) -> {
+            this.colorBackgroundDarker = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_BACKGROUND_DARKER);
+        });
+
+        this.colorBackgroundLighterSetting = prefs.getColorSetting ("Background Selected", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND_LIGHTER);
+        this.colorBackgroundLighterSetting.addValueObserver ( (red, green, blue) -> {
+            this.colorBackgroundLighter = Color.fromRGB (red, green, blue);
+            this.notifyObservers (COLOR_BACKGROUND_LIGHTER);
+        });
+
+        this.colorBorderSetting = prefs.getColorSetting ("Border", CATEGORY_COLORS, DEFAULT_COLOR_BORDER);
+        this.colorBorderSetting.addValueObserver ( (red, green, blue) -> {
             this.colorBorder = Color.fromRGB (red, green, blue);
             this.notifyObservers (COLOR_BORDER);
         });
 
-        prefs.getColorSetting ("Text", CATEGORY_COLORS, DEFAULT_COLOR_TEXT).addValueObserver ( (red, green, blue) -> {
+        this.colorTextSetting = prefs.getColorSetting ("Text", CATEGORY_COLORS, DEFAULT_COLOR_TEXT);
+        this.colorTextSetting.addValueObserver ( (red, green, blue) -> {
             this.colorText = Color.fromRGB (red, green, blue);
             this.notifyObservers (COLOR_TEXT);
         });
 
-        prefs.getColorSetting ("Fader", CATEGORY_COLORS, DEFAULT_COLOR_FADER).addValueObserver ( (red, green, blue) -> {
+        this.colorFaderSetting = prefs.getColorSetting ("Fader", CATEGORY_COLORS, DEFAULT_COLOR_FADER);
+        this.colorFaderSetting.addValueObserver ( (red, green, blue) -> {
             this.colorFader = Color.fromRGB (red, green, blue);
             this.notifyObservers (COLOR_FADER);
         });
 
-        prefs.getColorSetting ("VU", CATEGORY_COLORS, DEFAULT_COLOR_VU).addValueObserver ( (red, green, blue) -> {
+        this.colorVUSetting = prefs.getColorSetting ("VU", CATEGORY_COLORS, DEFAULT_COLOR_VU);
+        this.colorVUSetting.addValueObserver ( (red, green, blue) -> {
             this.colorVU = Color.fromRGB (red, green, blue);
             this.notifyObservers (COLOR_VU);
         });
 
-        prefs.getColorSetting ("Edit", CATEGORY_COLORS, DEFAULT_COLOR_EDIT).addValueObserver ( (red, green, blue) -> {
+        this.colorEditSetting = prefs.getColorSetting ("Edit", CATEGORY_COLORS, DEFAULT_COLOR_EDIT);
+        this.colorEditSetting.addValueObserver ( (red, green, blue) -> {
             this.colorVU = Color.fromRGB (red, green, blue);
             this.notifyObservers (COLOR_EDIT);
         });
 
-        prefs.getColorSetting ("Record", CATEGORY_COLORS, DEFAULT_COLOR_RECORD).addValueObserver ( (red, green, blue) -> {
+        this.colorRecordSetting = prefs.getColorSetting ("Record", CATEGORY_COLORS, DEFAULT_COLOR_RECORD);
+        this.colorRecordSetting.addValueObserver ( (red, green, blue) -> {
             this.colorRecord = Color.fromRGB (red, green, blue);
             this.notifyObservers (COLOR_RECORD);
         });
 
-        prefs.getColorSetting ("Solo", CATEGORY_COLORS, DEFAULT_COLOR_SOLO).addValueObserver ( (red, green, blue) -> {
+        this.colorSoloSetting = prefs.getColorSetting ("Solo", CATEGORY_COLORS, DEFAULT_COLOR_SOLO);
+        this.colorSoloSetting.addValueObserver ( (red, green, blue) -> {
             this.colorSolo = Color.fromRGB (red, green, blue);
             this.notifyObservers (COLOR_SOLO);
         });
 
-        prefs.getColorSetting ("Mute", CATEGORY_COLORS, DEFAULT_COLOR_MUTE).addValueObserver ( (red, green, blue) -> {
+        this.colorMuteSetting = prefs.getColorSetting ("Mute", CATEGORY_COLORS, DEFAULT_COLOR_MUTE);
+        this.colorMuteSetting.addValueObserver ( (red, green, blue) -> {
             this.colorMute = Color.fromRGB (red, green, blue);
             this.notifyObservers (COLOR_MUTE);
         });

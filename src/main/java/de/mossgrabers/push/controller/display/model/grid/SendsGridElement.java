@@ -4,8 +4,8 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.display.model.ChannelType;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
@@ -110,7 +110,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
 
         // Background of slider area
         final Color backgroundColor = configuration.getColorBackground ();
-        gc.setColor (this.isSelected () || this.isExMode ? ColorEx.brighter (backgroundColor) : backgroundColor);
+        gc.setColor (this.isSelected () || this.isExMode ? configuration.getColorBackgroundLighter () : backgroundColor);
         gc.rectangle (this.isExMode ? left - SEPARATOR_SIZE : left, t, this.isExMode ? width + SEPARATOR_SIZE : width, this.isExMode ? h - 2 : h);
         gc.fill ();
 
@@ -153,11 +153,10 @@ public class SendsGridElement extends ChannelSelectionGridElement
         }
 
         // Draw volume text on top if set
-        final double descent = gc.getFontExtents ().getDescent ();
         final double boxWidth = sliderWidth / 2;
         final double boxLeft = faderLeft + sliderWidth - boxWidth;
         topy = MENU_HEIGHT;
-        final Color backgroundDarker = ColorEx.darker (backgroundColor);
+        final Color backgroundDarker = configuration.getColorBackgroundDarker ();
         gc.setFontSize (UNIT);
         for (int i = 0; i < 4; i++)
         {
@@ -172,7 +171,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
                 gc.setColor (borderColor);
                 gc.rectangle (boxLeft, volumeTextTop, boxWidth - 1, UNIT);
                 gc.stroke ();
-                drawTextInBounds (gc, this.sendTexts[i], boxLeft, volumeTextTop + descent, boxWidth, UNIT, Align.CENTER, textColor);
+                drawTextInBounds (gc, this.sendTexts[i], boxLeft, volumeTextTop, boxWidth, UNIT, Align.CENTER, textColor);
             }
 
             topy += sendRowHeight;

@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.CursorClipProxy;
 import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -119,14 +120,14 @@ public class ClipMode extends AbstractTrackMode
         final TrackData t6 = tb.getTrack (6);
         final TrackData t7 = tb.getTrack (7);
 
-        message.addParameterElement ("", false, t0.getName (), t0.getType (), tb.getTrackColorEntry (0), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart ()), this.isKnobTouched[0], -1);
-        message.addParameterElement ("", false, t1.getName (), t1.getType (), tb.getTrackColorEntry (1), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd ()), this.isKnobTouched[1], -1);
-        message.addParameterElement ("", false, t2.getName (), t2.getType (), tb.getTrackColorEntry (2), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart ()), this.isKnobTouched[2], -1);
-        message.addParameterElement ("", false, t3.getName (), t3.getType (), tb.getTrackColorEntry (3), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength ()), this.isKnobTouched[3], -1);
-        message.addParameterElement ("", false, t4.getName (), t4.getType (), tb.getTrackColorEntry (4), t4.isSelected (), "Loop", -1, clip.isLoopEnabled () ? "On" : "Off", this.isKnobTouched[4], -1);
-        message.addParameterElement ("", false, t5.getName (), t5.getType (), tb.getTrackColorEntry (5), t5.isSelected (), "", -1, "", false, -1);
-        message.addParameterElement ("", false, t6.getName (), t6.getType (), tb.getTrackColorEntry (6), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
-        message.addParameterElement ("Select color", false, t7.getName (), t7.getType (), tb.getTrackColorEntry (7), t7.isSelected (), "Accent", -1, clip.getFormattedAccent (), this.isKnobTouched[7], -1);
+        message.addParameterElement ("", false, t0.getName (), getChannelType (t0), tb.getTrackColorEntry (0), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart ()), this.isKnobTouched[0], -1);
+        message.addParameterElement ("", false, t1.getName (), getChannelType (t1), tb.getTrackColorEntry (1), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd ()), this.isKnobTouched[1], -1);
+        message.addParameterElement ("", false, t2.getName (), getChannelType (t2), tb.getTrackColorEntry (2), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart ()), this.isKnobTouched[2], -1);
+        message.addParameterElement ("", false, t3.getName (), getChannelType (t3), tb.getTrackColorEntry (3), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength ()), this.isKnobTouched[3], -1);
+        message.addParameterElement ("", false, t4.getName (), getChannelType (t4), tb.getTrackColorEntry (4), t4.isSelected (), "Loop", -1, clip.isLoopEnabled () ? "On" : "Off", this.isKnobTouched[4], -1);
+        message.addParameterElement ("", false, t5.getName (), getChannelType (t5), tb.getTrackColorEntry (5), t5.isSelected (), "", -1, "", false, -1);
+        message.addParameterElement ("", false, t6.getName (), getChannelType (t6), tb.getTrackColorEntry (6), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
+        message.addParameterElement ("Select color", false, t7.getName (), getChannelType (t7), tb.getTrackColorEntry (7), t7.isSelected (), "Accent", -1, clip.getFormattedAccent (), this.isKnobTouched[7], -1);
         message.send ();
     }
 
@@ -142,6 +143,13 @@ public class ClipMode extends AbstractTrackMode
         final ViewManager viewManager = this.surface.getViewManager ();
         ((ColorView) viewManager.getView (Views.VIEW_COLOR)).setMode (SelectMode.MODE_CLIP);
         viewManager.setActiveView (Views.VIEW_COLOR);
+    }
+
+
+    private static ChannelType getChannelType (final TrackData t)
+    {
+        final String type = t.getType ();
+        return type.length () == 0 ? null : ChannelType.valueOf (type.toUpperCase ());
     }
 
 
