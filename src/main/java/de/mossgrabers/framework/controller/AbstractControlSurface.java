@@ -563,21 +563,21 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void flush ()
     {
-        if (this.taskReturning)
-        {
-            this.taskReturning = false;
-            return;
-        }
+        // if (this.taskReturning)
+        // {
+        // this.taskReturning = false;
+        // return;
+        // }
 
-        if (!this.displayScheduled)
-        {
-            this.displayScheduled = true;
-            this.scheduleTask ( () -> {
-                this.scheduledFlush ();
-                this.displayScheduled = false;
-                this.taskReturning = true;
-            }, 70);
-        }
+        // if (!this.displayScheduled)
+        // {
+        // this.displayScheduled = true;
+        // this.scheduleTask ( () -> {
+        this.scheduledFlush ();
+        // this.displayScheduled = false;
+        // this.taskReturning = true;
+        // }, 10);
+        // }
 
         this.redrawGrid ();
     }

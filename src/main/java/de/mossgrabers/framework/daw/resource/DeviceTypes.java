@@ -10,7 +10,7 @@ import java.util.Map;
 
 
 /**
- * TODO
+ * Stores information about the Bitwig devices.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -131,6 +131,12 @@ public class DeviceTypes
     }
 
 
+    /**
+     * Get the ID of an icon to use for the given device.
+     *
+     * @param deviceName The name of the device
+     * @return The icon
+     */
     public static String getIconId (final String deviceName)
     {
         final TypeIcon typeIcon = DEVICES.get (deviceName);
