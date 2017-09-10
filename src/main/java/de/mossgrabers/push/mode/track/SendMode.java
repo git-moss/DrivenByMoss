@@ -112,70 +112,67 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void updateDisplay2 ()
     {
+        this.updateTrackMenu ();
+
         final int sendIndex = this.getCurrentSendIndex ();
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
-        TrackData t;
-        if (this.isPush2)
+        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+
+        final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
+        for (int i = 0; i < 8; i++)
         {
-            this.updateTrackMenu ();
+            final TrackData t = tb.getTrack (i);
 
-            final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
-
-            final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
-            for (int i = 0; i < 8; i++)
+            // The menu item
+            String topMenu;
+            boolean topMenuSelected;
+            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
             {
-                t = tb.getTrack (i);
-
-                // The menu item
-                String topMenu;
-                boolean topMenuSelected;
-                if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
-                {
-                    topMenu = t.doesExist () ? "Stop Clip" : "";
-                    topMenuSelected = t.isPlaying ();
-                }
-                else if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
-                {
-                    topMenu = t.doesExist () ? "Mute" : "";
-                    topMenuSelected = t.isMute ();
-                }
-                else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
-                {
-                    topMenu = t.doesExist () ? "Solo" : "";
-                    topMenuSelected = t.isSolo ();
-                }
-                else
-                {
-                    topMenu = this.menu[i];
-                    topMenuSelected = i > 3 && i - 4 + sendOffset == sendIndex;
-                }
-
-                final ValueChanger valueChanger = this.model.getValueChanger ();
-                final String [] sendName = new String [4];
-                final String [] valueStr = new String [4];
-                final int [] value = new int [4];
-                final int [] modulatedValue = new int [4];
-                final boolean [] selected = new boolean [4];
-                for (int j = 0; j < 4; j++)
-                {
-                    final int sendPos = sendOffset + j;
-                    final SendData send = t.getSends ()[sendPos];
-                    sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
-                    valueStr[j] = send != null && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue (8) : "";
-                    value[j] = valueChanger.toDisplayValue (send != null ? send.getValue () : -1);
-                    modulatedValue[j] = valueChanger.toDisplayValue (send != null ? send.getModulatedValue () : -1);
-                    selected[j] = sendIndex == sendPos;
-                }
-
-                final String typeID = t.getType ();
-                final ChannelType type = typeID.isEmpty () ? null : ChannelType.valueOf (typeID.toUpperCase ());
-                message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", type, tb.getTrackColorEntry (i), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
+                topMenu = t.doesExist () ? "Stop Clip" : "";
+                topMenuSelected = t.isPlaying ();
+            }
+            else if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
+            {
+                topMenu = t.doesExist () ? "Mute" : "";
+                topMenuSelected = t.isMute ();
+            }
+            else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
+            {
+                topMenu = t.doesExist () ? "Solo" : "";
+                topMenuSelected = t.isSolo ();
+            }
+            else
+            {
+                topMenu = this.menu[i];
+                topMenuSelected = i > 3 && i - 4 + sendOffset == sendIndex;
             }
 
-            message.send ();
+            final ValueChanger valueChanger = this.model.getValueChanger ();
+            final String [] sendName = new String [4];
+            final String [] valueStr = new String [4];
+            final int [] value = new int [4];
+            final int [] modulatedValue = new int [4];
+            final boolean [] selected = new boolean [4];
+            for (int j = 0; j < 4; j++)
+            {
+                final int sendPos = sendOffset + j;
+                final SendData send = t.getSends ()[sendPos];
+                sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
+                valueStr[j] = send != null && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue (8) : "";
+                value[j] = valueChanger.toDisplayValue (send != null ? send.getValue () : -1);
+                modulatedValue[j] = valueChanger.toDisplayValue (send != null ? send.getModulatedValue () : -1);
+                selected[j] = sendIndex == sendPos;
+            }
+
+            final String typeID = t.getType ();
+            final ChannelType type = typeID.isEmpty () ? null : ChannelType.valueOf (typeID.toUpperCase ());
+            message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", type, tb.getTrackColorEntry (i), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
         }
+
+        message.send ();
+
     }
 
 

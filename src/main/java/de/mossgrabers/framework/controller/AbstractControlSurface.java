@@ -62,9 +62,6 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     private int []                                noteVelocities;
     protected boolean []                          buttonConsumed;
 
-    private boolean                               displayScheduled;
-    private boolean                               taskReturning;
-
     private List<int []>                          buttonCache;
 
     protected int []                              gridNotes;
@@ -126,10 +123,6 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             Arrays.fill (channels, -1);
             this.buttonCache.add (channels);
         }
-
-        // Flush optimisation
-        this.displayScheduled = false;
-        this.taskReturning = false;
 
         // Notes
         this.noteVelocities = new int [128];
@@ -563,22 +556,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void flush ()
     {
-        // if (this.taskReturning)
-        // {
-        // this.taskReturning = false;
-        // return;
-        // }
-
-        // if (!this.displayScheduled)
-        // {
-        // this.displayScheduled = true;
-        // this.scheduleTask ( () -> {
         this.scheduledFlush ();
-        // this.displayScheduled = false;
-        // this.taskReturning = true;
-        // }, 10);
-        // }
-
         this.redrawGrid ();
     }
 

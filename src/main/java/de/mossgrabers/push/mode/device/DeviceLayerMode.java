@@ -42,7 +42,7 @@ public class DeviceLayerMode extends BaseMode
         "Send 1",
         "Send 2",
         "Send 3",
-        "Send 4"
+        "Up"
     };
 
 
@@ -164,12 +164,9 @@ public class DeviceLayerMode extends BaseMode
         if (event == ButtonEvent.DOWN)
             return;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
-
-        final ModeManager modeManager = this.surface.getModeManager ();
-
         if (event == ButtonEvent.UP)
         {
+            final CursorDeviceProxy cd = this.model.getCursorDevice ();
             if (!cd.hasSelectedDevice ())
                 return;
 
@@ -187,22 +184,32 @@ public class DeviceLayerMode extends BaseMode
 
             cd.enterLayerOrDrumPad (layer.getIndex ());
             cd.selectFirstDeviceInLayerOrDrumPad (layer.getIndex ());
+            final ModeManager modeManager = this.surface.getModeManager ();
             modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);
             ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).setShowDevices (true);
             return;
         }
 
         // LONG press
-
         this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_ROW1_1 + index);
+        this.moveUp ();
+    }
 
+
+    /**
+     * Move up the hierarchy.
+     */
+    protected void moveUp ()
+    {
         // There is no device on the track move upwards to the track view
+        final CursorDeviceProxy cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
             this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
             return;
         }
 
+        final ModeManager modeManager = this.surface.getModeManager ();
         modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);
         cd.selectChannel ();
         ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).setShowDevices (true);
@@ -264,6 +271,10 @@ public class DeviceLayerMode extends BaseMode
                     if (!modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER))
                         modeManager.setActiveMode (Integer.valueOf (Modes.MODE_DEVICE_LAYER_SEND1.intValue () + (config.isSendsAreToggled () ? 4 : 0)));
                 }
+                break;
+
+            case 7:
+                this.moveUp ();
                 break;
 
             default:
@@ -411,7 +422,7 @@ public class DeviceLayerMode extends BaseMode
             else
             {
                 topMenu = this.menu[i];
-                topMenuSelected = false;
+                topMenuSelected = i == 7;
             }
 
             // Channel info
@@ -485,7 +496,7 @@ public class DeviceLayerMode extends BaseMode
             else
             {
                 topMenu = this.menu[i];
-                isTopMenuOn = i == selectedMenu - 1;
+                isTopMenuOn = i == 7 || i == selectedMenu - 1;
             }
             message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), isPan && this.isKnobTouched[i] ? layer.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
         }
@@ -499,7 +510,7 @@ public class DeviceLayerMode extends BaseMode
         final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
         final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
             this.menu[4 + i] = fxTrackBank.getTrack (sendOffset + i).getName ();
         this.menu[3] = config.isSendsAreToggled () ? "Sends 5-8" : "Sends 1-4";
     }
