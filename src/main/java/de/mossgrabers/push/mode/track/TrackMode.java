@@ -342,7 +342,7 @@ public class TrackMode extends AbstractTrackMode
             else
             {
                 topMenu = this.menu[i];
-                topMenuSelected = false;
+                topMenuSelected = i == 7;
             }
 
             // Channel info

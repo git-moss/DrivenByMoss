@@ -39,7 +39,7 @@ public abstract class AbstractTrackMode extends BaseMode
         "Send 1",
         "Send 2",
         "Send 3",
-        "Send 4"
+        "Up"
     };
 
 
@@ -178,6 +178,11 @@ public abstract class AbstractTrackMode extends BaseMode
                 }
                 break;
 
+            case 7:
+                if (!this.model.isEffectTrackBankActive ())
+                    this.model.getTrackBank ().selectParent ();
+                break;
+
             default:
                 if (!this.model.isEffectTrackBankActive ())
                 {
@@ -216,11 +221,11 @@ public abstract class AbstractTrackMode extends BaseMode
     public void updateSecondRow ()
     {
         final PushConfiguration config = this.surface.getConfiguration ();
+        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         if (this.isPush2)
         {
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
                 for (int i = 0; i < 8; i++)
                 {
                     final TrackData track = tb.getTrack (i);
@@ -231,7 +236,6 @@ public abstract class AbstractTrackMode extends BaseMode
 
             if (config.isMuteLongPressed () || config.isSoloLongPressed () || config.isMuteSoloLocked ())
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
                 final boolean muteState = config.isMuteState ();
                 for (int i = 0; i < 8; i++)
                     this.surface.updateButton (102 + i, this.getTrackStateColor (muteState, tb.getTrack (i)));
@@ -246,11 +250,10 @@ public abstract class AbstractTrackMode extends BaseMode
             this.surface.updateButton (106, modeManager.isActiveMode (config.isSendsAreToggled () ? Modes.MODE_SEND5 : Modes.MODE_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             this.surface.updateButton (107, modeManager.isActiveMode (config.isSendsAreToggled () ? Modes.MODE_SEND6 : Modes.MODE_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             this.surface.updateButton (108, modeManager.isActiveMode (config.isSendsAreToggled () ? Modes.MODE_SEND7 : Modes.MODE_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (109, modeManager.isActiveMode (config.isSendsAreToggled () ? Modes.MODE_SEND8 : Modes.MODE_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateButton (109, PushColors.PUSH2_COLOR2_WHITE);
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final boolean muteState = config.isMuteState ();
         for (int i = 0; i < 8; i++)
         {
@@ -362,7 +365,7 @@ public abstract class AbstractTrackMode extends BaseMode
             else
             {
                 topMenu = this.menu[i];
-                isTopMenuOn = i == selectedMenu - 1;
+                isTopMenuOn = i == selectedMenu - 1 || i == 7;
             }
 
             message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", t.getType (), tb.getTrackColorEntry (i), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecarm (), "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
@@ -385,7 +388,7 @@ public abstract class AbstractTrackMode extends BaseMode
             return;
         }
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
             this.menu[4 + i] = fxTrackBank.getTrack (sendOffset + i).getName ();
         this.menu[3] = config.isSendsAreToggled () ? "Sends 5-8" : "Sends 1-4";
     }

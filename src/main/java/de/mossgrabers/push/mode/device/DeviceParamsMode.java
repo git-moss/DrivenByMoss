@@ -33,13 +33,13 @@ public class DeviceParamsMode extends BaseMode
     private static final String [] MENU =
     {
         "On",
-        null,
-        null,
-        null,
-        null,
-        "Expanded",
         "Parameters",
-        "Window"
+        "Expanded",
+        null,
+        "Banks",
+        null,
+        "Window",
+        "Up"
     };
 
     private boolean                showDevices;
@@ -122,11 +122,9 @@ public class DeviceParamsMode extends BaseMode
         if (event == ButtonEvent.DOWN)
             return;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
-
-        final ModeManager modeManager = this.surface.getModeManager ();
         if (event == ButtonEvent.UP)
         {
+            final CursorDeviceProxy cd = this.model.getCursorDevice ();
             if (!cd.hasSelectedDevice ())
                 return;
 
@@ -142,8 +140,8 @@ public class DeviceParamsMode extends BaseMode
                 return;
             }
 
-            final boolean isContainer = cd.hasLayers ();
-            if (!isContainer)
+            final ModeManager modeManager = this.surface.getModeManager ();
+            if (!cd.hasLayers ())
             {
                 ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).setShowDevices (false);
                 return;
@@ -157,10 +155,18 @@ public class DeviceParamsMode extends BaseMode
         }
 
         // LONG press - move upwards
-
         this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_ROW1_1 + index);
+        this.moveUp ();
+    }
 
+
+    /**
+     * Move up the hierarchy.
+     */
+    protected void moveUp ()
+    {
         // There is no device on the track move upwards to the track view
+        final CursorDeviceProxy cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
             this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
@@ -168,6 +174,7 @@ public class DeviceParamsMode extends BaseMode
         }
 
         // Parameter banks are shown -> show devices
+        final ModeManager modeManager = this.surface.getModeManager ();
         final DeviceParamsMode deviceParamsMode = (DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS);
         if (!deviceParamsMode.isShowDevices ())
         {
@@ -238,14 +245,20 @@ public class DeviceParamsMode extends BaseMode
             case 0:
                 device.toggleEnabledState ();
                 break;
-            case 5:
-                device.toggleExpanded ();
-                break;
-            case 6:
+            case 1:
                 device.toggleParameterPageSectionVisible ();
                 break;
-            case 7:
+            case 2:
+                device.toggleExpanded ();
+                break;
+            case 4:
+                this.showDevices = !this.showDevices;
+                break;
+            case 6:
                 device.toggleWindowOpen ();
+                break;
+            case 7:
+                this.moveUp ();
                 break;
         }
     }
@@ -264,21 +277,20 @@ public class DeviceParamsMode extends BaseMode
 
         final int green = this.isPush2 ? PushColors.PUSH2_COLOR2_GREEN : PushColors.PUSH1_COLOR2_GREEN;
         final int grey = this.isPush2 ? PushColors.PUSH2_COLOR2_GREY_LO : PushColors.PUSH1_COLOR2_GREY_LO;
-        this.surface.updateButton (102, cd.isEnabled () ? green : grey);
-
+        final int orange = this.isPush2 ? PushColors.PUSH2_COLOR2_ORANGE : PushColors.PUSH1_COLOR2_ORANGE;
         final int off = this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
-
-        this.surface.updateButton (103, off);
-        this.surface.updateButton (104, off);
-        this.surface.updateButton (105, off);
-        this.surface.updateButton (106, off);
-
         final int white = this.isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE;
-        this.surface.updateButton (107, cd.isExpanded () ? white : off);
-        this.surface.updateButton (108, cd.isParameterPageSectionVisible () ? white : off);
-
         final int turquoise = this.isPush2 ? PushColors.PUSH2_COLOR2_TURQUOISE_HI : PushColors.PUSH1_COLOR2_TURQUOISE_HI;
-        this.surface.updateButton (109, cd.isPlugin () ? cd.isWindowOpen () ? turquoise : grey : off);
+
+        this.surface.updateButton (102, cd.isEnabled () ? green : grey);
+        this.surface.updateButton (103, cd.isParameterPageSectionVisible () ? orange : white);
+        this.surface.updateButton (104, cd.isExpanded () ? orange : white);
+        this.surface.updateButton (105, off);
+        this.surface.updateButton (106, this.showDevices ? white : orange);
+        this.surface.updateButton (107, off);
+        this.surface.updateButton (108, cd.isPlugin () ? cd.isWindowOpen () ? turquoise : grey : off);
+
+        this.surface.updateButton (109, white);
     }
 
 
@@ -351,7 +363,7 @@ public class DeviceParamsMode extends BaseMode
 
         for (int i = 0; i < 8; i++)
         {
-            final String topMenu = i == 7 && !cd.isPlugin () ? null : MENU[i];
+            final String topMenu = i == 6 && !cd.isPlugin () ? null : MENU[i];
 
             boolean isTopMenuOn;
             switch (i)
@@ -359,14 +371,20 @@ public class DeviceParamsMode extends BaseMode
                 case 0:
                     isTopMenuOn = cd.isEnabled ();
                     break;
-                case 5:
-                    isTopMenuOn = cd.isExpanded ();
-                    break;
-                case 6:
+                case 1:
                     isTopMenuOn = cd.isParameterPageSectionVisible ();
                     break;
-                case 7:
+                case 2:
+                    isTopMenuOn = cd.isExpanded ();
+                    break;
+                case 4:
+                    isTopMenuOn = !this.showDevices;
+                    break;
+                case 6:
                     isTopMenuOn = cd.isPlugin () && cd.isWindowOpen ();
+                    break;
+                case 7:
+                    isTopMenuOn = true;
                     break;
                 default:
                     // Not used
