@@ -7,9 +7,11 @@ package de.mossgrabers.push.command.continuous;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.mode.BaseMode;
 import de.mossgrabers.push.mode.Modes;
 
 
@@ -41,6 +43,11 @@ public class SmallKnobTouchCommand extends AbstractTriggerCommand<PushControlSur
         // Avoid accidently leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActiveMode (Modes.MODE_BROWSER))
+            return;
+
+        // Prevent flickering if a knob is touched accidently while fiddling with other knobs
+        final Mode activeMode = modeManager.getActiveMode ();
+        if (activeMode instanceof BaseMode && ((BaseMode) activeMode).isAKnobTouched ())
             return;
 
         this.model.getTransport ().setTempoIndication (isTouched);
