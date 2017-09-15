@@ -43,6 +43,22 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
     }
 
 
+    /**
+     * Check if a knob is touched.
+     *
+     * @return True if at least 1 knob is touched
+     */
+    public boolean isAKnobTouched ()
+    {
+        for (int i = 0; i < this.isKnobTouched.length; i++)
+        {
+            if (this.isKnobTouched[i])
+                return true;
+        }
+        return false;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void updateDisplay ()
