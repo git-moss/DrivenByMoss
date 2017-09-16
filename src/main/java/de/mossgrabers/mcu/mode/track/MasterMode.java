@@ -6,6 +6,7 @@ package de.mossgrabers.mcu.mode.track;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.ApplicationProxy;
 import de.mossgrabers.framework.daw.MasterTrackProxy;
@@ -106,12 +107,12 @@ public class MasterMode extends BaseMode
 
         final Display d = this.surface.getDisplay ().clear ();
         final ApplicationProxy application = this.model.getApplication ();
-        final String projectName = application.getProjectName ();
+        final String projectName = StringUtils.fixASCII (application.getProjectName ());
         final MasterTrackProxy master = this.model.getMasterTrack ();
 
-        d.setCell (0, 0, "Volume").setCell (0, 1, "Pan").setBlock (0, 1, "Audio Engine:").setCell (0, 4, application.isEngineActive () ? "On" : "Off");
+        d.setCell (0, 0, "Volume").setCell (0, 1, "Pan").setBlock (0, 1, "Audio Engine:").setCell (0, 4, application.isEngineActive () ? " On" : " Off");
         d.setCell (0, 5, "Prjct:").setBlock (0, 3, projectName);
-        d.setCell (1, 0, master.getVolumeStr (6)).setCell (1, 1, master.getPanStr (6)).setBlock (1, 1, application.isEngineActive () ? "Turn off" : "Turn on");
+        d.setCell (1, 0, master.getVolumeStr (6)).setCell (1, 1, master.getPanStr (6)).setBlock (1, 1, application.isEngineActive () ? "  Turn off" : "  Turn on");
         d.setCell (1, 6, " <<").setCell (1, 7, " >>").allDone ();
     }
 

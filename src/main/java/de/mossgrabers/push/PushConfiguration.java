@@ -677,9 +677,9 @@ public class PushConfiguration extends AbstractConfiguration
 
 
     /**
-     * Get the defaaualt note view.
+     * Get the default note view.
      *
-     * @return The defaaualt note view
+     * @return The default note view
      */
     public Integer getDefaultNoteView ()
     {
@@ -749,8 +749,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     private void activateStopAutomationOnKnobReleaseSetting (final Preferences prefs)
     {
-        final SettableEnumValue stopAutomationOnKnobReleaseSetting = prefs.getEnumSetting ("Stop automation recording on knob release", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        stopAutomationOnKnobReleaseSetting.addValueObserver (value -> {
+        prefs.getEnumSetting ("Stop automation recording on knob release", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]).addValueObserver (value -> {
             this.stopAutomationOnKnobRelease = "On".equals (value);
             this.notifyObservers (STOP_AUTOMATION_ON_KNOB_RELEASE);
         });

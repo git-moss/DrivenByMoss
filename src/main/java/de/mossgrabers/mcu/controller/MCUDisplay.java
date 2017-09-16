@@ -114,7 +114,14 @@ public class MCUDisplay extends AbstractDisplay
     @Override
     public void writeLine (final int row, final String text)
     {
-        final String t = this.isFirst ? text : " " + text + (row == 0 ? "r" : " ");
+        String t = text;
+        if (!this.isFirst)
+        {
+            if (row == 0)
+                t = t.substring (0, t.length () - 1) + 'r';
+            t = "  " + t;
+
+        }
         final int length = t.length ();
         final int [] array = new int [length];
         for (int i = 0; i < length; i++)

@@ -5,6 +5,7 @@
 package de.mossgrabers.mcu.mode.track;
 
 import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.TrackBankProxy;
@@ -115,7 +116,7 @@ public class TrackMode extends AbstractTrackMode
                 if (sendData.doesExist ())
                 {
                     if (!displayTrackNames)
-                        d.setCell (0, pos, sendData.getName ());
+                        d.setCell (0, pos, StringUtils.fixASCII (sendData.getName ()));
                     d.setCell (1, pos, sendData.getDisplayedValue (6));
                 }
             }

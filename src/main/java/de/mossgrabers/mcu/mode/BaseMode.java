@@ -6,6 +6,7 @@ package de.mossgrabers.mcu.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
@@ -109,15 +110,17 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         for (int i = 0; i < 8; i++)
         {
             final TrackData t = tb.getTrack (i);
-            d2.setCell (0, i, this.optimizeName (t.getName (), 6));
+            d2.setCell (0, i, this.optimizeName (StringUtils.fixASCII (t.getName ()), 6));
         }
+        d2.setCell (0, 8, "Maste").done (0);
 
         final MasterTrackProxy masterTrack = this.model.getMasterTrack ();
         final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
         if (masterTrack.isSelected ())
         {
-            d2.clearRow (1).setBlock (1, 0, "Sel. track:").setBlock (1, 1, masterTrack.getName ());
-            d2.setBlock (1, 2, "Sel. devce:").setBlock (1, 3, cursorDevice.hasSelectedDevice () ? cursorDevice.getName () : "None").setCell (1, 8, "      ").done (1);
+            d2.clearRow (1).setBlock (1, 0, "Sel.track: ").setBlock (1, 1, StringUtils.fixASCII (masterTrack.getName ()));
+            d2.setBlock (1, 2, "Sel.devce: ").setBlock (1, 3, cursorDevice.hasSelectedDevice () ? cursorDevice.getName () : "None").setCell (1, 8, "      ");
+            d2.done (1);
             return;
         }
 
@@ -126,10 +129,9 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
             d2.setRow (1, "               Please select a track...                 ");
         else
         {
-            d2.clearRow (1).setBlock (1, 0, "Sel. track:").setBlock (1, 1, selectedTrack.getName ());
-            d2.setBlock (1, 2, "Sel. devce:").setBlock (1, 3, cursorDevice.hasSelectedDevice () ? cursorDevice.getName () : "None").setCell (1, 8, "      ").done (1);
+            d2.clearRow (1).setBlock (1, 0, "Sel.track: ").setBlock (1, 1, StringUtils.fixASCII (selectedTrack.getName ()));
+            d2.setBlock (1, 2, "Sel.devce: ").setBlock (1, 3, cursorDevice.hasSelectedDevice () ? cursorDevice.getName () : "None").setCell (1, 8, "      ");
         }
-
-        d2.setCell (0, 8, "Maste").done (0);
+        d2.done (1);
     }
 }
