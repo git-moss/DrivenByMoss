@@ -29,7 +29,7 @@ public class DrumView4 extends DrumViewBase
      */
     public DrumView4 (final PushControlSurface surface, final Model model)
     {
-        super ("Drum 4", surface, model, 2, 0);
+        super (Views.VIEW_NAME_DRUM4, surface, model, 2, 0);
 
         this.soundOffset = 0;
     }

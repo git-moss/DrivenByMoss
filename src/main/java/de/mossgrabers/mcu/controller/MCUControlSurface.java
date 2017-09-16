@@ -240,6 +240,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         MCU_TRACK_LEFT,
         MCU_TRACK_RIGHT,
         MCU_FLIP,
+        MCU_EDIT,
         MCU_NAME_VALUE,
         MCU_SMPTE_BEATS,
         MCU_MIDI_TRACKS,
@@ -452,6 +453,9 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     // leds on/leds and vu-meter on display on/vu-meter on display on/all off
     public void switchVuMode (final int mode)
     {
+        // Always horizontal
+        this.output.sendSysex (new StringBuilder (SYSEX_HDR).append ("21 00 F7").toString ());
+
         if (this.activeVuMode != mode)
         {
             if (this.activeVuMode < 5)
@@ -460,39 +464,37 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
                 this.activeVuMode = VUMODE_LED;
         }
         final MidiOutput out = this.getOutput ();
-        switch (this.activeVuMode) // the mcu changes the vu-meter mode when receiving the
-                                   // corresponding
-        // sysex message
+        // the mcu changes the vu-meter mode when receiving the
+        // corresponding sysex message
+        switch (this.activeVuMode)
         {
             case VUMODE_LED:
                 for (int i = 0; i < 8; i++)
                 {
-                    out.sendChannelAftertouch (0 + (i << 4), 0); // resets the leds
-                                                                 // (and vu-meters on
-                                                                 // the
-                    // display?)
-                    out.sendSysex (SYSEX_HDR + "20 0" + i + "01 F7");
+                    // resets the leds (and vu-meters on the display?)
+                    out.sendChannelAftertouch (0 + (i << 4), 0);
+                    out.sendSysex (SYSEX_HDR + "20 0" + i + " 01 F7");
                 }
                 break;
             case VUMODE_LED_AND_LCD:
                 for (int i = 0; i < 8; i++)
                 {
                     out.sendChannelAftertouch (0 + (i << 4), 0);
-                    out.sendSysex (SYSEX_HDR + "20 0" + i + "03 F7");
+                    out.sendSysex (SYSEX_HDR + "20 0" + i + " 03 F7");
                 }
                 break;
             case VUMODE_LCD:
                 for (int i = 0; i < 8; i++)
                 {
                     out.sendChannelAftertouch (0 + (i << 4), 0);
-                    out.sendSysex (SYSEX_HDR + "20 0" + i + "06 F7");
+                    out.sendSysex (SYSEX_HDR + "20 0" + i + " 06 F7");
                 }
                 break;
             case VUMODE_OFF:
                 for (int i = 0; i < 8; i++)
                 {
                     out.sendChannelAftertouch (0 + (i << 4), 0);
-                    out.sendSysex (SYSEX_HDR + "20 0" + i + "00 F7");
+                    out.sendSysex (SYSEX_HDR + "20 0" + i + " 00 F7");
                 }
                 break;
         }

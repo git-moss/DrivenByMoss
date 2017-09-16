@@ -25,7 +25,7 @@ public class DrumView extends DrumViewBase
      */
     public DrumView (final PushControlSurface surface, final Model model)
     {
-        super ("Drum", surface, model, 4, 4);
+        super (Views.VIEW_NAME_DRUM, surface, model, 4, 4);
     }
 
 

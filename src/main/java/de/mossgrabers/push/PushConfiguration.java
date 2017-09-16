@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.controller.display.model.grid.ColorEx;
 import de.mossgrabers.push.mode.Modes;
+import de.mossgrabers.push.view.Views;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.Preferences;
@@ -57,10 +58,12 @@ public class PushConfiguration extends AbstractConfiguration
     public static final Integer    PAD_DYNAMICS                     = Integer.valueOf (38);
     /** Setting for stopping automation recording on knob release. */
     public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE  = Integer.valueOf (39);
+    /** Setting for the default note view. */
+    public static final Integer    DEFAULT_NOTE_VIEW                = Integer.valueOf (40);
     /** Mode debug. */
-    public static final Integer    DEBUG_MODE                       = Integer.valueOf (40);
+    public static final Integer    DEBUG_MODE                       = Integer.valueOf (41);
     /** Push 2 display debug window. */
-    public static final Integer    DEBUG_WINDOW                     = Integer.valueOf (41);
+    public static final Integer    DEBUG_WINDOW                     = Integer.valueOf (42);
     /** Background color of an element. */
     public static final Integer    COLOR_BACKGROUND                 = Integer.valueOf (50);
     /** Border color of an element. */
@@ -167,6 +170,7 @@ public class PushConfiguration extends AbstractConfiguration
     private SettableRangedValue    padDynamicsSetting;
     private SettableEnumValue      velocityCurveSetting;
     private SettableEnumValue      padThresholdSetting;
+    private Integer                defaultNoteView                  = Views.VIEW_PLAY;
 
     private SettableColorValue     colorBackgroundSetting;
     private SettableColorValue     colorBackgroundDarkerSetting;
@@ -227,6 +231,7 @@ public class PushConfiguration extends AbstractConfiguration
         this.activateAccentActiveSetting (preferences);
         this.activateAccentValueSetting (preferences);
         this.activateQuantizeAmountSetting (preferences);
+        this.activateDefaultNoteViewSetting (preferences);
 
         ///////////////////////////
         // Drum Sequencer
@@ -722,6 +727,17 @@ public class PushConfiguration extends AbstractConfiguration
 
 
     /**
+     * Get the default note view.
+     *
+     * @return The default note view
+     */
+    public Integer getDefaultNoteView ()
+    {
+        return this.defaultNoteView;
+    }
+
+
+    /**
      * Get the background color of an element.
      *
      * @return The background color of an element.
@@ -985,6 +1001,26 @@ public class PushConfiguration extends AbstractConfiguration
         this.padDynamicsSetting.addValueObserver (11, value -> {
             this.padDynamics = value;
             this.notifyObservers (PAD_DYNAMICS);
+        });
+    }
+
+
+    /**
+     * Activate the default note view setting.
+     *
+     * @param prefs The preferences
+     */
+    private void activateDefaultNoteViewSetting (final Preferences prefs)
+    {
+        final String [] noteViewNames = Views.getNoteViewNames ();
+        final SettableEnumValue defaultNoteViewSetting = prefs.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, noteViewNames, noteViewNames[0]);
+        defaultNoteViewSetting.addValueObserver (value -> {
+            for (int i = 0; i < noteViewNames.length; i++)
+            {
+                if (noteViewNames[i].equals (value))
+                    this.defaultNoteView = Views.getNoteView (i);
+            }
+            this.notifyObservers (DEFAULT_NOTE_VIEW);
         });
     }
 

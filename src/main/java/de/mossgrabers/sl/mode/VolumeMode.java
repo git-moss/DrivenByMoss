@@ -6,6 +6,7 @@ package de.mossgrabers.sl.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.MasterTrackProxy;
@@ -46,7 +47,7 @@ public class VolumeMode extends AbstractMode<SLControlSurface, SLConfiguration>
         if (masterTrack.isSelected ())
         {
             d.clear ();
-            final String n = this.optimizeName (fixASCII (masterTrack.getName ()), 7);
+            final String n = this.optimizeName (StringUtils.fixASCII (masterTrack.getName ()), 7);
             d.setCell (1, 0, SLDisplay.RIGHT_ARROW + n).setCell (3, 0, masterTrack.getVolumeStr (8)).done (1).done (3);
             return;
         }
@@ -59,53 +60,10 @@ public class VolumeMode extends AbstractMode<SLControlSurface, SLConfiguration>
         {
             final boolean isSel = i == selIndex;
             final TrackData t = tb.getTrack (i);
-            final String n = this.optimizeName (fixASCII (t.getName ()), isSel ? 7 : 8);
+            final String n = this.optimizeName (StringUtils.fixASCII (t.getName ()), isSel ? 7 : 8);
             d.setCell (1, i, isSel ? SLDisplay.RIGHT_ARROW + n : n).setCell (3, i, t.getVolumeStr (8));
         }
         d.done (1).done (3);
-    }
-
-
-    private static String fixASCII (final String name)
-    {
-        final StringBuilder str = new StringBuilder ();
-        for (int i = 0; i < name.length (); i++)
-        {
-            final char c = name.charAt (i);
-            if (c > 127)
-            {
-                switch (c)
-                {
-                    case 'Ä':
-                        str.append ("Ae");
-                        break;
-                    case 'ä':
-                        str.append ("ae");
-                        break;
-                    case 'Ö':
-                        str.append ("Oe");
-                        break;
-                    case 'ö':
-                        str.append ("oe");
-                        break;
-                    case 'Ü':
-                        str.append ("Ue");
-                        break;
-                    case 'ü':
-                        str.append ("ue");
-                        break;
-                    case 'ß':
-                        str.append ("ss");
-                        break;
-                    default:
-                        str.append ("?");
-                        break;
-                }
-            }
-            else
-                str.append (c);
-        }
-        return str.toString ();
     }
 
 

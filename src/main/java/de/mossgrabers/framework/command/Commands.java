@@ -253,6 +253,8 @@ public interface Commands
     Integer COMMAND_SAVE                     = Integer.valueOf (120);
     /** The command to toggle markers. */
     Integer COMMAND_MARKER                   = Integer.valueOf (121);
+    /** The command to toggle VU meters. */
+    Integer COMMAND_TOGGLE_VU                = Integer.valueOf (122);
 
     /** Continuous knob 1. */
     Integer CONT_COMMAND_KNOB1               = Integer.valueOf (1);

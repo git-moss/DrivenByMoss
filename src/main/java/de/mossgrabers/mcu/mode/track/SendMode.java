@@ -5,6 +5,7 @@
 package de.mossgrabers.mcu.mode.track;
 
 import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.TrackBankProxy;
@@ -71,7 +72,7 @@ public class SendMode extends AbstractTrackMode
         for (int i = 0; i < 8; i++)
         {
             final TrackData t = tb.getTrack (i);
-            d.setCell (1, i, t.getSends ()[sendIndex].getDisplayedValue (7));
+            d.setCell (1, i, t.getSends ()[sendIndex].getDisplayedValue (6));
         }
         d.done (1);
 
@@ -101,7 +102,7 @@ public class SendMode extends AbstractTrackMode
         {
             final TrackData t = tb.getTrack (i);
             if (t.doesExist ())
-                d.setCell (0, i, t.getSends ()[sendIndex].getName (6));
+                d.setCell (0, i, this.optimizeName (StringUtils.fixASCII (t.getSends ()[sendIndex].getName (6)), 6));
             else
                 d.clearCell (0, i);
         }
