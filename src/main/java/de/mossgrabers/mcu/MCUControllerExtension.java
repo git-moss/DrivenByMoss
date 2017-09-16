@@ -25,8 +25,10 @@ import de.mossgrabers.framework.command.trigger.SaveCommand;
 import de.mossgrabers.framework.command.trigger.StopCommand;
 import de.mossgrabers.framework.command.trigger.TapTempoCommand;
 import de.mossgrabers.framework.command.trigger.ToggleTrackBanksCommand;
+import de.mossgrabers.framework.command.trigger.ToggleVUCommand;
 import de.mossgrabers.framework.command.trigger.UndoCommand;
 import de.mossgrabers.framework.command.trigger.WindCommand;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.AbstractControllerExtension;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
@@ -38,6 +40,7 @@ import de.mossgrabers.framework.daw.TransportProxy;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.midi.MidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
@@ -231,6 +234,14 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             this.updateMode (null);
             this.updateMode (newMode);
         });
+
+        this.configuration.addSettingObserver (AbstractConfiguration.ENABLE_VU_METERS, () -> {
+            this.surface.switchVuMode (this.configuration.isEnableVUMeters () ? MCUControlSurface.VUMODE_LED_AND_LCD : MCUControlSurface.VUMODE_OFF);
+            final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+            if (activeMode != null)
+                activeMode.updateDisplay ();
+            ((MCUDisplay) this.surface.getDisplay ()).forceFlush ();
+        });
     }
 
 
@@ -337,8 +348,10 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         viewManager.registerTriggerCommand (Commands.COMMAND_NEW, new NewCommand<> (this.model, this.surface));
         viewManager.registerTriggerCommand (Commands.COMMAND_TAP_TEMPO, new TapTempoCommand<> (this.model, this.surface));
 
+        // Only MCU
         this.addTriggerCommand (Commands.COMMAND_SAVE, MCUControlSurface.MCU_SAVE, new SaveCommand<> (this.model, this.surface));
         this.addTriggerCommand (Commands.COMMAND_MARKER, MCUControlSurface.MCU_MARKER, new MarkerCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_TOGGLE_VU, MCUControlSurface.MCU_EDIT, new ToggleVUCommand<> (this.model, this.surface));
 
         viewManager.registerPitchbendCommand (new PitchbendVolumeCommand (this.model, this.surface));
     }
@@ -428,8 +441,10 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             positionText += " ";
         else
         {
-            final String tempoStr = t.formatTempoNoFraction (t.getTempo ());
+            String tempoStr = t.formatTempoNoFraction (t.getTempo ());
             final int pos = positionText.lastIndexOf (':');
+            if (tempoStr.length () < 3)
+                tempoStr = "0" + tempoStr;
             positionText = positionText.substring (0, pos + 1) + tempoStr;
         }
 

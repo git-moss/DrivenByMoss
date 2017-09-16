@@ -198,7 +198,7 @@ public abstract class AbstractDisplay implements Display
     /**
      * Forces the recreation of all row texts. The next call to flush will then send all rows.
      */
-    private void forceFlush ()
+    public void forceFlush ()
     {
         for (int row = 0; row < this.noOfLines; row++)
             this.currentMessage[row] = "";

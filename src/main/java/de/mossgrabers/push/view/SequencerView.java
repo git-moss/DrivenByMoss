@@ -27,7 +27,7 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
      */
     public SequencerView (final PushControlSurface surface, final Model model)
     {
-        super ("Sequencer", surface, model, true);
+        super (Views.VIEW_NAME_SEQUENCER, surface, model, true);
     }
 
 

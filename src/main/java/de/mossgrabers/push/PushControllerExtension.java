@@ -459,7 +459,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     protected void startup ()
     {
         this.getHost ().scheduleTask ( () -> {
-            this.surface.getViewManager ().setActiveView (Views.VIEW_PLAY);
+            this.surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
             this.surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
         }, 200);
     }
@@ -612,7 +612,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
             if (selectedTrack != null)
             {
                 final Integer preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
-                viewManager.setActiveView (preferredView == null ? Views.VIEW_PLAY : preferredView);
+                viewManager.setActiveView (preferredView == null ? this.configuration.getDefaultNoteView () : preferredView);
             }
         }
 

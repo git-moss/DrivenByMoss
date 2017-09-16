@@ -91,8 +91,8 @@ public class TrackMode extends AbstractTrackMode
             d.setCell (0, 1, "Pan");
         }
 
-        d.setCell (1, 0, selectedTrack.getVolumeStr (7));
-        d.setCell (1, 1, selectedTrack.getPanStr (7));
+        d.setCell (1, 0, selectedTrack.getVolumeStr (6));
+        d.setCell (1, 1, selectedTrack.getPanStr (6));
 
         int sendStart = 2;
         int sendCount = 6;
@@ -116,7 +116,7 @@ public class TrackMode extends AbstractTrackMode
                 {
                     if (!displayTrackNames)
                         d.setCell (0, pos, sendData.getName ());
-                    d.setCell (1, pos, sendData.getDisplayedValue (7));
+                    d.setCell (1, pos, sendData.getDisplayedValue (6));
                 }
             }
         }

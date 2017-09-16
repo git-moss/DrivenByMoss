@@ -73,7 +73,7 @@ public class MCUDisplay extends AbstractDisplay
         final int cell = 2 * block;
         if (value.length () >= this.charactersOfCell)
         {
-            this.setCell (row, cell, value.substring (0, this.charactersOfCell));
+            this.cells[row * this.noOfCells + cell] = pad (value.substring (0, this.charactersOfCell), this.charactersOfCell - 1);
             this.cells[row * this.noOfCells + cell + 1] = pad (value.substring (this.charactersOfCell - 1), this.charactersOfCell);
         }
         else
@@ -89,7 +89,7 @@ public class MCUDisplay extends AbstractDisplay
     @Override
     public Display setCell (final int row, final int column, final int value, final Format format)
     {
-        this.cells[row * this.noOfCells + column] = " " + pad (Integer.toString (value), this.charactersOfCell - 1);
+        this.cells[row * this.noOfCells + column] = pad (Integer.toString (value), this.charactersOfCell - 1) + " ";
         return this;
     }
 
@@ -100,7 +100,7 @@ public class MCUDisplay extends AbstractDisplay
     {
         try
         {
-            this.cells[row * this.noOfCells + column] = " " + pad (value, this.charactersOfCell - 1);
+            this.cells[row * this.noOfCells + column] = pad (value, this.charactersOfCell - 1) + " ";
         }
         catch (final ArrayIndexOutOfBoundsException ex)
         {

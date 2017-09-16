@@ -27,7 +27,7 @@ public class RaindropsView extends AbstractRaindropsView<PushControlSurface, Pus
      */
     public RaindropsView (final PushControlSurface surface, final Model model)
     {
-        super ("Raindrop", surface, model, true);
+        super (Views.VIEW_NAME_RAINDROPS, surface, model, true);
 
     }
 

@@ -111,7 +111,7 @@ public class MasterMode extends BaseMode
 
         d.setCell (0, 0, "Volume").setCell (0, 1, "Pan").setBlock (0, 1, "Audio Engine:").setCell (0, 4, application.isEngineActive () ? "On" : "Off");
         d.setCell (0, 5, "Prjct:").setBlock (0, 3, projectName);
-        d.setCell (1, 0, master.getVolumeStr (7)).setCell (1, 1, master.getPanStr (7)).setBlock (1, 1, application.isEngineActive () ? "Turn off" : "Turn on");
+        d.setCell (1, 0, master.getVolumeStr (6)).setCell (1, 1, master.getPanStr (6)).setBlock (1, 1, application.isEngineActive () ? "Turn off" : "Turn on");
         d.setCell (1, 6, " <<").setCell (1, 7, " >>").allDone ();
     }
 

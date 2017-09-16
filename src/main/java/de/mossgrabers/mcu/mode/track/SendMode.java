@@ -71,7 +71,7 @@ public class SendMode extends AbstractTrackMode
         for (int i = 0; i < 8; i++)
         {
             final TrackData t = tb.getTrack (i);
-            d.setCell (1, i, t.getSends ()[sendIndex].getDisplayedValue (7));
+            d.setCell (1, i, t.getSends ()[sendIndex].getDisplayedValue (6));
         }
         d.done (1);
 

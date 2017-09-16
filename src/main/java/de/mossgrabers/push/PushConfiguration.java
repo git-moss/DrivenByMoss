@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.mode.Modes;
+import de.mossgrabers.push.view.Views;
 
 import com.bitwig.extension.controller.api.Preferences;
 import com.bitwig.extension.controller.api.SettableEnumValue;
@@ -54,6 +55,8 @@ public class PushConfiguration extends AbstractConfiguration
     public static final Integer    PAD_DYNAMICS                    = Integer.valueOf (39);
     /** Setting for stopping automation recording on knob release. */
     public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (40);
+    /** Setting for the default note view. */
+    public static final Integer    DEFAULT_NOTE_VIEW               = Integer.valueOf (41);
 
     /** Use ribbon for pitch bend. */
     public static final int        RIBBON_MODE_PITCH               = 0;
@@ -104,6 +107,7 @@ public class PushConfiguration extends AbstractConfiguration
     private SettableRangedValue    padDynamicsSetting;
     private SettableEnumValue      velocityCurveSetting;
     private SettableEnumValue      padThresholdSetting;
+    private Integer                defaultNoteView                 = Views.VIEW_PLAY;
 
     private static final String [] RIBBON_MODE_VALUES              =
     {
@@ -161,6 +165,7 @@ public class PushConfiguration extends AbstractConfiguration
         this.activateAccentActiveSetting (preferences);
         this.activateAccentValueSetting (preferences);
         this.activateQuantizeAmountSetting (preferences);
+        this.activateDefaultNoteViewSetting (preferences);
 
         ///////////////////////////
         // Drum Sequencer
@@ -672,6 +677,17 @@ public class PushConfiguration extends AbstractConfiguration
 
 
     /**
+     * Get the defaaualt note view.
+     *
+     * @return The defaaualt note view
+     */
+    public Integer getDefaultNoteView ()
+    {
+        return this.defaultNoteView;
+    }
+
+
+    /**
      * Activate the Push 2 hardware settings.
      *
      * @param prefs The preferences
@@ -799,6 +815,26 @@ public class PushConfiguration extends AbstractConfiguration
         this.padDynamicsSetting.addValueObserver (11, value -> {
             this.padDynamics = value;
             this.notifyObservers (PAD_DYNAMICS);
+        });
+    }
+
+
+    /**
+     * Activate the default note view setting.
+     *
+     * @param prefs The preferences
+     */
+    private void activateDefaultNoteViewSetting (final Preferences prefs)
+    {
+        final String [] noteViewNames = Views.getNoteViewNames ();
+        final SettableEnumValue defaultNoteViewSetting = prefs.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, noteViewNames, noteViewNames[0]);
+        defaultNoteViewSetting.addValueObserver (value -> {
+            for (int i = 0; i < noteViewNames.length; i++)
+            {
+                if (noteViewNames[i].equals (value))
+                    this.defaultNoteView = Views.getNoteView (i);
+            }
+            this.notifyObservers (DEFAULT_NOTE_VIEW);
         });
     }
 }
