@@ -290,18 +290,19 @@ public class ChannelGridElement extends ChannelSelectionGridElement
     private static void drawButton (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final Color backgroundColor, final Color isOnColor, final Color textColor, final boolean isOn, final String iconName, final PushConfiguration configuration)
     {
         final Color borderColor = configuration.getColorBorder ();
+        final double radius = 2.0;
 
-        drawRoundedRect (gc, left, top, width, height, 5.0, borderColor);
+        drawRoundedRect (gc, left, top, width, height, radius, borderColor);
 
         if (isOn)
-            drawFilledRoundedRect (gc, left + 1, top + 1, width - 2, height - 2, 5.0, isOnColor);
+            drawFilledRoundedRect (gc, left + 1, top + 1, width - 2, height - 2, radius, isOnColor);
         else
         {
             final Color brighter = ColorEx.brighter (backgroundColor);
             final GradientPattern linearGradient = gc.createLinearGradient (left, top + 1, left, top + height);
             linearGradient.addColorStop (0, backgroundColor.getRed (), backgroundColor.getGreen (), backgroundColor.getBlue ());
             linearGradient.addColorStop (1, brighter.getRed (), brighter.getGreen (), brighter.getBlue ());
-            drawPatternFilledRoundedRect (gc, left + 1, top + 1, width - 2, height - 2, 5, linearGradient);
+            drawPatternFilledRoundedRect (gc, left + 1, top + 1, width - 2, height - 2, radius, linearGradient);
         }
 
         gc.setColor (isOn ? borderColor : textColor);
