@@ -11,17 +11,26 @@ import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.api.ControllerHost;
 
-import java.util.UUID;
-
 
 /**
  * Definition class for the Mackie MCU protocol.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MCUControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+abstract class MCUControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("5F10A0CD-F866-41C0-B16A-AEA16282B657");
+    private final int numMCUDevices;
+
+
+    /**
+     * Constructor.
+     *
+     * @param numExtenders The number of extenders to support
+     */
+    MCUControllerExtensionDefinition (final int numExtenders)
+    {
+        this.numMCUDevices = numExtenders + 1;
+    }
 
 
     /** {@inheritDoc} */
@@ -52,15 +61,23 @@ public class MCUControllerExtensionDefinition extends AbstractControllerExtensio
     @Override
     public String getVersion ()
     {
-        return "1.2";
+        return "2.0";
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public UUID getId ()
+    public int getNumMidiInPorts ()
     {
-        return EXTENSION_ID;
+        return this.numMCUDevices;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumMidiOutPorts ()
+    {
+        return this.numMCUDevices;
     }
 
 
@@ -68,7 +85,8 @@ public class MCUControllerExtensionDefinition extends AbstractControllerExtensio
     @Override
     public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
     {
-        this.addDeviceDiscoveryPair ("iCON QCON Pro", "iCON QCON Pro", list);
+        // If names are added for the different number of extenders Bitwig offers them with EVERY
+        // start of the program, so we leave that to manual config
     }
 
 
@@ -76,6 +94,6 @@ public class MCUControllerExtensionDefinition extends AbstractControllerExtensio
     @Override
     public ControllerExtension createInstance (final ControllerHost host)
     {
-        return new MCUControllerExtension (this, host);
+        return new MCUControllerExtension (this, host, this.numMCUDevices);
     }
 }

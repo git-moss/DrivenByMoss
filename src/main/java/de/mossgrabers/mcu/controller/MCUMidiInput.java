@@ -18,9 +18,12 @@ public class MCUMidiInput extends MidiInput
 {
     /**
      * Constructor.
+     *
+     * @param portNumber The number of the midi input port
      */
-    public MCUMidiInput ()
+    public MCUMidiInput (final int portNumber)
     {
+        super (portNumber);
     }
 
 

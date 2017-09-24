@@ -153,7 +153,7 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     @Override
     public void flush ()
     {
-        this.surface.flush ();
+        this.flushSurfaces ();
         this.updateIndication ();
     }
 
@@ -178,7 +178,7 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
         this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
             if (!isSelected)
                 return;
-            final ModeManager modeManager = this.surface.getModeManager ();
+            final ModeManager modeManager = this.getSurface ().getModeManager ();
             if (!modeManager.isActiveMode (Modes.MODE_VOLUME))
                 modeManager.setActiveMode (Modes.MODE_MASTER);
         });
@@ -196,8 +196,9 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
         keysInput.init (host);
         keysInput.createNoteInput ();
 
-        this.surface = new SLControlSurface (host, this.colorManager, this.configuration, output, input, this.isMkII);
-        this.surface.setDisplay (new SLDisplay (host, output));
+        final SLControlSurface surface = new SLControlSurface (host, this.colorManager, this.configuration, output, input, this.isMkII);
+        surface.setDisplay (new SLDisplay (host, output));
+        this.surfaces.add (surface);
     }
 
 
@@ -213,19 +214,20 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     @Override
     protected void createModes ()
     {
-        final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.registerMode (Modes.MODE_FIXED, new FixedMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_FRAME, new FrameMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_FUNCTIONS, new FunctionMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_PLAY_OPTIONS, new PlayOptionsMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_SESSION, new SessionMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_TRACK_TOGGLES, new TrackTogglesMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_VIEW_SELECT, new ViewSelectMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_PARAMS, new DeviceParamsMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_BROWSER, new DevicePresetsMode (this.surface, this.model));
+        final SLControlSurface surface = this.getSurface ();
+        final ModeManager modeManager = surface.getModeManager ();
+        modeManager.registerMode (Modes.MODE_FIXED, new FixedMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_FRAME, new FrameMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_FUNCTIONS, new FunctionMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_PLAY_OPTIONS, new PlayOptionsMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_SESSION, new SessionMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_TRACK_TOGGLES, new TrackTogglesMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_VIEW_SELECT, new ViewSelectMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_PARAMS, new DeviceParamsMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_BROWSER, new DevicePresetsMode (surface, this.model));
     }
 
 
@@ -233,9 +235,10 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     @Override
     protected void createViews ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.registerView (Views.VIEW_PLAY, new PlayView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_CONTROL, new ControlView (this.surface, this.model));
+        final SLControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
+        viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
+        viewManager.registerView (Views.VIEW_CONTROL, new ControlView (surface, this.model));
     }
 
 
@@ -243,26 +246,27 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     @Override
     protected void registerTriggerCommands ()
     {
+        final SLControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
         {
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW1_1 + i, new ButtonRowViewCommand<> (0, i, this.model, this.surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW2_1 + i, new ButtonRowViewCommand<> (1, i, this.model, this.surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW3_1 + i, new ButtonRowViewCommand<> (2, i, this.model, this.surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW4_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW4_1 + i, new ButtonRowViewCommand<> (3, i, this.model, this.surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROWSEL1 + i, new ButtonRowSelectCommand<> (i, this.model, this.surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW1_1 + i, new ButtonRowViewCommand<> (0, i, this.model, surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW2_1 + i, new ButtonRowViewCommand<> (1, i, this.model, surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW3_1 + i, new ButtonRowViewCommand<> (2, i, this.model, surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW4_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW4_1 + i, new ButtonRowViewCommand<> (3, i, this.model, surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROWSEL1 + i, new ButtonRowSelectCommand<> (i, this.model, surface));
         }
 
-        this.addTriggerCommand (Commands.COMMAND_REWIND, SLControlSurface.MKII_BUTTON_REWIND, new ButtonRowViewCommand<> (4, 0, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_FORWARD, SLControlSurface.MKII_BUTTON_FORWARD, new ButtonRowViewCommand<> (4, 1, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_STOP, SLControlSurface.MKII_BUTTON_STOP, new ButtonRowViewCommand<> (4, 2, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_PLAY, SLControlSurface.MKII_BUTTON_PLAY, new ButtonRowViewCommand<> (4, 3, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_LOOP, SLControlSurface.MKII_BUTTON_LOOP, new ButtonRowViewCommand<> (4, 4, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_RECORD, SLControlSurface.MKII_BUTTON_RECORD, new ButtonRowViewCommand<> (4, 6, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, SLControlSurface.MKII_BUTTON_P1_UP, new P1ButtonCommand (true, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, SLControlSurface.MKII_BUTTON_P1_DOWN, new P1ButtonCommand (false, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, SLControlSurface.MKII_BUTTON_P2_UP, new P2ButtonCommand (true, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, SLControlSurface.MKII_BUTTON_P2_DOWN, new P2ButtonCommand (false, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, SLControlSurface.MKII_BUTTON_TRANSPORT, new TransportButtonCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_REWIND, SLControlSurface.MKII_BUTTON_REWIND, new ButtonRowViewCommand<> (4, 0, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_FORWARD, SLControlSurface.MKII_BUTTON_FORWARD, new ButtonRowViewCommand<> (4, 1, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_STOP, SLControlSurface.MKII_BUTTON_STOP, new ButtonRowViewCommand<> (4, 2, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_PLAY, SLControlSurface.MKII_BUTTON_PLAY, new ButtonRowViewCommand<> (4, 3, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_LOOP, SLControlSurface.MKII_BUTTON_LOOP, new ButtonRowViewCommand<> (4, 4, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_RECORD, SLControlSurface.MKII_BUTTON_RECORD, new ButtonRowViewCommand<> (4, 6, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, SLControlSurface.MKII_BUTTON_P1_UP, new P1ButtonCommand (true, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, SLControlSurface.MKII_BUTTON_P1_DOWN, new P1ButtonCommand (false, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, SLControlSurface.MKII_BUTTON_P2_UP, new P2ButtonCommand (true, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, SLControlSurface.MKII_BUTTON_P2_DOWN, new P2ButtonCommand (false, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, SLControlSurface.MKII_BUTTON_TRANSPORT, new TransportButtonCommand (this.model, surface));
     }
 
 
@@ -270,16 +274,17 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     @Override
     protected void registerContinuousCommands ()
     {
+        final SLControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
         {
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_FADER1.intValue () + i), SLControlSurface.MKII_SLIDER1 + i, new FaderCommand (i, this.model, this.surface));
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i), SLControlSurface.MKII_KNOB_ROW1_1 + i, new DeviceKnobRowCommand (i, this.model, this.surface));
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), SLControlSurface.MKII_KNOB_ROW2_1 + i, new TrackKnobRowCommand (i, this.model, this.surface));
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_FADER1.intValue () + i), SLControlSurface.MKII_SLIDER1 + i, new FaderCommand (i, this.model, surface));
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i), SLControlSurface.MKII_KNOB_ROW1_1 + i, new DeviceKnobRowCommand (i, this.model, surface));
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), SLControlSurface.MKII_KNOB_ROW2_1 + i, new TrackKnobRowCommand (i, this.model, surface));
         }
-        this.addContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_X, SLControlSurface.MKII_TOUCHPAD_X, new TouchpadCommand (true, this.model, this.surface));
-        this.addContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_Y, SLControlSurface.MKII_TOUCHPAD_Y, new TouchpadCommand (false, this.model, this.surface));
-        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, SLControlSurface.MKI_BUTTON_TAP_TEMPO, new TapTempoInitMkICommand (this.model, this.surface));
-        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO, SLControlSurface.MKI_BUTTON_TAP_TEMPO_VALUE, new TapTempoMkICommand (this.model, this.surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_X, SLControlSurface.MKII_TOUCHPAD_X, new TouchpadCommand (true, this.model, surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_Y, SLControlSurface.MKII_TOUCHPAD_Y, new TouchpadCommand (false, this.model, surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, SLControlSurface.MKI_BUTTON_TAP_TEMPO, new TapTempoInitMkICommand (this.model, surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO, SLControlSurface.MKI_BUTTON_TAP_TEMPO_VALUE, new TapTempoMkICommand (this.model, surface));
     }
 
 
@@ -288,18 +293,20 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     protected void startup ()
     {
         // Initialise 2nd display
-        this.surface.getModeManager ().getMode (Modes.MODE_VOLUME).updateDisplay ();
+        final SLControlSurface surface = this.getSurface ();
+        surface.getModeManager ().getMode (Modes.MODE_VOLUME).updateDisplay ();
 
         this.getHost ().scheduleTask ( () -> {
-            this.surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
+            surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
+            surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
         }, 200);
     }
 
 
     private void updateIndication ()
     {
-        final Integer mode = this.surface.getModeManager ().getActiveModeId ();
+        final SLControlSurface surface = this.getSurface ();
+        final Integer mode = surface.getModeManager ().getActiveModeId ();
 
         final MasterTrackProxy mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (Modes.MODE_MASTER.equals (mode));
@@ -337,7 +344,7 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
      */
     private void handleTrackChange (final int index, final boolean isSelected)
     {
-        final ModeManager modeManager = this.surface.getModeManager ();
+        final ModeManager modeManager = this.getSurface ().getModeManager ();
         if (isSelected && modeManager.isActiveMode (Modes.MODE_MASTER))
             modeManager.setActiveMode (Modes.MODE_TRACK);
     }

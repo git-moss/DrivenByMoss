@@ -34,7 +34,8 @@ public class PanMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().changePan (index, value);
+        final int channel = this.surface.getExtenderOffset () + index;
+        this.model.getCurrentTrackBank ().changePan (channel, value);
     }
 
 
@@ -51,9 +52,10 @@ public class PanMode extends AbstractTrackMode
 
         final Display d = this.surface.getDisplay ();
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final TrackData t = tb.getTrack (extenderOffset + i);
             d.setCell (1, i, t.getPanStr (6));
         }
         d.done (1);
@@ -72,9 +74,10 @@ public class PanMode extends AbstractTrackMode
 
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final Display d = this.surface.getDisplay ();
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            if (tb.getTrack (i).doesExist ())
+            if (tb.getTrack (extenderOffset + i).doesExist ())
                 d.setCell (0, i, "Pan");
             else
                 d.clearCell (0, i);
@@ -91,9 +94,10 @@ public class PanMode extends AbstractTrackMode
     {
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final TrackData t = tb.getTrack (extenderOffset + i);
             this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_BOOST_CUT, t.doesExist () ? Math.max (t.getPan (), 1) : upperBound / 2, upperBound);
         }
     }
@@ -103,6 +107,7 @@ public class PanMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        this.model.getCurrentTrackBank ().resetPan (index);
+        final int extenderOffset = this.surface.getExtenderOffset ();
+        this.model.getCurrentTrackBank ().resetPan (extenderOffset + index);
     }
 }

@@ -17,6 +17,9 @@ import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.ControllerExtensionDefinition;
 import com.bitwig.extension.controller.api.ControllerHost;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Abstract base class for controller extensions.
@@ -28,7 +31,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C extends Configuration> extends ControllerExtension
 {
-    protected S            surface;
+    protected List<S>      surfaces = new ArrayList<> ();
     protected Scales       scales;
     protected Model        model;
     protected C            configuration;
@@ -45,6 +48,29 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
     protected AbstractControllerExtension (final ControllerExtensionDefinition definition, final ControllerHost host)
     {
         super (definition, host);
+    }
+
+
+    /**
+     * Get the 1st surface. Convenience method for backwards compatibility.
+     *
+     * @return The 1st surface
+     */
+    public S getSurface ()
+    {
+        return this.surfaces.get (0);
+    }
+
+
+    /**
+     * Get a surface.
+     * 
+     * @param index The index of the surface
+     * @return The surface
+     */
+    public S getSurface (final int index)
+    {
+        return this.surfaces.get (index);
     }
 
 
@@ -73,8 +99,19 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
     public void exit ()
     {
         this.configuration.clearSettingObservers ();
-        this.surface.shutdown ();
+        for (final S surface: this.surfaces)
+            surface.shutdown ();
         this.getHost ().println ("Exited.");
+    }
+
+
+    /**
+     * Flush all surfaces.
+     */
+    public void flushSurfaces ()
+    {
+        for (final S surface: this.surfaces)
+            surface.flush ();
     }
 
 
@@ -145,7 +182,8 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
 
 
     /**
-     * Register a (global) trigger command for all views and assign it to a MIDI CC.
+     * Register a (global) trigger command for all views and assign it to a MIDI CC for the first
+     * device.
      *
      * @param commandID The ID of the command to register
      * @param midiCC The midi CC
@@ -153,8 +191,23 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
      */
     protected void addTriggerCommand (final Integer commandID, final int midiCC, final TriggerCommand command)
     {
-        this.surface.getViewManager ().registerTriggerCommand (commandID, command);
-        this.surface.assignTriggerCommand (midiCC, commandID);
+        this.addTriggerCommand (commandID, midiCC, command, 0);
+    }
+
+
+    /**
+     * Register a (global) trigger command for all views and assign it to a MIDI CC.
+     *
+     * @param commandID The ID of the command to register
+     * @param midiCC The midi CC
+     * @param command The command to register
+     * @param deviceIndex The index of the device
+     */
+    protected void addTriggerCommand (final Integer commandID, final int midiCC, final TriggerCommand command, final int deviceIndex)
+    {
+        final S surface = this.surfaces.get (deviceIndex);
+        surface.getViewManager ().registerTriggerCommand (commandID, command);
+        surface.assignTriggerCommand (midiCC, commandID);
     }
 
 
@@ -167,8 +220,9 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
      */
     protected void addContinuousCommand (final Integer commandID, final int midiCC, final ContinuousCommand command)
     {
-        this.surface.getViewManager ().registerContinuousCommand (commandID, command);
-        this.surface.assignContinuousCommand (midiCC, commandID);
+        final S surface = this.surfaces.get (0);
+        surface.getViewManager ().registerContinuousCommand (commandID, command);
+        surface.assignContinuousCommand (midiCC, commandID);
     }
 
 
@@ -181,8 +235,9 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
      */
     protected void addNoteCommand (final Integer commandID, final int midiCC, final TriggerCommand command)
     {
-        this.surface.getViewManager ().registerNoteCommand (commandID, command);
-        this.surface.assignNoteCommand (midiCC, commandID);
+        final S surface = this.surfaces.get (0);
+        surface.getViewManager ().registerNoteCommand (commandID, command);
+        surface.assignNoteCommand (midiCC, commandID);
     }
 
 
@@ -218,8 +273,11 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
      */
     private void updateViewNoteMapping ()
     {
-        final View view = this.surface.getViewManager ().getActiveView ();
-        if (view != null)
-            view.updateNoteMapping ();
+        for (final S surface: this.surfaces)
+        {
+            final View view = surface.getViewManager ().getActiveView ();
+            if (view != null)
+                view.updateNoteMapping ();
+        }
     }
 }

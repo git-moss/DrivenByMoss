@@ -10,4 +10,7 @@ de.mossgrabers.push.Push1ControllerExtensionDefinition
 de.mossgrabers.push.Push2ControllerExtensionDefinition
 de.mossgrabers.sl.SLMkIControllerExtensionDefinition
 de.mossgrabers.sl.SLMkIIControllerExtensionDefinition
-de.mossgrabers.mcu.MCUControllerExtensionDefinition
+de.mossgrabers.mcu.MCUController0ExtenderExtensionDefinition
+de.mossgrabers.mcu.MCUController1ExtenderExtensionDefinition
+de.mossgrabers.mcu.MCUController2ExtenderExtensionDefinition
+de.mossgrabers.mcu.MCUController3ExtenderExtensionDefinition

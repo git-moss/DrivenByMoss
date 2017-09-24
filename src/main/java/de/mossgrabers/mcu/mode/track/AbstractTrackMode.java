@@ -46,9 +46,10 @@ public abstract class AbstractTrackMode extends BaseMode
         }
 
         // Format track names
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final TrackData t = tb.getTrack (extenderOffset + i);
             final String name = t.getName ();
             d.setCell (0, i, this.optimizeName (StringUtils.fixASCII (name), 6));
         }

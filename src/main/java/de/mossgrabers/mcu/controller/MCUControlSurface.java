@@ -309,6 +309,8 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     private int               activeVuMode             = VUMODE_LED;
     private int []            knobValues               = new int [8];
 
+    private final int         extenderOffset;
+
 
     /**
      * Constructor.
@@ -318,10 +320,13 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      * @param configuration The configuration
      * @param output The midi output
      * @param input The midi input
+     * @param extenderOffset The channel/bank offset if multiple extenders are used
      */
-    public MCUControlSurface (final ControllerHost host, final ColorManager colorManager, final MCUConfiguration configuration, final MidiOutput output, final MidiInput input)
+    public MCUControlSurface (final ControllerHost host, final ColorManager colorManager, final MCUConfiguration configuration, final MidiOutput output, final MidiInput input, final int extenderOffset)
     {
         super (host, configuration, colorManager, output, input, MCU_BUTTONS_ALL);
+
+        this.extenderOffset = extenderOffset;
 
         this.shiftButtonId = MCU_SHIFT;
         this.selectButtonId = MCU_OPTION;
@@ -416,27 +421,58 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     }
 
 
+    /**
+     * Set the second display (only on icon QCon Pro X).
+     *
+     * @param secondDisplay The second display
+     */
     public void setSecondDisplay (final MCUDisplay secondDisplay)
     {
         this.secondDisplay = secondDisplay;
     }
 
 
-    public void setSegmentDisplay (final MCUSegmentDisplay segmentDisplay)
-    {
-        this.segmentDisplay = segmentDisplay;
-    }
-
-
+    /**
+     * Get the second display (only on icon QCon Pro X).
+     *
+     * @return The second display
+     */
     public MCUDisplay getSecondDisplay ()
     {
         return this.secondDisplay;
     }
 
 
+    /**
+     * Set the segment display.
+     *
+     * @param segmentDisplay The segment display
+     */
+    public void setSegmentDisplay (final MCUSegmentDisplay segmentDisplay)
+    {
+        this.segmentDisplay = segmentDisplay;
+    }
+
+
+    /**
+     * Get the segment display.
+     *
+     * @return The segment display
+     */
     public MCUSegmentDisplay getSegmentDisplay ()
     {
         return this.segmentDisplay;
+    }
+
+
+    /**
+     * Get the channel/bank offset if multiple extenders are used.
+     *
+     * @return The offset 0, 8, 16 or 24
+     */
+    public int getExtenderOffset ()
+    {
+        return this.extenderOffset;
     }
 
 

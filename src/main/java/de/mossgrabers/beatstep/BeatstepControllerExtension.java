@@ -139,7 +139,7 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
     @Override
     public void flush ()
     {
-        this.surface.flush ();
+        this.flushSurfaces ();
     }
 
 
@@ -171,8 +171,9 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
         final ControllerHost host = this.getHost ();
         final MidiOutput output = new MidiOutput (host);
         final MidiInput input = new BeatstepMidiInput (this.isPro);
-        this.surface = new BeatstepControlSurface (host, this.colorManager, this.configuration, output, input, this.isPro);
-        this.surface.setDisplay (new DummyDisplay (host));
+        final BeatstepControlSurface surface = new BeatstepControlSurface (host, this.colorManager, this.configuration, output, input, this.isPro);
+        this.surfaces.add (surface);
+        surface.setDisplay (new DummyDisplay (host));
     }
 
 
@@ -180,7 +181,7 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
     @Override
     protected void createObservers ()
     {
-        this.surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication ());
+        this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication ());
         this.createScaleObservers (this.configuration);
     }
 
@@ -189,15 +190,16 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
     @Override
     protected void createViews ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.registerView (Views.VIEW_TRACK, new TrackView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_DEVICE, new DeviceView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_PLAY, new PlayView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM, new DrumView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_SESSION, new SessionView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_BROWSER, new BrowserView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (this.surface, this.model));
+        final BeatstepControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
+        viewManager.registerView (Views.VIEW_TRACK, new TrackView (surface, this.model));
+        viewManager.registerView (Views.VIEW_DEVICE, new DeviceView (surface, this.model));
+        viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
+        viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
+        viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
+        viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
+        viewManager.registerView (Views.VIEW_BROWSER, new BrowserView (surface, this.model));
+        viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (surface, this.model));
     }
 
 
@@ -208,8 +210,9 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
         if (!this.isPro)
             return;
 
+        final BeatstepControlSurface surface = this.getSurface ();
         for (int i = 0; i < 16; i++)
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), BeatstepControlSurface.BEATSTEP_PRO_STEP1 + i, new StepCommand (i, this.model, this.surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), BeatstepControlSurface.BEATSTEP_PRO_STEP1 + i, new StepCommand (i, this.model, surface));
     }
 
 
@@ -217,15 +220,16 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
     @Override
     protected void registerContinuousCommands ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
+        final BeatstepControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
         for (int i = 0; i < 8; i++)
         {
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_1 + i, new KnobRowViewCommand (i, this.model, this.surface));
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_9 + i, new KnobRowViewCommand (i + 8, this.model, this.surface));
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_1 + i, new KnobRowViewCommand (i, this.model, surface));
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_9 + i, new KnobRowViewCommand (i + 8, this.model, surface));
         }
-        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, new BeatstepPlayPositionCommand (this.model, this.surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, new BeatstepPlayPositionCommand (this.model, surface));
         final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);
-        playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, this.surface));
+        playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, surface));
     }
 
 
@@ -234,15 +238,16 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
     protected void startup ()
     {
         // Enable Shift button to send Midi Note 07
-        this.surface.getOutput ().sendSysex ("F0 00 20 6B 7F 42 02 00 01 5E 09 F7");
-
-        this.surface.scheduleTask ( () -> this.surface.getViewManager ().setActiveView (Views.VIEW_TRACK), 100);
+        final BeatstepControlSurface surface = this.getSurface ();
+        surface.getOutput ().sendSysex ("F0 00 20 6B 7F 42 02 00 01 5E 09 F7");
+        surface.scheduleTask ( () -> surface.getViewManager ().setActiveView (Views.VIEW_TRACK), 100);
     }
 
 
     private void updateIndication ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
+        final BeatstepControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
         final boolean isTrack = viewManager.isActiveView (Views.VIEW_TRACK);
         final boolean isDevice = viewManager.isActiveView (Views.VIEW_DEVICE);
         final boolean isSession = viewManager.isActiveView (Views.VIEW_SESSION);
@@ -288,7 +293,7 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
         if (!isSelected)
             return;
 
-        final ViewManager viewManager = this.surface.getViewManager ();
+        final ViewManager viewManager = this.getSurface ().getViewManager ();
         if (viewManager.isActiveView (Views.VIEW_PLAY))
             viewManager.getActiveView ().updateNoteMapping ();
 

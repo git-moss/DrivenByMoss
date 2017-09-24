@@ -137,8 +137,11 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         MODE_ACRONYMS.put (Modes.MODE_BROWSER, "BR");
     }
 
-    private final int [] vuValues    = new int [10];
-    private final int [] faderValues = new int [9];
+    private final int [] masterVuValues   = new int [2];
+    private int          masterFaderValue = -1;
+    private final int [] vuValues         = new int [36];
+    private final int [] faderValues      = new int [36];
+    private final int    numMCUDevices;
 
 
     /**
@@ -146,13 +149,17 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
      *
      * @param extensionDefinition The extension definition
      * @param host The Bitwig host
+     * @param numMCUDevices The number of MCU devices (main device + extenders) to support
      */
-    public MCUControllerExtension (final MCUControllerExtensionDefinition extensionDefinition, final ControllerHost host)
+    public MCUControllerExtension (final MCUControllerExtensionDefinition extensionDefinition, final ControllerHost host, final int numMCUDevices)
     {
         super (extensionDefinition, host);
 
+        this.numMCUDevices = numMCUDevices;
+
         Arrays.fill (this.vuValues, -1);
         Arrays.fill (this.faderValues, -1);
+        Arrays.fill (this.masterVuValues, -1);
 
         this.colorManager = new ColorManager ();
         this.valueChanger = new MCUValueChanger (16241 + 1, 100, 10);
@@ -164,10 +171,11 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @Override
     public void flush ()
     {
-        this.surface.flush ();
+        this.flushSurfaces ();
 
         this.updateButtons ();
-        this.updateMode (this.surface.getModeManager ().getActiveModeId ());
+        // TODO
+        this.updateMode (this.getSurface ().getModeManager ().getActiveModeId ());
     }
 
 
@@ -175,17 +183,19 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @Override
     protected void createModel ()
     {
-        this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 8, 8, true, -1, -1, -1, -1);
+        this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8 * this.numMCUDevices, 8, 8, 8, 8, true, 8 * this.numMCUDevices, -1, -1, -1);
 
         final TrackBankProxy trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
 
+        // TODO
         this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
+            final ModeManager modeManager = this.getSurface ().getModeManager ();
             if (isSelected)
-                this.surface.getModeManager ().setActiveMode (Modes.MODE_MASTER);
+                modeManager.setActiveMode (Modes.MODE_MASTER);
             else
-                this.surface.getModeManager ().restoreMode ();
+                modeManager.restoreMode ();
         });
     }
 
@@ -195,14 +205,18 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     protected void createSurface ()
     {
         final ControllerHost host = this.getHost ();
-        final MidiOutput output = new MidiOutput (host);
-        final MidiInput input = new MCUMidiInput ();
-        this.surface = new MCUControlSurface (host, this.colorManager, this.configuration, output, input);
-        this.surface.setDisplay (new MCUDisplay (host, output, true));
-        this.surface.setSecondDisplay (new MCUDisplay (host, output, false));
-        this.surface.setSegmentDisplay (new MCUSegmentDisplay (host, output));
 
-        this.surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
+        for (int i = 0; i < this.numMCUDevices; i++)
+        {
+            final MidiOutput output = new MidiOutput (host, i);
+            final MidiInput input = new MCUMidiInput (i);
+            final MCUControlSurface surface = new MCUControlSurface (host, this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1));
+            this.surfaces.add (surface);
+            surface.setDisplay (new MCUDisplay (host, output, true));
+            surface.setSecondDisplay (new MCUDisplay (host, output, false));
+            surface.setSegmentDisplay (new MCUSegmentDisplay (host, output));
+            surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
+        }
     }
 
 
@@ -210,19 +224,23 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @Override
     protected void createModes ()
     {
-        final ModeManager modeManager = this.surface.getModeManager ();
+        for (int index = 0; index < this.numMCUDevices; index++)
+        {
+            final MCUControlSurface surface = this.getSurface (index);
+            final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_PAN, new PanMode (this.surface, this.model));
-        final SendMode modeSend = new SendMode (this.surface, this.model);
-        for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), modeSend);
+            modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (surface, this.model));
+            modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
+            modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
+            final SendMode modeSend = new SendMode (surface, this.model);
+            for (int i = 0; i < 8; i++)
+                modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), modeSend);
 
-        modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new DeviceParamsMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_BROWSER, new DeviceBrowserMode (this.surface, this.model));
+            modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
+            modeManager.registerMode (Modes.MODE_BROWSER, new DeviceBrowserMode (surface, this.model));
 
-        modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (this.surface, this.model, false));
+            modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (surface, this.model, false));
+        }
     }
 
 
@@ -230,17 +248,22 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @Override
     protected void createObservers ()
     {
-        this.surface.getModeManager ().addModeListener ( (oldMode, newMode) -> {
+        // Track changes are only done on the main device, all others need to follow...
+        final MCUControlSurface surface = this.getSurface ();
+        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> {
+            for (int index = 1; index < this.numMCUDevices; index++)
+                this.getSurface (index).getModeManager ().setActiveMode (newMode);
+
             this.updateMode (null);
             this.updateMode (newMode);
         });
 
         this.configuration.addSettingObserver (AbstractConfiguration.ENABLE_VU_METERS, () -> {
-            this.surface.switchVuMode (this.configuration.isEnableVUMeters () ? MCUControlSurface.VUMODE_LED_AND_LCD : MCUControlSurface.VUMODE_OFF);
-            final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+            surface.switchVuMode (this.configuration.isEnableVUMeters () ? MCUControlSurface.VUMODE_LED_AND_LCD : MCUControlSurface.VUMODE_OFF);
+            final Mode activeMode = surface.getModeManager ().getActiveMode ();
             if (activeMode != null)
                 activeMode.updateDisplay ();
-            ((MCUDisplay) this.surface.getDisplay ()).forceFlush ();
+            ((MCUDisplay) surface.getDisplay ()).forceFlush ();
         });
     }
 
@@ -249,8 +272,12 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @Override
     protected void createViews ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.registerView (Views.VIEW_CONTROL, new ControlView (this.surface, this.model));
+        for (int index = 0; index < this.numMCUDevices; index++)
+        {
+            final MCUControlSurface surface = this.getSurface (index);
+            final ViewManager viewManager = surface.getViewManager ();
+            viewManager.registerView (Views.VIEW_CONTROL, new ControlView (surface, this.model));
+        }
     }
 
 
@@ -258,102 +285,119 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @Override
     protected void registerTriggerCommands ()
     {
+        // Assignments to the main device
+        final MCUControlSurface surface = this.getSurface ();
+
         // Footswitches
-        this.addTriggerCommand (COMMAND_FOOTSWITCH1, MCUControlSurface.MCU_USER_A, new AssignableCommand (0, this.model, this.surface));
-        this.addTriggerCommand (COMMAND_FOOTSWITCH2, MCUControlSurface.MCU_USER_B, new AssignableCommand (1, this.model, this.surface));
+        this.addTriggerCommand (COMMAND_FOOTSWITCH1, MCUControlSurface.MCU_USER_A, new AssignableCommand (0, this.model, surface));
+        this.addTriggerCommand (COMMAND_FOOTSWITCH2, MCUControlSurface.MCU_USER_B, new AssignableCommand (1, this.model, surface));
 
         // Navigation
-        this.addTriggerCommand (Commands.COMMAND_REWIND, MCUControlSurface.MCU_REWIND, new WindCommand<> (this.model, this.surface, false));
-        this.addTriggerCommand (Commands.COMMAND_FORWARD, MCUControlSurface.MCU_FORWARD, new WindCommand<> (this.model, this.surface, true));
-        this.addTriggerCommand (Commands.COMMAND_LOOP, MCUControlSurface.MCU_REPEAT, new LoopCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_STOP, MCUControlSurface.MCU_STOP, new StopCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_PLAY, MCUControlSurface.MCU_PLAY, new PlayCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_RECORD, MCUControlSurface.MCU_RECORD, new RecordCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_REWIND, MCUControlSurface.MCU_REWIND, new WindCommand<> (this.model, surface, false));
+        this.addTriggerCommand (Commands.COMMAND_FORWARD, MCUControlSurface.MCU_FORWARD, new WindCommand<> (this.model, surface, true));
+        this.addTriggerCommand (Commands.COMMAND_LOOP, MCUControlSurface.MCU_REPEAT, new LoopCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_STOP, MCUControlSurface.MCU_STOP, new StopCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_PLAY, MCUControlSurface.MCU_PLAY, new PlayCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_RECORD, MCUControlSurface.MCU_RECORD, new RecordCommand<> (this.model, surface));
 
-        this.addTriggerCommand (COMMAND_SCRUB, MCUControlSurface.MCU_SCRUB, new ScrubCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, MCUControlSurface.MCU_ARROW_LEFT, new CursorCommand (Direction.LEFT, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, MCUControlSurface.MCU_ARROW_RIGHT, new CursorCommand (Direction.RIGHT, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, MCUControlSurface.MCU_ARROW_UP, new CursorCommand (Direction.UP, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, MCUControlSurface.MCU_ARROW_DOWN, new CursorCommand (Direction.DOWN, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ZOOM, MCUControlSurface.MCU_ZOOM, new ZoomCommand (this.model, this.surface));
+        this.addTriggerCommand (COMMAND_SCRUB, MCUControlSurface.MCU_SCRUB, new ScrubCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, MCUControlSurface.MCU_ARROW_LEFT, new CursorCommand (Direction.LEFT, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, MCUControlSurface.MCU_ARROW_RIGHT, new CursorCommand (Direction.RIGHT, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, MCUControlSurface.MCU_ARROW_UP, new CursorCommand (Direction.UP, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, MCUControlSurface.MCU_ARROW_DOWN, new CursorCommand (Direction.DOWN, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ZOOM, MCUControlSurface.MCU_ZOOM, new ZoomCommand (this.model, surface));
 
         // Display Mode
-        this.addTriggerCommand (COMMAND_TOGGLE_DISPLAY, MCUControlSurface.MCU_NAME_VALUE, new ToggleDisplayCommand (this.model, this.surface));
-        this.addTriggerCommand (COMMAND_TEMPO_TICKS, MCUControlSurface.MCU_SMPTE_BEATS, new TempoTicksCommand (this.model, this.surface));
+        this.addTriggerCommand (COMMAND_TOGGLE_DISPLAY, MCUControlSurface.MCU_NAME_VALUE, new ToggleDisplayCommand (this.model, surface));
+        this.addTriggerCommand (COMMAND_TEMPO_TICKS, MCUControlSurface.MCU_SMPTE_BEATS, new TempoTicksCommand (this.model, surface));
 
         // Functions
-        this.addTriggerCommand (Commands.COMMAND_SHIFT, MCUControlSurface.MCU_SHIFT, new ShiftCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_SELECT, MCUControlSurface.MCU_OPTION, new NopCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_PUNCH_IN, MCUControlSurface.MCU_F6, new PunchInCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_PUNCH_OUT, MCUControlSurface.MCU_F7, new PunchOutCommand<> (this.model, this.surface));
-        this.addTriggerCommand (COMMAND_F1, MCUControlSurface.MCU_F1, new AssignableCommand (2, this.model, this.surface));
-        this.addTriggerCommand (COMMAND_F2, MCUControlSurface.MCU_F2, new AssignableCommand (3, this.model, this.surface));
-        this.addTriggerCommand (COMMAND_F3, MCUControlSurface.MCU_F3, new AssignableCommand (4, this.model, this.surface));
-        this.addTriggerCommand (COMMAND_F4, MCUControlSurface.MCU_F4, new AssignableCommand (5, this.model, this.surface));
-        this.addTriggerCommand (COMMAND_F5, MCUControlSurface.MCU_F5, new AssignableCommand (6, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SHIFT, MCUControlSurface.MCU_SHIFT, new ShiftCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_SELECT, MCUControlSurface.MCU_OPTION, new NopCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_PUNCH_IN, MCUControlSurface.MCU_F6, new PunchInCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_PUNCH_OUT, MCUControlSurface.MCU_F7, new PunchOutCommand<> (this.model, surface));
+        this.addTriggerCommand (COMMAND_F1, MCUControlSurface.MCU_F1, new AssignableCommand (2, this.model, surface));
+        this.addTriggerCommand (COMMAND_F2, MCUControlSurface.MCU_F2, new AssignableCommand (3, this.model, surface));
+        this.addTriggerCommand (COMMAND_F3, MCUControlSurface.MCU_F3, new AssignableCommand (4, this.model, surface));
+        this.addTriggerCommand (COMMAND_F4, MCUControlSurface.MCU_F4, new AssignableCommand (5, this.model, surface));
+        this.addTriggerCommand (COMMAND_F5, MCUControlSurface.MCU_F5, new AssignableCommand (6, this.model, surface));
 
         // Assignment
-        this.addTriggerCommand (Commands.COMMAND_TRACK, MCUControlSurface.MCU_MODE_IO, new ModeMultiSelectCommand<> (this.model, this.surface, Modes.MODE_TRACK, Modes.MODE_VOLUME));
-        this.addTriggerCommand (Commands.COMMAND_PAN_SEND, MCUControlSurface.MCU_MODE_PAN, new ModeSelectCommand<> (Modes.MODE_PAN, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_SENDS, MCUControlSurface.MCU_MODE_SENDS, new SendSelectCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_DEVICE, MCUControlSurface.MCU_MODE_PLUGIN, new ModeSelectCommand<> (Modes.MODE_DEVICE_PARAMS, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_LEFT, MCUControlSurface.MCU_MODE_EQ, new MoveTrackBankCommand<> (this.model, this.surface, true, true));
-        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_RIGHT, MCUControlSurface.MCU_MODE_DYN, new MoveTrackBankCommand<> (this.model, this.surface, true, false));
+        this.addTriggerCommand (Commands.COMMAND_TRACK, MCUControlSurface.MCU_MODE_IO, new ModeMultiSelectCommand<> (this.model, surface, Modes.MODE_TRACK, Modes.MODE_VOLUME));
+        this.addTriggerCommand (Commands.COMMAND_PAN_SEND, MCUControlSurface.MCU_MODE_PAN, new ModeSelectCommand<> (Modes.MODE_PAN, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_SENDS, MCUControlSurface.MCU_MODE_SENDS, new SendSelectCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_DEVICE, MCUControlSurface.MCU_MODE_PLUGIN, new ModeSelectCommand<> (Modes.MODE_DEVICE_PARAMS, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_LEFT, MCUControlSurface.MCU_MODE_EQ, new MoveTrackBankCommand<> (this.model, surface, true, true));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_RIGHT, MCUControlSurface.MCU_MODE_DYN, new MoveTrackBankCommand<> (this.model, surface, true, false));
 
         // Automation
-        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_READ, MCUControlSurface.MCU_READ, new AutomationCommand (0, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_WRITE, MCUControlSurface.MCU_WRITE, new AutomationCommand (1, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_TRIM, MCUControlSurface.MCU_TRIM, new AutomationCommand (2, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_TOUCH, MCUControlSurface.MCU_TOUCH, new AutomationCommand (3, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_LATCH, MCUControlSurface.MCU_LATCH, new AutomationCommand (4, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_UNDO, MCUControlSurface.MCU_UNDO, new UndoCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_READ, MCUControlSurface.MCU_READ, new AutomationCommand (0, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_WRITE, MCUControlSurface.MCU_WRITE, new AutomationCommand (1, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_TRIM, MCUControlSurface.MCU_TRIM, new AutomationCommand (2, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_TOUCH, MCUControlSurface.MCU_TOUCH, new AutomationCommand (3, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_LATCH, MCUControlSurface.MCU_LATCH, new AutomationCommand (4, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_UNDO, MCUControlSurface.MCU_UNDO, new UndoCommand<> (this.model, surface));
 
         // Utilities
-        this.addTriggerCommand (COMMAND_NOTE_EDITOR, MCUControlSurface.MCU_MIDI_TRACKS, new PaneCommand (0, this.model, this.surface));
-        this.addTriggerCommand (COMMAND_AUTOMATION_EDITOR, MCUControlSurface.MCU_INPUTS, new PaneCommand (1, this.model, this.surface));
-        this.addTriggerCommand (COMMAND_TOGGLE_DEVICE, MCUControlSurface.MCU_AUDIO_TRACKS, new PaneCommand (2, this.model, this.surface));
-        this.addTriggerCommand (COMMAND_MIXER, MCUControlSurface.MCU_AUDIO_INSTR, new PaneCommand (3, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_BROWSE, MCUControlSurface.MCU_USER, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_METRONOME, MCUControlSurface.MCU_CLICK, new MetronomeCommand<> (this.model, this.surface));
-        this.addTriggerCommand (COMMAND_GROOVE, MCUControlSurface.MCU_SOLO, new GrooveCommand (this.model, this.surface));
-        this.addTriggerCommand (COMMAND_OVERDUB, MCUControlSurface.MCU_REPLACE, new OverdubCommand (this.model, this.surface));
+        this.addTriggerCommand (COMMAND_NOTE_EDITOR, MCUControlSurface.MCU_MIDI_TRACKS, new PaneCommand (0, this.model, surface));
+        this.addTriggerCommand (COMMAND_AUTOMATION_EDITOR, MCUControlSurface.MCU_INPUTS, new PaneCommand (1, this.model, surface));
+        this.addTriggerCommand (COMMAND_TOGGLE_DEVICE, MCUControlSurface.MCU_AUDIO_TRACKS, new PaneCommand (2, this.model, surface));
+        this.addTriggerCommand (COMMAND_MIXER, MCUControlSurface.MCU_AUDIO_INSTR, new PaneCommand (3, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_BROWSE, MCUControlSurface.MCU_USER, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_METRONOME, MCUControlSurface.MCU_CLICK, new MetronomeCommand<> (this.model, surface));
+        this.addTriggerCommand (COMMAND_GROOVE, MCUControlSurface.MCU_SOLO, new GrooveCommand (this.model, surface));
+        this.addTriggerCommand (COMMAND_OVERDUB, MCUControlSurface.MCU_REPLACE, new OverdubCommand (this.model, surface));
 
         // Fader Controls
-        this.addTriggerCommand (COMMAND_FLIP, MCUControlSurface.MCU_FLIP, new ToggleTrackBanksCommand<> (this.model, this.surface));
-        this.addTriggerCommand (COMMAND_CANCEL, MCUControlSurface.MCU_CANCEL, new KeyCommand (Key.ESCAPE, this.model, this.surface));
-        this.addTriggerCommand (COMMAND_ENTER, MCUControlSurface.MCU_ENTER, new KeyCommand (Key.ENTER, this.model, this.surface));
+        this.addTriggerCommand (COMMAND_FLIP, MCUControlSurface.MCU_FLIP, new ToggleTrackBanksCommand<> (this.model, surface));
+        this.addTriggerCommand (COMMAND_CANCEL, MCUControlSurface.MCU_CANCEL, new KeyCommand (Key.ESCAPE, this.model, surface));
+        this.addTriggerCommand (COMMAND_ENTER, MCUControlSurface.MCU_ENTER, new KeyCommand (Key.ENTER, this.model, surface));
 
-        this.addTriggerCommand (Commands.COMMAND_MOVE_BANK_LEFT, MCUControlSurface.MCU_BANK_LEFT, new MoveTrackBankCommand<> (this.model, this.surface, false, true));
-        this.addTriggerCommand (Commands.COMMAND_MOVE_BANK_RIGHT, MCUControlSurface.MCU_BANK_RIGHT, new MoveTrackBankCommand<> (this.model, this.surface, false, false));
-        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_LEFT, MCUControlSurface.MCU_TRACK_LEFT, new MoveTrackBankCommand<> (this.model, this.surface, true, true));
-        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_RIGHT, MCUControlSurface.MCU_TRACK_RIGHT, new MoveTrackBankCommand<> (this.model, this.surface, true, false));
-
-        // Common track editing
-        final ViewManager viewManager = this.surface.getViewManager ();
-        for (int i = 0; i < 8; i++)
-        {
-            final Integer commandID = Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i);
-            viewManager.registerTriggerCommand (commandID, new SelectCommand (i, this.model, this.surface));
-            this.surface.assignTriggerCommand (MCUControlSurface.MCU_FADER_TOUCH1 + i, commandID);
-            this.surface.assignTriggerCommand (MCUControlSurface.MCU_SELECT1 + i, commandID);
-
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), MCUControlSurface.MCU_VSELECT1 + i, new ButtonRowModeCommand<> (0, i, this.model, this.surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), MCUControlSurface.MCU_ARM1 + i, new ButtonRowModeCommand<> (1, i, this.model, this.surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i), MCUControlSurface.MCU_SOLO1 + i, new ButtonRowModeCommand<> (2, i, this.model, this.surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW4_1.intValue () + i), MCUControlSurface.MCU_MUTE1 + i, new ButtonRowModeCommand<> (3, i, this.model, this.surface));
-        }
-        this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, MCUControlSurface.MCU_FADER_MASTER, new SelectCommand (8, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_BANK_LEFT, MCUControlSurface.MCU_BANK_LEFT, new MoveTrackBankCommand<> (this.model, surface, false, true));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_BANK_RIGHT, MCUControlSurface.MCU_BANK_RIGHT, new MoveTrackBankCommand<> (this.model, surface, false, false));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_LEFT, MCUControlSurface.MCU_TRACK_LEFT, new MoveTrackBankCommand<> (this.model, surface, true, true));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_RIGHT, MCUControlSurface.MCU_TRACK_RIGHT, new MoveTrackBankCommand<> (this.model, surface, true, false));
 
         // Additional commands for footcontrollers
-        viewManager.registerTriggerCommand (Commands.COMMAND_NEW, new NewCommand<> (this.model, this.surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_TAP_TEMPO, new TapTempoCommand<> (this.model, this.surface));
+        final ViewManager viewManager = surface.getViewManager ();
+        viewManager.registerTriggerCommand (Commands.COMMAND_NEW, new NewCommand<> (this.model, surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_TAP_TEMPO, new TapTempoCommand<> (this.model, surface));
 
         // Only MCU
-        this.addTriggerCommand (Commands.COMMAND_SAVE, MCUControlSurface.MCU_SAVE, new SaveCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_MARKER, MCUControlSurface.MCU_MARKER, new MarkerCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_TOGGLE_VU, MCUControlSurface.MCU_EDIT, new ToggleVUCommand<> (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SAVE, MCUControlSurface.MCU_SAVE, new SaveCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_MARKER, MCUControlSurface.MCU_MARKER, new MarkerCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_TOGGLE_VU, MCUControlSurface.MCU_EDIT, new ToggleVUCommand<> (this.model, surface));
 
-        viewManager.registerPitchbendCommand (new PitchbendVolumeCommand (this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, MCUControlSurface.MCU_FADER_MASTER, new SelectCommand (8, this.model, surface));
+
+        this.registerTriggerCommandsToAllDevices ();
+    }
+
+
+    /**
+     * Common track editing - Assignment to all devices
+     */
+    protected void registerTriggerCommandsToAllDevices ()
+    {
+        for (int index = 0; index < this.numMCUDevices; index++)
+        {
+            final MCUControlSurface surface = this.getSurface (index);
+            final ViewManager viewManager = surface.getViewManager ();
+            for (int i = 0; i < 8; i++)
+            {
+                final Integer commandID = Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i);
+                viewManager.registerTriggerCommand (commandID, new SelectCommand (i, this.model, surface));
+                surface.assignTriggerCommand (MCUControlSurface.MCU_FADER_TOUCH1 + i, commandID);
+                surface.assignTriggerCommand (MCUControlSurface.MCU_SELECT1 + i, commandID);
+
+                this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), MCUControlSurface.MCU_VSELECT1 + i, new ButtonRowModeCommand<> (0, i, this.model, surface), index);
+                this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), MCUControlSurface.MCU_ARM1 + i, new ButtonRowModeCommand<> (1, i, this.model, surface), index);
+                this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i), MCUControlSurface.MCU_SOLO1 + i, new ButtonRowModeCommand<> (2, i, this.model, surface), index);
+                this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW4_1.intValue () + i), MCUControlSurface.MCU_MUTE1 + i, new ButtonRowModeCommand<> (3, i, this.model, surface), index);
+            }
+
+            viewManager.registerPitchbendCommand (new PitchbendVolumeCommand (this.model, surface));
+        }
     }
 
 
@@ -361,16 +405,22 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @Override
     protected void registerContinuousCommands ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        for (int i = 0; i < 8; i++)
-        {
-            final Integer commandID = Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i);
-            viewManager.registerContinuousCommand (commandID, new KnobRowModeCommand<> (i, this.model, this.surface));
-            this.surface.assignContinuousCommand (MCUControlSurface.MCU_CC_VPOT1 + i, 1, commandID);
-        }
+        MCUControlSurface surface = this.getSurface ();
+        ViewManager viewManager = surface.getViewManager ();
+        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_PLAY_POSITION, new PlayPositionTempoCommand (this.model, surface));
+        surface.assignContinuousCommand (MCUControlSurface.MCU_CC_JOG, 1, Commands.CONT_COMMAND_PLAY_POSITION);
 
-        viewManager.registerContinuousCommand (Commands.CONT_COMMAND_PLAY_POSITION, new PlayPositionTempoCommand (this.model, this.surface));
-        this.surface.assignContinuousCommand (MCUControlSurface.MCU_CC_JOG, 1, Commands.CONT_COMMAND_PLAY_POSITION);
+        for (int index = 0; index < this.numMCUDevices; index++)
+        {
+            surface = this.getSurface (index);
+            viewManager = surface.getViewManager ();
+            for (int i = 0; i < 8; i++)
+            {
+                final Integer commandID = Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i);
+                viewManager.registerContinuousCommand (commandID, new KnobRowModeCommand<> (i, this.model, surface));
+                surface.assignContinuousCommand (MCUControlSurface.MCU_CC_VPOT1 + i, 1, commandID);
+            }
+        }
     }
 
 
@@ -378,12 +428,16 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @Override
     protected void startup ()
     {
-        this.surface.switchVuMode (MCUControlSurface.VUMODE_LED);
+        for (int index = 0; index < this.numMCUDevices; index++)
+        {
+            final MCUControlSurface surface = this.getSurface (index);
+            surface.switchVuMode (MCUControlSurface.VUMODE_LED);
 
-        this.getHost ().scheduleTask ( () -> {
-            this.surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
-        }, 200);
+            this.getHost ().scheduleTask ( () -> {
+                surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
+                surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
+            }, 200);
+        }
     }
 
 
@@ -395,38 +449,39 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
 
         // Set button states
         final TransportProxy t = this.model.getTransport ();
-        final boolean isShift = this.surface.isShiftPressed ();
+        final MCUControlSurface surface = this.getSurface ();
+        final boolean isShift = surface.isShiftPressed ();
         final boolean isFlipRecord = this.configuration.isFlipRecord ();
         final boolean isRecordShifted = isShift && !isFlipRecord || !isShift && isFlipRecord;
 
-        final View view = this.surface.getViewManager ().getView (Views.VIEW_CONTROL);
-        this.surface.updateButton (MCUControlSurface.MCU_REWIND, ((WindCommand<MCUControlSurface, MCUConfiguration>) view.getTriggerCommand (Commands.COMMAND_REWIND)).isRewinding () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_FORWARD, ((WindCommand<MCUControlSurface, MCUConfiguration>) view.getTriggerCommand (Commands.COMMAND_FORWARD)).isForwarding () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_REPEAT, t.isLoop () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_STOP, !t.isPlaying () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_PLAY, t.isPlaying () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_RECORD, isRecordShifted ? t.isLauncherOverdub () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF : t.isRecording () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        final View view = surface.getViewManager ().getView (Views.VIEW_CONTROL);
+        surface.updateButton (MCUControlSurface.MCU_REWIND, ((WindCommand<MCUControlSurface, MCUConfiguration>) view.getTriggerCommand (Commands.COMMAND_REWIND)).isRewinding () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_FORWARD, ((WindCommand<MCUControlSurface, MCUConfiguration>) view.getTriggerCommand (Commands.COMMAND_FORWARD)).isForwarding () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_REPEAT, t.isLoop () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_STOP, !t.isPlaying () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_PLAY, t.isPlaying () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_RECORD, isRecordShifted ? t.isLauncherOverdub () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF : t.isRecording () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
-        this.surface.updateButton (MCUControlSurface.MCU_NAME_VALUE, this.surface.getConfiguration ().isDisplayTrackNames () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_ZOOM, this.surface.getConfiguration ().isZoomState () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_SCRUB, this.surface.getModeManager ().isActiveMode (Modes.MODE_DEVICE_PARAMS) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_NAME_VALUE, surface.getConfiguration ().isDisplayTrackNames () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_ZOOM, surface.getConfiguration ().isZoomState () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_SCRUB, surface.getModeManager ().isActiveMode (Modes.MODE_DEVICE_PARAMS) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
-        this.surface.updateButton (MCUControlSurface.MCU_MIDI_TRACKS, MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_INPUTS, MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_AUDIO_TRACKS, this.model.getCursorDevice ().isWindowOpen () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_AUDIO_INSTR, MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_MIDI_TRACKS, MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_INPUTS, MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_AUDIO_TRACKS, this.model.getCursorDevice ().isWindowOpen () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_AUDIO_INSTR, MCU_BUTTON_STATE_OFF);
 
-        this.surface.updateButton (MCUControlSurface.MCU_CLICK, (isShift ? t.isMetronomeTicksOn () : t.isMetronomeOn ()) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_SOLO, this.model.getGroove ().getParameters ()[0].getValue () > 0 ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_REPLACE, (isShift ? t.isLauncherOverdub () : t.isArrangerOverdub ()) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_FLIP, this.model.isEffectTrackBankActive () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_CLICK, (isShift ? t.isMetronomeTicksOn () : t.isMetronomeOn ()) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_SOLO, this.model.getGroove ().getParameters ()[0].getValue () > 0 ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_REPLACE, (isShift ? t.isLauncherOverdub () : t.isArrangerOverdub ()) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_FLIP, this.model.isEffectTrackBankActive () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         final boolean displayTicks = this.configuration.isDisplayTicks ();
-        this.surface.updateButton (MCUControlSurface.MCU_SMPTE_BEATS, displayTicks ? MCU_BUTTON_STATE_OFF : MCU_BUTTON_STATE_ON);
-        this.surface.updateButton (MCUControlSurface.MCU_SMPTE_LED, displayTicks ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_BEATS_LED, displayTicks ? MCU_BUTTON_STATE_OFF : MCU_BUTTON_STATE_ON);
+        surface.updateButton (MCUControlSurface.MCU_SMPTE_BEATS, displayTicks ? MCU_BUTTON_STATE_OFF : MCU_BUTTON_STATE_ON);
+        surface.updateButton (MCUControlSurface.MCU_SMPTE_LED, displayTicks ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_BEATS_LED, displayTicks ? MCU_BUTTON_STATE_OFF : MCU_BUTTON_STATE_ON);
 
-        this.surface.updateButton (MCUControlSurface.MCU_MARKER, this.model.getArranger ().areCueMarkersVisible () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_MARKER, this.model.getArranger ().areCueMarkersVisible () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
     }
 
 
@@ -448,64 +503,72 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             positionText = positionText.substring (0, pos + 1) + tempoStr;
         }
 
-        this.surface.getSegmentDisplay ().setTransportPositionDisplay (positionText);
+        this.getSurface ().getSegmentDisplay ().setTransportPositionDisplay (positionText);
     }
 
 
     private void updateVUandFaders ()
     {
-        final MidiOutput output = this.surface.getOutput ();
         final double upperBound = this.valueChanger.getUpperBound ();
-
         final boolean enableVUMeters = this.configuration.isEnableVUMeters ();
         final boolean hasMotorFaders = this.configuration.hasMotorFaders ();
 
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        for (int i = 0; i < 8; i++)
+        MidiOutput output;
+        for (int index = 0; index < this.numMCUDevices; index++)
         {
-            final TrackData track = tb.getTrack (i);
-
-            // Update VU LEDs of channel
-            if (enableVUMeters)
+            final MCUControlSurface surface = this.getSurface (index);
+            output = surface.getOutput ();
+            final int extenderOffset = surface.getExtenderOffset ();
+            for (int i = 0; i < 8; i++)
             {
-                final int vu = track.getVu ();
-                if (vu != this.vuValues[i])
+                final int channel = extenderOffset + i;
+                final TrackData track = tb.getTrack (channel);
+
+                // Update VU LEDs of channel
+                if (enableVUMeters)
                 {
-                    this.vuValues[i] = vu;
-                    final int scaledValue = (int) Math.round (vu * 12 / upperBound);
-                    output.sendChannelAftertouch (0x10 * i + scaledValue, 0);
+                    final int vu = track.getVu ();
+                    if (vu != this.vuValues[channel])
+                    {
+                        this.vuValues[channel] = vu;
+                        final int scaledValue = (int) Math.round (vu * 12 / upperBound);
+                        output.sendChannelAftertouch (0x10 * i + scaledValue, 0);
+                    }
                 }
-            }
 
-            // Update motor fader of channel
-            if (hasMotorFaders)
-            {
-                final int volume = track.getVolume ();
-                if (volume != this.faderValues[i])
+                // Update motor fader of channel
+                if (hasMotorFaders)
                 {
-                    this.faderValues[i] = volume;
-                    output.sendPitchbend (i, volume % 127, volume / 127);
+                    final int volume = track.getVolume ();
+                    if (volume != this.faderValues[channel])
+                    {
+                        this.faderValues[channel] = volume;
+                        output.sendPitchbend (i, volume % 127, volume / 127);
+                    }
                 }
             }
         }
 
         final MasterTrackProxy masterTrack = this.model.getMasterTrack ();
 
+        output = this.getSurface ().getOutput ();
+
         // Stereo VU of master channel
         if (enableVUMeters)
         {
             int vu = masterTrack.getVuLeft ();
-            if (vu != this.vuValues[8])
+            if (vu != this.masterVuValues[0])
             {
-                this.vuValues[8] = vu;
+                this.masterVuValues[0] = vu;
                 final int scaledValue = (int) Math.round (vu * 12 / upperBound);
                 output.sendChannelAftertouch (1, scaledValue, 0);
             }
 
             vu = masterTrack.getVuRight ();
-            if (vu != this.vuValues[9])
+            if (vu != this.masterVuValues[1])
             {
-                this.vuValues[9] = vu;
+                this.masterVuValues[1] = vu;
                 final int scaledValue = (int) Math.round (vu * 12 / upperBound);
                 output.sendChannelAftertouch (1, 0x10 + scaledValue, 0);
             }
@@ -515,9 +578,9 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         if (hasMotorFaders)
         {
             final int volume = masterTrack.getVolume ();
-            if (volume != this.faderValues[8])
+            if (volume != this.masterFaderValue)
             {
-                this.faderValues[8] = volume;
+                this.masterFaderValue = volume;
                 output.sendPitchbend (8, volume % 127, volume / 127);
             }
         }
@@ -536,27 +599,28 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         final boolean isSendOn = mode.intValue () >= Modes.MODE_SEND1.intValue () && mode.intValue () <= Modes.MODE_SEND8.intValue ();
         final boolean isDeviceOn = Modes.MODE_DEVICE_PARAMS.equals (mode);
 
-        this.surface.updateButton (MCUControlSurface.MCU_MODE_IO, isTrackOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_MODE_PAN, isPanOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_MODE_SENDS, isSendOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_MODE_PLUGIN, isDeviceOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_USER, Modes.MODE_BROWSER.equals (mode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        final MCUControlSurface surface = this.getSurface ();
+        surface.updateButton (MCUControlSurface.MCU_MODE_IO, isTrackOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_MODE_PAN, isPanOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_MODE_SENDS, isSendOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_MODE_PLUGIN, isDeviceOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_USER, Modes.MODE_BROWSER.equals (mode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         final TransportProxy transport = this.model.getTransport ();
         final String automationWriteMode = transport.getAutomationWriteMode ();
         final boolean writingArrangerAutomation = transport.isWritingArrangerAutomation ();
 
-        this.surface.updateButton (MCUControlSurface.MCU_F6, transport.isPunchInEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_F7, transport.isPunchOutEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_F6, transport.isPunchInEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_F7, transport.isPunchOutEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
-        this.surface.updateButton (MCUControlSurface.MCU_READ, !writingArrangerAutomation ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_WRITE, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[2].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_TRIM, transport.isWritingClipLauncherAutomation () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_TOUCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        this.surface.updateButton (MCUControlSurface.MCU_LATCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_READ, !writingArrangerAutomation ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_WRITE, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[2].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_TRIM, transport.isWritingClipLauncherAutomation () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_TOUCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_LATCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         if (this.configuration.hasAssignmentDisplay ())
-            this.surface.getSegmentDisplay ().setAssignmentDisplay (MODE_ACRONYMS.get (mode));
+            surface.getSegmentDisplay ().setAssignmentDisplay (MODE_ACRONYMS.get (mode));
     }
 
 
@@ -567,6 +631,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isPan = Modes.MODE_PAN.equals (mode);
         final boolean isTrack = Modes.MODE_TRACK.equals (mode);
+        final boolean isDevice = Modes.MODE_DEVICE_PARAMS.equals (mode);
 
         tb.setIndication (!isEffect);
         tbe.setIndication (isEffect);
@@ -575,7 +640,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         final TrackData selectedTrack = tb.getSelectedTrack ();
         for (int i = 0; i < tb.getNumTracks (); i++)
         {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
+            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrack;
             tb.setVolumeIndication (i, !isEffect && (isTrack || hasTrackSel));
             tb.setPanIndication (i, !isEffect && (isPan || hasTrackSel));
 
@@ -584,9 +649,10 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
 
             tbe.setVolumeIndication (i, isEffect);
             tbe.setPanIndication (i, isEffect && isPan);
-
-            cursorDevice.getParameter (i).setIndication (true);
         }
+
+        for (int i = 0; i < cursorDevice.getNumParameters (); i++)
+            cursorDevice.getParameter (i).setIndication (isDevice);
     }
 
 
@@ -601,7 +667,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         if (!isSelected)
             return;
 
-        final ModeManager modeManager = this.surface.getModeManager ();
+        final ModeManager modeManager = this.getSurface ().getModeManager ();
         if (modeManager.isActiveMode (Modes.MODE_MASTER))
             modeManager.setActiveMode (Modes.MODE_TRACK);
     }

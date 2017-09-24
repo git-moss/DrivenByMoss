@@ -35,7 +35,8 @@ public class DeviceParamsMode extends BaseMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCursorDevice ().changeParameter (index, value);
+        final int extenderOffset = this.surface.getExtenderOffset ();
+        this.model.getCursorDevice ().changeParameter (extenderOffset + index, value);
     }
 
 
@@ -55,9 +56,10 @@ public class DeviceParamsMode extends BaseMode
         }
 
         // Row 1 & 2
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final ParameterData param = cd.getFXParam (i);
+            final ParameterData param = cd.getFXParam (extenderOffset + i);
             d.setCell (0, i, param.doesExist () ? param.getName () : "").setCell (1, i, param.getDisplayedValue (8));
         }
 
@@ -71,9 +73,10 @@ public class DeviceParamsMode extends BaseMode
     {
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final ParameterData param = cd.getFXParam (i);
+            final ParameterData param = cd.getFXParam (extenderOffset + i);
             this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, param.doesExist () ? param.getValue () : 0, upperBound);
         }
     }
@@ -83,6 +86,7 @@ public class DeviceParamsMode extends BaseMode
     @Override
     protected void resetParameter (final int index)
     {
-        this.model.getCursorDevice ().resetParameter (index);
+        final int extenderOffset = this.surface.getExtenderOffset ();
+        this.model.getCursorDevice ().resetParameter (extenderOffset + index);
     }
 }

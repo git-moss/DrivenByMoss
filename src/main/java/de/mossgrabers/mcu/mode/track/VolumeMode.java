@@ -34,7 +34,8 @@ public class VolumeMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().changeVolume (index, value);
+        final int channel = this.surface.getExtenderOffset () + index;
+        this.model.getCurrentTrackBank ().changeVolume (channel, value);
     }
 
 
@@ -51,9 +52,10 @@ public class VolumeMode extends AbstractTrackMode
 
         final Display d = this.surface.getDisplay ();
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final TrackData t = tb.getTrack (extenderOffset + i);
             d.setCell (1, i, t.getVolumeStr (6));
         }
         d.done (1);
@@ -72,9 +74,10 @@ public class VolumeMode extends AbstractTrackMode
 
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final Display d = this.surface.getDisplay ();
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            if (tb.getTrack (i).doesExist ())
+            if (tb.getTrack (extenderOffset + i).doesExist ())
                 d.setCell (0, i, "Volume");
             else
                 d.clearCell (0, i);
@@ -91,9 +94,10 @@ public class VolumeMode extends AbstractTrackMode
     {
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final TrackData t = tb.getTrack (extenderOffset + i);
             this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, t.getVolume (), upperBound);
         }
     }
@@ -103,6 +107,7 @@ public class VolumeMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        this.model.getCurrentTrackBank ().resetVolume (index);
+        final int extenderOffset = this.surface.getExtenderOffset ();
+        this.model.getCurrentTrackBank ().resetVolume (extenderOffset + index);
     }
 }
