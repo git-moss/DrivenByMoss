@@ -72,7 +72,7 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     @Override
     public void flush ()
     {
-        this.surface.flush ();
+        this.flushSurfaces ();
         this.updateButtons ();
     }
 
@@ -103,8 +103,9 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
         final ControllerHost host = this.getHost ();
         final MidiOutput output = new MidiOutput (host);
         final MidiInput input = new APCminiMidiInput ();
-        this.surface = new APCminiControlSurface (host, this.colorManager, this.configuration, output, input);
-        this.surface.setDisplay (new DummyDisplay (host));
+        final APCminiControlSurface surface = new APCminiControlSurface (host, this.colorManager, this.configuration, output, input);
+        this.surfaces.add (surface);
+        surface.setDisplay (new DummyDisplay (host));
     }
 
 
@@ -112,12 +113,13 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     @Override
     protected void createObservers ()
     {
-        this.surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
-        this.surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
+        final APCminiControlSurface surface = this.getSurface ();
+        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
+        surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
         this.createScaleObservers (this.configuration);
 
         this.configuration.addSettingObserver (APCminiConfiguration.FADER_CTRL, () -> {
-            final ModeManager modeManager = this.surface.getModeManager ();
+            final ModeManager modeManager = surface.getModeManager ();
             switch (this.configuration.getFaderCtrl ())
             {
                 case "Volume":
@@ -161,7 +163,7 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
             {
                 final String opt = APCminiConfiguration.SOFT_KEYS_OPTIONS[i];
                 if (opt.equals (this.configuration.getSoftKeys ()))
-                    this.surface.setTrackState (i);
+                    surface.setTrackState (i);
             }
         });
 
@@ -172,12 +174,13 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     @Override
     protected void createModes ()
     {
-        final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_PAN, new PanMode (this.surface, this.model));
+        final APCminiControlSurface surface = this.getSurface ();
+        final ModeManager modeManager = surface.getModeManager ();
+        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode (i, this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_DEVICE, new DeviceMode (this.surface, this.model));
+            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode (i, surface, this.model));
+        modeManager.registerMode (Modes.MODE_DEVICE, new DeviceMode (surface, this.model));
 
         modeManager.setDefaultMode (Modes.MODE_VOLUME);
     }
@@ -187,14 +190,15 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     @Override
     protected void createViews ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.registerView (Views.VIEW_PLAY, new PlayView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_SESSION, new SessionView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM, new DrumView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_BROWSER, new BrowserView (this.surface, this.model));
+        final APCminiControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
+        viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
+        viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
+        viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
+        viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
+        viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (surface, this.model));
+        viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (surface, this.model));
+        viewManager.registerView (Views.VIEW_BROWSER, new BrowserView (surface, this.model));
     }
 
 
@@ -202,11 +206,12 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     @Override
     protected void registerTriggerCommands ()
     {
-        this.addNoteCommand (Commands.COMMAND_SHIFT, APCminiControlSurface.APC_BUTTON_SHIFT, new ShiftCommand (this.model, this.surface));
+        final APCminiControlSurface surface = this.getSurface ();
+        this.addNoteCommand (Commands.COMMAND_SHIFT, APCminiControlSurface.APC_BUTTON_SHIFT, new ShiftCommand (this.model, surface));
         for (int i = 0; i < 8; i++)
         {
-            this.addNoteCommand (Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, new TrackSelectCommand (i, this.model, this.surface));
-            this.addNoteCommand (Integer.valueOf (Commands.COMMAND_SCENE1.intValue () + i), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, new SceneCommand<> (7 - i, this.model, this.surface));
+            this.addNoteCommand (Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, new TrackSelectCommand (i, this.model, surface));
+            this.addNoteCommand (Integer.valueOf (Commands.COMMAND_SCENE1.intValue () + i), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, new SceneCommand<> (7 - i, this.model, surface));
         }
     }
 
@@ -215,12 +220,13 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     @Override
     protected void registerContinuousCommands ()
     {
-        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, APCminiControlSurface.APC_KNOB_MASTER_LEVEL, new MasterFaderAbsoluteCommand<> (this.model, this.surface));
+        final APCminiControlSurface surface = this.getSurface ();
+        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, APCminiControlSurface.APC_KNOB_MASTER_LEVEL, new MasterFaderAbsoluteCommand<> (this.model, surface));
 
         for (int i = 0; i < 8; i++)
         {
             final Integer knobCommand = Integer.valueOf (Commands.CONT_COMMAND_FADER1.intValue () + i);
-            this.addContinuousCommand (knobCommand, APCminiControlSurface.APC_KNOB_TRACK_LEVEL1 + i, new KnobRowModeCommand<> (i, this.model, this.surface));
+            this.addContinuousCommand (knobCommand, APCminiControlSurface.APC_KNOB_TRACK_LEVEL1 + i, new KnobRowModeCommand<> (i, this.model, surface));
         }
     }
 
@@ -230,15 +236,16 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     protected void startup ()
     {
         this.getHost ().scheduleTask ( () -> {
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_VOLUME);
-            this.surface.getViewManager ().setActiveView (Views.VIEW_SESSION);
+            final APCminiControlSurface surface = this.getSurface ();
+            surface.getModeManager ().setActiveMode (Modes.MODE_VOLUME);
+            surface.getViewManager ().setActiveView (Views.VIEW_SESSION);
         }, 100);
     }
 
 
     private void updateButtons ()
     {
-        final View activeView = this.surface.getViewManager ().getActiveView ();
+        final View activeView = this.getSurface ().getViewManager ().getActiveView ();
         if (activeView != null)
             ((SceneView) activeView).updateSceneButtons ();
     }
@@ -246,7 +253,7 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
 
     private void updateMode (final Integer mode)
     {
-        this.updateIndication (mode == null ? this.surface.getModeManager ().getActiveModeId () : mode);
+        this.updateIndication (mode == null ? this.getSurface ().getModeManager ().getActiveModeId () : mode);
     }
 
 
@@ -254,7 +261,8 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     {
         final TrackBankProxy tb = this.model.getTrackBank ();
         final EffectTrackBankProxy tbe = this.model.getEffectTrackBank ();
-        final ViewManager viewManager = this.surface.getViewManager ();
+        final APCminiControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
         final boolean isShiftView = viewManager.isActiveView (Views.VIEW_SHIFT);
         final boolean isSession = viewManager.isActiveView (Views.VIEW_SESSION) || isShiftView;
         final boolean isEffect = this.model.isEffectTrackBankActive ();
@@ -291,7 +299,8 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
         if (!isSelected)
             return;
 
-        final ViewManager viewManager = this.surface.getViewManager ();
+        final APCminiControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
         if (viewManager.isActiveView (Views.VIEW_PLAY))
             viewManager.getActiveView ().updateNoteMapping ();
 

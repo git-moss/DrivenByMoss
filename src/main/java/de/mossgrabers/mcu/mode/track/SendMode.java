@@ -39,8 +39,10 @@ public class SendMode extends AbstractTrackMode
     {
         final int sendIndex = this.getCurrentSendIndex ();
         final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
-        if (currentTrackBank instanceof TrackBankProxy)
-            ((TrackBankProxy) currentTrackBank).changeSend (index, sendIndex, value);
+        if (!(currentTrackBank instanceof TrackBankProxy))
+            return;
+        final int extenderOffset = this.surface.getExtenderOffset ();
+        ((TrackBankProxy) currentTrackBank).changeSend (extenderOffset + index, sendIndex, value);
     }
 
 
@@ -69,9 +71,10 @@ public class SendMode extends AbstractTrackMode
             d.notify ("Send channel " + (sendIndex + 1) + " does not exist.", true, false);
             return;
         }
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final TrackData t = tb.getTrack (extenderOffset + i);
             d.setCell (1, i, t.getSends ()[sendIndex].getDisplayedValue (6));
         }
         d.done (1);
@@ -98,9 +101,10 @@ public class SendMode extends AbstractTrackMode
         final Display d = this.surface.getDisplay ();
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final int sendIndex = this.getCurrentSendIndex ();
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final TrackData t = tb.getTrack (extenderOffset + i);
             if (t.doesExist ())
                 d.setCell (0, i, this.optimizeName (StringUtils.fixASCII (t.getSends ()[sendIndex].getName (6)), 6));
             else
@@ -124,9 +128,10 @@ public class SendMode extends AbstractTrackMode
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         final int sendIndex = this.getCurrentSendIndex ();
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final TrackData t = tb.getTrack (extenderOffset + i);
             this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, t.getSends ()[sendIndex].getValue (), upperBound);
         }
     }
@@ -136,7 +141,8 @@ public class SendMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        ((TrackBankProxy) this.model.getCurrentTrackBank ()).resetSend (index, this.getCurrentSendIndex ());
+        final int extenderOffset = this.surface.getExtenderOffset ();
+        ((TrackBankProxy) this.model.getCurrentTrackBank ()).resetSend (extenderOffset + index, this.getCurrentSendIndex ());
     }
 
 

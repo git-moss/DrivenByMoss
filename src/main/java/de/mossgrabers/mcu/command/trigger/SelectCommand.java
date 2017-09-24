@@ -22,6 +22,7 @@ import de.mossgrabers.mcu.mode.Modes;
 public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {
     private int index;
+    private int channel;
 
 
     /**
@@ -35,6 +36,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     {
         super (model, surface);
         this.index = index;
+        this.channel = this.surface.getExtenderOffset () + this.index;
     }
 
 
@@ -45,27 +47,28 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.index < 8 && this.surface.isPressed (MCUControlSurface.MCU_MODE_SENDS))
+        if (this.index == 8)
         {
-            if (this.model.getEffectTrackBank ().getTrack (this.index).doesExist ())
+            this.model.getMasterTrack ().select ();
+            return;
+        }
+
+        if (this.surface.isPressed (MCUControlSurface.MCU_MODE_SENDS))
+        {
+            if (this.model.getEffectTrackBank ().getTrack (this.channel).doesExist ())
             {
                 this.surface.getModeManager ().setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + this.index));
-                this.surface.getDisplay ().notify ("Send channel " + (this.index + 1) + " selected.");
+                this.surface.getDisplay ().notify ("Send channel " + (this.channel + 1) + " selected.");
             }
             else
-                this.surface.getDisplay ().notify ("Send channel " + (this.index + 1) + " does not exist.");
+                this.surface.getDisplay ().notify ("Send channel " + (this.channel + 1) + " does not exist.");
             this.surface.setButtonConsumed (MCUControlSurface.MCU_MODE_SENDS);
             return;
         }
 
-        if (this.index < 8)
-        {
-            final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-            tb.select (this.index);
-            tb.makeVisible (this.index);
-        }
-        else
-            this.model.getMasterTrack ().select ();
+        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        tb.select (this.channel);
+        tb.makeVisible (this.channel);
     }
 
 

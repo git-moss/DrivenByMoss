@@ -162,12 +162,13 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     @Override
     public void flush ()
     {
-        this.surface.flush ();
+        this.flushSurfaces ();
 
         this.updateButtons ();
-        this.updateMode (this.surface.getModeManager ().getActiveModeId ());
+        final PushControlSurface surface = this.getSurface ();
+        this.updateMode (surface.getModeManager ().getActiveModeId ());
 
-        final View activeView = this.surface.getViewManager ().getActiveView ();
+        final View activeView = surface.getViewManager ().getActiveView ();
         if (activeView == null)
             return;
         final de.mossgrabers.framework.command.core.PitchbendCommand pitchbendCommand = activeView.getPitchbendCommand ();
@@ -186,10 +187,11 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         trackBank.setIndication (true);
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
         this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
+            final PushControlSurface surface = this.getSurface ();
             if (isSelected)
-                this.surface.getModeManager ().setActiveMode (Modes.MODE_MASTER);
+                surface.getModeManager ().setActiveMode (Modes.MODE_MASTER);
             else
-                this.surface.getModeManager ().restoreMode ();
+                surface.getModeManager ().restoreMode ();
         });
     }
 
@@ -201,11 +203,12 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         final ControllerHost host = this.getHost ();
         final MidiOutput output = new MidiOutput (host);
         final MidiInput input = new PushMidiInput (this.isPush2);
-        this.surface = new PushControlSurface (host, this.colorManager, this.configuration, output, input);
+        final PushControlSurface surface = new PushControlSurface (host, this.colorManager, this.configuration, output, input);
+        this.surfaces.add (surface);
         final PushDisplay display = new PushDisplay (host, this.isPush2, this.valueChanger.getUpperBound (), output);
         display.setCommunicationPort (this.configuration.getSendPort ());
-        this.surface.setDisplay (display);
-        this.surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
+        surface.setDisplay (display);
+        surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
     }
 
 
@@ -213,13 +216,14 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     @Override
     protected void createModes ()
     {
-        final ModeManager modeManager = this.surface.getModeManager ();
+        final PushControlSurface surface = this.getSurface ();
+        final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_PAN, new PanMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_CROSSFADER, new CrossfaderMode (this.surface, this.model));
+        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_CROSSFADER, new CrossfaderMode (surface, this.model));
 
-        final SendMode modeSend = new SendMode (this.surface, this.model);
+        final SendMode modeSend = new SendMode (surface, this.model);
         modeManager.registerMode (Modes.MODE_SEND1, modeSend);
         modeManager.registerMode (Modes.MODE_SEND2, modeSend);
         modeManager.registerMode (Modes.MODE_SEND3, modeSend);
@@ -227,35 +231,35 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         modeManager.registerMode (Modes.MODE_SEND5, modeSend);
         modeManager.registerMode (Modes.MODE_SEND6, modeSend);
 
-        modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (this.surface, this.model, false));
-        modeManager.registerMode (Modes.MODE_MASTER_TEMP, new MasterMode (this.surface, this.model, true));
+        modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (surface, this.model, false));
+        modeManager.registerMode (Modes.MODE_MASTER_TEMP, new MasterMode (surface, this.model, true));
 
-        modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_TRACK_DETAILS, new TrackDetailsMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_DEVICE_LAYER_DETAILS, new LayerDetailsMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_CLIP, new ClipMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_NOTE, new NoteMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_FRAME, new FrameMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_SCALES, new ScalesMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_SCALE_LAYOUT, new ScaleLayoutMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_ACCENT, new AccentMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_FIXED, new FixedMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_RIBBON, new RibbonMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_GROOVE, new GrooveMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_VIEW_SELECT, new NoteViewSelectMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_SESSION_VIEW_SELECT, new SessionViewSelectMode (this.surface, this.model));
+        modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_TRACK_DETAILS, new TrackDetailsMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_DEVICE_LAYER_DETAILS, new LayerDetailsMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_CLIP, new ClipMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_NOTE, new NoteMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_FRAME, new FrameMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_SCALES, new ScalesMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_SCALE_LAYOUT, new ScaleLayoutMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_ACCENT, new AccentMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_FIXED, new FixedMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_RIBBON, new RibbonMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_GROOVE, new GrooveMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_VIEW_SELECT, new NoteViewSelectMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_SESSION_VIEW_SELECT, new SessionViewSelectMode (surface, this.model));
 
-        modeManager.registerMode (Modes.MODE_AUTOMATION, new AutomationMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_TRANSPORT, new TransportMode (this.surface, this.model));
+        modeManager.registerMode (Modes.MODE_AUTOMATION, new AutomationMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_TRANSPORT, new TransportMode (surface, this.model));
 
-        modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new DeviceParamsMode (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_DEVICE_LAYER, new DeviceLayerMode (this.surface, this.model));
+        modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_DEVICE_LAYER, new DeviceLayerMode (surface, this.model));
 
-        modeManager.registerMode (Modes.MODE_BROWSER, new DeviceBrowserMode (this.surface, this.model));
+        modeManager.registerMode (Modes.MODE_BROWSER, new DeviceBrowserMode (surface, this.model));
 
-        modeManager.registerMode (Modes.MODE_DEVICE_LAYER_VOLUME, new DeviceLayerModeVolume (this.surface, this.model));
-        modeManager.registerMode (Modes.MODE_DEVICE_LAYER_PAN, new DeviceLayerModePan (this.surface, this.model));
-        final DeviceLayerModeSend modeLayerSend = new DeviceLayerModeSend (this.surface, this.model);
+        modeManager.registerMode (Modes.MODE_DEVICE_LAYER_VOLUME, new DeviceLayerModeVolume (surface, this.model));
+        modeManager.registerMode (Modes.MODE_DEVICE_LAYER_PAN, new DeviceLayerModePan (surface, this.model));
+        final DeviceLayerModeSend modeLayerSend = new DeviceLayerModeSend (surface, this.model);
         modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND1, modeLayerSend);
         modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND2, modeLayerSend);
         modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND3, modeLayerSend);
@@ -269,11 +273,11 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
             modeManager.registerMode (Modes.MODE_SEND8, modeSend);
             modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND7, modeLayerSend);
             modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND8, modeLayerSend);
-            modeManager.registerMode (Modes.MODE_SETUP, new SetupMode (this.surface, this.model));
-            modeManager.registerMode (Modes.MODE_INFO, new InfoMode (this.surface, this.model));
+            modeManager.registerMode (Modes.MODE_SETUP, new SetupMode (surface, this.model));
+            modeManager.registerMode (Modes.MODE_INFO, new InfoMode (surface, this.model));
         }
         else
-            modeManager.registerMode (Modes.MODE_CONFIGURATION, new ConfigurationMode (this.surface, this.model));
+            modeManager.registerMode (Modes.MODE_CONFIGURATION, new ConfigurationMode (surface, this.model));
     }
 
 
@@ -281,51 +285,52 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     @Override
     protected void createObservers ()
     {
+        final PushControlSurface surface = this.getSurface ();
         if (this.configuration.isPush2 ())
         {
-            this.configuration.addSettingObserver (PushConfiguration.DISPLAY_BRIGHTNESS, this.surface::sendDisplayBrightness);
-            this.configuration.addSettingObserver (PushConfiguration.LED_BRIGHTNESS, this.surface::sendLEDBrightness);
+            this.configuration.addSettingObserver (PushConfiguration.DISPLAY_BRIGHTNESS, surface::sendDisplayBrightness);
+            this.configuration.addSettingObserver (PushConfiguration.LED_BRIGHTNESS, surface::sendLEDBrightness);
             this.configuration.addSettingObserver (PushConfiguration.PAD_SENSITIVITY, () -> {
-                this.surface.sendPadVelocityCurve ();
-                this.surface.sendPadThreshold ();
+                surface.sendPadVelocityCurve ();
+                surface.sendPadThreshold ();
             });
             this.configuration.addSettingObserver (PushConfiguration.PAD_GAIN, () -> {
-                this.surface.sendPadVelocityCurve ();
-                this.surface.sendPadThreshold ();
+                surface.sendPadVelocityCurve ();
+                surface.sendPadThreshold ();
             });
             this.configuration.addSettingObserver (PushConfiguration.PAD_DYNAMICS, () -> {
-                this.surface.sendPadVelocityCurve ();
-                this.surface.sendPadThreshold ();
+                surface.sendPadVelocityCurve ();
+                surface.sendPadThreshold ();
             });
         }
         else
         {
-            this.configuration.addSettingObserver (PushConfiguration.VELOCITY_CURVE, this.surface::sendPadSensitivity);
-            this.configuration.addSettingObserver (PushConfiguration.PAD_THRESHOLD, this.surface::sendPadSensitivity);
+            this.configuration.addSettingObserver (PushConfiguration.VELOCITY_CURVE, surface::sendPadSensitivity);
+            this.configuration.addSettingObserver (PushConfiguration.PAD_THRESHOLD, surface::sendPadSensitivity);
         }
 
-        this.surface.getModeManager ().addModeListener ( (oldMode, newMode) -> {
+        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> {
             this.updateMode (null);
             this.updateMode (newMode);
         });
 
-        this.surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> {
+        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> {
             // Update button states
-            final View view = this.surface.getViewManager ().getActiveView ();
-            for (final int button: this.surface.getButtons ())
+            final View view = surface.getViewManager ().getActiveView ();
+            for (final int button: surface.getButtons ())
             {
-                if (this.surface.shouldUpdateButton (button))
-                    this.surface.setButton (button, view.usesButton (button) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+                if (surface.shouldUpdateButton (button))
+                    surface.setButton (button, view.usesButton (button) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             }
             // Update ribbon mode
             if (Views.VIEW_SESSION.equals (activeViewId))
-                this.surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_PAN);
+                surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_PAN);
             else
                 this.updateRibbonMode ();
         });
 
         this.configuration.addSettingObserver (PushConfiguration.RIBBON_MODE, this::updateRibbonMode);
-        this.configuration.addSettingObserver (PushConfiguration.SEND_PORT, () -> ((PushDisplay) this.surface.getDisplay ()).setCommunicationPort (this.configuration.getSendPort ()));
+        this.configuration.addSettingObserver (PushConfiguration.SEND_PORT, () -> ((PushDisplay) surface.getDisplay ()).setCommunicationPort (this.configuration.getSendPort ()));
 
         this.createScaleObservers (this.configuration);
     }
@@ -335,20 +340,21 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     @Override
     protected void createViews ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.registerView (Views.VIEW_PLAY, new PlayView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_SESSION, new SessionView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM, new DrumView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM4, new DrumView4 (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM8, new DrumView8 (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM64, new DrumView64 (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_PIANO, new PianoView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_PRG_CHANGE, new PrgChangeView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_CLIP, new ClipView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_COLOR, new ColorView (this.surface, this.model));
-        viewManager.registerView (Views.VIEW_SCENE_PLAY, new ScenePlayView (this.surface, this.model));
+        final PushControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
+        viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
+        viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
+        viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
+        viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
+        viewManager.registerView (Views.VIEW_DRUM4, new DrumView4 (surface, this.model));
+        viewManager.registerView (Views.VIEW_DRUM8, new DrumView8 (surface, this.model));
+        viewManager.registerView (Views.VIEW_DRUM64, new DrumView64 (surface, this.model));
+        viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (surface, this.model));
+        viewManager.registerView (Views.VIEW_PIANO, new PianoView (surface, this.model));
+        viewManager.registerView (Views.VIEW_PRG_CHANGE, new PrgChangeView (surface, this.model));
+        viewManager.registerView (Views.VIEW_CLIP, new ClipView (surface, this.model));
+        viewManager.registerView (Views.VIEW_COLOR, new ColorView (surface, this.model));
+        viewManager.registerView (Views.VIEW_SCENE_PLAY, new ScenePlayView (surface, this.model));
     }
 
 
@@ -356,63 +362,64 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     @Override
     protected void registerTriggerCommands ()
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        this.addTriggerCommand (Commands.COMMAND_PLAY, PushControlSurface.PUSH_BUTTON_PLAY, new PlayCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_RECORD, PushControlSurface.PUSH_BUTTON_RECORD, new RecordCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_NEW, PushControlSurface.PUSH_BUTTON_NEW, new NewCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_DUPLICATE, PushControlSurface.PUSH_BUTTON_DUPLICATE, new DuplicateCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_AUTOMATION, PushControlSurface.PUSH_BUTTON_AUTOMATION, new AutomationCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_FIXED_LENGTH, PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, new FixedLengthCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_QUANTIZE, PushControlSurface.PUSH_BUTTON_QUANTIZE, new QuantizeCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_DELETE, PushControlSurface.PUSH_BUTTON_DELETE, new DeleteCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_DOUBLE, PushControlSurface.PUSH_BUTTON_DOUBLE, new DoubleCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_UNDO, PushControlSurface.PUSH_BUTTON_UNDO, new UndoCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_DEVICE, PushControlSurface.PUSH_BUTTON_DEVICE, new DeviceCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_BROWSE, PushControlSurface.PUSH_BUTTON_BROWSE, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_TRACK, PushControlSurface.PUSH_BUTTON_TRACK, new TrackCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_CLIP, PushControlSurface.PUSH_BUTTON_CLIP, new ClipCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_VOLUME, PushControlSurface.PUSH_BUTTON_VOLUME, new VolumeCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_PAN_SEND, PushControlSurface.PUSH_BUTTON_PAN_SEND, new PanSendCommand (this.model, this.surface));
+        final PushControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
+        this.addTriggerCommand (Commands.COMMAND_PLAY, PushControlSurface.PUSH_BUTTON_PLAY, new PlayCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_RECORD, PushControlSurface.PUSH_BUTTON_RECORD, new RecordCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_NEW, PushControlSurface.PUSH_BUTTON_NEW, new NewCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_DUPLICATE, PushControlSurface.PUSH_BUTTON_DUPLICATE, new DuplicateCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_AUTOMATION, PushControlSurface.PUSH_BUTTON_AUTOMATION, new AutomationCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_FIXED_LENGTH, PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, new FixedLengthCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_QUANTIZE, PushControlSurface.PUSH_BUTTON_QUANTIZE, new QuantizeCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_DELETE, PushControlSurface.PUSH_BUTTON_DELETE, new DeleteCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_DOUBLE, PushControlSurface.PUSH_BUTTON_DOUBLE, new DoubleCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_UNDO, PushControlSurface.PUSH_BUTTON_UNDO, new UndoCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_DEVICE, PushControlSurface.PUSH_BUTTON_DEVICE, new DeviceCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_BROWSE, PushControlSurface.PUSH_BUTTON_BROWSE, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_TRACK, PushControlSurface.PUSH_BUTTON_TRACK, new TrackCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_CLIP, PushControlSurface.PUSH_BUTTON_CLIP, new ClipCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_VOLUME, PushControlSurface.PUSH_BUTTON_VOLUME, new VolumeCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_PAN_SEND, PushControlSurface.PUSH_BUTTON_PAN_SEND, new PanSendCommand (this.model, surface));
 
         for (int i = 0; i < 8; i++)
         {
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), PushControlSurface.PUSH_BUTTON_ROW1_1 + i, new ButtonRowModeCommand<> (0, i, this.model, this.surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), PushControlSurface.PUSH_BUTTON_ROW2_1 + i, new ButtonRowModeCommand<> (1, i, this.model, this.surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_SCENE1.intValue () + i), PushControlSurface.PUSH_BUTTON_SCENE1 + i, new SceneCommand<> (i, this.model, this.surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), PushControlSurface.PUSH_BUTTON_ROW1_1 + i, new ButtonRowModeCommand<> (0, i, this.model, surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), PushControlSurface.PUSH_BUTTON_ROW2_1 + i, new ButtonRowModeCommand<> (1, i, this.model, surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_SCENE1.intValue () + i), PushControlSurface.PUSH_BUTTON_SCENE1 + i, new SceneCommand<> (i, this.model, surface));
         }
 
-        this.addTriggerCommand (Commands.COMMAND_SHIFT, PushControlSurface.PUSH_BUTTON_SHIFT, new ShiftCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_LAYOUT, PushControlSurface.PUSH_BUTTON_LAYOUT, new LayoutCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_SELECT, PushControlSurface.PUSH_BUTTON_SELECT, new SelectCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_TAP_TEMPO, PushControlSurface.PUSH_BUTTON_TAP, new TapTempoCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_METRONOME, PushControlSurface.PUSH_BUTTON_METRONOME, new MetronomeCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, PushControlSurface.PUSH_BUTTON_MASTER, new MastertrackCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_STOP_CLIP, PushControlSurface.PUSH_BUTTON_CLIP_STOP, new StopClipCommand<> (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_PAGE_LEFT, PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, new PageLeftCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_PAGE_RIGHT, PushControlSurface.PUSH_BUTTON_DEVICE_RIGHT, new PageRightCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_MUTE, PushControlSurface.PUSH_BUTTON_MUTE, new MuteCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_SOLO, PushControlSurface.PUSH_BUTTON_SOLO, new SoloCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_SCALES, PushControlSurface.PUSH_BUTTON_SCALES, new ScalesCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ACCENT, PushControlSurface.PUSH_BUTTON_ACCENT, new AccentCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ADD_EFFECT, PushControlSurface.PUSH_BUTTON_ADD_EFFECT, new AddEffectCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ADD_TRACK, PushControlSurface.PUSH_BUTTON_ADD_TRACK, new AddTrackCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, PushControlSurface.PUSH_BUTTON_NOTE, new SelectPlayViewCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, PushControlSurface.PUSH_BUTTON_SESSION, new SelectSessionViewCommand (this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, PushControlSurface.PUSH_BUTTON_DOWN, new PushCursorCommand (Direction.DOWN, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, PushControlSurface.PUSH_BUTTON_UP, new PushCursorCommand (Direction.UP, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, PushControlSurface.PUSH_BUTTON_LEFT, new PushCursorCommand (Direction.LEFT, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, PushControlSurface.PUSH_BUTTON_RIGHT, new PushCursorCommand (Direction.RIGHT, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_OCTAVE_DOWN, PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, new OctaveCommand (false, this.model, this.surface));
-        this.addTriggerCommand (Commands.COMMAND_OCTAVE_UP, PushControlSurface.PUSH_BUTTON_OCTAVE_UP, new OctaveCommand (true, this.model, this.surface));
+        this.addTriggerCommand (Commands.COMMAND_SHIFT, PushControlSurface.PUSH_BUTTON_SHIFT, new ShiftCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_LAYOUT, PushControlSurface.PUSH_BUTTON_LAYOUT, new LayoutCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_SELECT, PushControlSurface.PUSH_BUTTON_SELECT, new SelectCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_TAP_TEMPO, PushControlSurface.PUSH_BUTTON_TAP, new TapTempoCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_METRONOME, PushControlSurface.PUSH_BUTTON_METRONOME, new MetronomeCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, PushControlSurface.PUSH_BUTTON_MASTER, new MastertrackCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_STOP_CLIP, PushControlSurface.PUSH_BUTTON_CLIP_STOP, new StopClipCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_PAGE_LEFT, PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, new PageLeftCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_PAGE_RIGHT, PushControlSurface.PUSH_BUTTON_DEVICE_RIGHT, new PageRightCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_MUTE, PushControlSurface.PUSH_BUTTON_MUTE, new MuteCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_SOLO, PushControlSurface.PUSH_BUTTON_SOLO, new SoloCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_SCALES, PushControlSurface.PUSH_BUTTON_SCALES, new ScalesCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ACCENT, PushControlSurface.PUSH_BUTTON_ACCENT, new AccentCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ADD_EFFECT, PushControlSurface.PUSH_BUTTON_ADD_EFFECT, new AddEffectCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ADD_TRACK, PushControlSurface.PUSH_BUTTON_ADD_TRACK, new AddTrackCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, PushControlSurface.PUSH_BUTTON_NOTE, new SelectPlayViewCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, PushControlSurface.PUSH_BUTTON_SESSION, new SelectSessionViewCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, PushControlSurface.PUSH_BUTTON_DOWN, new PushCursorCommand (Direction.DOWN, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, PushControlSurface.PUSH_BUTTON_UP, new PushCursorCommand (Direction.UP, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, PushControlSurface.PUSH_BUTTON_LEFT, new PushCursorCommand (Direction.LEFT, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, PushControlSurface.PUSH_BUTTON_RIGHT, new PushCursorCommand (Direction.RIGHT, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_OCTAVE_DOWN, PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, new OctaveCommand (false, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_OCTAVE_UP, PushControlSurface.PUSH_BUTTON_OCTAVE_UP, new OctaveCommand (true, this.model, surface));
 
-        viewManager.registerTriggerCommand (Commands.COMMAND_SETUP, new SetupCommand (this.isPush2, this.model, this.surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_SETUP, new SetupCommand (this.isPush2, this.model, surface));
         if (this.isPush2)
         {
-            this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SETUP, Commands.COMMAND_SETUP);
-            this.addTriggerCommand (Commands.COMMAND_CONVERT, PushControlSurface.PUSH_BUTTON_CONVERT, new ConvertCommand (this.model, this.surface));
+            surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SETUP, Commands.COMMAND_SETUP);
+            this.addTriggerCommand (Commands.COMMAND_CONVERT, PushControlSurface.PUSH_BUTTON_CONVERT, new ConvertCommand (this.model, surface));
         }
         else
-            this.surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_USER_MODE, Commands.COMMAND_SETUP);
+            surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_USER_MODE, Commands.COMMAND_SETUP);
     }
 
 
@@ -420,37 +427,38 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     @Override
     protected void registerContinuousCommands ()
     {
+        final PushControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), PushControlSurface.PUSH_KNOB1 + i, new KnobRowModeCommand<> (i, this.model, this.surface));
+            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), PushControlSurface.PUSH_KNOB1 + i, new KnobRowModeCommand<> (i, this.model, surface));
 
-        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, PushControlSurface.PUSH_KNOB9, new MasterVolumeCommand<> (this.model, this.surface));
-        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO, PushControlSurface.PUSH_SMALL_KNOB1, new TempoCommand<> (this.model, this.surface));
-        this.addContinuousCommand (Commands.CONT_COMMAND_PLAY_POSITION, PushControlSurface.PUSH_SMALL_KNOB2, new PlayPositionCommand<> (this.model, this.surface));
-        this.addContinuousCommand (Commands.COMMAND_FOOTSWITCH, PushControlSurface.PUSH_FOOTSWITCH2, new FootswitchCommand<> (this.model, this.surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, PushControlSurface.PUSH_KNOB9, new MasterVolumeCommand<> (this.model, surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO, PushControlSurface.PUSH_SMALL_KNOB1, new TempoCommand<> (this.model, surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_PLAY_POSITION, PushControlSurface.PUSH_SMALL_KNOB2, new PlayPositionCommand<> (this.model, surface));
+        this.addContinuousCommand (Commands.COMMAND_FOOTSWITCH, PushControlSurface.PUSH_FOOTSWITCH2, new FootswitchCommand<> (this.model, surface));
 
-        this.addNoteCommand (Commands.CONT_COMMAND_KNOB1_TOUCH, PushControlSurface.PUSH_KNOB1_TOUCH, new KnobRowTouchModeCommand<> (0, this.model, this.surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_KNOB2_TOUCH, PushControlSurface.PUSH_KNOB2_TOUCH, new KnobRowTouchModeCommand<> (1, this.model, this.surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_KNOB3_TOUCH, PushControlSurface.PUSH_KNOB3_TOUCH, new KnobRowTouchModeCommand<> (2, this.model, this.surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_KNOB4_TOUCH, PushControlSurface.PUSH_KNOB4_TOUCH, new KnobRowTouchModeCommand<> (3, this.model, this.surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_KNOB5_TOUCH, PushControlSurface.PUSH_KNOB5_TOUCH, new KnobRowTouchModeCommand<> (4, this.model, this.surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_KNOB6_TOUCH, PushControlSurface.PUSH_KNOB6_TOUCH, new KnobRowTouchModeCommand<> (5, this.model, this.surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_KNOB7_TOUCH, PushControlSurface.PUSH_KNOB7_TOUCH, new KnobRowTouchModeCommand<> (6, this.model, this.surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_KNOB8_TOUCH, PushControlSurface.PUSH_KNOB8_TOUCH, new KnobRowTouchModeCommand<> (7, this.model, this.surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, PushControlSurface.PUSH_SMALL_KNOB1_TOUCH, new SmallKnobTouchCommand (this.model, this.surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_PLAYCURSOR_TOUCH, PushControlSurface.PUSH_SMALL_KNOB2_TOUCH, new SmallKnobTouchCommand (this.model, this.surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_CONFIGURE_PITCHBEND, PushControlSurface.PUSH_RIBBON_TOUCH, new ConfigurePitchbendCommand (this.model, this.surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_MASTERTRACK_TOUCH, PushControlSurface.PUSH_KNOB9_TOUCH, new MastertrackTouchCommand (this.model, this.surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB1_TOUCH, PushControlSurface.PUSH_KNOB1_TOUCH, new KnobRowTouchModeCommand<> (0, this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB2_TOUCH, PushControlSurface.PUSH_KNOB2_TOUCH, new KnobRowTouchModeCommand<> (1, this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB3_TOUCH, PushControlSurface.PUSH_KNOB3_TOUCH, new KnobRowTouchModeCommand<> (2, this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB4_TOUCH, PushControlSurface.PUSH_KNOB4_TOUCH, new KnobRowTouchModeCommand<> (3, this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB5_TOUCH, PushControlSurface.PUSH_KNOB5_TOUCH, new KnobRowTouchModeCommand<> (4, this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB6_TOUCH, PushControlSurface.PUSH_KNOB6_TOUCH, new KnobRowTouchModeCommand<> (5, this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB7_TOUCH, PushControlSurface.PUSH_KNOB7_TOUCH, new KnobRowTouchModeCommand<> (6, this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_KNOB8_TOUCH, PushControlSurface.PUSH_KNOB8_TOUCH, new KnobRowTouchModeCommand<> (7, this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, PushControlSurface.PUSH_SMALL_KNOB1_TOUCH, new SmallKnobTouchCommand (this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_PLAYCURSOR_TOUCH, PushControlSurface.PUSH_SMALL_KNOB2_TOUCH, new SmallKnobTouchCommand (this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_CONFIGURE_PITCHBEND, PushControlSurface.PUSH_RIBBON_TOUCH, new ConfigurePitchbendCommand (this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_MASTERTRACK_TOUCH, PushControlSurface.PUSH_KNOB9_TOUCH, new MastertrackTouchCommand (this.model, surface));
 
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.registerPitchbendCommand (new PitchbendCommand (this.model, this.surface));
+        final ViewManager viewManager = surface.getViewManager ();
+        viewManager.registerPitchbendCommand (new PitchbendCommand (this.model, surface));
 
         final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);
-        playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, this.surface));
+        playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, surface));
         final PlayView pianoView = (PlayView) viewManager.getView (Views.VIEW_PIANO);
-        pianoView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (pianoView, this.model, this.surface));
+        pianoView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (pianoView, this.model, surface));
 
         final SessionView sessionView = (SessionView) viewManager.getView (Views.VIEW_SESSION);
-        sessionView.registerPitchbendCommand (new PitchbendSessionCommand (this.model, this.surface));
+        sessionView.registerPitchbendCommand (new PitchbendSessionCommand (this.model, surface));
     }
 
 
@@ -459,8 +467,9 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     protected void startup ()
     {
         this.getHost ().scheduleTask ( () -> {
-            this.surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
+            final PushControlSurface surface = this.getSurface ();
+            surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
+            surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
         }, 200);
     }
 
@@ -468,54 +477,55 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     private void updateButtons ()
     {
         final TransportProxy t = this.model.getTransport ();
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_METRONOME, t.isMetronomeOn () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_PLAY, t.isPlaying () ? PushColors.PUSH_BUTTON_STATE_PLAY_HI : PushColors.PUSH_BUTTON_STATE_PLAY_ON);
+        final PushControlSurface surface = this.getSurface ();
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_METRONOME, t.isMetronomeOn () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_PLAY, t.isPlaying () ? PushColors.PUSH_BUTTON_STATE_PLAY_HI : PushColors.PUSH_BUTTON_STATE_PLAY_ON);
         final boolean isFlipRecord = this.configuration.isFlipRecord ();
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_CLIP_STOP, this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP) ? PushColors.PUSH_BUTTON_STATE_STOP_HI : PushColors.PUSH_BUTTON_STATE_STOP_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_CLIP_STOP, surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP) ? PushColors.PUSH_BUTTON_STATE_STOP_HI : PushColors.PUSH_BUTTON_STATE_STOP_ON);
 
-        final boolean isShift = this.surface.isShiftPressed ();
+        final boolean isShift = surface.isShiftPressed ();
         final boolean isRecordShifted = isShift && !isFlipRecord || !isShift && isFlipRecord;
         if (isRecordShifted)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_AUTOMATION, t.isWritingClipLauncherAutomation () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
+            surface.updateButton (PushControlSurface.PUSH_BUTTON_AUTOMATION, t.isWritingClipLauncherAutomation () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
         else
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_AUTOMATION, t.isWritingArrangerAutomation () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_RECORD, isRecordShifted ? t.isLauncherOverdub () ? PushColors.PUSH_BUTTON_STATE_OVR_HI : PushColors.PUSH_BUTTON_STATE_OVR_ON : t.isRecording () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
+            surface.updateButton (PushControlSurface.PUSH_BUTTON_AUTOMATION, t.isWritingArrangerAutomation () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_RECORD, isRecordShifted ? t.isLauncherOverdub () ? PushColors.PUSH_BUTTON_STATE_OVR_HI : PushColors.PUSH_BUTTON_STATE_OVR_ON : t.isRecording () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
 
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_ACCENT, this.configuration.isAccentActive () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_ACCENT, this.configuration.isAccentActive () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
 
-        final PushConfiguration config = this.surface.getConfiguration ();
+        final PushConfiguration config = surface.getConfiguration ();
         if (this.isPush2)
         {
-            final ModeManager modeManager = this.surface.getModeManager ();
+            final ModeManager modeManager = surface.getModeManager ();
             if (modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER))
             {
                 final CursorDeviceProxy cd = this.model.getCursorDevice ();
                 final ChannelData layer = cd.getSelectedLayerOrDrumPad ();
-                this.surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, layer != null && layer.isMute () ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
-                this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, layer != null && layer.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
+                surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, layer != null && layer.isMute () ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
+                surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, layer != null && layer.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
             }
             else
             {
                 final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
                 final TrackData selTrack = modeManager.isActiveMode (Modes.MODE_MASTER) ? this.model.getMasterTrack () : tb.getSelectedTrack ();
-                this.surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, selTrack != null && selTrack.isMute () ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
-                this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, selTrack != null && selTrack.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
+                surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, selTrack != null && selTrack.isMute () ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
+                surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, selTrack != null && selTrack.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
             }
 
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_CONVERT, this.canConvertClip () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateButton (PushControlSurface.PUSH_BUTTON_CONVERT, this.canConvertClip () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         }
         else
         {
             final boolean isMuteState = config.isMuteState ();
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, isMuteState ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, !isMuteState ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
+            surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, isMuteState ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
+            surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, !isMuteState ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
         }
 
-        final ViewManager viewManager = this.surface.getViewManager ();
+        final ViewManager viewManager = surface.getViewManager ();
         final boolean isSessionView = Views.isSessionView (viewManager.getActiveViewId ());
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_NOTE, isSessionView ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_HI);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SESSION, isSessionView ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_ACCENT, config.isAccentActive () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_NOTE, isSessionView ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_HI);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_SESSION, isSessionView ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_ACCENT, config.isAccentActive () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
 
         final View activeView = viewManager.getActiveView ();
         if (activeView != null)
@@ -525,8 +535,8 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         }
 
         final CursorClipProxy clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, clip != null && clip.canScrollStepsBackwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_DEVICE_RIGHT, clip != null && clip.canScrollStepsForwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, clip != null && clip.canScrollStepsBackwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_DEVICE_RIGHT, clip != null && clip.canScrollStepsForwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
     }
 
 
@@ -545,18 +555,19 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         if (this.isPush2)
             isMixOn = isMixOn || isVolumeOn || isPanOn;
 
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_MASTER, isMasterOn ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_TRACK, isMixOn ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_VOLUME, isVolumeOn ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_PAN_SEND, isPanOn ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_DEVICE, isDeviceOn ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCALES, Modes.MODE_SCALES.equals (mode) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, Modes.MODE_FIXED.equals (mode) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_BROWSE, Modes.MODE_BROWSER.equals (mode) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_CLIP, Modes.MODE_CLIP.equals (mode) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        final PushControlSurface surface = this.getSurface ();
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_MASTER, isMasterOn ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_TRACK, isMixOn ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_VOLUME, isVolumeOn ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_PAN_SEND, isPanOn ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_DEVICE, isDeviceOn ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_SCALES, Modes.MODE_SCALES.equals (mode) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, Modes.MODE_FIXED.equals (mode) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_BROWSE, Modes.MODE_BROWSER.equals (mode) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_CLIP, Modes.MODE_CLIP.equals (mode) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
 
         if (this.isPush2)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SETUP, Modes.MODE_SETUP.equals (mode) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+            surface.updateButton (PushControlSurface.PUSH_BUTTON_SETUP, Modes.MODE_SETUP.equals (mode) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
     }
 
 
@@ -564,7 +575,8 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     {
         final TrackBankProxy tb = this.model.getTrackBank ();
         final EffectTrackBankProxy tbe = this.model.getEffectTrackBank ();
-        final boolean isSession = this.surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
+        final PushControlSurface surface = this.getSurface ();
+        final boolean isSession = surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isPan = Modes.MODE_PAN.equals (mode);
         final boolean isVolume = Modes.MODE_VOLUME.equals (mode);
@@ -602,8 +614,9 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         if (!isSelected)
             return;
 
-        final ViewManager viewManager = this.surface.getViewManager ();
-        final ModeManager modeManager = this.surface.getModeManager ();
+        final PushControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
+        final ModeManager modeManager = surface.getModeManager ();
 
         // Recall last used view (if we are not in session mode)
         if (!viewManager.isActiveView (Views.VIEW_SESSION))
@@ -649,17 +662,18 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
 
     private void updateRibbonMode ()
     {
-        this.surface.setRibbonValue (0);
+        final PushControlSurface surface = this.getSurface ();
+        surface.setRibbonValue (0);
 
         switch (this.configuration.getRibbonMode ())
         {
             case PushConfiguration.RIBBON_MODE_CC:
             case PushConfiguration.RIBBON_MODE_FADER:
-                this.surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_VOLUME);
+                surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_VOLUME);
                 break;
 
             default:
-                this.surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_PITCHBEND);
+                surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_PITCHBEND);
                 break;
         }
     }

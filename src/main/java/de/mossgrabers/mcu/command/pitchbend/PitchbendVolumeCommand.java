@@ -35,8 +35,12 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
     {
         final double value = Math.min (data2 * 127 + (double) data1, this.model.getValueChanger ().getUpperBound () - 1);
         if (channel == 8)
+        {
             this.model.getMasterTrack ().setVolume (value);
-        else
-            this.model.getCurrentTrackBank ().setVolume (channel, value);
+            return;
+        }
+
+        final int extenderOffset = this.surface.getExtenderOffset ();
+        this.model.getCurrentTrackBank ().setVolume (extenderOffset + channel, value);
     }
 }

@@ -45,6 +45,8 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         if (event != ButtonEvent.DOWN)
             return;
 
+        final int channel = this.surface.getExtenderOffset () + index;
+
         if (row == 0)
         {
             // Mode specific
@@ -55,21 +57,21 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         if (row == 1)
         {
-            tb.toggleArm (index);
+            tb.toggleArm (channel);
         }
         else if (row == 2)
         {
             if (this.surface.isShiftPressed ())
-                tb.toggleAutoMonitor (index);
+                tb.toggleAutoMonitor (channel);
             else
-                tb.toggleSolo (index);
+                tb.toggleSolo (channel);
         }
         else if (row == 3)
         {
             if (this.surface.isShiftPressed ())
-                tb.toggleMonitor (index);
+                tb.toggleMonitor (channel);
             else
-                tb.toggleMute (index);
+                tb.toggleMute (channel);
         }
     }
 
@@ -82,9 +84,10 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
     public void updateFirstRow ()
     {
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData track = tb.getTrack (i);
+            final TrackData track = tb.getTrack (extenderOffset + i);
             this.surface.updateButton (MCUControlSurface.MCU_ARM1 + i, track.isRecarm () ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);
             this.surface.updateButton (MCUControlSurface.MCU_SOLO1 + i, track.isSolo () ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);
             this.surface.updateButton (MCUControlSurface.MCU_MUTE1 + i, track.isMute () ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);
@@ -107,9 +110,10 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
 
         // Format track names
         final Display d2 = this.surface.getSecondDisplay ();
+        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final TrackData t = tb.getTrack (extenderOffset + i);
             d2.setCell (0, i, this.optimizeName (StringUtils.fixASCII (t.getName ()), 6));
         }
         d2.setCell (0, 8, "Maste").done (0);

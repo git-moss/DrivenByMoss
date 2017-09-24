@@ -25,7 +25,19 @@ public class MidiOutput
      */
     public MidiOutput (final ControllerHost host)
     {
-        this.port = host.getMidiOutPort (0);
+        this (host, 0);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param host The host
+     * @param portNumber The number of the midi output port
+     */
+    public MidiOutput (final ControllerHost host, final int portNumber)
+    {
+        this.port = host.getMidiOutPort (portNumber);
     }
 
 
