@@ -310,6 +310,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     private int []            knobValues               = new int [8];
 
     private final int         extenderOffset;
+    private boolean           isMainDevice;
 
 
     /**
@@ -321,12 +322,14 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      * @param output The midi output
      * @param input The midi input
      * @param extenderOffset The channel/bank offset if multiple extenders are used
+     * @param isMainDevice True if it is the main MCU controller (and not an extender)
      */
-    public MCUControlSurface (final ControllerHost host, final ColorManager colorManager, final MCUConfiguration configuration, final MidiOutput output, final MidiInput input, final int extenderOffset)
+    public MCUControlSurface (final ControllerHost host, final ColorManager colorManager, final MCUConfiguration configuration, final MidiOutput output, final MidiInput input, final int extenderOffset, final boolean isMainDevice)
     {
         super (host, configuration, colorManager, output, input, MCU_BUTTONS_ALL);
 
         this.extenderOffset = extenderOffset;
+        this.isMainDevice = isMainDevice;
 
         this.shiftButtonId = MCU_SHIFT;
         this.selectButtonId = MCU_OPTION;
@@ -542,5 +545,16 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     public boolean isGridNote (final int note)
     {
         return false;
+    }
+
+
+    /**
+     * True if it is the main device.
+     *
+     * @return Returns true if it is the main device
+     */
+    public boolean isMainDevice ()
+    {
+        return this.isMainDevice;
     }
 }

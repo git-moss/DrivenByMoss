@@ -38,6 +38,7 @@ public class MCUDisplay extends AbstractDisplay
 
     private boolean                isFirst;
     private int                    charactersOfCell;
+    private boolean                hasMaster;
 
 
     /**
@@ -47,13 +48,25 @@ public class MCUDisplay extends AbstractDisplay
      * @param host The host
      * @param output The midi output which addresses the display
      * @param isFirst True if it is the first display, otherwise the second
+     * @param hasMaster True if a 9th master cell should be added
      */
-    public MCUDisplay (final ControllerHost host, final MidiOutput output, final boolean isFirst)
+    public MCUDisplay (final ControllerHost host, final MidiOutput output, final boolean isFirst, final boolean hasMaster)
     {
-        super (host, output, 2 /* No of rows */, isFirst ? 8 : 9 /* No of cells */, 56);
+        super (host, output, 2 /* No of rows */, !isFirst && hasMaster ? 9 : 8 /* No of cells */, 56);
 
         this.isFirst = isFirst;
+        this.hasMaster = hasMaster;
         this.charactersOfCell = this.noOfCharacters / this.noOfCells;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public AbstractDisplay clearRow (final int row)
+    {
+        for (int i = 0; i < this.noOfCells; i++)
+            this.clearCell (row, i);
+        return this;
     }
 
 
@@ -115,7 +128,7 @@ public class MCUDisplay extends AbstractDisplay
     public void writeLine (final int row, final String text)
     {
         String t = text;
-        if (!this.isFirst)
+        if (!this.isFirst && this.hasMaster)
         {
             if (row == 0)
                 t = t.substring (0, t.length () - 1) + 'r';

@@ -37,13 +37,6 @@ public abstract class AbstractTrackMode extends BaseMode
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
 
         final Display d = this.surface.getDisplay ().clear ();
-        final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = currentTrackBank.getSelectedTrack ();
-        if (selectedTrack == null)
-        {
-            d.notify ("Please select a track...", true, false);
-            return false;
-        }
 
         // Format track names
         final int extenderOffset = this.surface.getExtenderOffset ();

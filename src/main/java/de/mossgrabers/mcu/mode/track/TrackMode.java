@@ -80,10 +80,17 @@ public class TrackMode extends AbstractTrackMode
         if (!this.drawTrackHeader ())
             return;
 
-        final MCUConfiguration config = this.surface.getConfiguration ();
         final Display d = this.surface.getDisplay ().clear ();
+
         final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
         final TrackData selectedTrack = currentTrackBank.getSelectedTrack ();
+        if (selectedTrack == null)
+        {
+            d.notify ("Please select a track...", true, false);
+            return;
+        }
+
+        final MCUConfiguration config = this.surface.getConfiguration ();
 
         final boolean displayTrackNames = this.surface.getConfiguration ().isDisplayTrackNames ();
         if (!displayTrackNames)
