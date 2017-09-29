@@ -174,7 +174,6 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.flushSurfaces ();
 
         this.updateButtons ();
-        // TODO
         this.updateMode (this.getSurface ().getModeManager ().getActiveModeId ());
     }
 
@@ -189,7 +188,6 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         trackBank.setIndication (true);
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
 
-        // TODO
         this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
             final ModeManager modeManager = this.getSurface ().getModeManager ();
             if (isSelected)
@@ -210,12 +208,12 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         {
             final MidiOutput output = new MidiOutput (host, i);
             final MidiInput input = new MCUMidiInput (i);
-            final MCUControlSurface surface = new MCUControlSurface (host, this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1));
+            final MCUControlSurface surface = new MCUControlSurface (host, this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1), i == 0);
             this.surfaces.add (surface);
-            surface.setDisplay (new MCUDisplay (host, output, true));
-            surface.setSecondDisplay (new MCUDisplay (host, output, false));
+            surface.setDisplay (new MCUDisplay (host, output, true, false));
+            surface.setSecondDisplay (new MCUDisplay (host, output, false, i == 0));
             surface.setSegmentDisplay (new MCUSegmentDisplay (host, output));
-            surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
+            surface.getModeManager ().setDefaultMode (Modes.MODE_VOLUME);
         }
     }
 
@@ -435,7 +433,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
 
             this.getHost ().scheduleTask ( () -> {
                 surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-                surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
+                surface.getModeManager ().setActiveMode (Modes.MODE_VOLUME);
             }, 200);
         }
     }
