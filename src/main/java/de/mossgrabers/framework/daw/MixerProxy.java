@@ -80,7 +80,7 @@ public class MixerProxy
      */
     public boolean isCrossFadeSectionVisible ()
     {
-        return this.mixer.isClipLauncherSectionVisible ().get ();
+        return this.mixer.isCrossFadeSectionVisible ().get ();
     }
 
 
