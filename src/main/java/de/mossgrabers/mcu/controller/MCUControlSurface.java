@@ -493,7 +493,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     public void switchVuMode (final int mode)
     {
         // Always horizontal
-        this.output.sendSysex (new StringBuilder (SYSEX_HDR).append ("21 00 F7").toString ());
+        this.output.sendSysex (SYSEX_HDR + "21 00 F7");
 
         if (this.activeVuMode != mode)
         {

@@ -35,8 +35,7 @@ public class APCminiScales extends Scales
     public int [] translateMatrixToGrid (final int [] matrix)
     {
         final int [] gridMatrix = Scales.getEmptyMatrix ();
-        for (int i = 36; i < 100; i++)
-            gridMatrix[i - 36] = matrix[i];
+        System.arraycopy(matrix, 36, gridMatrix, 0, 64);
         return gridMatrix;
     }
 }

@@ -41,6 +41,6 @@ public class PanMode extends BaseMode
     public Integer getValue (final int index)
     {
         final TrackData track = this.model.getCurrentTrackBank ().getTrack (index);
-        return track.doesExist () ? Integer.valueOf (track.getPan ()) : null;
+        return track.doesExist () ? track.getPan() : null;
     }
 }

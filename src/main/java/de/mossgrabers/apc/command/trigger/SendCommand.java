@@ -61,7 +61,7 @@ public class SendCommand extends AbstractTriggerCommand<APCControlSurface, APCCo
         if (this.model.isEffectTrackBankActive ())
             return;
 
-        this.surface.getModeManager ().setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + index));
+        this.surface.getModeManager ().setActiveMode (Modes.MODE_SEND1.intValue() + index);
         this.surface.getDisplay ().notify ("Send " + (index + 1));
     }
 }

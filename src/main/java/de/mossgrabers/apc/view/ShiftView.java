@@ -146,7 +146,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final Integer viewID = Integer.valueOf (Views.VIEW_SESSION.intValue () + scene);
+        final Integer viewID = Views.VIEW_SESSION.intValue() + scene;
         final ViewManager viewManager = this.surface.getViewManager ();
         viewManager.setActiveView (viewID);
         if (Views.VIEW_SESSION.equals (viewID))

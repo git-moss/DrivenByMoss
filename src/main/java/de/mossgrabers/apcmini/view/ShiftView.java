@@ -291,16 +291,16 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 if (this.model.isEffectTrackBankActive ())
                     return;
                 final ModeManager modeManager = this.surface.getModeManager ();
-                Integer mode = Integer.valueOf (modeManager.getActiveModeId ().intValue () + 1);
+                Integer mode = modeManager.getActiveModeId().intValue() + 1;
                 // Wrap
                 if (!Modes.isSendMode (mode))
                     mode = Modes.MODE_SEND1;
                 // Check if Send channel exists
                 final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
-                if (Modes.isSendMode (mode) && fxTrackBank != null && !fxTrackBank.getTrack (mode.intValue () - Modes.MODE_SEND1.intValue ()).doesExist ())
+                if (Modes.isSendMode (mode) && fxTrackBank != null && !fxTrackBank.getTrack (mode - Modes.MODE_SEND1).doesExist ())
                     mode = Modes.MODE_SEND1;
                 modeManager.setActiveMode (mode);
-                final String name = "Send " + (mode.intValue () - Modes.MODE_SEND1.intValue () + 1);
+                final String name = "Send " + (mode - Modes.MODE_SEND1 + 1);
                 this.surface.getConfiguration ().setFaderCtrl (name);
                 this.surface.getDisplay ().notify (name);
                 break;

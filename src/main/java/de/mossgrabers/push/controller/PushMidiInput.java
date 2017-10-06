@@ -38,7 +38,7 @@ public class PushMidiInput extends MidiInput
         {
             "80????", // Note off
             "90????", // Note on
-            "B040??" // Sustainpedal
+            "B040??" // Sustain pedal
         });
     }
 }

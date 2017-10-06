@@ -136,37 +136,41 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
                     return;
 
                 case 7:
-                    if (row == 0)
-                        browser.selectNextResult ();
-                    else if (row == 1)
-                    {
-                        for (int i = 0; i < 8; i++)
-                            browser.selectNextResult ();
+                    switch (row) {
+                        case 0:
+                            browser.selectNextResult();
+                            break;
+                        case 1:
+                            for (int i = 0; i < 8; i++)
+                                browser.selectNextResult();
+                            break;
+                        case 2:
+                            for (int i = 0; i < 8; i++)
+                                browser.selectPreviousResult();
+                            break;
+                        case 3:
+                            browser.selectPreviousResult();
+                            break;
                     }
-                    else if (row == 2)
-                    {
-                        for (int i = 0; i < 8; i++)
-                            browser.selectPreviousResult ();
-                    }
-                    else if (row == 3)
-                        browser.selectPreviousResult ();
                     break;
 
                 default:
-                    if (row == 0)
-                        browser.selectNextFilterItem (col);
-                    else if (row == 1)
-                    {
-                        for (int i = 0; i < 8; i++)
-                            browser.selectNextFilterItem (col);
+                    switch (row) {
+                        case 0:
+                            browser.selectNextFilterItem(col);
+                            break;
+                        case 1:
+                            for (int i = 0; i < 8; i++)
+                                browser.selectNextFilterItem(col);
+                            break;
+                        case 2:
+                            for (int i = 0; i < 8; i++)
+                                browser.selectPreviousFilterItem(col);
+                            break;
+                        case 3:
+                            browser.selectPreviousFilterItem(col);
+                            break;
                     }
-                    else if (row == 2)
-                    {
-                        for (int i = 0; i < 8; i++)
-                            browser.selectPreviousFilterItem (col);
-                    }
-                    else if (row == 3)
-                        browser.selectPreviousFilterItem (col);
                     break;
             }
         }

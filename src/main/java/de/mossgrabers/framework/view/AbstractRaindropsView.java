@@ -84,15 +84,15 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
         final int index = note - 36;
         final int x = index % 8;
         final int y = index / 8;
-        final int stepsize = y == 0 ? 1 : 2 * y;
+        final int stepSize = y == 0 ? 1 : 2 * y;
 
         final int length = (int) Math.floor (this.getClip ().getLoopLength () / RESOLUTIONS[this.selectedIndex]);
         final int distance = this.getNoteDistance (this.noteMap[x], length);
         this.getClip ().clearRow (this.noteMap[x]);
         if (distance == -1 || distance != (y == 0 ? 1 : y * 2))
         {
-            final int offset = this.getClip ().getCurrentStep () % stepsize;
-            for (int i = offset; i < length; i += stepsize)
+            final int offset = this.getClip ().getCurrentStep () % stepSize;
+            for (int i = offset; i < length; i += stepSize)
                 this.getClip ().setStep (i, this.noteMap[x], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, RESOLUTIONS[this.selectedIndex]);
         }
     }

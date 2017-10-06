@@ -27,63 +27,63 @@ import java.util.Set;
 public abstract class AbstractConfiguration implements Configuration
 {
     /** ID for scale setting. */
-    public static final Integer   SCALES_SCALE                      = Integer.valueOf (0);
+    public static final Integer   SCALES_SCALE                      = 0;
     /** ID for scale base note setting. */
-    public static final Integer   SCALES_BASE                       = Integer.valueOf (1);
+    public static final Integer   SCALES_BASE                       = 1;
     /** ID for scale in-key setting. */
-    public static final Integer   SCALES_IN_KEY                     = Integer.valueOf (2);
+    public static final Integer   SCALES_IN_KEY                     = 2;
     /** ID for scale layout setting. */
-    public static final Integer   SCALES_LAYOUT                     = Integer.valueOf (3);
+    public static final Integer   SCALES_LAYOUT                     = 3;
     /** ID for enabling VU meters setting. */
-    public static final Integer   ENABLE_VU_METERS                  = Integer.valueOf (4);
+    public static final Integer   ENABLE_VU_METERS                  = 4;
     /** ID for behaviour on stop setting. */
-    public static final Integer   BEHAVIOUR_ON_STOP                 = Integer.valueOf (5);
+    public static final Integer   BEHAVIOUR_ON_STOP                 = 5;
     /** ID for displaying the crossfader in tracks setting. */
-    public static final Integer   DISPLAY_CROSSFADER                = Integer.valueOf (6);
+    public static final Integer   DISPLAY_CROSSFADER                = 6;
     /** ID for flipping the session grid setting. */
-    public static final Integer   FLIP_SESSION                      = Integer.valueOf (7);
+    public static final Integer   FLIP_SESSION                      = 7;
     /** ID for locking the flip the session grid setting. */
-    public static final Integer   LOCK_FLIP_SESSION                 = Integer.valueOf (8);
+    public static final Integer   LOCK_FLIP_SESSION                 = 8;
     /** ID for selecting the clip on launch setting. */
-    public static final Integer   SELECT_CLIP_ON_LAUNCH             = Integer.valueOf (9);
+    public static final Integer   SELECT_CLIP_ON_LAUNCH             = 9;
     /** ID for drawing record stripes setting. */
-    public static final Integer   DRAW_RECORD_STRIPE                = Integer.valueOf (10);
+    public static final Integer   DRAW_RECORD_STRIPE                = 10;
     /** ID for converting the aftertouch data setting. */
-    public static final Integer   CONVERT_AFTERTOUCH                = Integer.valueOf (11);
+    public static final Integer   CONVERT_AFTERTOUCH                = 11;
     /** ID for activating the fixed accent setting. */
-    public static final Integer   ACTIVATE_FIXED_ACCENT             = Integer.valueOf (12);
+    public static final Integer   ACTIVATE_FIXED_ACCENT             = 12;
     /** ID for the value of the fixed accent setting. */
-    public static final Integer   FIXED_ACCENT_VALUE                = Integer.valueOf (13);
+    public static final Integer   FIXED_ACCENT_VALUE                = 13;
     /** ID for the quantize amount setting. */
-    public static final Integer   QUANTIZE_AMOUNT                   = Integer.valueOf (14);
+    public static final Integer   QUANTIZE_AMOUNT                   = 14;
     /** ID for the flip recording setting. */
-    public static final Integer   FLIP_RECORD                       = Integer.valueOf (15);
+    public static final Integer   FLIP_RECORD                       = 15;
     /** Setting for automatic selecting the drum channel. */
-    public static final Integer   AUTO_SELECT_DRUM                  = Integer.valueOf (16);
+    public static final Integer   AUTO_SELECT_DRUM                  = 16;
     /** Setting for new clip length. */
-    public static final Integer   NEW_CLIP_LENGTH                   = Integer.valueOf (17);
+    public static final Integer   NEW_CLIP_LENGTH                   = 17;
     /** Setting for turning off empty drum pads (otherwise orange). */
-    public static final Integer   TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (18);
+    public static final Integer   TURN_OFF_EMPTY_DRUM_PADS          = 18;
     /** Setting for action for rec armed pad. */
-    public static final Integer   ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (19);
+    public static final Integer   ACTION_FOR_REC_ARMED_PAD          = 19;
     /** Setting for the footswitch functionality. */
-    public static final Integer   FOOTSWITCH_2                      = Integer.valueOf (20);
+    public static final Integer   FOOTSWITCH_2                      = 20;
     /** Setting for displaying browser column 1. */
-    public static final Integer   BROWSER_DISPLAY_FILTER1           = Integer.valueOf (21);
+    public static final Integer   BROWSER_DISPLAY_FILTER1           = 21;
     /** Setting for displaying browser column 2. */
-    public static final Integer   BROWSER_DISPLAY_FILTER2           = Integer.valueOf (22);
+    public static final Integer   BROWSER_DISPLAY_FILTER2           = 22;
     /** Setting for displaying browser column 3. */
-    public static final Integer   BROWSER_DISPLAY_FILTER3           = Integer.valueOf (23);
+    public static final Integer   BROWSER_DISPLAY_FILTER3           = 23;
     /** Setting for displaying browser column 4. */
-    public static final Integer   BROWSER_DISPLAY_FILTER4           = Integer.valueOf (24);
+    public static final Integer   BROWSER_DISPLAY_FILTER4           = 24;
     /** Setting for displaying browser column 5. */
-    public static final Integer   BROWSER_DISPLAY_FILTER5           = Integer.valueOf (25);
+    public static final Integer   BROWSER_DISPLAY_FILTER5           = 25;
     /** Setting for displaying browser column 6. */
-    public static final Integer   BROWSER_DISPLAY_FILTER6           = Integer.valueOf (26);
+    public static final Integer   BROWSER_DISPLAY_FILTER6           = 26;
     /** Setting for displaying browser column 7. */
-    public static final Integer   BROWSER_DISPLAY_FILTER7           = Integer.valueOf (27);
+    public static final Integer   BROWSER_DISPLAY_FILTER7           = 27;
     /** Setting for displaying browser column 8. */
-    public static final Integer   BROWSER_DISPLAY_FILTER8           = Integer.valueOf (28);
+    public static final Integer   BROWSER_DISPLAY_FILTER8           = 28;
 
     protected static final String CATEGORY_DRUMS                    = "Drum Sequencer";
     protected static final String CATEGORY_SCALES                   = "Scales";
@@ -951,7 +951,7 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the footwswitch setting.
+     * Activate the footswitch setting.
      *
      * @param prefs The preferences
      */
@@ -982,7 +982,7 @@ public abstract class AbstractConfiguration implements Configuration
             final int index = i;
             browserDisplayFilterSetting.addValueObserver (value -> {
                 this.browserDisplayFilter[index] = COLUMN_VALUES[1].equals (value);
-                this.notifyObservers (Integer.valueOf (BROWSER_DISPLAY_FILTER1.intValue () + index));
+                this.notifyObservers (BROWSER_DISPLAY_FILTER1.intValue() + index);
             });
         }
     }

@@ -20,13 +20,13 @@ import com.bitwig.extension.controller.api.SettableStringValue;
 public class OSCConfiguration extends AbstractConfiguration
 {
     /** ID for receive host setting. */
-    public static final Integer RECEIVE_HOST   = Integer.valueOf (30);
+    public static final Integer RECEIVE_HOST   = 30;
     /** ID for receive port setting. */
-    public static final Integer RECEIVE_PORT   = Integer.valueOf (31);
+    public static final Integer RECEIVE_PORT   = 31;
     /** ID for send host setting. */
-    public static final Integer SEND_HOST      = Integer.valueOf (32);
+    public static final Integer SEND_HOST      = 32;
     /** ID for send port setting. */
-    public static final Integer SEND_PORT      = Integer.valueOf (33);
+    public static final Integer SEND_PORT      = 33;
 
     private static final String DEFAULT_SERVER = "127.0.0.1";
 

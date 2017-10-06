@@ -416,7 +416,7 @@ public class CursorDeviceProxy
      */
     public void changeParameter (final int index, final int control)
     {
-        this.getParameter (index).inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.getParameter (index).inc (this.valueChanger.calcKnobSpeed(control), this.valueChanger.getUpperBound());
     }
 
 
@@ -428,7 +428,7 @@ public class CursorDeviceProxy
      */
     public void setParameter (final int index, final int value)
     {
-        this.getParameter (index).set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.getParameter (index).set (value, this.valueChanger.getUpperBound());
     }
 
 
@@ -1326,7 +1326,9 @@ public class CursorDeviceProxy
      */
     public void changeLayerVolume (final int index, final int control)
     {
-        this.layerBank.getChannel (index).getVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.layerBank.getChannel (index).getVolume ().inc (this.valueChanger.calcKnobSpeed(control),
+                                                            this.valueChanger.getUpperBound()
+        );
     }
 
 
@@ -1338,7 +1340,7 @@ public class CursorDeviceProxy
      */
     public void setLayerVolume (final int index, final int value)
     {
-        this.layerBank.getChannel (index).getVolume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.layerBank.getChannel (index).getVolume ().set (value, this.valueChanger.getUpperBound());
     }
 
 
@@ -1373,7 +1375,9 @@ public class CursorDeviceProxy
      */
     public void changeLayerPan (final int index, final int control)
     {
-        this.layerBank.getChannel (index).getPan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.layerBank.getChannel (index).getPan ().inc (this.valueChanger.calcKnobSpeed(control),
+                                                         this.valueChanger.getUpperBound()
+        );
     }
 
 
@@ -1385,7 +1389,7 @@ public class CursorDeviceProxy
      */
     public void setLayerPan (final int index, final int value)
     {
-        this.layerBank.getChannel (index).getPan ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.layerBank.getChannel (index).getPan ().set (value, this.valueChanger.getUpperBound());
     }
 
 
@@ -1421,7 +1425,9 @@ public class CursorDeviceProxy
      */
     public void changeLayerSend (final int index, final int sendIndex, final int control)
     {
-        this.layerBank.getChannel (index).sendBank ().getItemAt (sendIndex).inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.layerBank.getChannel (index).sendBank ().getItemAt (sendIndex).inc (this.valueChanger.calcKnobSpeed(control),
+                                                                                 this.valueChanger.getUpperBound()
+        );
     }
 
 
@@ -1434,7 +1440,7 @@ public class CursorDeviceProxy
      */
     public void setLayerSend (final int index, final int sendIndex, final int value)
     {
-        this.layerBank.getChannel (index).sendBank ().getItemAt (sendIndex).set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.layerBank.getChannel (index).sendBank ().getItemAt (sendIndex).set (value, this.valueChanger.getUpperBound());
     }
 
 
@@ -1730,7 +1736,9 @@ public class CursorDeviceProxy
      */
     public void changeDrumPadVolume (final int index, final int control)
     {
-        this.drumPadBank.getChannel (index).getVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.drumPadBank.getChannel (index).getVolume ().inc (this.valueChanger.calcKnobSpeed(control),
+                                                              this.valueChanger.getUpperBound()
+        );
     }
 
 
@@ -1742,7 +1750,7 @@ public class CursorDeviceProxy
      */
     public void setDrumPadVolume (final int index, final int value)
     {
-        this.drumPadBank.getChannel (index).getVolume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.drumPadBank.getChannel (index).getVolume ().set (value, this.valueChanger.getUpperBound());
     }
 
 
@@ -1777,7 +1785,9 @@ public class CursorDeviceProxy
      */
     public void changeDrumPadPan (final int index, final int control)
     {
-        this.drumPadBank.getChannel (index).getPan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.drumPadBank.getChannel (index).getPan ().inc (this.valueChanger.calcKnobSpeed(control),
+                                                           this.valueChanger.getUpperBound()
+        );
     }
 
 
@@ -1789,7 +1799,7 @@ public class CursorDeviceProxy
      */
     public void setDrumPadPan (final int index, final int value)
     {
-        this.drumPadBank.getChannel (index).getPan ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.drumPadBank.getChannel (index).getPan ().set (value, this.valueChanger.getUpperBound());
     }
 
 
@@ -1825,7 +1835,9 @@ public class CursorDeviceProxy
      */
     public void changeDrumPadSend (final int index, final int sendIndex, final int control)
     {
-        this.drumPadBank.getChannel (index).sendBank ().getItemAt (sendIndex).inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.drumPadBank.getChannel (index).sendBank ().getItemAt (sendIndex).inc (this.valueChanger.calcKnobSpeed(control),
+                                                                                   this.valueChanger.getUpperBound()
+        );
     }
 
 
@@ -1838,7 +1850,9 @@ public class CursorDeviceProxy
      */
     public void setDrumPadSend (final int index, final int sendIndex, final int value)
     {
-        this.drumPadBank.getChannel (index).sendBank ().getItemAt (sendIndex).set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.drumPadBank.getChannel (index).sendBank ().getItemAt (sendIndex).set (value,
+                                                                                   this.valueChanger.getUpperBound()
+        );
     }
 
 

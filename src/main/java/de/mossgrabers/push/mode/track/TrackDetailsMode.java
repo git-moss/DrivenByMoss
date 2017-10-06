@@ -138,7 +138,7 @@ public class TrackDetailsMode extends BaseMode
 
         final int off = this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
         this.surface.updateButton (20, deviceChain.isActivated () ? this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_MD : PushColors.PUSH1_COLOR_YELLOW_MD : this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_LO : PushColors.PUSH1_COLOR_YELLOW_LO);
-        this.surface.updateButton (21, deviceChain.isRecarm () ? this.isPush2 ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH1_COLOR_RED_HI : this.isPush2 ? PushColors.PUSH2_COLOR_RED_LO : PushColors.PUSH1_COLOR_RED_LO);
+        this.surface.updateButton (21, deviceChain.isRecArm() ? this.isPush2 ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH1_COLOR_RED_HI : this.isPush2 ? PushColors.PUSH2_COLOR_RED_LO : PushColors.PUSH1_COLOR_RED_LO);
         this.surface.updateButton (22, deviceChain.isMute () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_LO : PushColors.PUSH1_COLOR_ORANGE_LO);
         this.surface.updateButton (23, deviceChain.isSolo () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_LO : PushColors.PUSH1_COLOR_ORANGE_LO);
         this.surface.updateButton (24, deviceChain.isMonitor () ? this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_HI : PushColors.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_LO : PushColors.PUSH1_COLOR_GREEN_LO);
@@ -161,7 +161,7 @@ public class TrackDetailsMode extends BaseMode
             d.clearRow (0).clearRow (1).setBlock (0, 0, "Track: " + deviceChain.getName ());
             d.setCell (2, 0, "Active").setCell (3, 0, deviceChain.isActivated () ? "On" : "Off");
             d.setCell (2, 1, "Rec Arm");
-            d.setCell (3, 1, deviceChain.isRecarm () ? "On" : "Off");
+            d.setCell (3, 1, deviceChain.isRecArm() ? "On" : "Off");
             d.setCell (2, 2, "Mute").setCell (3, 2, deviceChain.isMute () ? "On" : "Off");
             d.setCell (2, 3, "Solo").setCell (3, 3, deviceChain.isSolo () ? "On" : "Off");
             d.setCell (2, 4, "Monitor");
@@ -186,7 +186,7 @@ public class TrackDetailsMode extends BaseMode
         else
         {
             message.addOptionElement ("Track: " + deviceChain.getName (), "", false, "", "Active", deviceChain.isActivated (), false);
-            message.addOptionElement ("", "", false, "", "Rec Arm", deviceChain.isRecarm (), false);
+            message.addOptionElement ("", "", false, "", "Rec Arm", deviceChain.isRecArm(), false);
             message.addOptionElement ("", "", false, "", "Mute", deviceChain.isMute (), false);
             message.addOptionElement ("", "", false, "", "Solo", deviceChain.isSolo (), false);
             message.addOptionElement ("", "", false, "", "Monitor", deviceChain.isMonitor (), false);

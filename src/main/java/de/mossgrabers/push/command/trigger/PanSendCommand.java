@@ -56,12 +56,13 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
             }
             else
             {
-                mode = Integer.valueOf (currentMode.intValue () + 1);
+                mode = currentMode.intValue() + 1;
                 // Wrap
-                if (mode.intValue () < Modes.MODE_DEVICE_LAYER_PAN.intValue () || mode.intValue () > Modes.MODE_DEVICE_LAYER_SEND6.intValue ())
+                if (mode < Modes.MODE_DEVICE_LAYER_PAN || mode > Modes.MODE_DEVICE_LAYER_SEND6)
                     mode = Modes.MODE_DEVICE_LAYER_PAN;
                 // Check if Send channel exists
-                if (mode.intValue () >= Modes.MODE_DEVICE_LAYER_SEND1.intValue () && mode.intValue () <= Modes.MODE_DEVICE_LAYER_SEND6.intValue () && fxTrackBank != null && !fxTrackBank.getTrack (mode.intValue () - Modes.MODE_DEVICE_LAYER_SEND1.intValue ()).doesExist ())
+                if (mode >= Modes.MODE_DEVICE_LAYER_SEND1 && mode <= Modes.MODE_DEVICE_LAYER_SEND6 && fxTrackBank != null && !fxTrackBank.getTrack (
+                        mode - Modes.MODE_DEVICE_LAYER_SEND1).doesExist ())
                     mode = Modes.MODE_DEVICE_LAYER_PAN;
             }
             modeManager.setActiveMode (mode);
@@ -75,12 +76,13 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
         }
         else
         {
-            mode = Integer.valueOf (currentMode.intValue () + 1);
+            mode = currentMode.intValue() + 1;
             // Wrap
-            if (mode.intValue () < Modes.MODE_PAN.intValue () || mode.intValue () > Modes.MODE_SEND6.intValue ())
+            if (mode < Modes.MODE_PAN || mode > Modes.MODE_SEND6)
                 mode = Modes.MODE_PAN;
             // Check if Send channel exists
-            if (mode.intValue () >= Modes.MODE_SEND1.intValue () && mode.intValue () <= Modes.MODE_SEND6.intValue () && fxTrackBank != null && !fxTrackBank.getTrack (mode.intValue () - Modes.MODE_SEND1.intValue ()).doesExist ())
+            if (mode >= Modes.MODE_SEND1 && mode <= Modes.MODE_SEND6 && fxTrackBank != null && !fxTrackBank.getTrack (
+                    mode - Modes.MODE_SEND1).doesExist ())
                 mode = Modes.MODE_PAN;
         }
         modeManager.setActiveMode (mode);

@@ -357,7 +357,7 @@ public class TransportProxy
      */
     public void changeMetronomeVolume (final int control)
     {
-        this.transport.metronomeVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.transport.metronomeVolume ().inc (this.valueChanger.calcKnobSpeed(control), this.valueChanger.getUpperBound());
     }
 
 
@@ -368,7 +368,7 @@ public class TransportProxy
      */
     public void setMetronomeVolume (final int value)
     {
-        this.transport.metronomeVolume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.transport.metronomeVolume ().set (value, this.valueChanger.getUpperBound());
     }
 
 
@@ -612,7 +612,7 @@ public class TransportProxy
     /**
      * Changes the tempo.
      *
-     * @param increase True to increase otherwise descrease
+     * @param increase True to increase otherwise decrease
      */
     public void changeTempo (final boolean increase)
     {
@@ -685,7 +685,7 @@ public class TransportProxy
      */
     public void setCrossfade (final int value)
     {
-        this.transport.getCrossfade ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.transport.getCrossfade ().set (value, this.valueChanger.getUpperBound());
     }
 
 
@@ -707,7 +707,7 @@ public class TransportProxy
      */
     public void changeCrossfade (final int control)
     {
-        this.transport.getCrossfade ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.transport.getCrossfade ().inc (this.valueChanger.calcKnobSpeed(control), this.valueChanger.getUpperBound());
     }
 
 

@@ -359,7 +359,7 @@ public class BrowserProxy
 
 
     /**
-     * Select the previous resuts item.
+     * Select the previous results item.
      */
     public void selectPreviousResult ()
     {
@@ -368,7 +368,7 @@ public class BrowserProxy
 
 
     /**
-     * Select the next resuts item.
+     * Select the next results item.
      */
     public void selectNextResult ()
     {

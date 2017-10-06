@@ -15,7 +15,7 @@ import de.mossgrabers.sl.controller.SLControlSurface;
 
 
 /**
- * Different track parameters which can be toggeld and device navigation mode.
+ * Different track parameters which can be toggled and device navigation mode.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -53,7 +53,7 @@ public class TrackTogglesMode extends AbstractMode<SLControlSurface, SLConfigura
             d.setCell (0, 1, "  Solo");
             d.setCell (2, 1, t.isSolo () ? "   On" : "   Off");
             d.setCell (0, 2, "Rec Arm");
-            d.setCell (2, 2, t.isRecarm () ? "   On" : "   Off");
+            d.setCell (2, 2, t.isRecArm() ? "   On" : "   Off");
             d.setCell (0, 3, " Write");
             d.setCell (2, 3, this.model.getTransport ().isWritingArrangerAutomation () ? "   On" : "   Off");
             d.setCell (0, 4, " Browse");

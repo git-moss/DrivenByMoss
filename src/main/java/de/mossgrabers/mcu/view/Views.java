@@ -12,7 +12,7 @@ package de.mossgrabers.mcu.view;
 public class Views
 {
     /** View for controlling values. */
-    public static final Integer VIEW_CONTROL = Integer.valueOf (0);
+    public static final Integer VIEW_CONTROL = 0;
 
 
     /**

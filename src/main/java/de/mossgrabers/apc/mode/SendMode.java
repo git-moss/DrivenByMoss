@@ -50,8 +50,8 @@ public class SendMode extends BaseMode
     public Integer getValue (final int index)
     {
         if (this.model.isEffectTrackBankActive ())
-            return Integer.valueOf (0);
+            return 0;
         final TrackData track = this.model.getCurrentTrackBank ().getTrack (index);
-        return track.doesExist () ? Integer.valueOf (track.getSends ()[this.sendIndex].getValue ()) : null;
+        return track.doesExist () ? track.getSends()[this.sendIndex].getValue() : null;
     }
 }

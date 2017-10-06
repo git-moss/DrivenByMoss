@@ -190,13 +190,13 @@ public class OSCParser implements OSCListener
                         break;
                     case "+":
                         if (value == null)
-                            value = Integer.valueOf (1);
+                            value = 1;
                         if (value instanceof Number)
                             this.transport.setTempo (this.transport.getTempo () + ((Number) value).doubleValue ());
                         break;
                     case "-":
                         if (value == null)
-                            value = Integer.valueOf (1);
+                            value = 1;
                         if (value instanceof Number)
                             this.transport.setTempo (this.transport.getTempo () - ((Number) value).doubleValue ());
                         break;

@@ -26,7 +26,7 @@ public class ColorManager
 
 
     /**
-     * Registers a a color index. An exception is thrown if the color index is already regiostered.
+     * Registers a a color index. An exception is thrown if the color index is already registered.
      *
      * @param key The key under which to register the color index
      * @param colorIndex The color index
@@ -35,7 +35,7 @@ public class ColorManager
     {
         if (this.colors.containsKey (key))
             throw new ColorIndexException ("Color for key " + key + " is already registered!");
-        this.colors.put (key, Integer.valueOf (colorIndex));
+        this.colors.put (key, colorIndex);
     }
 
 
@@ -50,6 +50,6 @@ public class ColorManager
         final Integer colorIndex = this.colors.get (key);
         if (colorIndex == null)
             throw new ColorIndexException ("Color for key " + key + " is not registered!");
-        return colorIndex.intValue ();
+        return colorIndex;
     }
 }

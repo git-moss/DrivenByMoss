@@ -92,16 +92,16 @@ public class LaunchpadPadGrid extends PadGridImpl
     static
     {
         for (int i = 0; i < TRANSLATE_MATRIX.length; i++)
-            INVERSE_TRANSLATE_MATRIX.put (Integer.valueOf (TRANSLATE_MATRIX[i]), Integer.valueOf (36 + i));
+            INVERSE_TRANSLATE_MATRIX.put (TRANSLATE_MATRIX[i], 36 + i);
     }
 
     private final LaunchpadControlSurface surface;
 
 
     /**
-     * Conbstructor.
+     * Constructor.
      *
-     * @param colorManager The color mananger for accessing specific colors to use
+     * @param colorManager The color manager for accessing specific colors to use
      * @param surface The launchpad surface
      */
     public LaunchpadPadGrid (final ColorManager colorManager, final LaunchpadControlSurface surface)
@@ -123,8 +123,8 @@ public class LaunchpadPadGrid extends PadGridImpl
     @Override
     public int translateToGrid (final int note)
     {
-        final Integer value = INVERSE_TRANSLATE_MATRIX.get (Integer.valueOf (note));
-        return value == null ? -1 : value.intValue ();
+        final Integer value = INVERSE_TRANSLATE_MATRIX.get (note);
+        return value == null ? -1 : value;
     }
 
 

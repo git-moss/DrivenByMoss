@@ -12,21 +12,21 @@ package de.mossgrabers.beatstep.view;
 public class Views
 {
     /** View for changing track parameters. */
-    public static final Integer VIEW_TRACK     = Integer.valueOf (0);
+    public static final Integer VIEW_TRACK     = 0;
     /** View for editing remote parameters. */
-    public static final Integer VIEW_DEVICE    = Integer.valueOf (1);
+    public static final Integer VIEW_DEVICE    = 1;
     /** View for playing notes. */
-    public static final Integer VIEW_PLAY      = Integer.valueOf (2);
+    public static final Integer VIEW_PLAY      = 2;
     /** View for playing drums and sequencing. */
-    public static final Integer VIEW_DRUM      = Integer.valueOf (3);
+    public static final Integer VIEW_DRUM      = 3;
     /** View for a sequencer. */
-    public static final Integer VIEW_SEQUENCER = Integer.valueOf (4);
+    public static final Integer VIEW_SEQUENCER = 4;
     /** View for a session grid with clips. */
-    public static final Integer VIEW_SESSION   = Integer.valueOf (5);
+    public static final Integer VIEW_SESSION   = 5;
     /** View for browsing. */
-    public static final Integer VIEW_BROWSER   = Integer.valueOf (6);
+    public static final Integer VIEW_BROWSER   = 6;
     /** View for shift options (only MkII). */
-    public static final Integer VIEW_SHIFT     = Integer.valueOf (7);
+    public static final Integer VIEW_SHIFT     = 7;
 
 
     /**

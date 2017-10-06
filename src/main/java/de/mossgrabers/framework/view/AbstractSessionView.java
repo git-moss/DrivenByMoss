@@ -30,7 +30,7 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
     // Needs to be overwritten with device specific colors
     protected SessionColor clipColorIsRecording       = new SessionColor (0, -1, false);
     protected SessionColor clipColorIsRecordingQueued = new SessionColor (1, -1, false);
-    protected SessionColor clipColorisPlaying         = new SessionColor (2, -1, false);
+    protected SessionColor clipColorIsPlaying         = new SessionColor (2, -1, false);
     protected SessionColor clipColorIsPlayingQueued   = new SessionColor (3, -1, false);
     protected SessionColor clipColorHasContent        = new SessionColor (4, -1, false);
     protected SessionColor clipColorHasNoContent      = new SessionColor (5, -1, false);
@@ -112,7 +112,7 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
         if (this.doSelectClipOnLaunch ())
             slots.select (s);
 
-        if (!track.isRecarm ())
+        if (!track.isRecArm())
         {
             slots.launch (s);
             return;
@@ -167,7 +167,7 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
         {
             final TrackData t = tb.getTrack (x);
             for (int y = 0; y < this.rows; y++)
-                this.drawPad (t.getSlots ()[y], flipSession ? y : x, flipSession ? x : y, t.isRecarm ());
+                this.drawPad (t.getSlots ()[y], flipSession ? y : x, flipSession ? x : y, t.isRecArm());
         }
     }
 
@@ -203,7 +203,7 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
             {
                 SessionColor color = y < maxY ? rowColor : this.clipColorHasNoContent;
                 if (selX == x && selY == y)
-                    color = this.clipColorisPlaying;
+                    color = this.clipColorIsPlaying;
                 this.surface.getPadGrid ().lightEx (x, y, color.getColor (), color.getBlink (), color.isFast ());
             }
         }
@@ -214,7 +214,7 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
     {
         this.clipColorIsRecording = isRecording;
         this.clipColorIsRecordingQueued = isRecordingQueued;
-        this.clipColorisPlaying = isPlaying;
+        this.clipColorIsPlaying = isPlaying;
         this.clipColorIsPlayingQueued = isPlayingQueued;
         this.clipColorHasContent = hasContent;
         this.clipColorHasNoContent = noContent;
@@ -270,8 +270,8 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
         if (slot.isPlaying ())
         {
             if (this.useClipColor && colorIndex != null)
-                return new SessionColor (cm.getColor (colorIndex), this.clipColorisPlaying.getBlink (), this.clipColorisPlaying.isFast ());
-            return this.clipColorisPlaying;
+                return new SessionColor (cm.getColor (colorIndex), this.clipColorIsPlaying.getBlink (), this.clipColorIsPlaying.isFast ());
+            return this.clipColorIsPlaying;
         }
 
         if (slot.hasContent ())

@@ -174,7 +174,7 @@ public abstract class AbstractTrackMode extends BaseMode
                     config.setSendsAreToggled (!config.isSendsAreToggled ());
 
                     if (!modeManager.isActiveMode (Modes.MODE_TRACK))
-                        modeManager.setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + (config.isSendsAreToggled () ? 4 : 0)));
+                        modeManager.setActiveMode (Modes.MODE_SEND1.intValue() + (config.isSendsAreToggled() ? 4 : 0));
                 }
                 break;
 
@@ -191,7 +191,7 @@ public abstract class AbstractTrackMode extends BaseMode
                     final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
                     if (fxTrackBank != null && fxTrackBank.getTrack (sendIndex).doesExist ())
                     {
-                        final Integer si = Integer.valueOf (Modes.MODE_SEND1.intValue () + sendIndex);
+                        final Integer si = Modes.MODE_SEND1.intValue() + sendIndex;
                         if (modeManager.isActiveMode (si))
                             modeManager.setActiveMode (Modes.MODE_TRACK);
                         else
@@ -322,7 +322,7 @@ public abstract class AbstractTrackMode extends BaseMode
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
         final boolean isSel = track.getIndex () == selIndex;
 
-        if (track.isRecarm ())
+        if (track.isRecArm())
             return isSel ? this.isPush2 ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH1_COLOR_RED_HI : this.isPush2 ? PushColors.PUSH2_COLOR_RED_LO : PushColors.PUSH1_COLOR_RED_LO;
 
         return isSel ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_LO : PushColors.PUSH1_COLOR_YELLOW_LO;
@@ -368,7 +368,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 isTopMenuOn = i == selectedMenu - 1 || i == 7;
             }
 
-            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", t.getType (), tb.getTrackColorEntry (i), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecarm (), "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
+            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", t.getType (), tb.getTrackColorEntry (i), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecArm(), "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
         }
 
         message.send ();

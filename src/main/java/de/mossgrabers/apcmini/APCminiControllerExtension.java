@@ -179,7 +179,7 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
         modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode (i, surface, this.model));
+            modeManager.registerMode (Modes.MODE_SEND1.intValue() + i, new SendMode (i, surface, this.model));
         modeManager.registerMode (Modes.MODE_DEVICE, new DeviceMode (surface, this.model));
 
         modeManager.setDefaultMode (Modes.MODE_VOLUME);
@@ -210,8 +210,8 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
         this.addNoteCommand (Commands.COMMAND_SHIFT, APCminiControlSurface.APC_BUTTON_SHIFT, new ShiftCommand (this.model, surface));
         for (int i = 0; i < 8; i++)
         {
-            this.addNoteCommand (Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, new TrackSelectCommand (i, this.model, surface));
-            this.addNoteCommand (Integer.valueOf (Commands.COMMAND_SCENE1.intValue () + i), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, new SceneCommand<> (7 - i, this.model, surface));
+            this.addNoteCommand (Commands.COMMAND_ROW_SELECT_1.intValue() + i, APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, new TrackSelectCommand (i, this.model, surface));
+            this.addNoteCommand (Commands.COMMAND_SCENE1.intValue() + i, APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, new SceneCommand<> (7 - i, this.model, surface));
         }
     }
 
@@ -225,7 +225,7 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
 
         for (int i = 0; i < 8; i++)
         {
-            final Integer knobCommand = Integer.valueOf (Commands.CONT_COMMAND_FADER1.intValue () + i);
+            final Integer knobCommand = Commands.CONT_COMMAND_FADER1.intValue() + i;
             this.addContinuousCommand (knobCommand, APCminiControlSurface.APC_KNOB_TRACK_LEVEL1 + i, new KnobRowModeCommand<> (i, this.model, surface));
         }
     }

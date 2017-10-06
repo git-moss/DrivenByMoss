@@ -268,7 +268,7 @@ public class DeviceLayerMode extends BaseMode
                     config.setSendsAreToggled (!config.isSendsAreToggled ());
 
                     if (!modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER))
-                        modeManager.setActiveMode (Integer.valueOf (Modes.MODE_DEVICE_LAYER_SEND1.intValue () + (config.isSendsAreToggled () ? 4 : 0)));
+                        modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER_SEND1.intValue() + (config.isSendsAreToggled() ? 4 : 0));
                 }
                 break;
 
@@ -284,7 +284,7 @@ public class DeviceLayerMode extends BaseMode
                     fxTrackBank = this.model.getEffectTrackBank ();
                     if (fxTrackBank.getTrack (sendIndex).doesExist ())
                     {
-                        final Integer si = Integer.valueOf (Modes.MODE_DEVICE_LAYER_SEND1.intValue () + sendIndex);
+                        final Integer si = Modes.MODE_DEVICE_LAYER_SEND1.intValue() + sendIndex;
                         if (modeManager.isActiveMode (si))
                             modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
                         else

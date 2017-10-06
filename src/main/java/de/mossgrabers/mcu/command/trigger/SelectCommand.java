@@ -57,7 +57,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         {
             if (this.model.getEffectTrackBank ().getTrack (this.channel).doesExist ())
             {
-                this.surface.getModeManager ().setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + this.index));
+                this.surface.getModeManager ().setActiveMode (Modes.MODE_SEND1.intValue() + this.index);
                 this.surface.getDisplay ().notify ("Send channel " + (this.channel + 1) + " selected.");
             }
             else
