@@ -94,11 +94,11 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
     private static final int     COMMAND_SEND           = 150;
     private static final int     COMMAND_STOP_CLIP      = 160;
 
-    private static final Integer COMMAND_DEVICE_LEFT    = Integer.valueOf (200);
-    private static final Integer COMMAND_DEVICE_RIGHT   = Integer.valueOf (201);
-    private static final Integer COMMAND_BANK_LEFT      = Integer.valueOf (202);
-    private static final Integer COMMAND_BANK_RIGHT     = Integer.valueOf (203);
-    private static final Integer COMMAND_TOGGLE_DEVICES = Integer.valueOf (204);
+    private static final Integer COMMAND_DEVICE_LEFT    = 200;
+    private static final Integer COMMAND_DEVICE_RIGHT   = 201;
+    private static final Integer COMMAND_BANK_LEFT      = 202;
+    private static final Integer COMMAND_BANK_RIGHT     = 203;
+    private static final Integer COMMAND_TOGGLE_DEVICES = 204;
 
     private final boolean        isMkII;
 
@@ -183,7 +183,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         final ModeManager modeManager = surface.getModeManager ();
         modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode (surface, this.model, i));
+            modeManager.registerMode (Modes.MODE_SEND1.intValue() + i, new SendMode (surface, this.model, i));
         modeManager.registerMode (Modes.MODE_BROWSER, new BrowserMode (surface, this.model));
     }
 
@@ -217,17 +217,17 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         this.addTriggerCommand (Commands.COMMAND_PAN_SEND, APCControlSurface.APC_BUTTON_PAN, new ModeSelectCommand<> (Modes.MODE_PAN, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, APCControlSurface.APC_BUTTON_MASTER, new MasterCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_STOP_ALL_CLIPS, APCControlSurface.APC_BUTTON_STOP_ALL_CLIPS, new StopAllClipsCommand (this.model, surface));
-        this.addTriggerCommand (Integer.valueOf (COMMAND_SEND), APCControlSurface.APC_BUTTON_SEND_A, new SendCommand (0, this.model, surface));
-        this.addTriggerCommand (Integer.valueOf (COMMAND_SEND + 1), APCControlSurface.APC_BUTTON_SEND_B, new SendCommand (1, this.model, surface));
+        this.addTriggerCommand (COMMAND_SEND, APCControlSurface.APC_BUTTON_SEND_A, new SendCommand (0, this.model, surface));
+        this.addTriggerCommand (COMMAND_SEND + 1, APCControlSurface.APC_BUTTON_SEND_B, new SendCommand (1, this.model, surface));
 
         for (int i = 0; i < 8; i++)
         {
-            final Integer selectCommand = Integer.valueOf (COMMAND_SELECT + i);
-            final Integer soloCommand = Integer.valueOf (COMMAND_SOLO + i);
-            final Integer muteCommand = Integer.valueOf (COMMAND_MUTE + i);
-            final Integer recArmCommand = Integer.valueOf (COMMAND_REC_ARM + i);
-            final Integer crossfadeCommand = Integer.valueOf (COMMAND_CROSSFADER + i);
-            final Integer stopClipCommand = Integer.valueOf (COMMAND_STOP_CLIP + i);
+            final Integer selectCommand = COMMAND_SELECT + i;
+            final Integer soloCommand = COMMAND_SOLO + i;
+            final Integer muteCommand = COMMAND_MUTE + i;
+            final Integer recArmCommand = COMMAND_REC_ARM + i;
+            final Integer crossfadeCommand = COMMAND_CROSSFADER + i;
+            final Integer stopClipCommand = COMMAND_STOP_CLIP + i;
 
             viewManager.registerTriggerCommand (selectCommand, new SelectCommand (i, this.model, surface));
             viewManager.registerTriggerCommand (soloCommand, new SoloCommand (i, this.model, surface));
@@ -277,7 +277,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
             surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_CLIP_TRACK, COMMAND_TOGGLE_DEVICES);
 
             this.addTriggerCommand (Commands.COMMAND_STOP, APCControlSurface.APC_BUTTON_STOP, new StopCommand<> (this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (COMMAND_SEND + 2), APCControlSurface.APC_BUTTON_SEND_C, new SendCommand (2, this.model, surface));
+            this.addTriggerCommand (COMMAND_SEND + 2, APCControlSurface.APC_BUTTON_SEND_C, new SendCommand (2, this.model, surface));
             this.addTriggerCommand (Commands.COMMAND_NEW, APCControlSurface.APC_FOOTSWITCH_2, new NewCommand<> (this.model, surface));
         }
 
@@ -309,15 +309,15 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
 
         for (int i = 0; i < 8; i++)
         {
-            final Integer faderCommand = Integer.valueOf (Commands.CONT_COMMAND_FADER1.intValue () + i);
+            final Integer faderCommand = Commands.CONT_COMMAND_FADER1.intValue() + i;
             viewManager.registerContinuousCommand (faderCommand, new FaderAbsoluteCommand<> (i, this.model, surface));
             surface.assignContinuousCommand (APCControlSurface.APC_KNOB_TRACK_LEVEL, i, faderCommand);
 
-            final Integer knobCommand = Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i);
+            final Integer knobCommand = Commands.CONT_COMMAND_KNOB1.intValue() + i;
             viewManager.registerContinuousCommand (knobCommand, new KnobRowModeCommand<> (i, this.model, surface));
             surface.assignContinuousCommand (APCControlSurface.APC_KNOB_TRACK_KNOB_1 + i, knobCommand);
 
-            final Integer deviceKnobCommand = Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i);
+            final Integer deviceKnobCommand = Commands.CONT_COMMAND_DEVICE_KNOB1.intValue() + i;
             viewManager.registerContinuousCommand (deviceKnobCommand, new DeviceKnobRowCommand (i, this.model, surface));
             surface.assignContinuousCommand (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, deviceKnobCommand);
         }
@@ -370,7 +370,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
             if (isShift)
                 isOn = i == clipLength;
             else
-                isOn = isSendA ? modeManager.isActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i)) : i == selIndex;
+                isOn = isSendA ? modeManager.isActiveMode (Modes.MODE_SEND1.intValue() + i) : i == selIndex;
             surface.updateButtonEx (APCControlSurface.APC_BUTTON_TRACK_SELECTION, i, isOn ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             surface.updateButtonEx (APCControlSurface.APC_BUTTON_SOLO, i, track.doesExist () && (isShift ? track.isAutoMonitor () : track.isSolo ()) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             surface.updateButtonEx (APCControlSurface.APC_BUTTON_ACTIVATOR, i, track.doesExist () && (isShift ? track.isMonitor () : !track.isMute ()) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
@@ -378,14 +378,14 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
             if (this.isMkII)
             {
                 surface.updateButtonEx (APCControlSurface.APC_BUTTON_A_B, i, track.doesExist () && !"AB".equals (track.getCrossfadeMode ()) ? "A".equals (track.getCrossfadeMode ()) ? ColorManager.BUTTON_STATE_ON : APCColors.BUTTON_STATE_BLINK : ColorManager.BUTTON_STATE_OFF);
-                surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && track.isRecarm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+                surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && track.isRecArm() ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             }
             else
             {
                 if (isShift)
                     surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && !"AB".equals (track.getCrossfadeMode ()) ? "A".equals (track.getCrossfadeMode ()) ? ColorManager.BUTTON_STATE_ON : APCColors.BUTTON_STATE_BLINK : ColorManager.BUTTON_STATE_OFF);
                 else
-                    surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && track.isRecarm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+                    surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && track.isRecArm() ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             }
         }
         surface.updateButton (APCControlSurface.APC_BUTTON_MASTER, this.model.getMasterTrack ().isSelected () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
@@ -457,7 +457,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         for (int i = 0; i < 8; i++)
         {
 
-            final Integer deviceKnobCommand = Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i);
+            final Integer deviceKnobCommand = Commands.CONT_COMMAND_DEVICE_KNOB1.intValue() + i;
             if (!((DeviceKnobRowCommand) view.getContinuousCommand (deviceKnobCommand)).isKnobMoving ())
                 surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, cd.getFXParam (i).getValue ());
         }

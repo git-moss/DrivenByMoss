@@ -21,21 +21,21 @@ import java.util.Arrays;
 public class MCUConfiguration extends AbstractConfiguration
 {
     /** Zoom state. */
-    public static final Integer    ZOOM_STATE                  = Integer.valueOf (30);
+    public static final Integer    ZOOM_STATE                  = 30;
     /** Display mode tempo or ticks. */
-    public static final Integer    DISPLAY_MODE_TICKS_OR_TEMPO = Integer.valueOf (31);
+    public static final Integer    DISPLAY_MODE_TICKS_OR_TEMPO = 31;
     /** Has a display. */
-    public static final Integer    HAS_DISPLAY1                = Integer.valueOf (32);
+    public static final Integer    HAS_DISPLAY1                = 32;
     /** Has a second display. */
-    public static final Integer    HAS_DISPLAY2                = Integer.valueOf (33);
+    public static final Integer    HAS_DISPLAY2                = 33;
     /** Has a segment display. */
-    public static final Integer    HAS_SEGMENT_DISPLAY         = Integer.valueOf (34);
+    public static final Integer    HAS_SEGMENT_DISPLAY         = 34;
     /** Has an assignment display. */
-    public static final Integer    HAS_ASSIGNMENT_DISPLAY      = Integer.valueOf (35);
+    public static final Integer    HAS_ASSIGNMENT_DISPLAY      = 35;
     /** Has motor faders. */
-    public static final Integer    HAS_MOTOR_FADERS            = Integer.valueOf (36);
+    public static final Integer    HAS_MOTOR_FADERS            = 36;
     /** Display track names in 1st display. */
-    public static final Integer    DISPLAY_TRACK_NAMES         = Integer.valueOf (37);
+    public static final Integer    DISPLAY_TRACK_NAMES         = 37;
 
     private static final String    DEVICE_SELECT               = "<Select a profile>";
     private static final String    DEVICE_ICON_PLATFORM_M      = "icon Platform M";

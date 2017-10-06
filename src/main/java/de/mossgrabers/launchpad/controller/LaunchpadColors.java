@@ -161,7 +161,7 @@ public class LaunchpadColors
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PURPLE, LAUNCHPAD_COLOR_BLUE_ORCHID);
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PINK, LAUNCHPAD_COLOR_MAGENTA_PINK);
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_SKIN, LAUNCHPAD_COLOR_ROSE);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_REDISH_BROWN, LAUNCHPAD_COLOR_AMBER);
+        colorManager.registerColor (BitwigColors.BITWIG_COLOR_REDDISH_BROWN, LAUNCHPAD_COLOR_AMBER);
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_BROWN, LAUNCHPAD_COLOR_AMBER_HI);
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_GREEN, LAUNCHPAD_COLOR_LIME);
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_BLUISH_GREEN, LAUNCHPAD_COLOR_SPRING_HI);

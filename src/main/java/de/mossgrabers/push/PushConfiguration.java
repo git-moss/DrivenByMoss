@@ -34,29 +34,29 @@ public class PushConfiguration extends AbstractConfiguration
     }
 
     /** Setting for the ribbon mode. */
-    public static final Integer    RIBBON_MODE                     = Integer.valueOf (30);
+    public static final Integer    RIBBON_MODE                     = 30;
     /** Setting for the ribbon mode midi CC. */
-    public static final Integer    RIBBON_MODE_CC_VAL              = Integer.valueOf (31);
+    public static final Integer    RIBBON_MODE_CC_VAL              = 31;
     /** Setting for the velocity curve. */
-    public static final Integer    VELOCITY_CURVE                  = Integer.valueOf (32);
+    public static final Integer    VELOCITY_CURVE                  = 32;
     /** Setting for the pad threshold. */
-    public static final Integer    PAD_THRESHOLD                   = Integer.valueOf (33);
+    public static final Integer    PAD_THRESHOLD                   = 33;
     /** Setting for the display send port. */
-    public static final Integer    SEND_PORT                       = Integer.valueOf (34);
+    public static final Integer    SEND_PORT                       = 34;
     /** Setting for the display brightness. */
-    public static final Integer    DISPLAY_BRIGHTNESS              = Integer.valueOf (35);
+    public static final Integer    DISPLAY_BRIGHTNESS              = 35;
     /** Setting for the pad LED brightness. */
-    public static final Integer    LED_BRIGHTNESS                  = Integer.valueOf (36);
+    public static final Integer    LED_BRIGHTNESS                  = 36;
     /** Setting for the pad sensitivity. */
-    public static final Integer    PAD_SENSITIVITY                 = Integer.valueOf (37);
+    public static final Integer    PAD_SENSITIVITY                 = 37;
     /** Setting for the pad gain. */
-    public static final Integer    PAD_GAIN                        = Integer.valueOf (38);
+    public static final Integer    PAD_GAIN                        = 38;
     /** Setting for the pad dynamics. */
-    public static final Integer    PAD_DYNAMICS                    = Integer.valueOf (39);
+    public static final Integer    PAD_DYNAMICS                    = 39;
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (40);
+    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = 40;
     /** Setting for the default note view. */
-    public static final Integer    DEFAULT_NOTE_VIEW               = Integer.valueOf (41);
+    public static final Integer    DEFAULT_NOTE_VIEW               = 41;
 
     /** Use ribbon for pitch bend. */
     public static final int        RIBBON_MODE_PITCH               = 0;

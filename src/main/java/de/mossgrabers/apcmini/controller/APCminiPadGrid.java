@@ -16,9 +16,9 @@ import de.mossgrabers.framework.controller.grid.PadGridImpl;
 public class APCminiPadGrid extends PadGridImpl
 {
     /**
-     * Conbstructor.
+     * Constructor.
      *
-     * @param colorManager The color mananger for accessing specific colors to use
+     * @param colorManager The color manager for accessing specific colors to use
      * @param surface The APCmini surface
      */
     public APCminiPadGrid (final ColorManager colorManager, final APCminiControlSurface surface)

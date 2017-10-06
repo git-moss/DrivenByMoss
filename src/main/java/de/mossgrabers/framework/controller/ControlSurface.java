@@ -312,7 +312,7 @@ public interface ControlSurface<C extends Configuration>
      * Test if the button with the given midi cc is pressed.
      *
      * @param button The button to test
-     * @return True if presssed
+     * @return True if pressed
      */
     boolean isPressed (int button);
 

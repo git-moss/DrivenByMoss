@@ -55,23 +55,22 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         }
 
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        if (row == 1)
-        {
-            tb.toggleArm (channel);
-        }
-        else if (row == 2)
-        {
-            if (this.surface.isShiftPressed ())
-                tb.toggleAutoMonitor (channel);
-            else
-                tb.toggleSolo (channel);
-        }
-        else if (row == 3)
-        {
-            if (this.surface.isShiftPressed ())
-                tb.toggleMonitor (channel);
-            else
-                tb.toggleMute (channel);
+        switch (row) {
+            case 1:
+                tb.toggleArm(channel);
+                break;
+            case 2:
+                if (this.surface.isShiftPressed())
+                    tb.toggleAutoMonitor(channel);
+                else
+                    tb.toggleSolo(channel);
+                break;
+            case 3:
+                if (this.surface.isShiftPressed())
+                    tb.toggleMonitor(channel);
+                else
+                    tb.toggleMute(channel);
+                break;
         }
     }
 
@@ -88,7 +87,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         for (int i = 0; i < 8; i++)
         {
             final TrackData track = tb.getTrack (extenderOffset + i);
-            this.surface.updateButton (MCUControlSurface.MCU_ARM1 + i, track.isRecarm () ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);
+            this.surface.updateButton (MCUControlSurface.MCU_ARM1 + i, track.isRecArm() ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);
             this.surface.updateButton (MCUControlSurface.MCU_SOLO1 + i, track.isSolo () ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);
             this.surface.updateButton (MCUControlSurface.MCU_MUTE1 + i, track.isMute () ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);
             this.surface.updateButton (MCUControlSurface.MCU_SELECT1 + i, track.isSelected () ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);

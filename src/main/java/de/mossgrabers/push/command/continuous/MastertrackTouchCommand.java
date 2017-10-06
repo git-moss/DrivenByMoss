@@ -38,7 +38,7 @@ public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlS
     {
         final boolean isTouched = event == ButtonEvent.DOWN;
 
-        // Avoid accidently leaving the browser
+        // Avoid accidentally leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActiveMode (Modes.MODE_BROWSER))
             return;

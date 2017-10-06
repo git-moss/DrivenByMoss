@@ -129,7 +129,7 @@ public class MasterMode extends BaseMode
         final ValueChanger valueChanger = this.model.getValueChanger ();
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
 
-        message.addChannelElement ("Volume", false, master.getName (), "master", master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", valueChanger.toDisplayValue (this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : 0), master.isMute (), master.isSolo (), master.isRecarm (), 0);
+        message.addChannelElement ("Volume", false, master.getName (), "master", master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", valueChanger.toDisplayValue (this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : 0), master.isMute (), master.isSolo (), master.isRecArm(), 0);
 
         for (int i = 1; i < 4; i++)
         {
@@ -251,7 +251,7 @@ public class MasterMode extends BaseMode
         final MasterTrackProxy track = this.model.getMasterTrack ();
         if (!track.isActivated ())
             return this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
-        if (track.isRecarm ())
+        if (track.isRecArm())
             return this.isPush2 ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH1_COLOR_RED_HI;
         return this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI;
     }

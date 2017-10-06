@@ -160,8 +160,8 @@ public class DisplayMessage
      * @param vu The VU meter value
      * @param mute The mute state
      * @param solo The solo state
-     * @param recarm Therecording armed state
-     * @param crossfadeMode Crossfae mode (0-2)
+     * @param recarm The recording armed state
+     * @param crossfadeMode Crossfade mode (0-2)
      */
     public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
     {
@@ -188,8 +188,8 @@ public class DisplayMessage
      * @param vu The VU meter value
      * @param mute The mute state
      * @param solo The solo state
-     * @param recarm Therecording armed state
-     * @param crossfadeMode Crossfae mode (0-2)
+     * @param recarm The recording armed state
+     * @param crossfadeMode Crossfade mode (0-2)
      */
     public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
     {
@@ -373,16 +373,16 @@ public class DisplayMessage
             {
                 final char character = text.charAt (i);
                 if (character < 128)
-                    this.array.add (Integer.valueOf (character));
+                    this.array.add ((int) character);
                 else
                 {
-                    // Split up non-ASII characters into 3 bytes
-                    this.array.add (Integer.valueOf (-1));
+                    // Split up non-ASCII characters into 3 bytes
+                    this.array.add (-1);
                     this.addInteger (character);
                 }
             }
         }
-        this.array.add (Integer.valueOf (0));
+        this.array.add (0);
     }
 
 
@@ -393,8 +393,8 @@ public class DisplayMessage
      */
     private void addInteger (final int value)
     {
-        this.array.add (Integer.valueOf (value & 0x7F));
-        this.array.add (Integer.valueOf (value >> 7 & 0x7F));
+        this.array.add (value & 0x7F);
+        this.array.add (value >> 7 & 0x7F);
     }
 
 
@@ -405,7 +405,7 @@ public class DisplayMessage
      */
     private void addBoolean (final boolean value)
     {
-        this.array.add (Integer.valueOf (value ? 1 : 0));
+        this.array.add (value ? 1 : 0);
     }
 
 
@@ -424,12 +424,12 @@ public class DisplayMessage
         }
         else
         {
-            this.array.add (Integer.valueOf (0));
-            this.array.add (Integer.valueOf (0));
-            this.array.add (Integer.valueOf (0));
-            this.array.add (Integer.valueOf (0));
-            this.array.add (Integer.valueOf (0));
-            this.array.add (Integer.valueOf (0));
+            this.array.add (0);
+            this.array.add (0);
+            this.array.add (0);
+            this.array.add (0);
+            this.array.add (0);
+            this.array.add (0);
         }
     }
 
@@ -441,7 +441,7 @@ public class DisplayMessage
      */
     private void addByte (final int value)
     {
-        this.array.add (Integer.valueOf (value));
+        this.array.add (value);
     }
 
 

@@ -97,25 +97,25 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     /** State for button LED off. */
     public static final int                   MCU_BUTTON_STATE_OFF      = 0;
 
-    private static final Integer              COMMAND_NOTE_EDITOR       = Integer.valueOf (150);
-    private static final Integer              COMMAND_AUTOMATION_EDITOR = Integer.valueOf (151);
-    private static final Integer              COMMAND_TOGGLE_DEVICE     = Integer.valueOf (152);
-    private static final Integer              COMMAND_MIXER             = Integer.valueOf (153);
-    private static final Integer              COMMAND_TEMPO_TICKS       = Integer.valueOf (154);
-    private static final Integer              COMMAND_ENTER             = Integer.valueOf (155);
-    private static final Integer              COMMAND_CANCEL            = Integer.valueOf (156);
-    private static final Integer              COMMAND_FLIP              = Integer.valueOf (157);
-    private static final Integer              COMMAND_GROOVE            = Integer.valueOf (158);
-    private static final Integer              COMMAND_OVERDUB           = Integer.valueOf (159);
-    private static final Integer              COMMAND_SCRUB             = Integer.valueOf (160);
-    private static final Integer              COMMAND_FOOTSWITCH1       = Integer.valueOf (161);
-    private static final Integer              COMMAND_FOOTSWITCH2       = Integer.valueOf (162);
-    private static final Integer              COMMAND_F1                = Integer.valueOf (163);
-    private static final Integer              COMMAND_F2                = Integer.valueOf (164);
-    private static final Integer              COMMAND_F3                = Integer.valueOf (165);
-    private static final Integer              COMMAND_F4                = Integer.valueOf (166);
-    private static final Integer              COMMAND_F5                = Integer.valueOf (167);
-    private static final Integer              COMMAND_TOGGLE_DISPLAY    = Integer.valueOf (168);
+    private static final Integer              COMMAND_NOTE_EDITOR       = 150;
+    private static final Integer              COMMAND_AUTOMATION_EDITOR = 151;
+    private static final Integer              COMMAND_TOGGLE_DEVICE     = 152;
+    private static final Integer              COMMAND_MIXER             = 153;
+    private static final Integer              COMMAND_TEMPO_TICKS       = 154;
+    private static final Integer              COMMAND_ENTER             = 155;
+    private static final Integer              COMMAND_CANCEL            = 156;
+    private static final Integer              COMMAND_FLIP              = 157;
+    private static final Integer              COMMAND_GROOVE            = 158;
+    private static final Integer              COMMAND_OVERDUB           = 159;
+    private static final Integer              COMMAND_SCRUB             = 160;
+    private static final Integer              COMMAND_FOOTSWITCH1       = 161;
+    private static final Integer              COMMAND_FOOTSWITCH2       = 162;
+    private static final Integer              COMMAND_F1                = 163;
+    private static final Integer              COMMAND_F2                = 164;
+    private static final Integer              COMMAND_F3                = 165;
+    private static final Integer              COMMAND_F4                = 166;
+    private static final Integer              COMMAND_F5                = 167;
+    private static final Integer              COMMAND_TOGGLE_DISPLAY    = 168;
 
     private static final Map<Integer, String> MODE_ACRONYMS             = new HashMap<> ();
 
@@ -232,7 +232,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
             final SendMode modeSend = new SendMode (surface, this.model);
             for (int i = 0; i < 8; i++)
-                modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), modeSend);
+                modeManager.registerMode (Modes.MODE_SEND1.intValue() + i, modeSend);
 
             modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
             modeManager.registerMode (Modes.MODE_BROWSER, new DeviceBrowserMode (surface, this.model));
@@ -383,15 +383,15 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             final ViewManager viewManager = surface.getViewManager ();
             for (int i = 0; i < 8; i++)
             {
-                final Integer commandID = Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i);
+                final Integer commandID = Commands.COMMAND_ROW_SELECT_1.intValue() + i;
                 viewManager.registerTriggerCommand (commandID, new SelectCommand (i, this.model, surface));
                 surface.assignTriggerCommand (MCUControlSurface.MCU_FADER_TOUCH1 + i, commandID);
                 surface.assignTriggerCommand (MCUControlSurface.MCU_SELECT1 + i, commandID);
 
-                this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), MCUControlSurface.MCU_VSELECT1 + i, new ButtonRowModeCommand<> (0, i, this.model, surface), index);
-                this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), MCUControlSurface.MCU_ARM1 + i, new ButtonRowModeCommand<> (1, i, this.model, surface), index);
-                this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i), MCUControlSurface.MCU_SOLO1 + i, new ButtonRowModeCommand<> (2, i, this.model, surface), index);
-                this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW4_1.intValue () + i), MCUControlSurface.MCU_MUTE1 + i, new ButtonRowModeCommand<> (3, i, this.model, surface), index);
+                this.addTriggerCommand (Commands.COMMAND_ROW1_1.intValue() + i, MCUControlSurface.MCU_VSELECT1 + i, new ButtonRowModeCommand<> (0, i, this.model, surface), index);
+                this.addTriggerCommand (Commands.COMMAND_ROW2_1.intValue() + i, MCUControlSurface.MCU_ARM1 + i, new ButtonRowModeCommand<> (1, i, this.model, surface), index);
+                this.addTriggerCommand (Commands.COMMAND_ROW3_1.intValue() + i, MCUControlSurface.MCU_SOLO1 + i, new ButtonRowModeCommand<> (2, i, this.model, surface), index);
+                this.addTriggerCommand (Commands.COMMAND_ROW4_1.intValue() + i, MCUControlSurface.MCU_MUTE1 + i, new ButtonRowModeCommand<> (3, i, this.model, surface), index);
             }
 
             viewManager.registerPitchbendCommand (new PitchbendVolumeCommand (this.model, surface));
@@ -414,7 +414,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             viewManager = surface.getViewManager ();
             for (int i = 0; i < 8; i++)
             {
-                final Integer commandID = Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i);
+                final Integer commandID = Commands.CONT_COMMAND_KNOB1.intValue() + i;
                 viewManager.registerContinuousCommand (commandID, new KnobRowModeCommand<> (i, this.model, surface));
                 surface.assignContinuousCommand (MCUControlSurface.MCU_CC_VPOT1 + i, 1, commandID);
             }
@@ -594,7 +594,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
 
         final boolean isTrackOn = Modes.MODE_TRACK.equals (mode) || Modes.MODE_VOLUME.equals (mode);
         final boolean isPanOn = Modes.MODE_PAN.equals (mode);
-        final boolean isSendOn = mode.intValue () >= Modes.MODE_SEND1.intValue () && mode.intValue () <= Modes.MODE_SEND8.intValue ();
+        final boolean isSendOn = mode >= Modes.MODE_SEND1 && mode <= Modes.MODE_SEND8;
         final boolean isDeviceOn = Modes.MODE_DEVICE_PARAMS.equals (mode);
 
         final MCUControlSurface surface = this.getSurface ();
@@ -643,7 +643,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             tb.setPanIndication (i, !isEffect && (isPan || hasTrackSel));
 
             for (int j = 0; j < tb.getNumSends (); j++)
-                tb.setSendIndication (i, j, !isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
+                tb.setSendIndication (i, j, !isEffect && (mode - Modes.MODE_SEND1 == j || hasTrackSel));
 
             tbe.setVolumeIndication (i, isEffect);
             tbe.setPanIndication (i, isEffect && isPan);

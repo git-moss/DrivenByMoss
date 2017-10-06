@@ -361,7 +361,7 @@ public class PushColors
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PURPLE, isPush2 ? PUSH2_COLOR2_BLUE_ORCHID : 48);
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PINK, isPush2 ? PUSH2_COLOR2_MAGENTA_PINK : 56);
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_SKIN, isPush2 ? PUSH2_COLOR2_ROSE : 4);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_REDISH_BROWN, isPush2 ? PUSH2_COLOR2_AMBER : 10);
+        colorManager.registerColor (BitwigColors.BITWIG_COLOR_REDDISH_BROWN, isPush2 ? PUSH2_COLOR2_AMBER : 10);
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_BROWN, isPush2 ? PUSH2_COLOR2_LIGHT_BROWN : 61);
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_GREEN, isPush2 ? PUSH2_COLOR2_LIME : 18);
         colorManager.registerColor (BitwigColors.BITWIG_COLOR_BLUISH_GREEN, isPush2 ? PUSH2_COLOR2_SPRING_HI : 25);

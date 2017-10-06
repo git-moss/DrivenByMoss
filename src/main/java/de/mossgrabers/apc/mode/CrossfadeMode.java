@@ -46,9 +46,9 @@ public class CrossfadeMode extends BaseMode
 
         final String crossfadeMode = track.getCrossfadeMode ();
         if ("A".equals (crossfadeMode))
-            return Integer.valueOf (0);
+            return 0;
         if ("B".equals (crossfadeMode))
-            return Integer.valueOf (127);
-        return Integer.valueOf (64);
+            return 127;
+        return 64;
     }
 }

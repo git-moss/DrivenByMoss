@@ -75,7 +75,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void changeVolume (final int control)
     {
-        this.track.getVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.track.getVolume ().inc (this.valueChanger.calcKnobSpeed(control), this.valueChanger.getUpperBound());
     }
 
 
@@ -86,7 +86,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void setVolume (final double value)
     {
-        this.track.getVolume ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.track.getVolume ().set (value, this.valueChanger.getUpperBound());
     }
 
 
@@ -128,7 +128,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void changePan (final int control)
     {
-        this.track.getPan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.track.getPan ().inc (this.valueChanger.calcKnobSpeed(control), this.valueChanger.getUpperBound());
     }
 
 
@@ -139,7 +139,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void setPan (final double value)
     {
-        this.track.getPan ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.track.getPan ().set (value, this.valueChanger.getUpperBound());
     }
 
 

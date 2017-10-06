@@ -13,7 +13,7 @@ public class DefaultValueChanger implements ValueChanger
 {
     private final int    upperBound;
     private final int    fractionValue;
-    private final double slowfractionValue;
+    private final double slowFractionValue;
     private boolean      isSlow;
 
 
@@ -28,7 +28,7 @@ public class DefaultValueChanger implements ValueChanger
     {
         this.upperBound = upperBound;
         this.fractionValue = fractionValue;
-        this.slowfractionValue = slowFractionValue;
+        this.slowFractionValue = slowFractionValue;
     }
 
 
@@ -52,7 +52,7 @@ public class DefaultValueChanger implements ValueChanger
     @Override
     public double getSlowFractionValue ()
     {
-        return this.slowfractionValue;
+        return this.slowFractionValue;
     }
 
 
@@ -76,7 +76,7 @@ public class DefaultValueChanger implements ValueChanger
     @Override
     public double calcKnobSpeed (final int control)
     {
-        return this.calcKnobSpeed (control, this.isSlow ? this.slowfractionValue : this.fractionValue);
+        return this.calcKnobSpeed (control, this.isSlow ? this.slowFractionValue : this.fractionValue);
     }
 
 
@@ -108,7 +108,7 @@ public class DefaultValueChanger implements ValueChanger
     @Override
     public int changeValue (final int control, final int value)
     {
-        return this.changeValue (control, value, this.isSlow ? this.slowfractionValue : this.fractionValue, this.upperBound);
+        return this.changeValue (control, value, this.isSlow ? this.slowFractionValue : this.fractionValue, this.upperBound);
     }
 
 

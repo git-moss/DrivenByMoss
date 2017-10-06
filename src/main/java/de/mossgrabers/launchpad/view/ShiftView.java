@@ -24,6 +24,7 @@ import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
  */
 public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadConfiguration> implements SceneView
 {
+
     /**
      * Constructor.
      *

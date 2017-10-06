@@ -29,7 +29,7 @@ public class ChannelData
      * Constructor.
      *
      * @param channel The channel
-     * @param maxParameterValue The maximum paraeter value, remove when clipping bug is fixed
+     * @param maxParameterValue The maximum parameter value, remove when clipping bug is fixed
      * @param index The index of the channel in the page
      * @param numSends The number of sends of a bank
      */
@@ -113,7 +113,7 @@ public class ChannelData
     /**
      * Set the selected state of the channel.
      *
-     * @param isSelected True if the channel is selcted
+     * @param isSelected True if the channel is selected
      */
     public void setSelected (final boolean isSelected)
     {

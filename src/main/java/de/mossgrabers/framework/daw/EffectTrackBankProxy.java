@@ -28,7 +28,7 @@ public class EffectTrackBankProxy extends AbstractTrackBankProxy
      * @param cursorTrack The cursor track
      * @param numTracks The number of track of a bank page
      * @param numScenes The number of scenes of a bank page
-     * @param audioInstrumentTrackBank The trackbank which monitors the audio and instrument tracks
+     * @param audioInstrumentTrackBank The track bank which monitors the audio and instrument tracks
      */
     public EffectTrackBankProxy (final ControllerHost host, final ValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final TrackBankProxy audioInstrumentTrackBank)
     {

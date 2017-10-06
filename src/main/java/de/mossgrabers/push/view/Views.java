@@ -35,31 +35,31 @@ public class Views
     public static final String         VIEW_NAME_RAINDROPS = "Raindrop";
 
     /** View for playing notes. */
-    public static final Integer        VIEW_PLAY           = Integer.valueOf (0);
+    public static final Integer        VIEW_PLAY           = 0;
     /** View for a session grid with clips. */
-    public static final Integer        VIEW_SESSION        = Integer.valueOf (1);
+    public static final Integer        VIEW_SESSION        = 1;
     /** View for a sequencer. */
-    public static final Integer        VIEW_SEQUENCER      = Integer.valueOf (2);
+    public static final Integer        VIEW_SEQUENCER      = 2;
     /** View for playing drums and sequencing. */
-    public static final Integer        VIEW_DRUM           = Integer.valueOf (3);
+    public static final Integer        VIEW_DRUM           = 3;
     /** View for raindrops sequencer. */
-    public static final Integer        VIEW_RAINDROPS      = Integer.valueOf (4);
+    public static final Integer        VIEW_RAINDROPS      = 4;
     /** View for playing in piano keyboard style. */
-    public static final Integer        VIEW_PIANO          = Integer.valueOf (5);
+    public static final Integer        VIEW_PIANO          = 5;
     /** View sending program changes. */
-    public static final Integer        VIEW_PRG_CHANGE     = Integer.valueOf (6);
+    public static final Integer        VIEW_PRG_CHANGE     = 6;
     /** View for editing the clip length. */
-    public static final Integer        VIEW_CLIP           = Integer.valueOf (7);
+    public static final Integer        VIEW_CLIP           = 7;
     /** View for drum sequencing with 4 sounds. */
-    public static final Integer        VIEW_DRUM4          = Integer.valueOf (8);
+    public static final Integer        VIEW_DRUM4          = 8;
     /** View for drum sequencing with 8 sounds. */
-    public static final Integer        VIEW_DRUM8          = Integer.valueOf (9);
+    public static final Integer        VIEW_DRUM8          = 9;
     /** View for drum playing with 64 pads. */
-    public static final Integer        VIEW_DRUM64         = Integer.valueOf (10);
+    public static final Integer        VIEW_DRUM64         = 10;
     /** View for selecting a color. */
-    public static final Integer        VIEW_COLOR          = Integer.valueOf (11);
+    public static final Integer        VIEW_COLOR          = 11;
     /** View for playing scenes. */
-    public static final Integer        VIEW_SCENE_PLAY     = Integer.valueOf (12);
+    public static final Integer        VIEW_SCENE_PLAY     = 12;
 
     private static final List<String>  NOTE_VIEW_NAMES     = new ArrayList<> ();
     private static final List<Integer> NOTE_VIEWS          = new ArrayList<> ();

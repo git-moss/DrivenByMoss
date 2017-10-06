@@ -59,12 +59,17 @@ public class TransportMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        if (index == 2)
-            this.model.getTransport ().setPreroll (TransportProxy.PREROLL_NONE);
-        else if (index == 3)
-            this.model.getTransport ().setPreroll (TransportProxy.PREROLL_2_BARS);
-        else if (index == 5)
-            this.model.getTransport ().togglePrerollMetronome ();
+        switch (index) {
+            case 2:
+                this.model.getTransport().setPreroll(TransportProxy.PREROLL_NONE);
+                break;
+            case 3:
+                this.model.getTransport().setPreroll(TransportProxy.PREROLL_2_BARS);
+                break;
+            case 5:
+                this.model.getTransport().togglePrerollMetronome();
+                break;
+        }
     }
 
 

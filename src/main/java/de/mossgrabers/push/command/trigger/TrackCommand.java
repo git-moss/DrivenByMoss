@@ -58,7 +58,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
             {
                 this.model.toggleCurrentTrackBank ();
             }
-            else if (currentMode.intValue () >= Modes.MODE_SEND1.intValue () && currentMode.intValue () <= Modes.MODE_SEND8.intValue ())
+            else if (currentMode >= Modes.MODE_SEND1 && currentMode <= Modes.MODE_SEND8)
             {
                 modeManager.setActiveMode (Modes.MODE_TRACK);
                 this.model.toggleCurrentTrackBank ();

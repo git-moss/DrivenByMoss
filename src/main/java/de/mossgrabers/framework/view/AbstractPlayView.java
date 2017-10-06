@@ -201,7 +201,7 @@ public abstract class AbstractPlayView<S extends ControlSurface<C>, C extends Co
         for (int i = 0; i < 128; i++)
         {
             if (this.pressedKeys[i] != 0)
-                keys.add (Integer.valueOf (i));
+                keys.add (i);
         }
         return keys;
     }

@@ -249,11 +249,11 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
         final SLControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
         {
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW1_1 + i, new ButtonRowViewCommand<> (0, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW2_1 + i, new ButtonRowViewCommand<> (1, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW3_1 + i, new ButtonRowViewCommand<> (2, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW4_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW4_1 + i, new ButtonRowViewCommand<> (3, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROWSEL1 + i, new ButtonRowSelectCommand<> (i, this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_ROW1_1.intValue() + i, SLControlSurface.MKII_BUTTON_ROW1_1 + i, new ButtonRowViewCommand<> (0, i, this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_ROW2_1.intValue() + i, SLControlSurface.MKII_BUTTON_ROW2_1 + i, new ButtonRowViewCommand<> (1, i, this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_ROW3_1.intValue() + i, SLControlSurface.MKII_BUTTON_ROW3_1 + i, new ButtonRowViewCommand<> (2, i, this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_ROW4_1.intValue() + i, SLControlSurface.MKII_BUTTON_ROW4_1 + i, new ButtonRowViewCommand<> (3, i, this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_ROW_SELECT_1.intValue() + i, SLControlSurface.MKII_BUTTON_ROWSEL1 + i, new ButtonRowSelectCommand<> (i, this.model, surface));
         }
 
         this.addTriggerCommand (Commands.COMMAND_REWIND, SLControlSurface.MKII_BUTTON_REWIND, new ButtonRowViewCommand<> (4, 0, this.model, surface));
@@ -277,9 +277,9 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
         final SLControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
         {
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_FADER1.intValue () + i), SLControlSurface.MKII_SLIDER1 + i, new FaderCommand (i, this.model, surface));
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i), SLControlSurface.MKII_KNOB_ROW1_1 + i, new DeviceKnobRowCommand (i, this.model, surface));
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), SLControlSurface.MKII_KNOB_ROW2_1 + i, new TrackKnobRowCommand (i, this.model, surface));
+            this.addContinuousCommand (Commands.CONT_COMMAND_FADER1.intValue() + i, SLControlSurface.MKII_SLIDER1 + i, new FaderCommand (i, this.model, surface));
+            this.addContinuousCommand (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue() + i, SLControlSurface.MKII_KNOB_ROW1_1 + i, new DeviceKnobRowCommand (i, this.model, surface));
+            this.addContinuousCommand (Commands.CONT_COMMAND_KNOB1.intValue() + i, SLControlSurface.MKII_KNOB_ROW2_1 + i, new TrackKnobRowCommand (i, this.model, surface));
         }
         this.addContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_X, SLControlSurface.MKII_TOUCHPAD_X, new TouchpadCommand (true, this.model, surface));
         this.addContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_Y, SLControlSurface.MKII_TOUCHPAD_Y, new TouchpadCommand (false, this.model, surface));

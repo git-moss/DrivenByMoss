@@ -26,8 +26,8 @@ public class ViewManager
     private final List<ViewChangeListener> viewChangeListeners = new ArrayList<> ();
     private final Map<Integer, Integer>    preferredViews      = new HashMap<> ();
 
-    private Integer                        activeViewId        = Integer.valueOf (-1);
-    private Integer                        previousViewId      = Integer.valueOf (-1);
+    private Integer                        activeViewId        = -1;
+    private Integer                        previousViewId      = -1;
 
 
     /**
@@ -104,7 +104,7 @@ public class ViewManager
      */
     public View getActiveView ()
     {
-        return this.activeViewId.intValue () < 0 ? null : this.getView (this.activeViewId);
+        return this.activeViewId < 0 ? null : this.getView (this.activeViewId);
     }
 
 
@@ -229,7 +229,7 @@ public class ViewManager
     public void setPreferredView (final int position, final Integer viewID)
     {
         if (position >= 0)
-            this.preferredViews.put (Integer.valueOf (position), viewID);
+            this.preferredViews.put (position, viewID);
     }
 
 
@@ -241,6 +241,6 @@ public class ViewManager
      */
     public Integer getPreferredView (final int position)
     {
-        return position >= 0 ? this.preferredViews.get (Integer.valueOf (position)) : null;
+        return position >= 0 ? this.preferredViews.get (position) : null;
     }
 }

@@ -77,8 +77,8 @@ public class TrackBankProxy extends AbstractTrackBankProxy
      */
     public void changeSend (final int index, final int sendIndex, final int value)
     {
-        final Double newValue = Double.valueOf (this.valueChanger.calcKnobSpeed (value));
-        this.trackBank.getChannel (index).sendBank ().getItemAt (sendIndex).inc (newValue, Integer.valueOf (this.valueChanger.getUpperBound ()));
+        final Double newValue = this.valueChanger.calcKnobSpeed(value);
+        this.trackBank.getChannel (index).sendBank ().getItemAt (sendIndex).inc (newValue, this.valueChanger.getUpperBound());
     }
 
 

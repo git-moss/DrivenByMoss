@@ -107,10 +107,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         this.buttonConsumed = new boolean [128];
         if (this.buttons != null)
         {
-            for (int i = 0; i < this.buttons.length; i++)
-            {
-                this.buttonStates[this.buttons[i]] = ButtonEvent.UP;
-                this.buttonConsumed[this.buttons[i]] = false;
+            for (int button : this.buttons) {
+                this.buttonStates[button] = ButtonEvent.UP;
+                this.buttonConsumed[button] = false;
             }
         }
 
@@ -221,13 +220,13 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void assignTriggerCommand (final int midiCC, final int midiChannel, final Integer commandID)
     {
-        Map<Integer, Integer> channelMap = this.triggerCommands.get (Integer.valueOf (midiCC));
+        Map<Integer, Integer> channelMap = this.triggerCommands.get (midiCC);
         if (channelMap == null)
         {
             channelMap = new HashMap<> ();
-            this.triggerCommands.put (Integer.valueOf (midiCC), channelMap);
+            this.triggerCommands.put (midiCC, channelMap);
         }
-        channelMap.put (Integer.valueOf (midiChannel), commandID);
+        channelMap.put (midiChannel, commandID);
     }
 
 
@@ -243,8 +242,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public Integer getTriggerCommand (final int midiCC, final int midiChannel)
     {
-        final Map<Integer, Integer> channelMap = this.triggerCommands.get (Integer.valueOf (midiCC));
-        return channelMap == null ? null : channelMap.get (Integer.valueOf (midiChannel));
+        final Map<Integer, Integer> channelMap = this.triggerCommands.get (midiCC);
+        return channelMap == null ? null : channelMap.get (midiChannel);
     }
 
 
@@ -260,13 +259,13 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void assignContinuousCommand (final int midiCC, final int midiChannel, final Integer commandID)
     {
-        Map<Integer, Integer> channelMap = this.continuousCommands.get (Integer.valueOf (midiCC));
+        Map<Integer, Integer> channelMap = this.continuousCommands.get (midiCC);
         if (channelMap == null)
         {
             channelMap = new HashMap<> ();
-            this.continuousCommands.put (Integer.valueOf (midiCC), channelMap);
+            this.continuousCommands.put (midiCC, channelMap);
         }
-        channelMap.put (Integer.valueOf (midiChannel), commandID);
+        channelMap.put (midiChannel, commandID);
     }
 
 
@@ -282,8 +281,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public Integer getContinuousCommand (final int midiCC, final int midiChannel)
     {
-        final Map<Integer, Integer> channelMap = this.continuousCommands.get (Integer.valueOf (midiCC));
-        return channelMap == null ? null : channelMap.get (Integer.valueOf (midiChannel));
+        final Map<Integer, Integer> channelMap = this.continuousCommands.get (midiCC);
+        return channelMap == null ? null : channelMap.get (midiChannel);
     }
 
 
@@ -291,7 +290,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void assignNoteCommand (final int midiNote, final Integer commandID)
     {
-        this.noteCommands.put (Integer.valueOf (midiNote), commandID);
+        this.noteCommands.put (midiNote, commandID);
     }
 
 
@@ -299,7 +298,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public Integer getNoteCommand (final int midiNote)
     {
-        return this.noteCommands.get (Integer.valueOf (midiNote));
+        return this.noteCommands.get (midiNote);
     }
 
 
@@ -321,7 +320,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             return;
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
-            t[i] = Integer.valueOf (table[i]);
+            t[i] = table[i];
         this.noteInput.setKeyTranslationTable (t);
     }
 
@@ -334,7 +333,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             return;
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
-            t[i] = Integer.valueOf (table[i]);
+            t[i] = table[i];
         this.noteInput.setVelocityTranslationTable (t);
     }
 

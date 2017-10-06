@@ -19,7 +19,7 @@ import com.bitwig.extension.controller.api.SettableEnumValue;
 public class SLConfiguration extends AbstractConfiguration
 {
     /** Touchpad mode. */
-    public static final Integer    TOUCHPAD_MODE            = Integer.valueOf (30);
+    public static final Integer    TOUCHPAD_MODE            = 30;
 
     /** Touchpad mode: Use as the crossfader. */
     public static final String     TOUCHPAD_MODE_CROSSFADER = "Crossfader";

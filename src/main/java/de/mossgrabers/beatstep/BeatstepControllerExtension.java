@@ -212,7 +212,7 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
 
         final BeatstepControlSurface surface = this.getSurface ();
         for (int i = 0; i < 16; i++)
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), BeatstepControlSurface.BEATSTEP_PRO_STEP1 + i, new StepCommand (i, this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_ROW1_1.intValue() + i, BeatstepControlSurface.BEATSTEP_PRO_STEP1 + i, new StepCommand (i, this.model, surface));
     }
 
 
@@ -224,8 +224,8 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
         final ViewManager viewManager = surface.getViewManager ();
         for (int i = 0; i < 8; i++)
         {
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_1 + i, new KnobRowViewCommand (i, this.model, surface));
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_9 + i, new KnobRowViewCommand (i + 8, this.model, surface));
+            this.addContinuousCommand (Commands.CONT_COMMAND_KNOB1.intValue() + i, BeatstepControlSurface.BEATSTEP_KNOB_1 + i, new KnobRowViewCommand (i, this.model, surface));
+            this.addContinuousCommand (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue() + i, BeatstepControlSurface.BEATSTEP_KNOB_9 + i, new KnobRowViewCommand (i + 8, this.model, surface));
         }
         this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, new BeatstepPlayPositionCommand (this.model, surface));
         final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);

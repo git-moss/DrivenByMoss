@@ -270,7 +270,7 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
     {
         final LaunchpadControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, new FaderCommand (i, this.model, surface));
+            this.addContinuousCommand (Commands.CONT_COMMAND_KNOB1.intValue() + i, LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, new FaderCommand (i, this.model, surface));
         final PlayView playView = (PlayView) surface.getViewManager ().getView (Views.VIEW_PLAY);
         playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, surface));
     }

@@ -383,9 +383,9 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
 
         for (int i = 0; i < 8; i++)
         {
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), PushControlSurface.PUSH_BUTTON_ROW1_1 + i, new ButtonRowModeCommand<> (0, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), PushControlSurface.PUSH_BUTTON_ROW2_1 + i, new ButtonRowModeCommand<> (1, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_SCENE1.intValue () + i), PushControlSurface.PUSH_BUTTON_SCENE1 + i, new SceneCommand<> (i, this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_ROW1_1.intValue() + i, PushControlSurface.PUSH_BUTTON_ROW1_1 + i, new ButtonRowModeCommand<> (0, i, this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_ROW2_1.intValue() + i, PushControlSurface.PUSH_BUTTON_ROW2_1 + i, new ButtonRowModeCommand<> (1, i, this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_SCENE1.intValue() + i, PushControlSurface.PUSH_BUTTON_SCENE1 + i, new SceneCommand<> (i, this.model, surface));
         }
 
         this.addTriggerCommand (Commands.COMMAND_SHIFT, PushControlSurface.PUSH_BUTTON_SHIFT, new ShiftCommand (this.model, surface));
@@ -429,7 +429,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     {
         final PushControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), PushControlSurface.PUSH_KNOB1 + i, new KnobRowModeCommand<> (i, this.model, surface));
+            this.addContinuousCommand (Commands.CONT_COMMAND_KNOB1.intValue() + i, PushControlSurface.PUSH_KNOB1 + i, new KnobRowModeCommand<> (i, this.model, surface));
 
         this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, PushControlSurface.PUSH_KNOB9, new MasterVolumeCommand<> (this.model, surface));
         this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO, PushControlSurface.PUSH_SMALL_KNOB1, new TempoCommand<> (this.model, surface));
@@ -549,7 +549,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
 
         final boolean isMasterOn = Modes.MODE_MASTER.equals (mode) || Modes.MODE_MASTER_TEMP.equals (mode) || Modes.MODE_FRAME.equals (mode);
         final boolean isVolumeOn = Modes.MODE_VOLUME.equals (mode) || Modes.MODE_CROSSFADER.equals (mode);
-        final boolean isPanOn = mode.intValue () >= Modes.MODE_PAN.intValue () && mode.intValue () <= Modes.MODE_SEND8.intValue ();
+        final boolean isPanOn = mode >= Modes.MODE_PAN && mode <= Modes.MODE_SEND8;
         final boolean isDeviceOn = Modes.isDeviceMode (mode);
         boolean isMixOn = Modes.MODE_TRACK.equals (mode);
         if (this.isPush2)
@@ -593,7 +593,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
             tb.setPanIndication (i, !isEffect && (isPan || hasTrackSel));
 
             for (int j = 0; j < tb.getNumSends (); j++)
-                tb.setSendIndication (i, j, !isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
+                tb.setSendIndication (i, j, !isEffect && (mode - Modes.MODE_SEND1 == j || hasTrackSel));
 
             tbe.setVolumeIndication (i, isEffect);
             tbe.setPanIndication (i, isEffect && isPan);

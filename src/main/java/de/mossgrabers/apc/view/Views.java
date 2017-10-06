@@ -12,17 +12,17 @@ package de.mossgrabers.apc.view;
 public class Views
 {
     /** View for a session grid with clips. */
-    public static final Integer VIEW_SESSION   = Integer.valueOf (0);
+    public static final Integer VIEW_SESSION   = 0;
     /** View for playing notes. */
-    public static final Integer VIEW_PLAY      = Integer.valueOf (1);
+    public static final Integer VIEW_PLAY      = 1;
     /** View for playing drums and sequencing. */
-    public static final Integer VIEW_DRUM      = Integer.valueOf (2);
+    public static final Integer VIEW_DRUM      = 2;
     /** View for a sequencer. */
-    public static final Integer VIEW_SEQUENCER = Integer.valueOf (3);
+    public static final Integer VIEW_SEQUENCER = 3;
     /** View for raindrops sequencer. */
-    public static final Integer VIEW_RAINDROPS = Integer.valueOf (4);
+    public static final Integer VIEW_RAINDROPS = 4;
     /** View for shift. */
-    public static final Integer VIEW_SHIFT     = Integer.valueOf (5);
+    public static final Integer VIEW_SHIFT     = 5;
 
 
     /**

@@ -296,7 +296,9 @@ public abstract class AbstractTrackBankProxy
      */
     public void changeVolume (final int index, final int control)
     {
-        this.trackBank.getChannel (index).getVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.trackBank.getChannel (index).getVolume ().inc (this.valueChanger.calcKnobSpeed(control),
+                                                            this.valueChanger.getUpperBound()
+        );
     }
 
 
@@ -308,7 +310,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setVolume (final int index, final double value)
     {
-        this.trackBank.getChannel (index).getVolume ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.trackBank.getChannel (index).getVolume ().set (value, this.valueChanger.getUpperBound());
     }
 
 
@@ -321,7 +323,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setVolume (final int index, final double value, final int upperBound)
     {
-        this.trackBank.getChannel (index).getVolume ().set (Double.valueOf (value), Integer.valueOf (upperBound));
+        this.trackBank.getChannel (index).getVolume ().set (value, upperBound);
     }
 
 
@@ -368,7 +370,9 @@ public abstract class AbstractTrackBankProxy
      */
     public void changePan (final int index, final int control)
     {
-        this.trackBank.getChannel (index).getPan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.trackBank.getChannel (index).getPan ().inc (this.valueChanger.calcKnobSpeed(control),
+                                                         this.valueChanger.getUpperBound()
+        );
     }
 
 
@@ -380,7 +384,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setPan (final int index, final double value)
     {
-        this.trackBank.getChannel (index).getPan ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.trackBank.getChannel (index).getPan ().set (value, this.valueChanger.getUpperBound());
     }
 
 
@@ -507,7 +511,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void toggleArm (final int index)
     {
-        this.setArm (index, !this.getTrack (index).isRecarm ());
+        this.setArm (index, !this.getTrack (index).isRecArm());
     }
 
 

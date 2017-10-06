@@ -12,29 +12,29 @@ package de.mossgrabers.sl.mode;
 public class Modes
 {
     /** Pick length of new clips. */
-    public static final Integer MODE_FIXED         = Integer.valueOf (0);
+    public static final Integer MODE_FIXED         = 0;
     /** Show/hide different frames. */
-    public static final Integer MODE_FRAME         = Integer.valueOf (1);
+    public static final Integer MODE_FRAME         = 1;
     /** Execute different functions. */
-    public static final Integer MODE_FUNCTIONS     = Integer.valueOf (2);
+    public static final Integer MODE_FUNCTIONS     = 2;
     /** Edit master track. */
-    public static final Integer MODE_MASTER        = Integer.valueOf (3);
+    public static final Integer MODE_MASTER        = 3;
     /** Edit play options. */
-    public static final Integer MODE_PLAY_OPTIONS  = Integer.valueOf (4);
+    public static final Integer MODE_PLAY_OPTIONS  = 4;
     /** Start scenes. */
-    public static final Integer MODE_SESSION       = Integer.valueOf (5);
+    public static final Integer MODE_SESSION       = 5;
     /** Single Track editing mode. */
-    public static final Integer MODE_TRACK         = Integer.valueOf (6);
+    public static final Integer MODE_TRACK         = 6;
     /** Track parameters which can be toggled. */
-    public static final Integer MODE_TRACK_TOGGLES = Integer.valueOf (7);
+    public static final Integer MODE_TRACK_TOGGLES = 7;
     /** Select a view for a track. */
-    public static final Integer MODE_VIEW_SELECT   = Integer.valueOf (8);
+    public static final Integer MODE_VIEW_SELECT   = 8;
     /** Edit volume of all tracks. */
-    public static final Integer MODE_VOLUME        = Integer.valueOf (9);
+    public static final Integer MODE_VOLUME        = 9;
     /** Edit device parameters. */
-    public static final Integer MODE_PARAMS        = Integer.valueOf (10);
+    public static final Integer MODE_PARAMS        = 10;
     /** The preset browser. */
-    public static final Integer MODE_BROWSER       = Integer.valueOf (11);
+    public static final Integer MODE_BROWSER       = 11;
 
 
     /**

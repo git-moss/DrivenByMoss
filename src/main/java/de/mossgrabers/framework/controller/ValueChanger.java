@@ -13,7 +13,7 @@ public interface ValueChanger
 {
     /**
      * Get the limit for the maximum value for parameters. The value is in the range of 0 to
-     * upperbound-1.
+     * upper bound -1.
      *
      * @return The upper bound value
      */

@@ -37,7 +37,7 @@ import java.util.Map;
 
 
 /**
- * Writes the changed DAW stati as OSC messages.
+ * Writes the changed DAW status as OSC messages.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -193,7 +193,7 @@ public class OSCWriter
         this.sendOSC (trackAddress + "pan", track.getPan (), dump);
         this.sendOSC (trackAddress + "mute", track.isMute (), dump);
         this.sendOSC (trackAddress + "solo", track.isSolo (), dump);
-        this.sendOSC (trackAddress + "recarm", track.isRecarm (), dump);
+        this.sendOSC (trackAddress + "recarm", track.isRecArm(), dump);
         this.sendOSC (trackAddress + "monitor", track.isMonitor (), dump);
         this.sendOSC (trackAddress + "autoMonitor", track.isAutoMonitor (), dump);
         this.sendOSC (trackAddress + "canHoldNotes", track.canHoldNotes (), dump);
@@ -399,6 +399,6 @@ public class OSCWriter
 
     private static Object convertBooleanToInt (final Object value)
     {
-        return value instanceof Boolean ? Integer.valueOf (((Boolean) value).booleanValue () ? 1 : 0) : value;
+        return value instanceof Boolean ? Integer.valueOf ((Boolean) value ? 1 : 0) : value;
     }
 }

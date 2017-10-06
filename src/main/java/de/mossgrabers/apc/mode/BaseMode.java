@@ -102,7 +102,7 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
         for (int i = 0; i < 8; i++)
         {
             final Integer value = this.getValue (i);
-            this.surface.setLED (APCControlSurface.APC_KNOB_TRACK_KNOB_1 + i, value == null ? this.defaultValue : value.intValue ());
+            this.surface.setLED (APCControlSurface.APC_KNOB_TRACK_KNOB_1 + i, value == null ? this.defaultValue : value);
         }
     }
 
@@ -128,6 +128,6 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
     @Override
     public void onRowButton (final int row, final int index, final ButtonEvent event)
     {
-        // Intentionall empty
+        // Intentionally empty
     }
 }

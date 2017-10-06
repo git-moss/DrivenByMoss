@@ -12,9 +12,9 @@ package de.mossgrabers.sl.view;
 public class Views
 {
     /** View for playing notes. */
-    public static final Integer VIEW_PLAY    = Integer.valueOf (0);
+    public static final Integer VIEW_PLAY    = 0;
     /** View for controlling values. */
-    public static final Integer VIEW_CONTROL = Integer.valueOf (1);
+    public static final Integer VIEW_CONTROL = 1;
 
 
     /**

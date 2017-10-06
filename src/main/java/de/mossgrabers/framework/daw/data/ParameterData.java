@@ -63,7 +63,7 @@ public class ParameterData
      */
     public void inc (final double increment)
     {
-        this.parameter.inc (Double.valueOf (increment), Integer.valueOf (this.maxParameterValue));
+        this.parameter.inc (increment, this.maxParameterValue);
     }
 
 
@@ -142,7 +142,7 @@ public class ParameterData
      */
     public void setValue (final double value)
     {
-        this.parameter.set (Double.valueOf (value), Integer.valueOf (this.maxParameterValue));
+        this.parameter.set (value, this.maxParameterValue);
     }
 
 
@@ -162,7 +162,7 @@ public class ParameterData
      * Specifies if this value should be indicated as mapped in Bitwig Studio, which is visually
      * shown as colored dots or tinting on the parameter controls.
      *
-     * @param enable Ttrue in case visual indications should be shown in Bitwig Studio
+     * @param enable True in case visual indications should be shown in Bitwig Studio
      */
     public void setIndication (final boolean enable)
     {

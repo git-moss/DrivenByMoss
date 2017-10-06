@@ -719,8 +719,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             final int [] args = new int [2 + PAD_VELOCITY_CURVE_CHUNK_SIZE];
             args[0] = 32;
             args[1] = index;
-            for (int i = 0; i < PAD_VELOCITY_CURVE_CHUNK_SIZE; i++)
-                args[i + 2] = velocities[index + i];
+            System.arraycopy(velocities, index + 0, args, 2, PAD_VELOCITY_CURVE_CHUNK_SIZE);
             this.sendPush2SysEx (args);
         }
     }
@@ -880,7 +879,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     /**
      * Send the aftertouch mode.
      *
-     * @param mode Push 2 : 0 = Channel Afterouch, 1 = Poly Aftertouch
+     * @param mode Push 2 : 0 = Channel Aftertouch, 1 = Poly Aftertouch
      */
     public void sendAftertouchMode (final int mode)
     {

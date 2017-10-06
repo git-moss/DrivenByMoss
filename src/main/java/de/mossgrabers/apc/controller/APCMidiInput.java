@@ -36,7 +36,7 @@ public class APCMidiInput extends MidiInput
     {
         return this.createNoteInputBase (this.inputName, new String []
         {
-            "B040??" // Sustainpedal
+            "B040??" // Sustain pedal
         });
     }
 }
