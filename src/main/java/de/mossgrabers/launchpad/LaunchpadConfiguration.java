@@ -34,7 +34,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
 
 
     /**
-     * Is Laucnhpad Pro or MkII?
+     * Is Launchpad Pro or MkII?
      *
      * @return True if Pro
      */
