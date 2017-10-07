@@ -23,7 +23,7 @@ public class TrackData extends ChannelData
      * Constructor.
      *
      * @param track The track
-     * @param maxParameterValue The maximum paraeter value, remove when clipping bug is fixed
+     * @param maxParameterValue The maximum parameter value, remove when clipping bug is fixed
      * @param index The index of the track in the page
      * @param numSends The number of sends of a bank
      * @param numScenes The number of scenes of a bank
@@ -120,7 +120,7 @@ public class TrackData extends ChannelData
      *
      * @return True if armed for recording.
      */
-    public boolean isRecarm ()
+    public boolean isRecArm ()
     {
         return this.track.getArm ().get ();
     }

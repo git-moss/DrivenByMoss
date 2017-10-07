@@ -5,7 +5,7 @@
 package de.mossgrabers.framework;
 
 /**
- * An bcallback interface for a timer.
+ * An callback interface for a timer.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

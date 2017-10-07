@@ -52,7 +52,7 @@ public class TrackButtons
                     this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getTrack (i).isSolo () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
                     break;
                 case APCminiControlSurface.TRACK_STATE_REC_ARM:
-                    this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getTrack (i).isRecarm () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+                    this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getTrack (i).isRecArm () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
                     break;
                 case APCminiControlSurface.TRACK_STATE_MUTE:
                     this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, !tb.getTrack (i).isMute () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);

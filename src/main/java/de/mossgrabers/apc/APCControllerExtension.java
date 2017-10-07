@@ -378,14 +378,14 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
             if (this.isMkII)
             {
                 surface.updateButtonEx (APCControlSurface.APC_BUTTON_A_B, i, track.doesExist () && !"AB".equals (track.getCrossfadeMode ()) ? "A".equals (track.getCrossfadeMode ()) ? ColorManager.BUTTON_STATE_ON : APCColors.BUTTON_STATE_BLINK : ColorManager.BUTTON_STATE_OFF);
-                surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && track.isRecarm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+                surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && track.isRecArm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             }
             else
             {
                 if (isShift)
                     surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && !"AB".equals (track.getCrossfadeMode ()) ? "A".equals (track.getCrossfadeMode ()) ? ColorManager.BUTTON_STATE_ON : APCColors.BUTTON_STATE_BLINK : ColorManager.BUTTON_STATE_OFF);
                 else
-                    surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && track.isRecarm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+                    surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && track.isRecArm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             }
         }
         surface.updateButton (APCControlSurface.APC_BUTTON_MASTER, this.model.getMasterTrack ().isSelected () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);

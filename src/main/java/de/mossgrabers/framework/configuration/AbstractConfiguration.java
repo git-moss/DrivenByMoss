@@ -951,7 +951,7 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the footwswitch setting.
+     * Activate the footswitch setting.
      *
      * @param prefs The preferences
      */

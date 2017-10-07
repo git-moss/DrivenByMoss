@@ -107,10 +107,10 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         this.buttonConsumed = new boolean [128];
         if (this.buttons != null)
         {
-            for (int i = 0; i < this.buttons.length; i++)
+            for (int button: this.buttons)
             {
-                this.buttonStates[this.buttons[i]] = ButtonEvent.UP;
-                this.buttonConsumed[this.buttons[i]] = false;
+                this.buttonStates[button] = ButtonEvent.UP;
+                this.buttonConsumed[button] = false;
             }
         }
 

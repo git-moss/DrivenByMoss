@@ -160,8 +160,8 @@ public class DisplayMessage
      * @param vu The VU meter value
      * @param mute The mute state
      * @param solo The solo state
-     * @param recarm Therecording armed state
-     * @param crossfadeMode Crossfae mode (0-2)
+     * @param recarm The recording armed state
+     * @param crossfadeMode Crossfade mode (0-2)
      */
     public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
     {
@@ -188,8 +188,8 @@ public class DisplayMessage
      * @param vu The VU meter value
      * @param mute The mute state
      * @param solo The solo state
-     * @param recarm Therecording armed state
-     * @param crossfadeMode Crossfae mode (0-2)
+     * @param recarm The recording armed state
+     * @param crossfadeMode Crossfade mode (0-2)
      */
     public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
     {

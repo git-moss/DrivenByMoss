@@ -127,7 +127,7 @@ public abstract class CursorCommand<S extends ControlSurface<C>, C extends Confi
 
 
     /**
-     * Update the states of the arrorw buttons.
+     * Update the states of the arrow buttons.
      */
     protected abstract void updateArrowStates ();
 

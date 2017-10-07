@@ -36,7 +36,7 @@ public class OSCExtension extends ControllerExtension
     /**
      * Constructor.
      *
-     * @param extensionDefinition The etxension definition
+     * @param extensionDefinition The extension definition
      * @param host The Bitwig host
      */
     protected OSCExtension (final OSCExtensionDefinition extensionDefinition, final ControllerHost host)

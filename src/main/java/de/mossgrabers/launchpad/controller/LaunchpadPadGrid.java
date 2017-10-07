@@ -99,9 +99,9 @@ public class LaunchpadPadGrid extends PadGridImpl
 
 
     /**
-     * Conbstructor.
+     * Constructor.
      *
-     * @param colorManager The color mananger for accessing specific colors to use
+     * @param colorManager The color manager for accessing specific colors to use
      * @param surface The launchpad surface
      */
     public LaunchpadPadGrid (final ColorManager colorManager, final LaunchpadControlSurface surface)

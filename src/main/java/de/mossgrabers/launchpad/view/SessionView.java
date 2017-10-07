@@ -137,7 +137,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             final TrackData track = tb.getTrack (x);
             final boolean exists = track.doesExist ();
             if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
-                pads.lightEx (x, 7, exists ? track.isRecarm () ? LaunchpadColors.LAUNCHPAD_COLOR_RED_HI : LaunchpadColors.LAUNCHPAD_COLOR_RED_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+                pads.lightEx (x, 7, exists ? track.isRecArm () ? LaunchpadColors.LAUNCHPAD_COLOR_RED_HI : LaunchpadColors.LAUNCHPAD_COLOR_RED_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
             else if (modeManager.isActiveMode (Modes.MODE_TRACK_SELECT))
                 pads.lightEx (x, 7, exists ? track.isSelected () ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
             else if (modeManager.isActiveMode (Modes.MODE_MUTE))
