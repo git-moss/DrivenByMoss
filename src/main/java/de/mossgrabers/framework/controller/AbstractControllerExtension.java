@@ -40,7 +40,7 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
 
 
     /**
-     * Csontructor.
+     * Constructor.
      *
      * @param definition The definition
      * @param host The host
@@ -64,7 +64,7 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
 
     /**
      * Get a surface.
-     * 
+     *
      * @param index The index of the surface
      * @return The surface
      */

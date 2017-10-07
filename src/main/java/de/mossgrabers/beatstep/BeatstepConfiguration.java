@@ -34,7 +34,7 @@ public class BeatstepConfiguration extends AbstractConfiguration
 
 
     /**
-     * Is Laucnhpad Pro or MkII?
+     * Is it Beatstep Pro?
      *
      * @return True if Pro
      */

@@ -128,6 +128,6 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
     @Override
     public void onRowButton (final int row, final int index, final ButtonEvent event)
     {
-        // Intentionall empty
+        // Intentionally empty
     }
 }

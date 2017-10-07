@@ -102,7 +102,7 @@ public interface Display
 
 
     /**
-     * Signales that editing of a row is finished and the full text for the row can be created.
+     * Signals that editing of a row is finished and the full text for the row can be created.
      *
      * @param row The row
      * @return The instance for concatenated calls

@@ -23,13 +23,13 @@ public enum ScaleLayout
     SEQUENT_UP("Seqent ^"),
     /** Sequential to the right in fourth steps. */
     SEQUENT_RIGHT("Seqent >"),
-    /** Upwards in eigth steps. */
+    /** Upwards in eighth steps. */
     EIGHT_UP("8th ^"),
-    /** To the right in eigth steps. */
+    /** To the right in eighth steps. */
     EIGHT_RIGHT("8th >"),
-    /** Eigth steps centered upwards. */
+    /** Eighth steps centered upwards. */
     EIGHT_UP_CENTER("8th ^ centered"),
-    /** Eigth steps centered to the right. */
+    /** Eighth steps centered to the right. */
     EIGHT_RIGHT_CENTER("8th > centered");
 
     private static final String [] scaleLayoutNames = new String [10];

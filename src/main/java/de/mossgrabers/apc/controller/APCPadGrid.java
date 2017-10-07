@@ -19,9 +19,9 @@ public class APCPadGrid extends PadGridImpl
 
 
     /**
-     * Conbstructor.
+     * Constructor.
      *
-     * @param colorManager The color mananger for accessing specific colors to use
+     * @param colorManager The color manager for accessing specific colors to use
      * @param surface The APC surface
      */
     public APCPadGrid (final ColorManager colorManager, final APCControlSurface surface)

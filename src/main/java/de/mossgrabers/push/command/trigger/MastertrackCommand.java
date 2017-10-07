@@ -41,7 +41,7 @@ public class MastertrackCommand extends AbstractTriggerCommand<PushControlSurfac
     @Override
     public void execute (final ButtonEvent event)
     {
-        // Avoid accidently leaving the browser
+        // Avoid accidentally leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActiveMode (Modes.MODE_BROWSER))
             return;

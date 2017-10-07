@@ -50,9 +50,9 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
      */
     public boolean isAKnobTouched ()
     {
-        for (int i = 0; i < this.isKnobTouched.length; i++)
+        for (boolean anIsKnobTouched: this.isKnobTouched)
         {
-            if (this.isKnobTouched[i])
+            if (anIsKnobTouched)
                 return true;
         }
         return false;

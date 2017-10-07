@@ -507,7 +507,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void toggleArm (final int index)
     {
-        this.setArm (index, !this.getTrack (index).isRecarm ());
+        this.setArm (index, !this.getTrack (index).isRecArm ());
     }
 
 

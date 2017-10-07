@@ -612,7 +612,7 @@ public class TransportProxy
     /**
      * Changes the tempo.
      *
-     * @param increase True to increase otherwise descrease
+     * @param increase True to increase otherwise decrease
      */
     public void changeTempo (final boolean increase)
     {

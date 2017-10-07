@@ -193,7 +193,7 @@ public class OSCWriter
         this.sendOSC (trackAddress + "pan", track.getPan (), dump);
         this.sendOSC (trackAddress + "mute", track.isMute (), dump);
         this.sendOSC (trackAddress + "solo", track.isSolo (), dump);
-        this.sendOSC (trackAddress + "recarm", track.isRecarm (), dump);
+        this.sendOSC (trackAddress + "recarm", track.isRecArm (), dump);
         this.sendOSC (trackAddress + "monitor", track.isMonitor (), dump);
         this.sendOSC (trackAddress + "autoMonitor", track.isAutoMonitor (), dump);
         this.sendOSC (trackAddress + "canHoldNotes", track.canHoldNotes (), dump);

@@ -5,14 +5,14 @@
 package de.mossgrabers.framework.daw;
 
 /**
- * Suuport for handling the colors used in Bitwig.
+ * Support for handling the colors used in Bitwig.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class BitwigColors
 {
     /** All Bitwig track colors. */
-    private static final Object [] COLORS                    =
+    private static final Object [] COLORS                     =
     {
         // Gray - not assigned
         new double []
@@ -207,62 +207,62 @@ public class BitwigColors
     };
 
     /** Color off. */
-    public static final String     COLOR_OFF                 = "COLOR_OFF";
+    public static final String     COLOR_OFF                  = "COLOR_OFF";
     /** Color dark grey. */
-    public static final String     BITWIG_COLOR_DARK_GRAY    = "BITWIG_COLOR_DARK_GRAY";
+    public static final String     BITWIG_COLOR_DARK_GRAY     = "BITWIG_COLOR_DARK_GRAY";
     /** Color grey. */
-    public static final String     BITWIG_COLOR_GRAY         = "BITWIG_COLOR_GRAY";
+    public static final String     BITWIG_COLOR_GRAY          = "BITWIG_COLOR_GRAY";
     /** Color light grey. */
-    public static final String     BITWIG_COLOR_LIGHT_GRAY   = "BITWIG_COLOR_LIGHT_GRAY";
+    public static final String     BITWIG_COLOR_LIGHT_GRAY    = "BITWIG_COLOR_LIGHT_GRAY";
     /** Color silver. */
-    public static final String     BITWIG_COLOR_SILVER       = "BITWIG_COLOR_SILVER";
+    public static final String     BITWIG_COLOR_SILVER        = "BITWIG_COLOR_SILVER";
     /** Color dark brown. */
-    public static final String     BITWIG_COLOR_DARK_BROWN   = "BITWIG_COLOR_DARK_BROWN";
+    public static final String     BITWIG_COLOR_DARK_BROWN    = "BITWIG_COLOR_DARK_BROWN";
     /** Color brown. */
-    public static final String     BITWIG_COLOR_BROWN        = "BITWIG_COLOR_BROWN";
+    public static final String     BITWIG_COLOR_BROWN         = "BITWIG_COLOR_BROWN";
     /** Color dark blue. */
-    public static final String     BITWIG_COLOR_DARK_BLUE    = "BITWIG_COLOR_DARK_BLUE";
+    public static final String     BITWIG_COLOR_DARK_BLUE     = "BITWIG_COLOR_DARK_BLUE";
     /** Color purple blue. */
-    public static final String     BITWIG_COLOR_PURPLE_BLUE  = "BITWIG_COLOR_PURPLE_BLUE";
+    public static final String     BITWIG_COLOR_PURPLE_BLUE   = "BITWIG_COLOR_PURPLE_BLUE";
     /** Color purple. */
-    public static final String     BITWIG_COLOR_PURPLE       = "BITWIG_COLOR_PURPLE";
+    public static final String     BITWIG_COLOR_PURPLE        = "BITWIG_COLOR_PURPLE";
     /** Color pink. */
-    public static final String     BITWIG_COLOR_PINK         = "BITWIG_COLOR_PINK";
+    public static final String     BITWIG_COLOR_PINK          = "BITWIG_COLOR_PINK";
     /** Color red. */
-    public static final String     BITWIG_COLOR_RED          = "BITWIG_COLOR_RED";
+    public static final String     BITWIG_COLOR_RED           = "BITWIG_COLOR_RED";
     /** Color orange. */
-    public static final String     BITWIG_COLOR_ORANGE       = "BITWIG_COLOR_ORANGE";
+    public static final String     BITWIG_COLOR_ORANGE        = "BITWIG_COLOR_ORANGE";
     /** Color light orange. */
-    public static final String     BITWIG_COLOR_LIGHT_ORANGE = "BITWIG_COLOR_LIGHT_ORANGE";
+    public static final String     BITWIG_COLOR_LIGHT_ORANGE  = "BITWIG_COLOR_LIGHT_ORANGE";
     /** Color moss green. */
-    public static final String     BITWIG_COLOR_MOSS_GREEN   = "BITWIG_COLOR_MOSS_GREEN";
+    public static final String     BITWIG_COLOR_MOSS_GREEN    = "BITWIG_COLOR_MOSS_GREEN";
     /** Color green. */
-    public static final String     BITWIG_COLOR_GREEN        = "BITWIG_COLOR_GREEN";
+    public static final String     BITWIG_COLOR_GREEN         = "BITWIG_COLOR_GREEN";
     /** Color cold green. */
-    public static final String     BITWIG_COLOR_COLD_GREEN   = "BITWIG_COLOR_COLD_GREEN";
+    public static final String     BITWIG_COLOR_COLD_GREEN    = "BITWIG_COLOR_COLD_GREEN";
     /** Color blue. */
-    public static final String     BITWIG_COLOR_BLUE         = "BITWIG_COLOR_BLUE";
+    public static final String     BITWIG_COLOR_BLUE          = "BITWIG_COLOR_BLUE";
     /** Color purple. */
-    public static final String     BITWIG_COLOR_LIGHT_PURPLE = "BITWIG_COLOR_LIGHT_PURPLE";
+    public static final String     BITWIG_COLOR_LIGHT_PURPLE  = "BITWIG_COLOR_LIGHT_PURPLE";
     /** Color light pink. */
-    public static final String     BITWIG_COLOR_LIGHT_PINK   = "BITWIG_COLOR_LIGHT_PINK";
+    public static final String     BITWIG_COLOR_LIGHT_PINK    = "BITWIG_COLOR_LIGHT_PINK";
     /** Color skin. */
-    public static final String     BITWIG_COLOR_SKIN         = "BITWIG_COLOR_SKIN";
-    /** Color redish brown. */
-    public static final String     BITWIG_COLOR_REDISH_BROWN = "BITWIG_COLOR_REDISH_BROWN";
+    public static final String     BITWIG_COLOR_SKIN          = "BITWIG_COLOR_SKIN";
+    /** Color reddish brown. */
+    public static final String     BITWIG_COLOR_REDDISH_BROWN = "BITWIG_COLOR_REDDISH_BROWN";
     /** Color light brown. */
-    public static final String     BITWIG_COLOR_LIGHT_BROWN  = "BITWIG_COLOR_LIGHT_BROWN";
+    public static final String     BITWIG_COLOR_LIGHT_BROWN   = "BITWIG_COLOR_LIGHT_BROWN";
     /** Color light green. */
-    public static final String     BITWIG_COLOR_LIGHT_GREEN  = "BITWIG_COLOR_LIGHT_GREEN";
+    public static final String     BITWIG_COLOR_LIGHT_GREEN   = "BITWIG_COLOR_LIGHT_GREEN";
     /** Color bluish green. */
-    public static final String     BITWIG_COLOR_BLUISH_GREEN = "BITWIG_COLOR_BLUISH_GREEN";
+    public static final String     BITWIG_COLOR_BLUISH_GREEN  = "BITWIG_COLOR_BLUISH_GREEN";
     /** Color green blue. */
-    public static final String     BITWIG_COLOR_GREEN_BLUE   = "BITWIG_COLOR_GREEN_BLUE";
+    public static final String     BITWIG_COLOR_GREEN_BLUE    = "BITWIG_COLOR_GREEN_BLUE";
     /** Color light blue. */
-    public static final String     BITWIG_COLOR_LIGHT_BLUE   = "BITWIG_COLOR_LIGHT_BLUE";
+    public static final String     BITWIG_COLOR_LIGHT_BLUE    = "BITWIG_COLOR_LIGHT_BLUE";
 
     /** All IDs for the Bitwig track colors. */
-    public static final String []  BITWIG_COLORS             = new String []
+    public static final String []  BITWIG_COLORS              = new String []
     {
         BITWIG_COLOR_GRAY,
         BITWIG_COLOR_DARK_GRAY,
@@ -285,7 +285,7 @@ public class BitwigColors
         BITWIG_COLOR_LIGHT_PURPLE,
         BITWIG_COLOR_LIGHT_PINK,
         BITWIG_COLOR_SKIN,
-        BITWIG_COLOR_REDISH_BROWN,
+        BITWIG_COLOR_REDDISH_BROWN,
         BITWIG_COLOR_LIGHT_BROWN,
         BITWIG_COLOR_LIGHT_GREEN,
         BITWIG_COLOR_BLUISH_GREEN,

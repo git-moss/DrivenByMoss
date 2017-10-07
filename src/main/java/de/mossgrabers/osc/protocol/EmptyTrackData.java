@@ -59,7 +59,7 @@ public class EmptyTrackData extends TrackData
 
     /** {@inheritDoc} */
     @Override
-    public boolean isRecarm ()
+    public boolean isRecArm ()
     {
         return false;
     }

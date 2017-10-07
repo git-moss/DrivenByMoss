@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 
 
 /**
- * Command for toggline between the Instrument/Audio/Hybrid tracks and the Effect tracks.
+ * Command for toggling between the Instrument/Audio/Hybrid tracks and the Effect tracks.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

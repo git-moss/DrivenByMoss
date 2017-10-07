@@ -179,7 +179,7 @@ public class APCColors
             colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PURPLE, APC_MKII_COLOR_BLUE_ORCHID);
             colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PINK, APC_MKII_COLOR_MAGENTA_PINK);
             colorManager.registerColor (BitwigColors.BITWIG_COLOR_SKIN, APC_MKII_COLOR_ROSE);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_REDISH_BROWN, APC_MKII_COLOR_AMBER);
+            colorManager.registerColor (BitwigColors.BITWIG_COLOR_REDDISH_BROWN, APC_MKII_COLOR_AMBER);
             colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_BROWN, APC_MKII_COLOR_AMBER_HI);
             colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_GREEN, APC_MKII_COLOR_LIME);
             colorManager.registerColor (BitwigColors.BITWIG_COLOR_BLUISH_GREEN, APC_MKII_COLOR_SPRING_HI);

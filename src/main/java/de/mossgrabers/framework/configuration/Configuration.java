@@ -98,7 +98,7 @@ public interface Configuration
     /**
      * Get the fixed accent value.
      *
-     * @return The fixyed accent value
+     * @return The fixed accent value
      */
     int getFixedAccentValue ();
 
@@ -112,9 +112,9 @@ public interface Configuration
 
 
     /**
-     * The convertion type of aftertouch.
+     * The conversion type of aftertouch.
      *
-     * @return The convertion type
+     * @return The conversion type
      */
     int getConvertAftertouch ();
 
