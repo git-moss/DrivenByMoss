@@ -86,8 +86,8 @@ public class MCUDisplay extends AbstractDisplay
         final int cell = 2 * block;
         if (value.length () >= this.charactersOfCell)
         {
-            this.cells[row * this.noOfCells + cell] = pad (value.substring (0, this.charactersOfCell), this.charactersOfCell - 1);
-            this.cells[row * this.noOfCells + cell + 1] = pad (value.substring (this.charactersOfCell - 1), this.charactersOfCell);
+            this.cells[row * this.noOfCells + cell] = pad (value.substring (0, this.charactersOfCell), this.charactersOfCell);
+            this.cells[row * this.noOfCells + cell + 1] = pad (value.substring (this.charactersOfCell), this.charactersOfCell);
         }
         else
         {

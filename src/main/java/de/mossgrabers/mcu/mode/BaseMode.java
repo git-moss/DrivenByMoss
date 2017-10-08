@@ -130,7 +130,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         {
             final MasterTrackProxy masterTrack = this.model.getMasterTrack ();
             final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
-            final TrackData selectedTrack = masterTrack.isSelected () ? tb.getSelectedTrack () : masterTrack;
+            final TrackData selectedTrack = masterTrack.isSelected () ? masterTrack : tb.getSelectedTrack ();
             d2.setBlock (1, 0, "Sel.track: ").setBlock (1, 1, selectedTrack == null ? "None" : StringUtils.fixASCII (selectedTrack.getName ()));
             d2.setBlock (1, 2, "Sel.devce: ").setBlock (1, 3, cursorDevice.hasSelectedDevice () ? cursorDevice.getName () : "None");
         }
