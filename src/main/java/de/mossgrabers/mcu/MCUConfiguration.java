@@ -36,6 +36,15 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final Integer    HAS_MOTOR_FADERS            = Integer.valueOf (36);
     /** Display track names in 1st display. */
     public static final Integer    DISPLAY_TRACK_NAMES         = Integer.valueOf (37);
+    /** Replace the vertical zoom withmode change. */
+    public static final Integer    USE_VERT_ZOOM_FOR_MODES     = Integer.valueOf (38);
+    /** Use the faders like the editing knobs. */
+    public static final Integer    USE_FADERS_AS_KNOBS         = Integer.valueOf (39);
+
+    /** Use a Function button to switch to previous mode. */
+    public static final int        FOOTSWITCH_2_PREV_MODE      = 14;
+    /** Use a Function button to switch to next mode. */
+    public static final int        FOOTSWITCH_2_NEXT_MODE      = 15;
 
     private static final String    DEVICE_SELECT               = "<Select a profile>";
     private static final String    DEVICE_ICON_PLATFORM_M      = "icon Platform M";
@@ -50,6 +59,26 @@ public class MCUConfiguration extends AbstractConfiguration
         DEVICE_ICON_QCON_PRO_X,
         DEVICE_MACKIE_MCU_PRO,
         DEVICE_ZOOM_R16
+    };
+
+    private static final String [] ASSIGNABLE_VALUES           =
+    {
+        "Toggle Play",
+        "Toggle Record",
+        "Stop All Clips",
+        "Toggle Clip Overdub",
+        "Undo",
+        "Tap Tempo",
+        "New Button",
+        "Clip Based Looper",
+        "Panel layout arrange",
+        "Panel layout mix",
+        "Panel layout edit",
+        "Add instrument track",
+        "Add audio track",
+        "Add effect track",
+        "Previous mode",
+        "Next mode"
     };
 
     private static final String [] ASSIGNABLE_BUTTON_NAMES     = new String []
@@ -77,6 +106,8 @@ public class MCUConfiguration extends AbstractConfiguration
     private SettableEnumValue      hasAssignmentDisplaySetting;
     private SettableEnumValue      hasMotorFadersSetting;
     private SettableEnumValue      displayTrackNamesSetting;
+    private SettableEnumValue      useVertZoomForModesSetting;
+    private SettableEnumValue      useFadersAsKnobsSetting;
 
     private boolean                zoomState;
     private boolean                displayTicks;
@@ -86,6 +117,8 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                hasAssignmentDisplay;
     private boolean                hasMotorFaders;
     private boolean                displayTrackNames;
+    private boolean                useVertZoomForModes;
+    private boolean                useFadersAsKnobs;
     private int []                 assignableFunctions         = new int [7];
 
 
@@ -155,6 +188,8 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
+                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[1]);
+                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (false);
                     break;
 
@@ -165,6 +200,8 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
+                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
+                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
                     break;
 
@@ -175,6 +212,8 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
+                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
+                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
                     break;
 
@@ -185,6 +224,8 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
+                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
+                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[1]);
                     this.setVUMetersEnabled (false);
                     break;
             }
@@ -227,6 +268,18 @@ public class MCUConfiguration extends AbstractConfiguration
             this.displayTrackNames = "On".equals (value);
             this.notifyObservers (DISPLAY_TRACK_NAMES);
         });
+
+        this.useVertZoomForModesSetting = prefs.getEnumSetting ("Use vertical zoom to change tracks", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.useVertZoomForModesSetting.addValueObserver (value -> {
+            this.useVertZoomForModes = "On".equals (value);
+            this.notifyObservers (USE_VERT_ZOOM_FOR_MODES);
+        });
+
+        this.useFadersAsKnobsSetting = prefs.getEnumSetting ("Use faders like editing knobs", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.useFadersAsKnobsSetting.addValueObserver (value -> {
+            this.useFadersAsKnobs = "On".equals (value);
+            this.notifyObservers (USE_FADERS_AS_KNOBS);
+        });
     }
 
 
@@ -235,11 +288,11 @@ public class MCUConfiguration extends AbstractConfiguration
         for (int i = 0; i < this.assignableFunctions.length; i++)
         {
             final int pos = i;
-            final SettableEnumValue setting = prefs.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], "Assignable buttons", FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
+            final SettableEnumValue setting = prefs.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], "Assignable buttons", ASSIGNABLE_VALUES, ASSIGNABLE_VALUES[6]);
             setting.addValueObserver (value -> {
-                for (int f = 0; f < FOOTSWITCH_VALUES.length; f++)
+                for (int f = 0; f < ASSIGNABLE_VALUES.length; f++)
                 {
-                    if (FOOTSWITCH_VALUES[f].equals (value))
+                    if (ASSIGNABLE_VALUES[f].equals (value))
                         this.assignableFunctions[pos] = f;
                 }
             });
@@ -389,6 +442,28 @@ public class MCUConfiguration extends AbstractConfiguration
     public void toggleDisplayTrackNames ()
     {
         this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[this.displayTrackNames ? 0 : 1]);
+    }
+
+
+    /**
+     * Returns true if vertical zoom buttons should be used to change modes.
+     *
+     * @return True if vertical zoom buttons should be used to change modes.
+     */
+    public boolean useVertZoomForModes ()
+    {
+        return this.useVertZoomForModes;
+    }
+
+
+    /**
+     * Returns true if faders should be used like the editing knobs.
+     *
+     * @return True if faders should be used like the editing knobs.
+     */
+    public boolean useFadersAsKnobs ()
+    {
+        return this.useFadersAsKnobs;
     }
 
 

@@ -21,8 +21,8 @@ import de.mossgrabers.mcu.mode.Modes;
  */
 public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {
-    private int index;
-    private int channel;
+    protected int index;
+    protected int channel;
 
 
     /**

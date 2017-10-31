@@ -4,6 +4,7 @@
 
 package de.mossgrabers.mcu.command.trigger;
 
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.mcu.MCUConfiguration;
@@ -17,7 +18,8 @@ import de.mossgrabers.mcu.controller.MCUControlSurface;
  */
 public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUConfiguration>
 {
-    private int index;
+    private final int          index;
+    private final ModeSwitcher switcher;
 
 
     /**
@@ -31,6 +33,30 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
     {
         super (model, surface);
         this.index = index;
+        this.switcher = new ModeSwitcher (surface);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute (final ButtonEvent event)
+    {
+        switch (this.getSetting ())
+        {
+            case MCUConfiguration.FOOTSWITCH_2_PREV_MODE:
+                if (event == ButtonEvent.DOWN)
+                    this.switcher.scrollDown ();
+                break;
+
+            case MCUConfiguration.FOOTSWITCH_2_NEXT_MODE:
+                if (event == ButtonEvent.DOWN)
+                    this.switcher.scrollUp ();
+                break;
+
+            default:
+                super.execute (event);
+                break;
+        }
     }
 
 

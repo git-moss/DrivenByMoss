@@ -50,6 +50,7 @@ import de.mossgrabers.mcu.command.trigger.AssignableCommand;
 import de.mossgrabers.mcu.command.trigger.AutomationCommand;
 import de.mossgrabers.mcu.command.trigger.CursorCommand;
 import de.mossgrabers.mcu.command.trigger.CursorCommand.Direction;
+import de.mossgrabers.mcu.command.trigger.FaderTouchCommand;
 import de.mossgrabers.mcu.command.trigger.GrooveCommand;
 import de.mossgrabers.mcu.command.trigger.KeyCommand;
 import de.mossgrabers.mcu.command.trigger.KeyCommand.Key;
@@ -383,10 +384,13 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             final ViewManager viewManager = surface.getViewManager ();
             for (int i = 0; i < 8; i++)
             {
-                final Integer commandID = Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i);
+                Integer commandID = Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i);
                 viewManager.registerTriggerCommand (commandID, new SelectCommand (i, this.model, surface));
-                surface.assignTriggerCommand (MCUControlSurface.MCU_FADER_TOUCH1 + i, commandID);
                 surface.assignTriggerCommand (MCUControlSurface.MCU_SELECT1 + i, commandID);
+
+                commandID = Integer.valueOf (Commands.COMMAND_FADER_TOUCH_1.intValue () + i);
+                viewManager.registerTriggerCommand (commandID, new FaderTouchCommand (i, this.model, surface));
+                surface.assignTriggerCommand (MCUControlSurface.MCU_FADER_TOUCH1 + i, commandID);
 
                 this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), MCUControlSurface.MCU_VSELECT1 + i, new ButtonRowModeCommand<> (0, i, this.model, surface), index);
                 this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), MCUControlSurface.MCU_ARM1 + i, new ButtonRowModeCommand<> (1, i, this.model, surface), index);
@@ -433,7 +437,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
 
             this.getHost ().scheduleTask ( () -> {
                 surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-                surface.getModeManager ().setActiveMode (Modes.MODE_VOLUME);
+                surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
             }, 200);
         }
     }
@@ -537,14 +541,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
 
                 // Update motor fader of channel
                 if (hasMotorFaders)
-                {
-                    final int volume = track.getVolume ();
-                    if (volume != this.faderValues[channel])
-                    {
-                        this.faderValues[channel] = volume;
-                        output.sendPitchbend (i, volume % 127, volume / 127);
-                    }
-                }
+                    this.updateFaders (output, i, channel, track);
             }
         }
 
@@ -581,6 +578,76 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
                 this.masterFaderValue = volume;
                 output.sendPitchbend (8, volume % 127, volume / 127);
             }
+        }
+    }
+
+
+    private void updateFaders (final MidiOutput output, final int index, final int channel, final TrackData track)
+    {
+        int value = track.getVolume ();
+
+        if (this.configuration.useFadersAsKnobs ())
+        {
+            final ModeManager modeManager = this.getSurface ().getModeManager ();
+            if (modeManager.isActiveMode (Modes.MODE_VOLUME))
+                value = track.getVolume ();
+            else if (modeManager.isActiveMode (Modes.MODE_PAN))
+                value = track.getPan ();
+            else if (modeManager.isActiveMode (Modes.MODE_TRACK))
+            {
+                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+                final TrackData selectedTrack = tb.getSelectedTrack ();
+
+                final TrackData selTrack = tb.getTrack (selectedTrack.getIndex ());
+                switch (index)
+                {
+                    case 0:
+                        value = selTrack.getVolume ();
+                        break;
+                    case 1:
+                        value = selTrack.getPan ();
+                        break;
+                    default:
+                        final boolean effectTrackBankActive = this.model.isEffectTrackBankActive ();
+                        if (index == 2)
+                        {
+                            if (this.configuration.isDisplayCrossfader ())
+                            {
+                                final int crossfadeMode = tb.getCrossfadeModeAsNumber (selectedTrack.getIndex ());
+                                value = crossfadeMode == 2 ? this.valueChanger.getUpperBound () : (crossfadeMode == 1 ? this.valueChanger.getUpperBound () / 2 : 0);
+                            }
+                            else if (!effectTrackBankActive)
+                                value = selTrack.getSends ()[0].getValue ();
+                        }
+                        else if (!effectTrackBankActive)
+                            value = selTrack.getSends ()[index - (this.configuration.isDisplayCrossfader () ? 3 : 2)].getValue ();
+                        break;
+                }
+            }
+            else if (modeManager.isActiveMode (Modes.MODE_SEND1))
+                value = track.getSends ()[0].getValue ();
+            else if (modeManager.isActiveMode (Modes.MODE_SEND2))
+                value = track.getSends ()[1].getValue ();
+            else if (modeManager.isActiveMode (Modes.MODE_SEND3))
+                value = track.getSends ()[2].getValue ();
+            else if (modeManager.isActiveMode (Modes.MODE_SEND4))
+                value = track.getSends ()[3].getValue ();
+            else if (modeManager.isActiveMode (Modes.MODE_SEND5))
+                value = track.getSends ()[4].getValue ();
+            else if (modeManager.isActiveMode (Modes.MODE_SEND6))
+                value = track.getSends ()[5].getValue ();
+            else if (modeManager.isActiveMode (Modes.MODE_SEND7))
+                value = track.getSends ()[6].getValue ();
+            else if (modeManager.isActiveMode (Modes.MODE_SEND8))
+                value = track.getSends ()[7].getValue ();
+            else if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
+                value = this.model.getCursorDevice ().getFXParam (channel).getValue ();
+        }
+
+        if (value != this.faderValues[channel])
+        {
+            this.faderValues[channel] = value;
+            output.sendPitchbend (index, value % 127, value / 127);
         }
     }
 

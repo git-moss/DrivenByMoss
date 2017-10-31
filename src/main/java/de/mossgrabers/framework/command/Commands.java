@@ -256,6 +256,23 @@ public interface Commands
     /** The command to toggle VU meters. */
     Integer COMMAND_TOGGLE_VU                = Integer.valueOf (122);
 
+    /** The command to touch a fader. */
+    Integer COMMAND_FADER_TOUCH_1            = Integer.valueOf (123);
+    /** The command to touch a fader. */
+    Integer COMMAND_FADER_TOUCH_2            = Integer.valueOf (124);
+    /** The command to touch a fader. */
+    Integer COMMAND_FADER_TOUCH_3            = Integer.valueOf (125);
+    /** The command to touch a fader. */
+    Integer COMMAND_FADER_TOUCH_4            = Integer.valueOf (126);
+    /** The command to touch a fader. */
+    Integer COMMAND_FADER_TOUCH_5            = Integer.valueOf (127);
+    /** The command to touch a fader. */
+    Integer COMMAND_FADER_TOUCH_6            = Integer.valueOf (128);
+    /** The command to touch a fader. */
+    Integer COMMAND_FADER_TOUCH_7            = Integer.valueOf (129);
+    /** The command to touch a fader. */
+    Integer COMMAND_FADER_TOUCH_8            = Integer.valueOf (130);
+
     /** Continuous knob 1. */
     Integer CONT_COMMAND_KNOB1               = Integer.valueOf (1);
     /** Continuous knob 2. */

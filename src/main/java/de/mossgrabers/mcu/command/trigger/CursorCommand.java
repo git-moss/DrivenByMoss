@@ -31,7 +31,9 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         DOWN
     }
 
-    protected Direction direction;
+    protected Direction        direction;
+
+    private final ModeSwitcher switcher;
 
 
     /**
@@ -45,6 +47,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     {
         super (model, surface);
         this.direction = direction;
+        this.switcher = new ModeSwitcher (surface);
     }
 
 
@@ -94,7 +97,12 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     private void scrollUp ()
     {
         if (this.surface.getConfiguration ().isZoomState ())
-            this.model.getApplication ().getAction ("toggle_double_or_single_row_track_height").invoke ();
+        {
+            if (this.surface.getConfiguration ().useVertZoomForModes ())
+                this.switcher.scrollUp ();
+            else
+                this.model.getApplication ().getAction ("toggle_double_or_single_row_track_height").invoke ();
+        }
         else
             this.model.getApplication ().arrowKeyUp ();
     }
@@ -103,7 +111,12 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     private void scrollDown ()
     {
         if (this.surface.getConfiguration ().isZoomState ())
-            this.model.getApplication ().getAction ("toggle_double_or_single_row_track_height").invoke ();
+        {
+            if (this.surface.getConfiguration ().useVertZoomForModes ())
+                this.switcher.scrollDown ();
+            else
+                this.model.getApplication ().getAction ("toggle_double_or_single_row_track_height").invoke ();
+        }
         else
             this.model.getApplication ().arrowKeyDown ();
     }

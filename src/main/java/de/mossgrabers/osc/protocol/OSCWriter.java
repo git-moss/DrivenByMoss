@@ -25,6 +25,7 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.osc.OSCColors;
 import de.mossgrabers.osc.OSCConfiguration;
 
+import com.bitwig.extension.controller.api.ControllerHost;
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
@@ -167,12 +168,15 @@ public class OSCWriter
         // Send all collected messages
         int pos = 0;
         final int size = this.messages.size ();
+        final ControllerHost host = this.model.getHost ();
+        final String sendHost = this.configuration.getSendHost ();
+        final int sendPort = this.configuration.getSendPort ();
         while (pos < size)
         {
             final int end = pos + 1000;
             final OSCBundle oscBundle = new OSCBundle (this.messages.subList (pos, Math.min (end, size)));
             final byte [] data = oscBundle.getByteArray ();
-            this.model.getHost ().sendDatagramPacket (this.configuration.getSendHost (), this.configuration.getSendPort (), data);
+            host.sendDatagramPacket (sendHost, sendPort, data);
             pos += 1000;
         }
         this.messages.clear ();
