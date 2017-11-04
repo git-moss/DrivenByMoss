@@ -778,13 +778,7 @@ public abstract class AbstractTrackBankProxy
     public void scrollToChannel (final int channel)
     {
         if (channel >= 0 && channel < this.getTrackCount ())
-        {
-            final int pos = channel / this.numTracks * this.numTracks;
-            this.trackBank.scrollToChannel (pos);
-            // TODO Bugfix required - Call it twice to work around a Bitwig bug
-            // https://github.com/teotigraphix/Framework4Bitwig/issues/103
-            this.trackBank.scrollToChannel (pos);
-        }
+            this.trackBank.scrollToChannel (channel / this.numTracks * this.numTracks);
     }
 
 
@@ -831,10 +825,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void scrollToScene (final int position)
     {
-        this.trackBank.scrollToScene (position);
-        // TODO Bugfix required - Call it twice to work around a Bitwig bug
-        // https://github.com/teotigraphix/Framework4Bitwig/issues/103
-        this.trackBank.scrollToScene (position);
+        this.trackBank.sceneBank ().scrollPosition ().set (position);
     }
 
 
