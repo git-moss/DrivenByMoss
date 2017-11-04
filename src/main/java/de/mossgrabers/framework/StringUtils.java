@@ -34,9 +34,11 @@ public class StringUtils
                         str.append ("ae");
                         break;
                     case 'Ö':
+                    case '\u0152':
                         str.append ("Oe");
                         break;
                     case 'ö':
+                    case '\u0153':
                         str.append ("oe");
                         break;
                     case 'Ü':
@@ -47,6 +49,9 @@ public class StringUtils
                         break;
                     case 'ß':
                         str.append ("ss");
+                        break;
+                    case 'é':
+                        str.append ("e");
                         break;
                     default:
                         str.append ("?");
