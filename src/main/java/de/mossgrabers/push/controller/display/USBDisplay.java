@@ -109,8 +109,8 @@ public class USBDisplay
 
             byteBuffer.rewind ();
 
-            this.usbOut.write (this.headerBuffer);
-            this.usbOut.write (this.imageBuffer);
+            this.usbOut.bulkTransfer (this.headerBuffer);
+            this.usbOut.bulkTransfer (this.imageBuffer);
         }
     }
 

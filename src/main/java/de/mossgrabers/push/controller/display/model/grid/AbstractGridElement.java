@@ -8,7 +8,6 @@ import de.mossgrabers.push.PushConfiguration;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.GraphicsOutput;
-import com.bitwig.extension.api.TextExtents;
 
 
 /**
@@ -120,11 +119,10 @@ public abstract class AbstractGridElement implements GridElement
         if (text == null || text.length () == 0)
             return;
 
-        final TextExtents textExtents = g.getTextExtents (text);
         // We need to calculate the text height from a character which has no ascent, since showText
         // always draws the text on the baseline of the font!
         final double h = g.getTextExtents ("T").getHeight ();
-        final double pos = alignment == Align.CENTER ? x + (width - textExtents.getWidth ()) / 2.0 : x;
+        final double pos = alignment == Align.CENTER ? x + (width - g.getTextExtents (text).getWidth ()) / 2.0 : x;
 
         g.save ();
         g.rectangle (x, y, width, height);
