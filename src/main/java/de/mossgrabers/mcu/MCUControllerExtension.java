@@ -597,31 +597,35 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             {
                 final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
                 final TrackData selectedTrack = tb.getSelectedTrack ();
-
-                final TrackData selTrack = tb.getTrack (selectedTrack.getIndex ());
-                switch (index)
+                if (selectedTrack == null)
+                    value = 0;
+                else
                 {
-                    case 0:
-                        value = selTrack.getVolume ();
-                        break;
-                    case 1:
-                        value = selTrack.getPan ();
-                        break;
-                    default:
-                        final boolean effectTrackBankActive = this.model.isEffectTrackBankActive ();
-                        if (index == 2)
-                        {
-                            if (this.configuration.isDisplayCrossfader ())
+                    final TrackData selTrack = tb.getTrack (selectedTrack.getIndex ());
+                    switch (index)
+                    {
+                        case 0:
+                            value = selTrack.getVolume ();
+                            break;
+                        case 1:
+                            value = selTrack.getPan ();
+                            break;
+                        default:
+                            final boolean effectTrackBankActive = this.model.isEffectTrackBankActive ();
+                            if (index == 2)
                             {
-                                final int crossfadeMode = tb.getCrossfadeModeAsNumber (selectedTrack.getIndex ());
-                                value = crossfadeMode == 2 ? this.valueChanger.getUpperBound () : (crossfadeMode == 1 ? this.valueChanger.getUpperBound () / 2 : 0);
+                                if (this.configuration.isDisplayCrossfader ())
+                                {
+                                    final int crossfadeMode = tb.getCrossfadeModeAsNumber (selectedTrack.getIndex ());
+                                    value = crossfadeMode == 2 ? this.valueChanger.getUpperBound () : (crossfadeMode == 1 ? this.valueChanger.getUpperBound () / 2 : 0);
+                                }
+                                else if (!effectTrackBankActive)
+                                    value = selTrack.getSends ()[0].getValue ();
                             }
                             else if (!effectTrackBankActive)
-                                value = selTrack.getSends ()[0].getValue ();
-                        }
-                        else if (!effectTrackBankActive)
-                            value = selTrack.getSends ()[index - (this.configuration.isDisplayCrossfader () ? 3 : 2)].getValue ();
-                        break;
+                                value = selTrack.getSends ()[index - (this.configuration.isDisplayCrossfader () ? 3 : 2)].getValue ();
+                            break;
+                    }
                 }
             }
             else if (modeManager.isActiveMode (Modes.MODE_SEND1))
