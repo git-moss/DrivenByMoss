@@ -180,7 +180,7 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final int numTracks = tb.getNumTracks ();
         final int numScenes = tb.getNumScenes ();
-        int sceneCount = this.model.getSceneBank ().getSceneCount ();
+        final int sceneCount = this.model.getSceneBank ().getSceneCount ();
         final int trackCount = tb.getTrackCount ();
         final int maxScenePads = sceneCount / numScenes + (sceneCount % numScenes > 0 ? 1 : 0);
         final int maxTrackPads = trackCount / numTracks + (trackCount % numTracks > 0 ? 1 : 0);

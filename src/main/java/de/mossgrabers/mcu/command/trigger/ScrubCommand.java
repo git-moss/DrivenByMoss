@@ -7,10 +7,8 @@ package de.mossgrabers.mcu.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
-import de.mossgrabers.mcu.mode.Modes;
 
 
 /**
@@ -20,6 +18,9 @@ import de.mossgrabers.mcu.mode.Modes;
  */
 public class ScrubCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {
+    private ModeSwitcher switcher;
+
+
     /**
      * Constructor.
      *
@@ -29,6 +30,7 @@ public class ScrubCommand extends AbstractTriggerCommand<MCUControlSurface, MCUC
     public ScrubCommand (final Model model, final MCUControlSurface surface)
     {
         super (model, surface);
+        this.switcher = new ModeSwitcher (surface);
     }
 
 
@@ -36,10 +38,7 @@ public class ScrubCommand extends AbstractTriggerCommand<MCUControlSurface, MCUC
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (modeManager.isActiveMode (Modes.MODE_TRACK) ? Modes.MODE_DEVICE_PARAMS : Modes.MODE_TRACK);
-        this.surface.getDisplay ().notify (modeManager.isActiveMode (Modes.MODE_TRACK) ? "Track" : "Device");
+        if (event == ButtonEvent.DOWN)
+            this.switcher.scrollUp ();
     }
 }

@@ -183,7 +183,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      */
     protected boolean isInXRange (final int x)
     {
-        final int stepSize = this.clip.getStepSize ();
+        final int stepSize = this.clip.getNumSteps ();
         final int start = this.clip.getEditPage () * stepSize;
         return x >= start && x < start + stepSize;
     }

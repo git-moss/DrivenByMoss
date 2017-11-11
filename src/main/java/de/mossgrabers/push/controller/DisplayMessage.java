@@ -5,12 +5,14 @@
 package de.mossgrabers.push.controller;
 
 import de.mossgrabers.framework.Pair;
+import de.mossgrabers.framework.daw.CursorClipProxy;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.push.controller.display.model.DisplayModel;
 import de.mossgrabers.push.controller.display.model.grid.ChannelGridElement;
 import de.mossgrabers.push.controller.display.model.grid.ChannelSelectionGridElement;
 import de.mossgrabers.push.controller.display.model.grid.GridElement;
 import de.mossgrabers.push.controller.display.model.grid.ListGridElement;
+import de.mossgrabers.push.controller.display.model.grid.MidiClipElement;
 import de.mossgrabers.push.controller.display.model.grid.OptionsGridElement;
 import de.mossgrabers.push.controller.display.model.grid.ParamGridElement;
 import de.mossgrabers.push.controller.display.model.grid.SendsGridElement;
@@ -68,6 +70,19 @@ public class DisplayMessage
     public void send ()
     {
         this.model.setGridElements (this.elements);
+    }
+
+
+    /**
+     * Set a midi clip to display in a piano roll
+     *
+     * @param clip The clip to display
+     * @param quartersPerMeasure The quarters of a measure
+     */
+    public void setMidiClipElement (final CursorClipProxy clip, final int quartersPerMeasure)
+    {
+        this.elements.clear ();
+        this.elements.add (new MidiClipElement (clip, quartersPerMeasure));
     }
 
 

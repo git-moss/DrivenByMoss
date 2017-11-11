@@ -170,7 +170,7 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.offsetY = Math.min (this.getClip ().getRowSize () - AbstractRaindropsView.NUM_OCTAVE, this.offsetY + AbstractRaindropsView.NUM_OCTAVE);
+        this.offsetY = Math.min (this.getClip ().getNumRows () - AbstractRaindropsView.NUM_OCTAVE, this.offsetY + AbstractRaindropsView.NUM_OCTAVE);
         this.updateScale ();
         this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.noteMap[0], this.noteMap[7]), true, true);
     }
