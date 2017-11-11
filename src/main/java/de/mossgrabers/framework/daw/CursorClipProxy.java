@@ -19,13 +19,14 @@ import java.util.Arrays;
  */
 public class CursorClipProxy
 {
-    private int             stepSize;
-    private int             rowSize;
+    private int             numSteps;
+    private int             numRows;
 
     private final int [] [] data;
     private Clip            clip;
     private ValueChanger    valueChanger;
     private int             editPage = 0;
+    private double          stepLength;
 
 
     /**
@@ -33,27 +34,27 @@ public class CursorClipProxy
      *
      * @param host The host
      * @param valueChanger The value changer
-     * @param stepSize The number of steps of the clip to monitor
-     * @param rowSize The number of note rows of the clip to monitor
+     * @param numSteps The number of steps of the clip to monitor
+     * @param numRows The number of note rows of the clip to monitor
      */
-    public CursorClipProxy (final ControllerHost host, final ValueChanger valueChanger, final int stepSize, final int rowSize)
+    public CursorClipProxy (final ControllerHost host, final ValueChanger valueChanger, final int numSteps, final int numRows)
     {
         this.valueChanger = valueChanger;
 
-        this.stepSize = stepSize;
-        this.rowSize = rowSize;
+        this.numSteps = numSteps;
+        this.numRows = numRows;
+        this.stepLength = 1.0 / 4.0; // 16th
+        this.data = new int [this.numSteps] [];
 
-        this.data = new int [this.stepSize] [];
-
-        for (int step = 0; step < this.stepSize; step++)
+        for (int step = 0; step < this.numSteps; step++)
         {
-            this.data[step] = new int [this.rowSize];
+            this.data[step] = new int [this.numRows];
             Arrays.fill (this.data[step], 0);
         }
 
         // TODO We need the old method back to monitor both launcher and arranger - otherwise use
         // both and check which one exists!
-        this.clip = host.createLauncherCursorClip (this.stepSize, this.rowSize);
+        this.clip = host.createLauncherCursorClip (this.numSteps, this.numRows);
 
         this.clip.playingStep ().markInterested ();
         this.clip.addStepDataObserver (this::handleStepData);
@@ -67,6 +68,7 @@ public class CursorClipProxy
         this.clip.getAccent ().markInterested ();
         this.clip.canScrollStepsBackwards ().markInterested ();
         this.clip.canScrollStepsForwards ().markInterested ();
+        this.clip.color ().markInterested ();
     }
 
 
@@ -86,6 +88,7 @@ public class CursorClipProxy
         this.clip.isLoopEnabled ().setIsSubscribed (enable);
         this.clip.getShuffle ().setIsSubscribed (enable);
         this.clip.getAccent ().setIsSubscribed (enable);
+        this.clip.color ().setIsSubscribed (enable);
     }
 
 
@@ -125,13 +128,14 @@ public class CursorClipProxy
 
 
     /**
-     * Change the start of the clip.
-     *
+     * Change the start of the clip. Use 1 as fast and 0.1 as slow fraction value since scaling
+     * cannot be applied to this.
+     * 
      * @param control The control value
      */
     public void changePlayStart (final int control)
     {
-        this.clip.getPlayStart ().inc (this.valueChanger.calcKnobSpeed (control));
+        this.clip.getPlayStart ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
     }
 
 
@@ -158,13 +162,14 @@ public class CursorClipProxy
 
 
     /**
-     * Change the end of the clip.
+     * Change the end of the clip. Use 1 as fast and 0.1 as slow fraction value since scaling cannot
+     * be applied to this.
      *
      * @param control The control value
      */
     public void changePlayEnd (final int control)
     {
-        this.clip.getPlayStop ().inc (this.valueChanger.calcKnobSpeed (control));
+        this.clip.getPlayStop ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
     }
 
 
@@ -214,13 +219,14 @@ public class CursorClipProxy
 
 
     /**
-     * Change the start of the loop.
+     * Change the start of the loop. Use 1 as fast and 0.1 as slow fraction value since scaling
+     * cannot be applied to this.
      *
      * @param control The control value
      */
     public void changeLoopStart (final int control)
     {
-        this.clip.getLoopStart ().inc (this.valueChanger.calcKnobSpeed (control));
+        this.clip.getLoopStart ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
     }
 
 
@@ -247,13 +253,14 @@ public class CursorClipProxy
 
 
     /**
-     * Change the length of the loop.
+     * Change the length of the loop. Use 1 as fast and 0.1 as slow fraction value since scaling
+     * cannot be applied to this.
      *
      * @param control The control value
      */
     public void changeLoopLength (final int control)
     {
-        this.clip.getLoopLength ().inc (this.valueChanger.calcKnobSpeed (control));
+        this.clip.getLoopLength ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
     }
 
 
@@ -349,9 +356,9 @@ public class CursorClipProxy
      *
      * @return The number of steps
      */
-    public int getStepSize ()
+    public int getNumSteps ()
     {
-        return this.stepSize;
+        return this.numSteps;
     }
 
 
@@ -360,9 +367,9 @@ public class CursorClipProxy
      *
      * @return The row of notes
      */
-    public int getRowSize ()
+    public int getNumRows ()
     {
-        return this.rowSize;
+        return this.numRows;
     }
 
 
@@ -378,11 +385,11 @@ public class CursorClipProxy
 
 
     /**
-     * Get the value (velocity) of a note.
+     * Get the state of a note.
      *
      * @param step The step
      * @param row The row
-     * @return The velocity
+     * @return 0: not set, 1: note continues playing, 2: start of note
      */
     public int getStep (final int step, final int row)
     {
@@ -433,15 +440,43 @@ public class CursorClipProxy
     /**
      * Does the row contain any notes?
      *
-     * @param row THe row
+     * @param row The row
      * @return True if it contains at least one note
      */
     public boolean hasRowData (final int row)
     {
-        for (int step = 0; step < this.stepSize; step++)
+        for (int step = 0; step < this.numSteps; step++)
             if (this.data[step][row] > 0)
                 return true;
         return false;
+    }
+
+
+    /**
+     * Get the lowest row (note) which contains data.
+     *
+     * @return The lowest row or -1 if all rows are empty
+     */
+    public int getLowerRowWithData ()
+    {
+        for (int row = 0; row < this.numRows; row++)
+            if (this.hasRowData (row))
+                return row;
+        return -1;
+    }
+
+
+    /**
+     * Get the highest row (note) which contains data.
+     *
+     * @return The highest row or -1 if all rows are empty
+     */
+    public int getUpperRowWithData ()
+    {
+        for (int row = this.numRows - 1; row >= 0; row--)
+            if (this.hasRowData (row))
+                return row;
+        return -1;
     }
 
 
@@ -452,7 +487,19 @@ public class CursorClipProxy
      */
     public void setStepLength (final double length)
     {
+        this.stepLength = length;
         this.clip.setStepSize (length);
+    }
+
+
+    /**
+     * Get the length of a step.
+     *
+     * @return The length
+     */
+    public double getStepLength ()
+    {
+        return this.stepLength;
     }
 
 
@@ -476,7 +523,7 @@ public class CursorClipProxy
      */
     public void scrollToPage (final int page)
     {
-        this.clip.scrollToStep (page * this.stepSize);
+        this.clip.scrollToStep (page * this.numSteps);
         this.editPage = page;
     }
 
@@ -579,6 +626,24 @@ public class CursorClipProxy
     public void transpose (final int semitones)
     {
         this.clip.transpose (semitones);
+    }
+
+
+    /**
+     * Format the given time as measure.quarters.eights.
+     *
+     * @param quartersPerMeasure The number of quarters of a measure
+     * @param time The time to format
+     * @return The formatted text
+     */
+    public static String formatMeasures (final int quartersPerMeasure, final double time)
+    {
+        final int measure = (int) Math.floor (time / quartersPerMeasure);
+        double t = time - measure * quartersPerMeasure;
+        final int quarters = (int) Math.floor (t); // :1
+        t = t - quarters; // *1
+        final int eights = (int) Math.floor (t / 0.25);
+        return (measure + 1) + "." + (quarters + 1) + "." + (eights + 1);
     }
 
 

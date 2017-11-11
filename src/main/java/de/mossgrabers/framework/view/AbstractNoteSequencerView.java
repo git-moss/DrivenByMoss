@@ -220,7 +220,7 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
         if (event != ButtonEvent.DOWN)
             return;
         final int offset = this.getScrollOffset ();
-        if (this.offsetY + offset < this.clip.getRowSize ())
+        if (this.offsetY + offset < this.clip.getNumRows ())
             this.updateOctave (this.offsetY + offset);
     }
 

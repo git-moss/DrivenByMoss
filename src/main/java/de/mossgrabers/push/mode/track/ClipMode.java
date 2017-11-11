@@ -153,12 +153,6 @@ public class ClipMode extends AbstractTrackMode
 
     private String formatMeasures (final double time)
     {
-        final int quartersPerMeasure = this.model.getQuartersPerMeasure ();
-        final int measure = (int) Math.floor (time / quartersPerMeasure);
-        double t = time - measure * quartersPerMeasure;
-        final int quarters = (int) Math.floor (t); // :1
-        t = t - quarters; // *1
-        final int eights = (int) Math.floor (t / 0.25);
-        return measure + "." + quarters + "." + eights;
+        return CursorClipProxy.formatMeasures (this.model.getQuartersPerMeasure (), time);
     }
 }
