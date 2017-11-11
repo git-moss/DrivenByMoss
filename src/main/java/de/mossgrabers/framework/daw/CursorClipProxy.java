@@ -130,7 +130,7 @@ public class CursorClipProxy
     /**
      * Change the start of the clip. Use 1 as fast and 0.1 as slow fraction value since scaling
      * cannot be applied to this.
-     * 
+     *
      * @param control The control value
      */
     public void changePlayStart (final int control)

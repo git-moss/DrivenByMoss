@@ -81,7 +81,7 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
     }
 
 
-    private void handleTrack (int index, double value)
+    private void handleTrack (final int index, final double value)
     {
         final boolean effectTrackBankActive = this.model.isEffectTrackBankActive ();
 

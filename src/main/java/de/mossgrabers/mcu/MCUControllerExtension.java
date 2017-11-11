@@ -617,7 +617,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
                                 if (this.configuration.isDisplayCrossfader ())
                                 {
                                     final int crossfadeMode = tb.getCrossfadeModeAsNumber (selectedTrack.getIndex ());
-                                    value = crossfadeMode == 2 ? this.valueChanger.getUpperBound () : (crossfadeMode == 1 ? this.valueChanger.getUpperBound () / 2 : 0);
+                                    value = crossfadeMode == 2 ? this.valueChanger.getUpperBound () : crossfadeMode == 1 ? this.valueChanger.getUpperBound () / 2 : 0;
                                 }
                                 else if (!effectTrackBankActive)
                                     value = selTrack.getSends ()[0].getValue ();

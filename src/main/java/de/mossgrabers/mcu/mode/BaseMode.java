@@ -112,7 +112,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         final Display d2 = this.surface.getSecondDisplay ();
         final int extenderOffset = this.surface.getExtenderOffset ();
 
-        boolean isMainDevice = this.surface.isMainDevice ();
+        final boolean isMainDevice = this.surface.isMainDevice ();
 
         for (int i = 0; i < 8; i++)
         {
