@@ -4,6 +4,7 @@
 
 package de.mossgrabers.mcu.controller;
 
+import de.mossgrabers.framework.LatestTaskExecutor;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
@@ -40,6 +41,8 @@ public class MCUDisplay extends AbstractDisplay
     private int                    charactersOfCell;
     private boolean                hasMaster;
 
+    private LatestTaskExecutor []  executors             = new LatestTaskExecutor [4];
+
 
     /**
      * Constructor. 2 rows (0-1) with 4 blocks (0-3). Each block consists of 18 characters or 2
@@ -57,6 +60,9 @@ public class MCUDisplay extends AbstractDisplay
         this.isFirst = isFirst;
         this.hasMaster = hasMaster;
         this.charactersOfCell = this.noOfCharacters / this.noOfCells;
+
+        for (int i = 0; i < 4; i++)
+            this.executors[i] = new LatestTaskExecutor ();
     }
 
 
@@ -127,28 +133,30 @@ public class MCUDisplay extends AbstractDisplay
     @Override
     public void writeLine (final int row, final String text)
     {
-        String t = text;
-        if (!this.isFirst && this.hasMaster)
-        {
-            if (row == 0)
-                t = t.substring (0, t.length () - 1) + 'r';
-            t = "  " + t;
+        this.executors[row + (this.isFirst ? 0 : 2)].execute ( () -> {
+            String t = text;
+            if (!this.isFirst && this.hasMaster)
+            {
+                if (row == 0)
+                    t = t.substring (0, t.length () - 1) + 'r';
+                t = "  " + t;
 
-        }
-        final int length = t.length ();
-        final int [] array = new int [length];
-        for (int i = 0; i < length; i++)
-            array[i] = t.charAt (i);
-        final StringBuilder code = new StringBuilder ();
-        if (this.isFirst)
-            code.append (SYSEX_DISPLAY_HEADER1);
-        else
-            code.append (SYSEX_DISPLAY_HEADER2);
-        if (row == 0)
-            code.append ("00 ");
-        else
-            code.append ("38 ");
-        this.output.sendSysex (code.append (MidiOutput.toHexStr (array)).append ("F7").toString ());
+            }
+            final int length = t.length ();
+            final int [] array = new int [length];
+            for (int i = 0; i < length; i++)
+                array[i] = t.charAt (i);
+            final StringBuilder code = new StringBuilder ();
+            if (this.isFirst)
+                code.append (SYSEX_DISPLAY_HEADER1);
+            else
+                code.append (SYSEX_DISPLAY_HEADER2);
+            if (row == 0)
+                code.append ("00 ");
+            else
+                code.append ("38 ");
+            this.output.sendSysex (code.append (MidiOutput.toHexStr (array)).append ("F7").toString ());
+        });
     }
 
 
