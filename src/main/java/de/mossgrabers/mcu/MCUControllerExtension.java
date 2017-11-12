@@ -247,22 +247,33 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @Override
     protected void createObservers ()
     {
-        // Track changes are only done on the main device, all others need to follow...
-        final MCUControlSurface surface = this.getSurface ();
-        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> {
-            for (int index = 1; index < this.numMCUDevices; index++)
-                this.getSurface (index).getModeManager ().setActiveMode (newMode);
+        for (int index = 0; index < this.numMCUDevices; index++)
+        {
+            final MCUControlSurface surface = this.getSurface (index);
+            surface.getModeManager ().addModeListener ( (oldMode, newMode) -> {
 
-            this.updateMode (null);
-            this.updateMode (newMode);
-        });
+                for (int d = 0; d < this.numMCUDevices; d++)
+                {
+                    final MCUControlSurface s = this.getSurface (d);
+                    if (!s.equals (surface))
+                        s.getModeManager ().setActiveMode (newMode);
+                }
+
+                this.updateMode (null);
+                this.updateMode (newMode);
+            });
+        }
 
         this.configuration.addSettingObserver (AbstractConfiguration.ENABLE_VU_METERS, () -> {
-            surface.switchVuMode (this.configuration.isEnableVUMeters () ? MCUControlSurface.VUMODE_LED_AND_LCD : MCUControlSurface.VUMODE_OFF);
-            final Mode activeMode = surface.getModeManager ().getActiveMode ();
-            if (activeMode != null)
-                activeMode.updateDisplay ();
-            ((MCUDisplay) surface.getDisplay ()).forceFlush ();
+            for (int index = 0; index < this.numMCUDevices; index++)
+            {
+                final MCUControlSurface surface = this.getSurface (index);
+                surface.switchVuMode (this.configuration.isEnableVUMeters () ? MCUControlSurface.VUMODE_LED_AND_LCD : MCUControlSurface.VUMODE_OFF);
+                final Mode activeMode = surface.getModeManager ().getActiveMode ();
+                if (activeMode != null)
+                    activeMode.updateDisplay ();
+                ((MCUDisplay) surface.getDisplay ()).forceFlush ();
+            }
         });
     }
 
@@ -322,7 +333,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.addTriggerCommand (COMMAND_F5, MCUControlSurface.MCU_F5, new AssignableCommand (6, this.model, surface));
 
         // Assignment
-        this.addTriggerCommand (Commands.COMMAND_TRACK, MCUControlSurface.MCU_MODE_IO, new ModeMultiSelectCommand<> (this.model, surface, Modes.MODE_TRACK, Modes.MODE_VOLUME));
+        this.addTriggerCommand (Commands.COMMAND_TRACK, MCUControlSurface.MCU_MODE_IO, new ModeMultiSelectCommand<> (this.model, surface, Modes.MODE_VOLUME, Modes.MODE_TRACK));
         this.addTriggerCommand (Commands.COMMAND_PAN_SEND, MCUControlSurface.MCU_MODE_PAN, new ModeSelectCommand<> (Modes.MODE_PAN, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_SENDS, MCUControlSurface.MCU_MODE_SENDS, new SendSelectCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_DEVICE, MCUControlSurface.MCU_MODE_PLUGIN, new ModeSelectCommand<> (Modes.MODE_DEVICE_PARAMS, this.model, surface));
