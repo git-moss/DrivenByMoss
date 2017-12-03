@@ -9,7 +9,7 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.view.ViewManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,16 +17,16 @@ import java.util.List;
 
 
 /**
- * Selects the next mode from a list. If the last element is reached it wraps around to the first.
+ * Selects the next view from a list. If the last element is reached it wraps around to the first.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ModeMultiSelectCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class ViewMultiSelectCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private List<Integer> modeIds = new ArrayList<> ();
+    private List<Integer> viewIds = new ArrayList<> ();
 
 
     /**
@@ -34,13 +34,13 @@ public class ModeMultiSelectCommand<S extends ControlSurface<C>, C extends Confi
      *
      * @param model The model
      * @param surface The surface
-     * @param modeIds The list with IDs of the modes to select
+     * @param viewIds The list with IDs of the views to select
      */
-    public ModeMultiSelectCommand (final Model model, final S surface, final Integer... modeIds)
+    public ViewMultiSelectCommand (final Model model, final S surface, final Integer... viewIds)
     {
         super (model, surface);
 
-        this.modeIds.addAll (Arrays.asList (modeIds));
+        this.viewIds.addAll (Arrays.asList (viewIds));
     }
 
 
@@ -51,11 +51,11 @@ public class ModeMultiSelectCommand<S extends ControlSurface<C>, C extends Confi
         if (event != ButtonEvent.DOWN)
             return;
 
-        final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveModeId ();
-        int index = this.modeIds.indexOf (activeModeId) + 1;
-        if (index < 0 || index >= this.modeIds.size ())
+        final ViewManager viewManager = this.surface.getViewManager ();
+        final Integer activeViewId = viewManager.getActiveViewId ();
+        int index = this.viewIds.indexOf (activeViewId) + 1;
+        if (index < 0 || index >= this.viewIds.size ())
             index = 0;
-        modeManager.setActiveMode (this.modeIds.get (index));
+        viewManager.setActiveView (this.viewIds.get (index));
     }
 }

@@ -7,6 +7,7 @@ package de.mossgrabers.launchpad.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.command.trigger.ViewMultiSelectCommand;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.view.ViewManager;
@@ -22,6 +23,10 @@ import de.mossgrabers.launchpad.view.Views;
  */
 public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
+    private final ViewMultiSelectCommand<LaunchpadControlSurface, LaunchpadConfiguration> playSelect;
+    private final ViewMultiSelectCommand<LaunchpadControlSurface, LaunchpadConfiguration> seqSelect;
+
+
     /**
      * Constructor.
      *
@@ -31,6 +36,9 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
     public SelectNoteViewCommand (final Model model, final LaunchpadControlSurface surface)
     {
         super (model, surface);
+
+        this.playSelect = new ViewMultiSelectCommand<> (model, surface, Views.VIEW_PLAY, Views.VIEW_DRUM, Views.VIEW_DRUM4, Views.VIEW_DRUM8, Views.VIEW_DRUM64);
+        this.seqSelect = new ViewMultiSelectCommand<> (model, surface, Views.VIEW_SEQUENCER, Views.VIEW_RAINDROPS);
     }
 
 
@@ -50,21 +58,23 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
             return;
         }
 
-        Integer viewID;
         if (Views.isNoteView (viewManager.getActiveViewId ()))
         {
             if (this.surface.isShiftPressed ())
-                viewID = viewManager.isActiveView (Views.VIEW_SEQUENCER) ? Views.VIEW_RAINDROPS : Views.VIEW_SEQUENCER;
+                this.seqSelect.executeNormal (event);
             else
-                viewID = viewManager.isActiveView (Views.VIEW_PLAY) ? Views.VIEW_DRUM : Views.VIEW_PLAY;
+                this.playSelect.executeNormal (event);
         }
         else
         {
-            viewID = viewManager.getPreferredView (sel.getPosition ());
+            final Integer viewID = viewManager.getPreferredView (sel.getPosition ());
             if (viewID == null)
-                viewID = this.surface.isShiftPressed () ? Views.VIEW_SEQUENCER : Views.VIEW_PLAY;
+                this.seqSelect.executeNormal (event);
+            else
+                viewManager.setActiveView (viewID);
         }
-        viewManager.setActiveView (viewID);
-        viewManager.setPreferredView (sel.getPosition (), viewID);
+
+        viewManager.setPreferredView (sel.getPosition (), viewManager.getActiveViewId ());
+        this.surface.getDisplay ().notify (viewManager.getActiveView ().getName ());
     }
 }
