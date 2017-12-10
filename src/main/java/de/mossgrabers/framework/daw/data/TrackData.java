@@ -40,12 +40,12 @@ public class TrackData extends ChannelData
         track.trackType ().markInterested ();
         track.position ().markInterested ();
         track.isGroup ().markInterested ();
-        track.getArm ().markInterested ();
-        track.getMonitor ().markInterested ();
-        track.getAutoMonitor ().markInterested ();
-        track.getCrossFadeMode ().markInterested ();
-        track.getCanHoldNoteData ().markInterested ();
-        track.getCanHoldAudioData ().markInterested ();
+        track.arm ().markInterested ();
+        track.monitor ().markInterested ();
+        track.autoMonitor ().markInterested ();
+        track.crossFadeMode ().markInterested ();
+        track.canHoldNoteData ().markInterested ();
+        track.canHoldAudioData ().markInterested ();
         track.isStopped ().markInterested ();
 
         this.slots = new SlotData [numScenes];
@@ -69,12 +69,12 @@ public class TrackData extends ChannelData
         this.track.trackType ().setIsSubscribed (enable);
         this.track.position ().setIsSubscribed (enable);
         this.track.isGroup ().setIsSubscribed (enable);
-        this.track.getArm ().setIsSubscribed (enable);
-        this.track.getMonitor ().setIsSubscribed (enable);
-        this.track.getAutoMonitor ().setIsSubscribed (enable);
-        this.track.getCrossFadeMode ().setIsSubscribed (enable);
-        this.track.getCanHoldNoteData ().setIsSubscribed (enable);
-        this.track.getCanHoldAudioData ().setIsSubscribed (enable);
+        this.track.arm ().setIsSubscribed (enable);
+        this.track.monitor ().setIsSubscribed (enable);
+        this.track.autoMonitor ().setIsSubscribed (enable);
+        this.track.crossFadeMode ().setIsSubscribed (enable);
+        this.track.canHoldNoteData ().setIsSubscribed (enable);
+        this.track.canHoldAudioData ().setIsSubscribed (enable);
         this.track.isStopped ().setIsSubscribed (enable);
 
         for (final SlotData slot: this.slots)
@@ -122,7 +122,7 @@ public class TrackData extends ChannelData
      */
     public boolean isRecArm ()
     {
-        return this.track.getArm ().get ();
+        return this.track.arm ().get ();
     }
 
 
@@ -133,7 +133,7 @@ public class TrackData extends ChannelData
      */
     public boolean isMonitor ()
     {
-        return this.track.getMonitor ().get ();
+        return this.track.monitor ().get ();
     }
 
 
@@ -144,7 +144,7 @@ public class TrackData extends ChannelData
      */
     public boolean isAutoMonitor ()
     {
-        return this.track.getAutoMonitor ().get ();
+        return this.track.autoMonitor ().get ();
     }
 
 
@@ -155,7 +155,7 @@ public class TrackData extends ChannelData
      */
     public boolean canHoldNotes ()
     {
-        return this.track.getCanHoldNoteData ().get ();
+        return this.track.canHoldNoteData ().get ();
     }
 
 
@@ -166,7 +166,7 @@ public class TrackData extends ChannelData
      */
     public boolean canHoldAudioData ()
     {
-        return this.track.getCanHoldAudioData ().get ();
+        return this.track.canHoldAudioData ().get ();
     }
 
 
@@ -177,7 +177,7 @@ public class TrackData extends ChannelData
      */
     public String getCrossfadeMode ()
     {
-        return this.track.getCrossFadeMode ().get ();
+        return this.track.crossFadeMode ().get ();
     }
 
 

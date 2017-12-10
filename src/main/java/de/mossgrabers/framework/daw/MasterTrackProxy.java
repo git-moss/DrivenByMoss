@@ -75,7 +75,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void changeVolume (final int control)
     {
-        this.track.getVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.track.volume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -86,7 +86,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void setVolume (final double value)
     {
-        this.track.getVolume ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.track.volume ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -95,7 +95,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void resetVolume ()
     {
-        this.track.getVolume ().reset ();
+        this.track.volume ().reset ();
     }
 
 
@@ -106,7 +106,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void touchVolume (final boolean isBeingTouched)
     {
-        this.track.getVolume ().touch (isBeingTouched);
+        this.track.volume ().touch (isBeingTouched);
     }
 
 
@@ -117,7 +117,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void setVolumeIndication (final boolean indicate)
     {
-        this.track.getVolume ().setIndication (indicate);
+        this.track.volume ().setIndication (indicate);
     }
 
 
@@ -128,7 +128,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void changePan (final int control)
     {
-        this.track.getPan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.track.pan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -139,7 +139,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void setPan (final double value)
     {
-        this.track.getPan ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.track.pan ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -148,7 +148,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void resetPan ()
     {
-        this.track.getPan ().reset ();
+        this.track.pan ().reset ();
     }
 
 
@@ -159,7 +159,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void touchPan (final boolean isBeingTouched)
     {
-        this.track.getPan ().touch (isBeingTouched);
+        this.track.pan ().touch (isBeingTouched);
     }
 
 
@@ -170,7 +170,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void setPanIndication (final boolean indicate)
     {
-        this.track.getPan ().setIndication (indicate);
+        this.track.pan ().setIndication (indicate);
     }
 
 
@@ -201,7 +201,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void setMute (final boolean value)
     {
-        this.track.getMute ().set (value);
+        this.track.mute ().set (value);
     }
 
 
@@ -210,7 +210,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void toggleMute ()
     {
-        this.track.getMute ().toggle ();
+        this.track.mute ().toggle ();
     }
 
 
@@ -221,7 +221,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void setSolo (final boolean value)
     {
-        this.track.getSolo ().set (value);
+        this.track.solo ().set (value);
     }
 
 
@@ -230,7 +230,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void toggleSolo ()
     {
-        this.track.getSolo ().toggle ();
+        this.track.solo ().toggle ();
     }
 
 
@@ -241,7 +241,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void setArm (final boolean value)
     {
-        this.track.getArm ().set (value);
+        this.track.arm ().set (value);
     }
 
 
@@ -250,7 +250,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void toggleArm ()
     {
-        this.track.getArm ().toggle ();
+        this.track.arm ().toggle ();
     }
 
 
@@ -261,7 +261,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void setMonitor (final boolean value)
     {
-        this.track.getMonitor ().set (value);
+        this.track.monitor ().set (value);
     }
 
 
@@ -270,7 +270,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void toggleMonitor ()
     {
-        this.track.getMonitor ().toggle ();
+        this.track.monitor ().toggle ();
     }
 
 
@@ -281,7 +281,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void setAutoMonitor (final boolean value)
     {
-        this.track.getAutoMonitor ().set (value);
+        this.track.autoMonitor ().set (value);
     }
 
 
@@ -290,7 +290,7 @@ public class MasterTrackProxy extends TrackData
      */
     public void toggleAutoMonitor ()
     {
-        this.track.getAutoMonitor ().toggle ();
+        this.track.autoMonitor ().toggle ();
     }
 
 

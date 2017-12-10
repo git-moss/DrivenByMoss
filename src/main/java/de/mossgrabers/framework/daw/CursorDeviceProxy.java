@@ -227,7 +227,7 @@ public class CursorDeviceProxy
      */
     public void selectChannel ()
     {
-        this.cursorDevice.getChannel ().selectInEditor ();
+        this.cursorDevice.channel ().selectInEditor ();
     }
 
 
@@ -1326,7 +1326,7 @@ public class CursorDeviceProxy
      */
     public void changeLayerVolume (final int index, final int control)
     {
-        this.layerBank.getChannel (index).getVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.layerBank.getChannel (index).volume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1338,7 +1338,7 @@ public class CursorDeviceProxy
      */
     public void setLayerVolume (final int index, final int value)
     {
-        this.layerBank.getChannel (index).getVolume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.layerBank.getChannel (index).volume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1349,7 +1349,7 @@ public class CursorDeviceProxy
      */
     public void resetLayerVolume (final int index)
     {
-        this.layerBank.getChannel (index).getVolume ().reset ();
+        this.layerBank.getChannel (index).volume ().reset ();
     }
 
 
@@ -1361,7 +1361,7 @@ public class CursorDeviceProxy
      */
     public void touchLayerVolume (final int index, final boolean isBeingTouched)
     {
-        this.layerBank.getChannel (index).getVolume ().touch (isBeingTouched);
+        this.layerBank.getChannel (index).volume ().touch (isBeingTouched);
     }
 
 
@@ -1373,7 +1373,7 @@ public class CursorDeviceProxy
      */
     public void changeLayerPan (final int index, final int control)
     {
-        this.layerBank.getChannel (index).getPan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.layerBank.getChannel (index).pan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1385,7 +1385,7 @@ public class CursorDeviceProxy
      */
     public void setLayerPan (final int index, final int value)
     {
-        this.layerBank.getChannel (index).getPan ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.layerBank.getChannel (index).pan ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1396,7 +1396,7 @@ public class CursorDeviceProxy
      */
     public void resetLayerPan (final int index)
     {
-        this.layerBank.getChannel (index).getPan ().reset ();
+        this.layerBank.getChannel (index).pan ().reset ();
     }
 
 
@@ -1408,7 +1408,7 @@ public class CursorDeviceProxy
      */
     public void touchLayerPan (final int index, final boolean isBeingTouched)
     {
-        this.layerBank.getChannel (index).getPan ().touch (isBeingTouched);
+        this.layerBank.getChannel (index).pan ().touch (isBeingTouched);
     }
 
 
@@ -1481,7 +1481,7 @@ public class CursorDeviceProxy
      */
     public void toggleLayerMute (final int index)
     {
-        this.layerBank.getChannel (index).getMute ().toggle ();
+        this.layerBank.getChannel (index).mute ().toggle ();
     }
 
 
@@ -1493,7 +1493,7 @@ public class CursorDeviceProxy
      */
     public void setLayerMute (final int index, final boolean value)
     {
-        this.layerBank.getChannel (index).getMute ().set (value);
+        this.layerBank.getChannel (index).mute ().set (value);
     }
 
 
@@ -1504,7 +1504,7 @@ public class CursorDeviceProxy
      */
     public void toggleLayerSolo (final int index)
     {
-        this.layerBank.getChannel (index).getSolo ().toggle ();
+        this.layerBank.getChannel (index).solo ().toggle ();
     }
 
 
@@ -1516,7 +1516,7 @@ public class CursorDeviceProxy
      */
     public void setLayerSolo (final int index, final boolean value)
     {
-        this.layerBank.getChannel (index).getSolo ().set (value);
+        this.layerBank.getChannel (index).solo ().set (value);
     }
 
 
@@ -1730,7 +1730,7 @@ public class CursorDeviceProxy
      */
     public void changeDrumPadVolume (final int index, final int control)
     {
-        this.drumPadBank.getChannel (index).getVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.drumPadBank.getChannel (index).volume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1742,7 +1742,7 @@ public class CursorDeviceProxy
      */
     public void setDrumPadVolume (final int index, final int value)
     {
-        this.drumPadBank.getChannel (index).getVolume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.drumPadBank.getChannel (index).volume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1753,7 +1753,7 @@ public class CursorDeviceProxy
      */
     public void resetDrumPadVolume (final int index)
     {
-        this.drumPadBank.getChannel (index).getVolume ().reset ();
+        this.drumPadBank.getChannel (index).volume ().reset ();
     }
 
 
@@ -1765,7 +1765,7 @@ public class CursorDeviceProxy
      */
     public void touchDrumPadVolume (final int index, final boolean isBeingTouched)
     {
-        this.drumPadBank.getChannel (index).getVolume ().touch (isBeingTouched);
+        this.drumPadBank.getChannel (index).volume ().touch (isBeingTouched);
     }
 
 
@@ -1777,7 +1777,7 @@ public class CursorDeviceProxy
      */
     public void changeDrumPadPan (final int index, final int control)
     {
-        this.drumPadBank.getChannel (index).getPan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.drumPadBank.getChannel (index).pan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1789,7 +1789,7 @@ public class CursorDeviceProxy
      */
     public void setDrumPadPan (final int index, final int value)
     {
-        this.drumPadBank.getChannel (index).getPan ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.drumPadBank.getChannel (index).pan ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1800,7 +1800,7 @@ public class CursorDeviceProxy
      */
     public void resetDrumPadPan (final int index)
     {
-        this.drumPadBank.getChannel (index).getPan ().reset ();
+        this.drumPadBank.getChannel (index).pan ().reset ();
     }
 
 
@@ -1812,7 +1812,7 @@ public class CursorDeviceProxy
      */
     public void touchDrumPadPan (final int index, final boolean isBeingTouched)
     {
-        this.drumPadBank.getChannel (index).getPan ().touch (isBeingTouched);
+        this.drumPadBank.getChannel (index).pan ().touch (isBeingTouched);
     }
 
 
@@ -1885,7 +1885,7 @@ public class CursorDeviceProxy
      */
     public void toggleDrumPadMute (final int index)
     {
-        this.drumPadBank.getChannel (index).getMute ().toggle ();
+        this.drumPadBank.getChannel (index).mute ().toggle ();
     }
 
 
@@ -1897,7 +1897,7 @@ public class CursorDeviceProxy
      */
     public void setDrumPadMute (final int index, final boolean value)
     {
-        this.drumPadBank.getChannel (index).getMute ().set (value);
+        this.drumPadBank.getChannel (index).mute ().set (value);
     }
 
 
@@ -1908,7 +1908,7 @@ public class CursorDeviceProxy
      */
     public void toggleDrumPadSolo (final int index)
     {
-        this.drumPadBank.getChannel (index).getSolo ().toggle ();
+        this.drumPadBank.getChannel (index).solo ().toggle ();
     }
 
 
@@ -1920,7 +1920,7 @@ public class CursorDeviceProxy
      */
     public void setDrumPadSolo (final int index, final boolean value)
     {
-        this.drumPadBank.getChannel (index).getSolo ().set (value);
+        this.drumPadBank.getChannel (index).solo ().set (value);
     }
 
 

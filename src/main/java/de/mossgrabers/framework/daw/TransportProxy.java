@@ -90,15 +90,15 @@ public class TransportProxy
         this.transport.preRoll ().markInterested ();
         this.transport.tempo ().value ().addRawValueObserver (this::handleTempo);
         this.transport.getPosition ().markInterested ();
-        this.transport.getCrossfade ().value ().addValueObserver (valueChanger.getUpperBound (), this::handleCrossfade);
+        this.transport.crossfade ().value ().addValueObserver (valueChanger.getUpperBound (), this::handleCrossfade);
 
         final SettableRangedValue metronomeVolume = this.transport.metronomeVolume ();
         metronomeVolume.markInterested ();
         metronomeVolume.displayedValue ().markInterested ();
 
-        final TimeSignatureValue ts = this.transport.getTimeSignature ();
-        ts.getNumerator ().markInterested ();
-        ts.getDenominator ().markInterested ();
+        final TimeSignatureValue ts = this.transport.timeSignature ();
+        ts.numerator ().markInterested ();
+        ts.denominator ().markInterested ();
     }
 
 
@@ -127,15 +127,15 @@ public class TransportProxy
         this.transport.preRoll ().setIsSubscribed (enable);
         this.transport.tempo ().value ().setIsSubscribed (enable);
         this.transport.getPosition ().setIsSubscribed (enable);
-        this.transport.getCrossfade ().value ().setIsSubscribed (enable);
+        this.transport.crossfade ().value ().setIsSubscribed (enable);
 
         final SettableRangedValue metronomeVolume = this.transport.metronomeVolume ();
         metronomeVolume.setIsSubscribed (enable);
         metronomeVolume.displayedValue ().setIsSubscribed (enable);
 
-        final TimeSignatureValue ts = this.transport.getTimeSignature ();
-        ts.getNumerator ().setIsSubscribed (enable);
-        ts.getDenominator ().setIsSubscribed (enable);
+        final TimeSignatureValue ts = this.transport.timeSignature ();
+        ts.numerator ().setIsSubscribed (enable);
+        ts.denominator ().setIsSubscribed (enable);
     }
 
 
@@ -685,7 +685,7 @@ public class TransportProxy
      */
     public void setCrossfade (final int value)
     {
-        this.transport.getCrossfade ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.transport.crossfade ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -707,7 +707,7 @@ public class TransportProxy
      */
     public void changeCrossfade (final int control)
     {
-        this.transport.getCrossfade ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.transport.crossfade ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -741,7 +741,7 @@ public class TransportProxy
      */
     public int getNumerator ()
     {
-        return this.transport.getTimeSignature ().getNumerator ().get ();
+        return this.transport.timeSignature ().numerator ().get ();
     }
 
 
@@ -753,7 +753,7 @@ public class TransportProxy
     public int getDenominator ()
     {
 
-        return this.transport.getTimeSignature ().getDenominator ().get ();
+        return this.transport.timeSignature ().denominator ().get ();
     }
 
 

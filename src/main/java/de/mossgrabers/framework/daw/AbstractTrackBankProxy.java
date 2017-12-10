@@ -296,7 +296,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void changeVolume (final int index, final int control)
     {
-        this.trackBank.getChannel (index).getVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.trackBank.getChannel (index).volume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -308,7 +308,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setVolume (final int index, final double value)
     {
-        this.trackBank.getChannel (index).getVolume ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.trackBank.getChannel (index).volume ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -321,7 +321,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setVolume (final int index, final double value, final int upperBound)
     {
-        this.trackBank.getChannel (index).getVolume ().set (Double.valueOf (value), Integer.valueOf (upperBound));
+        this.trackBank.getChannel (index).volume ().set (Double.valueOf (value), Integer.valueOf (upperBound));
     }
 
 
@@ -332,7 +332,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void resetVolume (final int index)
     {
-        this.trackBank.getChannel (index).getVolume ().reset ();
+        this.trackBank.getChannel (index).volume ().reset ();
     }
 
 
@@ -344,7 +344,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void touchVolume (final int index, final boolean isBeingTouched)
     {
-        this.trackBank.getChannel (index).getVolume ().touch (isBeingTouched);
+        this.trackBank.getChannel (index).volume ().touch (isBeingTouched);
     }
 
 
@@ -356,7 +356,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setVolumeIndication (final int index, final boolean indicate)
     {
-        this.trackBank.getChannel (index).getVolume ().setIndication (indicate);
+        this.trackBank.getChannel (index).volume ().setIndication (indicate);
     }
 
 
@@ -368,7 +368,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void changePan (final int index, final int control)
     {
-        this.trackBank.getChannel (index).getPan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.trackBank.getChannel (index).pan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -380,7 +380,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setPan (final int index, final double value)
     {
-        this.trackBank.getChannel (index).getPan ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.trackBank.getChannel (index).pan ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -391,7 +391,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void resetPan (final int index)
     {
-        this.trackBank.getChannel (index).getPan ().reset ();
+        this.trackBank.getChannel (index).pan ().reset ();
     }
 
 
@@ -403,7 +403,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void touchPan (final int index, final boolean isBeingTouched)
     {
-        this.trackBank.getChannel (index).getPan ().touch (isBeingTouched);
+        this.trackBank.getChannel (index).pan ().touch (isBeingTouched);
     }
 
 
@@ -415,7 +415,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setPanIndication (final int index, final boolean indicate)
     {
-        this.trackBank.getChannel (index).getPan ().setIndication (indicate);
+        this.trackBank.getChannel (index).pan ().setIndication (indicate);
     }
 
 
@@ -450,7 +450,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setMute (final int index, final boolean value)
     {
-        this.trackBank.getChannel (index).getMute ().set (value);
+        this.trackBank.getChannel (index).mute ().set (value);
     }
 
 
@@ -473,7 +473,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setSolo (final int index, final boolean value)
     {
-        this.trackBank.getChannel (index).getSolo ().set (value);
+        this.trackBank.getChannel (index).solo ().set (value);
     }
 
 
@@ -496,7 +496,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setArm (final int index, final boolean value)
     {
-        this.trackBank.getChannel (index).getArm ().set (value);
+        this.trackBank.getChannel (index).arm ().set (value);
     }
 
 
@@ -519,7 +519,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setMonitor (final int index, final boolean value)
     {
-        this.trackBank.getChannel (index).getMonitor ().set (value);
+        this.trackBank.getChannel (index).monitor ().set (value);
     }
 
 
@@ -530,7 +530,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void toggleMonitor (final int index)
     {
-        this.trackBank.getChannel (index).getMonitor ().toggle ();
+        this.trackBank.getChannel (index).monitor ().toggle ();
     }
 
 
@@ -542,7 +542,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setAutoMonitor (final int index, final boolean value)
     {
-        this.trackBank.getChannel (index).getAutoMonitor ().set (value);
+        this.trackBank.getChannel (index).autoMonitor ().set (value);
     }
 
 
@@ -553,7 +553,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void toggleAutoMonitor (final int index)
     {
-        this.trackBank.getChannel (index).getAutoMonitor ().toggle ();
+        this.trackBank.getChannel (index).autoMonitor ().toggle ();
     }
 
 
@@ -589,7 +589,7 @@ public abstract class AbstractTrackBankProxy
      */
     public void setCrossfadeMode (final int index, final String mode)
     {
-        this.trackBank.getChannel (index).getCrossFadeMode ().set (mode);
+        this.trackBank.getChannel (index).crossFadeMode ().set (mode);
     }
 
 

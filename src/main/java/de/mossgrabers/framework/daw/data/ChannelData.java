@@ -44,14 +44,14 @@ public class ChannelData
         channel.exists ().markInterested ();
         channel.name ().markInterested ();
         channel.isActivated ().markInterested ();
-        channel.getMute ().markInterested ();
-        channel.getSolo ().markInterested ();
+        channel.mute ().markInterested ();
+        channel.solo ().markInterested ();
         channel.color ().markInterested ();
 
         channel.addIsSelectedInEditorObserver (this::handleChannelSelect);
 
-        this.volumeParameter = new ParameterData (channel.getVolume (), maxParameterValue);
-        this.panParameter = new ParameterData (channel.getPan (), maxParameterValue);
+        this.volumeParameter = new ParameterData (channel.volume (), maxParameterValue);
+        this.panParameter = new ParameterData (channel.pan (), maxParameterValue);
 
         channel.addVuMeterObserver (maxParameterValue, -1, true, value -> this.handleVUMeters (maxParameterValue, value));
 
@@ -75,8 +75,8 @@ public class ChannelData
         this.channel.exists ().setIsSubscribed (enable);
         this.channel.name ().setIsSubscribed (enable);
         this.channel.isActivated ().setIsSubscribed (enable);
-        this.channel.getMute ().setIsSubscribed (enable);
-        this.channel.getSolo ().setIsSubscribed (enable);
+        this.channel.mute ().setIsSubscribed (enable);
+        this.channel.solo ().setIsSubscribed (enable);
         this.channel.color ().setIsSubscribed (enable);
 
         this.volumeParameter.enableObservers (enable);
@@ -268,7 +268,7 @@ public class ChannelData
      */
     public boolean isMute ()
     {
-        return this.channel.getMute ().get ();
+        return this.channel.mute ().get ();
     }
 
 
@@ -279,7 +279,7 @@ public class ChannelData
      */
     public boolean isSolo ()
     {
-        return this.channel.getSolo ().get ();
+        return this.channel.solo ().get ();
     }
 
 
