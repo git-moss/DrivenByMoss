@@ -8,8 +8,6 @@ import com.bitwig.extension.api.Bitmap;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.UsbDevice;
 import com.bitwig.extension.controller.api.UsbEndpoint;
-import com.bitwig.extension.controller.api.UsbTransferCallback;
-import com.bitwig.extension.controller.api.UsbTransferStatus;
 
 import java.nio.ByteBuffer;
 
@@ -58,7 +56,8 @@ public class USBDisplay
     private UsbEndpoint          usbEndpoint;
     private final ByteBuffer     headerBuffer;
     private final ByteBuffer     imageBuffer;
-    private ControllerHost       host;
+
+    boolean                      isSending        = false;
 
 
     /**
@@ -68,8 +67,6 @@ public class USBDisplay
      */
     public USBDisplay (final ControllerHost host)
     {
-        this.host = host;
-
         try
         {
             this.usbDevice = host.getUsbDevice (0);
@@ -98,42 +95,39 @@ public class USBDisplay
         if (this.usbDevice == null)
             return;
 
-        synchronized (this.imageBuffer)
+        if (this.isSending)
+            return;
+
+        this.isSending = true;
+
+        this.imageBuffer.clear ();
+
+        final ByteBuffer byteBuffer = image.getByteBuffer ();
+        for (int y = 0; y < HEIGHT; y++)
         {
-            this.imageBuffer.clear ();
-
-            final ByteBuffer byteBuffer = image.getByteBuffer ();
-            for (int y = 0; y < HEIGHT; y++)
+            for (int x = 0; x < WIDTH; x++)
             {
-                for (int x = 0; x < WIDTH; x++)
-                {
-                    final int blue = byteBuffer.get ();
-                    final int green = byteBuffer.get ();
-                    final int red = byteBuffer.get ();
-                    byteBuffer.get (); // Drop unused Alpha
+                final int blue = byteBuffer.get ();
+                final int green = byteBuffer.get ();
+                final int red = byteBuffer.get ();
+                byteBuffer.get (); // Drop unused Alpha
 
-                    final int pixel = SPixelFromRGB (red, green, blue);
-                    this.imageBuffer.put ((byte) (pixel & 0x00FF));
-                    this.imageBuffer.put ((byte) ((pixel & 0xFF00) >> 8));
-                }
-
-                for (int x = 0; x < 128; x++)
-                    this.imageBuffer.put ((byte) 0x00);
+                final int pixel = SPixelFromRGB (red, green, blue);
+                this.imageBuffer.put ((byte) (pixel & 0x00FF));
+                this.imageBuffer.put ((byte) ((pixel & 0xFF00) >> 8));
             }
 
-            byteBuffer.rewind ();
-
-            UsbTransferCallback callback = new UsbTransferCallback ()
-            {
-                @Override
-                public void transferCompleted (UsbTransferStatus status)
-                {
-                    host.println (status.toString ());
-                }
-            };
-            this.usbEndpoint.bulkTransfer (this.headerBuffer, callback);
-            this.usbEndpoint.bulkTransfer (this.imageBuffer, callback);
+            for (int x = 0; x < 128; x++)
+                this.imageBuffer.put ((byte) 0x00);
         }
+
+        byteBuffer.rewind ();
+
+        this.usbEndpoint.bulkTransfer (this.headerBuffer, (status, sent) -> {
+            this.usbEndpoint.bulkTransfer (this.imageBuffer, (status2, sent2) -> {
+                this.isSending = false;
+            }, this.imageBuffer.capacity ());
+        }, this.headerBuffer.capacity ());
     }
 
 
