@@ -19,14 +19,14 @@ import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.osc.OSCConfiguration;
 
+import com.bitwig.extension.api.opensoundcontrol.OscConnection;
+import com.bitwig.extension.api.opensoundcontrol.OscMessage;
+import com.bitwig.extension.api.opensoundcontrol.OscMethodCallback;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.MidiIn;
 import com.bitwig.extension.controller.api.NoteInput;
-import com.illposed.osc.OSCListener;
-import com.illposed.osc.OSCMessage;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class OSCParser implements OSCListener
+public class OSCParser implements OscMethodCallback
 {
     private static final Pattern   RGB_COLOR_PATTERN = Pattern.compile ("(rgb|RGB)\\((\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?)\\)");
 
@@ -85,10 +85,10 @@ public class OSCParser implements OSCListener
 
     /** {@inheritDoc} */
     @Override
-    public void acceptMessage (final Date time, final OSCMessage message)
+    public void handle (final OscConnection source, final OscMessage message)
     {
         final LinkedList<String> oscParts = new LinkedList<> ();
-        Collections.addAll (oscParts, message.getAddress ().split ("/"));
+        Collections.addAll (oscParts, message.getAddressPattern ().split ("/"));
 
         // Remove first empty element
         oscParts.removeFirst ();
@@ -461,28 +461,6 @@ public class OSCParser implements OSCListener
                 break;
 
             //
-            // Indicators
-            //
-
-            case "indicate":
-            {
-                p = oscParts.removeFirst ();
-                final boolean isVolume = "volume".equals (p);
-                final boolean isParam = "param".equals (p);
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final CursorDeviceProxy cd = this.model.getCursorDevice ();
-                for (int i = 0; i < cd.getNumParameters (); i++)
-                    cd.getParameter (i).setIndication (isParam);
-                for (int i = 0; i < tb.getNumTracks (); i++)
-                {
-                    tb.setVolumeIndication (i, isVolume);
-                    tb.setPanIndication (i, isVolume);
-                }
-                this.masterTrack.setVolumeIndication (isVolume);
-                break;
-            }
-
-            //
             // Actions
             //
 
@@ -501,7 +479,7 @@ public class OSCParser implements OSCListener
                 break;
 
             default:
-                this.host.println ("Unhandled OSC Command: " + message.getAddress () + " " + value);
+                this.host.println ("Unhandled OSC Command: " + message.getAddressPattern () + " " + value);
                 break;
         }
     }

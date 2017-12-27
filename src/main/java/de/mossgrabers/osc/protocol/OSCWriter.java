@@ -25,11 +25,9 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.osc.OSCColors;
 import de.mossgrabers.osc.OSCConfiguration;
 
-import com.bitwig.extension.controller.api.ControllerHost;
-import com.illposed.osc.OSCBundle;
-import com.illposed.osc.OSCMessage;
-import com.illposed.osc.OSCPacket;
+import com.bitwig.extension.api.opensoundcontrol.OscConnection;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,20 +46,23 @@ public class OSCWriter
 
     private OSCModel                    model;
     private Map<String, Object>         oldValues   = new HashMap<> ();
-    private List<OSCPacket>             messages    = new ArrayList<> ();
+    private List<OscMessageData>        messages    = new ArrayList<> ();
     private OSCConfiguration            configuration;
+    private OscConnection               udpServer;
 
 
     /**
      * Constructor.
      *
-     * @param model
-     * @param configuration
+     * @param model The model
+     * @param configuration The configuration
+     * @param udpServer The UDP server to send to
      */
-    public OSCWriter (final OSCModel model, final OSCConfiguration configuration)
+    public OSCWriter (final OSCModel model, final OSCConfiguration configuration, final OscConnection udpServer)
     {
         this.model = model;
         this.configuration = configuration;
+        this.udpServer = udpServer;
     }
 
 
@@ -166,19 +167,29 @@ public class OSCWriter
         this.flushNotes ("/vkb_midi/note/", dump);
 
         // Send all collected messages
-        int pos = 0;
-        final int size = this.messages.size ();
-        final ControllerHost host = this.model.getHost ();
-        final String sendHost = this.configuration.getSendHost ();
-        final int sendPort = this.configuration.getSendPort ();
-        while (pos < size)
+
+        try
         {
-            final int end = pos + 1000;
-            final OSCBundle oscBundle = new OSCBundle (this.messages.subList (pos, Math.min (end, size)));
-            final byte [] data = oscBundle.getByteArray ();
-            host.sendDatagramPacket (sendHost, sendPort, data);
-            pos += 1000;
+            int pos = 0;
+            this.udpServer.startBundle ();
+            for (final OscMessageData message: this.messages)
+            {
+                this.udpServer.sendMessage (message.getAddress (), message.getValues ());
+                pos++;
+                if (pos > 1000)
+                {
+                    pos = 0;
+                    this.udpServer.endBundle ();
+                    this.udpServer.startBundle ();
+                }
+            }
+            this.udpServer.endBundle ();
         }
+        catch (final IOException ex)
+        {
+            this.model.getHost ().errorln (ex.getClass () + ":" + ex.getMessage ());
+        }
+
         this.messages.clear ();
     }
 
@@ -391,7 +402,7 @@ public class OSCWriter
         }
 
         this.oldValues.put (address, value);
-        this.messages.add (new OSCMessage (address, Collections.singletonList (convertBooleanToInt (value))));
+        this.messages.add (new OscMessageData (address, Collections.singletonList (convertBooleanToInt (value))));
     }
 
 

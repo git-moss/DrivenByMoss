@@ -6,7 +6,10 @@ package de.mossgrabers.push.controller.display;
 
 import com.bitwig.extension.api.Bitmap;
 import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.UsbOut;
+import com.bitwig.extension.controller.api.UsbDevice;
+import com.bitwig.extension.controller.api.UsbEndpoint;
+import com.bitwig.extension.controller.api.UsbTransferCallback;
+import com.bitwig.extension.controller.api.UsbTransferStatus;
 
 import java.nio.ByteBuffer;
 
@@ -19,14 +22,19 @@ import java.nio.ByteBuffer;
 public class USBDisplay
 {
     /** The pixel width of the display. */
-    private static final int     WIDTH          = 960;
+    private static final int     WIDTH            = 960;
     /** The pixel height of the display. */
-    private static final int     HEIGHT         = 160;
+    private static final int     HEIGHT           = 160;
 
     /** The size of the display content. */
-    private static final int     DATA_SZ        = 20 * 0x4000;
+    private static final int     DATA_SZ          = 20 * 0x4000;
 
-    private static final byte [] DISPLAY_HEADER =
+    /** Push 2 USB Interface for the display. */
+    private static final byte    INTERFACE_NUMBER = 0;
+    /** Push 2 USB display endpoint. */
+    private static final byte    ENDPOINT_ADDRESS = (byte) 0x01;
+
+    private static final byte [] DISPLAY_HEADER   =
     {
         (byte) 0xef,
         (byte) 0xcd,
@@ -46,9 +54,11 @@ public class USBDisplay
         0
     };
 
-    private UsbOut               usbOut;
+    private UsbDevice            usbDevice;
+    private UsbEndpoint          usbEndpoint;
     private final ByteBuffer     headerBuffer;
     private final ByteBuffer     imageBuffer;
+    private ControllerHost       host;
 
 
     /**
@@ -58,13 +68,17 @@ public class USBDisplay
      */
     public USBDisplay (final ControllerHost host)
     {
+        this.host = host;
+
         try
         {
-            this.usbOut = host.getUsbOut (0);
+            this.usbDevice = host.getUsbDevice (0);
+            this.usbEndpoint = this.usbDevice.createEndpoint (INTERFACE_NUMBER, ENDPOINT_ADDRESS);
         }
         catch (final RuntimeException ex)
         {
-            this.usbOut = null;
+            this.usbDevice = null;
+            this.usbEndpoint = null;
             host.errorln ("Could not open USB output.");
         }
 
@@ -81,7 +95,7 @@ public class USBDisplay
      */
     public void send (final Bitmap image)
     {
-        if (this.usbOut == null)
+        if (this.usbDevice == null)
             return;
 
         synchronized (this.imageBuffer)
@@ -109,8 +123,16 @@ public class USBDisplay
 
             byteBuffer.rewind ();
 
-            this.usbOut.bulkTransfer (this.headerBuffer);
-            this.usbOut.bulkTransfer (this.imageBuffer);
+            UsbTransferCallback callback = new UsbTransferCallback ()
+            {
+                @Override
+                public void transferCompleted (UsbTransferStatus status)
+                {
+                    host.println (status.toString ());
+                }
+            };
+            this.usbEndpoint.bulkTransfer (this.headerBuffer, callback);
+            this.usbEndpoint.bulkTransfer (this.imageBuffer, callback);
         }
     }
 

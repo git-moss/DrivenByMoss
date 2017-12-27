@@ -11,10 +11,11 @@ import de.mossgrabers.osc.protocol.OSCModel;
 import de.mossgrabers.osc.protocol.OSCParser;
 import de.mossgrabers.osc.protocol.OSCWriter;
 
+import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
+import com.bitwig.extension.api.opensoundcontrol.OscConnection;
+import com.bitwig.extension.api.opensoundcontrol.OscModule;
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.api.ControllerHost;
-import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
-import com.illposed.osc.utility.OSCPacketDispatcher;
 
 
 /**
@@ -24,13 +25,10 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
  */
 public class OSCExtension extends ControllerExtension
 {
-    private OSCWriter                         writer;
-    private OSCParser                         parser;
-    private OSCConfiguration                  configuration;
-    private DefaultValueChanger               valueChanger;
-
-    private final OSCByteArrayToJavaConverter converter  = new OSCByteArrayToJavaConverter ();
-    private final OSCPacketDispatcher         dispatcher = new OSCPacketDispatcher ();
+    private OSCWriter           writer;
+    private OSCParser           parser;
+    private OSCConfiguration    configuration;
+    private DefaultValueChanger valueChanger;
 
 
     /**
@@ -58,33 +56,29 @@ public class OSCExtension extends ControllerExtension
         scales.setChromatic (true);
 
         final ControllerHost host = this.getHost ();
+
+        final OscModule oscModule = host.getOscModule ();
+        final OscAddressSpace addressSpace = oscModule.createAddressSpace ();
+
+        this.configuration.addSettingObserver (OSCConfiguration.DEBUG_COMMANDS, () -> {
+            addressSpace.setShouldLogMessages (this.configuration.getDebugCommands ());
+        });
+
         final OSCModel model = new OSCModel (host, new ColorManager (), this.valueChanger, scales);
-        this.writer = new OSCWriter (model, this.configuration);
         this.parser = new OSCParser (host, this.writer, this.configuration, model);
 
-        this.dispatcher.addListener ( (messageAddress) -> {
-            return true;
-        }, this.parser);
+        addressSpace.registerDefaultMethod (this.parser);
 
-        final String receiveHost = this.configuration.getReceiveHost ();
+        final int sendPort = this.configuration.getSendPort ();
+        final OscConnection udpServer = oscModule.connectToUdpServer (this.configuration.getSendHost (), sendPort, oscModule.createAddressSpace ());
+
+        this.writer = new OSCWriter (model, this.configuration, udpServer);
+
         final int receivePort = this.configuration.getReceivePort ();
-        host.addDatagramPacketObserver (receiveHost, receivePort, this::handleOSCMessage);
+        oscModule.createUdpServer (receivePort, addressSpace);
 
         host.scheduleTask ( () -> this.writer.flush (true), 1000);
         host.println ("Initialized.");
-    }
-
-
-    private void handleOSCMessage (final byte [] data)
-    {
-        try
-        {
-            this.dispatcher.dispatchPacket (this.converter.convert (data, data.length));
-        }
-        catch (final IllegalArgumentException ex)
-        {
-            this.getHost ().errorln (ex.getLocalizedMessage ());
-        }
     }
 
 
