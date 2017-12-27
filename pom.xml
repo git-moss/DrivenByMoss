@@ -8,6 +8,10 @@
 	<name>DrivenByMoss</name>
 	<version>LOCAL-21</version>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
 	<!-- https://mvnrepository.com/artifact/com.illposed.osc/javaosc-core -->
 
 	<repositories>
