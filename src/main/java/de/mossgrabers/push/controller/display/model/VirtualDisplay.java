@@ -8,10 +8,10 @@ import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.grid.GridElement;
 
-import com.bitwig.extension.api.Bitmap;
-import com.bitwig.extension.api.BitmapFormat;
-import com.bitwig.extension.api.GraphicsOutput;
-import com.bitwig.extension.api.GraphicsOutput.AntialiasMode;
+import com.bitwig.extension.api.graphics.Bitmap;
+import com.bitwig.extension.api.graphics.BitmapFormat;
+import com.bitwig.extension.api.graphics.GraphicsOutput;
+import com.bitwig.extension.api.graphics.GraphicsOutput.AntialiasMode;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.List;

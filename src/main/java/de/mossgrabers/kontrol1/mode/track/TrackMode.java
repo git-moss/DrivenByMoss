@@ -1,0 +1,108 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.kontrol1.mode.track;
+
+import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.StringUtils;
+import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.TrackBankProxy;
+import de.mossgrabers.framework.daw.data.SendData;
+import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.kontrol1.Kontrol1Configuration;
+import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
+import de.mossgrabers.kontrol1.controller.Kontrol1Display;
+
+
+/**
+ * Edit track parameters mode.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class TrackMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Configuration>
+{
+    /**
+     * Constructor.
+     *
+     * @param surface The surface
+     * @param model The model
+     */
+    public TrackMode (final Kontrol1ControlSurface surface, final Model model)
+    {
+        super (surface, model);
+        this.isTemporary = false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateDisplay ()
+    {
+        final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
+        final TrackData t = currentTrackBank.getSelectedTrack ();
+        final Kontrol1Display d = (Kontrol1Display) this.surface.getDisplay ();
+
+        d.clear ();
+
+        if (t == null)
+        {
+            d.setCell (0, 3, "  PLEASE").setCell (0, 4, "SELECT A").setCell (0, 5, "TRACK").allDone ();
+            return;
+        }
+
+        final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
+
+        d.setCell (0, 0, (isEffectTrackBankActive ? "TR-FX " : "TRACK ") + (t.getPosition () + 1)).setCell (1, 0, this.optimizeName (StringUtils.fixASCII (t.getName ()), 8).toUpperCase ());
+
+        d.setCell (0, 1, "VOLUME").setCell (1, 1, t.isMute () ? "-MUTED-" : t.isSolo () ? "-SOLO-" : t.getVolumeStr (8)).setCell (0, 2, "PAN").setCell (1, 2, t.getPanStr (8));
+        d.setBar (1, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_1), t.getVolume ());
+        d.setPanBar (2, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_2), t.getPan ());
+
+        if (!isEffectTrackBankActive)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                final int pos = 3 + i;
+                final SendData sendData = t.getSends ()[i];
+                d.setCell (0, pos, this.optimizeName (StringUtils.fixASCII (sendData.getName (8)), 8).toUpperCase ()).setCell (1, pos, sendData.getDisplayedValue (8));
+                d.setBar (pos, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_1 + 2 + i) && sendData.doesExist (), sendData.getValue ());
+            }
+        }
+        d.allDone ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onValueKnob (final int index, final int value)
+    {
+        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final TrackData selectedTrack = tb.getSelectedTrack ();
+        if (selectedTrack == null)
+            return;
+
+        switch (index)
+        {
+            case 0:
+                tb.changeVolume (selectedTrack.getIndex (), value);
+                return;
+            case 1:
+                tb.changePan (selectedTrack.getIndex (), value);
+                return;
+            default:
+                ((TrackBankProxy) tb).changeSend (selectedTrack.getIndex (), index - 2, value);
+                break;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onRowButton (final int row, final int index, final ButtonEvent event)
+    {
+        // Intentionally empty
+    }
+}

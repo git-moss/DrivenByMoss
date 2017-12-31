@@ -9,8 +9,8 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.push.PushConfiguration;
 
 import com.bitwig.extension.api.Color;
-import com.bitwig.extension.api.GraphicsOutput;
-import com.bitwig.extension.api.GraphicsOutput.AntialiasMode;
+import com.bitwig.extension.api.graphics.GraphicsOutput;
+import com.bitwig.extension.api.graphics.GraphicsOutput.AntialiasMode;
 
 
 /**

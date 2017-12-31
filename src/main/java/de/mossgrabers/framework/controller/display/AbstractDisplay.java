@@ -26,12 +26,12 @@ public abstract class AbstractDisplay implements Display
     protected int            noOfCells;
     protected int            noOfCharacters;
 
-    private final String     emptyLine;
-    private String           notificationMessage;
+    protected final String   emptyLine;
+    protected String         notificationMessage;
     protected boolean        isNotificationActive;
 
-    private String []        currentMessage;
-    private String []        message;
+    protected String []      currentMessage;
+    protected String []      message;
     protected String []      cells;
 
 
@@ -160,7 +160,8 @@ public abstract class AbstractDisplay implements Display
 
     protected void notifyOnDisplay (final String message)
     {
-        final String padding = this.emptyLine.substring (0, (this.noOfCharacters - message.length ()) / 2 + 1);
+        final int padLength = (this.noOfCharacters - message.length ()) / 2 + 1;
+        final String padding = padLength > 0 ? this.emptyLine.substring (0, padLength) : "";
         this.notificationMessage = (padding + message + padding).substring (0, this.noOfCharacters);
         this.isNotificationActive = true;
         this.flush ();

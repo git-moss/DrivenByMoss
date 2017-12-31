@@ -6,7 +6,7 @@ package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.push.PushConfiguration;
 
-import com.bitwig.extension.api.GraphicsOutput;
+import com.bitwig.extension.api.graphics.GraphicsOutput;
 
 
 /**

@@ -4,10 +4,11 @@
 
 package de.mossgrabers.push.controller.display;
 
-import com.bitwig.extension.api.Bitmap;
+import com.bitwig.extension.api.graphics.Bitmap;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.UsbDevice;
 import com.bitwig.extension.controller.api.UsbEndpoint;
+import com.bitwig.extension.controller.api.UsbTransferStatus;
 
 import java.nio.ByteBuffer;
 
@@ -26,6 +27,8 @@ public class USBDisplay
 
     /** The size of the display content. */
     private static final int     DATA_SZ          = 20 * 0x4000;
+
+    private static final int     TIMEOUT          = 1000;
 
     /** Push 2 USB Interface for the display. */
     private static final byte    INTERFACE_NUMBER = 0;
@@ -124,10 +127,21 @@ public class USBDisplay
         byteBuffer.rewind ();
 
         this.usbEndpoint.bulkTransfer (this.headerBuffer, (status, sent) -> {
-            this.usbEndpoint.bulkTransfer (this.imageBuffer, (status2, sent2) -> {
-                this.isSending = false;
-            }, this.imageBuffer.capacity ());
-        }, this.headerBuffer.capacity ());
+            if (status == UsbTransferStatus.Completed)
+                this.usbEndpoint.bulkTransfer (this.imageBuffer, (status2, sent2) -> {
+                    this.isSending = false;
+                }, TIMEOUT);
+        }, TIMEOUT);
+    }
+
+
+    /**
+     * Stops all transfers to the device. Nulls the device.
+     */
+    public void shutdown ()
+    {
+        this.usbDevice = null;
+        this.usbEndpoint = null;
     }
 
 

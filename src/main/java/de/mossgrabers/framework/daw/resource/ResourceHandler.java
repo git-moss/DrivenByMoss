@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw.resource;
 
-import com.bitwig.extension.api.Image;
+import com.bitwig.extension.api.graphics.Image;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.HashMap;

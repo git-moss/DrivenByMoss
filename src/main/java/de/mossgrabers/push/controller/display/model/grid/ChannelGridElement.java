@@ -9,10 +9,10 @@ import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
 
 import com.bitwig.extension.api.Color;
-import com.bitwig.extension.api.GradientPattern;
-import com.bitwig.extension.api.GraphicsOutput;
-import com.bitwig.extension.api.Image;
-import com.bitwig.extension.api.Pattern;
+import com.bitwig.extension.api.graphics.GradientPattern;
+import com.bitwig.extension.api.graphics.GraphicsOutput;
+import com.bitwig.extension.api.graphics.Image;
+import com.bitwig.extension.api.graphics.Pattern;
 
 
 /**

@@ -14,3 +14,7 @@ de.mossgrabers.mcu.MCUController0ExtenderExtensionDefinition
 de.mossgrabers.mcu.MCUController1ExtenderExtensionDefinition
 de.mossgrabers.mcu.MCUController2ExtenderExtensionDefinition
 de.mossgrabers.mcu.MCUController3ExtenderExtensionDefinition
+de.mossgrabers.kontrol1.Kontrol1S25ExtensionDefinition
+de.mossgrabers.kontrol1.Kontrol1S49ExtensionDefinition
+de.mossgrabers.kontrol1.Kontrol1S61ExtensionDefinition
+de.mossgrabers.kontrol1.Kontrol1S88ExtensionDefinition

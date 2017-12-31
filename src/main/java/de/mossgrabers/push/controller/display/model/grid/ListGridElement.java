@@ -8,7 +8,7 @@ import de.mossgrabers.framework.Pair;
 import de.mossgrabers.push.PushConfiguration;
 
 import com.bitwig.extension.api.Color;
-import com.bitwig.extension.api.GraphicsOutput;
+import com.bitwig.extension.api.graphics.GraphicsOutput;
 
 import java.util.ArrayList;
 import java.util.List;

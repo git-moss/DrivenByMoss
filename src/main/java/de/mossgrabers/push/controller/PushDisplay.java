@@ -122,7 +122,11 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     public void shutdown ()
     {
         if (this.isPush2)
-            this.createMessage ().setMessage (3, "Please start Bitwig to play...").send ();
+        {
+            // TODO
+            // this.createMessage ().setMessage (3, "Please start Bitwig to play...").send ();
+            this.usbDisplay.shutdown ();
+        }
         else
             this.clear ().setBlock (1, 1, "     Please start").setBlock (1, 2, "Bitwig to play...").allDone ().flush ();
     }

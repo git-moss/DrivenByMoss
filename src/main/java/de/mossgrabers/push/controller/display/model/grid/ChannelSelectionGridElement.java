@@ -9,8 +9,8 @@ import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
 
 import com.bitwig.extension.api.Color;
-import com.bitwig.extension.api.GraphicsOutput;
-import com.bitwig.extension.api.Image;
+import com.bitwig.extension.api.graphics.GraphicsOutput;
+import com.bitwig.extension.api.graphics.Image;
 
 import java.util.EnumMap;
 

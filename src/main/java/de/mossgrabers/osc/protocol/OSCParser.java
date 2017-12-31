@@ -372,7 +372,7 @@ public class OSCParser implements OscMethodCallback
             //
 
             case "scene":
-                String p = oscParts.removeFirst ();
+                final String p = oscParts.removeFirst ();
                 switch (p)
                 {
                     case "bank":
