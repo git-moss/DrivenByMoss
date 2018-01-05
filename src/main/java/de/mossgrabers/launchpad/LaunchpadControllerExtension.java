@@ -195,9 +195,7 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
         viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
         viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
         viewManager.registerView (Views.VIEW_VOLUME, new VolumeView (surface, this.model));
-
-        if (!this.isPro)
-            viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (surface, this.model));
+        viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (surface, this.model));
     }
 
 

@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.TransportProxy;
 
 
 /**
- * Command handle the play button.
+ * Command to handle the play button.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

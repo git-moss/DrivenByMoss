@@ -141,6 +141,18 @@ public class BrowserColumnData
 
 
     /**
+     * Get the cursor name of the column.
+     * 
+     * @param limit The maximum number of characters to get
+     * @return The cursor name of the column
+     */
+    public String getCursorName (final int limit)
+    {
+        return this.cursorResult.name ().getLimited (limit);
+    }
+
+
+    /**
      * Get the item data.
      *
      * @return The item data
@@ -174,7 +186,7 @@ public class BrowserColumnData
      */
     public void resetFilter ()
     {
-        this.itemBank.cursorIndex ().set (0);
+        this.cursorResult.selectFirst ();
     }
 
 

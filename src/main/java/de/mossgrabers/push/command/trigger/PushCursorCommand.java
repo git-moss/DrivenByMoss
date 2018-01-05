@@ -13,6 +13,7 @@ import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.mode.Modes;
+import de.mossgrabers.push.mode.device.DeviceBrowserMode;
 import de.mossgrabers.push.mode.device.DeviceParamsMode;
 
 
@@ -94,6 +95,7 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
 
         if (modeManager.isActiveMode (Modes.MODE_BROWSER))
         {
+            ((DeviceBrowserMode) modeManager.getActiveMode ()).resetFilterColumn ();
             this.model.getBrowser ().previousContentType ();
             return;
         }
@@ -128,6 +130,7 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
 
         if (modeManager.isActiveMode (Modes.MODE_BROWSER))
         {
+            ((DeviceBrowserMode) modeManager.getActiveMode ()).resetFilterColumn ();
             this.model.getBrowser ().nextContentType ();
             return;
         }

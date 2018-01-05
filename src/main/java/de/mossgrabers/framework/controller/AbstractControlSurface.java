@@ -95,9 +95,12 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
         this.output = output;
         this.input = input;
-        this.input.init (host);
-        this.input.setMidiCallback (this::handleMidi);
-        this.noteInput = this.input.createNoteInput ();
+        if (this.input != null)
+        {
+            this.input.init (host);
+            this.input.setMidiCallback (this::handleMidi);
+            this.noteInput = this.input.createNoteInput ();
+        }
 
         this.gridNotes = new int [64];
 
@@ -382,7 +385,6 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     /** {@inheritDoc} */
     @Override
     public boolean isPressed (final int button)
-
     {
         if (button == -1)
             return false;

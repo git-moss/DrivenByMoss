@@ -643,7 +643,7 @@ public class CursorClipProxy
         final int quarters = (int) Math.floor (t); // :1
         t = t - quarters; // *1
         final int eights = (int) Math.floor (t / 0.25);
-        return (measure + 1) + "." + (quarters + 1) + "." + (eights + 1);
+        return measure + 1 + "." + (quarters + 1) + "." + (eights + 1);
     }
 
 

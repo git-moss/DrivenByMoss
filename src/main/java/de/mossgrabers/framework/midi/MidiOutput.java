@@ -188,6 +188,21 @@ public class MidiOutput
 
 
     /**
+     * Convert the bytes to a hex string
+     *
+     * @param data The data to convert
+     * @return The hex string
+     */
+    public static String toHexStr (final byte [] data)
+    {
+        final StringBuilder sysex = new StringBuilder ();
+        for (final byte d: data)
+            sysex.append (toHexStr (Byte.toUnsignedInt (d))).append (' ');
+        return sysex.toString ();
+    }
+
+
+    /**
      * Convert the byte to a hex string
      *
      * @param number The value to convert

@@ -89,7 +89,8 @@ public abstract class AbstractTrackBankProxy
         this.trackBank.scrollPosition ().markInterested ();
         this.trackBank.canScrollChannelsUp ().markInterested ();
         this.trackBank.canScrollChannelsDown ().markInterested ();
-        this.sceneBankProxy = new SceneBankProxy (this.trackBank.sceneBank (), this.numScenes);
+        if (this.numScenes > 0)
+            this.sceneBankProxy = new SceneBankProxy (this.trackBank.sceneBank (), this.numScenes);
     }
 
 
@@ -993,6 +994,36 @@ public abstract class AbstractTrackBankProxy
     public int getNumSends ()
     {
         return this.numSends;
+    }
+
+
+    /**
+     * Get the position of the first track of the current bank page.
+     *
+     * @return The position
+     */
+    public int getTrackPositionFirst ()
+    {
+        return this.getTrack (0).getPosition ();
+    }
+
+
+    /**
+     * Get the position of the last track of the current bank page. E.g. if the current bank page
+     * contains only 5 tracks, the position of the 5th track is returned. If there are no tracks -1
+     * is returned.
+     *
+     * @return The position or -1
+     */
+    public int getTrackPositionLast ()
+    {
+        for (int i = 7; i >= 0; i--)
+        {
+            final int pos = this.getTrack (i).getPosition ();
+            if (pos >= 0)
+                return pos;
+        }
+        return -1;
     }
 
 

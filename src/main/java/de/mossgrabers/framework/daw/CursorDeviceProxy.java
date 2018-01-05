@@ -502,7 +502,7 @@ public class CursorDeviceProxy
     public String getSelectedParameterPageName ()
     {
         final int sel = this.getSelectedParameterPage ();
-        return sel >= 0 ? this.parameterPageNames[sel] : "";
+        return sel >= 0 && sel < this.parameterPageNames.length ? this.parameterPageNames[sel] : "";
     }
 
 

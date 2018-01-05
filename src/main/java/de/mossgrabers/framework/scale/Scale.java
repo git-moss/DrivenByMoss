@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.scale;
 
+import java.util.HashSet;
+import java.util.Set;
+
+
 /**
  * Several scales and their intervals.
  *
@@ -311,8 +315,9 @@ public enum Scale
         10
     });
 
-    private String name;
-    private int [] intervals;
+    private String       name;
+    private int []       intervals;
+    private Set<Integer> scaleKeys = new HashSet<> (7);
 
 
     /**
@@ -325,6 +330,9 @@ public enum Scale
     {
         this.name = name;
         this.intervals = intervals;
+
+        for (int i = 0; i < this.intervals.length; i++)
+            this.scaleKeys.add (Integer.valueOf (this.intervals[i]));
     }
 
 
@@ -347,6 +355,18 @@ public enum Scale
     public int [] getIntervals ()
     {
         return this.intervals;
+    }
+
+
+    /**
+     * Tests if the given note is in the scale.
+     *
+     * @param note The note to test (0-11)
+     * @return True if it is in the scale
+     */
+    public boolean isInScale (final int note)
+    {
+        return this.scaleKeys.contains (Integer.valueOf (note));
     }
 
 

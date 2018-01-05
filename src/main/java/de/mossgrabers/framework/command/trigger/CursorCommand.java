@@ -177,14 +177,21 @@ public abstract class CursorCommand<S extends ControlSurface<C>, C extends Confi
         final int index = sel == null ? 0 : sel.getIndex () - 1;
         if (index == -1 || this.surface.isShiftPressed ())
         {
-            if (!tb.canScrollTracksUp ())
-                return;
-            tb.scrollTracksPageUp ();
-            final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
-            this.surface.scheduleTask ( () -> this.selectTrack (newSel), BUTTON_REPEAT_INTERVAL);
+            this.scrollTrackBankLeft (sel, index);
             return;
         }
         this.selectTrack (index);
+    }
+
+
+    protected void scrollTrackBankLeft (final TrackData sel, final int index)
+    {
+        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        if (!tb.canScrollTracksUp ())
+            return;
+        tb.scrollTracksPageUp ();
+        final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
+        this.surface.scheduleTask ( () -> this.selectTrack (newSel), BUTTON_REPEAT_INTERVAL);
     }
 
 
@@ -195,13 +202,20 @@ public abstract class CursorCommand<S extends ControlSurface<C>, C extends Confi
         final int index = sel == null ? 0 : sel.getIndex () + 1;
         if (index == 8 || this.surface.isShiftPressed ())
         {
-            if (!tb.canScrollTracksDown ())
-                return;
-            tb.scrollTracksPageDown ();
-            final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
-            this.surface.scheduleTask ( () -> this.selectTrack (newSel), BUTTON_REPEAT_INTERVAL);
+            this.scrollTrackBankRight (sel, index);
             return;
         }
         this.selectTrack (index);
+    }
+
+
+    protected void scrollTrackBankRight (final TrackData sel, final int index)
+    {
+        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        if (!tb.canScrollTracksDown ())
+            return;
+        tb.scrollTracksPageDown ();
+        final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
+        this.surface.scheduleTask ( () -> this.selectTrack (newSel), BUTTON_REPEAT_INTERVAL);
     }
 }

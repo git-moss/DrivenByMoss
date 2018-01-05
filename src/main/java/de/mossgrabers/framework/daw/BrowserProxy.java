@@ -347,7 +347,7 @@ public class BrowserProxy
 
 
     /**
-     * Set the index of the select filter item of a column.
+     * Set the index of the selected filter item of a column.
      *
      * @param columnIndex The index of the column
      * @param index The index of the item

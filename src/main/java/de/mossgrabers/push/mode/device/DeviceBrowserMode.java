@@ -29,8 +29,11 @@ public class DeviceBrowserMode extends BaseMode
     private static final int SELECTION_PRESET = 1;
     private static final int SELECTION_FILTER = 2;
 
+    private static final int SCROLL_RATE      = 8;
+
     private int              selectionMode;
     private int              filterColumn;
+    private int              movementCounter  = 0;
 
 
     /**
@@ -58,6 +61,27 @@ public class DeviceBrowserMode extends BaseMode
     }
 
 
+    /**
+     * Change the value of the last selected column.
+     *
+     * @param value The change value
+     */
+    public void changeSelectedColumnValue (final int value)
+    {
+        final int index = this.filterColumn == -1 ? 7 : this.filterColumn;
+        this.changeValue (index, value);
+    }
+
+
+    /**
+     * Set the last selected column to the selection column.
+     */
+    public void resetFilterColumn ()
+    {
+        this.filterColumn = -1;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void onValueKnob (final int index, final int value)
@@ -65,16 +89,13 @@ public class DeviceBrowserMode extends BaseMode
         if (!this.isKnobTouched[index])
             return;
 
-        int speed = (int) this.model.getValueChanger ().calcKnobSpeed (value, 1);
-        final boolean direction = speed > 0;
-        if (this.surface.isShiftPressed ())
-            speed = speed * 4;
+        // Slow down scrolling
+        this.movementCounter++;
+        if (this.movementCounter < SCROLL_RATE)
+            return;
+        this.movementCounter = 0;
 
-        speed = Math.abs (speed);
-        if (direction)
-            this.selectNext (index, speed);
-        else
-            this.selectPrevious (index, speed);
+        this.changeValue (index, value);
     }
 
 
@@ -160,7 +181,7 @@ public class DeviceBrowserMode extends BaseMode
         final CursorDeviceProxy cd = this.model.getCursorDevice ();
         if (isPresetSession && !(browser.isActive () && cd.hasSelectedDevice ()))
         {
-            d.clear ().setBlock (1, 1, "   No active Brow").setBlock (1, 2, "sing Session.").setBlock (2, 1, "Select device and").setBlock (2, 2, "press Browse...").allDone ();
+            this.surface.getModeManager ().restoreMode ();
             return;
         }
 
@@ -177,9 +198,8 @@ public class DeviceBrowserMode extends BaseMode
                 for (int i = 0; i < 7; i++)
                 {
                     final BrowserColumnData column = this.getFilterColumn (i);
-                    final String value = column != null && column.doesCursorExist () ? column.getCursorName ().equals (column.getWildcard ()) ? "-" : column.getCursorName () : "";
                     final String name = column == null ? "" : this.optimizeName (column.getName (), 8);
-                    d.setCell (0, i, name).setCell (1, i, value);
+                    d.setCell (0, i, name).setCell (1, i, getColumnName (column));
                 }
                 break;
 
@@ -220,7 +240,7 @@ public class DeviceBrowserMode extends BaseMode
         final BrowserProxy browser = this.model.getBrowser ();
         if (!browser.isActive ())
         {
-            message.setMessage (1, "No active Browsing Session. Select a device and press Browse...").send ();
+            this.surface.getModeManager ().restoreMode ();
             return;
         }
 
@@ -237,10 +257,10 @@ public class DeviceBrowserMode extends BaseMode
                     final BrowserColumnData column = this.getFilterColumn (i);
                     final String headerTopName = i == 0 ? "Device: " + (deviceName.isEmpty () ? "None" : deviceName) : "";
                     final String headerBottomName = i == 0 && isPresetSession ? "Preset: " + selectedResult : "";
-                    final String menuBottomName = column != null && column.doesCursorExist () ? column.getCursorName ().equals (column.getWildcard ()) ? " " : column.getCursorName () : "";
-                    message.addOptionElement (headerTopName, column == null ? "" : column.getName (), false, headerBottomName, menuBottomName, true, false);
+                    final String menuBottomName = getColumnName (column);
+                    message.addOptionElement (headerTopName, column == null ? "" : column.getName (), i == this.filterColumn, headerBottomName, menuBottomName, !menuBottomName.equals (" "), false);
                 }
-                message.addOptionElement ("", browser.getSelectedContentType (), false, "", "", false, false);
+                message.addOptionElement ("", browser.getSelectedContentType (), this.filterColumn == -1, "", "", false, false);
                 break;
 
             case DeviceBrowserMode.SELECTION_PRESET:
@@ -377,5 +397,28 @@ public class DeviceBrowserMode extends BaseMode
                     browser.selectPreviousResult ();
             }
         }
+    }
+
+
+    private void changeValue (final int index, final int value)
+    {
+        int speed = (int) this.model.getValueChanger ().calcKnobSpeed (value, 1);
+        final boolean direction = speed > 0;
+        if (this.surface.isShiftPressed ())
+            speed = speed * 4;
+
+        speed = Math.abs (speed);
+        if (direction)
+            this.selectNext (index, speed);
+        else
+            this.selectPrevious (index, speed);
+    }
+
+
+    private static String getColumnName (final BrowserColumnData column)
+    {
+        if (column == null || !column.doesCursorExist ())
+            return "";
+        return column.getCursorName ().equals (column.getWildcard ()) ? " " : column.getCursorName (12);
     }
 }

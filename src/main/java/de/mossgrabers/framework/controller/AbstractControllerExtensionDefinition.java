@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.controller;
 
+import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.ControllerExtensionDefinition;
 
@@ -44,6 +45,14 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     public int getNumMidiOutPorts ()
     {
         return 1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
+    {
+        // Intentionally empty
     }
 
 

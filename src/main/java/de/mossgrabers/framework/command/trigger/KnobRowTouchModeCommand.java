@@ -44,7 +44,7 @@ public class KnobRowTouchModeCommand<S extends ControlSurface<C>, C extends Conf
     public void execute (final ButtonEvent event)
     {
         final Mode m = this.surface.getModeManager ().getActiveMode ();
-        if (m != null)
+        if (m != null && event != ButtonEvent.LONG)
             m.onValueKnobTouch (this.index, event == ButtonEvent.DOWN);
     }
 }
