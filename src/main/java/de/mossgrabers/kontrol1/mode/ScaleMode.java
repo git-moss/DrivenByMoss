@@ -60,7 +60,7 @@ public class ScaleMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        boolean isInc = value <= 63;
+        final boolean isInc = value <= 63;
 
         switch (index)
         {

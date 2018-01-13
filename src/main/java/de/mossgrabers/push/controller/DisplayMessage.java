@@ -8,6 +8,7 @@ import de.mossgrabers.framework.Pair;
 import de.mossgrabers.framework.daw.CursorClipProxy;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.push.controller.display.model.DisplayModel;
+import de.mossgrabers.push.controller.display.model.grid.BoxListGridElement;
 import de.mossgrabers.push.controller.display.model.grid.ChannelGridElement;
 import de.mossgrabers.push.controller.display.model.grid.ChannelSelectionGridElement;
 import de.mossgrabers.push.controller.display.model.grid.GridElement;
@@ -302,14 +303,26 @@ public class DisplayMessage
     /**
      * Add a list element to the message.
      *
-     * @param items Must contain 6 texts
-     * @param selected Must contain 6 states
+     * @param items Must contain X number of texts
+     * @param selected Must contain X number of states
      */
     public void addListElement (final String [] items, final boolean [] selected)
     {
         final List<Pair<String, Boolean>> menu = new ArrayList<> ();
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < items.length; i++)
             menu.add (new Pair<> (items[i], Boolean.valueOf (selected[i])));
         this.elements.add (new ListGridElement (menu));
+    }
+
+
+    /**
+     * Add a list of box elements to the message.
+     *
+     * @param items Must contain X number of texts
+     * @param colors Must contain X number of states
+     */
+    public void addBoxListElement (final String [] items, final List<double []> colors)
+    {
+        this.elements.add (new BoxListGridElement (items, colors));
     }
 }

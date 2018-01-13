@@ -137,7 +137,7 @@ public class ControlView extends AbstractView<Kontrol1ControlSurface, Kontrol1Co
             for (int i = 0; i < 88; i++)
             {
                 final int key = i % 12;
-                boolean inScale = scale.isInScale (key);
+                final boolean inScale = scale.isInScale (key);
                 final int brighter = scaleOffset == key ? 10 : 0;
                 this.surface.setKeyLED (i, inScale ? Math.min (red + brighter, 127) : 0, inScale ? Math.min (green + brighter, 127) : 0, inScale ? Math.min (blue + brighter, 127) : 0);
             }

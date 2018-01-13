@@ -91,7 +91,7 @@ public abstract class AbstractGridElement implements GridElement
 
 
     /**
-     * Is the grid element seleted?
+     * Is the grid element selected?
      *
      * @return True if selected
      */

@@ -115,20 +115,30 @@ public class ChannelSelectionGridElement extends AbstractGridElement
         final String iconName = this.getIcon ();
         if (iconName != null)
         {
-            final Color textColor = configuration.getColorText ();
             final Image icon = ResourceHandler.getSVGImage (iconName);
-
-            gc.setColor (textColor);
-            gc.mask (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2.0);
-            gc.fill ();
-
-            gc.setFontSize (1.2 * UNIT);
-            drawTextInBounds (gc, name, left + DOUBLE_UNIT, height - TRACK_ROW_HEIGHT - UNIT, width - DOUBLE_UNIT, TRACK_ROW_HEIGHT, Align.LEFT, textColor);
+            final Color maskColor = this.getMaskColor (configuration);
+            if (maskColor == null)
+                gc.drawImage (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2.0);
+            else
+            {
+                gc.setColor (maskColor);
+                gc.mask (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2.0);
+                gc.fill ();
+            }
         }
+
+        gc.setFontSize (1.2 * UNIT);
+        drawTextInBounds (gc, name, left + DOUBLE_UNIT, height - TRACK_ROW_HEIGHT - UNIT, width - DOUBLE_UNIT, TRACK_ROW_HEIGHT, Align.LEFT, configuration.getColorText ());
 
         // The track color section
         gc.setColor (this.getColor ());
         gc.rectangle (left, height - UNIT, width, UNIT);
         gc.fill ();
+    }
+
+
+    protected Color getMaskColor (final PushConfiguration configuration)
+    {
+        return configuration.getColorText ();
     }
 }

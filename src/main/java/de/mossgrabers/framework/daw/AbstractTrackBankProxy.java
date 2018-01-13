@@ -713,6 +713,25 @@ public abstract class AbstractTrackBankProxy
 
 
     /**
+     * Find the color of the first clip of the scene.
+     *
+     * @param scene The index of the scene
+     * @return The color as an identifier string. Returns green if none is found
+     */
+    public String getColorOfFirstClipInScene (final int scene)
+    {
+        for (int t = 0; t < this.getNumTracks (); t++)
+        {
+            final SlotData slotData = this.getTrack (t).getSlots ()[scene];
+            if (slotData.doesExist () && slotData.hasContent ())
+                return BitwigColors.getColorIndex (slotData.getColor ());
+        }
+
+        return BitwigColors.BITWIG_COLOR_GREEN;
+    }
+
+
+    /**
      * Launch a scene.
      *
      * @param scene The index of the scene

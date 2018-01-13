@@ -13,6 +13,7 @@ import de.mossgrabers.push.controller.display.model.DisplayModel;
 import de.mossgrabers.push.controller.display.model.VirtualDisplay;
 import de.mossgrabers.push.controller.display.model.grid.GridChangeListener;
 
+import com.bitwig.extension.api.graphics.Bitmap;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 
@@ -101,8 +102,9 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
         this.isPush2 = isPush2;
         this.model = new DisplayModel ();
         this.model.addGridElementChangeListener (this);
-        this.virtualDisplay = new VirtualDisplay (host, this.model, configuration);
-        this.usbDisplay = new USBDisplay (host);
+
+        this.virtualDisplay = this.isPush2 ? new VirtualDisplay (host, this.model, configuration) : null;
+        this.usbDisplay = this.isPush2 ? new USBDisplay (host) : null;
     }
 
 
@@ -125,7 +127,8 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
         {
             // TODO
             // this.createMessage ().setMessage (3, "Please start Bitwig to play...").send ();
-            this.usbDisplay.shutdown ();
+            if (this.usbDisplay != null)
+                this.usbDisplay.shutdown ();
         }
         else
             this.clear ().setBlock (1, 1, "     Please start").setBlock (1, 2, "Bitwig to play...").allDone ().flush ();
@@ -284,10 +287,14 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
      */
     public void showDebugWindow (final boolean show)
     {
+        if (this.virtualDisplay == null)
+            return;
+
+        final Bitmap image = this.virtualDisplay.getImage ();
         if (show)
-            this.virtualDisplay.getImage ().showDisplayWindow ();
+            image.showDisplayWindow ();
         else
-            this.virtualDisplay.getImage ().hideDisplayWindow ();
+            image.hideDisplayWindow ();
     }
 
 
@@ -295,6 +302,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     @Override
     public void gridHasChanged ()
     {
-        this.usbDisplay.send (this.virtualDisplay.getImage ());
+        if (this.usbDisplay != null)
+            this.usbDisplay.send (this.virtualDisplay.getImage ());
     }
 }

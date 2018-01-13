@@ -6,7 +6,7 @@ package de.mossgrabers.push.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.mode.Modes;
@@ -17,7 +17,7 @@ import de.mossgrabers.push.mode.Modes;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class AddEffectCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
+public class AddEffectCommand extends BrowserCommand<PushControlSurface, PushConfiguration>
 {
     /**
      * Constructor.
@@ -27,7 +27,7 @@ public class AddEffectCommand extends AbstractTriggerCommand<PushControlSurface,
      */
     public AddEffectCommand (final Model model, final PushControlSurface surface)
     {
-        super (model, surface);
+        super (Modes.MODE_BROWSER, model, surface);
     }
 
 
@@ -35,20 +35,7 @@ public class AddEffectCommand extends AbstractTriggerCommand<PushControlSurface,
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        this.model.getBrowser ().browseToInsertAfterDevice ();
-        this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void executeShifted (final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-        this.model.getBrowser ().browseToInsertBeforeDevice ();
-        this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
+        if (event == ButtonEvent.UP)
+            this.startBrowser (true, false);
     }
 }

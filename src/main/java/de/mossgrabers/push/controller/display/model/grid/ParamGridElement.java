@@ -6,12 +6,10 @@ package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.daw.resource.DeviceTypes;
-import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.graphics.GraphicsOutput;
-import com.bitwig.extension.api.graphics.Image;
 
 
 /**
@@ -170,28 +168,10 @@ public class ParamGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    protected void drawTrackInfo (final GraphicsOutput gc, final double left, final double width, final double height, final double trackRowTop, final String name, final PushConfiguration configuration)
+    protected Color getMaskColor (final PushConfiguration configuration)
     {
-        // Draw the background
-        final Color backgroundColor = configuration.getColorBackground ();
-        gc.setColor (this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
-        gc.rectangle (left, trackRowTop + 1, width, height - UNIT - 1);
-        gc.fill ();
-
-        // The tracks icon and name
-        final String iconName = this.getIcon ();
-        if (iconName != null)
-        {
-            final Color textColor = configuration.getColorText ();
-            final Image icon = ResourceHandler.getSVGImage (iconName);
-            gc.drawImage (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2.0);
-            gc.setFontSize (1.2 * UNIT);
-            drawTextInBounds (gc, name, left + DOUBLE_UNIT, height - TRACK_ROW_HEIGHT - UNIT, width - DOUBLE_UNIT, TRACK_ROW_HEIGHT, Align.LEFT, textColor);
-        }
-
-        // The track color section
-        gc.setColor (this.getColor ());
-        gc.rectangle (left, height - UNIT, width, UNIT);
-        gc.fill ();
+        if (this.deviceName != null)
+            return null;
+        return super.getMaskColor (configuration);
     }
 }

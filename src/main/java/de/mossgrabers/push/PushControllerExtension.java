@@ -12,7 +12,6 @@ import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
-import de.mossgrabers.framework.command.continuous.TempoCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
@@ -68,6 +67,7 @@ import de.mossgrabers.push.command.trigger.PageRightCommand;
 import de.mossgrabers.push.command.trigger.PanSendCommand;
 import de.mossgrabers.push.command.trigger.PushCursorCommand;
 import de.mossgrabers.push.command.trigger.QuantizeCommand;
+import de.mossgrabers.push.command.trigger.RasteredKnobCommand;
 import de.mossgrabers.push.command.trigger.ScalesCommand;
 import de.mossgrabers.push.command.trigger.SelectCommand;
 import de.mossgrabers.push.command.trigger.SelectPlayViewCommand;
@@ -94,6 +94,7 @@ import de.mossgrabers.push.mode.NoteViewSelectMode;
 import de.mossgrabers.push.mode.RibbonMode;
 import de.mossgrabers.push.mode.ScaleLayoutMode;
 import de.mossgrabers.push.mode.ScalesMode;
+import de.mossgrabers.push.mode.SessionMode;
 import de.mossgrabers.push.mode.SessionViewSelectMode;
 import de.mossgrabers.push.mode.SetupMode;
 import de.mossgrabers.push.mode.TransportMode;
@@ -247,6 +248,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         modeManager.registerMode (Modes.MODE_GROOVE, new GrooveMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_VIEW_SELECT, new NoteViewSelectMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_SESSION_VIEW_SELECT, new SessionViewSelectMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_SESSION, new SessionMode (surface, this.model));
 
         modeManager.registerMode (Modes.MODE_AUTOMATION, new AutomationMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_TRANSPORT, new TransportMode (surface, this.model));
@@ -440,7 +442,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
             this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), PushControlSurface.PUSH_KNOB1 + i, new KnobRowModeCommand<> (i, this.model, surface));
 
         this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, PushControlSurface.PUSH_KNOB9, new MasterVolumeCommand<> (this.model, surface));
-        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO, PushControlSurface.PUSH_SMALL_KNOB1, new TempoCommand<> (this.model, surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO, PushControlSurface.PUSH_SMALL_KNOB1, new RasteredKnobCommand (this.model, surface));
         this.addContinuousCommand (Commands.CONT_COMMAND_PLAY_POSITION, PushControlSurface.PUSH_SMALL_KNOB2, new PlayPositionCommand<> (this.model, surface));
         this.addContinuousCommand (Commands.COMMAND_FOOTSWITCH, PushControlSurface.PUSH_FOOTSWITCH2, new FootswitchCommand<> (this.model, surface));
 

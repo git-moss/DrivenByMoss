@@ -92,23 +92,6 @@ public class SessionViewSelectMode extends BaseMode
     }
 
 
-    private boolean isSelected (final ViewManager viewManager, final int index)
-    {
-        final boolean activeView = viewManager.isActiveView (VIEWS[index]);
-        switch (index)
-        {
-            case 0:
-                return activeView && !this.surface.getConfiguration ().isFlipSession ();
-
-            case 1:
-                return activeView && this.surface.getConfiguration ().isFlipSession ();
-
-            default:
-                return activeView;
-        }
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public void updateDisplay2 ()
@@ -144,5 +127,22 @@ public class SessionViewSelectMode extends BaseMode
         viewManager.setActiveView (viewID);
 
         this.surface.getModeManager ().restoreMode ();
+    }
+
+
+    private boolean isSelected (final ViewManager viewManager, final int index)
+    {
+        final boolean activeView = viewManager.isActiveView (VIEWS[index]);
+        switch (index)
+        {
+            case 0:
+                return activeView && !this.surface.getConfiguration ().isFlipSession ();
+
+            case 1:
+                return activeView && this.surface.getConfiguration ().isFlipSession ();
+
+            default:
+                return activeView;
+        }
     }
 }

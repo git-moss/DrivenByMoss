@@ -51,7 +51,7 @@ public class DisplayModel
     /**
      * Get the grid elements.
      *
-     * @return The elemtens
+     * @return The elements
      */
     public List<GridElement> getGridElements ()
     {

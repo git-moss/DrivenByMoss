@@ -406,6 +406,14 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
+    public int getSelectButtonId ()
+    {
+        return this.selectButtonId;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getDeleteButtonId ()
     {
         return this.deleteButtonId;
@@ -551,6 +559,14 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     public void setButtonConsumed (final int buttonID)
     {
         this.buttonConsumed[buttonID] = true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isButtonConsumed (final int buttonID)
+    {
+        return this.buttonConsumed[buttonID];
     }
 
 

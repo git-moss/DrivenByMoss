@@ -129,7 +129,7 @@ public class MidiClipElement extends AbstractGridElement
                 gc.setAntialias (AntialiasMode.BEST);
                 gc.setFontSize (top);
                 final double time = startPos + step * stepLength;
-                final String measureText = CursorClipProxy.formatMeasures (this.quartersPerMeasure, time);
+                final String measureText = CursorClipProxy.formatMeasures (this.quartersPerMeasure, time, 1);
                 drawTextInHeight (gc, measureText, x, 0, top - 1, Color.whiteColor ());
                 gc.setAntialias (AntialiasMode.OFF);
             }

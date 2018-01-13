@@ -13,8 +13,10 @@ import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.controller.DisplayMessage;
+import de.mossgrabers.push.controller.PushColors;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.controller.PushDisplay;
+import de.mossgrabers.push.mode.Modes;
 import de.mossgrabers.push.view.ColorView;
 import de.mossgrabers.push.view.ColorView.SelectMode;
 import de.mossgrabers.push.view.DrumView;
@@ -95,10 +97,10 @@ public class ClipMode extends AbstractTrackMode
     {
         final Display d = this.surface.getDisplay ();
         final CursorClipProxy clip = this.getClip ();
-        d.setCell (0, 0, "PlayStrt").setCell (1, 0, this.formatMeasures (clip.getPlayStart ()));
-        d.setCell (0, 1, "Play End").setCell (1, 1, this.formatMeasures (clip.getPlayEnd ()));
-        d.setCell (0, 2, "LoopStrt").setCell (1, 2, this.formatMeasures (clip.getLoopStart ()));
-        d.setCell (0, 3, "LopLngth").setCell (1, 3, this.formatMeasures (clip.getLoopLength ()));
+        d.setCell (0, 0, "PlayStrt").setCell (1, 0, this.formatMeasures (clip.getPlayStart (), 1));
+        d.setCell (0, 1, "Play End").setCell (1, 1, this.formatMeasures (clip.getPlayEnd (), 1));
+        d.setCell (0, 2, "LoopStrt").setCell (1, 2, this.formatMeasures (clip.getLoopStart (), 1));
+        d.setCell (0, 3, "LopLngth").setCell (1, 3, this.formatMeasures (clip.getLoopLength (), 0));
         d.setCell (0, 4, "Loop").setCell (1, 4, clip.isLoopEnabled () ? "On" : "Off").clearCell (0, 5).clearCell (1, 5);
         d.setCell (0, 6, "Shuffle").setCell (1, 6, clip.isShuffleEnabled () ? "On" : "Off");
         d.setCell (0, 7, "Accent").setCell (1, 7, clip.getFormattedAccent ()).done (0).done (1).clearRow (2).done (2);
@@ -127,10 +129,10 @@ public class ClipMode extends AbstractTrackMode
             final TrackData t6 = tb.getTrack (6);
             final TrackData t7 = tb.getTrack (7);
 
-            message.addParameterElement ("Piano Roll", this.displayMidiNotes, t0.getName (), getChannelType (t0), tb.getTrackColorEntry (0), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart ()), this.isKnobTouched[0], -1);
-            message.addParameterElement ("", false, t1.getName (), getChannelType (t1), tb.getTrackColorEntry (1), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd ()), this.isKnobTouched[1], -1);
-            message.addParameterElement ("", false, t2.getName (), getChannelType (t2), tb.getTrackColorEntry (2), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart ()), this.isKnobTouched[2], -1);
-            message.addParameterElement ("", false, t3.getName (), getChannelType (t3), tb.getTrackColorEntry (3), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength ()), this.isKnobTouched[3], -1);
+            message.addParameterElement ("Session", this.displayMidiNotes, t0.getName (), getChannelType (t0), tb.getTrackColorEntry (0), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
+            message.addParameterElement ("Piano Roll", false, t1.getName (), getChannelType (t1), tb.getTrackColorEntry (1), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);
+            message.addParameterElement ("", false, t2.getName (), getChannelType (t2), tb.getTrackColorEntry (2), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart (), 1), this.isKnobTouched[2], -1);
+            message.addParameterElement ("", false, t3.getName (), getChannelType (t3), tb.getTrackColorEntry (3), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength (), 0), this.isKnobTouched[3], -1);
             message.addParameterElement ("", false, t4.getName (), getChannelType (t4), tb.getTrackColorEntry (4), t4.isSelected (), "Loop", -1, clip.isLoopEnabled () ? "On" : "Off", this.isKnobTouched[4], -1);
             message.addParameterElement ("", false, t5.getName (), getChannelType (t5), tb.getTrackColorEntry (5), t5.isSelected (), "", -1, "", false, -1);
             message.addParameterElement ("", false, t6.getName (), getChannelType (t6), tb.getTrackColorEntry (6), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
@@ -147,10 +149,21 @@ public class ClipMode extends AbstractTrackMode
     {
         if (event != ButtonEvent.DOWN)
             return;
+
+        if (this.displayMidiNotes)
+        {
+            this.displayMidiNotes = false;
+            return;
+        }
+
         switch (index)
         {
             case 0:
-                this.displayMidiNotes = !this.displayMidiNotes;
+                this.surface.getModeManager ().setActiveMode (Modes.MODE_SESSION);
+                break;
+            case 1:
+                if (this.isPush2)
+                    this.displayMidiNotes = !this.displayMidiNotes;
                 break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();
@@ -161,6 +174,21 @@ public class ClipMode extends AbstractTrackMode
                 // not used
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateSecondRow ()
+    {
+        this.surface.updateButton (102, this.displayMidiNotes ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH2_COLOR2_WHITE);
+        this.surface.updateButton (103, this.isPush2 && !this.displayMidiNotes ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateButton (104, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateButton (105, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateButton (106, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateButton (107, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateButton (108, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateButton (109, this.displayMidiNotes ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH2_COLOR2_WHITE);
     }
 
 
@@ -177,8 +205,8 @@ public class ClipMode extends AbstractTrackMode
     }
 
 
-    private String formatMeasures (final double time)
+    private String formatMeasures (final double time, final int startOffset)
     {
-        return CursorClipProxy.formatMeasures (this.model.getQuartersPerMeasure (), time);
+        return CursorClipProxy.formatMeasures (this.model.getQuartersPerMeasure (), time, startOffset);
     }
 }

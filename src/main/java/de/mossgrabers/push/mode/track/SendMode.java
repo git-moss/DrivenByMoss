@@ -172,7 +172,6 @@ public class SendMode extends AbstractTrackMode
         }
 
         message.send ();
-
     }
 
 

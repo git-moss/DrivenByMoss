@@ -50,33 +50,70 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     public void drawGrid ()
     {
         final PadGrid padGrid = this.surface.getPadGrid ();
-        for (int i = 46; i < 100; i++)
-            padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
 
-        padGrid.light (92, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        padGrid.light (93, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
-        padGrid.light (84, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        padGrid.light (85, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
-        padGrid.light (76, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        padGrid.light (77, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        padGrid.light (68, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        padGrid.light (69, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        padGrid.light (60, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        padGrid.light (61, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
-        padGrid.light (52, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        padGrid.light (53, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
-        padGrid.light (44, LaunchpadColors.LAUNCHPAD_COLOR_RED);
-        padGrid.light (45, LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
+        if (this.surface.isPro ())
+        {
+            for (int i = 36; i < 97; i++)
+                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        }
+        else
+        {
+            padGrid.light (36, LaunchpadColors.LAUNCHPAD_COLOR_RED);
+            padGrid.light (37, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            padGrid.light (38, LaunchpadColors.LAUNCHPAD_COLOR_YELLOW);
+            padGrid.light (39, LaunchpadColors.LAUNCHPAD_COLOR_BLUE);
+            padGrid.light (40, LaunchpadColors.LAUNCHPAD_COLOR_CYAN);
+            padGrid.light (41, LaunchpadColors.LAUNCHPAD_COLOR_SKY);
+            padGrid.light (42, LaunchpadColors.LAUNCHPAD_COLOR_ORCHID);
+            padGrid.light (43, LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
 
-        padGrid.light (36, LaunchpadColors.LAUNCHPAD_COLOR_RED);
-        padGrid.light (37, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        padGrid.light (38, LaunchpadColors.LAUNCHPAD_COLOR_YELLOW);
-        padGrid.light (39, LaunchpadColors.LAUNCHPAD_COLOR_BLUE);
-        padGrid.light (40, LaunchpadColors.LAUNCHPAD_COLOR_CYAN);
-        padGrid.light (41, LaunchpadColors.LAUNCHPAD_COLOR_SKY);
-        padGrid.light (42, LaunchpadColors.LAUNCHPAD_COLOR_ORCHID);
-        padGrid.light (43, LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
-        padGrid.light (51, LaunchpadColors.LAUNCHPAD_COLOR_RED);
+            padGrid.light (44, LaunchpadColors.LAUNCHPAD_COLOR_RED);
+            padGrid.light (45, LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
+
+            for (int i = 46; i < 51; i++)
+                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+            padGrid.light (51, LaunchpadColors.LAUNCHPAD_COLOR_RED);
+            padGrid.light (52, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            padGrid.light (53, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
+
+            for (int i = 54; i < 60; i++)
+                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+            padGrid.light (60, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            padGrid.light (61, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
+
+            for (int i = 62; i < 68; i++)
+                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+            padGrid.light (68, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            padGrid.light (69, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+            for (int i = 70; i < 76; i++)
+                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+            padGrid.light (76, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            padGrid.light (77, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+            for (int i = 78; i < 84; i++)
+                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+            padGrid.light (84, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            padGrid.light (85, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
+
+            for (int i = 86; i < 92; i++)
+                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+            padGrid.light (92, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            padGrid.light (93, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
+
+            for (int i = 94; i < 97; i++)
+                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        }
+
+        padGrid.light (97, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        padGrid.light (98, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
+        padGrid.light (99, LaunchpadColors.LAUNCHPAD_COLOR_TURQUOISE_CYAN);
     }
 
 
@@ -84,8 +121,11 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (this.handleControlModes (note, velocity))
-            return;
+        if (!this.surface.isPro ())
+        {
+            if (this.handleControlModes (note, velocity))
+                return;
+        }
         if (velocity > 0)
             this.handleFunctions (note);
     }
@@ -95,14 +135,15 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     @Override
     public void updateSceneButtons ()
     {
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, LaunchpadColors.LAUNCHPAD_COLOR_CYAN);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, LaunchpadColors.LAUNCHPAD_COLOR_SKY);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, LaunchpadColors.LAUNCHPAD_COLOR_ORCHID);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_YELLOW);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_BLUE);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_RED);
+        final boolean isPro = this.surface.isPro ();
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_CYAN);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_SKY);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_ORCHID);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_YELLOW);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_BLUE);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_RED);
     }
 
 
@@ -149,6 +190,22 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     private void handleFunctions (final int note)
     {
         final View view = this.surface.getViewManager ().getActiveView ();
+
+        switch (note)
+        {
+            case 97:
+                this.model.getApplication ().addInstrumentTrack ();
+                return;
+            case 98:
+                this.model.getApplication ().addAudioTrack ();
+                return;
+            case 99:
+                this.model.getApplication ().addEffectTrack ();
+                return;
+        }
+
+        if (this.surface.isPro ())
+            return;
 
         switch (note)
         {
@@ -199,6 +256,9 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     @Override
     public void onScene (final int scene, final ButtonEvent event)
     {
+        if (this.surface.isPro ())
+            return;
+
         if (event != ButtonEvent.DOWN)
             return;
         switch (scene)
