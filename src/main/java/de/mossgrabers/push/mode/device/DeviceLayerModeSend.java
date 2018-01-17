@@ -46,7 +46,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
         final int offset = getDrumPadIndex (cd);
         final ChannelData layer = cd.getLayerOrDrumPad (offset + index);
         if (layer.doesExist ())
-            cd.changeLayerOrDrumPadSend (index, this.getCurrentSendIndex (), value);
+            cd.changeLayerOrDrumPadSend (offset + index, this.getCurrentSendIndex (), value);
     }
 
 
@@ -71,7 +71,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
             if (this.surface.isDeletePressed ())
             {
                 this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                cd.resetLayerSend (index, sendIndex);
+                cd.resetLayerOrDrumPadSend (offset + index, sendIndex);
                 return;
             }
 
@@ -81,7 +81,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
                 this.surface.getDisplay ().notify ("Send " + name + ": " + layer.getSends ()[sendIndex].getDisplayedValue ());
         }
 
-        cd.touchLayerOrDrumPadSend (index, sendIndex, isTouched);
+        cd.touchLayerOrDrumPadSend (offset + index, sendIndex, isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 

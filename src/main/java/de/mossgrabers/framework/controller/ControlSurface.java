@@ -243,6 +243,14 @@ public interface ControlSurface<C extends Configuration>
 
 
     /**
+     * Get the midi cc of the Select button.
+     *
+     * @return The midi cc
+     */
+    int getSelectButtonId ();
+
+
+    /**
      * Get the midi cc of the Delete button.
      *
      * @return The midi cc
@@ -324,6 +332,15 @@ public interface ControlSurface<C extends Configuration>
      * @param buttonID The button to set as consumed
      */
     void setButtonConsumed (int buttonID);
+
+
+    /**
+     * Test if the consumed flag is set for a button.
+     *
+     * @param buttonID The button to set as consumed
+     * @return The consumed flag
+     */
+    boolean isButtonConsumed (int buttonID);
 
 
     /**

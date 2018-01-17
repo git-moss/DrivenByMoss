@@ -1,3 +1,7 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.framework.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
@@ -18,8 +22,10 @@ import de.mossgrabers.framework.daw.BrowserProxy;
  */
 public class BrowserCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    protected Integer browserMode;
-    protected int     startRetries;
+    private static final int NUMBER_OF_RETRIES = 20;
+
+    protected Integer        browserMode;
+    protected int            startRetries;
 
 
     /**
@@ -39,17 +45,24 @@ public class BrowserCommand<S extends ControlSurface<C>, C extends Configuration
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void executeNormal (final ButtonEvent event)
     {
         if (event != ButtonEvent.UP)
             return;
 
-        if (this.surface.isShiftPressed ())
-            this.startBrowser (true, true);
-        else if (this.surface.isSelectPressed ())
+        if (this.surface.isSelectPressed ())
             this.startBrowser (true, false);
         else
             this.startBrowser (false, false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.UP)
+            this.startBrowser (true, true);
     }
 
 
@@ -92,7 +105,7 @@ public class BrowserCommand<S extends ControlSurface<C>, C extends Configuration
     {
         if (this.model.getBrowser ().isActive ())
             this.surface.getModeManager ().setActiveMode (this.browserMode);
-        else if (this.startRetries < 20)
+        else if (this.startRetries < NUMBER_OF_RETRIES)
         {
             this.startRetries++;
             this.surface.scheduleTask (this::activateMode, 200);

@@ -91,10 +91,10 @@ public class ClipMode extends AbstractTrackMode
     {
         final Display d = this.surface.getDisplay ();
         final CursorClipProxy clip = this.getClip ();
-        d.setCell (0, 0, "PlayStrt").setCell (1, 0, this.formatMeasures (clip.getPlayStart ()));
-        d.setCell (0, 1, "Play End").setCell (1, 1, this.formatMeasures (clip.getPlayEnd ()));
-        d.setCell (0, 2, "LoopStrt").setCell (1, 2, this.formatMeasures (clip.getLoopStart ()));
-        d.setCell (0, 3, "LopLngth").setCell (1, 3, this.formatMeasures (clip.getLoopLength ()));
+        d.setCell (0, 0, "PlayStrt").setCell (1, 0, this.formatMeasures (clip.getPlayStart (), 1));
+        d.setCell (0, 1, "Play End").setCell (1, 1, this.formatMeasures (clip.getPlayEnd (), 1));
+        d.setCell (0, 2, "LoopStrt").setCell (1, 2, this.formatMeasures (clip.getLoopStart (), 1));
+        d.setCell (0, 3, "LopLngth").setCell (1, 3, this.formatMeasures (clip.getLoopLength (), 0));
         d.setCell (0, 4, "Loop").setCell (1, 4, clip.isLoopEnabled () ? "On" : "Off").clearCell (0, 5).clearCell (1, 5);
         d.setCell (0, 6, "Shuffle").setCell (1, 6, clip.isShuffleEnabled () ? "On" : "Off");
         d.setCell (0, 7, "Accent").setCell (1, 7, clip.getFormattedAccent ()).done (0).done (1).clearRow (2).done (2);
@@ -119,10 +119,10 @@ public class ClipMode extends AbstractTrackMode
         final TrackData t6 = tb.getTrack (6);
         final TrackData t7 = tb.getTrack (7);
 
-        message.addParameterElement ("", false, t0.getName (), t0.getType (), tb.getTrackColorEntry (0), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart ()), this.isKnobTouched[0], -1);
-        message.addParameterElement ("", false, t1.getName (), t1.getType (), tb.getTrackColorEntry (1), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd ()), this.isKnobTouched[1], -1);
-        message.addParameterElement ("", false, t2.getName (), t2.getType (), tb.getTrackColorEntry (2), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart ()), this.isKnobTouched[2], -1);
-        message.addParameterElement ("", false, t3.getName (), t3.getType (), tb.getTrackColorEntry (3), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength ()), this.isKnobTouched[3], -1);
+        message.addParameterElement ("", false, t0.getName (), t0.getType (), tb.getTrackColorEntry (0), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
+        message.addParameterElement ("", false, t1.getName (), t1.getType (), tb.getTrackColorEntry (1), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);
+        message.addParameterElement ("", false, t2.getName (), t2.getType (), tb.getTrackColorEntry (2), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart (), 1), this.isKnobTouched[2], -1);
+        message.addParameterElement ("", false, t3.getName (), t3.getType (), tb.getTrackColorEntry (3), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength (), 0), this.isKnobTouched[3], -1);
         message.addParameterElement ("", false, t4.getName (), t4.getType (), tb.getTrackColorEntry (4), t4.isSelected (), "Loop", -1, clip.isLoopEnabled () ? "On" : "Off", this.isKnobTouched[4], -1);
         message.addParameterElement ("", false, t5.getName (), t5.getType (), tb.getTrackColorEntry (5), t5.isSelected (), "", -1, "", false, -1);
         message.addParameterElement ("", false, t6.getName (), t6.getType (), tb.getTrackColorEntry (6), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
@@ -151,8 +151,8 @@ public class ClipMode extends AbstractTrackMode
     }
 
 
-    private String formatMeasures (final double time)
+    private String formatMeasures (final double time, final int startOffset)
     {
-        return CursorClipProxy.formatMeasures (this.model.getQuartersPerMeasure (), time);
+        return CursorClipProxy.formatMeasures (this.model.getQuartersPerMeasure (), time, startOffset);
     }
 }

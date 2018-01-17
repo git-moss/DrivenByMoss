@@ -328,7 +328,7 @@ public abstract class AbstractDrumView<S extends ControlSurface<C>, C extends Co
 
 
     /**
-     * Hook for playing notes with grids who do not use midi notes.
+     * Hook for playing notes with grids which do not use midi notes.
      *
      * @param note The note to play
      * @param velocity The velocity of the note
@@ -405,26 +405,24 @@ public abstract class AbstractDrumView<S extends ControlSurface<C>, C extends Co
     }
 
 
-    protected void onSelect (final ButtonEvent event)
-    {
-        if (event != ButtonEvent.LONG)
-            this.updateNoteMapping ();
-    }
-
-
-    protected void onDelete (final ButtonEvent event)
-    {
-        if (event != ButtonEvent.LONG)
-            this.updateNoteMapping ();
-    }
-
-
     private boolean canPadsBeTurnedOn ()
     {
         if (!this.model.canSelectedTrackHoldNotes ())
             return false;
-        final boolean isMute = !this.surface.isMutePressed ();
-        return !this.surface.isSelectPressed () && !this.surface.isDeletePressed () && isMute && !this.surface.isSoloPressed ();
+
+        if (this.surface.isSelectPressed () && !this.surface.isButtonConsumed (this.surface.getSelectButtonId ()))
+            return false;
+
+        if (this.surface.isDeletePressed () && !this.surface.isButtonConsumed (this.surface.getDeleteButtonId ()))
+            return false;
+
+        if (this.surface.isMutePressed () && !this.surface.isButtonConsumed (this.surface.getMuteButtonId ()))
+            return false;
+
+        if (this.surface.isSoloPressed () && !this.surface.isButtonConsumed (this.surface.getSoloButtonId ()))
+            return false;
+
+        return true;
     }
 
 

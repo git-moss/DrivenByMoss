@@ -288,7 +288,7 @@ public class DeviceParamsMode extends BaseMode
         this.surface.updateButton (105, off);
         this.surface.updateButton (106, this.showDevices ? white : orange);
         this.surface.updateButton (107, off);
-        this.surface.updateButton (108, cd.isPlugin () ? cd.isWindowOpen () ? turquoise : grey : off);
+        this.surface.updateButton (108, cd.isWindowOpen () ? turquoise : grey);
 
         this.surface.updateButton (109, white);
     }
@@ -363,8 +363,6 @@ public class DeviceParamsMode extends BaseMode
 
         for (int i = 0; i < 8; i++)
         {
-            final String topMenu = i == 6 && !cd.isPlugin () ? null : MENU[i];
-
             boolean isTopMenuOn;
             switch (i)
             {
@@ -381,7 +379,7 @@ public class DeviceParamsMode extends BaseMode
                     isTopMenuOn = !this.showDevices;
                     break;
                 case 6:
-                    isTopMenuOn = cd.isPlugin () && cd.isWindowOpen ();
+                    isTopMenuOn = cd.isWindowOpen ();
                     break;
                 case 7:
                     isTopMenuOn = true;
@@ -418,7 +416,7 @@ public class DeviceParamsMode extends BaseMode
             final boolean parameterIsActive = this.isKnobTouched[i];
             final int parameterModulatedValue = valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1);
 
-            message.addParameterElement (topMenu, isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+            message.addParameterElement (MENU[i], isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
 
         message.send ();

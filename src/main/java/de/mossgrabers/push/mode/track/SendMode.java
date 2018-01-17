@@ -117,7 +117,6 @@ public class SendMode extends AbstractTrackMode
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
-
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
 
         final int sendOffset = config.isSendsAreToggled () ? 4 : 0;

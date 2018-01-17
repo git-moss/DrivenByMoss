@@ -43,7 +43,7 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
         final int offset = getDrumPadIndex (cd);
         final ChannelData layer = cd.getLayerOrDrumPad (offset + index);
         if (layer.doesExist ())
-            cd.changeLayerOrDrumPadVolume (index, value);
+            cd.changeLayerOrDrumPadVolume (offset + index, value);
     }
 
 
@@ -66,7 +66,7 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
             if (this.surface.isDeletePressed ())
             {
                 this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                cd.resetLayerOrDrumPadVolume (index);
+                cd.resetLayerOrDrumPadVolume (offset + index);
                 return;
             }
 

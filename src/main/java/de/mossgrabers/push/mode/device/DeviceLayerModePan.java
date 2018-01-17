@@ -42,7 +42,7 @@ public class DeviceLayerModePan extends DeviceLayerMode
         final int offset = getDrumPadIndex (cd);
         final ChannelData layer = cd.getLayerOrDrumPad (offset + index);
         if (layer.doesExist ())
-            cd.changeLayerOrDrumPadPan (index, value);
+            cd.changeLayerOrDrumPadPan (offset + index, value);
     }
 
 
@@ -65,7 +65,7 @@ public class DeviceLayerModePan extends DeviceLayerMode
             if (this.surface.isDeletePressed ())
             {
                 this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                cd.resetLayerOrDrumPadPan (index);
+                cd.resetLayerOrDrumPadPan (offset + index);
                 return;
             }
 

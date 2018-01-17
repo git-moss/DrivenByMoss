@@ -8,7 +8,6 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.BrowserProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.data.BrowserColumnData;
 import de.mossgrabers.framework.daw.data.BrowserColumnItemData;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -176,29 +175,33 @@ public class DeviceBrowserMode extends BaseMode
     public void updateDisplay1 ()
     {
         final BrowserProxy browser = this.model.getBrowser ();
-        final Display d = this.surface.getDisplay ();
-        final boolean isPresetSession = browser.isPresetContentType ();
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
-        if (isPresetSession && !(browser.isActive () && cd.hasSelectedDevice ()))
+        if (!browser.isActive ())
         {
             this.surface.getModeManager ().restoreMode ();
             return;
         }
 
-        d.clear ();
+        final Display d = this.surface.getDisplay ().clear ();
 
         switch (this.selectionMode)
         {
             case DeviceBrowserMode.SELECTION_OFF:
                 final String selectedResult = browser.getSelectedResult ();
-                final String deviceName = cd.getName ();
-                d.setCell (0, 7, browser.getSelectedContentType ()).setBlock (3, 0, " Selected Device:").setBlock (3, 1, deviceName.length () == 0 ? "None" : deviceName);
+                final String deviceName = this.model.getCursorDevice ().getName ();
+                String selectedContentType = browser.getSelectedContentType ();
+                if (this.filterColumn == -1)
+                    selectedContentType = PushDisplay.RIGHT_ARROW + selectedContentType;
+
+                d.setCell (0, 7, selectedContentType).setBlock (3, 0, " Selected Device:").setBlock (3, 1, deviceName.length () == 0 ? "None" : deviceName);
+                final boolean isPresetSession = browser.isPresetContentType ();
                 d.setBlock (3, 2, isPresetSession ? " Selected Preset:" : "").setBlock (3, 3, isPresetSession ? selectedResult == null || selectedResult.length () == 0 ? "None" : selectedResult : "");
 
                 for (int i = 0; i < 7; i++)
                 {
                     final BrowserColumnData column = this.getFilterColumn (i);
-                    final String name = column == null ? "" : this.optimizeName (column.getName (), 8);
+                    String name = column == null ? "" : this.optimizeName (column.getName (), 8);
+                    if (i == this.filterColumn)
+                        name = PushDisplay.RIGHT_ARROW + name;
                     d.setCell (0, i, name).setCell (1, i, getColumnName (column));
                 }
                 break;
@@ -236,7 +239,6 @@ public class DeviceBrowserMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         final BrowserProxy browser = this.model.getBrowser ();
         if (!browser.isActive ())
         {
@@ -244,6 +246,7 @@ public class DeviceBrowserMode extends BaseMode
             return;
         }
 
+        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         switch (this.selectionMode)
         {
             case DeviceBrowserMode.SELECTION_OFF:
