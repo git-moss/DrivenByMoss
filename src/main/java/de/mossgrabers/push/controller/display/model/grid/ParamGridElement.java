@@ -164,14 +164,4 @@ public class ParamGridElement extends ChannelSelectionGridElement
             return DeviceTypes.getIconId (this.deviceName);
         return super.getIcon ();
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected Color getMaskColor (final PushConfiguration configuration)
-    {
-        if (this.deviceName != null)
-            return null;
-        return super.getMaskColor (configuration);
-    }
 }

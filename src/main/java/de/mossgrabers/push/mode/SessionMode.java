@@ -202,7 +202,19 @@ public class SessionMode extends BaseMode
 
                 final SlotData [] slots = tb.getTrack (x).getSlots ();
                 if (slots[y].doesExist ())
-                    d.setCell (row, col, this.optimizeName (slots[y].getName (8), 8));
+                {
+                    String optimizedName = this.optimizeName (slots[y].getName (8), 8);
+                    // TODO Bugfix required: Workaround to displaying unnamed clips, since
+                    // doesExist does not work reliably
+                    if (optimizedName.length () == 0)
+                    {
+                        double [] color = slots[y].getColor ();
+                        if (color[0] != 0 || color[1] != 0 || color[2] != 0)
+                            optimizedName = "[------]";
+                    }
+
+                    d.setCell (row, col, optimizedName);
+                }
             }
         }
         d.allDone ();
