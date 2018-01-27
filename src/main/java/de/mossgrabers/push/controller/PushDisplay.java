@@ -291,10 +291,11 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
             return;
 
         final Bitmap image = this.virtualDisplay.getImage ();
+        // TODO
         if (show)
             image.showDisplayWindow ();
-        else
-            image.hideDisplayWindow ();
+        // else
+        // image.hideDisplayWindow ();
     }
 
 

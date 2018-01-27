@@ -202,7 +202,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 break;
         }
 
-        config.setCurrentMixMode (modeManager.getActiveModeId ());
+        config.setDebugMode (modeManager.getActiveModeId ());
     }
 
 

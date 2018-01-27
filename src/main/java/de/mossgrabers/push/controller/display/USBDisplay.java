@@ -8,6 +8,7 @@ import com.bitwig.extension.api.graphics.Bitmap;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.UsbDevice;
 import com.bitwig.extension.controller.api.UsbEndpoint;
+import com.bitwig.extension.controller.api.UsbTransferResult;
 import com.bitwig.extension.controller.api.UsbTransferStatus;
 
 import java.nio.ByteBuffer;
@@ -60,7 +61,8 @@ public class USBDisplay
     private final ByteBuffer     headerBuffer;
     private final ByteBuffer     imageBuffer;
 
-    boolean                      isSending        = false;
+    private boolean              isSending        = false;
+    private ControllerHost       host;
 
 
     /**
@@ -70,6 +72,8 @@ public class USBDisplay
      */
     public USBDisplay (final ControllerHost host)
     {
+        this.host = host;
+
         try
         {
             this.usbDevice = host.getUsbDevice (0);
@@ -126,12 +130,19 @@ public class USBDisplay
 
         byteBuffer.rewind ();
 
-        this.usbEndpoint.bulkTransfer (this.headerBuffer, (status, sent) -> {
-            if (status == UsbTransferStatus.Completed)
-                this.usbEndpoint.bulkTransfer (this.imageBuffer, (status2, sent2) -> {
-                    this.isSending = false;
-                }, TIMEOUT);
-        }, TIMEOUT);
+        UsbTransferResult result = this.usbEndpoint.bulkTransfer (this.headerBuffer, TIMEOUT);
+        UsbTransferStatus status = result.status ();
+        if (status == UsbTransferStatus.Completed)
+        {
+            result = this.usbEndpoint.bulkTransfer (this.imageBuffer, TIMEOUT);
+            status = result.status ();
+            if (status != UsbTransferStatus.Completed)
+                this.host.errorln ("USB transmission error: " + status);
+        }
+        else
+            this.host.errorln ("USB transmission error: " + status);
+
+        this.isSending = false;
     }
 
 

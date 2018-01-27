@@ -64,7 +64,7 @@ public class TrackMode extends AbstractTrackMode
             switch (index)
             {
                 case 2:
-                    tb.changeCrossfadeModeAsNumber (selectedTrack.getIndex (), value);
+                    this.changeCrossfader (value, selectedTrack);
                     break;
                 case 3:
                     break;
@@ -80,7 +80,7 @@ public class TrackMode extends AbstractTrackMode
         {
             case 2:
                 if (config.isDisplayCrossfader ())
-                    tb.changeCrossfadeModeAsNumber (selectedTrack.getIndex (), value);
+                    this.changeCrossfader (value, selectedTrack);
                 else
                     ((TrackBankProxy) tb).changeSend (selectedTrack.getIndex (), 0, value);
                 break;
@@ -88,6 +88,18 @@ public class TrackMode extends AbstractTrackMode
                 ((TrackBankProxy) tb).changeSend (selectedTrack.getIndex (), index - (config.isDisplayCrossfader () ? 3 : 2), value);
                 break;
         }
+    }
+
+
+    private void changeCrossfader (final int value, final TrackData selectedTrack)
+    {
+        // Slow down scrolling
+        this.movementCounter++;
+        if (this.movementCounter < SCROLL_RATE)
+            return;
+        this.movementCounter = 0;
+
+        this.model.getCurrentTrackBank ().changeCrossfadeModeAsNumber (selectedTrack.getIndex (), value);
     }
 
 

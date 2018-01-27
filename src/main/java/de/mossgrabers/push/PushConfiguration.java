@@ -134,7 +134,6 @@ public class PushConfiguration extends AbstractConfiguration
     private TrackState             trackState                       = TrackState.MUTE;
     private Integer                debugMode                        = Modes.MODE_TRACK;
     private boolean                isDisplayWindowVisible           = false;
-    private Integer                currentMixMode                   = Modes.MODE_TRACK;
 
     // Only Push 1
     private int                    velocityCurve                    = 1;
@@ -183,6 +182,7 @@ public class PushConfiguration extends AbstractConfiguration
     private SettableColorValue     colorRecordSetting;
     private SettableColorValue     colorSoloSetting;
     private SettableColorValue     colorMuteSetting;
+    private SettableEnumValue      debugModeSetting;
 
 
     /**
@@ -705,24 +705,13 @@ public class PushConfiguration extends AbstractConfiguration
 
 
     /**
-     * Set the current mode which is selected for mixing.
+     * Get the current mode which is selected for mixing.
      *
      * @return The ID of the current mode which is selected for mixing.
      */
     public Integer getCurrentMixMode ()
     {
-        return this.currentMixMode;
-    }
-
-
-    /**
-     * Get the current mode which is selected for mixing.
-     *
-     * @param currentMixMode The ID of the current mode which is selected for mixing.
-     */
-    public void setCurrentMixMode (final Integer currentMixMode)
-    {
-        this.currentMixMode = currentMixMode;
+        return Modes.isTrackMode (this.debugMode) ? this.debugMode : null;
     }
 
 
@@ -866,6 +855,17 @@ public class PushConfiguration extends AbstractConfiguration
     public Integer getDebugMode ()
     {
         return this.debugMode;
+    }
+
+
+    /**
+     * Set the selected display mode for debugging.
+     *
+     * @param debugMode The ID of a mode
+     */
+    public void setDebugMode (final Integer debugMode)
+    {
+        this.debugModeSetting.set (debugMode.toString ());
     }
 
 
@@ -1133,7 +1133,8 @@ public class PushConfiguration extends AbstractConfiguration
             i++;
         }
 
-        prefs.getEnumSetting ("Display Mode", CATEGORY_DEBUG, modes, Modes.MODE_TRACK.toString ()).addValueObserver (value -> {
+        this.debugModeSetting = prefs.getEnumSetting ("Display Mode", CATEGORY_DEBUG, modes, Modes.MODE_TRACK.toString ());
+        this.debugModeSetting.addValueObserver (value -> {
             this.debugMode = Integer.valueOf (value);
             this.notifyObservers (DEBUG_MODE);
         });

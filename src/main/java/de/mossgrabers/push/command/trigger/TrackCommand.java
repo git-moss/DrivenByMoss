@@ -81,7 +81,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
                 modeManager.setActiveMode (Modes.MODE_TRACK);
         }
 
-        config.setCurrentMixMode (modeManager.getActiveModeId ());
+        config.setDebugMode (modeManager.getActiveModeId ());
 
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final TrackData track = tb.getSelectedTrack ();

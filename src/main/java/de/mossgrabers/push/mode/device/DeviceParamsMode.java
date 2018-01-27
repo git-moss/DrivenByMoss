@@ -238,24 +238,27 @@ public class DeviceParamsMode extends BaseMode
         if (event != ButtonEvent.DOWN)
             return;
         final CursorDeviceProxy device = this.model.getCursorDevice ();
-        if (!device.hasSelectedDevice ())
-            return;
         switch (index)
         {
             case 0:
-                device.toggleEnabledState ();
+                if (device.hasSelectedDevice ())
+                    device.toggleEnabledState ();
                 break;
             case 1:
-                device.toggleParameterPageSectionVisible ();
+                if (device.hasSelectedDevice ())
+                    device.toggleParameterPageSectionVisible ();
                 break;
             case 2:
-                device.toggleExpanded ();
+                if (device.hasSelectedDevice ())
+                    device.toggleExpanded ();
                 break;
             case 4:
-                this.showDevices = !this.showDevices;
+                if (device.hasSelectedDevice ())
+                    this.showDevices = !this.showDevices;
                 break;
             case 6:
-                device.toggleWindowOpen ();
+                if (device.hasSelectedDevice ())
+                    device.toggleWindowOpen ();
                 break;
             case 7:
                 this.moveUp ();
@@ -268,10 +271,13 @@ public class DeviceParamsMode extends BaseMode
     @Override
     public void updateSecondRow ()
     {
+        final int white = this.isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE;
+
         final CursorDeviceProxy cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
             this.disableSecondRow ();
+            this.surface.updateButton (109, white);
             return;
         }
 
@@ -279,7 +285,6 @@ public class DeviceParamsMode extends BaseMode
         final int grey = this.isPush2 ? PushColors.PUSH2_COLOR2_GREY_LO : PushColors.PUSH1_COLOR2_GREY_LO;
         final int orange = this.isPush2 ? PushColors.PUSH2_COLOR2_ORANGE : PushColors.PUSH1_COLOR2_ORANGE;
         final int off = this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
-        final int white = this.isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE;
         final int turquoise = this.isPush2 ? PushColors.PUSH2_COLOR2_TURQUOISE_HI : PushColors.PUSH1_COLOR2_TURQUOISE_HI;
 
         this.surface.updateButton (102, cd.isEnabled () ? green : grey);
@@ -344,16 +349,20 @@ public class DeviceParamsMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
+        final PushDisplay pushDisplay = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = pushDisplay.createMessage ();
+
         if (!this.model.getCursorDevice ().hasSelectedDevice ())
         {
-            ((PushDisplay) this.surface.getDisplay ()).createMessage ().setMessage (2, "Please select a device or press 'Add Device'...").send ();
+            for (int i = 0; i < 8; i++)
+                message.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
+            message.send ();
             return;
         }
 
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final String color = tb.getSelectedTrackColorEntry ();
 
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         final ValueChanger valueChanger = this.model.getValueChanger ();
 
         final CursorDeviceProxy cd = this.model.getCursorDevice ();
@@ -409,11 +418,12 @@ public class DeviceParamsMode extends BaseMode
             final double [] bottomMenuColor = BitwigColors.getColorEntry (color);
             final ParameterData param = this.model.getCursorDevice ().getFXParam (i);
             final boolean exists = param.doesExist ();
-            final String parameterName = exists ? param.getName () : "";
+            final String parameterName = exists ? param.getName (9) : "";
             final int parameterValue = valueChanger.toDisplayValue (exists ? param.getValue () : 0);
             final String parameterValueStr = exists ? param.getDisplayedValue (8) : "";
             final boolean parameterIsActive = this.isKnobTouched[i];
             final int parameterModulatedValue = valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1);
+
             message.addParameterElement (MENU[i], isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
 

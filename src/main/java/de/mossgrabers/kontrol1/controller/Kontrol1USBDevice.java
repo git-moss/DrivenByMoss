@@ -7,6 +7,7 @@ package de.mossgrabers.kontrol1.controller;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.UsbDevice;
 import com.bitwig.extension.controller.api.UsbEndpoint;
+import com.bitwig.extension.controller.api.UsbTransferResult;
 import com.bitwig.extension.controller.api.UsbTransferStatus;
 
 import java.nio.ByteBuffer;
@@ -513,10 +514,11 @@ public class Kontrol1USBDevice
      */
     public void init ()
     {
-        this.usbEndpointDisplay.bulkTransfer (this.initBuffer, (status, sent) -> {
-            if (status != UsbTransferStatus.Completed)
-                this.host.errorln ("USB transmission error: " + status);
-        }, TIMEOUT);
+        final UsbTransferResult result = this.usbEndpointDisplay.bulkTransfer (this.initBuffer, TIMEOUT);
+        final UsbTransferStatus status = result.status ();
+        if (status != UsbTransferStatus.Completed)
+            this.host.errorln ("USB transmission error: " + status);
+
     }
 
 
@@ -528,9 +530,10 @@ public class Kontrol1USBDevice
         if (this.usbEndpointUI == null)
             return;
 
-        this.usbEndpointUI.bulkTransfer (this.uiBuffer, (status, received) -> {
+        this.usbEndpointUI.asyncBulkTransfer (this.uiBuffer, (result) -> {
+            final UsbTransferStatus status = result.status ();
             if (status == UsbTransferStatus.Completed)
-                this.processMessage (received);
+                this.processMessage (result.actualLength ());
             else
                 this.host.errorln ("USB receive error: " + status);
             this.uiBuffer.clear ();
@@ -700,12 +703,12 @@ public class Kontrol1USBDevice
             }
 
             this.busySendingDisplay = true;
-            this.usbEndpointDisplay.bulkTransfer (this.displayBuffer, (status, sent) -> {
-                this.busySendingDisplay = false;
-                if (status != UsbTransferStatus.Completed)
-                    this.host.println ("Transmission error: " + status);
-            }, TIMEOUT);
 
+            final UsbTransferResult result = this.usbEndpointDisplay.bulkTransfer (this.displayBuffer, TIMEOUT);
+            final UsbTransferStatus status = result.status ();
+            this.busySendingDisplay = false;
+            if (status != UsbTransferStatus.Completed)
+                this.host.println ("Transmission error: " + status);
         }
     }
 
@@ -756,11 +759,12 @@ public class Kontrol1USBDevice
         this.ledBuffer.put ((byte) 0);
 
         this.busySendingLEDs = true;
-        this.usbEndpointDisplay.bulkTransfer (this.ledBuffer, (status, sent) -> {
-            this.busySendingLEDs = false;
-            if (status != UsbTransferStatus.Completed)
-                this.host.errorln ("USB transmission error: " + status);
-        }, TIMEOUT);
+
+        final UsbTransferResult result = this.usbEndpointDisplay.bulkTransfer (this.ledBuffer, TIMEOUT);
+        final UsbTransferStatus status = result.status ();
+        this.busySendingLEDs = false;
+        if (status != UsbTransferStatus.Completed)
+            this.host.errorln ("USB transmission error: " + status);
     }
 
 
@@ -801,11 +805,12 @@ public class Kontrol1USBDevice
         this.keyLedBuffer.put ((byte) 0x0);
 
         this.busySendingKeyLEDs = true;
-        this.usbEndpointDisplay.bulkTransfer (this.keyLedBuffer, (status, sent) -> {
-            this.busySendingKeyLEDs = false;
-            if (status != UsbTransferStatus.Completed)
-                this.host.errorln ("USB transmission error: " + status);
-        }, TIMEOUT);
+
+        final UsbTransferResult result = this.usbEndpointDisplay.bulkTransfer (this.keyLedBuffer, TIMEOUT);
+        final UsbTransferStatus status = result.status ();
+        this.busySendingKeyLEDs = false;
+        if (status != UsbTransferStatus.Completed)
+            this.host.errorln ("USB transmission error: " + status);
     }
 
 

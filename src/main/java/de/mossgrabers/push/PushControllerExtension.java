@@ -187,12 +187,14 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         final TrackBankProxy trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
+        this.model.getEffectTrackBank ().addTrackSelectionObserver (this::handleTrackChange);
         this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
             final PushControlSurface surface = this.getSurface ();
+            final ModeManager modeManager = surface.getModeManager ();
             if (isSelected)
-                surface.getModeManager ().setActiveMode (Modes.MODE_MASTER);
-            else
-                surface.getModeManager ().restoreMode ();
+                modeManager.setActiveMode (Modes.MODE_MASTER);
+            else if (modeManager.isActiveMode (Modes.MODE_MASTER))
+                modeManager.restoreMode ();
         });
     }
 
@@ -479,7 +481,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         this.getHost ().scheduleTask ( () -> {
             final PushControlSurface surface = this.getSurface ();
             surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
-            surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
+            // surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
         }, 200);
     }
 
