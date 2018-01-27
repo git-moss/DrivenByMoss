@@ -23,8 +23,12 @@ import java.util.Arrays;
  */
 public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConfiguration>
 {
-    protected boolean []    isKnobTouched;
-    protected final boolean isPush2;
+    protected static final int SCROLL_RATE     = 8;
+
+    protected int              movementCounter = 0;
+
+    protected boolean []       isKnobTouched;
+    protected final boolean    isPush2;
 
 
     /**

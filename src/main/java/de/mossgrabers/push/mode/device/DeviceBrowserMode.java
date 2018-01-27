@@ -28,11 +28,8 @@ public class DeviceBrowserMode extends BaseMode
     private static final int SELECTION_PRESET = 1;
     private static final int SELECTION_FILTER = 2;
 
-    private static final int SCROLL_RATE      = 8;
-
     private int              selectionMode;
     private int              filterColumn;
-    private int              movementCounter  = 0;
 
 
     /**
