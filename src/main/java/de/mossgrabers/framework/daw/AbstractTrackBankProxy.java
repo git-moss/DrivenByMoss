@@ -713,6 +713,25 @@ public abstract class AbstractTrackBankProxy
 
 
     /**
+     * Find the color of the first clip of the scene.
+     *
+     * @param scene The index of the scene
+     * @return The color as an identifier string. Returns green if none is found
+     */
+    public String getColorOfFirstClipInScene (final int scene)
+    {
+        for (int t = 0; t < this.getNumTracks (); t++)
+        {
+            final SlotData slotData = this.getTrack (t).getSlots ()[scene];
+            if (slotData.doesExist () && slotData.hasContent ())
+                return BitwigColors.getColorIndex (slotData.getColor ());
+        }
+
+        return BitwigColors.BITWIG_COLOR_GREEN;
+    }
+
+
+    /**
      * Launch a scene.
      *
      * @param scene The index of the scene
@@ -843,12 +862,108 @@ public abstract class AbstractTrackBankProxy
 
 
     /**
+     * Select a clip.
+     *
+     * @param trackIndex The index of the track
+     * @param slotIndex The index of the slot
+     */
+    public void selectClip (final int trackIndex, final int slotIndex)
+    {
+        this.getClipLauncherSlots (trackIndex).select (slotIndex);
+    }
+
+
+    /**
+     * Launch a clip.
+     *
+     * @param trackIndex The index of the track
+     * @param slotIndex The index of the slot
+     */
+    public void launchClip (final int trackIndex, final int slotIndex)
+    {
+        this.getClipLauncherSlots (trackIndex).launch (slotIndex);
+    }
+
+
+    /**
+     * Record a clip.
+     *
+     * @param trackIndex The index of the track
+     * @param slotIndex The index of the slot
+     */
+    public void recordClip (final int trackIndex, final int slotIndex)
+    {
+        this.getClipLauncherSlots (trackIndex).record (slotIndex);
+    }
+
+
+    /**
+     * Create a clip.
+     *
+     * @param trackIndex The index of the track
+     * @param slotIndex The index of the slot
+     * @param length The length of the clip
+     */
+    public void createClip (final int trackIndex, final int slotIndex, final int length)
+    {
+        this.getClipLauncherSlots (trackIndex).createEmptyClip (slotIndex, length);
+    }
+
+
+    /**
+     * Delete a clip.
+     *
+     * @param trackIndex The index of the track
+     * @param slotIndex The index of the slot
+     */
+    public void deleteClip (final int trackIndex, final int slotIndex)
+    {
+        this.getClipLauncherSlots (trackIndex).deleteClip (slotIndex);
+    }
+
+
+    /**
+     * Duplicate a clip.
+     *
+     * @param trackIndex The index of the track
+     * @param slotIndex The index of the slot
+     */
+    public void duplicateClip (final int trackIndex, final int slotIndex)
+    {
+        this.getClipLauncherSlots (trackIndex).duplicateClip (slotIndex);
+    }
+
+
+    /**
+     * Opens the context browser to insert a clip.
+     *
+     * @param trackIndex The index of the track
+     * @param slotIndex The index of the slot
+     */
+    public void browseToInsertClip (final int trackIndex, final int slotIndex)
+    {
+        this.getClipLauncherSlots (trackIndex).getItemAt (slotIndex).browseToInsertClip ();
+    }
+
+
+    /**
+     * Scroll to the next clip page.
+     *
+     * @param trackIndex The index of the track
+     */
+    public void scrollClipPageForwards (final int trackIndex)
+    {
+        this.getClipLauncherSlots (trackIndex).scrollPageForwards ();
+    }
+
+
+    /**
      * Get the clip launcher slots of a track.
      *
      * @param index The index of the track
      * @return The clip launcher slots
      */
-    public ClipLauncherSlotBank getClipLauncherSlots (final int index)
+    private ClipLauncherSlotBank getClipLauncherSlots (final int index)
     {
         return this.trackBank.getChannel (index).clipLauncherSlotBank ();
     }

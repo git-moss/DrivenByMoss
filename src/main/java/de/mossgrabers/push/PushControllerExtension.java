@@ -189,10 +189,11 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         this.model.getEffectTrackBank ().addTrackSelectionObserver (this::handleTrackChange);
         this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
             final PushControlSurface surface = this.getSurface ();
+            final ModeManager modeManager = surface.getModeManager ();
             if (isSelected)
-                surface.getModeManager ().setActiveMode (Modes.MODE_MASTER);
-            else
-                surface.getModeManager ().restoreMode ();
+                modeManager.setActiveMode (Modes.MODE_MASTER);
+            else if (modeManager.isActiveMode (Modes.MODE_MASTER))
+                modeManager.restoreMode ();
         });
     }
 
@@ -599,7 +600,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
             tbe.setVolumeIndication (i, isEffect);
             tbe.setPanIndication (i, isEffect && isPan);
 
-            cursorDevice.getParameter (i).setIndication (true);
+            cursorDevice.indicateParameter (i, true);
         }
     }
 

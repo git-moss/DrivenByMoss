@@ -24,8 +24,6 @@ import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.ViewManager;
 
-import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
-
 
 /**
  * The Shift view.
@@ -397,22 +395,21 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         final TrackData t = tb.getSelectedTrack ();
         if (t != null)
         {
-            final SlotData [] slotIndexes = tb.getSelectedSlots (t.getIndex ());
+            int trackIndex = t.getIndex ();
+            final SlotData [] slotIndexes = tb.getSelectedSlots (trackIndex);
             final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
             for (int i = 0; i < 8; i++)
             {
                 final int sIndex = (slotIndex + i) % 8;
                 final SlotData s = t.getSlots ()[sIndex];
-                if (!s.hasContent ())
-                {
-                    final ClipLauncherSlotBank slots = tb.getClipLauncherSlots (t.getIndex ());
-                    slots.createEmptyClip (sIndex, (int) Math.pow (2, this.surface.getConfiguration ().getNewClipLength ()));
-                    if (slotIndex != sIndex)
-                        slots.select (sIndex);
-                    slots.launch (sIndex);
-                    this.model.getTransport ().setLauncherOverdub (true);
-                    return;
-                }
+                if (s.hasContent ())
+                    continue;
+                tb.createClip (trackIndex, sIndex, (int) Math.pow (2, this.surface.getConfiguration ().getNewClipLength ()));
+                if (slotIndex != sIndex)
+                    tb.selectClip (trackIndex, sIndex);
+                tb.launchClip (trackIndex, sIndex);
+                this.model.getTransport ().setLauncherOverdub (true);
+                return;
             }
         }
         this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.");

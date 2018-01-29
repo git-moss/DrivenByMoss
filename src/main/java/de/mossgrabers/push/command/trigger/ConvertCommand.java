@@ -7,11 +7,8 @@ package de.mossgrabers.push.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.ApplicationProxy;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
-
-import com.bitwig.extension.controller.api.Action;
 
 
 /**
@@ -37,15 +34,7 @@ public class ConvertCommand extends AbstractTriggerCommand<PushControlSurface, P
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        final ApplicationProxy application = this.model.getApplication ();
-        final Action action = application.getAction (this.surface.isShiftPressed () ? "slice_to_multi_sampler_track" : "slice_to_drum_track");
-        if (action == null)
-        {
-            this.surface.errorln ("Slice action not found.");
-            return;
-        }
-        action.invoke ();
+        if (event == ButtonEvent.DOWN)
+            this.model.getApplication ().invokeAction (this.surface.isShiftPressed () ? "slice_to_multi_sampler_track" : "slice_to_drum_track");
     }
 }

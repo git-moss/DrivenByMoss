@@ -365,7 +365,7 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
             tbe.setVolumeIndication (i, isEffect && isVolume);
             tbe.setPanIndication (i, isEffect && isPan);
 
-            cursorDevice.getParameter (i).setIndication (isDevice);
+            cursorDevice.indicateParameter (i, isDevice);
         }
     }
 

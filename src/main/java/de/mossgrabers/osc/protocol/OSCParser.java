@@ -372,7 +372,7 @@ public class OSCParser implements OSCListener
             //
 
             case "scene":
-                String p = oscParts.removeFirst ();
+                final String p = oscParts.removeFirst ();
                 switch (p)
                 {
                     case "bank":
@@ -461,28 +461,6 @@ public class OSCParser implements OSCListener
                 break;
 
             //
-            // Indicators
-            //
-
-            case "indicate":
-            {
-                p = oscParts.removeFirst ();
-                final boolean isVolume = "volume".equals (p);
-                final boolean isParam = "param".equals (p);
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final CursorDeviceProxy cd = this.model.getCursorDevice ();
-                for (int i = 0; i < cd.getNumParameters (); i++)
-                    cd.getParameter (i).setIndication (isParam);
-                for (int i = 0; i < tb.getNumTracks (); i++)
-                {
-                    tb.setVolumeIndication (i, isVolume);
-                    tb.setPanIndication (i, isVolume);
-                }
-                this.masterTrack.setVolumeIndication (isVolume);
-                break;
-            }
-
-            //
             // Actions
             //
 
@@ -492,7 +470,7 @@ public class OSCParser implements OSCListener
                 final String cmd = oscParts.get (0).replace ('-', ' ');
                 try
                 {
-                    this.model.getApplication ().getAction (cmd).invoke ();
+                    this.model.getApplication ().invokeAction (cmd);
                 }
                 catch (final RuntimeException ex)
                 {
@@ -815,13 +793,13 @@ public class OSCParser implements OSCListener
                     switch (p)
                     {
                         case "select":
-                            this.model.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).select (clipNo - 1);
+                            this.model.getCurrentTrackBank ().selectClip (trackIndex, clipNo - 1);
                             break;
                         case "launch":
-                            this.model.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).launch (clipNo - 1);
+                            this.model.getCurrentTrackBank ().launchClip (trackIndex, clipNo - 1);
                             break;
                         case "record":
-                            this.model.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).record (clipNo - 1);
+                            this.model.getCurrentTrackBank ().recordClip (trackIndex, clipNo - 1);
                             break;
                         case "color":
                             final Matcher matcher = RGB_COLOR_PATTERN.matcher (value.toString ());
@@ -845,10 +823,10 @@ public class OSCParser implements OSCListener
                     switch (p)
                     {
                         case "stop":
-                            this.model.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).stop ();
+                            this.model.getCurrentTrackBank ().stop (trackIndex);
                             break;
                         case "returntoarrangement":
-                            this.model.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).returnToArrangement ();
+                            this.model.getCurrentTrackBank ().returnToArrangement (trackIndex);
                             break;
                         default:
                             this.host.println ("Unhandled clip command: " + p);
@@ -929,7 +907,7 @@ public class OSCParser implements OSCListener
                 {
                     case "param":
                         for (int i = 0; i < cursorDevice.getNumParameters (); i++)
-                            cursorDevice.getParameter (i).setIndication (numValue > 0);
+                            cursorDevice.indicateParameter (i, numValue > 0);
                         break;
                 }
                 break;
@@ -1130,7 +1108,7 @@ public class OSCParser implements OSCListener
 
             case "indicate":
                 if (parts.size () == 1 && value != null)
-                    cursorDevice.getParameter (fxparamIndex).setIndication (numValue > 0);
+                    cursorDevice.indicateParameter (fxparamIndex, numValue > 0);
                 break;
 
             default:

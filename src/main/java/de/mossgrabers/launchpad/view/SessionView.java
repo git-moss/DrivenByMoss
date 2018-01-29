@@ -100,7 +100,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
                 if (tb.getTrack (t).doesExist ())
                 {
                     final int s = this.rows - 1 - index / this.columns;
-                    tb.getClipLauncherSlots (t).duplicateClip (s);
+                    tb.duplicateClip (t, s);
                 }
                 return;
             }

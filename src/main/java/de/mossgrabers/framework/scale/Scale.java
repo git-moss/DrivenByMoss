@@ -331,8 +331,8 @@ public enum Scale
         this.name = name;
         this.intervals = intervals;
 
-        for (int i = 0; i < this.intervals.length; i++)
-            this.scaleKeys.add (Integer.valueOf (this.intervals[i]));
+        for (final int interval: this.intervals)
+            this.scaleKeys.add (Integer.valueOf (interval));
     }
 
 

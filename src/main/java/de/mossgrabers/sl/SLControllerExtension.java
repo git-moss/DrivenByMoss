@@ -331,7 +331,7 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
             tbe.setVolumeIndication (i, isEffect);
             tbe.setPanIndication (i, isEffect);
 
-            cursorDevice.getParameter (i).setIndication (true);
+            cursorDevice.indicateParameter (i, true);
         }
     }
 

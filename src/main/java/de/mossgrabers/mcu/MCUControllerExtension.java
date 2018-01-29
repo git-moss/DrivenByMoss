@@ -337,8 +337,8 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.addTriggerCommand (Commands.COMMAND_PAN_SEND, MCUControlSurface.MCU_MODE_PAN, new ModeSelectCommand<> (Modes.MODE_PAN, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_SENDS, MCUControlSurface.MCU_MODE_SENDS, new SendSelectCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_DEVICE, MCUControlSurface.MCU_MODE_PLUGIN, new ModeSelectCommand<> (Modes.MODE_DEVICE_PARAMS, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_LEFT, MCUControlSurface.MCU_MODE_EQ, new MoveTrackBankCommand<> (this.model, surface, true, true));
-        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_RIGHT, MCUControlSurface.MCU_MODE_DYN, new MoveTrackBankCommand<> (this.model, surface, true, false));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_LEFT, MCUControlSurface.MCU_MODE_EQ, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, true, true));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_RIGHT, MCUControlSurface.MCU_MODE_DYN, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, true, false));
 
         // Automation
         this.addTriggerCommand (Commands.COMMAND_AUTOMATION_READ, MCUControlSurface.MCU_READ, new AutomationCommand (0, this.model, surface));
@@ -363,10 +363,10 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.addTriggerCommand (COMMAND_CANCEL, MCUControlSurface.MCU_CANCEL, new KeyCommand (Key.ESCAPE, this.model, surface));
         this.addTriggerCommand (COMMAND_ENTER, MCUControlSurface.MCU_ENTER, new KeyCommand (Key.ENTER, this.model, surface));
 
-        this.addTriggerCommand (Commands.COMMAND_MOVE_BANK_LEFT, MCUControlSurface.MCU_BANK_LEFT, new MoveTrackBankCommand<> (this.model, surface, false, true));
-        this.addTriggerCommand (Commands.COMMAND_MOVE_BANK_RIGHT, MCUControlSurface.MCU_BANK_RIGHT, new MoveTrackBankCommand<> (this.model, surface, false, false));
-        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_LEFT, MCUControlSurface.MCU_TRACK_LEFT, new MoveTrackBankCommand<> (this.model, surface, true, true));
-        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_RIGHT, MCUControlSurface.MCU_TRACK_RIGHT, new MoveTrackBankCommand<> (this.model, surface, true, false));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_BANK_LEFT, MCUControlSurface.MCU_BANK_LEFT, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, false, true));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_BANK_RIGHT, MCUControlSurface.MCU_BANK_RIGHT, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, false, false));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_LEFT, MCUControlSurface.MCU_TRACK_LEFT, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, true, true));
+        this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_RIGHT, MCUControlSurface.MCU_TRACK_RIGHT, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, true, false));
 
         // Additional commands for footcontrollers
         final ViewManager viewManager = surface.getViewManager ();
@@ -732,7 +732,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         }
 
         for (int i = 0; i < cursorDevice.getNumParameters (); i++)
-            cursorDevice.getParameter (i).setIndication (isDevice);
+            cursorDevice.indicateParameter (i, isDevice);
     }
 
 

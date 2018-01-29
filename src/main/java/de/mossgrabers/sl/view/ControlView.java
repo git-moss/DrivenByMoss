@@ -21,8 +21,6 @@ import de.mossgrabers.sl.mode.Modes;
 import de.mossgrabers.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.sl.mode.device.DevicePresetsMode;
 
-import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
-
 
 /**
  * The view for controlling the DAW.
@@ -114,7 +112,8 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
                 final TrackData t = tb.getSelectedTrack ();
                 if (t != null)
                 {
-                    final SlotData [] slotIndexes = tb.getSelectedSlots (t.getIndex ());
+                    final int trackIndex = t.getIndex ();
+                    final SlotData [] slotIndexes = tb.getSelectedSlots (trackIndex);
                     final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
                     for (int i = 0; i < 8; i++)
                     {
@@ -122,11 +121,10 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
                         final SlotData s = t.getSlots ()[sIndex];
                         if (!s.hasContent ())
                         {
-                            final ClipLauncherSlotBank slots = tb.getClipLauncherSlots (t.getIndex ());
-                            slots.createEmptyClip (sIndex, (int) Math.pow (2, this.surface.getConfiguration ().getNewClipLength ()));
+                            tb.createClip (trackIndex, sIndex, (int) Math.pow (2, this.surface.getConfiguration ().getNewClipLength ()));
                             if (slotIndex != sIndex)
-                                slots.select (sIndex);
-                            slots.launch (sIndex);
+                                tb.selectClip (trackIndex, sIndex);
+                            tb.launchClip (trackIndex, sIndex);
                             this.model.getTransport ().setLauncherOverdub (true);
                             return;
                         }

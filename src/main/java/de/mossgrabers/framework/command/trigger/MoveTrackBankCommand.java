@@ -9,7 +9,6 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.mcu.mode.Modes;
 
 
 /**
@@ -24,6 +23,7 @@ public class MoveTrackBankCommand<S extends ControlSurface<C>, C extends Configu
 {
     private boolean moveLeft;
     private boolean moveBy1;
+    private Integer deviceMode;
 
 
     /**
@@ -31,12 +31,14 @@ public class MoveTrackBankCommand<S extends ControlSurface<C>, C extends Configu
      *
      * @param model The model
      * @param surface The surface
+     * @param deviceMode The ID of the device mode
      * @param moveBy1 If true the bank window moves by 1 otherwise by 8
      * @param moveLeft If true the bank window is moved left otherwise to the right
      */
-    public MoveTrackBankCommand (final Model model, final S surface, final boolean moveBy1, final boolean moveLeft)
+    public MoveTrackBankCommand (final Model model, final S surface, final Integer deviceMode, final boolean moveBy1, final boolean moveLeft)
     {
         super (model, surface);
+        this.deviceMode = deviceMode;
         this.moveBy1 = moveBy1;
         this.moveLeft = moveLeft;
     }
@@ -49,7 +51,7 @@ public class MoveTrackBankCommand<S extends ControlSurface<C>, C extends Configu
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.surface.getModeManager ().isActiveMode (Modes.MODE_DEVICE_PARAMS))
+        if (this.surface.getModeManager ().isActiveMode (this.deviceMode))
         {
             if (this.moveBy1)
             {

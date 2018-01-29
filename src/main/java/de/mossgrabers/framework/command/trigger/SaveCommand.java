@@ -38,6 +38,6 @@ public class SaveCommand<S extends ControlSurface<C>, C extends Configuration> e
     public void execute (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getApplication ().getAction ("Save").invoke ();
+            this.model.getApplication ().invokeAction ("Save");
     }
 }

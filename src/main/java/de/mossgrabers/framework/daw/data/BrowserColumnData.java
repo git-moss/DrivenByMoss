@@ -142,7 +142,7 @@ public class BrowserColumnData
 
     /**
      * Get the cursor name of the column.
-     * 
+     *
      * @param limit The maximum number of characters to get
      * @return The cursor name of the column
      */

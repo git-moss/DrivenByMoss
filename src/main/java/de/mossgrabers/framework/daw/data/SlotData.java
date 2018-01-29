@@ -100,6 +100,18 @@ public class SlotData
 
 
     /**
+     * Get the name of the slot.
+     *
+     * @param limit Limit the text to this length
+     * @return The name of the slot
+     */
+    public String getName (final int limit)
+    {
+        return this.slot.name ().getLimited (limit);
+    }
+
+
+    /**
      * Is the slot selected?
      *
      * @return True if selected

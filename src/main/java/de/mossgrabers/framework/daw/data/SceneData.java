@@ -74,13 +74,25 @@ public class SceneData
 
 
     /**
-     * get the name of the slot.
+     * Get the name of the scene.
      *
-     * @return The name of the slot
+     * @return The name of the scene
      */
     public String getName ()
     {
         return this.scene.name ().get ();
+    }
+
+
+    /**
+     * Get the name of the scene.
+     *
+     * @param limit Limit the text to this length
+     * @return The name of the scene
+     */
+    public String getName (final int limit)
+    {
+        return this.scene.name ().getLimited (limit);
     }
 
 
