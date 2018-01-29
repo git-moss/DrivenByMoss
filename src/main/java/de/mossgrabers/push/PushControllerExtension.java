@@ -610,7 +610,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
             tbe.setVolumeIndication (i, isEffect);
             tbe.setPanIndication (i, isEffect && isPan);
 
-            cursorDevice.getParameter (i).setIndication (true);
+            cursorDevice.indicateParameter (i, true);
         }
     }
 

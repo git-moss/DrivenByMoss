@@ -370,7 +370,7 @@ public class Model
     {
         final int quartersPerMeasure = this.getQuartersPerMeasure ();
         final int beats = (int) (newCLipLength < 2 ? Math.pow (2, newCLipLength) : Math.pow (2, newCLipLength - 2.0) * quartersPerMeasure);
-        this.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).createEmptyClip (slotIndex, beats);
+        this.getCurrentTrackBank ().createClip (trackIndex, slotIndex, beats);
     }
 
 

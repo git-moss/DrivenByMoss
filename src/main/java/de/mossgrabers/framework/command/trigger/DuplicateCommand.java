@@ -13,8 +13,6 @@ import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.data.SlotData;
 import de.mossgrabers.framework.daw.data.TrackData;
 
-import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
-
 
 /**
  * Command to duplicate an object (clip, track, ...) depending on the context.
@@ -60,8 +58,7 @@ public class DuplicateCommand<S extends ControlSurface<C>, C extends Configurati
         final boolean isPlaying = slotData.isPlaying ();
 
         // Duplicate the clip in the selected slot
-        final ClipLauncherSlotBank slots = tb.getClipLauncherSlots (trackIndex);
-        slots.duplicateClip (slotData.getIndex ());
+        tb.duplicateClip (trackIndex, slotData.getIndex ());
 
         if (!isPlaying)
             return;
@@ -71,16 +68,16 @@ public class DuplicateCommand<S extends ControlSurface<C>, C extends Configurati
             final SlotData slotDataNew = tb.getSelectedSlot (trackIndex);
             if (slotDataNew != null)
             {
-                slots.launch (slotDataNew.getIndex ());
+                tb.launchClip (trackIndex, slotDataNew.getIndex ());
                 return;
             }
 
             // Try to find the clip in the next page...
-            slots.scrollPageForwards ();
+            tb.scrollClipPageForwards (trackIndex);
             this.model.getHost ().scheduleTask ( () -> {
                 final SlotData slotDataNew2 = tb.getSelectedSlot (trackIndex);
                 if (slotDataNew2 != null)
-                    slots.launch (slotDataNew2.getIndex ());
+                    tb.launchClip (trackIndex, slotDataNew2.getIndex ());
             }, 200);
         }, 200);
     }

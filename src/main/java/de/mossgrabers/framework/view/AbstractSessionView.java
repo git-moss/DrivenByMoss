@@ -14,8 +14,6 @@ import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.data.SlotData;
 import de.mossgrabers.framework.daw.data.TrackData;
 
-import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
-
 
 /**
  * Abstract implementation for a view which provides a session with clips.
@@ -91,36 +89,35 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
         }
 
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData track = tb.getTrack (t);
-        final SlotData slot = track.getSlots ()[s];
-        final ClipLauncherSlotBank slots = tb.getClipLauncherSlots (t);
 
         // Delete selected clip
         if (this.surface.isDeletePressed ())
         {
             this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-            slots.deleteClip (s);
+            tb.deleteClip (t, s);
             return;
         }
 
         if (this.surface.isSelectPressed ())
         {
-            slots.select (s);
+            tb.selectClip (t, s);
             return;
         }
 
         if (this.doSelectClipOnLaunch ())
-            slots.select (s);
+            tb.selectClip (t, s);
 
+        final TrackData track = tb.getTrack (t);
         if (!track.isRecArm ())
         {
-            slots.launch (s);
+            tb.launchClip (t, s);
             return;
         }
 
+        final SlotData slot = track.getSlots ()[s];
         if (slot.hasContent ())
         {
-            slots.launch (s);
+            tb.launchClip (t, s);
             return;
         }
 
@@ -129,8 +126,8 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
             case 0:
                 // Record clip
                 if (!slot.isRecording ())
-                    slots.record (s);
-                slots.launch (s);
+                    tb.recordClip (t, s);
+                tb.launchClip (t, s);
                 break;
 
             case 1:
@@ -293,16 +290,13 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
     {
         final int trackIndex = track.getIndex ();
         final int slotIndex = slot.getIndex ();
-
         final int quartersPerMeasure = this.model.getQuartersPerMeasure ();
         final int newCLipLength = this.surface.getConfiguration ().getNewClipLength ();
         final int beats = (int) (newCLipLength < 2 ? Math.pow (2, newCLipLength) : Math.pow (2, newCLipLength - 2) * quartersPerMeasure);
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        tb.getClipLauncherSlots (trackIndex).createEmptyClip (slotIndex, beats);
-
-        final ClipLauncherSlotBank slots = tb.getClipLauncherSlots (trackIndex);
-        slots.select (slotIndex);
-        slots.launch (slotIndex);
+        tb.createClip (trackIndex, slotIndex, beats);
+        tb.selectClip (trackIndex, slotIndex);
+        tb.launchClip (trackIndex, slotIndex);
         this.model.getTransport ().setLauncherOverdub (true);
     }
 }

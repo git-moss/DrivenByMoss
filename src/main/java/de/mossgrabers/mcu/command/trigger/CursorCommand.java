@@ -79,7 +79,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     private void scrollLeft ()
     {
         if (this.surface.getConfiguration ().isZoomState ())
-            this.model.getApplication ().getAction ("Zoom Out").invoke ();
+            this.model.getApplication ().invokeAction ("Zoom Out");
         else
             this.model.getApplication ().arrowKeyLeft ();
     }
@@ -88,7 +88,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     private void scrollRight ()
     {
         if (this.surface.getConfiguration ().isZoomState ())
-            this.model.getApplication ().getAction ("Zoom In").invoke ();
+            this.model.getApplication ().invokeAction ("Zoom In");
         else
             this.model.getApplication ().arrowKeyRight ();
     }
@@ -101,7 +101,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             if (this.surface.getConfiguration ().useVertZoomForModes ())
                 this.switcher.scrollUp ();
             else
-                this.model.getApplication ().getAction ("toggle_double_or_single_row_track_height").invoke ();
+                this.model.getApplication ().invokeAction ("toggle_double_or_single_row_track_height");
         }
         else
             this.model.getApplication ().arrowKeyUp ();
@@ -115,7 +115,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             if (this.surface.getConfiguration ().useVertZoomForModes ())
                 this.switcher.scrollDown ();
             else
-                this.model.getApplication ().getAction ("toggle_double_or_single_row_track_height").invoke ();
+                this.model.getApplication ().invokeAction ("toggle_double_or_single_row_track_height");
         }
         else
             this.model.getApplication ().arrowKeyDown ();

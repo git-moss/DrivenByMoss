@@ -13,8 +13,6 @@ import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.data.SlotData;
 import de.mossgrabers.framework.daw.data.TrackData;
 
-import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
-
 
 /**
  * Command to create a new clip on the current track, start it and activate overdub.
@@ -79,10 +77,9 @@ public class NewCommand<S extends ControlSurface<C>, C extends Configuration> ex
 
         final int index = slot.getIndex ();
         this.model.createClip (trackIndex, index, this.getClipLength ());
-        final ClipLauncherSlotBank slots = tb.getClipLauncherSlots (trackIndex);
         if (slotIndex != index)
-            slots.select (index);
-        slots.launch (index);
+            tb.selectClip (trackIndex, index);
+        tb.launchClip (trackIndex, index);
         if (enableOverdub)
             this.model.getTransport ().setLauncherOverdub (true);
     }

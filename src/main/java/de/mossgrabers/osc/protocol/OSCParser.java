@@ -470,7 +470,7 @@ public class OSCParser implements OscMethodCallback
                 final String cmd = oscParts.get (0).replace ('-', ' ');
                 try
                 {
-                    this.model.getApplication ().getAction (cmd).invoke ();
+                    this.model.getApplication ().invokeAction (cmd);
                 }
                 catch (final RuntimeException ex)
                 {
@@ -793,13 +793,13 @@ public class OSCParser implements OscMethodCallback
                     switch (p)
                     {
                         case "select":
-                            this.model.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).select (clipNo - 1);
+                            this.model.getCurrentTrackBank ().selectClip (trackIndex, clipNo - 1);
                             break;
                         case "launch":
-                            this.model.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).launch (clipNo - 1);
+                            this.model.getCurrentTrackBank ().launchClip (trackIndex, clipNo - 1);
                             break;
                         case "record":
-                            this.model.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).record (clipNo - 1);
+                            this.model.getCurrentTrackBank ().recordClip (trackIndex, clipNo - 1);
                             break;
                         case "color":
                             final Matcher matcher = RGB_COLOR_PATTERN.matcher (value.toString ());
@@ -823,10 +823,10 @@ public class OSCParser implements OscMethodCallback
                     switch (p)
                     {
                         case "stop":
-                            this.model.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).stop ();
+                            this.model.getCurrentTrackBank ().stop (trackIndex);
                             break;
                         case "returntoarrangement":
-                            this.model.getCurrentTrackBank ().getClipLauncherSlots (trackIndex).returnToArrangement ();
+                            this.model.getCurrentTrackBank ().returnToArrangement (trackIndex);
                             break;
                         default:
                             this.host.println ("Unhandled clip command: " + p);
@@ -907,7 +907,7 @@ public class OSCParser implements OscMethodCallback
                 {
                     case "param":
                         for (int i = 0; i < cursorDevice.getNumParameters (); i++)
-                            cursorDevice.getParameter (i).setIndication (numValue > 0);
+                            cursorDevice.indicateParameter (i, numValue > 0);
                         break;
                 }
                 break;
@@ -1108,7 +1108,7 @@ public class OSCParser implements OscMethodCallback
 
             case "indicate":
                 if (parts.size () == 1 && value != null)
-                    cursorDevice.getParameter (fxparamIndex).setIndication (numValue > 0);
+                    cursorDevice.indicateParameter (fxparamIndex, numValue > 0);
                 break;
 
             default:

@@ -14,8 +14,6 @@ import de.mossgrabers.framework.daw.data.SlotData;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
-import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
-
 
 /**
  * Session view.
@@ -52,19 +50,16 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
 
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final SlotData slot = tb.getTrack (channel).getSlots ()[scene];
-        final ClipLauncherSlotBank slots = tb.getClipLauncherSlots (channel);
 
         if (tb.getTrack (channel).isRecArm ())
         {
             if (!slot.isRecording ())
-                slots.record (scene);
-            slots.launch (scene);
+                tb.recordClip (channel, scene);
         }
-        else
-            slots.launch (scene);
+        tb.launchClip (channel, scene);
 
         if (this.doSelectClipOnLaunch ())
-            slots.select (scene);
+            tb.selectClip (channel, scene);
     }
 
 

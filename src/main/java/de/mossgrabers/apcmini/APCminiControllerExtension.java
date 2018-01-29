@@ -283,7 +283,7 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
             tbe.setVolumeIndication (i, isEffect);
             tbe.setPanIndication (i, isEffect && isPan);
 
-            cursorDevice.getParameter (i).setIndication (isDevice || isShiftView);
+            cursorDevice.indicateParameter (i, isDevice || isShiftView);
         }
     }
 

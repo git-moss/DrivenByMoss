@@ -402,7 +402,7 @@ public class CursorDeviceProxy
      * @param index The index of the parameter
      * @return The parameter
      */
-    public RemoteControl getParameter (final int index)
+    private RemoteControl getParameter (final int index)
     {
         return this.remoteControls.getParameter (index);
     }
@@ -440,6 +440,30 @@ public class CursorDeviceProxy
     public void resetParameter (final int index)
     {
         this.getParameter (index).reset ();
+    }
+
+
+    /**
+     * Set parameter indication.
+     *
+     * @param index The index of the parameter
+     * @param indicate True to enable indication
+     */
+    public void indicateParameter (final int index, final boolean indicate)
+    {
+        this.getParameter (index).setIndication (indicate);
+    }
+
+
+    /**
+     * Touch parameter indication.
+     *
+     * @param index The index of the parameter
+     * @param indicate True to enable touch indication
+     */
+    public void touchParameter (final int index, final boolean indicate)
+    {
+        this.getParameter (index).touch (indicate);
     }
 
 

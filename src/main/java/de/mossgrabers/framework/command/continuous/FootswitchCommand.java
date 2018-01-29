@@ -17,8 +17,6 @@ import de.mossgrabers.framework.daw.ApplicationProxy;
 import de.mossgrabers.framework.daw.data.SlotData;
 import de.mossgrabers.framework.daw.data.TrackData;
 
-import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
-
 
 /**
  * Command for different functionalities of a foot switch.
@@ -97,7 +95,6 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
 
                 final SlotData selectedSlot = tb.getSelectedSlot (track.getIndex ());
                 final SlotData slot = selectedSlot == null ? track.getSlots ()[0] : selectedSlot;
-                final ClipLauncherSlotBank slots = tb.getClipLauncherSlots (track.getIndex ());
                 if (event == ButtonEvent.DOWN)
                 {
                     if (slot.hasContent ())
@@ -111,7 +108,7 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
                         // If there is no clip in the selected slot, create a clip and begin record
                         // mode. Releasing it ends record mode.
                         this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_NEW, event);
-                        slots.select (slot.getIndex ());
+                        tb.selectClip (track.getIndex (), slot.getIndex ());
                         this.model.getTransport ().setLauncherOverdub (true);
                     }
                 }
@@ -121,7 +118,7 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
                     this.model.getTransport ().setLauncherOverdub (false);
                 }
                 // Start transport if not already playing
-                slots.launch (slot.getIndex ());
+                tb.launchClip (track.getIndex (), slot.getIndex ());
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_ARRANGE:

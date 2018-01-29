@@ -277,7 +277,7 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
             tbe.setVolumeIndication (i, isEffect && hasFXTrackSel && isTrack);
             tbe.setPanIndication (i, isEffect && hasFXTrackSel && isTrack);
 
-            cursorDevice.getParameter (i).setIndication (isDevice);
+            cursorDevice.indicateParameter (i, isDevice);
         }
     }
 

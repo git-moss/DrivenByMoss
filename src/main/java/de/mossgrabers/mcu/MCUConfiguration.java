@@ -47,7 +47,7 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final int        FOOTSWITCH_2_NEXT_MODE      = 15;
 
     private static final String    DEVICE_SELECT               = "<Select a profile>";
-    private static final String    DEVICE_ICON_PLATFORM_M      = "icon Platform M";
+    private static final String    DEVICE_ICON_PLATFORM_M      = "icon Platform M / M+";
     private static final String    DEVICE_ICON_QCON_PRO_X      = "icon QConPro X";
     private static final String    DEVICE_MACKIE_MCU_PRO       = "Mackie MCU Pro";
     private static final String    DEVICE_ZOOM_R16             = "Zoom R16";

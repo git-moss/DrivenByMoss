@@ -377,18 +377,6 @@ public class ApplicationProxy
 
 
     /**
-     * Returns the action for the given action identifier.
-     *
-     * @param id the action identifier string, must not be `null`
-     * @return The action
-     */
-    public Action getAction (final String id)
-    {
-        return this.application.getAction (id);
-    }
-
-
-    /**
      * Returns a list of action categories that is used by Bitwig Studio to group actions into
      * categories.
      *
@@ -413,12 +401,24 @@ public class ApplicationProxy
 
 
     /**
-     * Returns a list of actions that the application supports.
+     * Invokes the action for the given action identifier.
      *
-     * @return All actions
+     * @param id the action identifier string, must not be `null`
      */
-    public Action [] getActions ()
+    public void invokeAction (final String id)
     {
-        return this.application.getActions ();
+        this.getAction (id).invoke ();
+    }
+
+
+    /**
+     * Returns the action for the given action identifier.
+     *
+     * @param id the action identifier string, must not be `null`
+     * @return The action
+     */
+    private Action getAction (final String id)
+    {
+        return this.application.getAction (id);
     }
 }
