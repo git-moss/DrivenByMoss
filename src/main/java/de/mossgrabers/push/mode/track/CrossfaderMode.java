@@ -59,13 +59,8 @@ public class CrossfaderMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        // Slow down scrolling
-        this.movementCounter++;
-        if (this.movementCounter < SCROLL_RATE)
-            return;
-        this.movementCounter = 0;
-
-        this.model.getCurrentTrackBank ().changeCrossfadeModeAsNumber (index, value);
+        if (this.increaseKnobMovement ())
+            this.model.getCurrentTrackBank ().changeCrossfadeModeAsNumber (index, value);
     }
 
 

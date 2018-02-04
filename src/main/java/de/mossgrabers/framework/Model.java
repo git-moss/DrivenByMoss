@@ -22,9 +22,12 @@ import de.mossgrabers.framework.daw.TransportProxy;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.scale.Scales;
 
+import com.bitwig.extension.controller.api.BooleanValue;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
 import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.MasterTrack;
+import com.bitwig.extension.controller.api.PinnableCursorDevice;
 import com.bitwig.extension.controller.api.Project;
 
 
@@ -62,6 +65,7 @@ public class Model
     private ColorManager           colorManager;
     private CursorDeviceProxy      primaryDevice;
     private CursorDeviceProxy      cursorDevice;
+    private BooleanValue           masterTrackEqualsValue;
 
 
     /**
@@ -98,13 +102,20 @@ public class Model
         this.application = new ApplicationProxy (host);
         this.transport = new TransportProxy (host, valueChanger);
         this.groove = new GrooveProxy (host, valueChanger.getUpperBound ());
-        this.masterTrack = new MasterTrackProxy (host, valueChanger);
+        final MasterTrack master = host.createMasterTrack (0);
+        this.masterTrack = new MasterTrackProxy (master, valueChanger);
 
-        this.cursorTrack = host.createCursorTrack ("MyCursorTrackID", "MyCursorTrack", 0, 0, true);
+        this.cursorTrack = host.createCursorTrack ("MyCursorTrackID", "The Cursor Track", 0, 0, true);
+        this.cursorTrack.isPinned ().markInterested ();
+
         this.trackBank = new TrackBankProxy (host, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
         this.effectTrackBank = new EffectTrackBankProxy (host, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
         this.primaryDevice = new CursorDeviceProxy (host, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
-        this.cursorDevice = new CursorDeviceProxy (host, this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", this.numSends, CursorDeviceFollowMode.FOLLOW_SELECTION), valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        final PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", this.numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
+        this.cursorDevice = new CursorDeviceProxy (host, cd, valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+
+        this.masterTrackEqualsValue = cd.channel ().createEqualsValue (master);
+        this.masterTrackEqualsValue.markInterested ();
 
         this.project = host.getProject ();
         this.arranger = new ArrangerProxy (host);
@@ -405,5 +416,37 @@ public class Model
     {
         final TrackData t = this.getCurrentTrackBank ().getSelectedTrack ();
         return t != null && t.canHoldNotes ();
+    }
+
+
+    /**
+     * Returns true if the cursor track is pinned (aka does not follow the track selection in
+     * Bitwig).
+     *
+     * @return True if the cursor track is pinned
+     */
+    public boolean isCursorTrackPinned ()
+    {
+        return this.cursorTrack.isPinned ().get ();
+    }
+
+
+    /**
+     * Toggles if the cursor track is pinned.
+     */
+    public void toggleCursorTrackPinned ()
+    {
+        this.cursorTrack.isPinned ().toggle ();
+    }
+
+
+    /**
+     * Returns true if the cursor device is pointing to a device on the master track.
+     *
+     * @return True if the cursor device is pointing to a device on the master track
+     */
+    public boolean isCursorDeviceOnMasterTrack ()
+    {
+        return this.masterTrackEqualsValue.get ();
     }
 }

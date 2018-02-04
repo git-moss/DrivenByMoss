@@ -3,6 +3,7 @@ package de.mossgrabers.mcu.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.mode.Modes;
 
@@ -31,9 +32,10 @@ public class FaderTouchCommand extends SelectCommand
     @Override
     public void executeNormal (final ButtonEvent event)
     {
+        final MCUConfiguration configuration = this.surface.getConfiguration ();
         if (this.index < 8)
         {
-            if (this.surface.getConfiguration ().useFadersAsKnobs ())
+            if (configuration.useFadersAsKnobs ())
             {
                 this.surface.getModeManager ().getActiveMode ().onValueKnobTouch (this.index, event == ButtonEvent.DOWN);
                 return;
@@ -46,6 +48,7 @@ public class FaderTouchCommand extends SelectCommand
                 modeManager.restoreMode ();
         }
 
-        super.executeNormal (event);
+        if (configuration.isTouchChannel ())
+            super.executeNormal (event);
     }
 }

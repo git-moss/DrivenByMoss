@@ -114,7 +114,7 @@ public class TrackDetailsMode extends BaseMode
                 this.model.getCurrentTrackBank ().toggleAutoMonitor (t.getIndex ());
                 break;
             case 6:
-                // Not used
+                this.model.toggleCursorTrackPinned ();
                 break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();
@@ -136,14 +136,13 @@ public class TrackDetailsMode extends BaseMode
             return;
         }
 
-        final int off = this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
         this.surface.updateButton (20, deviceChain.isActivated () ? this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_MD : PushColors.PUSH1_COLOR_YELLOW_MD : this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_LO : PushColors.PUSH1_COLOR_YELLOW_LO);
         this.surface.updateButton (21, deviceChain.isRecArm () ? this.isPush2 ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH1_COLOR_RED_HI : this.isPush2 ? PushColors.PUSH2_COLOR_RED_LO : PushColors.PUSH1_COLOR_RED_LO);
         this.surface.updateButton (22, deviceChain.isMute () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_LO : PushColors.PUSH1_COLOR_ORANGE_LO);
         this.surface.updateButton (23, deviceChain.isSolo () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_LO : PushColors.PUSH1_COLOR_ORANGE_LO);
         this.surface.updateButton (24, deviceChain.isMonitor () ? this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_HI : PushColors.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_LO : PushColors.PUSH1_COLOR_GREEN_LO);
         this.surface.updateButton (25, deviceChain.isAutoMonitor () ? this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_HI : PushColors.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_LO : PushColors.PUSH1_COLOR_GREEN_LO);
-        this.surface.updateButton (26, off);
+        this.surface.updateButton (26, this.model.isCursorTrackPinned () ? this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_HI : PushColors.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_LO : PushColors.PUSH1_COLOR_GREEN_LO);
         this.surface.updateButton (27, this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_HI : PushColors.PUSH1_COLOR_GREEN_HI);
     }
 
@@ -168,7 +167,8 @@ public class TrackDetailsMode extends BaseMode
             d.setCell (3, 4, deviceChain.isMonitor () ? "On" : "Off");
             d.setCell (2, 5, "Auto Monitor");
             d.setCell (3, 5, deviceChain.isAutoMonitor () ? "On" : "Off");
-            d.clearCell (2, 6).clearCell (3, 6);
+            d.setCell (2, 6, "Pin Trck");
+            d.setCell (3, 6, this.model.isCursorTrackPinned () ? "On" : "Off");
             d.setCell (2, 7, "Select").setCell (3, 7, "Color").done (0).done (1).done (2).done (3);
         }
     }
@@ -191,7 +191,7 @@ public class TrackDetailsMode extends BaseMode
             message.addOptionElement ("", "", false, "", "Solo", deviceChain.isSolo (), false);
             message.addOptionElement ("", "", false, "", "Monitor", deviceChain.isMonitor (), false);
             message.addOptionElement ("", "", false, "", "Auto Monitor", deviceChain.isAutoMonitor (), false);
-            message.addOptionElement ("", "", false, "", "", false, false);
+            message.addOptionElement ("", "", false, "", "Pin Track", this.model.isCursorTrackPinned (), false);
             message.addOptionElement ("", "", false, "", "Select Color", false, false);
         }
         message.send ();

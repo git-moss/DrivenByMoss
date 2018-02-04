@@ -36,4 +36,12 @@ public abstract class PushControllerExtensionDefinition extends AbstractControll
     {
         return "10.0";
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isUsingBetaAPI ()
+    {
+        return true;
+    }
 }

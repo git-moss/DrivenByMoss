@@ -85,13 +85,8 @@ public class DeviceBrowserMode extends BaseMode
         if (!this.isKnobTouched[index])
             return;
 
-        // Slow down scrolling
-        this.movementCounter++;
-        if (this.movementCounter < SCROLL_RATE)
-            return;
-        this.movementCounter = 0;
-
-        this.changeValue (index, value);
+        if (this.increaseKnobMovement ())
+            this.changeValue (index, value);
     }
 
 

@@ -15,6 +15,7 @@ import com.bitwig.extension.controller.api.CursorDeviceLayer;
 import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.DeviceBank;
+import com.bitwig.extension.controller.api.DeviceLayer;
 import com.bitwig.extension.controller.api.DeviceLayerBank;
 import com.bitwig.extension.controller.api.DrumPadBank;
 import com.bitwig.extension.controller.api.RemoteControl;
@@ -123,6 +124,11 @@ public class CursorDeviceProxy
             final Channel layer = this.layerBank.getChannel (i);
             this.deviceLayers[i] = new ChannelData (layer, valueChanger.getUpperBound (), i, numSends);
             this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
+
+            final int index = i;
+            layer.addIsSelectedInEditorObserver (isSelected -> {
+                this.deviceLayers[index].setSelected (isSelected);
+            });
         }
 
         // Monitor the drum pad layers of a container device (if any)
@@ -134,6 +140,11 @@ public class CursorDeviceProxy
             final Channel layer = this.drumPadBank.getChannel (i);
             this.drumPadLayers[i] = new ChannelData (layer, valueChanger.getUpperBound (), i, numSends);
             this.drumPadBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
+
+            final int index = i;
+            layer.addIsSelectedInEditorObserver (isSelected -> {
+                this.drumPadLayers[index].setSelected (isSelected);
+            });
         }
     }
 
@@ -1210,8 +1221,11 @@ public class CursorDeviceProxy
      */
     public void selectLayer (final int index)
     {
-        if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).selectInEditor ();
+        if (index >= this.numDeviceLayers)
+            return;
+        final DeviceLayer channel = this.layerBank.getChannel (index);
+        if (channel != null)
+            channel.selectInEditor ();
     }
 
 
@@ -1610,12 +1624,11 @@ public class CursorDeviceProxy
      */
     public void selectDrumPad (final int index)
     {
-        if (index < this.numDrumPadLayers)
-        {
-            final Channel channel = this.drumPadBank.getChannel (index);
-            if (channel != null)
-                channel.selectInEditor ();
-        }
+        if (index >= this.numDrumPadLayers)
+            return;
+        final Channel channel = this.drumPadBank.getChannel (index);
+        if (channel != null)
+            channel.selectInEditor ();
     }
 
 

@@ -48,8 +48,6 @@ public class ChannelData
         channel.solo ().markInterested ();
         channel.color ().markInterested ();
 
-        channel.addIsSelectedInEditorObserver (this::handleChannelSelect);
-
         this.volumeParameter = new ParameterData (channel.volume (), maxParameterValue);
         this.panParameter = new ParameterData (channel.pan (), maxParameterValue);
 
@@ -316,11 +314,5 @@ public class ChannelData
         // Limit value to this.configuration.getMaxParameterValue () due to
         // https://github.com/teotigraphix/Framework4Bitwig/issues/98
         this.vu = value >= maxParameterValue ? maxParameterValue - 1 : value;
-    }
-
-
-    private void handleChannelSelect (final boolean isSelected)
-    {
-        this.selected = isSelected;
     }
 }

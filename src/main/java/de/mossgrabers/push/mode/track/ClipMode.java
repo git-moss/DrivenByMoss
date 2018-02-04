@@ -60,6 +60,9 @@ public class ClipMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
+        if (!this.increaseKnobMovement ())
+            return;
+
         final CursorClipProxy clip = this.getClip ();
         switch (index)
         {

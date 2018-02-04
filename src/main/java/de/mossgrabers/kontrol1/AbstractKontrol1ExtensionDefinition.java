@@ -114,4 +114,12 @@ public abstract class AbstractKontrol1ExtensionDefinition extends AbstractContro
             "Komplete Kontrol - 1"
         }, new String [0]);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isUsingBetaAPI ()
+    {
+        return true;
+    }
 }

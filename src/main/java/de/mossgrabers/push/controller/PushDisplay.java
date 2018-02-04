@@ -13,7 +13,6 @@ import de.mossgrabers.push.controller.display.model.DisplayModel;
 import de.mossgrabers.push.controller.display.model.VirtualDisplay;
 import de.mossgrabers.push.controller.display.model.grid.GridChangeListener;
 
-import com.bitwig.extension.api.graphics.Bitmap;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 
@@ -125,8 +124,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     {
         if (this.isPush2)
         {
-            // TODO
-            // this.createMessage ().setMessage (3, "Please start Bitwig to play...").send ();
+            this.createMessage ().setMessage (3, "Please start Bitwig to play...").send ();
             if (this.usbDisplay != null)
                 this.usbDisplay.shutdown ();
         }
@@ -287,15 +285,8 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
      */
     public void showDebugWindow (final boolean show)
     {
-        if (this.virtualDisplay == null)
-            return;
-
-        final Bitmap image = this.virtualDisplay.getImage ();
-        // TODO
-        if (show)
-            image.showDisplayWindow ();
-        // else
-        // image.hideDisplayWindow ();
+        if (this.virtualDisplay != null && show)
+            this.virtualDisplay.getImage ().showDisplayWindow ();
     }
 
 
