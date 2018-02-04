@@ -90,6 +90,8 @@ public class DeviceLayerMode extends BaseMode
     {
         final CursorDeviceProxy cd = this.model.getCursorDevice ();
         final ChannelData l = cd.getSelectedLayerOrDrumPad ();
+        if (l == null)
+            return;
 
         this.isKnobTouched[index] = isTouched;
 
@@ -300,54 +302,55 @@ public class DeviceLayerMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final Display d = this.surface.getDisplay ().clear ();
         final CursorDeviceProxy cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
-            d.clear ().setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
+            d.setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
             return;
         }
 
-        d.clear ();
-
-        final ChannelData l = cd.getSelectedLayerOrDrumPad ();
-        if (l == null)
+        final boolean noLayers = cd.hasLayers () && cd.hasZeroLayers ();
+        if (noLayers)
         {
-            final boolean noLayers = cd.hasLayers () && cd.hasZeroLayers ();
-            d.setBlock (1, 1, "    Please " + (noLayers ? "create" : "select")).setBlock (1, 2, cd.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
+            d.setBlock (1, 1, "    Please create").setBlock (1, 2, cd.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
         }
         else
         {
-            d.setCell (0, 0, "Volume").setCell (1, 0, l.getVolumeStr (8)).setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? l.getVu () : l.getVolume (), Format.FORMAT_VALUE);
-            d.setCell (0, 1, "Pan").setCell (1, 1, l.getPanStr (8)).setCell (2, 1, l.getPan (), Format.FORMAT_PAN);
+            final ChannelData l = cd.getSelectedLayerOrDrumPad ();
+            if (l != null)
+            {
+                d.setCell (0, 0, "Volume").setCell (1, 0, l.getVolumeStr (8)).setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? l.getVu () : l.getVolume (), Format.FORMAT_VALUE);
+                d.setCell (0, 1, "Pan").setCell (1, 1, l.getPanStr (8)).setCell (2, 1, l.getPan (), Format.FORMAT_PAN);
 
-            final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
-            if (fxTrackBank == null)
-            {
-                for (int i = 0; i < 6; i++)
+                final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+                if (fxTrackBank == null)
                 {
-                    final int pos = 2 + i;
-                    final SendData sendData = l.getSends ()[i];
-                    d.setCell (0, pos, sendData.getName ()).setCell (1, pos, sendData.getDisplayedValue (8)).setCell (2, pos, sendData.getValue (), Format.FORMAT_VALUE);
-                }
-            }
-            else
-            {
-                final boolean isFX = this.model.isEffectTrackBankActive ();
-                for (int i = 0; i < 6; i++)
-                {
-                    final TrackData fxTrack = fxTrackBank.getTrack (i);
-                    final boolean isEmpty = isFX || !fxTrack.doesExist ();
-                    final int pos = 2 + i;
-                    if (isEmpty)
+                    for (int i = 0; i < 6; i++)
                     {
-                        d.clearCell (0, pos);
-                        d.clearCell (2, pos);
+                        final int pos = 2 + i;
+                        final SendData sendData = l.getSends ()[i];
+                        d.setCell (0, pos, sendData.getName ()).setCell (1, pos, sendData.getDisplayedValue (8)).setCell (2, pos, sendData.getValue (), Format.FORMAT_VALUE);
                     }
-                    else
+                }
+                else
+                {
+                    final boolean isFX = this.model.isEffectTrackBankActive ();
+                    for (int i = 0; i < 6; i++)
                     {
-                        d.setCell (0, pos, fxTrack.getName ()).setCell (1, pos, l.getSends ()[i].getDisplayedValue (8));
-                        d.setCell (2, pos, l.getSends ()[i].getValue (), Format.FORMAT_VALUE);
+                        final TrackData fxTrack = fxTrackBank.getTrack (i);
+                        final boolean isEmpty = isFX || !fxTrack.doesExist ();
+                        final int pos = 2 + i;
+                        if (isEmpty)
+                        {
+                            d.clearCell (0, pos);
+                            d.clearCell (2, pos);
+                        }
+                        else
+                        {
+                            d.setCell (0, pos, fxTrack.getName ()).setCell (1, pos, l.getSends ()[i].getDisplayedValue (8));
+                            d.setCell (2, pos, l.getSends ()[i].getValue (), Format.FORMAT_VALUE);
+                        }
                     }
                 }
             }
@@ -365,20 +368,23 @@ public class DeviceLayerMode extends BaseMode
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         if (!cd.hasSelectedDevice ())
         {
-            message.setMessage (3, "Please select a device or press 'Add Device'...").send ();
+            for (int i = 0; i < 8; i++)
+                message.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
+            message.send ();
             return;
         }
 
-        final ChannelData l = cd.getSelectedLayerOrDrumPad ();
-        if (l == null)
+        final boolean noLayers = cd.hasLayers () && cd.hasZeroLayers ();
+        if (noLayers)
         {
-            final boolean noLayers = cd.hasLayers () && cd.hasZeroLayers ();
-            message.setMessage (2, "Please " + (noLayers ? "create" : "select") + " a " + (cd.hasDrumPads () ? "Drum Pad..." : "Device Layer...")).send ();
+            for (int i = 0; i < 8; i++)
+                message.addOptionElement (i == 3 ? "Please create a " + (cd.hasDrumPads () ? "Drum Pad..." : "Device Layer...") : "", i == 7 ? "Up" : "", true, "", "", false, true);
+            message.send ();
             return;
         }
 
         this.updateMenu ();
-        this.updateDisplayElements (message, cd, l);
+        this.updateDisplayElements (message, cd, cd.getSelectedLayerOrDrumPad ());
     }
 
 
@@ -587,6 +593,7 @@ public class DeviceLayerMode extends BaseMode
         if (cd == null || !cd.hasLayers ())
         {
             this.disableSecondRow ();
+            this.surface.updateButton (109, this.isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE);
             return;
         }
 

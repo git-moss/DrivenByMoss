@@ -34,6 +34,6 @@ public abstract class APCControllerExtensionDefinition extends AbstractControlle
     @Override
     public String getVersion ()
     {
-        return "5.02";
+        return "5.10";
     }
 }

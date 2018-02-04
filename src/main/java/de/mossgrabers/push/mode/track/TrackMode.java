@@ -92,13 +92,8 @@ public class TrackMode extends AbstractTrackMode
 
     private void changeCrossfader (final int value, final TrackData selectedTrack)
     {
-        // Slow down scrolling
-        this.movementCounter++;
-        if (this.movementCounter < SCROLL_RATE)
-            return;
-        this.movementCounter = 0;
-
-        this.model.getCurrentTrackBank ().changeCrossfadeModeAsNumber (selectedTrack.getIndex (), value);
+        if (this.increaseKnobMovement ())
+            this.model.getCurrentTrackBank ().changeCrossfadeModeAsNumber (selectedTrack.getIndex (), value);
     }
 
 

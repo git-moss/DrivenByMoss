@@ -81,9 +81,17 @@ public abstract class AbstractTrackBankProxy
         {
             final int index = i;
             final Track t = this.trackBank.getChannel (i);
-            t.addIsSelectedInEditorObserver (value -> this.handleBankTrackSelection (index, value));
             t.playingNotes ().addValueObserver (value -> this.handleNotes (index, value));
         }
+
+        this.trackBank.cursorIndex ().addValueObserver (index -> {
+            for (int i = 0; i < this.numTracks; i++)
+            {
+                final boolean isSelected = index == i;
+                if (this.tracks[i].isSelected () != isSelected)
+                    this.handleBankTrackSelection (i, isSelected);
+            }
+        });
 
         this.trackBank.channelCount ().markInterested ();
         this.trackBank.scrollPosition ().markInterested ();
@@ -254,10 +262,8 @@ public abstract class AbstractTrackBankProxy
     public void select (final int index)
     {
         final Track t = this.trackBank.getChannel (index);
-        if (t == null)
-            return;
-        t.selectInEditor ();
-        t.selectInMixer ();
+        if (t != null)
+            this.trackBank.cursorIndex ().set (index);
     }
 
 

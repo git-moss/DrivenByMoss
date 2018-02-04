@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.daw.data.TrackData;
 
-import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.MasterTrack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +29,12 @@ public class MasterTrackProxy extends TrackData
     /**
      * Constructor.
      *
-     * @param host The host
+     * @param master The master track
      * @param valueChanger The valueChanger
      */
-    public MasterTrackProxy (final ControllerHost host, final ValueChanger valueChanger)
+    public MasterTrackProxy (final MasterTrack master, final ValueChanger valueChanger)
     {
-        super (host.createMasterTrack (0), valueChanger.getUpperBound (), -1, 0, 0);
+        super (master, valueChanger.getUpperBound (), -1, 0, 0);
         this.valueChanger = valueChanger;
         this.track.addIsSelectedInEditorObserver (this::handleIsSelected);
 

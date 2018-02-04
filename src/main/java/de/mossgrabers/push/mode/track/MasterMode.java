@@ -6,6 +6,7 @@ package de.mossgrabers.push.mode.track;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
@@ -156,11 +157,19 @@ public class MasterMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
+
+        if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_RECORD))
+        {
+            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_RECORD);
+            this.model.getMasterTrack ().toggleArm ();
+            return;
+        }
+
         final ApplicationProxy application = this.model.getApplication ();
         switch (index)
         {
             case 0:
-                this.model.getMasterTrack ().toggleArm ();
+                this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_DEVICE, ButtonEvent.DOWN);
                 break;
 
             case 4:

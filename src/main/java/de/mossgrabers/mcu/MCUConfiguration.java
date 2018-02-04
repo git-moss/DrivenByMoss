@@ -40,6 +40,8 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final Integer    USE_VERT_ZOOM_FOR_MODES     = Integer.valueOf (38);
     /** Use the faders like the editing knobs. */
     public static final Integer    USE_FADERS_AS_KNOBS         = Integer.valueOf (39);
+    /** Select the channel when touching it's fader. */
+    private static final Integer   TOUCH_CHANNEL               = Integer.valueOf (40);
 
     /** Use a Function button to switch to previous mode. */
     public static final int        FOOTSWITCH_2_PREV_MODE      = 14;
@@ -119,6 +121,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                displayTrackNames;
     private boolean                useVertZoomForModes;
     private boolean                useFadersAsKnobs;
+    private boolean                touchChannel;
     private int []                 assignableFunctions         = new int [7];
 
 
@@ -167,6 +170,7 @@ public class MCUConfiguration extends AbstractConfiguration
         this.activateNewClipLengthSetting (preferences);
         this.activateZoomStateSetting (preferences);
         this.activateDisplayTempoOrTicksSetting (preferences);
+        this.activateChannelTouchSetting (preferences);
 
         ///////////////////////////
         // Browser
@@ -311,6 +315,21 @@ public class MCUConfiguration extends AbstractConfiguration
         this.zoomStateSetting.addValueObserver (value -> {
             this.zoomState = "On".equals (value);
             this.notifyObservers (ZOOM_STATE);
+        });
+    }
+
+
+    /**
+     * Activate the channel touch select setting.
+     *
+     * @param prefs The preferences
+     */
+    protected void activateChannelTouchSetting (final Preferences prefs)
+    {
+        final SettableEnumValue touchChannelSetting = prefs.getEnumSetting ("Select Channel on Fader Touch", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        touchChannelSetting.addValueObserver (value -> {
+            this.touchChannel = "On".equals (value);
+            this.notifyObservers (TOUCH_CHANNEL);
         });
     }
 
@@ -476,5 +495,16 @@ public class MCUConfiguration extends AbstractConfiguration
     public int getAssignable (final int index)
     {
         return this.assignableFunctions[index];
+    }
+
+
+    /**
+     * Returns true if touching the channel fader should select the track.
+     *
+     * @return True if touching the channel fader should select the track.
+     */
+    public boolean isTouchChannel ()
+    {
+        return this.touchChannel;
     }
 }

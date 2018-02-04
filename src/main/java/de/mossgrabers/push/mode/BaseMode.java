@@ -25,7 +25,7 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
 {
     protected static final int SCROLL_RATE     = 8;
 
-    protected int              movementCounter = 0;
+    private int                movementCounter = 0;
 
     protected boolean []       isKnobTouched;
     protected final boolean    isPush2;
@@ -183,5 +183,20 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
     protected String optimizeName (final String text, final int length)
     {
         return super.optimizeName (this.isPush2 ? text : StringUtils.fixASCII (text), length);
+    }
+
+
+    /**
+     * Slows down knob movement. Increases the counter till the scroll rate.
+     *
+     * @return True if the knob movement should be executed otherwise false
+     */
+    protected boolean increaseKnobMovement ()
+    {
+        this.movementCounter++;
+        if (this.movementCounter < SCROLL_RATE)
+            return false;
+        this.movementCounter = 0;
+        return true;
     }
 }

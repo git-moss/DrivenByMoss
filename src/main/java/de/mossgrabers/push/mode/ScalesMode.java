@@ -49,11 +49,8 @@ public class ScalesMode extends BaseMode
         if (index != 0)
             return;
 
-        // Slow down scrolling
-        this.movementCounter++;
-        if (this.movementCounter < SCROLL_RATE)
+        if (!this.increaseKnobMovement ())
             return;
-        this.movementCounter = 0;
 
         this.scales.changeScale (value);
         this.update ();

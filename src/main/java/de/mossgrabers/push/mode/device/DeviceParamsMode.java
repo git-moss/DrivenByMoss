@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.data.ChannelData;
 import de.mossgrabers.framework.daw.data.ParameterData;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.view.View;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushColors;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -167,9 +168,10 @@ public class DeviceParamsMode extends BaseMode
     {
         // There is no device on the track move upwards to the track view
         final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final View activeView = this.surface.getViewManager ().getActiveView ();
         if (!cd.hasSelectedDevice ())
         {
-            this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
+            activeView.executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
             return;
         }
 
@@ -193,7 +195,13 @@ public class DeviceParamsMode extends BaseMode
         }
 
         // Move up to the track
-        this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
+        if (this.model.isCursorDeviceOnMasterTrack ())
+        {
+            activeView.executeTriggerCommand (Commands.COMMAND_MASTERTRACK, ButtonEvent.DOWN);
+            activeView.executeTriggerCommand (Commands.COMMAND_MASTERTRACK, ButtonEvent.UP);
+        }
+        else
+            activeView.executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
     }
 
 
