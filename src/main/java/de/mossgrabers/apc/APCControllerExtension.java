@@ -13,7 +13,6 @@ import de.mossgrabers.apc.command.trigger.BankLeftCommand;
 import de.mossgrabers.apc.command.trigger.BankRightCommand;
 import de.mossgrabers.apc.command.trigger.CrossfadeCommand;
 import de.mossgrabers.apc.command.trigger.DeviceLeftCommand;
-import de.mossgrabers.apc.command.trigger.DeviceOnOffCommand;
 import de.mossgrabers.apc.command.trigger.DeviceRightCommand;
 import de.mossgrabers.apc.command.trigger.MasterCommand;
 import de.mossgrabers.apc.command.trigger.MuteCommand;
@@ -52,6 +51,7 @@ import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.continuous.TempoCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
+import de.mossgrabers.framework.command.trigger.DeviceOnOffCommand;
 import de.mossgrabers.framework.command.trigger.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.NewCommand;
@@ -250,7 +250,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         viewManager.registerTriggerCommand (Commands.COMMAND_NUDGE_MINUS, new NudgeCommand (true, this.model, surface));
         viewManager.registerTriggerCommand (Commands.COMMAND_NUDGE_PLUS, new NudgeCommand (false, this.model, surface));
         viewManager.registerTriggerCommand (Commands.COMMAND_LAYOUT, new PanelLayoutCommand (this.model, surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_DEVICE_ON_OFF, new DeviceOnOffCommand (this.model, surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_DEVICE_ON_OFF, new DeviceOnOffCommand<> (this.model, surface));
         viewManager.registerTriggerCommand (COMMAND_TOGGLE_DEVICES, new ToggleDeviceFrameCommand (this.model, surface));
         if (this.isMkII)
         {

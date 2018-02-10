@@ -38,7 +38,7 @@ public class DeviceParamsMode extends BaseMode
         "Expanded",
         null,
         "Banks",
-        null,
+        "Pin Device",
         "Window",
         "Up"
     };
@@ -264,6 +264,10 @@ public class DeviceParamsMode extends BaseMode
                 if (device.hasSelectedDevice ())
                     this.showDevices = !this.showDevices;
                 break;
+            case 5:
+                if (device.hasSelectedDevice ())
+                    device.togglePinned ();
+                break;
             case 6:
                 if (device.hasSelectedDevice ())
                     device.toggleWindowOpen ();
@@ -300,10 +304,10 @@ public class DeviceParamsMode extends BaseMode
         this.surface.updateButton (104, cd.isExpanded () ? orange : white);
         this.surface.updateButton (105, off);
         this.surface.updateButton (106, this.showDevices ? white : orange);
-        this.surface.updateButton (107, off);
+        this.surface.updateButton (107, cd.isPinned () ? turquoise : grey);
         this.surface.updateButton (108, cd.isWindowOpen () ? turquoise : grey);
-
         this.surface.updateButton (109, white);
+
     }
 
 
@@ -394,6 +398,9 @@ public class DeviceParamsMode extends BaseMode
                     break;
                 case 4:
                     isTopMenuOn = !this.showDevices;
+                    break;
+                case 5:
+                    isTopMenuOn = cd.isPinned ();
                     break;
                 case 6:
                     isTopMenuOn = cd.isWindowOpen ();

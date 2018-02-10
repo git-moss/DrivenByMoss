@@ -9,14 +9,17 @@ import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.ButtonRowModeCommand;
+import de.mossgrabers.framework.command.trigger.DeviceOnOffCommand;
+import de.mossgrabers.framework.command.trigger.DuplicateCommand;
+import de.mossgrabers.framework.command.trigger.LayoutCommand;
 import de.mossgrabers.framework.command.trigger.LoopCommand;
 import de.mossgrabers.framework.command.trigger.MarkerCommand;
 import de.mossgrabers.framework.command.trigger.MetronomeCommand;
-import de.mossgrabers.framework.command.trigger.ModeMultiSelectCommand;
 import de.mossgrabers.framework.command.trigger.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.MoveTrackBankCommand;
 import de.mossgrabers.framework.command.trigger.NewCommand;
 import de.mossgrabers.framework.command.trigger.NopCommand;
+import de.mossgrabers.framework.command.trigger.PaneCommand;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
 import de.mossgrabers.framework.command.trigger.PunchInCommand;
 import de.mossgrabers.framework.command.trigger.PunchOutCommand;
@@ -32,6 +35,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.AbstractControllerExtension;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.ApplicationProxy;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.EffectTrackBankProxy;
 import de.mossgrabers.framework.daw.MasterTrackProxy;
@@ -50,18 +54,19 @@ import de.mossgrabers.mcu.command.trigger.AssignableCommand;
 import de.mossgrabers.mcu.command.trigger.AutomationCommand;
 import de.mossgrabers.mcu.command.trigger.CursorCommand;
 import de.mossgrabers.mcu.command.trigger.CursorCommand.Direction;
+import de.mossgrabers.mcu.command.trigger.DevicesCommand;
 import de.mossgrabers.mcu.command.trigger.FaderTouchCommand;
 import de.mossgrabers.mcu.command.trigger.GrooveCommand;
 import de.mossgrabers.mcu.command.trigger.KeyCommand;
 import de.mossgrabers.mcu.command.trigger.KeyCommand.Key;
 import de.mossgrabers.mcu.command.trigger.OverdubCommand;
-import de.mossgrabers.mcu.command.trigger.PaneCommand;
 import de.mossgrabers.mcu.command.trigger.ScrubCommand;
 import de.mossgrabers.mcu.command.trigger.SelectCommand;
 import de.mossgrabers.mcu.command.trigger.SendSelectCommand;
 import de.mossgrabers.mcu.command.trigger.ShiftCommand;
 import de.mossgrabers.mcu.command.trigger.TempoTicksCommand;
 import de.mossgrabers.mcu.command.trigger.ToggleDisplayCommand;
+import de.mossgrabers.mcu.command.trigger.TracksCommand;
 import de.mossgrabers.mcu.command.trigger.ZoomCommand;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.controller.MCUDisplay;
@@ -117,6 +122,11 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     private static final Integer              COMMAND_F4                = Integer.valueOf (166);
     private static final Integer              COMMAND_F5                = Integer.valueOf (167);
     private static final Integer              COMMAND_TOGGLE_DISPLAY    = Integer.valueOf (168);
+    private static final Integer              COMMAND_LAYOUT_ARRANGE    = Integer.valueOf (169);
+    private static final Integer              COMMAND_LAYOUT_MIX        = Integer.valueOf (170);
+    private static final Integer              COMMAND_LAYOUT_EDIT       = Integer.valueOf (171);
+    private static final Integer              COMMAND_CONTROL           = Integer.valueOf (172);
+    private static final Integer              COMMAND_ALT               = Integer.valueOf (173);
 
     private static final Map<Integer, String> MODE_ACRONYMS             = new HashMap<> ();
 
@@ -333,30 +343,47 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.addTriggerCommand (COMMAND_F5, MCUControlSurface.MCU_F5, new AssignableCommand (6, this.model, surface));
 
         // Assignment
-        this.addTriggerCommand (Commands.COMMAND_TRACK, MCUControlSurface.MCU_MODE_IO, new ModeMultiSelectCommand<> (this.model, surface, Modes.MODE_VOLUME, Modes.MODE_TRACK));
+        this.addTriggerCommand (Commands.COMMAND_TRACK, MCUControlSurface.MCU_MODE_IO, new TracksCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_PAN_SEND, MCUControlSurface.MCU_MODE_PAN, new ModeSelectCommand<> (Modes.MODE_PAN, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_SENDS, MCUControlSurface.MCU_MODE_SENDS, new SendSelectCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_DEVICE, MCUControlSurface.MCU_MODE_PLUGIN, new ModeSelectCommand<> (Modes.MODE_DEVICE_PARAMS, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_DEVICE, MCUControlSurface.MCU_MODE_PLUGIN, new DevicesCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_LEFT, MCUControlSurface.MCU_MODE_EQ, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, true, true));
         this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_RIGHT, MCUControlSurface.MCU_MODE_DYN, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, true, false));
 
         // Automation
         this.addTriggerCommand (Commands.COMMAND_AUTOMATION_READ, MCUControlSurface.MCU_READ, new AutomationCommand (0, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_WRITE, MCUControlSurface.MCU_WRITE, new AutomationCommand (1, this.model, surface));
+        final AutomationCommand writeCommand = new AutomationCommand (1, this.model, surface);
+        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_WRITE, MCUControlSurface.MCU_WRITE, writeCommand);
+        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_WRITE, MCUControlSurface.MCU_GROUP, writeCommand);
         this.addTriggerCommand (Commands.COMMAND_AUTOMATION_TRIM, MCUControlSurface.MCU_TRIM, new AutomationCommand (2, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_AUTOMATION_TOUCH, MCUControlSurface.MCU_TOUCH, new AutomationCommand (3, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_AUTOMATION_LATCH, MCUControlSurface.MCU_LATCH, new AutomationCommand (4, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_UNDO, MCUControlSurface.MCU_UNDO, new UndoCommand<> (this.model, surface));
 
+        // Panes
+        this.addTriggerCommand (COMMAND_NOTE_EDITOR, MCUControlSurface.MCU_MIDI_TRACKS, new PaneCommand<> (PaneCommand.Panels.NOTE, this.model, surface));
+        this.addTriggerCommand (COMMAND_AUTOMATION_EDITOR, MCUControlSurface.MCU_INPUTS, new PaneCommand<> (PaneCommand.Panels.AUTOMATION, this.model, surface));
+        this.addTriggerCommand (COMMAND_TOGGLE_DEVICE, MCUControlSurface.MCU_AUDIO_TRACKS, new PaneCommand<> (PaneCommand.Panels.DEVICE, this.model, surface));
+        this.addTriggerCommand (COMMAND_MIXER, MCUControlSurface.MCU_AUDIO_INSTR, new PaneCommand<> (PaneCommand.Panels.MIXER, this.model, surface));
+
+        // Layouts
+        this.addTriggerCommand (COMMAND_LAYOUT_ARRANGE, MCUControlSurface.MCU_AUX, new LayoutCommand<> (ApplicationProxy.PANEL_LAYOUT_ARRANGE, this.model, surface));
+        this.addTriggerCommand (COMMAND_LAYOUT_MIX, MCUControlSurface.MCU_BUSSES, new LayoutCommand<> (ApplicationProxy.PANEL_LAYOUT_MIX, this.model, surface));
+        this.addTriggerCommand (COMMAND_LAYOUT_EDIT, MCUControlSurface.MCU_OUTPUTS, new LayoutCommand<> (ApplicationProxy.PANEL_LAYOUT_EDIT, this.model, surface));
+
         // Utilities
-        this.addTriggerCommand (COMMAND_NOTE_EDITOR, MCUControlSurface.MCU_MIDI_TRACKS, new PaneCommand (0, this.model, surface));
-        this.addTriggerCommand (COMMAND_AUTOMATION_EDITOR, MCUControlSurface.MCU_INPUTS, new PaneCommand (1, this.model, surface));
-        this.addTriggerCommand (COMMAND_TOGGLE_DEVICE, MCUControlSurface.MCU_AUDIO_TRACKS, new PaneCommand (2, this.model, surface));
-        this.addTriggerCommand (COMMAND_MIXER, MCUControlSurface.MCU_AUDIO_INSTR, new PaneCommand (3, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_BROWSE, MCUControlSurface.MCU_USER, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_METRONOME, MCUControlSurface.MCU_CLICK, new MetronomeCommand<> (this.model, surface));
         this.addTriggerCommand (COMMAND_GROOVE, MCUControlSurface.MCU_SOLO, new GrooveCommand (this.model, surface));
         this.addTriggerCommand (COMMAND_OVERDUB, MCUControlSurface.MCU_REPLACE, new OverdubCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_TAP_TEMPO, MCUControlSurface.MCU_NUDGE, new TapTempoCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_DUPLICATE, MCUControlSurface.MCU_DROP, new DuplicateCommand<> (this.model, surface));
+
+        this.addTriggerCommand (Commands.COMMAND_DEVICE_ON_OFF, MCUControlSurface.MCU_F8, new DeviceOnOffCommand<> (this.model, surface));
+
+        // Currently not used but prevent error in console
+        this.addTriggerCommand (COMMAND_CONTROL, MCUControlSurface.MCU_CONTROL, new NopCommand<> (this.model, surface));
+        this.addTriggerCommand (COMMAND_ALT, MCUControlSurface.MCU_ALT, new NopCommand<> (this.model, surface));
 
         // Fader Controls
         this.addTriggerCommand (COMMAND_FLIP, MCUControlSurface.MCU_FLIP, new ToggleTrackBanksCommand<> (this.model, surface));
@@ -457,15 +484,50 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @SuppressWarnings("unchecked")
     private void updateButtons ()
     {
+        final MCUControlSurface surface = this.getSurface ();
+        final Integer mode = surface.getModeManager ().getActiveModeId ();
+        if (mode == null)
+            return;
+
         this.updateVUandFaders ();
         this.updateSegmentDisplay ();
 
         // Set button states
         final TransportProxy t = this.model.getTransport ();
-        final MCUControlSurface surface = this.getSurface ();
         final boolean isShift = surface.isShiftPressed ();
         final boolean isFlipRecord = this.configuration.isFlipRecord ();
         final boolean isRecordShifted = isShift && !isFlipRecord || !isShift && isFlipRecord;
+
+        final boolean isTrackOn = Modes.MODE_TRACK.equals (mode) || Modes.MODE_VOLUME.equals (mode);
+        final boolean isPanOn = Modes.MODE_PAN.equals (mode);
+        final boolean isSendOn = mode.intValue () >= Modes.MODE_SEND1.intValue () && mode.intValue () <= Modes.MODE_SEND8.intValue ();
+        final boolean isDeviceOn = Modes.MODE_DEVICE_PARAMS.equals (mode);
+
+        final boolean isLEDOn = surface.isPressed (MCUControlSurface.MCU_OPTION) ? this.model.isCursorTrackPinned () : isTrackOn;
+        surface.updateButton (MCUControlSurface.MCU_MODE_IO, isLEDOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_MODE_PAN, isPanOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_MODE_SENDS, isSendOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+
+        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final boolean isOn = surface.isPressed (MCUControlSurface.MCU_OPTION) ? cursorDevice.isPinned () : isDeviceOn;
+
+        surface.updateButton (MCUControlSurface.MCU_MODE_PLUGIN, isOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_USER, Modes.MODE_BROWSER.equals (mode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+
+        final TransportProxy transport = this.model.getTransport ();
+        final String automationWriteMode = transport.getAutomationWriteMode ();
+        final boolean writingArrangerAutomation = transport.isWritingArrangerAutomation ();
+
+        surface.updateButton (MCUControlSurface.MCU_F6, transport.isPunchInEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_F7, transport.isPunchOutEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+
+        surface.updateButton (MCUControlSurface.MCU_READ, !writingArrangerAutomation ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        final int writeState = writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[2].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF;
+        surface.updateButton (MCUControlSurface.MCU_WRITE, writeState);
+        surface.updateButton (MCUControlSurface.MCU_GROUP, writeState);
+        surface.updateButton (MCUControlSurface.MCU_TRIM, transport.isWritingClipLauncherAutomation () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_TOUCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_LATCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         final View view = surface.getViewManager ().getView (Views.VIEW_CONTROL);
         surface.updateButton (MCUControlSurface.MCU_REWIND, ((WindCommand<MCUControlSurface, MCUConfiguration>) view.getTriggerCommand (Commands.COMMAND_REWIND)).isRewinding () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
@@ -481,7 +543,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
 
         surface.updateButton (MCUControlSurface.MCU_MIDI_TRACKS, MCU_BUTTON_STATE_OFF);
         surface.updateButton (MCUControlSurface.MCU_INPUTS, MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_AUDIO_TRACKS, this.model.getCursorDevice ().isWindowOpen () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_AUDIO_TRACKS, surface.isShiftPressed () && cursorDevice.isWindowOpen () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         surface.updateButton (MCUControlSurface.MCU_AUDIO_INSTR, MCU_BUTTON_STATE_OFF);
 
         surface.updateButton (MCUControlSurface.MCU_CLICK, (isShift ? t.isMetronomeTicksOn () : t.isMetronomeOn ()) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
@@ -673,34 +735,8 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             return;
 
         this.updateIndication (mode);
-
-        final boolean isTrackOn = Modes.MODE_TRACK.equals (mode) || Modes.MODE_VOLUME.equals (mode);
-        final boolean isPanOn = Modes.MODE_PAN.equals (mode);
-        final boolean isSendOn = mode.intValue () >= Modes.MODE_SEND1.intValue () && mode.intValue () <= Modes.MODE_SEND8.intValue ();
-        final boolean isDeviceOn = Modes.MODE_DEVICE_PARAMS.equals (mode);
-
-        final MCUControlSurface surface = this.getSurface ();
-        surface.updateButton (MCUControlSurface.MCU_MODE_IO, isTrackOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_MODE_PAN, isPanOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_MODE_SENDS, isSendOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_MODE_PLUGIN, isDeviceOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_USER, Modes.MODE_BROWSER.equals (mode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-
-        final TransportProxy transport = this.model.getTransport ();
-        final String automationWriteMode = transport.getAutomationWriteMode ();
-        final boolean writingArrangerAutomation = transport.isWritingArrangerAutomation ();
-
-        surface.updateButton (MCUControlSurface.MCU_F6, transport.isPunchInEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_F7, transport.isPunchOutEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-
-        surface.updateButton (MCUControlSurface.MCU_READ, !writingArrangerAutomation ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_WRITE, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[2].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_TRIM, transport.isWritingClipLauncherAutomation () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_TOUCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_LATCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-
         if (this.configuration.hasAssignmentDisplay ())
-            surface.getSegmentDisplay ().setAssignmentDisplay (MODE_ACRONYMS.get (mode));
+            this.getSurface ().getSegmentDisplay ().setAssignmentDisplay (MODE_ACRONYMS.get (mode));
     }
 
 

@@ -10,7 +10,6 @@ import de.mossgrabers.framework.daw.data.ParameterData;
 
 import com.bitwig.extension.controller.api.Channel;
 import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.CursorDevice;
 import com.bitwig.extension.controller.api.CursorDeviceLayer;
 import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.Device;
@@ -18,6 +17,7 @@ import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.DeviceLayer;
 import com.bitwig.extension.controller.api.DeviceLayerBank;
 import com.bitwig.extension.controller.api.DrumPadBank;
+import com.bitwig.extension.controller.api.PinnableCursorDevice;
 import com.bitwig.extension.controller.api.RemoteControl;
 import com.bitwig.extension.controller.api.SettableIntegerValue;
 
@@ -30,7 +30,7 @@ import com.bitwig.extension.controller.api.SettableIntegerValue;
 public class CursorDeviceProxy
 {
     private ControllerHost           host;
-    private CursorDevice             cursorDevice;
+    private PinnableCursorDevice     cursorDevice;
     private DeviceBank               siblings;
     private CursorRemoteControlsPage remoteControls;
     private CursorDeviceLayer        cursorDeviceLayer;
@@ -63,7 +63,7 @@ public class CursorDeviceProxy
      * @param numDeviceLayers The number of layers
      * @param numDrumPadLayers The number of drum pad layers
      */
-    public CursorDeviceProxy (final ControllerHost host, final CursorDevice cursorDevice, final ValueChanger valueChanger, final int numSends, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public CursorDeviceProxy (final ControllerHost host, final PinnableCursorDevice cursorDevice, final ValueChanger valueChanger, final int numSends, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
         this.host = host;
         this.cursorDevice = cursorDevice;
@@ -88,6 +88,7 @@ public class CursorDeviceProxy
         this.cursorDevice.hasDrumPads ().markInterested ();
         this.cursorDevice.hasLayers ().markInterested ();
         this.cursorDevice.hasSlots ().markInterested ();
+        this.cursorDevice.isPinned ().markInterested ();
 
         this.remoteControls = this.cursorDevice.createCursorRemoteControlsPage (this.numParams);
         this.remoteControls.hasPrevious ().markInterested ();
@@ -171,6 +172,7 @@ public class CursorDeviceProxy
         this.cursorDevice.hasDrumPads ().setIsSubscribed (enable);
         this.cursorDevice.hasLayers ().setIsSubscribed (enable);
         this.cursorDevice.hasSlots ().setIsSubscribed (enable);
+        this.cursorDevice.isPinned ().setIsSubscribed (enable);
 
         this.remoteControls.hasPrevious ().setIsSubscribed (enable);
         this.remoteControls.hasNext ().setIsSubscribed (enable);
@@ -404,6 +406,26 @@ public class CursorDeviceProxy
     public boolean hasSlots ()
     {
         return this.cursorDevice.hasSlots ().get ();
+    }
+
+
+    /**
+     * Get if the cursor device is pinned.
+     * 
+     * @return True if pinned
+     */
+    public boolean isPinned ()
+    {
+        return this.cursorDevice.isPinned ().get ();
+    }
+
+
+    /**
+     * Toggles if the cursor device is pinned.
+     */
+    public void togglePinned ()
+    {
+        this.cursorDevice.isPinned ().toggle ();
     }
 
 
