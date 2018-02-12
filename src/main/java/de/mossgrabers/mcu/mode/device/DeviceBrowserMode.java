@@ -6,8 +6,8 @@ package de.mossgrabers.mcu.mode.device;
 
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.BrowserProxy;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.data.BrowserColumnData;
 import de.mossgrabers.framework.daw.data.BrowserColumnItemData;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
@@ -75,7 +75,7 @@ public class DeviceBrowserMode extends BaseMode
     @Override
     public void updateDisplay ()
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         final Display d = this.surface.getDisplay ();
         final boolean isPresetSession = browser.isPresetContentType ();
         final CursorDeviceProxy cd = this.model.getCursorDevice ();
@@ -160,7 +160,7 @@ public class DeviceBrowserMode extends BaseMode
 
     private BrowserColumnData getFilterColumn (final int index)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         int column = -1;
         final boolean [] browserDisplayFilter = this.surface.getConfiguration ().getBrowserDisplayFilter ();
         for (int i = 0; i < browser.getFilterColumnCount (); i++)
@@ -178,7 +178,7 @@ public class DeviceBrowserMode extends BaseMode
 
     private void selectNext (final int index, final int count)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (index < 7)
         {
             final BrowserColumnData fc = this.getFilterColumn (index);
@@ -201,7 +201,7 @@ public class DeviceBrowserMode extends BaseMode
 
     private void selectPrevious (final int index, final int count)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         for (int i = 0; i < count; i++)
         {
             if (index < 7)

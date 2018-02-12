@@ -9,7 +9,7 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.BrowserProxy;
+import de.mossgrabers.framework.daw.IBrowser;
 
 
 /**
@@ -74,7 +74,7 @@ public class BrowserCommand<S extends ControlSurface<C>, C extends Configuration
      */
     public void startBrowser (final boolean insertDevice, final boolean beforeCurrent)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
 
         // Patch Browser already active?
         if (browser.isActive ())

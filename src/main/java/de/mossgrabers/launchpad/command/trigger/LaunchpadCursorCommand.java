@@ -8,8 +8,8 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.BrowserProxy;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
@@ -111,7 +111,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         if (viewManager.isActiveView (Views.VIEW_BROWSER))
         {
-            final BrowserProxy browser = this.model.getBrowser ();
+            final IBrowser browser = this.model.getBrowser ();
             final int index = browser.getSelectedContentTypeIndex ();
             this.canScrollUp = false;
             this.canScrollDown = false;

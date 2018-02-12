@@ -8,7 +8,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.TransportProxy;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -41,8 +41,8 @@ public class AutomationMode extends BaseMode
         final Display d = this.surface.getDisplay ();
         final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
         d.clear ().setBlock (1, 0, "Automation Mode:");
-        for (int i = 0; i < TransportProxy.AUTOMATION_MODES.length; i++)
-            d.setCell (3, i, (TransportProxy.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? PushDisplay.RIGHT_ARROW : "") + TransportProxy.AUTOMATION_MODES[i]);
+        for (int i = 0; i < ITransport.AUTOMATION_MODES.length; i++)
+            d.setCell (3, i, (ITransport.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? PushDisplay.RIGHT_ARROW : "") + ITransport.AUTOMATION_MODES[i]);
         d.allDone ();
     }
 
@@ -54,7 +54,7 @@ public class AutomationMode extends BaseMode
         final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         for (int i = 0; i < 8; i++)
-            message.addOptionElement ("", "", false, i == 0 ? "Automation Mode" : "", i < TransportProxy.AUTOMATION_MODES.length ? TransportProxy.AUTOMATION_MODES[i] : "", i < TransportProxy.AUTOMATION_MODES.length && TransportProxy.AUTOMATION_MODES_VALUES[i].equals (writeMode), false);
+            message.addOptionElement ("", "", false, i == 0 ? "Automation Mode" : "", i < ITransport.AUTOMATION_MODES.length ? ITransport.AUTOMATION_MODES[i] : "", i < ITransport.AUTOMATION_MODES.length && ITransport.AUTOMATION_MODES_VALUES[i].equals (writeMode), false);
         message.send ();
     }
 
@@ -65,8 +65,8 @@ public class AutomationMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        if (index < TransportProxy.AUTOMATION_MODES_VALUES.length)
-            this.model.getTransport ().setAutomationWriteMode (TransportProxy.AUTOMATION_MODES_VALUES[index]);
+        if (index < ITransport.AUTOMATION_MODES_VALUES.length)
+            this.model.getTransport ().setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[index]);
     }
 
 
@@ -78,9 +78,9 @@ public class AutomationMode extends BaseMode
 
         final ColorManager colorManager = this.model.getColorManager ();
 
-        for (int i = 0; i < TransportProxy.AUTOMATION_MODES_VALUES.length; i++)
-            this.surface.updateButton (20 + i, colorManager.getColor (TransportProxy.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
-        for (int i = TransportProxy.AUTOMATION_MODES_VALUES.length; i < 8; i++)
+        for (int i = 0; i < ITransport.AUTOMATION_MODES_VALUES.length; i++)
+            this.surface.updateButton (20 + i, colorManager.getColor (ITransport.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+        for (int i = ITransport.AUTOMATION_MODES_VALUES.length; i < 8; i++)
             this.surface.updateButton (20 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
     }
 }

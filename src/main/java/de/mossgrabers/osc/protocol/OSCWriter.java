@@ -4,15 +4,15 @@
 
 package de.mossgrabers.osc.protocol;
 
-import de.mossgrabers.framework.daw.ApplicationProxy;
-import de.mossgrabers.framework.daw.ArrangerProxy;
-import de.mossgrabers.framework.daw.BrowserProxy;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.MixerProxy;
+import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.IArranger;
+import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IMixer;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.SceneBankProxy;
 import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
 import de.mossgrabers.framework.daw.data.BrowserColumnData;
 import de.mossgrabers.framework.daw.data.BrowserColumnItemData;
 import de.mossgrabers.framework.daw.data.ChannelData;
@@ -77,7 +77,7 @@ public class OSCWriter
         // Transport
         //
 
-        final TransportProxy trans = this.model.getTransport ();
+        final ITransport trans = this.model.getTransport ();
         this.sendOSC ("/play", trans.isPlaying (), dump);
         this.sendOSC ("/record", trans.isRecording (), dump);
         this.sendOSC ("/overdub", trans.isArrangerOverdub (), dump);
@@ -98,10 +98,10 @@ public class OSCWriter
         // Frames
         //
 
-        final ApplicationProxy app = this.model.getApplication ();
+        final IApplication app = this.model.getApplication ();
         this.sendOSC ("/layout", app.getPanelLayout ().toLowerCase (), dump);
 
-        final ArrangerProxy arrange = this.model.getArranger ();
+        final IArranger arrange = this.model.getArranger ();
         this.sendOSC ("/arranger/cueMarkerVisibility", arrange.areCueMarkersVisible (), dump);
         this.sendOSC ("/arranger/playbackFollow", arrange.isPlaybackFollowEnabled (), dump);
         this.sendOSC ("/arranger/trackRowHeight", arrange.hasDoubleRowTrackHeight (), dump);
@@ -110,7 +110,7 @@ public class OSCWriter
         this.sendOSC ("/arranger/ioSectionVisibility", arrange.isIoSectionVisible (), dump);
         this.sendOSC ("/arranger/effectTracksVisibility", arrange.areEffectTracksVisible (), dump);
 
-        final MixerProxy mix = this.model.getMixer ();
+        final IMixer mix = this.model.getMixer ();
         this.sendOSC ("/mixer/clipLauncherSectionVisibility", mix.isClipLauncherSectionVisible (), dump);
         this.sendOSC ("/mixer/crossFadeSectionVisibility", mix.isCrossFadeSectionVisible (), dump);
         this.sendOSC ("/mixer/deviceSectionVisibility", mix.isDeviceSectionVisible (), dump);
@@ -122,7 +122,7 @@ public class OSCWriter
         // Project
         //
 
-        this.sendOSC ("/project/name", app.getProjectName (), dump);
+        this.sendOSC ("/project/name", this.model.getProject ().getName (), dump);
         this.sendOSC ("/project/engine", app.isEngineActive (), dump);
 
         //
@@ -187,7 +187,7 @@ public class OSCWriter
         }
         catch (final IOException ex)
         {
-            this.model.getHost ().errorln (ex.getClass () + ":" + ex.getMessage ());
+            this.model.getHost ().error ("Could not send UDP message.", ex);
         }
 
         this.messages.clear ();
@@ -281,7 +281,7 @@ public class OSCWriter
     }
 
 
-    private void flushBrowser (final String browserAddress, final BrowserProxy browser, final boolean dump)
+    private void flushBrowser (final String browserAddress, final IBrowser browser, final boolean dump)
     {
         this.sendOSC (browserAddress + "isActive", browser.isActive (), dump);
 

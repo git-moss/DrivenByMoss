@@ -2,10 +2,11 @@
 // (c) 2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.daw;
+package de.mossgrabers.framework.daw.bitwig;
+
+import de.mossgrabers.framework.daw.IArranger;
 
 import com.bitwig.extension.controller.api.Arranger;
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
@@ -13,7 +14,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ArrangerProxy
+public class ArrangerProxy implements IArranger
 {
     private Arranger arranger;
 
@@ -21,11 +22,11 @@ public class ArrangerProxy
     /**
      * Constructor
      *
-     * @param host The host
+     * @param arranger The arranger
      */
-    public ArrangerProxy (final ControllerHost host)
+    public ArrangerProxy (final Arranger arranger)
     {
-        this.arranger = host.createArranger ();
+        this.arranger = arranger;
 
         this.arranger.areCueMarkersVisible ().markInterested ();
         this.arranger.isPlaybackFollowEnabled ().markInterested ();
@@ -37,12 +38,8 @@ public class ArrangerProxy
     }
 
 
-    /**
-     * Dis-/Enable all attributes. They are enabled by default. Use this function if values are
-     * currently not needed to improve performance.
-     *
-     * @param enable True to enable
-     */
+    /** {@inheritDoc} */
+    @Override
     public void enableObservers (final boolean enable)
     {
         this.arranger.areCueMarkersVisible ().setIsSubscribed (enable);
@@ -55,140 +52,112 @@ public class ArrangerProxy
     }
 
 
-    /**
-     * Are the cue markers visible?
-     *
-     * @return True if cue markers are visible
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean areCueMarkersVisible ()
     {
         return this.arranger.areCueMarkersVisible ().get ();
     }
 
 
-    /**
-     * Show/hide the cue markers in the arranger panel.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleCueMarkerVisibility ()
     {
         this.arranger.areCueMarkersVisible ().toggle ();
     }
 
 
-    /**
-     * Is playback follow enabled?.
-     *
-     * @return True if playback follows
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isPlaybackFollowEnabled ()
     {
         return this.arranger.isPlaybackFollowEnabled ().get ();
     }
 
 
-    /**
-     * Enable/disable arranger playback follow.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void togglePlaybackFollow ()
     {
         this.arranger.isPlaybackFollowEnabled ().toggle ();
     }
 
 
-    /**
-     * Are double track heights enabled?.
-     *
-     * @return True if double row track height is enabled
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasDoubleRowTrackHeight ()
     {
         return this.arranger.hasDoubleRowTrackHeight ().get ();
     }
 
 
-    /**
-     * Toggles the double/single row height of the Arranger tracks.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleTrackRowHeight ()
     {
         this.arranger.hasDoubleRowTrackHeight ().toggle ();
     }
 
 
-    /**
-     * Is the clip launcher visible?
-     *
-     * @return True if the clip launcher is visible
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isClipLauncherVisible ()
     {
         return this.arranger.isClipLauncherVisible ().get ();
     }
 
 
-    /**
-     * Toggle the clip launcher visibility.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleClipLauncher ()
     {
         this.arranger.isClipLauncherVisible ().toggle ();
     }
 
 
-    /**
-     * Is the timeline visible?
-     *
-     * @return True if the timeline is visible?
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isTimelineVisible ()
     {
         return this.arranger.isTimelineVisible ().get ();
     }
 
 
-    /**
-     * Toggles the timeline visibility.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleTimeLine ()
     {
         this.arranger.isTimelineVisible ().toggle ();
     }
 
 
-    /**
-     * Is the IO section visible?
-     *
-     * @return True if the IO section is visible
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isIoSectionVisible ()
     {
         return this.arranger.isIoSectionVisible ().get ();
     }
 
 
-    /**
-     * Toggles the visibility of the IO section
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleIoSection ()
     {
         this.arranger.isIoSectionVisible ().toggle ();
     }
 
 
-    /**
-     * Are effect tracks visible?
-     *
-     * @return True if effect tracks are visible
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean areEffectTracksVisible ()
     {
         return this.arranger.areEffectTracksVisible ().get ();
     }
 
 
-    /**
-     * Toggles the effect tracks visibility.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleEffectTracks ()
     {
         this.arranger.areEffectTracksVisible ().toggle ();

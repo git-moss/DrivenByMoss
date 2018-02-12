@@ -7,11 +7,10 @@ package de.mossgrabers.push.mode;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.daw.CursorClipProxy;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.controller.PushDisplay;
-
-import com.bitwig.extension.controller.api.Clip;
 
 
 /**
@@ -21,11 +20,11 @@ import com.bitwig.extension.controller.api.Clip;
  */
 public class NoteMode extends BaseMode
 {
-    Clip   clip         = null;
-    double noteLength   = 1.0;
-    int    noteVelocity = 127;
-    int    step         = 0;
-    int    note         = 60;
+    CursorClipProxy clip         = null;
+    double          noteLength   = 1.0;
+    int             noteVelocity = 127;
+    int             step         = 0;
+    int             note         = 60;
 
 
     /**
@@ -49,7 +48,7 @@ public class NoteMode extends BaseMode
      * @param noteLength The note length to edit
      * @param noteVelocity The note velocity to edit
      */
-    public void setValues (final Clip clip, final int step, final int note, final double noteLength, final int noteVelocity)
+    public void setValues (final CursorClipProxy clip, final int step, final int note, final double noteLength, final int noteVelocity)
     {
         this.clip = clip;
         this.step = step;

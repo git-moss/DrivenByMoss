@@ -13,7 +13,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.ApplicationProxy;
+import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.data.SlotData;
 import de.mossgrabers.framework.daw.data.TrackData;
 
@@ -123,17 +123,17 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
 
             case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_ARRANGE:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getApplication ().setPanelLayout (ApplicationProxy.PANEL_LAYOUT_ARRANGE);
+                    this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_ARRANGE);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_MIX:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getApplication ().setPanelLayout (ApplicationProxy.PANEL_LAYOUT_MIX);
+                    this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_MIX);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_EDIT:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getApplication ().setPanelLayout (ApplicationProxy.PANEL_LAYOUT_EDIT);
+                    this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_EDIT);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_ADD_INSTRUMENT_TRACK:

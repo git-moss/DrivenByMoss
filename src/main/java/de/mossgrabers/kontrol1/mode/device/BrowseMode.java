@@ -7,7 +7,7 @@ package de.mossgrabers.kontrol1.mode.device;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.BrowserProxy;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.data.BrowserColumnData;
 import de.mossgrabers.framework.daw.data.BrowserColumnItemData;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -69,7 +69,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
         }
         else
         {
-            final BrowserProxy browser = this.model.getBrowser ();
+            final IBrowser browser = this.model.getBrowser ();
             final BrowserColumnData fc = browser.getFilterColumn (index);
             if (fc != null && fc.doesExist ())
             {
@@ -91,7 +91,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
         }
 
         final Display d = this.surface.getDisplay ();
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
         {
             this.surface.getModeManager ().restoreMode ();
@@ -145,7 +145,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
     public void navigatePresets (final boolean moveUp)
     {
         this.selectionMode = BrowseMode.SELECTION_PRESET;
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
             return;
         if (moveUp)
@@ -163,7 +163,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
      */
     public void navigateFilters (final int filterNumber, final boolean moveUp)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
             return;
         if (moveUp)
@@ -193,7 +193,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
     {
         final int index = this.selectedColumn == -1 ? 7 : this.selectedColumn;
 
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (index < 7)
         {
             final BrowserColumnData fc = browser.getFilterColumn (index);
@@ -223,7 +223,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
     {
         final int index = this.selectedColumn == -1 ? 7 : this.selectedColumn;
 
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         for (int i = 0; i < count; i++)
         {
             if (index < 7)

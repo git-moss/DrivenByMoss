@@ -2,8 +2,9 @@
 // (c) 2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.daw;
+package de.mossgrabers.framework.daw.bitwig;
 
+import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.data.ParameterData;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -15,7 +16,7 @@ import com.bitwig.extension.controller.api.Groove;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class GrooveProxy
+public class GrooveProxy implements IGroove
 {
     private Groove           groove;
     private ParameterData [] parameters = new ParameterData [6];
@@ -40,12 +41,8 @@ public class GrooveProxy
     }
 
 
-    /**
-     * Dis-/Enable all attributes. They are enabled by default. Use this function if values are
-     * currently not needed to improve performance.
-     *
-     * @param enable True to enable
-     */
+    /** {@inheritDoc} */
+    @Override
     public void enableObservers (final boolean enable)
     {
         for (final ParameterData parameter: this.parameters)
@@ -53,22 +50,16 @@ public class GrooveProxy
     }
 
 
-    /**
-     * Get all groove parameters.
-     *
-     * @return The groove parameters
-     */
+    /** {@inheritDoc} */
+    @Override
     public ParameterData [] getParameters ()
     {
         return this.parameters;
     }
 
 
-    /**
-     * Sets indication for all groove parameters.
-     *
-     * @param enable True to enable
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setIndication (final boolean enable)
     {
         for (final ParameterData p: this.parameters)

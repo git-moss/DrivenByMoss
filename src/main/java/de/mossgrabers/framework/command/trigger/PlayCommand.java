@@ -9,7 +9,7 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.TransportProxy;
+import de.mossgrabers.framework.daw.ITransport;
 
 
 /**
@@ -79,7 +79,7 @@ public class PlayCommand<S extends ControlSurface<C>, C extends Configuration> e
      */
     protected void handleStopOptions ()
     {
-        final TransportProxy transport = this.model.getTransport ();
+        final ITransport transport = this.model.getTransport ();
         switch (this.surface.getConfiguration ().getBehaviourOnStop ())
         {
             case RETURN_TO_ZERO:

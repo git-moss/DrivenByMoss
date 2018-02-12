@@ -10,7 +10,6 @@ import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.ApplicationProxy;
 import de.mossgrabers.framework.daw.MasterTrackProxy;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -110,14 +109,12 @@ public class MasterMode extends BaseMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final ApplicationProxy application = this.model.getApplication ();
-        final String projectName = application.getProjectName ();
         final MasterTrackProxy master = this.model.getMasterTrack ();
         d.setRow (0, MasterMode.PARAM_NAMES).setCell (1, 0, master.getVolumeStr (8)).setCell (1, 1, master.getPanStr (8));
-        d.clearCell (1, 2).clearCell (1, 3).setBlock (1, 2, "Audio Engine").setBlock (1, 3, projectName).done (1);
+        d.clearCell (1, 2).clearCell (1, 3).setBlock (1, 2, "Audio Engine").setBlock (1, 3, this.model.getProject ().getName ()).done (1);
         d.setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : master.getVolume (), Format.FORMAT_VALUE);
         d.setCell (2, 1, master.getPan (), Format.FORMAT_PAN).clearCell (2, 2).clearCell (2, 3).clearCell (2, 4).clearCell (2, 5).clearCell (2, 6).clearCell (2, 7).done (2);
-        d.setCell (3, 0, master.getName ()).clearCell (3, 1).clearCell (3, 2).clearCell (3, 3).setCell (3, 4, application.isEngineActive () ? "Turn off" : "Turn on");
+        d.setCell (3, 0, master.getName ()).clearCell (3, 1).clearCell (3, 2).clearCell (3, 3).setCell (3, 4, this.model.getApplication ().isEngineActive () ? "Turn off" : "Turn on");
         d.clearCell (3, 5).setCell (3, 6, "Previous").setCell (3, 7, "Next").done (3);
     }
 
@@ -127,7 +124,6 @@ public class MasterMode extends BaseMode
     public void updateDisplay2 ()
     {
         final MasterTrackProxy master = this.model.getMasterTrack ();
-        final ApplicationProxy application = this.model.getApplication ();
         final ValueChanger valueChanger = this.model.getValueChanger ();
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
 
@@ -143,9 +139,9 @@ public class MasterMode extends BaseMode
             }, false);
         }
 
-        message.addOptionElement ("", "", false, "Audio Engine", application.isEngineActive () ? "Turn off" : "Turn on", false, false);
+        message.addOptionElement ("", "", false, "Audio Engine", this.model.getApplication ().isEngineActive () ? "Turn off" : "Turn on", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
-        message.addOptionElement ("Project:", "", false, application.getProjectName (), "Previous", false, false);
+        message.addOptionElement ("Project:", "", false, this.model.getProject ().getName (), "Previous", false, false);
         message.addOptionElement ("", "", false, "", "Next", false, false);
 
         message.send ();
@@ -166,7 +162,6 @@ public class MasterMode extends BaseMode
             return;
         }
 
-        final ApplicationProxy application = this.model.getApplication ();
         switch (index)
         {
             case 0:
@@ -174,15 +169,15 @@ public class MasterMode extends BaseMode
                 break;
 
             case 4:
-                application.setEngineActive (!application.isEngineActive ());
+                this.model.getApplication ().toggleEngineActive ();
                 break;
 
             case 6:
-                application.previousProject ();
+                this.model.getProject ().previous ();
                 break;
 
             case 7:
-                application.nextProject ();
+                this.model.getProject ().next ();
                 break;
         }
     }

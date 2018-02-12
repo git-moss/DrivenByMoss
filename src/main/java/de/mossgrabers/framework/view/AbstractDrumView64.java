@@ -14,8 +14,8 @@ import de.mossgrabers.framework.daw.TrackBankProxy;
 import de.mossgrabers.framework.daw.data.ChannelData;
 import de.mossgrabers.framework.scale.Scales;
 
-import com.bitwig.extension.controller.api.CursorDevice;
 import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
+import com.bitwig.extension.controller.api.PinnableCursorDevice;
 
 
 /**
@@ -82,7 +82,7 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
         tb.addNoteObserver ( (note, velocity) -> this.pressedKeys[note] = velocity);
         tb.addTrackSelectionObserver ( (final int index, final boolean isSelected) -> this.clearPressedKeys ());
 
-        final CursorDevice cd = tb.getCursorTrack ().createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
+        final PinnableCursorDevice cd = tb.getCursorTrack ().createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
         this.primaryDevice = new CursorDeviceProxy (model.getHost (), cd, this.model.getValueChanger (), 0, 0, 0, 64, 64);
     }
 

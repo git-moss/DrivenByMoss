@@ -6,7 +6,7 @@ package de.mossgrabers.kontrol1.view;
 
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scale;
@@ -42,7 +42,7 @@ public class ControlView extends AbstractView<Kontrol1ControlSurface, Kontrol1Co
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final boolean isBrowseMode = modeManager.isActiveMode (Modes.MODE_BROWSER);
-        final TransportProxy transport = this.model.getTransport ();
+        final ITransport transport = this.model.getTransport ();
         final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
         final TrackData t = currentTrackBank.getSelectedTrack ();
         final Kontrol1Configuration configuration = this.surface.getConfiguration ();

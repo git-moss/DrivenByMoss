@@ -20,8 +20,8 @@ import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.EffectTrackBankProxy;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.midi.MidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
@@ -307,7 +307,7 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
 
         final ModeManager modeManager = surface.getModeManager ();
 
-        final TransportProxy transport = this.model.getTransport ();
+        final ITransport transport = this.model.getTransport ();
 
         surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SHIFT, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
         surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_CLICK, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING : transport.isMetronomeOn () ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);

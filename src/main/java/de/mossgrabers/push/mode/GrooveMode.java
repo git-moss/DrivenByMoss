@@ -7,7 +7,6 @@ package de.mossgrabers.push.mode;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.GrooveProxy;
 import de.mossgrabers.framework.daw.data.ParameterData;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -78,8 +77,7 @@ public class GrooveMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final GrooveProxy groove = this.model.getGroove ();
-        final ParameterData [] parameters = groove.getParameters ();
+        final ParameterData [] parameters = this.model.getGroove ().getParameters ();
         final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
         message.addParameterElement ("Quant Amnt", quantizeAmount * 1023 / 100, quantizeAmount + "%", this.isKnobTouched[0], -1);

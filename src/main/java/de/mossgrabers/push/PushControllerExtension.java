@@ -32,8 +32,8 @@ import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.CursorClipProxy;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.EffectTrackBankProxy;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
 import de.mossgrabers.framework.daw.data.ChannelData;
 import de.mossgrabers.framework.daw.data.SlotData;
 import de.mossgrabers.framework.daw.data.TrackData;
@@ -481,14 +481,13 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         this.getHost ().scheduleTask ( () -> {
             final PushControlSurface surface = this.getSurface ();
             surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
-            // surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
         }, 200);
     }
 
 
     private void updateButtons ()
     {
-        final TransportProxy t = this.model.getTransport ();
+        final ITransport t = this.model.getTransport ();
         final PushControlSurface surface = this.getSurface ();
         surface.updateButton (PushControlSurface.PUSH_BUTTON_METRONOME, t.isMetronomeOn () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
         surface.updateButton (PushControlSurface.PUSH_BUTTON_PLAY, t.isPlaying () ? PushColors.PUSH_BUTTON_STATE_PLAY_HI : PushColors.PUSH_BUTTON_STATE_PLAY_ON);

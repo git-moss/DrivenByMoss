@@ -9,7 +9,6 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.SceneBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
 import de.mossgrabers.framework.daw.data.SceneData;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
@@ -19,7 +18,7 @@ import de.mossgrabers.push.controller.PushControlSurface;
 
 
 /**
- * The Color view.
+ * The scene play view.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -38,7 +37,7 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     {
         super ("Scene Play", surface, model);
 
-        this.trackBank = new TrackBankProxy (model.getHost (), model.getValueChanger (), model.getTrackBank ().getCursorTrack (), 8, 64, 0, true);
+        this.trackBank = model.createTrackBank (model.getTrackBank ().getCursorTrack (), 8, 64, 0, true);
     }
 
 

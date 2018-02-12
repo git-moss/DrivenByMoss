@@ -9,7 +9,7 @@ import de.mossgrabers.beatstep.controller.BeatstepColors;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.BrowserProxy;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.ViewManager;
 
@@ -37,7 +37,7 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
     @Override
     public void onKnob (final int index, final int value)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
         {
             final ViewManager viewManager = this.surface.getViewManager ();

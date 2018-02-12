@@ -8,7 +8,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.ApplicationProxy;
+import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
 
@@ -40,7 +40,7 @@ public class AddTrackCommand extends AbstractTriggerCommand<PushControlSurface, 
             return;
 
         AbstractTrackBankProxy tb = this.model.getTrackBank ();
-        final ApplicationProxy application = this.model.getApplication ();
+        final IApplication application = this.model.getApplication ();
         if (this.surface.isShiftPressed ())
         {
             application.addEffectTrack ();

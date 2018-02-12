@@ -8,7 +8,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.SlotData;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -347,7 +347,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     {
         final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
         final CursorDeviceProxy cd = this.model.getCursorDevice ();
-        final TransportProxy transport = this.model.getTransport ();
+        final ITransport transport = this.model.getTransport ();
         final int clipLength = this.surface.getConfiguration ().getNewClipLength ();
 
         final Integer mode = this.surface.getModeManager ().getActiveModeId ();

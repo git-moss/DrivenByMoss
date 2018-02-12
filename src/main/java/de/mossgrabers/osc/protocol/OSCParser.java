@@ -7,14 +7,14 @@ package de.mossgrabers.osc.protocol;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.ApplicationProxy;
-import de.mossgrabers.framework.daw.ArrangerProxy;
-import de.mossgrabers.framework.daw.BrowserProxy;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.IArranger;
+import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IMixer;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.MasterTrackProxy;
-import de.mossgrabers.framework.daw.MixerProxy;
 import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.osc.OSCConfiguration;
@@ -43,7 +43,7 @@ public class OSCParser implements OscMethodCallback
     private static final Pattern   RGB_COLOR_PATTERN = Pattern.compile ("(rgb|RGB)\\((\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?)\\)");
 
     private final OSCModel         model;
-    private final TransportProxy   transport;
+    private final ITransport       transport;
     private final MasterTrackProxy masterTrack;
     private final Scales           scales;
     private final MidiIn           port;
@@ -246,16 +246,16 @@ public class OSCParser implements OscMethodCallback
                 switch (numValue)
                 {
                     case 0:
-                        this.transport.setPreroll (TransportProxy.PREROLL_NONE);
+                        this.transport.setPreroll (ITransport.PREROLL_NONE);
                         break;
                     case 1:
-                        this.transport.setPreroll (TransportProxy.PREROLL_1_BAR);
+                        this.transport.setPreroll (ITransport.PREROLL_1_BAR);
                         break;
                     case 2:
-                        this.transport.setPreroll (TransportProxy.PREROLL_2_BARS);
+                        this.transport.setPreroll (ITransport.PREROLL_2_BARS);
                         break;
                     case 4:
-                        this.transport.setPreroll (TransportProxy.PREROLL_4_BARS);
+                        this.transport.setPreroll (ITransport.PREROLL_4_BARS);
                         break;
                 }
                 break;
@@ -270,7 +270,7 @@ public class OSCParser implements OscMethodCallback
                 break;
 
             case "panel":
-                ApplicationProxy app = this.model.getApplication ();
+                final IApplication app = this.model.getApplication ();
                 switch (oscParts.get (0))
                 {
                     case "noteEditor":
@@ -292,7 +292,7 @@ public class OSCParser implements OscMethodCallback
                 break;
 
             case "arranger":
-                final ArrangerProxy arrange = this.model.getArranger ();
+                final IArranger arrange = this.model.getArranger ();
                 switch (oscParts.get (0))
                 {
                     case "cueMarkerVisibility":
@@ -320,7 +320,7 @@ public class OSCParser implements OscMethodCallback
                 break;
 
             case "mixer":
-                final MixerProxy mix = this.model.getMixer ();
+                final IMixer mix = this.model.getMixer ();
                 switch (oscParts.get (0))
                 {
                     case "clipLauncherSectionVisibility":
@@ -349,20 +349,19 @@ public class OSCParser implements OscMethodCallback
             //
 
             case "project":
-                app = this.model.getApplication ();
                 switch (oscParts.get (0))
                 {
                     case "+":
-                        app.nextProject ();
+                        this.model.getProject ().next ();
                         break;
                     case "-":
-                        app.previousProject ();
+                        this.model.getProject ().previous ();
                         break;
                     case "engine":
                         if (numValue >= 0)
-                            app.setEngineActive (numValue > 0);
+                            this.model.getApplication ().setEngineActive (numValue > 0);
                         else
-                            app.toggleEngineActive ();
+                            this.model.getApplication ().toggleEngineActive ();
                         break;
                 }
                 break;
@@ -992,7 +991,7 @@ public class OSCParser implements OscMethodCallback
 
     private void parseBrowser (final LinkedList<String> parts)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
 
         final String p = parts.removeFirst ();
         switch (p)

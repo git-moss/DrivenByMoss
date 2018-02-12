@@ -7,7 +7,7 @@ package de.mossgrabers.sl.mode.device;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.BrowserProxy;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.data.BrowserColumnData;
 import de.mossgrabers.framework.daw.data.BrowserColumnItemData;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -120,7 +120,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
             d.clearRow (2).done (2).setRow (0, "                       Please select a device...                       ");
             return;
         }
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
         {
             d.setRow (0, "                     No active Browsing Session.                       ").setRow (2, "                        Press Browse again...                          ");
@@ -175,7 +175,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
     public void navigatePresets (final boolean moveUp)
     {
         this.selectionMode = DevicePresetsMode.SELECTION_PRESET;
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
             return;
         if (moveUp)
@@ -193,7 +193,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
      */
     public void navigateFilters (final int filterNumber, final boolean moveUp)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
             return;
         if (moveUp)

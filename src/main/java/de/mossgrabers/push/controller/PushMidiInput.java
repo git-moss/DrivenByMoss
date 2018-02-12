@@ -34,11 +34,9 @@ public class PushMidiInput extends MidiInput
     @Override
     public NoteInput createNoteInput ()
     {
-        return this.createNoteInputBase (this.inputName, new String []
-        {
-            "80????", // Note off
-            "90????", // Note on
-            "B040??" // Sustainpedal
-        });
+        return this.createNoteInputBase (this.inputName, "80????", // Note off
+                "90????", // Note on
+                "B040??" // Sustainpedal
+        );
     }
 }

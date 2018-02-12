@@ -13,7 +13,6 @@ import de.mossgrabers.apc.command.trigger.BankLeftCommand;
 import de.mossgrabers.apc.command.trigger.BankRightCommand;
 import de.mossgrabers.apc.command.trigger.CrossfadeCommand;
 import de.mossgrabers.apc.command.trigger.DeviceLeftCommand;
-import de.mossgrabers.apc.command.trigger.DeviceOnOffCommand;
 import de.mossgrabers.apc.command.trigger.DeviceRightCommand;
 import de.mossgrabers.apc.command.trigger.MasterCommand;
 import de.mossgrabers.apc.command.trigger.MuteCommand;
@@ -52,6 +51,7 @@ import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.continuous.TempoCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
+import de.mossgrabers.framework.command.trigger.DeviceOnOffCommand;
 import de.mossgrabers.framework.command.trigger.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.NewCommand;
@@ -65,8 +65,8 @@ import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.EffectTrackBankProxy;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.midi.MidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
@@ -250,7 +250,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         viewManager.registerTriggerCommand (Commands.COMMAND_NUDGE_MINUS, new NudgeCommand (true, this.model, surface));
         viewManager.registerTriggerCommand (Commands.COMMAND_NUDGE_PLUS, new NudgeCommand (false, this.model, surface));
         viewManager.registerTriggerCommand (Commands.COMMAND_LAYOUT, new PanelLayoutCommand (this.model, surface));
-        viewManager.registerTriggerCommand (Commands.COMMAND_DEVICE_ON_OFF, new DeviceOnOffCommand (this.model, surface));
+        viewManager.registerTriggerCommand (Commands.COMMAND_DEVICE_ON_OFF, new DeviceOnOffCommand<> (this.model, surface));
         viewManager.registerTriggerCommand (COMMAND_TOGGLE_DEVICES, new ToggleDeviceFrameCommand (this.model, surface));
         if (this.isMkII)
         {
@@ -353,7 +353,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         final boolean isShift = surface.isShiftPressed ();
         final boolean isSendA = surface.isPressed (APCControlSurface.APC_BUTTON_SEND_A);
 
-        final TransportProxy t = this.model.getTransport ();
+        final ITransport t = this.model.getTransport ();
         surface.updateButton (APCControlSurface.APC_BUTTON_PLAY, t.isPlaying () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         surface.updateButton (APCControlSurface.APC_BUTTON_RECORD, t.isRecording () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
 

@@ -284,7 +284,13 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         MCU_CANCEL,
         MCU_ENTER,
         MCU_SAVE,
-        MCU_MARKER
+        MCU_MARKER,
+        MCU_AUX,
+        MCU_BUSSES,
+        MCU_OUTPUTS,
+        MCU_GROUP,
+        MCU_NUDGE,
+        MCU_DROP
     };
 
     private static final boolean [] MCU_BUTTON_UPDATE;

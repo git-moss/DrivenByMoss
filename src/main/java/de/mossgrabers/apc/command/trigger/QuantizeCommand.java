@@ -11,6 +11,7 @@ import de.mossgrabers.apc.view.Views;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.daw.CursorDeviceProxy;
 
 
 /**
@@ -41,5 +42,17 @@ public class QuantizeCommand extends AbstractTriggerCommand<APCControlSurface, A
         // We can use any cursor clip, e.g. the one of the drum view
         final DrumView view = (DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM);
         view.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        if (cursorDevice.hasSelectedDevice ())
+            cursorDevice.togglePinned ();
     }
 }

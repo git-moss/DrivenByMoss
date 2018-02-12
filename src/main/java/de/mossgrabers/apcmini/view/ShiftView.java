@@ -15,7 +15,7 @@ import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.SlotData;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -114,7 +114,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         padGrid.light (36 + 60, previousViewId == Views.VIEW_RAINDROPS ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
 
         // Draw transport
-        final TransportProxy transport = this.model.getTransport ();
+        final ITransport transport = this.model.getTransport ();
         padGrid.light (36 + 63, transport.isPlaying () ? APCminiColors.APC_COLOR_GREEN_BLINK : APCminiColors.APC_COLOR_GREEN);
         padGrid.light (36 + 55, transport.isRecording () ? APCminiColors.APC_COLOR_RED_BLINK : APCminiColors.APC_COLOR_RED);
         padGrid.light (36 + 47, APCminiColors.APC_COLOR_YELLOW);

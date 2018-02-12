@@ -6,8 +6,8 @@ package de.mossgrabers.push.command.trigger;
 
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.BrowserProxy;
 import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.data.TrackData;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
@@ -56,7 +56,7 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
 
         if (modeManager.isActiveMode (Modes.MODE_BROWSER))
         {
-            final BrowserProxy browser = this.model.getBrowser ();
+            final IBrowser browser = this.model.getBrowser ();
             final int index = browser.getSelectedContentTypeIndex ();
             this.canScrollLeft = index > 0;
             this.canScrollRight = index < browser.getContentTypeNames ().length - 1;

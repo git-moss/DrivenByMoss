@@ -2,9 +2,10 @@
 // (c) 2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.daw;
+package de.mossgrabers.framework.daw.bitwig;
 
 import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.daw.ITransport;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.SettableRangedValue;
@@ -19,46 +20,21 @@ import java.text.DecimalFormat;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TransportProxy
+public class TransportProxy implements ITransport
 {
-    /** The names for automation modes. */
-    public static final String [] AUTOMATION_MODES        =
-    {
-        "Latch",
-        "Touch",
-        "Write"
-    };
-
-    /** The names for automation modes values. */
-    public static final String [] AUTOMATION_MODES_VALUES =
-    {
-        "latch",
-        "touch",
-        "write"
-    };
-
-    /** No preroll. */
-    public static final String    PREROLL_NONE            = "none";
-    /** 1 bar preroll. */
-    public static final String    PREROLL_1_BAR           = "one_bar";
-    /** 2 bar preroll. */
-    public static final String    PREROLL_2_BARS          = "two_bars";
-    /** 4 bar preroll. */
-    public static final String    PREROLL_4_BARS          = "four_bars";
-
     /** 1 beat. */
-    private static final double   INC_FRACTION_TIME       = 1.0;
+    private static final double INC_FRACTION_TIME      = 1.0;
     /** 1/20th of a beat. */
-    private static final double   INC_FRACTION_TIME_SLOW  = 1.0 / 20;
-    private static final int      TEMPO_MIN               = 20;
-    private static final int      TEMPO_MAX               = 666;
+    private static final double INC_FRACTION_TIME_SLOW = 1.0 / 20;
+    private static final int    TEMPO_MIN              = 20;
+    private static final int    TEMPO_MAX              = 666;
 
-    private ControllerHost        host;
-    private ValueChanger          valueChanger;
-    private Transport             transport;
+    private ControllerHost      host;
+    private ValueChanger        valueChanger;
+    private Transport           transport;
 
-    private int                   crossfade               = 0;
-    private double                tempo;
+    private int                 crossfade              = 0;
+    private double              tempo;
 
 
     /**
@@ -79,7 +55,6 @@ public class TransportProxy
         this.transport.isClipLauncherAutomationWriteEnabled ().markInterested ();
         this.transport.isClipLauncherOverdubEnabled ().markInterested ();
         this.transport.isArrangerAutomationWriteEnabled ().markInterested ();
-        this.transport.isAutomationOverrideActive ().markInterested ();
         this.transport.automationWriteMode ().markInterested ();
         this.transport.isArrangerLoopEnabled ().markInterested ();
         this.transport.isPunchInEnabled ().markInterested ();
@@ -102,12 +77,8 @@ public class TransportProxy
     }
 
 
-    /**
-     * Dis-/Enable all attributes. They are enabled by default. Use this function if values are
-     * currently not needed to improve performance.
-     *
-     * @param enable True to enable
-     */
+    /** {@inheritDoc} */
+    @Override
     public void enableObservers (final boolean enable)
     {
         this.transport.isPlaying ().setIsSubscribed (enable);
@@ -116,7 +87,6 @@ public class TransportProxy
         this.transport.isClipLauncherAutomationWriteEnabled ().setIsSubscribed (enable);
         this.transport.isClipLauncherOverdubEnabled ().setIsSubscribed (enable);
         this.transport.isArrangerAutomationWriteEnabled ().setIsSubscribed (enable);
-        this.transport.isAutomationOverrideActive ().setIsSubscribed (enable);
         this.transport.automationWriteMode ().setIsSubscribed (enable);
         this.transport.isArrangerLoopEnabled ().setIsSubscribed (enable);
         this.transport.isPunchInEnabled ().setIsSubscribed (enable);
@@ -139,58 +109,40 @@ public class TransportProxy
     }
 
 
-    /**
-     * Start the playback.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void play ()
     {
         this.transport.play ();
     }
 
 
-    /**
-     * Toggle the playback.
-     */
-    public void togglePlay ()
-    {
-        this.transport.togglePlay ();
-    }
-
-
-    /**
-     * Returns true if playing.
-     *
-     * @return True if playing
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isPlaying ()
     {
         return this.transport.isPlaying ().get ();
     }
 
 
-    /**
-     * Restart the playback. When the transport is stopped, calling this function starts transport
-     * playback, otherwise the transport is first stopped and the playback is restarted from the
-     * last play-start position.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void restart ()
     {
         this.transport.restart ();
     }
 
 
-    /**
-     * Stop the playback.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void stop ()
     {
         this.transport.stop ();
     }
 
 
-    /**
-     * Stops the playback and moves the play position to the start of the arrangement.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void stopAndRewind ()
     {
         this.transport.stop ();
@@ -199,360 +151,248 @@ public class TransportProxy
     }
 
 
-    /**
-     * Start arranger recording.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void record ()
     {
         this.transport.record ();
     }
 
 
-    /**
-     * Returns true if arranger recording is enabled.
-     *
-     * @return True if arranger recording is enabled
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isRecording ()
     {
         return this.transport.isArrangerRecordEnabled ().get ();
     }
 
 
-    /**
-     * Forwards the play position.
-     */
-    public void fastForward ()
-    {
-        this.transport.fastForward ();
-    }
-
-
-    /**
-     * Rewinds the play position.
-     */
-    public void rewind ()
-    {
-        this.transport.rewind ();
-    }
-
-
-    /**
-     * Returns true if arranger overdub is enabled.
-     *
-     * @return True if arranger overdub is enabled
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isArrangerOverdub ()
     {
         return this.transport.isArrangerOverdubEnabled ().get ();
     }
 
 
-    /**
-     * Toggle if arranger overdub is enabled.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleOverdub ()
     {
         this.transport.isArrangerOverdubEnabled ().toggle ();
     }
 
 
-    /**
-     * Returns true if clip launcher overdub is enabled.
-     *
-     * @return True if clip launcher overdub is enabled
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isLauncherOverdub ()
     {
         return this.transport.isClipLauncherOverdubEnabled ().get ();
     }
 
 
-    /**
-     * Set if the clip launcher overdub is enabled.
-     *
-     * @param on True if clip launcher overdub is enabled
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setLauncherOverdub (final boolean on)
     {
         this.transport.isClipLauncherOverdubEnabled ().set (on);
     }
 
 
-    /**
-     * Toggle if the clip launcher overdub is enabled.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleLauncherOverdub ()
     {
         this.transport.isClipLauncherOverdubEnabled ().toggle ();
     }
 
 
-    /**
-     * Dis-/enables the metronome.
-     *
-     * @param on Turn on if true
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setMetronome (final boolean on)
     {
         this.transport.isMetronomeEnabled ().set (on);
     }
 
 
-    /**
-     * Returns true if the metronome is on.
-     *
-     * @return True if the metronome is on
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isMetronomeOn ()
     {
         return this.transport.isMetronomeEnabled ().get ();
     }
 
 
-    /**
-     * Toggle the metronome on/off.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleMetronome ()
     {
         this.transport.isMetronomeEnabled ().toggle ();
     }
 
 
-    /**
-     * Returns true if the metronome ticks option is on.
-     *
-     * @return True if the metronome ticks option is on
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isMetronomeTicksOn ()
     {
         return this.transport.isMetronomeTickPlaybackEnabled ().get ();
     }
 
 
-    /**
-     * Toggles if the metronome has tick playback enabled.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleMetronomeTicks ()
     {
         this.transport.isMetronomeTickPlaybackEnabled ().toggle ();
     }
 
 
-    /**
-     * Get the metronome volume as a formatted string.
-     *
-     * @return The formatted volume
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getMetronomeVolumeStr ()
     {
         return this.transport.metronomeVolume ().displayedValue ().getLimited (6) + " dB";
     }
 
 
-    /**
-     * Change the metronome volume.
-     *
-     * @param control The control value
-     */
+    /** {@inheritDoc} */
+    @Override
     public void changeMetronomeVolume (final int control)
     {
         this.transport.metronomeVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
-    /**
-     * Set the metronome volume.
-     *
-     * @param value The new value
-     */
-    public void setMetronomeVolume (final int value)
-    {
-        this.transport.metronomeVolume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
-    }
-
-
-    /**
-     * Should the metronome be audible during pre-roll?
-     *
-     * @return True if the metronome should be audible during pre-roll
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isPrerollMetronomeEnabled ()
     {
         return this.transport.isMetronomeAudibleDuringPreRoll ().get ();
     }
 
 
-    /**
-     * Toggle if the metronome should be audible during pre-roll.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void togglePrerollMetronome ()
     {
         this.transport.isMetronomeAudibleDuringPreRoll ().toggle ();
     }
 
 
-    /**
-     * Dis-/enable the arranger loop.
-     *
-     * @param on True if on
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setLoop (final boolean on)
     {
         this.transport.isArrangerLoopEnabled ().set (on);
     }
 
 
-    /**
-     * Toggle the arranger loop.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleLoop ()
     {
         this.transport.isArrangerLoopEnabled ().toggle ();
     }
 
 
-    /**
-     * Returns true if the arranger loop is on.
-     *
-     * @return True if on
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isLoop ()
     {
         return this.transport.isArrangerLoopEnabled ().get ();
     }
 
 
-    /**
-     * Returns true if writing clip launcher automation is on.
-     *
-     * @return True if writing clip launcher automation is on
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isWritingClipLauncherAutomation ()
     {
         return this.transport.isClipLauncherAutomationWriteEnabled ().get ();
     }
 
 
-    /**
-     * Returns true if writing arranger automation is on.
-     *
-     * @return True if writing arranger automation is on
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isWritingArrangerAutomation ()
     {
         return this.transport.isArrangerAutomationWriteEnabled ().get ();
     }
 
 
-    /**
-     * Returns true if automation override is on.
-     *
-     * @return True if automation override is on
-     */
-    public boolean isAutomationOverride ()
-    {
-        return this.transport.isAutomationOverrideActive ().get ();
-    }
-
-
-    /**
-     * Get the automation write mode.
-     *
-     * @return The automation write mode (latch , touch, write)
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getAutomationWriteMode ()
     {
         return this.transport.automationWriteMode ().get ();
     }
 
 
-    /**
-     * Set the automation write mode.
-     *
-     * @param mode The automation write mode (latch , touch, write)
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setAutomationWriteMode (final String mode)
     {
         this.transport.automationWriteMode ().set (mode);
     }
 
 
-    /**
-     * Toggles the arranger automation write enabled state of the transport.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleWriteArrangerAutomation ()
     {
         this.transport.toggleWriteArrangerAutomation ();
     }
 
 
-    /**
-     * Toggles the clip launcher automation write enabled state of the transport.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleWriteClipLauncherAutomation ()
     {
         this.transport.toggleWriteClipLauncherAutomation ();
     }
 
 
-    /**
-     * Resets any automation overrides.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void resetAutomationOverrides ()
     {
         this.transport.resetAutomationOverrides ();
     }
 
 
-    /**
-     * Switches playback to the arrangement sequencer on all tracks.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void returnToArrangement ()
     {
         this.transport.returnToArrangement ();
     }
 
 
-    /**
-     * Get the default formatted play position.
-     *
-     * @return The formatted text
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getPositionText ()
     {
         return this.transport.getPosition ().getFormatted ();
     }
 
 
-    /**
-     * Sets the transport playback position to the given beat time value.
-     *
-     * @param beats The new playback position in beats
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setPosition (final double beats)
     {
         this.transport.setPosition (beats);
     }
 
 
-    /**
-     * Changes the play position.
-     *
-     * @param increase If true move to the right otherwise left
-     */
+    /** {@inheritDoc} */
+    @Override
     public void changePosition (final boolean increase)
     {
         this.changePosition (increase, this.valueChanger.isSlow ());
     }
 
 
-    /**
-     * Changes the play position.
-     *
-     * @param increase If true move to the right otherwise left
-     * @param slow Change slowly
-     */
+    /** {@inheritDoc} */
+    @Override
     public void changePosition (final boolean increase, final boolean slow)
     {
         final double frac = slow ? INC_FRACTION_TIME_SLOW : INC_FRACTION_TIME;
@@ -560,60 +400,48 @@ public class TransportProxy
     }
 
 
-    /**
-     * Toggle punch-in enabled in the transport.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void togglePunchIn ()
     {
         this.transport.isPunchInEnabled ().toggle ();
     }
 
 
-    /**
-     * Is punch-in enabled in the transport?
-     *
-     * @return True if punch-in is enabled in the transport
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isPunchInEnabled ()
     {
         return this.transport.isPunchInEnabled ().get ();
     }
 
 
-    /**
-     * Is punch-out enabled in the transport?
-     */
+    /** {@inheritDoc} */
+    @Override
     public void togglePunchOut ()
     {
         this.transport.isPunchOutEnabled ().toggle ();
     }
 
 
-    /**
-     * Is punch-out enabled in the transport?
-     *
-     * @return True if punch-out is enabled in the transport
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isPunchOutEnabled ()
     {
         return this.transport.isPunchOutEnabled ().get ();
     }
 
 
-    /**
-     * Tap the tempo.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void tapTempo ()
     {
         this.transport.tapTempo ();
     }
 
 
-    /**
-     * Changes the tempo.
-     *
-     * @param increase True to increase otherwise decrease
-     */
+    /** {@inheritDoc} */
+    @Override
     public void changeTempo (final boolean increase)
     {
         final double offset = this.valueChanger.isSlow () ? 0.01 : 1;
@@ -621,135 +449,96 @@ public class TransportProxy
     }
 
 
-    /**
-     * Set the tempo.
-     *
-     * @param tempo The tempo in BPM
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setTempo (final double tempo)
     {
         this.transport.tempo ().setRaw (tempo);
     }
 
 
-    /**
-     * Get the tempo.
-     *
-     * @return The tempo in BPM
-     */
+    /** {@inheritDoc} */
+    @Override
     public double getTempo ()
     {
         return this.tempo;
     }
 
 
-    /**
-     * Format the tempo with 2 fractions.
-     *
-     * @param tempo The tempo to format
-     * @return The formatted tempo
-     */
+    /** {@inheritDoc} */
+    @Override
     public String formatTempo (final double tempo)
     {
         return new DecimalFormat ("#.00").format (tempo);
     }
 
 
-    /**
-     * Format the tempo with 2 fractions.
-     *
-     * @param tempo The tempo to format
-     * @return The formatted tempo
-     */
+    /** {@inheritDoc} */
+    @Override
     public String formatTempoNoFraction (final double tempo)
     {
         return new DecimalFormat ("###").format (tempo);
     }
 
 
-    /**
-     * Specifies if this value should be indicated as mapped.
-     *
-     * @param isTouched True if touched
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setTempoIndication (final boolean isTouched)
     {
         this.transport.tempo ().setIndication (isTouched);
     }
 
 
-    /**
-     * Set the position of the crossfader.
-     *
-     * @param value The value
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setCrossfade (final int value)
     {
         this.transport.crossfade ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
-    /**
-     * Get the position of the crossfader.
-     *
-     * @return The position
-     */
+    /** {@inheritDoc} */
+    @Override
     public int getCrossfade ()
     {
         return this.crossfade;
     }
 
 
-    /**
-     * Change the crossfade.
-     *
-     * @param control The control value
-     */
+    /** {@inheritDoc} */
+    @Override
     public void changeCrossfade (final int control)
     {
         this.transport.crossfade ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
-    /**
-     * Get the value that reports the current pre-roll setting. Possible values are `"none"`,
-     * `"one_bar"`, `"two_bars"`, or `"four_bars"`.
-     *
-     * @return The value
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getPreroll ()
     {
         return this.transport.preRoll ().get ();
     }
 
 
-    /**
-     * Set the value that reports the current pre-roll setting.
-     *
-     * @param preroll Possible values are `"none"`, `"one_bar"`, `"two_bars"`, or `"four_bars"`.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setPreroll (final String preroll)
     {
         this.transport.preRoll ().set (preroll);
     }
 
 
-    /**
-     * Get the numerator of the time signature.
-     *
-     * @return The numerator
-     */
+    /** {@inheritDoc} */
+    @Override
     public int getNumerator ()
     {
         return this.transport.timeSignature ().numerator ().get ();
     }
 
 
-    /**
-     * Get the denominator of the time signature.
-     *
-     * @return The denominator
-     */
+    /** {@inheritDoc} */
+    @Override
     public int getDenominator ()
     {
 

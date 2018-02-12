@@ -8,7 +8,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.ApplicationProxy;
+import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.MasterTrackProxy;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.mode.BaseMode;
@@ -68,7 +68,6 @@ public class MasterMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        final ApplicationProxy application = this.model.getApplication ();
         switch (index)
         {
             case 0:
@@ -82,15 +81,15 @@ public class MasterMode extends BaseMode
             case 2:
             case 3:
             case 4:
-                application.setEngineActive (!application.isEngineActive ());
+                this.model.getApplication ().toggleEngineActive ();
                 break;
 
             case 6:
-                application.previousProject ();
+                this.model.getProject ().previous ();
                 break;
 
             case 7:
-                application.nextProject ();
+                this.model.getProject ().next ();
                 break;
         }
     }
@@ -106,10 +105,10 @@ public class MasterMode extends BaseMode
         this.drawDisplay2 ();
 
         final Display d = this.surface.getDisplay ().clear ();
-        final ApplicationProxy application = this.model.getApplication ();
-        final String projectName = StringUtils.fixASCII (application.getProjectName ());
+        final String projectName = StringUtils.fixASCII (this.model.getProject ().getName ());
         final MasterTrackProxy master = this.model.getMasterTrack ();
 
+        final IApplication application = this.model.getApplication ();
         d.setCell (0, 0, "Volume").setCell (0, 1, "Pan").setBlock (0, 1, "Audio Engine:").setCell (0, 4, application.isEngineActive () ? " On" : " Off");
         d.setCell (0, 5, "Prjct:").setBlock (0, 3, projectName);
         d.setCell (1, 0, master.getVolumeStr (6)).setCell (1, 1, master.getPanStr (6)).setBlock (1, 1, application.isEngineActive () ? "  Turn off" : "  Turn on");
