@@ -9,8 +9,8 @@ import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.SceneView;
@@ -63,8 +63,8 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
     @Override
     public void updateArrows ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData sel = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack sel = tb.getSelectedTrack ();
         this.canScrollLeft = sel != null && sel.getIndex () > 0 || tb.canScrollTracksUp ();
         this.canScrollRight = sel != null && sel.getIndex () < 7 || tb.canScrollTracksDown ();
 

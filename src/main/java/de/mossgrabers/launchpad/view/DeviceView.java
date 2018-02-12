@@ -5,8 +5,8 @@
 package de.mossgrabers.launchpad.view;
 
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.data.ParameterData;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
@@ -18,7 +18,7 @@ import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
  */
 public class DeviceView extends AbstractFaderView
 {
-    private CursorDeviceProxy cursorDevice;
+    private ICursorDevice cursorDevice;
 
 
     /**
@@ -75,7 +75,7 @@ public class DeviceView extends AbstractFaderView
     {
         for (int i = 0; i < 8; i++)
         {
-            final ParameterData param = this.cursorDevice.getFXParam (i);
+            final IParameter param = this.cursorDevice.getFXParam (i);
             this.surface.getOutput ().sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, param.getValue ());
         }
     }

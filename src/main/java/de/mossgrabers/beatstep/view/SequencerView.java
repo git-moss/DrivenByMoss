@@ -8,7 +8,7 @@ import de.mossgrabers.beatstep.controller.BeatstepColors;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.TrackBankProxy;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -35,7 +35,7 @@ public class SequencerView extends BaseSequencerView
 
         this.offsetY = SequencerView.START_KEY;
 
-        final TrackBankProxy tb = model.getTrackBank ();
+        final ITrackBank tb = model.getTrackBank ();
         tb.addNoteObserver ( (note, velocity) -> {
             // Light notes send from the sequencer
             for (int i = 0; i < 128; i++)

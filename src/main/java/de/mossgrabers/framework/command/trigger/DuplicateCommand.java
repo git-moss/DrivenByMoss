@@ -9,9 +9,9 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -44,40 +44,40 @@ public class DuplicateCommand<S extends ControlSurface<C>, C extends Configurati
             return;
 
         // Is there a selected track?
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData trackData = tb.getSelectedTrack ();
-        if (trackData == null || !trackData.doesExist ())
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack ITrack = tb.getSelectedTrack ();
+        if (ITrack == null || !ITrack.doesExist ())
             return;
 
         // Is there a selected slot?
-        final int trackIndex = trackData.getIndex ();
-        final SlotData slotData = tb.getSelectedSlot (trackIndex);
-        if (slotData == null)
+        final int trackIndex = ITrack.getIndex ();
+        final ISlot slot = tb.getSelectedSlot (trackIndex);
+        if (slot == null)
             return;
 
-        final boolean isPlaying = slotData.isPlaying ();
+        final boolean isPlaying = slot.isPlaying ();
 
         // Duplicate the clip in the selected slot
-        tb.duplicateClip (trackIndex, slotData.getIndex ());
+        tb.duplicateClip (trackIndex, slot.getIndex ());
 
         if (!isPlaying)
             return;
 
         // Need to wait a bit with starting the duplicated clip until it is selected
         this.model.getHost ().scheduleTask ( () -> {
-            final SlotData slotDataNew = tb.getSelectedSlot (trackIndex);
-            if (slotDataNew != null)
+            final ISlot slotNew = tb.getSelectedSlot (trackIndex);
+            if (slotNew != null)
             {
-                tb.launchClip (trackIndex, slotDataNew.getIndex ());
+                tb.launchClip (trackIndex, slotNew.getIndex ());
                 return;
             }
 
             // Try to find the clip in the next page...
             tb.scrollClipPageForwards (trackIndex);
             this.model.getHost ().scheduleTask ( () -> {
-                final SlotData slotDataNew2 = tb.getSelectedSlot (trackIndex);
-                if (slotDataNew2 != null)
-                    tb.launchClip (trackIndex, slotDataNew2.getIndex ());
+                final ISlot slotNew2 = tb.getSelectedSlot (trackIndex);
+                if (slotNew2 != null)
+                    tb.launchClip (trackIndex, slotNew2.getIndex ());
             }, 200);
         }, 200);
     }

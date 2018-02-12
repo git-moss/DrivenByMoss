@@ -7,7 +7,7 @@ package de.mossgrabers.launchpad.view;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
@@ -108,7 +108,7 @@ public abstract class AbstractFaderView extends SessionView
      */
     public void setupFader (final int index)
     {
-        final TrackData track = this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
         final int color = this.model.getColorManager ().getColor (BitwigColors.getColorIndex (track.getColor ()));
         this.surface.setupFader (index, color);
     }

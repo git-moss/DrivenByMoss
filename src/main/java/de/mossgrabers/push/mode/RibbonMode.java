@@ -160,11 +160,12 @@ public class RibbonMode extends BaseMode
         final String ribbonModeCC = Integer.toString (config.getRibbonModeCCVal ());
         final int ribbonMode = config.getRibbonMode ();
 
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         for (int i = 0; i < 7; i++)
             message.addOptionElement (i == 0 ? "CC Quick Select" : "", RibbonMode.CC_QUICK_SELECT[i], false, i == 0 ? "Function" : "", RibbonMode.FUNCTION[i], i < RibbonMode.FUNCTION_IDS.length && ribbonMode == RibbonMode.FUNCTION_IDS[i], false);
         message.addParameterElement ("Midi CC", -1, ribbonModeCC, this.isKnobTouched[5], -1);
-        message.send ();
+        display.send (message);
         return;
     }
 }

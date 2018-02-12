@@ -10,13 +10,13 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
-import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.NoteInput;
 
 import java.util.ArrayList;
@@ -37,11 +37,11 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 {
     protected static final int                    BUTTON_STATE_INTERVAL = 400;
 
-    protected ControllerHost                      host;
+    protected IHost                               host;
     protected C                                   configuration;
     protected ColorManager                        colorManager;
     protected MidiOutput                          output;
-    protected MidiInput                           input;
+    protected IMidiInput                          input;
     protected NoteInput                           noteInput;
 
     protected ViewManager                         viewManager           = new ViewManager ();
@@ -87,7 +87,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      * @param input The midi input
      * @param buttons All midi CC which should be treated as a button
      */
-    public AbstractControlSurface (final ControllerHost host, final C configuration, final ColorManager colorManager, final MidiOutput output, final MidiInput input, final int [] buttons)
+    public AbstractControlSurface (final IHost host, final C configuration, final ColorManager colorManager, final MidiOutput output, final IMidiInput input, final int [] buttons)
     {
         this.host = host;
         this.configuration = configuration;
@@ -96,11 +96,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         this.output = output;
         this.input = input;
         if (this.input != null)
-        {
-            this.input.init (host);
             this.input.setMidiCallback (this::handleMidi);
-            this.noteInput = this.input.createNoteInput ();
-        }
 
         this.gridNotes = new int [64];
 
@@ -664,7 +660,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void errorln (final String message)
     {
-        this.host.errorln (message);
+        this.host.error (message);
     }
 
 

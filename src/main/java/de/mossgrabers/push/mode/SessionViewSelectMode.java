@@ -97,13 +97,14 @@ public class SessionViewSelectMode extends BaseMode
     public void updateDisplay2 ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         for (int i = 0; i < VIEWS.length; i++)
         {
             final boolean isMenuBottomSelected = VIEWS[i] != null && this.isSelected (viewManager, i);
             message.addOptionElement ("", "", false, i == 0 ? "Session view" : "", VIEW_NAMES[i], isMenuBottomSelected, false);
         }
-        message.send ();
+        display.send (message);
     }
 
 

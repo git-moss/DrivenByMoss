@@ -6,11 +6,11 @@ package de.mossgrabers.sl.view;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.sl.SLConfiguration;
@@ -108,17 +108,17 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
 
             // New
             case 4:
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final TrackData t = tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack t = tb.getSelectedTrack ();
                 if (t != null)
                 {
                     final int trackIndex = t.getIndex ();
-                    final SlotData [] slotIndexes = tb.getSelectedSlots (trackIndex);
+                    final ISlot [] slotIndexes = tb.getSelectedSlots (trackIndex);
                     final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
                     for (int i = 0; i < 8; i++)
                     {
                         final int sIndex = (slotIndex + i) % 8;
-                        final SlotData s = t.getSlots ()[sIndex];
+                        final ISlot s = t.getSlots ()[sIndex];
                         if (!s.hasContent ())
                         {
                             tb.createClip (trackIndex, sIndex, (int) Math.pow (2, this.surface.getConfiguration ().getNewClipLength ()));
@@ -177,8 +177,8 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
             return;
         }
 
-        AbstractTrackBankProxy tb;
-        TrackData track;
+        IChannelBank tb;
+        ITrack track;
         switch (index)
         {
             // Mute
@@ -345,9 +345,9 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     @Override
     public void updateButtons ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
-        final TransportProxy transport = this.model.getTransport ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        final ITransport transport = this.model.getTransport ();
         final int clipLength = this.surface.getConfiguration ().getNewClipLength ();
 
         final Integer mode = this.surface.getModeManager ().getActiveModeId ();
@@ -395,7 +395,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
         else
         {
             final boolean isNoOverlayMode = mode != Modes.MODE_FRAME && mode != Modes.MODE_BROWSER;
-            final TrackData track = tb.getSelectedTrack ();
+            final ITrack track = tb.getSelectedTrack ();
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW2_1, isNoOverlayMode && track != null && track.isMute () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW2_2, isNoOverlayMode && track != null && track.isSolo () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW2_3, isNoOverlayMode && track != null && track.isRecArm () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);

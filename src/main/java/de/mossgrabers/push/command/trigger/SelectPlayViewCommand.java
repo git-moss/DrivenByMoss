@@ -7,8 +7,8 @@ package de.mossgrabers.push.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.PushConfiguration;
@@ -46,8 +46,8 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
         final ViewManager viewManager = this.surface.getViewManager ();
         if (Views.isSessionView (viewManager.getActiveViewId ()))
         {
-            final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-            final TrackData selectedTrack = tb.getSelectedTrack ();
+            final IChannelBank tb = this.model.getCurrentTrackBank ();
+            final ITrack selectedTrack = tb.getSelectedTrack ();
             if (selectedTrack == null)
             {
                 this.surface.getDisplay ().notify ("Please select a track first.");

@@ -8,7 +8,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.TransportProxy;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -170,7 +170,7 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
     {
         if (!this.surface.getConfiguration ().isStopAutomationOnKnobRelease () || isTouched)
             return;
-        final TransportProxy transport = this.model.getTransport ();
+        final ITransport transport = this.model.getTransport ();
         if (transport.isWritingArrangerAutomation ())
             transport.toggleWriteArrangerAutomation ();
         if (transport.isWritingClipLauncherAutomation ())

@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ValueChanger;
 
 import com.bitwig.extension.controller.api.Preferences;
+import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.SettableRangedValue;
 import com.bitwig.extension.controller.api.SettableStringValue;
 
@@ -19,21 +20,21 @@ import com.bitwig.extension.controller.api.SettableStringValue;
  */
 public class OSCConfiguration extends AbstractConfiguration
 {
-    /** ID for receive host setting. */
-    public static final Integer RECEIVE_HOST   = Integer.valueOf (30);
     /** ID for receive port setting. */
     public static final Integer RECEIVE_PORT   = Integer.valueOf (31);
     /** ID for send host setting. */
     public static final Integer SEND_HOST      = Integer.valueOf (32);
     /** ID for send port setting. */
     public static final Integer SEND_PORT      = Integer.valueOf (33);
+    /** ID for debug option. */
+    public static final Integer DEBUG_COMMANDS = Integer.valueOf (34);
 
     private static final String DEFAULT_SERVER = "127.0.0.1";
 
-    private String              receiveHost    = DEFAULT_SERVER;
     private int                 receivePort    = 8000;
     private String              sendHost       = DEFAULT_SERVER;
     private int                 sendPort       = 9000;
+    private boolean             debugCommands  = false;
 
 
     /**
@@ -53,12 +54,6 @@ public class OSCConfiguration extends AbstractConfiguration
     {
         ///////////////////////////
         // Network
-
-        final SettableStringValue receiveHostSetting = prefs.getStringSetting ("Host", "Receive from (Script restart required)", 15, DEFAULT_SERVER);
-        receiveHostSetting.addValueObserver (value -> {
-            this.receiveHost = value;
-            this.notifyObservers (OSCConfiguration.RECEIVE_HOST);
-        });
 
         final SettableRangedValue receivePortSetting = prefs.getNumberSetting ("Port", "Receive from (Script restart required)", 0, 65535, 1, "", 8000);
         receivePortSetting.addValueObserver (65535, value -> {
@@ -88,17 +83,15 @@ public class OSCConfiguration extends AbstractConfiguration
         // Workflow
 
         this.activateEnableVUMetersSetting (prefs);
-    }
 
+        ///////////////////////////
+        // Debug
 
-    /**
-     * Get the host on which the extension receives OSC messages.
-     *
-     * @return The receive host
-     */
-    public String getReceiveHost ()
-    {
-        return this.receiveHost;
+        final SettableEnumValue debugCommandsSetting = prefs.getEnumSetting ("Debug commands", "Debug", ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        debugCommandsSetting.addValueObserver (value -> {
+            this.debugCommands = "On".equals (value);
+            this.notifyObservers (DEBUG_COMMANDS);
+        });
     }
 
 
@@ -132,5 +125,16 @@ public class OSCConfiguration extends AbstractConfiguration
     public int getSendPort ()
     {
         return this.sendPort;
+    }
+
+
+    /**
+     * Get if debugging should be enabled.
+     *
+     * @return True if debugging should be enabled
+     */
+    public boolean getDebugCommands ()
+    {
+        return this.debugCommands;
     }
 }

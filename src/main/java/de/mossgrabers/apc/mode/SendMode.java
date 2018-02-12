@@ -6,9 +6,9 @@ package de.mossgrabers.apc.mode;
 
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -39,9 +39,9 @@ public class SendMode extends BaseMode
     @Override
     public void setValue (final int index, final int value)
     {
-        final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
-        if (currentTrackBank instanceof TrackBankProxy)
-            ((TrackBankProxy) currentTrackBank).setSend (index, this.sendIndex, value);
+        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
+        if (currentTrackBank instanceof ITrackBank)
+            ((ITrackBank) currentTrackBank).setSend (index, this.sendIndex, value);
     }
 
 
@@ -51,7 +51,7 @@ public class SendMode extends BaseMode
     {
         if (this.model.isEffectTrackBankActive ())
             return Integer.valueOf (0);
-        final TrackData track = this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
         return track.doesExist () ? Integer.valueOf (track.getSends ()[this.sendIndex].getValue ()) : null;
     }
 }

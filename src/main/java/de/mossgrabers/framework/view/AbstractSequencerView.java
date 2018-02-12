@@ -8,7 +8,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.CursorClipProxy;
+import de.mossgrabers.framework.daw.ICursorClip;
 
 
 /**
@@ -65,7 +65,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     protected int                    numSequencerRows;
     protected int                    selectedIndex;
     protected int                    offsetY;
-    protected CursorClipProxy        clip;
+    protected ICursorClip            clip;
     protected final Configuration    configuration;
 
 
@@ -169,7 +169,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      *
      * @return The clip
      */
-    public CursorClipProxy getClip ()
+    public ICursorClip getClip ()
     {
         return this.clip;
     }

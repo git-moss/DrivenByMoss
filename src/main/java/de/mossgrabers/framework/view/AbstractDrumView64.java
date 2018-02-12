@@ -9,9 +9,10 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.bitwig.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.scale.Scales;
 
 import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
@@ -51,7 +52,7 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
     protected int                 columns;
     protected int                 rows;
     protected int                 drumOctave;
-    protected CursorDeviceProxy   primaryDevice;
+    protected ICursorDevice       primaryDevice;
 
 
     /**
@@ -77,7 +78,7 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
 
         this.drumOctave = 0;
 
-        final TrackBankProxy tb = model.getTrackBank ();
+        final ITrackBank tb = model.getTrackBank ();
         // Light notes send from the sequencer
         tb.addNoteObserver ( (note, velocity) -> this.pressedKeys[note] = velocity);
         tb.addTrackSelectionObserver ( (final int index, final boolean isSelected) -> this.clearPressedKeys ());
@@ -176,7 +177,7 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
     }
 
 
-    private String getPadColor (final int index, final CursorDeviceProxy primary, final boolean isSoloed, final boolean isRecording)
+    private String getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed, final boolean isRecording)
     {
         // Playing note?
         if (this.pressedKeys[this.offsetY + index] > 0)
@@ -186,7 +187,7 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
             return AbstractDrumView.COLOR_PAD_SELECTED;
 
         // Exists and active?
-        final ChannelData drumPad = primary.getDrumPad (index);
+        final IChannel drumPad = primary.getDrumPad (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return this.surface.getConfiguration ().isTurnOffEmptyDrumPads () ? AbstractDrumView.COLOR_PAD_OFF : AbstractDrumView.COLOR_PAD_NO_CONTENT;
         // Muted or soloed?
@@ -197,7 +198,7 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
     }
 
 
-    protected String getPadContentColor (final ChannelData drumPad)
+    protected String getPadContentColor (final IChannel drumPad)
     {
         return BitwigColors.getColorIndex (drumPad.getColor ());
     }

@@ -7,8 +7,8 @@ package de.mossgrabers.sl.mode;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -38,7 +38,7 @@ public class TrackTogglesMode extends AbstractMode<SLControlSurface, SLConfigura
     @Override
     public void updateDisplay ()
     {
-        final TrackData t = this.model.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack t = this.model.getCurrentTrackBank ().getSelectedTrack ();
         final Display d = this.surface.getDisplay ();
 
         if (t == null)
@@ -47,7 +47,7 @@ public class TrackTogglesMode extends AbstractMode<SLControlSurface, SLConfigura
         }
         else
         {
-            final CursorDeviceProxy device = this.model.getCursorDevice ();
+            final ICursorDevice device = this.model.getCursorDevice ();
             d.setCell (0, 0, "  Mute");
             d.setCell (2, 0, t.isMute () ? "   On" : "   Off");
             d.setCell (0, 1, "  Solo");

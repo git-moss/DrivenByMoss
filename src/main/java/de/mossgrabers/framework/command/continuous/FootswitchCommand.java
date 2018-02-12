@@ -12,10 +12,10 @@ import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.ApplicationProxy;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -85,16 +85,16 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final TrackData track = tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack track = tb.getSelectedTrack ();
                 if (track == null)
                 {
                     this.surface.getDisplay ().notify ("Please select an Instrument track first.", true, true);
                     return;
                 }
 
-                final SlotData selectedSlot = tb.getSelectedSlot (track.getIndex ());
-                final SlotData slot = selectedSlot == null ? track.getSlots ()[0] : selectedSlot;
+                final ISlot selectedSlot = tb.getSelectedSlot (track.getIndex ());
+                final ISlot slot = selectedSlot == null ? track.getSlots ()[0] : selectedSlot;
                 if (event == ButtonEvent.DOWN)
                 {
                     if (slot.hasContent ())
@@ -123,17 +123,17 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
 
             case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_ARRANGE:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getApplication ().setPanelLayout (ApplicationProxy.PANEL_LAYOUT_ARRANGE);
+                    this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_ARRANGE);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_MIX:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getApplication ().setPanelLayout (ApplicationProxy.PANEL_LAYOUT_MIX);
+                    this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_MIX);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_EDIT:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getApplication ().setPanelLayout (ApplicationProxy.PANEL_LAYOUT_EDIT);
+                    this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_EDIT);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_ADD_INSTRUMENT_TRACK:

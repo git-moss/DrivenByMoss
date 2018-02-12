@@ -9,7 +9,7 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.sl.mode.Modes;
@@ -129,7 +129,7 @@ public class ButtonRowSelectCommand<S extends ControlSurface<C>, C extends Confi
 
     private void activateMasterMode (final boolean activateMode)
     {
-        final MasterTrackProxy masterTrack = this.model.getMasterTrack ();
+        final IMasterTrack masterTrack = this.model.getMasterTrack ();
         masterTrack.select ();
         masterTrack.makeVisible ();
         if (activateMode)

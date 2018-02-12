@@ -14,6 +14,8 @@ import com.bitwig.extension.controller.api.Preferences;
 import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.SettableRangedValue;
 
+import java.util.Set;
+
 
 /**
  * The configuration settings for Push.
@@ -44,19 +46,45 @@ public class PushConfiguration extends AbstractConfiguration
     /** Setting for the display send port. */
     public static final Integer    SEND_PORT                       = Integer.valueOf (34);
     /** Setting for the display brightness. */
-    public static final Integer    DISPLAY_BRIGHTNESS              = Integer.valueOf (35);
+    public static final Integer    DISPLAY_BRIGHTNESS              = Integer.valueOf (34);
     /** Setting for the pad LED brightness. */
-    public static final Integer    LED_BRIGHTNESS                  = Integer.valueOf (36);
+    public static final Integer    LED_BRIGHTNESS                  = Integer.valueOf (35);
     /** Setting for the pad sensitivity. */
-    public static final Integer    PAD_SENSITIVITY                 = Integer.valueOf (37);
+    public static final Integer    PAD_SENSITIVITY                 = Integer.valueOf (36);
     /** Setting for the pad gain. */
-    public static final Integer    PAD_GAIN                        = Integer.valueOf (38);
+    public static final Integer    PAD_GAIN                        = Integer.valueOf (37);
     /** Setting for the pad dynamics. */
-    public static final Integer    PAD_DYNAMICS                    = Integer.valueOf (39);
+    public static final Integer    PAD_DYNAMICS                    = Integer.valueOf (38);
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (40);
+    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (39);
     /** Setting for the default note view. */
-    public static final Integer    DEFAULT_NOTE_VIEW               = Integer.valueOf (41);
+    public static final Integer    DEFAULT_NOTE_VIEW               = Integer.valueOf (40);
+    /** Mode debug. */
+    public static final Integer    DEBUG_MODE                      = Integer.valueOf (41);
+    /** Push 2 display debug window. */
+    public static final Integer    DEBUG_WINDOW                    = Integer.valueOf (42);
+    /** Background color of an element. */
+    public static final Integer    COLOR_BACKGROUND                = Integer.valueOf (50);
+    /** Border color of an element. */
+    public static final Integer    COLOR_BORDER                    = Integer.valueOf (51);
+    /** Text color of an element. */
+    public static final Integer    COLOR_TEXT                      = Integer.valueOf (52);
+    /** Fader color of an element. */
+    public static final Integer    COLOR_FADER                     = Integer.valueOf (53);
+    /** VU color of an element. */
+    public static final Integer    COLOR_VU                        = Integer.valueOf (54);
+    /** Edit color of an element. */
+    public static final Integer    COLOR_EDIT                      = Integer.valueOf (55);
+    /** Record color of an element. */
+    public static final Integer    COLOR_RECORD                    = Integer.valueOf (56);
+    /** Solo color of an element. */
+    public static final Integer    COLOR_SOLO                      = Integer.valueOf (57);
+    /** Mute color of an element. */
+    public static final Integer    COLOR_MUTE                      = Integer.valueOf (58);
+    /** Background color darker of an element. */
+    public static final Integer    COLOR_BACKGROUND_DARKER         = Integer.valueOf (59);
+    /** Background color lighter of an element. */
+    public static final Integer    COLOR_BACKGROUND_LIGHTER        = Integer.valueOf (60);
 
     /** Use ribbon for pitch bend. */
     public static final int        RIBBON_MODE_PITCH               = 0;
@@ -74,6 +102,16 @@ public class PushConfiguration extends AbstractConfiguration
     private boolean                isMuteSoloLocked                = false;
 
     private static final String    CATEGORY_RIBBON                 = "Ribbon";
+    private static final String    CATEGORY_DEBUG                  = "Debug - keep your hands off";
+
+    private static final String [] RIBBON_MODE_VALUES              =
+    {
+        "Pitch",
+        "CC",
+        "CC/Pitch",
+        "Pitch/CC",
+        "Fader"
+    };
 
     /** What does the ribbon send? **/
     private int                    ribbonMode                      = RIBBON_MODE_PITCH;
@@ -81,12 +119,13 @@ public class PushConfiguration extends AbstractConfiguration
     private int                    sendPort                        = 7000;
     private boolean                stopAutomationOnKnobRelease     = false;
     private TrackState             trackState                      = TrackState.MUTE;
+    private Integer                debugMode                       = Modes.MODE_TRACK;
 
-    // Push 1
+    // Only Push 1
     private int                    velocityCurve                   = 1;
     private int                    padThreshold                    = 20;
 
-    // Push 2
+    // Only Push 2
     private boolean                sendsAreToggled                 = false;
     private int                    displayBrightness               = 255;
     private int                    ledBrightness                   = 127;
@@ -95,8 +134,6 @@ public class PushConfiguration extends AbstractConfiguration
     private int                    padDynamics                     = 5;
 
     private boolean                isPush2;
-
-    private Integer                currentMixMode                  = Modes.MODE_TRACK;
 
     private SettableRangedValue    displayBrightnessSetting;
     private SettableRangedValue    ledBrightnessSetting;
@@ -107,16 +144,9 @@ public class PushConfiguration extends AbstractConfiguration
     private SettableRangedValue    padDynamicsSetting;
     private SettableEnumValue      velocityCurveSetting;
     private SettableEnumValue      padThresholdSetting;
-    private Integer                defaultNoteView                 = Views.VIEW_PLAY;
+    private SettableEnumValue      debugModeSetting;
 
-    private static final String [] RIBBON_MODE_VALUES              =
-    {
-        "Pitch",
-        "CC",
-        "CC/Pitch",
-        "Pitch/CC",
-        "Fader"
-    };
+    private Integer                defaultNoteView                 = Views.VIEW_PLAY;
 
 
     /**
@@ -207,6 +237,12 @@ public class PushConfiguration extends AbstractConfiguration
         // Push 2 Hardware
 
         this.activatePush2HardwareSettings (preferences);
+        this.activatePush2DisplayColorsSettings (preferences);
+
+        ///////////////////////////
+        // Debugging
+
+        this.activateDebugSettings (preferences);
     }
 
 
@@ -655,24 +691,13 @@ public class PushConfiguration extends AbstractConfiguration
 
 
     /**
-     * Set the current mode which is selected for mixing.
+     * Get the current mode which is selected for mixing.
      *
      * @return The ID of the current mode which is selected for mixing.
      */
     public Integer getCurrentMixMode ()
     {
-        return this.currentMixMode;
-    }
-
-
-    /**
-     * Get the current mode which is selected for mixing.
-     *
-     * @param currentMixMode The ID of the current mode which is selected for mixing.
-     */
-    public void setCurrentMixMode (final Integer currentMixMode)
-    {
-        this.currentMixMode = currentMixMode;
+        return Modes.isTrackMode (this.debugMode) ? this.debugMode : null;
     }
 
 
@@ -684,6 +709,28 @@ public class PushConfiguration extends AbstractConfiguration
     public Integer getDefaultNoteView ()
     {
         return this.defaultNoteView;
+    }
+
+
+    /**
+     * Get the selected display mode for debugging.
+     *
+     * @return The ID of a mode
+     */
+    public Integer getDebugMode ()
+    {
+        return this.debugMode;
+    }
+
+
+    /**
+     * Set the selected display mode for debugging.
+     *
+     * @param debugMode The ID of a mode
+     */
+    public void setDebugMode (final Integer debugMode)
+    {
+        this.debugModeSetting.set (debugMode.toString ());
     }
 
 
@@ -834,6 +881,41 @@ public class PushConfiguration extends AbstractConfiguration
                     this.defaultNoteView = Views.getNoteView (i);
             }
             this.notifyObservers (DEFAULT_NOTE_VIEW);
+        });
+    }
+
+
+    /**
+     * Activate the color settings for the Push 2 display.
+     *
+     * @param prefs The preferences
+     */
+    private void activatePush2DisplayColorsSettings (final Preferences prefs)
+    {
+        // TODO Requires API 7
+    }
+
+
+    /**
+     * Activate the debug settings.
+     *
+     * @param prefs The preferences
+     */
+    private void activateDebugSettings (final Preferences prefs)
+    {
+        final Set<Integer> allModes = Modes.ALL_MODES;
+        final String [] modes = new String [allModes.size ()];
+        int i = 0;
+        for (final Integer mode: allModes)
+        {
+            modes[i] = mode.toString ();
+            i++;
+        }
+
+        this.debugModeSetting = prefs.getEnumSetting ("Display Mode", CATEGORY_DEBUG, modes, Modes.MODE_TRACK.toString ());
+        this.debugModeSetting.addValueObserver (value -> {
+            this.debugMode = Integer.valueOf (value);
+            this.notifyObservers (DEBUG_MODE);
         });
     }
 }

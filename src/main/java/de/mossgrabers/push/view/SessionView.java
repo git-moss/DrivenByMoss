@@ -8,8 +8,8 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.SceneBankProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
@@ -75,7 +75,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
             t = s;
             s = dummy;
         }
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
         // Birds-eye-view navigation
         if (this.surface.isShiftPressed ())
@@ -143,7 +143,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     @Override
     public void updateSceneButtons ()
     {
-        final SceneBankProxy sceneBank = this.model.getSceneBank ();
+        final ISceneBank sceneBank = this.model.getSceneBank ();
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
         final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;

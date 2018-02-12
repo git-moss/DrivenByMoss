@@ -9,9 +9,9 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -57,8 +57,8 @@ public class NewCommand<S extends ControlSurface<C>, C extends Configuration> ex
         if (event != ButtonEvent.DOWN)
             return;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData track = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getSelectedTrack ();
         if (track == null)
         {
             this.surface.getDisplay ().notify ("Please select an Instrument track first.", true, true);
@@ -66,9 +66,9 @@ public class NewCommand<S extends ControlSurface<C>, C extends Configuration> ex
         }
 
         final int trackIndex = track.getIndex ();
-        final SlotData selectedSlot = tb.getSelectedSlot (trackIndex);
+        final ISlot selectedSlot = tb.getSelectedSlot (trackIndex);
         final int slotIndex = selectedSlot == null ? 0 : selectedSlot.getIndex ();
-        final SlotData slot = tb.getEmptySlot (trackIndex, slotIndex);
+        final ISlot slot = tb.getEmptySlot (trackIndex, slotIndex);
         if (slot == null)
         {
             this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.", true, true);

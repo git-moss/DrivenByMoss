@@ -6,7 +6,7 @@ package de.mossgrabers.push.view;
 
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView64;
 import de.mossgrabers.push.PushConfiguration;
@@ -63,7 +63,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
         if (this.primaryDevice.getDrumPad (playedPad).isSelected ())
             return;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (cd.isNested ())
             cd.selectParent ();
 

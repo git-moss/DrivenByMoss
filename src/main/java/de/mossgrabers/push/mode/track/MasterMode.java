@@ -10,8 +10,7 @@ import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.ApplicationProxy;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushColors;
@@ -109,14 +108,12 @@ public class MasterMode extends BaseMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final ApplicationProxy application = this.model.getApplication ();
-        final String projectName = application.getProjectName ();
-        final MasterTrackProxy master = this.model.getMasterTrack ();
+        final IMasterTrack master = this.model.getMasterTrack ();
         d.setRow (0, MasterMode.PARAM_NAMES).setCell (1, 0, master.getVolumeStr (8)).setCell (1, 1, master.getPanStr (8));
-        d.clearCell (1, 2).clearCell (1, 3).setBlock (1, 2, "Audio Engine").setBlock (1, 3, projectName).done (1);
+        d.clearCell (1, 2).clearCell (1, 3).setBlock (1, 2, "Audio Engine").setBlock (1, 3, this.model.getProject ().getName ()).done (1);
         d.setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : master.getVolume (), Format.FORMAT_VALUE);
         d.setCell (2, 1, master.getPan (), Format.FORMAT_PAN).clearCell (2, 2).clearCell (2, 3).clearCell (2, 4).clearCell (2, 5).clearCell (2, 6).clearCell (2, 7).done (2);
-        d.setCell (3, 0, master.getName ()).clearCell (3, 1).clearCell (3, 2).clearCell (3, 3).setCell (3, 4, application.isEngineActive () ? "Turn off" : "Turn on");
+        d.setCell (3, 0, master.getName ()).clearCell (3, 1).clearCell (3, 2).clearCell (3, 3).setCell (3, 4, this.model.getApplication ().isEngineActive () ? "Turn off" : "Turn on");
         d.clearCell (3, 5).setCell (3, 6, "Previous").setCell (3, 7, "Next").done (3);
     }
 
@@ -125,10 +122,10 @@ public class MasterMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final MasterTrackProxy master = this.model.getMasterTrack ();
-        final ApplicationProxy application = this.model.getApplication ();
+        final IMasterTrack master = this.model.getMasterTrack ();
         final ValueChanger valueChanger = this.model.getValueChanger ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
 
         message.addChannelElement ("Volume", false, master.getName (), "master", master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", valueChanger.toDisplayValue (this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : 0), master.isMute (), master.isSolo (), master.isRecArm (), 0);
 
@@ -142,12 +139,12 @@ public class MasterMode extends BaseMode
             }, false);
         }
 
-        message.addOptionElement ("", "", false, "Audio Engine", application.isEngineActive () ? "Turn off" : "Turn on", false, false);
+        message.addOptionElement ("", "", false, "Audio Engine", this.model.getApplication ().isEngineActive () ? "Turn off" : "Turn on", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
-        message.addOptionElement ("Project:", "", false, application.getProjectName (), "Previous", false, false);
+        message.addOptionElement ("Project:", "", false, this.model.getProject ().getName (), "Previous", false, false);
         message.addOptionElement ("", "", false, "", "Next", false, false);
 
-        message.send ();
+        display.send (message);
     }
 
 
@@ -165,7 +162,6 @@ public class MasterMode extends BaseMode
             return;
         }
 
-        final ApplicationProxy application = this.model.getApplication ();
         switch (index)
         {
             case 0:
@@ -173,15 +169,15 @@ public class MasterMode extends BaseMode
                 break;
 
             case 4:
-                application.setEngineActive (!application.isEngineActive ());
+                this.model.getApplication ().toggleEngineActive ();
                 break;
 
             case 6:
-                application.previousProject ();
+                this.model.getProject ().previous ();
                 break;
 
             case 7:
-                application.nextProject ();
+                this.model.getProject ().next ();
                 break;
         }
     }
@@ -215,7 +211,7 @@ public class MasterMode extends BaseMode
         if (index > 0)
             return;
 
-        final MasterTrackProxy master = this.model.getMasterTrack ();
+        final IMasterTrack master = this.model.getMasterTrack ();
         if (this.surface.getConfiguration ().isMuteState ())
             master.toggleMute ();
         else
@@ -238,7 +234,7 @@ public class MasterMode extends BaseMode
 
         final boolean muteState = this.surface.getConfiguration ().isMuteState ();
 
-        final MasterTrackProxy master = this.model.getMasterTrack ();
+        final IMasterTrack master = this.model.getMasterTrack ();
 
         int color = off;
         if (muteState)
@@ -257,7 +253,7 @@ public class MasterMode extends BaseMode
 
     private int getTrackButtonColor ()
     {
-        final MasterTrackProxy track = this.model.getMasterTrack ();
+        final IMasterTrack track = this.model.getMasterTrack ();
         if (!track.isActivated ())
             return this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
         if (track.isRecArm ())
@@ -268,7 +264,7 @@ public class MasterMode extends BaseMode
 
     private void setActive (final boolean enable)
     {
-        final MasterTrackProxy mt = this.model.getMasterTrack ();
+        final IMasterTrack mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (enable);
         mt.setPanIndication (enable);
     }

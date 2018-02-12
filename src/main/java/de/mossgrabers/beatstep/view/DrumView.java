@@ -8,9 +8,9 @@ import de.mossgrabers.beatstep.controller.BeatstepColors;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -36,7 +36,7 @@ public class DrumView extends BaseSequencerView
 
         this.offsetY = Scales.DRUM_NOTE_START;
 
-        final TrackBankProxy tb = model.getTrackBank ();
+        final ITrackBank tb = model.getTrackBank ();
         // Light notes send from the sequencer
         tb.addNoteObserver ( (note, velocity) -> this.pressedKeys[note] = velocity);
         tb.addTrackSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
@@ -140,7 +140,7 @@ public class DrumView extends BaseSequencerView
 
         if (this.isPlayMode)
         {
-            final CursorDeviceProxy primary = this.model.getPrimaryDevice ();
+            final ICursorDevice primary = this.model.getPrimaryDevice ();
             final boolean hasDrumPads = primary.hasDrumPads ();
             boolean isSoloed = false;
             if (hasDrumPads)
@@ -180,7 +180,7 @@ public class DrumView extends BaseSequencerView
     }
 
 
-    private int getPadColor (final int index, final CursorDeviceProxy primary, final boolean isSoloed)
+    private int getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed)
     {
         // Playing note?
         if (this.pressedKeys[this.offsetY + index] > 0)
@@ -189,7 +189,7 @@ public class DrumView extends BaseSequencerView
         if (this.selectedPad == index)
             return BeatstepColors.BEATSTEP_BUTTON_STATE_RED;
         // Exists and active?
-        final ChannelData drumPad = primary.getDrumPad (index);
+        final IChannel drumPad = primary.getDrumPad (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return BeatstepColors.BEATSTEP_BUTTON_STATE_OFF;
         // Muted or soloed?

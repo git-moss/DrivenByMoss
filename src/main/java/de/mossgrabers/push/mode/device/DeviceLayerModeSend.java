@@ -7,10 +7,10 @@ package de.mossgrabers.push.mode.device;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
-import de.mossgrabers.framework.daw.data.SendData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -40,11 +40,11 @@ public class DeviceLayerModeSend extends DeviceLayerMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final ChannelData layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
         if (layer.doesExist ())
             cd.changeLayerOrDrumPadSend (offset + index, this.getCurrentSendIndex (), value);
     }
@@ -56,11 +56,11 @@ public class DeviceLayerModeSend extends DeviceLayerMode
     {
         this.isKnobTouched[index] = isTouched;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final ChannelData layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
         if (!layer.doesExist ())
             return;
 
@@ -75,7 +75,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
                 return;
             }
 
-            final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+            final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
             final String name = fxTrackBank == null ? layer.getSends ()[sendIndex].getName () : fxTrackBank.getTrack (sendIndex).getName ();
             if (!name.isEmpty ())
                 this.surface.getDisplay ().notify ("Send " + name + ": " + layer.getSends ()[sendIndex].getDisplayedValue ());
@@ -91,14 +91,14 @@ public class DeviceLayerModeSend extends DeviceLayerMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
         final int sendIndex = this.getCurrentSendIndex ();
 
         for (int i = 0; i < 8; i++)
         {
-            final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
+            final IChannel layer = cd.getLayerOrDrumPad (offset + i);
             final boolean exists = layer.doesExist ();
             d.setCell (0, i, exists ? layer.getSends ()[sendIndex].getName () : "").setCell (1, i, layer.getSends ()[sendIndex].getDisplayedValue (8));
             if (exists)
@@ -114,10 +114,10 @@ public class DeviceLayerModeSend extends DeviceLayerMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplayElements (final DisplayMessage message, final CursorDeviceProxy cd, final ChannelData l)
+    public void updateDisplayElements (final DisplayMessage message, final ICursorDevice cd, final IChannel l)
     {
         final int sendIndex = this.getCurrentSendIndex ();
-        final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
 
         this.updateMenu ();
 
@@ -128,7 +128,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
         final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
         for (int i = 0; i < 8; i++)
         {
-            final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
+            final IChannel layer = cd.getLayerOrDrumPad (offset + i);
 
             // The menu item
             String topMenu;
@@ -158,7 +158,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
             for (int j = 0; j < 4; j++)
             {
                 final int sendPos = sendOffset + j;
-                final SendData send = layer.getSends ()[sendPos];
+                final ISend send = layer.getSends ()[sendPos];
                 sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
                 valueStr[j] = send.doesExist () && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue () : "";
                 value[j] = send.doesExist () ? send.getValue () : 0;
@@ -168,8 +168,6 @@ public class DeviceLayerModeSend extends DeviceLayerMode
 
             message.addSendsElement (topMenu, topMenuSelected, layer.doesExist () ? layer.getName () : "", "layer", cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
         }
-
-        message.send ();
     }
 
 

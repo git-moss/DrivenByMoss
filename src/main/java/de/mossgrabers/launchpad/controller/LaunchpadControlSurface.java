@@ -6,11 +6,10 @@ package de.mossgrabers.launchpad.controller;
 
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
@@ -184,7 +183,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      * @param input The midi input
      * @param isPro Is Pro or MkII?
      */
-    public LaunchpadControlSurface (final ControllerHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final MidiOutput output, final MidiInput input, final boolean isPro)
+    public LaunchpadControlSurface (final IHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final MidiOutput output, final IMidiInput input, final boolean isPro)
     {
         super (host, configuration, colorManager, output, input, isPro ? LAUNCHPAD_PRO_BUTTONS_ALL : LAUNCHPAD_MKII_BUTTONS_ALL);
 

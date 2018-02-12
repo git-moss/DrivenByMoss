@@ -7,7 +7,7 @@ package de.mossgrabers.push.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -40,7 +40,7 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
         if (event != ButtonEvent.DOWN)
             return;
 
-        final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
         final ModeManager modeManager = this.surface.getModeManager ();
         final Integer currentMode = modeManager.getActiveModeId ();
 

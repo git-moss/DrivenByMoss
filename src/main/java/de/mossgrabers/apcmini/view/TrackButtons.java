@@ -7,7 +7,7 @@ package de.mossgrabers.apcmini.view;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
 
 
 /**
@@ -39,7 +39,7 @@ public class TrackButtons
      */
     public void updateTrackButtons ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final int trackState = this.surface.getTrackState ();
         for (int i = 0; i < 8; i++)
         {

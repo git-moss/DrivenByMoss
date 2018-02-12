@@ -9,10 +9,10 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -88,7 +88,7 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
             s = dummy;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
         // Delete selected clip
         if (this.surface.isDeletePressed ())
@@ -107,14 +107,14 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
         if (this.doSelectClipOnLaunch ())
             tb.selectClip (t, s);
 
-        final TrackData track = tb.getTrack (t);
+        final ITrack track = tb.getTrack (t);
         if (!track.isRecArm ())
         {
             tb.launchClip (t, s);
             return;
         }
 
-        final SlotData slot = track.getSlots ()[s];
+        final ISlot slot = track.getSlots ()[s];
         if (slot.hasContent ())
         {
             tb.launchClip (t, s);
@@ -158,11 +158,11 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
      */
     protected void drawSessionGrid ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
         for (int x = 0; x < this.columns; x++)
         {
-            final TrackData t = tb.getTrack (x);
+            final ITrack t = tb.getTrack (x);
             for (int y = 0; y < this.rows; y++)
                 this.drawPad (t.getSlots ()[y], flipSession ? y : x, flipSession ? x : y, t.isRecArm ());
         }
@@ -174,7 +174,7 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
      */
     protected void drawBirdsEyeGrid ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final int numTracks = tb.getNumTracks ();
         final int numScenes = tb.getNumScenes ();
         final int sceneCount = this.model.getSceneBank ().getSceneCount ();
@@ -242,14 +242,14 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
      * @param y The y index on the grid
      * @param isArmed True if armed for recording
      */
-    protected void drawPad (final SlotData slot, final int x, final int y, final boolean isArmed)
+    protected void drawPad (final ISlot slot, final int x, final int y, final boolean isArmed)
     {
         final SessionColor color = this.getPadColor (slot, isArmed);
         this.surface.getPadGrid ().lightEx (x, y, color.getColor (), color.getBlink (), color.isFast ());
     }
 
 
-    protected SessionColor getPadColor (final SlotData slot, final boolean isArmed)
+    protected SessionColor getPadColor (final ISlot slot, final boolean isArmed)
     {
         final double [] slotColor = slot.getColor ();
         final String colorIndex = BitwigColors.getColorIndex (slotColor[0], slotColor[1], slotColor[2]);
@@ -286,14 +286,14 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
     }
 
 
-    private void createClip (final TrackData track, final SlotData slot)
+    private void createClip (final ITrack track, final ISlot slot)
     {
         final int trackIndex = track.getIndex ();
         final int slotIndex = slot.getIndex ();
         final int quartersPerMeasure = this.model.getQuartersPerMeasure ();
         final int newCLipLength = this.surface.getConfiguration ().getNewClipLength ();
         final int beats = (int) (newCLipLength < 2 ? Math.pow (2, newCLipLength) : Math.pow (2, newCLipLength - 2) * quartersPerMeasure);
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         tb.createClip (trackIndex, slotIndex, beats);
         tb.selectClip (trackIndex, slotIndex);
         tb.launchClip (trackIndex, slotIndex);

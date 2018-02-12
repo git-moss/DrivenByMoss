@@ -11,7 +11,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
 
 
 /**
@@ -52,7 +52,7 @@ public class SelectCommand extends AbstractTriggerCommand<APCControlSurface, APC
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         tb.select (this.index);
         tb.makeVisible (this.index);
     }

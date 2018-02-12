@@ -7,8 +7,8 @@ package de.mossgrabers.osc.protocol;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.CursorClipProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.scale.Scales;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -23,11 +23,11 @@ import java.util.Arrays;
  */
 public class OSCModel extends Model
 {
-    private int []          keysTranslation  = null;
-    private int []          drumsTranslation = null;
+    private int []      keysTranslation  = null;
+    private int []      drumsTranslation = null;
 
-    private int []          pressedKeys      = new int [128];
-    private CursorClipProxy clip;
+    private int []      pressedKeys      = new int [128];
+    private ICursorClip clip;
 
 
     /**
@@ -45,7 +45,7 @@ public class OSCModel extends Model
         this.updateNoteMapping ();
         Arrays.fill (this.pressedKeys, 0);
 
-        final TrackBankProxy tb = this.getTrackBank ();
+        final ITrackBank tb = this.getTrackBank ();
         tb.addNoteObserver ( (note, velocity) -> {
             // Light notes send from the sequencer
             for (int i = 0; i < 128; i++)
@@ -128,7 +128,7 @@ public class OSCModel extends Model
      *
      * @return The clip
      */
-    public CursorClipProxy getClip ()
+    public ICursorClip getClip ()
     {
         return this.clip;
     }

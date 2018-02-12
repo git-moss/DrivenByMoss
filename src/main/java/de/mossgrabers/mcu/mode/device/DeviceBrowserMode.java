@@ -6,10 +6,10 @@ package de.mossgrabers.mcu.mode.device;
 
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.BrowserProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.data.BrowserColumnData;
-import de.mossgrabers.framework.daw.data.BrowserColumnItemData;
+import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IBrowserColumn;
+import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.mode.BaseMode;
 
@@ -75,10 +75,10 @@ public class DeviceBrowserMode extends BaseMode
     @Override
     public void updateDisplay ()
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         final Display d = this.surface.getDisplay ();
         final boolean isPresetSession = browser.isPresetContentType ();
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (isPresetSession && !(browser.isActive () && cd.hasSelectedDevice ()))
         {
             d.notify ("No active Browsing Session. Select device and press Browser...");
@@ -92,7 +92,7 @@ public class DeviceBrowserMode extends BaseMode
             case SELECTION_OFF:
                 for (int i = 0; i < 7; i++)
                 {
-                    final BrowserColumnData column = this.getFilterColumn (i);
+                    final IBrowserColumn column = this.getFilterColumn (i);
                     final String value = column != null && column.doesCursorExist () ? column.getCursorName ().equals (column.getWildcard ()) ? "-" : column.getCursorName () : "";
                     final String name = column == null ? "" : this.optimizeName (column.getName (), 6);
                     d.setCell (0, i, name).setCell (1, i, value);
@@ -102,7 +102,7 @@ public class DeviceBrowserMode extends BaseMode
                 break;
 
             case SELECTION_PRESET:
-                final BrowserColumnItemData [] results = browser.getResultColumnItems ();
+                final IBrowserColumnItem [] results = browser.getResultColumnItems ();
                 for (int i = 0; i < browser.getNumFilterColumnEntries (); i++)
                 {
                     if (i < results.length)
@@ -113,7 +113,7 @@ public class DeviceBrowserMode extends BaseMode
                 break;
 
             case SELECTION_FILTER:
-                final BrowserColumnItemData [] items = browser.getFilterColumn (this.filterColumn).getItems ();
+                final IBrowserColumnItem [] items = browser.getFilterColumn (this.filterColumn).getItems ();
                 for (int i = 0; i < browser.getNumResults (); i++)
                     d.setBlock (i / 4, i % 4, (items[i].isSelected () ? ">" : " ") + items[i].getName ());
                 break;
@@ -139,7 +139,7 @@ public class DeviceBrowserMode extends BaseMode
         }
         else
         {
-            final BrowserColumnData fc = this.getFilterColumn (index);
+            final IBrowserColumn fc = this.getFilterColumn (index);
             if (fc != null && fc.doesExist ())
             {
                 this.selectionMode = SELECTION_FILTER;
@@ -158,9 +158,9 @@ public class DeviceBrowserMode extends BaseMode
     }
 
 
-    private BrowserColumnData getFilterColumn (final int index)
+    private IBrowserColumn getFilterColumn (final int index)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         int column = -1;
         final boolean [] browserDisplayFilter = this.surface.getConfiguration ().getBrowserDisplayFilter ();
         for (int i = 0; i < browser.getFilterColumnCount (); i++)
@@ -178,10 +178,10 @@ public class DeviceBrowserMode extends BaseMode
 
     private void selectNext (final int index, final int count)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (index < 7)
         {
-            final BrowserColumnData fc = this.getFilterColumn (index);
+            final IBrowserColumn fc = this.getFilterColumn (index);
             if (fc != null && fc.doesExist ())
             {
                 this.filterColumn = fc.getIndex ();
@@ -201,12 +201,12 @@ public class DeviceBrowserMode extends BaseMode
 
     private void selectPrevious (final int index, final int count)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         for (int i = 0; i < count; i++)
         {
             if (index < 7)
             {
-                final BrowserColumnData fc = this.getFilterColumn (index);
+                final IBrowserColumn fc = this.getFilterColumn (index);
                 if (fc != null && fc.doesExist ())
                 {
                     this.filterColumn = fc.getIndex ();

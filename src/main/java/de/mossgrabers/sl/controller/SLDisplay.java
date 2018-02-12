@@ -7,9 +7,8 @@ package de.mossgrabers.sl.controller;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.midi.MidiOutput;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
@@ -44,7 +43,7 @@ public class SLDisplay extends AbstractDisplay
      * @param host The host
      * @param output The midi output which addresses the display
      */
-    public SLDisplay (final ControllerHost host, final MidiOutput output)
+    public SLDisplay (final IHost host, final MidiOutput output)
     {
         super (host, output, 4 /* No of rows */, 8 /* No of cells */, 8);
     }

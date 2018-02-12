@@ -5,7 +5,7 @@
 package de.mossgrabers.push.view;
 
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.mode.Modes;
 
@@ -33,7 +33,7 @@ public class DrumView extends DrumViewBase
     @Override
     public void handleSelectButton (final int playedPad)
     {
-        final CursorDeviceProxy primary = this.model.getPrimaryDevice ();
+        final ICursorDevice primary = this.model.getPrimaryDevice ();
         if (!primary.hasDrumPads ())
             return;
 
@@ -41,7 +41,7 @@ public class DrumView extends DrumViewBase
         if (primary.getDrumPad (playedPad).isSelected ())
             return;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (cd.isNested ())
             cd.selectParent ();
 

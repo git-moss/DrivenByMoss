@@ -70,9 +70,10 @@ public class AccentMode extends BaseMode
     {
         final int fixedAccentValue = this.surface.getConfiguration ().getFixedAccentValue ();
         final ValueChanger valueChanger = this.model.getValueChanger ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         for (int i = 0; i < 8; i++)
             message.addParameterElement (i == 7 ? "Accent" : "", i == 7 ? valueChanger.toDisplayValue (valueChanger.toDAWValue (fixedAccentValue)) : 0, i == 7 ? Integer.toString (fixedAccentValue) : "", this.isKnobTouched[i], -1);
-        message.send ();
+        display.send (message);
     }
 }

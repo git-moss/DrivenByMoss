@@ -7,10 +7,9 @@ package de.mossgrabers.apcmini.controller;
 import de.mossgrabers.apcmini.APCminiConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
@@ -94,7 +93,7 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
      * @param output The midi output
      * @param input The midi input
      */
-    public APCminiControlSurface (final ControllerHost host, final ColorManager colorManager, final APCminiConfiguration configuration, final MidiOutput output, final MidiInput input)
+    public APCminiControlSurface (final IHost host, final ColorManager colorManager, final APCminiConfiguration configuration, final MidiOutput output, final IMidiInput input)
     {
         super (host, configuration, colorManager, output, input, APC_BUTTONS_ALL);
 

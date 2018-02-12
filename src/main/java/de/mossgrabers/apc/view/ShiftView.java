@@ -12,7 +12,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
@@ -155,7 +155,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         if (Views.VIEW_SESSION.equals (viewID))
             return;
 
-        final TrackData selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
         if (selectedTrack != null)
             viewManager.setPreferredView (selectedTrack.getPosition (), viewID);
     }

@@ -102,9 +102,10 @@ public class FixedMode extends BaseMode
     public void updateDisplay2 ()
     {
         final int newClipLength = this.surface.getConfiguration ().getNewClipLength ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         for (int i = 0; i < 8; i++)
             message.addOptionElement (i == 0 ? "Create Clip (length not stored)" : "", AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i], false, i == 0 ? "New Clip Length" : "", AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i], newClipLength == i, false);
-        message.send ();
+        display.send (message);
     }
 }

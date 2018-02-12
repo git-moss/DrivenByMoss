@@ -6,13 +6,11 @@
 	<artifactId>DrivenByMoss</artifactId>
 	<packaging>jar</packaging>
 	<name>DrivenByMoss</name>
-	<version>LOCAL-21</version>
+	<version>LOCAL-23</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
-	<!-- https://mvnrepository.com/artifact/com.illposed.osc/javaosc-core -->
 
 	<repositories>
 		<repository>
@@ -24,15 +22,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.illposed.osc</groupId>
-			<artifactId>javaosc-core</artifactId>
-			<version>0.4</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.bitwig</groupId>
 			<artifactId>extension-api</artifactId>
-			<version>3</version>
+			<version>5</version>
 		</dependency>
 	</dependencies>
 
@@ -50,27 +42,6 @@
 					<encoding>UTF-8</encoding>
 					<maxmem>1024m</maxmem>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<artifactSet>
-								<excludes>
-									<exclude>com.bitwig:extension-api</exclude>
-								</excludes>
-							</artifactSet>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>

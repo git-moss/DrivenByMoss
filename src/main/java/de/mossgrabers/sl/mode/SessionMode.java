@@ -7,8 +7,8 @@ package de.mossgrabers.sl.mode;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.SceneBankProxy;
-import de.mossgrabers.framework.daw.data.SceneData;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -39,10 +39,10 @@ public class SessionMode extends AbstractMode<SLControlSurface, SLConfiguration>
     public void updateDisplay ()
     {
         final Display d = this.surface.getDisplay ();
-        final SceneBankProxy sceneBank = this.model.getSceneBank ();
+        final ISceneBank sceneBank = this.model.getSceneBank ();
         for (int i = 0; i < 8; i++)
         {
-            final SceneData scene = sceneBank.getScene (i);
+            final IScene scene = sceneBank.getScene (i);
             final String name = scene.getName ();
             d.setCell (2, i, name.isEmpty () ? "Scene " + (i + 1) : name);
         }

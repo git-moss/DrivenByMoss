@@ -11,7 +11,7 @@ import de.mossgrabers.apc.view.Views;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.ICursorDevice;
 
 
 /**
@@ -51,7 +51,7 @@ public class QuantizeCommand extends AbstractTriggerCommand<APCControlSurface, A
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         if (cursorDevice.hasSelectedDevice ())
             cursorDevice.togglePinned ();
     }

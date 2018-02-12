@@ -6,8 +6,8 @@ package de.mossgrabers.mcu.mode.device;
 
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.data.ParameterData;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.mode.BaseMode;
 
@@ -48,7 +48,7 @@ public class DeviceParamsMode extends BaseMode
 
         final Display d = this.surface.getDisplay ().clear ();
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
             d.notify ("Please select a Device...", true, false);
@@ -59,7 +59,7 @@ public class DeviceParamsMode extends BaseMode
         final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final ParameterData param = cd.getFXParam (extenderOffset + i);
+            final IParameter param = cd.getFXParam (extenderOffset + i);
             d.setCell (0, i, param.doesExist () ? param.getName () : "").setCell (1, i, param.getDisplayedValue (8));
         }
 
@@ -72,11 +72,11 @@ public class DeviceParamsMode extends BaseMode
     protected void updateKnobLEDs ()
     {
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final ParameterData param = cd.getFXParam (extenderOffset + i);
+            final IParameter param = cd.getFXParam (extenderOffset + i);
             this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, param.doesExist () ? param.getValue () : 0, upperBound);
         }
     }

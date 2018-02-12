@@ -7,11 +7,10 @@ package de.mossgrabers.push.controller;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.push.PushConfiguration;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.Arrays;
 
@@ -568,7 +567,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      * @param output The midi output
      * @param input The midi input
      */
-    public PushControlSurface (final ControllerHost host, final ColorManager colorManager, final PushConfiguration configuration, final MidiOutput output, final MidiInput input)
+    public PushControlSurface (final IHost host, final ColorManager colorManager, final PushConfiguration configuration, final MidiOutput output, final IMidiInput input)
     {
         super (host, configuration, colorManager, output, input, PUSH_BUTTONS_ALL);
 

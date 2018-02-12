@@ -34,15 +34,15 @@ import de.mossgrabers.framework.command.trigger.WindCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.AbstractControllerExtension;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.ApplicationProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -70,7 +70,6 @@ import de.mossgrabers.mcu.command.trigger.TracksCommand;
 import de.mossgrabers.mcu.command.trigger.ZoomCommand;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.controller.MCUDisplay;
-import de.mossgrabers.mcu.controller.MCUMidiInput;
 import de.mossgrabers.mcu.controller.MCUSegmentDisplay;
 import de.mossgrabers.mcu.controller.MCUValueChanger;
 import de.mossgrabers.mcu.mode.Modes;
@@ -195,7 +194,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     {
         this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8 * this.numMCUDevices, 8, 8, 8, 8, true, 8 * this.numMCUDevices, -1, -1, -1);
 
-        final TrackBankProxy trackBank = this.model.getTrackBank ();
+        final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
 
@@ -214,16 +213,17 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     protected void createSurface ()
     {
         final ControllerHost host = this.getHost ();
+        final MidiDeviceImpl midiDevice = new MidiDeviceImpl (host);
 
         for (int i = 0; i < this.numMCUDevices; i++)
         {
             final MidiOutput output = new MidiOutput (host, i);
-            final MidiInput input = new MCUMidiInput (i);
-            final MCUControlSurface surface = new MCUControlSurface (host, this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1), i == 0);
+            final IMidiInput input = midiDevice.createInput (i, null);
+            final MCUControlSurface surface = new MCUControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1), i == 0);
             this.surfaces.add (surface);
-            surface.setDisplay (new MCUDisplay (host, output, true, false));
-            surface.setSecondDisplay (new MCUDisplay (host, output, false, i == 0));
-            surface.setSegmentDisplay (new MCUSegmentDisplay (host, output));
+            surface.setDisplay (new MCUDisplay (this.model.getHost (), output, true, false));
+            surface.setSecondDisplay (new MCUDisplay (this.model.getHost (), output, false, i == 0));
+            surface.setSegmentDisplay (new MCUSegmentDisplay (output));
             surface.getModeManager ().setDefaultMode (Modes.MODE_VOLUME);
         }
     }
@@ -367,9 +367,9 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.addTriggerCommand (COMMAND_MIXER, MCUControlSurface.MCU_AUDIO_INSTR, new PaneCommand<> (PaneCommand.Panels.MIXER, this.model, surface));
 
         // Layouts
-        this.addTriggerCommand (COMMAND_LAYOUT_ARRANGE, MCUControlSurface.MCU_AUX, new LayoutCommand<> (ApplicationProxy.PANEL_LAYOUT_ARRANGE, this.model, surface));
-        this.addTriggerCommand (COMMAND_LAYOUT_MIX, MCUControlSurface.MCU_BUSSES, new LayoutCommand<> (ApplicationProxy.PANEL_LAYOUT_MIX, this.model, surface));
-        this.addTriggerCommand (COMMAND_LAYOUT_EDIT, MCUControlSurface.MCU_OUTPUTS, new LayoutCommand<> (ApplicationProxy.PANEL_LAYOUT_EDIT, this.model, surface));
+        this.addTriggerCommand (COMMAND_LAYOUT_ARRANGE, MCUControlSurface.MCU_AUX, new LayoutCommand<> (IApplication.PANEL_LAYOUT_ARRANGE, this.model, surface));
+        this.addTriggerCommand (COMMAND_LAYOUT_MIX, MCUControlSurface.MCU_BUSSES, new LayoutCommand<> (IApplication.PANEL_LAYOUT_MIX, this.model, surface));
+        this.addTriggerCommand (COMMAND_LAYOUT_EDIT, MCUControlSurface.MCU_OUTPUTS, new LayoutCommand<> (IApplication.PANEL_LAYOUT_EDIT, this.model, surface));
 
         // Utilities
         this.addTriggerCommand (Commands.COMMAND_BROWSE, MCUControlSurface.MCU_USER, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
@@ -493,7 +493,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         this.updateSegmentDisplay ();
 
         // Set button states
-        final TransportProxy t = this.model.getTransport ();
+        final ITransport t = this.model.getTransport ();
         final boolean isShift = surface.isShiftPressed ();
         final boolean isFlipRecord = this.configuration.isFlipRecord ();
         final boolean isRecordShifted = isShift && !isFlipRecord || !isShift && isFlipRecord;
@@ -508,13 +508,13 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         surface.updateButton (MCUControlSurface.MCU_MODE_PAN, isPanOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         surface.updateButton (MCUControlSurface.MCU_MODE_SENDS, isSendOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final boolean isOn = surface.isPressed (MCUControlSurface.MCU_OPTION) ? cursorDevice.isPinned () : isDeviceOn;
 
         surface.updateButton (MCUControlSurface.MCU_MODE_PLUGIN, isOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         surface.updateButton (MCUControlSurface.MCU_USER, Modes.MODE_BROWSER.equals (mode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
-        final TransportProxy transport = this.model.getTransport ();
+        final ITransport transport = this.model.getTransport ();
         final String automationWriteMode = transport.getAutomationWriteMode ();
         final boolean writingArrangerAutomation = transport.isWritingArrangerAutomation ();
 
@@ -522,12 +522,12 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         surface.updateButton (MCUControlSurface.MCU_F7, transport.isPunchOutEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         surface.updateButton (MCUControlSurface.MCU_READ, !writingArrangerAutomation ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        final int writeState = writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[2].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF;
+        final int writeState = writingArrangerAutomation && ITransport.AUTOMATION_MODES_VALUES[2].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF;
         surface.updateButton (MCUControlSurface.MCU_WRITE, writeState);
         surface.updateButton (MCUControlSurface.MCU_GROUP, writeState);
         surface.updateButton (MCUControlSurface.MCU_TRIM, transport.isWritingClipLauncherAutomation () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_TOUCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_LATCH, writingArrangerAutomation && TransportProxy.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_TOUCH, writingArrangerAutomation && ITransport.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_LATCH, writingArrangerAutomation && ITransport.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         final View view = surface.getViewManager ().getView (Views.VIEW_CONTROL);
         surface.updateButton (MCUControlSurface.MCU_REWIND, ((WindCommand<MCUControlSurface, MCUConfiguration>) view.getTriggerCommand (Commands.COMMAND_REWIND)).isRewinding () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
@@ -565,7 +565,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         if (!this.configuration.hasSegmentDisplay ())
             return;
 
-        final TransportProxy t = this.model.getTransport ();
+        final ITransport t = this.model.getTransport ();
         String positionText = t.getPositionText ();
         if (this.configuration.isDisplayTicks ())
             positionText += " ";
@@ -588,7 +588,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         final boolean enableVUMeters = this.configuration.isEnableVUMeters ();
         final boolean hasMotorFaders = this.configuration.hasMotorFaders ();
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         MidiOutput output;
         for (int index = 0; index < this.numMCUDevices; index++)
         {
@@ -598,7 +598,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             for (int i = 0; i < 8; i++)
             {
                 final int channel = extenderOffset + i;
-                final TrackData track = tb.getTrack (channel);
+                final ITrack track = tb.getTrack (channel);
 
                 // Update VU LEDs of channel
                 if (enableVUMeters)
@@ -618,7 +618,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             }
         }
 
-        final MasterTrackProxy masterTrack = this.model.getMasterTrack ();
+        final IMasterTrack masterTrack = this.model.getMasterTrack ();
 
         output = this.getSurface ().getOutput ();
 
@@ -655,7 +655,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     }
 
 
-    private void updateFaders (final MidiOutput output, final int index, final int channel, final TrackData track)
+    private void updateFaders (final MidiOutput output, final int index, final int channel, final ITrack track)
     {
         int value = track.getVolume ();
 
@@ -668,13 +668,13 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
                 value = track.getPan ();
             else if (modeManager.isActiveMode (Modes.MODE_TRACK))
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final TrackData selectedTrack = tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack selectedTrack = tb.getSelectedTrack ();
                 if (selectedTrack == null)
                     value = 0;
                 else
                 {
-                    final TrackData selTrack = tb.getTrack (selectedTrack.getIndex ());
+                    final ITrack selTrack = tb.getTrack (selectedTrack.getIndex ());
                     switch (index)
                     {
                         case 0:
@@ -742,8 +742,8 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
 
     private void updateIndication (final Integer mode)
     {
-        final TrackBankProxy tb = this.model.getTrackBank ();
-        final EffectTrackBankProxy tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tb = this.model.getTrackBank ();
+        final IChannelBank tbe = this.model.getEffectTrackBank ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isPan = Modes.MODE_PAN.equals (mode);
         final boolean isTrack = Modes.MODE_TRACK.equals (mode);
@@ -752,8 +752,8 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         tb.setIndication (!isEffect);
         tbe.setIndication (isEffect);
 
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         for (int i = 0; i < tb.getNumTracks (); i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrack;

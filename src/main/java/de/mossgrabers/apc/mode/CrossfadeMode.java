@@ -6,7 +6,7 @@ package de.mossgrabers.apc.mode;
 
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -40,7 +40,7 @@ public class CrossfadeMode extends BaseMode
     @Override
     public Integer getValue (final int index)
     {
-        final TrackData track = this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
         if (!track.doesExist ())
             return null;
 

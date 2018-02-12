@@ -9,7 +9,7 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
 
 
 /**
@@ -42,7 +42,7 @@ public class ToggleTrackBanksCommand<S extends ControlSurface<C>, C extends Conf
             return;
 
         this.model.toggleCurrentTrackBank ();
-        final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
+        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
         if (currentTrackBank.getSelectedTrack () == null)
             currentTrackBank.select (0);
     }

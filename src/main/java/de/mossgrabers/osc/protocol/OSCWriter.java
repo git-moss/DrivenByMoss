@@ -4,32 +4,31 @@
 
 package de.mossgrabers.osc.protocol;
 
-import de.mossgrabers.framework.daw.ApplicationProxy;
-import de.mossgrabers.framework.daw.ArrangerProxy;
-import de.mossgrabers.framework.daw.BrowserProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.MixerProxy;
-import de.mossgrabers.framework.daw.SceneBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
-import de.mossgrabers.framework.daw.data.BrowserColumnData;
-import de.mossgrabers.framework.daw.data.BrowserColumnItemData;
-import de.mossgrabers.framework.daw.data.ChannelData;
-import de.mossgrabers.framework.daw.data.ParameterData;
-import de.mossgrabers.framework.daw.data.SceneData;
-import de.mossgrabers.framework.daw.data.SendData;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.IArranger;
+import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IMixer;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.EmptyTrackData;
+import de.mossgrabers.framework.daw.data.IBrowserColumn;
+import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
+import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.osc.OSCColors;
 import de.mossgrabers.osc.OSCConfiguration;
 
-import com.bitwig.extension.controller.api.ControllerHost;
-import com.illposed.osc.OSCBundle;
-import com.illposed.osc.OSCMessage;
-import com.illposed.osc.OSCPacket;
+import com.bitwig.extension.api.opensoundcontrol.OscConnection;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,24 +43,27 @@ import java.util.Map;
  */
 public class OSCWriter
 {
-    private static final EmptyTrackData EMPTY_TRACK = new EmptyTrackData ();
+    private static final ITrack  EMPTY_TRACK = new EmptyTrackData ();
 
-    private OSCModel                    model;
-    private Map<String, Object>         oldValues   = new HashMap<> ();
-    private List<OSCPacket>             messages    = new ArrayList<> ();
-    private OSCConfiguration            configuration;
+    private OSCModel             model;
+    private Map<String, Object>  oldValues   = new HashMap<> ();
+    private List<OscMessageData> messages    = new ArrayList<> ();
+    private OSCConfiguration     configuration;
+    private OscConnection        udpServer;
 
 
     /**
      * Constructor.
      *
-     * @param model
-     * @param configuration
+     * @param model The model
+     * @param configuration The configuration
+     * @param udpServer The UDP server to send to
      */
-    public OSCWriter (final OSCModel model, final OSCConfiguration configuration)
+    public OSCWriter (final OSCModel model, final OSCConfiguration configuration, final OscConnection udpServer)
     {
         this.model = model;
         this.configuration = configuration;
+        this.udpServer = udpServer;
     }
 
 
@@ -76,7 +78,7 @@ public class OSCWriter
         // Transport
         //
 
-        final TransportProxy trans = this.model.getTransport ();
+        final ITransport trans = this.model.getTransport ();
         this.sendOSC ("/play", trans.isPlaying (), dump);
         this.sendOSC ("/record", trans.isRecording (), dump);
         this.sendOSC ("/overdub", trans.isArrangerOverdub (), dump);
@@ -97,10 +99,10 @@ public class OSCWriter
         // Frames
         //
 
-        final ApplicationProxy app = this.model.getApplication ();
+        final IApplication app = this.model.getApplication ();
         this.sendOSC ("/layout", app.getPanelLayout ().toLowerCase (), dump);
 
-        final ArrangerProxy arrange = this.model.getArranger ();
+        final IArranger arrange = this.model.getArranger ();
         this.sendOSC ("/arranger/cueMarkerVisibility", arrange.areCueMarkersVisible (), dump);
         this.sendOSC ("/arranger/playbackFollow", arrange.isPlaybackFollowEnabled (), dump);
         this.sendOSC ("/arranger/trackRowHeight", arrange.hasDoubleRowTrackHeight (), dump);
@@ -109,7 +111,7 @@ public class OSCWriter
         this.sendOSC ("/arranger/ioSectionVisibility", arrange.isIoSectionVisible (), dump);
         this.sendOSC ("/arranger/effectTracksVisibility", arrange.areEffectTracksVisible (), dump);
 
-        final MixerProxy mix = this.model.getMixer ();
+        final IMixer mix = this.model.getMixer ();
         this.sendOSC ("/mixer/clipLauncherSectionVisibility", mix.isClipLauncherSectionVisible (), dump);
         this.sendOSC ("/mixer/crossFadeSectionVisibility", mix.isCrossFadeSectionVisible (), dump);
         this.sendOSC ("/mixer/deviceSectionVisibility", mix.isDeviceSectionVisible (), dump);
@@ -121,18 +123,18 @@ public class OSCWriter
         // Project
         //
 
-        this.sendOSC ("/project/name", app.getProjectName (), dump);
+        this.sendOSC ("/project/name", this.model.getProject ().getName (), dump);
         this.sendOSC ("/project/engine", app.isEngineActive (), dump);
 
         //
         // Master-/Track(-commands)
         //
 
-        final TrackBankProxy trackBank = this.model.getTrackBank ();
+        final ITrackBank trackBank = this.model.getTrackBank ();
         for (int i = 0; i < trackBank.getNumTracks (); i++)
             this.flushTrack ("/track/" + (i + 1) + "/", trackBank.getTrack (i), dump);
         this.flushTrack ("/master/", this.model.getMasterTrack (), dump);
-        final TrackData selectedTrack = trackBank.getSelectedTrack ();
+        final ITrack selectedTrack = trackBank.getSelectedTrack ();
         this.flushTrack ("/track/selected/", selectedTrack == null ? EMPTY_TRACK : selectedTrack, dump);
         this.flushSendNames ("/send/", dump);
 
@@ -140,14 +142,14 @@ public class OSCWriter
         // Scenes
         //
 
-        final SceneBankProxy sceneBank = this.model.getSceneBank ();
+        final ISceneBank sceneBank = this.model.getSceneBank ();
         for (int i = 0; i < sceneBank.getNumScenes (); i++)
             this.flushScene ("/scene/" + (i + 1) + "/", sceneBank.getScene (i), dump);
 
         //
         // Device / Primary Device
         //
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         this.flushDevice ("/device/", cd, dump);
         for (int i = 0; i < cd.getNumDeviceLayers (); i++)
             this.flushDeviceLayers ("/device/layer/" + (i + 1) + "/", cd.getLayerOrDrumPad (i), dump);
@@ -166,24 +168,34 @@ public class OSCWriter
         this.flushNotes ("/vkb_midi/note/", dump);
 
         // Send all collected messages
-        int pos = 0;
-        final int size = this.messages.size ();
-        final ControllerHost host = this.model.getHost ();
-        final String sendHost = this.configuration.getSendHost ();
-        final int sendPort = this.configuration.getSendPort ();
-        while (pos < size)
+
+        try
         {
-            final int end = pos + 1000;
-            final OSCBundle oscBundle = new OSCBundle (this.messages.subList (pos, Math.min (end, size)));
-            final byte [] data = oscBundle.getByteArray ();
-            host.sendDatagramPacket (sendHost, sendPort, data);
-            pos += 1000;
+            int pos = 0;
+            this.udpServer.startBundle ();
+            for (final OscMessageData message: this.messages)
+            {
+                this.udpServer.sendMessage (message.getAddress (), message.getValues ());
+                pos++;
+                if (pos > 1000)
+                {
+                    pos = 0;
+                    this.udpServer.endBundle ();
+                    this.udpServer.startBundle ();
+                }
+            }
+            this.udpServer.endBundle ();
         }
+        catch (final IOException ex)
+        {
+            this.model.getHost ().error ("Could not send UDP message.", ex);
+        }
+
         this.messages.clear ();
     }
 
 
-    private void flushTrack (final String trackAddress, final TrackData track, final boolean dump)
+    private void flushTrack (final String trackAddress, final ITrack track, final boolean dump)
     {
         this.sendOSC (trackAddress + "exists", track.doesExist (), dump);
         this.sendOSC (trackAddress + "type", track.getType (), dump);
@@ -204,11 +216,11 @@ public class OSCWriter
         this.sendOSC (trackAddress + "canHoldAudioData", track.canHoldAudioData (), dump);
         this.sendOSC (trackAddress + "position", track.getPosition (), dump);
 
-        final SendData [] sends = track.getSends ();
+        final ISend [] sends = track.getSends ();
         for (int i = 0; i < sends.length; i++)
             this.flushParameterData (trackAddress + "send/" + (i + 1) + "/", sends[i], dump);
 
-        final SlotData [] slots = track.getSlots ();
+        final ISlot [] slots = track.getSlots ();
         for (int i = 0; i < slots.length; i++)
         {
             final String clipAddress = trackAddress + "clip/" + (i + 1) + "/";
@@ -239,18 +251,18 @@ public class OSCWriter
 
     private void flushSendNames (final String sendAddress, final boolean dump)
     {
-        final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
         final boolean isFX = this.model.isEffectTrackBankActive ();
         for (int i = 0; i < fxTrackBank.getNumSends (); i++)
         {
-            final TrackData fxTrack = fxTrackBank.getTrack (i);
+            final ITrack fxTrack = fxTrackBank.getTrack (i);
             final boolean isEmpty = isFX || !fxTrack.doesExist ();
             this.sendOSC (sendAddress + (i + 1) + "/name", isEmpty ? "" : fxTrack.getName (), dump);
         }
     }
 
 
-    private void flushScene (final String sceneAddress, final SceneData scene, final boolean dump)
+    private void flushScene (final String sceneAddress, final IScene scene, final boolean dump)
     {
         this.sendOSC (sceneAddress + "exists", scene.doesExist (), dump);
         this.sendOSC (sceneAddress + "name", scene.getName (), dump);
@@ -258,7 +270,7 @@ public class OSCWriter
     }
 
 
-    private void flushDevice (final String deviceAddress, final CursorDeviceProxy device, final boolean dump)
+    private void flushDevice (final String deviceAddress, final ICursorDevice device, final boolean dump)
     {
         this.sendOSC (deviceAddress + "name", device.getName (), dump);
         this.sendOSC (deviceAddress + "bypass", !device.isEnabled (), dump);
@@ -270,11 +282,11 @@ public class OSCWriter
     }
 
 
-    private void flushBrowser (final String browserAddress, final BrowserProxy browser, final boolean dump)
+    private void flushBrowser (final String browserAddress, final IBrowser browser, final boolean dump)
     {
         this.sendOSC (browserAddress + "isActive", browser.isActive (), dump);
 
-        BrowserColumnData column;
+        IBrowserColumn column;
         // Filter Columns
         for (int i = 0; i < browser.getFilterColumnCount (); i++)
         {
@@ -283,7 +295,7 @@ public class OSCWriter
             this.sendOSC (filterAddress + "exists", column.doesExist (), dump);
             this.sendOSC (filterAddress + "name", column.getName (), dump);
             this.sendOSC (filterAddress + "wildcard", column.getWildcard (), dump);
-            final BrowserColumnItemData [] items = column.getItems ();
+            final IBrowserColumnItem [] items = column.getItems ();
             for (int j = 0; j < items.length; j++)
             {
                 this.sendOSC (filterAddress + "item/" + (j + 1) + "/exists", items[j].doesExist (), dump);
@@ -295,7 +307,7 @@ public class OSCWriter
 
         // Presets
         final String presetAddress = browserAddress + "result/";
-        final BrowserColumnItemData [] items = browser.getResultColumnItems ();
+        final IBrowserColumnItem [] items = browser.getResultColumnItems ();
         for (int i = 0; i < items.length; i++)
         {
             this.sendOSC (presetAddress + (i + 1) + "/exists", items[i].doesExist (), dump);
@@ -306,7 +318,7 @@ public class OSCWriter
     }
 
 
-    private void flushDeviceLayers (final String deviceAddress, final ChannelData device, final boolean dump)
+    private void flushDeviceLayers (final String deviceAddress, final IChannel device, final boolean dump)
     {
         this.sendOSC (deviceAddress + "exists", device.doesExist (), dump);
         this.sendOSC (deviceAddress + "activated", device.isActivated (), dump);
@@ -319,7 +331,7 @@ public class OSCWriter
         this.sendOSC (deviceAddress + "mute", device.isMute (), dump);
         this.sendOSC (deviceAddress + "solo", device.isSolo (), dump);
 
-        final SendData [] sends = device.getSends ();
+        final ISend [] sends = device.getSends ();
         for (int i = 0; i < sends.length; i++)
             this.flushParameterData (deviceAddress + "send/" + (i + 1) + "/", sends[i], dump);
 
@@ -331,7 +343,7 @@ public class OSCWriter
     }
 
 
-    private void flushParameterData (final String fxAddress, final ParameterData fxParam, final boolean dump)
+    private void flushParameterData (final String fxAddress, final IParameter fxParam, final boolean dump)
     {
         this.sendOSC (fxAddress + "name", fxParam.getName (), dump);
         this.sendOSC (fxAddress + "valueStr", fxParam.getDisplayedValue (), dump);
@@ -391,7 +403,7 @@ public class OSCWriter
         }
 
         this.oldValues.put (address, value);
-        this.messages.add (new OSCMessage (address, Collections.singletonList (convertBooleanToInt (value))));
+        this.messages.add (new OscMessageData (address, Collections.singletonList (convertBooleanToInt (value))));
     }
 
 

@@ -6,29 +6,43 @@ package de.mossgrabers.framework;
 
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.ApplicationProxy;
-import de.mossgrabers.framework.daw.ArrangerProxy;
-import de.mossgrabers.framework.daw.BrowserProxy;
-import de.mossgrabers.framework.daw.CursorClipProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.GrooveProxy;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
-import de.mossgrabers.framework.daw.MixerProxy;
-import de.mossgrabers.framework.daw.SceneBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.IArranger;
+import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IGroove;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IMixer;
+import de.mossgrabers.framework.daw.IProject;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.bitwig.ApplicationProxy;
+import de.mossgrabers.framework.daw.bitwig.ArrangerProxy;
+import de.mossgrabers.framework.daw.bitwig.BrowserProxy;
+import de.mossgrabers.framework.daw.bitwig.CursorClipProxy;
+import de.mossgrabers.framework.daw.bitwig.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.bitwig.EffectTrackBankProxy;
+import de.mossgrabers.framework.daw.bitwig.GrooveProxy;
+import de.mossgrabers.framework.daw.bitwig.HostProxy;
+import de.mossgrabers.framework.daw.bitwig.MixerProxy;
+import de.mossgrabers.framework.daw.bitwig.ProjectProxy;
+import de.mossgrabers.framework.daw.bitwig.TrackBankProxy;
+import de.mossgrabers.framework.daw.bitwig.TransportProxy;
+import de.mossgrabers.framework.daw.bitwig.data.MasterTrackImpl;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
+import com.bitwig.extension.controller.api.Application;
 import com.bitwig.extension.controller.api.BooleanValue;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.MasterTrack;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
-import com.bitwig.extension.controller.api.Project;
 
 
 /**
@@ -38,34 +52,36 @@ import com.bitwig.extension.controller.api.Project;
  */
 public class Model
 {
-    private int                    numTracks;
-    private int                    numScenes;
-    private int                    numSends;
-    private int                    numFilterColumnEntries;
-    private int                    numResults;
-    private boolean                hasFlatTrackList;
+    private int            numTracks;
+    private int            numScenes;
+    private int            numSends;
+    private int            numFilterColumnEntries;
+    private int            numResults;
+    private boolean        hasFlatTrackList;
 
-    private ControllerHost         host;
-    private ValueChanger           valueChanger;
+    private IHost          hostProxy;
+    private ControllerHost host;
+    private ValueChanger   valueChanger;
 
-    protected Scales               scales;
-    private ApplicationProxy       application;
-    private ArrangerProxy          arranger;
-    private MixerProxy             mixer;
-    private GrooveProxy            groove;
-    private Project                project;
-    private BrowserProxy           browser;
-    private CursorTrack            cursorTrack;
-    private AbstractTrackBankProxy currentTrackBank;
-    private TrackBankProxy         trackBank;
-    private EffectTrackBankProxy   effectTrackBank;
-    private TransportProxy         transport;
-    private MasterTrackProxy       masterTrack;
+    protected Scales       scales;
+    private IApplication   application;
+    private IArranger      arranger;
+    private IMixer         mixer;
+    private ITransport     transport;
+    private IGroove        groove;
+    private IProject       project;
+    private IBrowser       browser;
 
-    private ColorManager           colorManager;
-    private CursorDeviceProxy      primaryDevice;
-    private CursorDeviceProxy      cursorDevice;
-    private BooleanValue           masterTrackEqualsValue;
+    private CursorTrack    cursorTrack;
+    private IChannelBank   currentTrackBank;
+    private ITrackBank     trackBank;
+    private IChannelBank   effectTrackBank;
+    private IMasterTrack   masterTrack;
+    private BooleanValue   masterTrackEqualsValue;
+
+    private ColorManager   colorManager;
+    private ICursorDevice  primaryDevice;
+    private ICursorDevice  cursorDevice;
 
 
     /**
@@ -89,6 +105,7 @@ public class Model
     public Model (final ControllerHost host, final ColorManager colorManager, final ValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
         this.host = host;
+        this.hostProxy = new HostProxy (host);
         this.colorManager = colorManager;
         this.valueChanger = valueChanger;
 
@@ -99,29 +116,30 @@ public class Model
         this.numResults = numResults < 0 ? 16 : numResults;
         this.hasFlatTrackList = hasFlatTrackList ? true : false;
 
-        this.application = new ApplicationProxy (host);
+        final Application app = host.createApplication ();
+        this.application = new ApplicationProxy (app);
         this.transport = new TransportProxy (host, valueChanger);
         this.groove = new GrooveProxy (host, valueChanger.getUpperBound ());
         final MasterTrack master = host.createMasterTrack (0);
-        this.masterTrack = new MasterTrackProxy (master, valueChanger);
+        this.masterTrack = new MasterTrackImpl (master, valueChanger);
 
         this.cursorTrack = host.createCursorTrack ("MyCursorTrackID", "The Cursor Track", 0, 0, true);
         this.cursorTrack.isPinned ().markInterested ();
 
         this.trackBank = new TrackBankProxy (host, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
         this.effectTrackBank = new EffectTrackBankProxy (host, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
-        this.primaryDevice = new CursorDeviceProxy (host, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.primaryDevice = new CursorDeviceProxy (this.hostProxy, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
         final PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", this.numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
-        this.cursorDevice = new CursorDeviceProxy (host, cd, valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.cursorDevice = new CursorDeviceProxy (this.hostProxy, cd, valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
 
-        this.masterTrackEqualsValue = cd.getChannel ().createEqualsValue (master);
+        this.masterTrackEqualsValue = cd.channel ().createEqualsValue (master);
         this.masterTrackEqualsValue.markInterested ();
 
-        this.project = host.getProject ();
-        this.arranger = new ArrangerProxy (host);
-        this.mixer = new MixerProxy (host);
+        this.project = new ProjectProxy (host.getProject (), app);
+        this.arranger = new ArrangerProxy (host.createArranger ());
+        this.mixer = new MixerProxy (host.createMixer ());
 
-        this.browser = new BrowserProxy (host, this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
+        this.browser = new BrowserProxy (host.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
 
         this.currentTrackBank = this.trackBank;
         this.scales = scales;
@@ -133,9 +151,9 @@ public class Model
      *
      * @return The host
      */
-    public ControllerHost getHost ()
+    public IHost getHost ()
     {
-        return this.host;
+        return this.hostProxy;
     }
 
 
@@ -155,7 +173,7 @@ public class Model
      *
      * @return The project
      */
-    public Project getProject ()
+    public IProject getProject ()
     {
         return this.project;
     }
@@ -166,7 +184,7 @@ public class Model
      *
      * @return The arranger
      */
-    public ArrangerProxy getArranger ()
+    public IArranger getArranger ()
     {
         return this.arranger;
     }
@@ -177,7 +195,7 @@ public class Model
      *
      * @return The mixer
      */
-    public MixerProxy getMixer ()
+    public IMixer getMixer ()
     {
         return this.mixer;
     }
@@ -188,7 +206,7 @@ public class Model
      *
      * @return The transport
      */
-    public TransportProxy getTransport ()
+    public ITransport getTransport ()
     {
         return this.transport;
     }
@@ -199,7 +217,7 @@ public class Model
      *
      * @return The groove instance
      */
-    public GrooveProxy getGroove ()
+    public IGroove getGroove ()
     {
         return this.groove;
     }
@@ -210,7 +228,7 @@ public class Model
      *
      * @return The master track
      */
-    public MasterTrackProxy getMasterTrack ()
+    public IMasterTrack getMasterTrack ()
     {
         return this.masterTrack;
     }
@@ -254,7 +272,7 @@ public class Model
      *
      * @return The cursor device
      */
-    public CursorDeviceProxy getCursorDevice ()
+    public ICursorDevice getCursorDevice ()
     {
         return this.cursorDevice;
     }
@@ -265,7 +283,7 @@ public class Model
      *
      * @return The device
      */
-    public CursorDeviceProxy getPrimaryDevice ()
+    public ICursorDevice getPrimaryDevice ()
     {
         return this.primaryDevice;
     }
@@ -296,7 +314,7 @@ public class Model
      *
      * @return The current track bank
      */
-    public AbstractTrackBankProxy getCurrentTrackBank ()
+    public IChannelBank getCurrentTrackBank ()
     {
         return this.currentTrackBank;
     }
@@ -307,7 +325,7 @@ public class Model
      *
      * @return The track bank
      */
-    public TrackBankProxy getTrackBank ()
+    public ITrackBank getTrackBank ()
     {
         return this.trackBank;
     }
@@ -318,7 +336,7 @@ public class Model
      *
      * @return The effect track bank
      */
-    public EffectTrackBankProxy getEffectTrackBank ()
+    public IChannelBank getEffectTrackBank ()
     {
         return this.effectTrackBank;
     }
@@ -329,7 +347,7 @@ public class Model
      *
      * @return The application
      */
-    public ApplicationProxy getApplication ()
+    public IApplication getApplication ()
     {
         return this.application;
     }
@@ -340,7 +358,7 @@ public class Model
      *
      * @return The scene bank
      */
-    public SceneBankProxy getSceneBank ()
+    public ISceneBank getSceneBank ()
     {
         return this.trackBank.getSceneBank ();
     }
@@ -351,9 +369,26 @@ public class Model
      *
      * @return The browser
      */
-    public BrowserProxy getBrowser ()
+    public IBrowser getBrowser ()
     {
         return this.browser;
+    }
+
+
+    /**
+     * Creates a new track bank.
+     *
+     * @param cursorTrack The cursor track
+     * @param numTracks The number of tracks in a bank page
+     * @param numScenes The number of scenes in a bank page
+     * @param numSends The number of sends in a bank page
+     * @param hasFlatTrackList True if group navigation should not be supported, instead all tracks
+     *            are flat
+     * @return The track bank
+     */
+    public TrackBankProxy createTrackBank (final CursorTrack cursorTrack, final int numTracks, final int numScenes, final int numSends, final boolean hasFlatTrackList)
+    {
+        return new TrackBankProxy (this.host, this.valueChanger, cursorTrack, numTracks, numScenes, numSends, hasFlatTrackList);
     }
 
 
@@ -364,7 +399,7 @@ public class Model
      * @param rows The rows of the clip
      * @return The cursor clip
      */
-    public CursorClipProxy createCursorClip (final int cols, final int rows)
+    public ICursorClip createCursorClip (final int cols, final int rows)
     {
         return new CursorClipProxy (this.host, this.valueChanger, cols, rows);
     }
@@ -414,7 +449,7 @@ public class Model
      */
     public boolean canSelectedTrackHoldNotes ()
     {
-        final TrackData t = this.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack t = this.getCurrentTrackBank ().getSelectedTrack ();
         return t != null && t.canHoldNotes ();
     }
 

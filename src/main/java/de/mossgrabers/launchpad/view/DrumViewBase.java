@@ -6,8 +6,8 @@ package de.mossgrabers.launchpad.view;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;
@@ -52,8 +52,8 @@ public abstract class DrumViewBase extends AbstractDrumView<LaunchpadControlSurf
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         if (selectedTrack != null)
             this.onLowerScene (index);
     }

@@ -9,11 +9,11 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
-import de.mossgrabers.framework.daw.data.ParameterData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.push.controller.DisplayMessage;
@@ -97,7 +97,7 @@ public class DeviceParamsMode extends BaseMode
     {
         this.isKnobTouched[index] = isTouched;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
@@ -107,7 +107,7 @@ public class DeviceParamsMode extends BaseMode
                 return;
             }
 
-            final ParameterData param = cd.getFXParam (index);
+            final IParameter param = cd.getFXParam (index);
             if (!param.getName ().isEmpty ())
                 this.surface.getDisplay ().notify (param.getName () + ": " + param.getDisplayedValue ());
         }
@@ -125,7 +125,7 @@ public class DeviceParamsMode extends BaseMode
 
         if (event == ButtonEvent.UP)
         {
-            final CursorDeviceProxy cd = this.model.getCursorDevice ();
+            final ICursorDevice cd = this.model.getCursorDevice ();
             if (!cd.hasSelectedDevice ())
                 return;
 
@@ -148,7 +148,7 @@ public class DeviceParamsMode extends BaseMode
                 return;
             }
 
-            final ChannelData layer = cd.getSelectedLayerOrDrumPad ();
+            final IChannel layer = cd.getSelectedLayerOrDrumPad ();
             if (layer == null)
                 cd.selectLayerOrDrumPad (0);
             modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
@@ -167,7 +167,7 @@ public class DeviceParamsMode extends BaseMode
     protected void moveUp ()
     {
         // There is no device on the track move upwards to the track view
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         final View activeView = this.surface.getViewManager ().getActiveView ();
         if (!cd.hasSelectedDevice ())
         {
@@ -209,7 +209,7 @@ public class DeviceParamsMode extends BaseMode
     @Override
     public void updateFirstRow ()
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
             this.disableFirstRow ();
@@ -245,7 +245,7 @@ public class DeviceParamsMode extends BaseMode
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final CursorDeviceProxy device = this.model.getCursorDevice ();
+        final ICursorDevice device = this.model.getCursorDevice ();
         switch (index)
         {
             case 0:
@@ -285,7 +285,7 @@ public class DeviceParamsMode extends BaseMode
     {
         final int white = this.isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
             this.disableSecondRow ();
@@ -307,7 +307,6 @@ public class DeviceParamsMode extends BaseMode
         this.surface.updateButton (107, cd.isPinned () ? turquoise : grey);
         this.surface.updateButton (108, cd.isWindowOpen () ? turquoise : grey);
         this.surface.updateButton (109, white);
-
     }
 
 
@@ -317,7 +316,7 @@ public class DeviceParamsMode extends BaseMode
     {
         final Display d = this.surface.getDisplay ().clear ();
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
             d.clear ().setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
@@ -327,7 +326,7 @@ public class DeviceParamsMode extends BaseMode
         // Row 1 & 2
         for (int i = 0; i < 8; i++)
         {
-            final ParameterData param = cd.getFXParam (i);
+            final IParameter param = cd.getFXParam (i);
             final boolean exists = param.doesExist ();
             d.setCell (0, i, exists ? param.getName () : "").setCell (1, i, param.getDisplayedValue (8));
         }
@@ -361,23 +360,23 @@ public class DeviceParamsMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final PushDisplay pushDisplay = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = pushDisplay.createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
 
         if (!this.model.getCursorDevice ().hasSelectedDevice ())
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
-            message.send ();
+            display.send (message);
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final String color = tb.getSelectedTrackColorEntry ();
 
         final ValueChanger valueChanger = this.model.getValueChanger ();
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         final String [] pages = cd.getParameterPageNames ();
         final int page = Math.min (Math.max (0, cd.getSelectedParameterPage ()), pages.length - 1);
         final int start = page / 8 * 8;
@@ -415,10 +414,7 @@ public class DeviceParamsMode extends BaseMode
             }
 
             String bottomMenu;
-            // TODO API extension required, add an icon if the type of the plugin is known
-            // https://github.com/teotigraphix/Framework4Bitwig/issues/138
             final String bottomMenuIcon = "";
-            final double [] bottomMenuColor = BitwigColors.getColorEntry (color);
             boolean isBottomMenuOn;
             if (this.showDevices)
             {
@@ -432,7 +428,8 @@ public class DeviceParamsMode extends BaseMode
                 isBottomMenuOn = index == page;
             }
 
-            final ParameterData param = this.model.getCursorDevice ().getFXParam (i);
+            final double [] bottomMenuColor = BitwigColors.getColorEntry (color);
+            final IParameter param = this.model.getCursorDevice ().getFXParam (i);
             final boolean exists = param.doesExist ();
             final String parameterName = exists ? param.getName (9) : "";
             final int parameterValue = valueChanger.toDisplayValue (exists ? param.getValue () : 0);
@@ -443,7 +440,7 @@ public class DeviceParamsMode extends BaseMode
             message.addParameterElement (MENU[i], isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
 
-        message.send ();
+        display.send (message);
     }
 
 
@@ -454,7 +451,7 @@ public class DeviceParamsMode extends BaseMode
      */
     public boolean canSelectPreviousPage ()
     {
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         return this.showDevices ? cursorDevice.canSelectPreviousFX () : cursorDevice.hasPreviousParameterPage ();
     }
 
@@ -466,7 +463,7 @@ public class DeviceParamsMode extends BaseMode
      */
     public boolean canSelectNextPage ()
     {
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         return this.showDevices ? cursorDevice.canSelectNextFX () : cursorDevice.hasNextParameterPage ();
     }
 
@@ -476,7 +473,7 @@ public class DeviceParamsMode extends BaseMode
      */
     public void selectPreviousPage ()
     {
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         if (this.showDevices)
             cursorDevice.selectPrevious ();
         else
@@ -489,7 +486,7 @@ public class DeviceParamsMode extends BaseMode
      */
     public void selectNextPage ()
     {
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         if (this.showDevices)
             cursorDevice.selectNext ();
         else
@@ -502,7 +499,7 @@ public class DeviceParamsMode extends BaseMode
      */
     public void selectPreviousPageBank ()
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (this.showDevices)
             cd.selectPreviousBank ();
         else
@@ -515,7 +512,7 @@ public class DeviceParamsMode extends BaseMode
      */
     public void selectNextPageBank ()
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (this.showDevices)
             cd.selectNextBank ();
         else

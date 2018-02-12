@@ -12,12 +12,11 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractView;
@@ -114,7 +113,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         padGrid.light (36 + 60, previousViewId == Views.VIEW_RAINDROPS ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
 
         // Draw transport
-        final TransportProxy transport = this.model.getTransport ();
+        final ITransport transport = this.model.getTransport ();
         padGrid.light (36 + 63, transport.isPlaying () ? APCminiColors.APC_COLOR_GREEN_BLINK : APCminiColors.APC_COLOR_GREEN);
         padGrid.light (36 + 55, transport.isRecording () ? APCminiColors.APC_COLOR_RED_BLINK : APCminiColors.APC_COLOR_RED);
         padGrid.light (36 + 47, APCminiColors.APC_COLOR_YELLOW);
@@ -134,7 +133,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         if (velocity == 0)
             return;
 
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         switch (note)
         {
             // Flip views
@@ -294,7 +293,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 if (!Modes.isSendMode (mode))
                     mode = Modes.MODE_SEND1;
                 // Check if Send channel exists
-                final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+                final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
                 if (Modes.isSendMode (mode) && fxTrackBank != null && !fxTrackBank.getTrack (mode.intValue () - Modes.MODE_SEND1.intValue ()).doesExist ())
                     mode = Modes.MODE_SEND1;
                 modeManager.setActiveMode (mode);
@@ -374,7 +373,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON7, APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON8, APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1, tb.canScrollScenesUp () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON2, tb.canScrollScenesDown () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3, tb.canScrollTracksUp () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
@@ -391,17 +390,17 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
     private void onNew ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData t = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getSelectedTrack ();
         if (t != null)
         {
-            int trackIndex = t.getIndex ();
-            final SlotData [] slotIndexes = tb.getSelectedSlots (trackIndex);
+            final int trackIndex = t.getIndex ();
+            final ISlot [] slotIndexes = tb.getSelectedSlots (trackIndex);
             final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
             for (int i = 0; i < 8; i++)
             {
                 final int sIndex = (slotIndex + i) % 8;
-                final SlotData s = t.getSlots ()[sIndex];
+                final ISlot s = t.getSlots ()[sIndex];
                 if (s.hasContent ())
                     continue;
                 tb.createClip (trackIndex, sIndex, (int) Math.pow (2, this.surface.getConfiguration ().getNewClipLength ()));

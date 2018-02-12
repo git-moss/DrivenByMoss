@@ -10,8 +10,8 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -149,7 +149,7 @@ public abstract class CursorCommand<S extends ControlSurface<C>, C extends Confi
      */
     protected void scrollUp ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         if (this.surface.isShiftPressed ())
             tb.scrollScenesPageUp ();
         else
@@ -162,7 +162,7 @@ public abstract class CursorCommand<S extends ControlSurface<C>, C extends Confi
      */
     protected void scrollDown ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         if (this.surface.isShiftPressed ())
             tb.scrollScenesPageDown ();
         else
@@ -172,8 +172,8 @@ public abstract class CursorCommand<S extends ControlSurface<C>, C extends Confi
 
     protected void scrollTracksLeft ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData sel = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack sel = tb.getSelectedTrack ();
         final int index = sel == null ? 0 : sel.getIndex () - 1;
         if (index == -1 || this.surface.isShiftPressed ())
         {
@@ -184,9 +184,9 @@ public abstract class CursorCommand<S extends ControlSurface<C>, C extends Confi
     }
 
 
-    protected void scrollTrackBankLeft (final TrackData sel, final int index)
+    protected void scrollTrackBankLeft (final ITrack sel, final int index)
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         if (!tb.canScrollTracksUp ())
             return;
         tb.scrollTracksPageUp ();
@@ -197,8 +197,8 @@ public abstract class CursorCommand<S extends ControlSurface<C>, C extends Confi
 
     protected void scrollTracksRight ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData sel = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack sel = tb.getSelectedTrack ();
         final int index = sel == null ? 0 : sel.getIndex () + 1;
         if (index == 8 || this.surface.isShiftPressed ())
         {
@@ -209,9 +209,9 @@ public abstract class CursorCommand<S extends ControlSurface<C>, C extends Confi
     }
 
 
-    protected void scrollTrackBankRight (final TrackData sel, final int index)
+    protected void scrollTrackBankRight (final ITrack sel, final int index)
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         if (!tb.canScrollTracksDown ())
             return;
         tb.scrollTracksPageDown ();

@@ -7,7 +7,7 @@ package de.mossgrabers.launchpad.view;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.BrowserProxy;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.ViewManager;
@@ -111,7 +111,7 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
         {
             final ViewManager viewManager = this.surface.getViewManager ();

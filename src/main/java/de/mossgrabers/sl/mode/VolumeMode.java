@@ -8,9 +8,9 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -43,7 +43,7 @@ public class VolumeMode extends AbstractMode<SLControlSurface, SLConfiguration>
     {
         final Display d = this.surface.getDisplay ();
 
-        final MasterTrackProxy masterTrack = this.model.getMasterTrack ();
+        final IMasterTrack masterTrack = this.model.getMasterTrack ();
         if (masterTrack.isSelected ())
         {
             d.clear ();
@@ -52,14 +52,14 @@ public class VolumeMode extends AbstractMode<SLControlSurface, SLConfiguration>
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selTrack = tb.getSelectedTrack ();
 
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
         for (int i = 0; i < 8; i++)
         {
             final boolean isSel = i == selIndex;
-            final TrackData t = tb.getTrack (i);
+            final ITrack t = tb.getTrack (i);
             final String n = this.optimizeName (StringUtils.fixASCII (t.getName ()), isSel ? 7 : 8);
             d.setCell (1, i, isSel ? SLDisplay.RIGHT_ARROW + n : n).setCell (3, i, t.getVolumeStr (8));
         }

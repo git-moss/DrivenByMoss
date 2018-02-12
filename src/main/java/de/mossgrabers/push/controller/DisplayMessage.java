@@ -1,10 +1,8 @@
-// Written by J�rgen Mo�graber - mossgrabers.de
+// Written by Jürgen Moßgraber - mossgrabers.de
 // (c) 2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,46 +39,36 @@ public class DisplayMessage
 
     private int             command;
     private List<Integer>   array;
-    private ControllerHost  host;
-    private int             port;
 
 
     /**
      * Constructor. Uses the grid command.
-     *
-     * @param host The host
-     * @param port The communication port
      */
-    public DisplayMessage (final ControllerHost host, final int port)
+    public DisplayMessage ()
     {
-        this (host, port, DISPLAY_COMMAND_GRID);
+        this (DISPLAY_COMMAND_GRID);
     }
 
 
     /**
      * Constructor.
      *
-     * @param host The host
-     * @param port The communication port
      * @param command The command to send
      */
-    public DisplayMessage (final ControllerHost host, final int port, final int command)
+    public DisplayMessage (final int command)
     {
-        this.host = host;
-        this.port = port;
         this.command = command;
         this.array = new ArrayList<> ();
     }
 
 
     /**
-     * Send the message to the display process.
+     * Get the message as a byte array.
+     *
+     * @return The data of the message
      */
-    public void send ()
+    public byte [] getData ()
     {
-        if (this.port < 1)
-            return;
-
         final int size = this.array.size ();
         final byte [] data = new byte [3 + size];
         data[0] = -16; // -16 = 0xF0
@@ -88,7 +76,7 @@ public class DisplayMessage
         for (int i = 0; i < size; i++)
             data[2 + i] = this.array.get (i).byteValue ();
         data[size + 2] = -9; // -9 = 0xF7
-        this.sendToDisplay (data);
+        return data;
     }
 
 
@@ -442,11 +430,5 @@ public class DisplayMessage
     private void addByte (final int value)
     {
         this.array.add (Integer.valueOf (value));
-    }
-
-
-    private void sendToDisplay (final byte [] data)
-    {
-        this.host.sendDatagramPacket ("127.0.0.1", this.port, data);
     }
 }

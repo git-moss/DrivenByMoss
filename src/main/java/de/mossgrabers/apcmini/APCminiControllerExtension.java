@@ -8,7 +8,6 @@ import de.mossgrabers.apcmini.command.trigger.ShiftCommand;
 import de.mossgrabers.apcmini.command.trigger.TrackSelectCommand;
 import de.mossgrabers.apcmini.controller.APCminiColors;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.apcmini.controller.APCminiMidiInput;
 import de.mossgrabers.apcmini.controller.APCminiScales;
 import de.mossgrabers.apcmini.mode.DeviceMode;
 import de.mossgrabers.apcmini.mode.Modes;
@@ -32,10 +31,11 @@ import de.mossgrabers.framework.controller.AbstractControllerExtension;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.SceneView;
@@ -90,7 +90,7 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     protected void createModel ()
     {
         this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
-        final TrackBankProxy trackBank = this.model.getTrackBank ();
+        final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
     }
@@ -101,9 +101,11 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     protected void createSurface ()
     {
         final ControllerHost host = this.getHost ();
+        final MidiDeviceImpl midiDevice = new MidiDeviceImpl (host);
+
         final MidiOutput output = new MidiOutput (host);
-        final MidiInput input = new APCminiMidiInput ();
-        final APCminiControlSurface surface = new APCminiControlSurface (host, this.colorManager, this.configuration, output, input);
+        final IMidiInput input = midiDevice.createInput ("Akai APCmini");
+        final APCminiControlSurface surface = new APCminiControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
         surface.setDisplay (new DummyDisplay (host));
     }
@@ -259,8 +261,8 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
 
     private void updateIndication (final Integer mode)
     {
-        final TrackBankProxy tb = this.model.getTrackBank ();
-        final EffectTrackBankProxy tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tb = this.model.getTrackBank ();
+        final IChannelBank tbe = this.model.getEffectTrackBank ();
         final APCminiControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
         final boolean isShiftView = viewManager.isActiveView (Views.VIEW_SHIFT);
@@ -272,7 +274,7 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
         tb.setIndication (!isEffect && isSession);
         tbe.setIndication (isEffect && isSession);
 
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         for (int i = 0; i < 8; i++)
         {
             tb.setVolumeIndication (i, !isEffect);

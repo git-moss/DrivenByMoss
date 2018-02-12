@@ -9,8 +9,8 @@ import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IChannel;
 
 
 /**
@@ -39,8 +39,8 @@ public class DeviceLeftCommand extends AbstractTriggerCommand<APCControlSurface,
         if (event != ButtonEvent.DOWN)
             return;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
-        final ChannelData layer = cd.getSelectedLayerOrDrumPad ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        final IChannel layer = cd.getSelectedLayerOrDrumPad ();
         if (!cd.hasLayers () || layer == null)
             cd.selectPrevious ();
         else
@@ -56,8 +56,8 @@ public class DeviceLeftCommand extends AbstractTriggerCommand<APCControlSurface,
             return;
 
         // Exit layer
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
-        final ChannelData layer = cd.getSelectedLayerOrDrumPad ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        final IChannel layer = cd.getSelectedLayerOrDrumPad ();
         if (!cd.hasLayers () || layer == null)
         {
             if (cd.isNested ())

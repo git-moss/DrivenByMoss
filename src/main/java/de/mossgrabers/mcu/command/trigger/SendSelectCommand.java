@@ -7,8 +7,8 @@ package de.mossgrabers.mcu.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.SendData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.mode.Modes;
@@ -57,8 +57,8 @@ public class SendSelectCommand extends AbstractTriggerCommand<MCUControlSurface,
         if (index < 0 || index >= this.modeIds.size ())
             index = 0;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final SendData [] sends = tb.getTrack (0).getSends ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ISend [] sends = tb.getTrack (0).getSends ();
         if (sends[index].doesExist ())
             this.surface.getModeManager ().setActiveMode (this.modeIds.get (index));
         else if (sends[0].doesExist ())

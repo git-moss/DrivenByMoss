@@ -8,7 +8,7 @@ import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.ICursorDevice;
 
 import java.util.Date;
 
@@ -43,7 +43,7 @@ public class DeviceKnobRowCommand extends AbstractContinuousCommand<APCControlSu
     @Override
     public void execute (final int value)
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
             return;
         cd.setParameter (this.index, value);

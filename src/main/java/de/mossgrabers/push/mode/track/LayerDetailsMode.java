@@ -7,7 +7,7 @@ package de.mossgrabers.push.mode.track;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.data.ChannelData;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushColors;
@@ -43,7 +43,7 @@ public class LayerDetailsMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        final ChannelData deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
+        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
         if (deviceChain == null)
             return;
 
@@ -74,7 +74,7 @@ public class LayerDetailsMode extends BaseMode
     @Override
     public void updateFirstRow ()
     {
-        final ChannelData deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
+        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
         if (deviceChain == null)
         {
             this.disableFirstRow ();
@@ -98,7 +98,7 @@ public class LayerDetailsMode extends BaseMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final ChannelData deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
+        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
         if (deviceChain == null)
             d.setRow (1, "                     Please selecta layer...                        ").clearRow (0).clearRow (2).done (0).done (2);
         else
@@ -123,9 +123,10 @@ public class LayerDetailsMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
 
-        final ChannelData deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
+        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
         if (deviceChain == null)
             message.setMessage (3, "Please select a layer...");
         else
@@ -139,6 +140,6 @@ public class LayerDetailsMode extends BaseMode
             message.addEmptyElement ();
             message.addOptionElement ("", "", false, "", "Select Color", false, false);
         }
-        message.send ();
+        display.send (message);
     }
 }

@@ -8,9 +8,8 @@ import de.mossgrabers.framework.LatestTaskExecutor;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.midi.MidiOutput;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
@@ -53,7 +52,7 @@ public class MCUDisplay extends AbstractDisplay
      * @param isFirst True if it is the first display, otherwise the second
      * @param hasMaster True if a 9th master cell should be added
      */
-    public MCUDisplay (final ControllerHost host, final MidiOutput output, final boolean isFirst, final boolean hasMaster)
+    public MCUDisplay (final IHost host, final MidiOutput output, final boolean isFirst, final boolean hasMaster)
     {
         super (host, output, 2 /* No of rows */, !isFirst && hasMaster ? 9 : 8 /* No of cells */, 56);
 

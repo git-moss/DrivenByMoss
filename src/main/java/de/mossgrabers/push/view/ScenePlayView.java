@@ -7,11 +7,9 @@ package de.mossgrabers.push.view;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.SceneBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.SceneData;
-import de.mossgrabers.framework.daw.data.SlotData;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.push.PushConfiguration;
@@ -20,13 +18,13 @@ import de.mossgrabers.push.controller.PushControlSurface;
 
 
 /**
- * The Color view.
+ * The scene play view.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class ScenePlayView extends AbstractView<PushControlSurface, PushConfiguration> implements SceneView
 {
-    private TrackBankProxy trackBank;
+    private ITrackBank trackBank;
 
 
     /**
@@ -39,25 +37,7 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     {
         super ("Scene Play", surface, model);
 
-        this.trackBank = new TrackBankProxy (model.getHost (), model.getValueChanger (), model.getTrackBank ().getCursorTrack (), 8, 64, 0, true);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        super.onActivate ();
-        this.trackBank.enableObservers (true);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onDeactivate ()
-    {
-        super.onActivate ();
-        this.trackBank.enableObservers (false);
+        this.trackBank = model.createTrackBank (model.getTrackBank ().getCursorTrack (), 8, 64, 0, true);
     }
 
 
@@ -82,30 +62,35 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     @Override
     public void drawGrid ()
     {
-        final SceneBankProxy sceneBank = this.trackBank.getSceneBank ();
+        final ISceneBank sceneBank = this.getSceneBank ();
         for (int i = 0; i < 64; i++)
         {
-            final SceneData scene = sceneBank.getScene (i);
-            String color = PadGrid.GRID_OFF;
-
-            if (scene.doesExist ())
-            {
-                color = BitwigColors.BITWIG_COLOR_GREEN;
-
-                // Find the color of the first clip of the scene
-                for (int t = 0; t < this.trackBank.getNumTracks (); t++)
-                {
-                    final SlotData slotData = this.trackBank.getTrack (t).getSlots ()[i];
-                    if (slotData.doesExist () && slotData.hasContent ())
-                    {
-                        color = BitwigColors.getColorIndex (slotData.getColor ());
-                        break;
-                    }
-                }
-            }
-
+            final IScene scene = sceneBank.getScene (i);
+            final String color = scene.doesExist () ? this.trackBank.getColorOfFirstClipInScene (i) : PadGrid.GRID_OFF;
             this.surface.getPadGrid ().light (36 + i, color);
         }
+    }
+
+
+    /**
+     * Get the scene bank with 64 entries.
+     *
+     * @return The scene bank with 64 entries
+     */
+    public ISceneBank getSceneBank ()
+    {
+        return this.trackBank.getSceneBank ();
+    }
+
+
+    /**
+     * Get the track bank with 64 scene entries.
+     *
+     * @return The scene bank with 64 entries
+     */
+    public ITrackBank getTrackBank ()
+    {
+        return this.trackBank;
     }
 
 

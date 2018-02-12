@@ -7,10 +7,9 @@ package de.mossgrabers.sl.mode;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.data.SendData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -40,8 +39,8 @@ public class TrackMode extends AbstractMode<SLControlSurface, SLConfiguration>
     @Override
     public void updateDisplay ()
     {
-        final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
-        final TrackData t = currentTrackBank.getSelectedTrack ();
+        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack t = currentTrackBank.getSelectedTrack ();
         final Display d = this.surface.getDisplay ();
 
         if (t == null)
@@ -62,14 +61,14 @@ public class TrackMode extends AbstractMode<SLControlSurface, SLConfiguration>
             d.setCell (0, 2, "Crossfdr").setCell (2, 2, "A".equals (crossfadeMode) ? "A" : "B".equals (crossfadeMode) ? "       B" : "   <> ");
         }
 
-        final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
         int pos;
         if (fxTrackBank != null)
         {
             final boolean isFX = this.model.isEffectTrackBankActive ();
             for (int i = 0; i < sendCount; i++)
             {
-                final TrackData fxTrack = fxTrackBank.getTrack (i);
+                final ITrack fxTrack = fxTrackBank.getTrack (i);
                 final boolean isEmpty = isFX || !fxTrack.doesExist ();
                 pos = sendStart + i;
                 d.setCell (0, pos, isEmpty ? "" : fxTrack.getName ()).setCell (2, pos, isEmpty ? "" : t.getSends ()[i].getDisplayedValue (8));
@@ -83,8 +82,8 @@ public class TrackMode extends AbstractMode<SLControlSurface, SLConfiguration>
             for (int i = 0; i < sendCount; i++)
             {
                 pos = sendStart + i;
-                final SendData sendData = t.getSends ()[i];
-                d.setCell (0, pos, sendData.getName (8)).setCell (2, pos, sendData.getDisplayedValue (8));
+                final ISend send = t.getSends ()[i];
+                d.setCell (0, pos, send.getName (8)).setCell (2, pos, send.getDisplayedValue (8));
             }
         }
         d.done (0).done (2);

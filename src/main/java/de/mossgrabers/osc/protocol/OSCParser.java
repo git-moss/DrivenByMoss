@@ -6,27 +6,27 @@ package de.mossgrabers.osc.protocol;
 
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.ApplicationProxy;
-import de.mossgrabers.framework.daw.ArrangerProxy;
-import de.mossgrabers.framework.daw.BrowserProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
-import de.mossgrabers.framework.daw.MixerProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.IArranger;
+import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IMixer;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.osc.OSCConfiguration;
 
+import com.bitwig.extension.api.opensoundcontrol.OscConnection;
+import com.bitwig.extension.api.opensoundcontrol.OscMessage;
+import com.bitwig.extension.api.opensoundcontrol.OscMethodCallback;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.MidiIn;
 import com.bitwig.extension.controller.api.NoteInput;
-import com.illposed.osc.OSCListener;
-import com.illposed.osc.OSCMessage;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -38,13 +38,13 @@ import java.util.regex.Pattern;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class OSCParser implements OSCListener
+public class OSCParser implements OscMethodCallback
 {
     private static final Pattern   RGB_COLOR_PATTERN = Pattern.compile ("(rgb|RGB)\\((\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?)\\)");
 
     private final OSCModel         model;
-    private final TransportProxy   transport;
-    private final MasterTrackProxy masterTrack;
+    private final ITransport       transport;
+    private final IMasterTrack     masterTrack;
     private final Scales           scales;
     private final MidiIn           port;
     private final NoteInput        noteInput;
@@ -85,10 +85,10 @@ public class OSCParser implements OSCListener
 
     /** {@inheritDoc} */
     @Override
-    public void acceptMessage (final Date time, final OSCMessage message)
+    public void handle (final OscConnection source, final OscMessage message)
     {
         final LinkedList<String> oscParts = new LinkedList<> ();
-        Collections.addAll (oscParts, message.getAddress ().split ("/"));
+        Collections.addAll (oscParts, message.getAddressPattern ().split ("/"));
 
         // Remove first empty element
         oscParts.removeFirst ();
@@ -246,16 +246,16 @@ public class OSCParser implements OSCListener
                 switch (numValue)
                 {
                     case 0:
-                        this.transport.setPreroll (TransportProxy.PREROLL_NONE);
+                        this.transport.setPreroll (ITransport.PREROLL_NONE);
                         break;
                     case 1:
-                        this.transport.setPreroll (TransportProxy.PREROLL_1_BAR);
+                        this.transport.setPreroll (ITransport.PREROLL_1_BAR);
                         break;
                     case 2:
-                        this.transport.setPreroll (TransportProxy.PREROLL_2_BARS);
+                        this.transport.setPreroll (ITransport.PREROLL_2_BARS);
                         break;
                     case 4:
-                        this.transport.setPreroll (TransportProxy.PREROLL_4_BARS);
+                        this.transport.setPreroll (ITransport.PREROLL_4_BARS);
                         break;
                 }
                 break;
@@ -270,7 +270,7 @@ public class OSCParser implements OSCListener
                 break;
 
             case "panel":
-                ApplicationProxy app = this.model.getApplication ();
+                final IApplication app = this.model.getApplication ();
                 switch (oscParts.get (0))
                 {
                     case "noteEditor":
@@ -292,7 +292,7 @@ public class OSCParser implements OSCListener
                 break;
 
             case "arranger":
-                final ArrangerProxy arrange = this.model.getArranger ();
+                final IArranger arrange = this.model.getArranger ();
                 switch (oscParts.get (0))
                 {
                     case "cueMarkerVisibility":
@@ -320,7 +320,7 @@ public class OSCParser implements OSCListener
                 break;
 
             case "mixer":
-                final MixerProxy mix = this.model.getMixer ();
+                final IMixer mix = this.model.getMixer ();
                 switch (oscParts.get (0))
                 {
                     case "clipLauncherSectionVisibility":
@@ -349,20 +349,19 @@ public class OSCParser implements OSCListener
             //
 
             case "project":
-                app = this.model.getApplication ();
                 switch (oscParts.get (0))
                 {
                     case "+":
-                        app.nextProject ();
+                        this.model.getProject ().next ();
                         break;
                     case "-":
-                        app.previousProject ();
+                        this.model.getProject ().previous ();
                         break;
                     case "engine":
                         if (numValue >= 0)
-                            app.setEngineActive (numValue > 0);
+                            this.model.getApplication ().setEngineActive (numValue > 0);
                         else
-                            app.toggleEngineActive ();
+                            this.model.getApplication ().toggleEngineActive ();
                         break;
                 }
                 break;
@@ -435,7 +434,7 @@ public class OSCParser implements OSCListener
 
             case "device":
             {
-                final CursorDeviceProxy cd = this.model.getCursorDevice ();
+                final ICursorDevice cd = this.model.getCursorDevice ();
                 this.parseDeviceValue (cd, oscParts, value);
                 break;
             }
@@ -479,7 +478,7 @@ public class OSCParser implements OSCListener
                 break;
 
             default:
-                this.host.println ("Unhandled OSC Command: " + message.getAddress () + " " + value);
+                this.host.println ("Unhandled OSC Command: " + message.getAddressPattern () + " " + value);
                 break;
         }
     }
@@ -492,7 +491,7 @@ public class OSCParser implements OSCListener
         {
             case "indicate":
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
                 final boolean isTrue = value != null && value instanceof Number && ((Number) value).intValue () > 0;
                 switch (parts.removeFirst ())
                 {
@@ -505,11 +504,11 @@ public class OSCParser implements OSCListener
                             tb.setPanIndication (i, isTrue);
                         break;
                     case "send":
-                        if (tb instanceof TrackBankProxy)
+                        if (tb instanceof ITrackBank)
                         {
                             final int sendIndex = Integer.parseInt (parts.get (0));
                             for (int i = 0; i < tb.getNumTracks (); i++)
-                                ((TrackBankProxy) tb).setSendIndication (i, sendIndex - 1, isTrue);
+                                ((ITrackBank) tb).setSendIndication (i, sendIndex - 1, isTrue);
                         }
                         break;
                 }
@@ -520,7 +519,7 @@ public class OSCParser implements OSCListener
                 switch (parts.removeFirst ())
                 {
                     case "page":
-                        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+                        final IChannelBank tb = this.model.getCurrentTrackBank ();
                         if ("+".equals (parts.removeFirst ()))
                         {
                             if (!tb.canScrollTracksDown ())
@@ -549,8 +548,8 @@ public class OSCParser implements OSCListener
 
             case "+":
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final TrackData sel = tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack sel = tb.getSelectedTrack ();
                 final int index = sel == null ? 0 : sel.getIndex () + 1;
                 if (index == tb.getNumTracks ())
                 {
@@ -565,8 +564,8 @@ public class OSCParser implements OSCListener
 
             case "-":
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final TrackData sel = tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack sel = tb.getSelectedTrack ();
                 final int index = sel == null ? 0 : sel.getIndex () - 1;
                 if (index == -1)
                 {
@@ -607,9 +606,9 @@ public class OSCParser implements OSCListener
             {
                 this.model.toggleCurrentTrackBank ();
                 // Make sure a track is selected
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final AbstractTrackBankProxy tbOther = this.model.isEffectTrackBankActive () ? this.model.getTrackBank () : this.model.getEffectTrackBank ();
-                final TrackData track = tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final IChannelBank tbOther = this.model.isEffectTrackBankActive () ? this.model.getTrackBank () : this.model.getEffectTrackBank ();
+                final ITrack track = tb.getSelectedTrack ();
                 if (track == null)
                     this.selectTrack (0);
                 // Move the indication to the other bank
@@ -625,9 +624,9 @@ public class OSCParser implements OSCListener
 
             case "parent":
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).selectParent ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                if (tb instanceof ITrackBank)
+                    ((ITrackBank) tb).selectParent ();
                 break;
             }
 
@@ -836,11 +835,11 @@ public class OSCParser implements OSCListener
                 break;
 
             case "enter":
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
                 // TODO API extension required - selectChildren() should be available for Track as
                 // well
-                if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).selectChildren ();
+                if (tb instanceof ITrackBank)
+                    ((ITrackBank) tb).selectChildren ();
                 break;
 
             case "color":
@@ -865,8 +864,8 @@ public class OSCParser implements OSCListener
 
     private void parseSendValue (final int trackIndex, final int sendIndex, final LinkedList<String> parts, final Object value)
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        if (!(tb instanceof TrackBankProxy))
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        if (!(tb instanceof ITrackBank))
             return;
 
         final double numValue = value instanceof Number ? ((Number) value).doubleValue () : -1;
@@ -876,9 +875,9 @@ public class OSCParser implements OSCListener
         {
             case "volume":
                 if (parts.isEmpty ())
-                    ((TrackBankProxy) tb).setSend (trackIndex, sendIndex, numValue);
+                    ((ITrackBank) tb).setSend (trackIndex, sendIndex, numValue);
                 else if ("indicate".equals (parts.get (0)))
-                    ((TrackBankProxy) tb).setSendIndication (trackIndex, sendIndex, numValue > 0);
+                    ((ITrackBank) tb).setSendIndication (trackIndex, sendIndex, numValue > 0);
                 break;
 
             default:
@@ -888,7 +887,7 @@ public class OSCParser implements OSCListener
     }
 
 
-    private void parseDeviceValue (final CursorDeviceProxy cursorDevice, final LinkedList<String> parts, final Object value)
+    private void parseDeviceValue (final ICursorDevice cursorDevice, final LinkedList<String> parts, final Object value)
     {
         final int numValue = value instanceof Number ? ((Number) value).intValue () : -1;
         final String p = parts.removeFirst ();
@@ -992,7 +991,7 @@ public class OSCParser implements OSCListener
 
     private void parseBrowser (final LinkedList<String> parts)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
 
         final String p = parts.removeFirst ();
         switch (p)
@@ -1047,7 +1046,7 @@ public class OSCParser implements OSCListener
     }
 
 
-    private void parseDeviceLayerValue (final CursorDeviceProxy cursorDevice, final int layer, final LinkedList<String> parts, final Object value)
+    private void parseDeviceLayerValue (final ICursorDevice cursorDevice, final int layer, final LinkedList<String> parts, final Object value)
     {
         final String p = parts.removeFirst ();
         final int numValue = value instanceof Number ? ((Number) value).intValue () : -1;
@@ -1096,7 +1095,7 @@ public class OSCParser implements OSCListener
     }
 
 
-    private void parseFXParamValue (final CursorDeviceProxy cursorDevice, final int fxparamIndex, final LinkedList<String> parts, final Object value)
+    private void parseFXParamValue (final ICursorDevice cursorDevice, final int fxparamIndex, final LinkedList<String> parts, final Object value)
     {
         final int numValue = value instanceof Number ? ((Number) value).intValue () : -1;
         switch (parts.get (0))
@@ -1245,7 +1244,7 @@ public class OSCParser implements OSCListener
 
     private void selectTrack (final int index)
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         tb.select (index);
         tb.makeVisible (index);
     }

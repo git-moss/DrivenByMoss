@@ -11,7 +11,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.TransportProxy;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
@@ -44,7 +44,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
     @Override
     public void drawGrid ()
     {
-        final TransportProxy t = this.model.getTransport ();
+        final ITransport t = this.model.getTransport ();
         final PadGrid padGrid = this.surface.getPadGrid ();
         padGrid.light (36, t.isPlaying () ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
         padGrid.light (37, t.isRecording () ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_RED);

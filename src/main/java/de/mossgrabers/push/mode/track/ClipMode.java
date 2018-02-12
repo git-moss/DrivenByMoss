@@ -7,9 +7,10 @@ package de.mossgrabers.push.mode.track;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.CursorClipProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.bitwig.CursorClipProxy;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -57,7 +58,7 @@ public class ClipMode extends AbstractTrackMode
         if (!this.increaseKnobMovement ())
             return;
 
-        final CursorClipProxy clip = this.getClip ();
+        final ICursorClip clip = this.getClip ();
         switch (index)
         {
             case 0:
@@ -93,7 +94,7 @@ public class ClipMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final CursorClipProxy clip = this.getClip ();
+        final ICursorClip clip = this.getClip ();
         d.setCell (0, 0, "PlayStrt").setCell (1, 0, this.formatMeasures (clip.getPlayStart (), 1));
         d.setCell (0, 1, "Play End").setCell (1, 1, this.formatMeasures (clip.getPlayEnd (), 1));
         d.setCell (0, 2, "LoopStrt").setCell (1, 2, this.formatMeasures (clip.getLoopStart (), 1));
@@ -109,18 +110,19 @@ public class ClipMode extends AbstractTrackMode
     @Override
     public void updateDisplay2 ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final CursorClipProxy clip = this.getClip ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ICursorClip clip = this.getClip ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
 
-        final TrackData t0 = tb.getTrack (0);
-        final TrackData t1 = tb.getTrack (1);
-        final TrackData t2 = tb.getTrack (2);
-        final TrackData t3 = tb.getTrack (3);
-        final TrackData t4 = tb.getTrack (4);
-        final TrackData t5 = tb.getTrack (5);
-        final TrackData t6 = tb.getTrack (6);
-        final TrackData t7 = tb.getTrack (7);
+        final ITrack t0 = tb.getTrack (0);
+        final ITrack t1 = tb.getTrack (1);
+        final ITrack t2 = tb.getTrack (2);
+        final ITrack t3 = tb.getTrack (3);
+        final ITrack t4 = tb.getTrack (4);
+        final ITrack t5 = tb.getTrack (5);
+        final ITrack t6 = tb.getTrack (6);
+        final ITrack t7 = tb.getTrack (7);
 
         message.addParameterElement ("", false, t0.getName (), t0.getType (), tb.getTrackColorEntry (0), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
         message.addParameterElement ("", false, t1.getName (), t1.getType (), tb.getTrackColorEntry (1), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);
@@ -130,7 +132,7 @@ public class ClipMode extends AbstractTrackMode
         message.addParameterElement ("", false, t5.getName (), t5.getType (), tb.getTrackColorEntry (5), t5.isSelected (), "", -1, "", false, -1);
         message.addParameterElement ("", false, t6.getName (), t6.getType (), tb.getTrackColorEntry (6), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
         message.addParameterElement ("Select color", false, t7.getName (), t7.getType (), tb.getTrackColorEntry (7), t7.isSelected (), "Accent", -1, clip.getFormattedAccent (), this.isKnobTouched[7], -1);
-        message.send ();
+        display.send (message);
     }
 
 
@@ -148,7 +150,7 @@ public class ClipMode extends AbstractTrackMode
     }
 
 
-    private CursorClipProxy getClip ()
+    private ICursorClip getClip ()
     {
         return ((DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM)).getClip ();
     }

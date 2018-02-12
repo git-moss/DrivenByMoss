@@ -7,7 +7,7 @@ package de.mossgrabers.mcu.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.TransportProxy;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 
@@ -43,7 +43,7 @@ public class AutomationCommand extends AbstractTriggerCommand<MCUControlSurface,
         if (event != ButtonEvent.DOWN)
             return;
 
-        final TransportProxy transport = this.model.getTransport ();
+        final ITransport transport = this.model.getTransport ();
         switch (this.index)
         {
             // Read/Off
@@ -53,7 +53,7 @@ public class AutomationCommand extends AbstractTriggerCommand<MCUControlSurface,
                 break;
             // Write
             case 1:
-                transport.setAutomationWriteMode (TransportProxy.AUTOMATION_MODES_VALUES[2]);
+                transport.setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[2]);
                 if (!transport.isWritingArrangerAutomation ())
                     transport.toggleWriteArrangerAutomation ();
                 break;
@@ -63,13 +63,13 @@ public class AutomationCommand extends AbstractTriggerCommand<MCUControlSurface,
                 break;
             // Touch
             case 3:
-                transport.setAutomationWriteMode (TransportProxy.AUTOMATION_MODES_VALUES[1]);
+                transport.setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[1]);
                 if (!transport.isWritingArrangerAutomation ())
                     transport.toggleWriteArrangerAutomation ();
                 break;
             // Latch
             case 4:
-                transport.setAutomationWriteMode (TransportProxy.AUTOMATION_MODES_VALUES[0]);
+                transport.setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[0]);
                 if (!transport.isWritingArrangerAutomation ())
                     transport.toggleWriteArrangerAutomation ();
                 break;

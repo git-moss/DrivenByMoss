@@ -6,10 +6,10 @@ package de.mossgrabers.sl.view;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -61,7 +61,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         this.isPlayMode = true;
 
-        final TrackBankProxy tb = model.getTrackBank ();
+        final ITrackBank tb = model.getTrackBank ();
         tb.addNoteObserver ( (note, velocity) -> {
             // Light notes send from the sequencer
             this.pressedKeys[note] = velocity;
@@ -279,7 +279,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         {
             for (int i = 0; i < 8; i++)
                 this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW3_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
-            final TransportProxy transport = this.model.getTransport ();
+            final ITransport transport = this.model.getTransport ();
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW4_3, !transport.isPlaying () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW4_4, transport.isPlaying () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW4_5, transport.isLoop () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
@@ -323,7 +323,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         if (this.isPlayMode)
         {
-            final CursorDeviceProxy primary = this.model.getPrimaryDevice ();
+            final ICursorDevice primary = this.model.getPrimaryDevice ();
             final boolean hasDrumPads = primary.hasDrumPads ();
             boolean isSoloed = false;
             if (hasDrumPads)
@@ -420,7 +420,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     }
 
 
-    private int getPadColor (final int index, final CursorDeviceProxy primary, final boolean isSoloed)
+    private int getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed)
     {
         // Playing note?
         if (this.pressedKeys[this.offsetY + index] > 0)
@@ -429,7 +429,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (this.selectedPad == index)
             return SLControlSurface.MKII_BUTTON_STATE_ON;
         // Exists and active?
-        final ChannelData drumPad = primary.getDrumPad (index);
+        final IChannel drumPad = primary.getDrumPad (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
         // Muted or soloed?

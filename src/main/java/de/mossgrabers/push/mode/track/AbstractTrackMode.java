@@ -9,10 +9,9 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
@@ -63,7 +62,7 @@ public abstract class AbstractTrackMode extends BaseMode
         if (event == ButtonEvent.DOWN)
             return;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
         if (event == ButtonEvent.UP)
         {
@@ -86,13 +85,13 @@ public abstract class AbstractTrackMode extends BaseMode
                 return;
             }
 
-            final TrackData selTrack = tb.getSelectedTrack ();
+            final ITrack selTrack = tb.getSelectedTrack ();
             if (selTrack != null && selTrack.getIndex () == index)
             {
                 // If it is a group display child channels of group, otherwise jump into device
                 // mode
-                if (selTrack.isGroup () && tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).selectChildren ();
+                if (selTrack.isGroup () && tb instanceof ITrackBank)
+                    ((ITrackBank) tb).selectChildren ();
                 else
                     this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_DEVICE, ButtonEvent.DOWN);
             }
@@ -119,7 +118,7 @@ public abstract class AbstractTrackMode extends BaseMode
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
         {
@@ -167,7 +166,7 @@ public abstract class AbstractTrackMode extends BaseMode
                     // Check if there are more than 4 FX channels
                     if (!config.isSendsAreToggled ())
                     {
-                        final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+                        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
                         if (fxTrackBank == null || !fxTrackBank.getTrack (4).doesExist ())
                             return;
                     }
@@ -188,7 +187,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 {
                     final int sendOffset = config.isSendsAreToggled () ? 0 : 4;
                     final int sendIndex = index - sendOffset;
-                    final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+                    final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
                     if (fxTrackBank != null && fxTrackBank.getTrack (sendIndex).doesExist ())
                     {
                         final Integer si = Integer.valueOf (Modes.MODE_SEND1.intValue () + sendIndex);
@@ -201,7 +200,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 break;
         }
 
-        config.setCurrentMixMode (modeManager.getActiveModeId ());
+        config.setDebugMode (modeManager.getActiveModeId ());
     }
 
 
@@ -209,7 +208,7 @@ public abstract class AbstractTrackMode extends BaseMode
     @Override
     public void updateFirstRow ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         // Light up selection and record buttons
         for (int i = 0; i < 8; i++)
             this.surface.updateButton (20 + i, this.getTrackButtonColor (tb.getTrack (i)));
@@ -221,14 +220,14 @@ public abstract class AbstractTrackMode extends BaseMode
     public void updateSecondRow ()
     {
         final PushConfiguration config = this.surface.getConfiguration ();
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         if (this.isPush2)
         {
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    final TrackData track = tb.getTrack (i);
+                    final ITrack track = tb.getTrack (i);
                     this.surface.updateButton (102 + i, track.doesExist () && track.isPlaying () ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH2_COLOR_BLACK);
                 }
                 return;
@@ -257,7 +256,7 @@ public abstract class AbstractTrackMode extends BaseMode
         final boolean muteState = config.isMuteState ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final ITrack t = tb.getTrack (i);
 
             int color = PushColors.PUSH1_COLOR_BLACK;
             if (t.doesExist ())
@@ -276,7 +275,7 @@ public abstract class AbstractTrackMode extends BaseMode
     }
 
 
-    protected int getTrackStateColor (final boolean muteState, final TrackData t)
+    protected int getTrackStateColor (final boolean muteState, final ITrack t)
     {
         if (!t.doesExist ())
             return PushColors.PUSH2_COLOR_BLACK;
@@ -295,8 +294,8 @@ public abstract class AbstractTrackMode extends BaseMode
 
     protected void drawRow4 ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selTrack = tb.getSelectedTrack ();
 
         // Format track names
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
@@ -304,7 +303,7 @@ public abstract class AbstractTrackMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final boolean isSel = i == selIndex;
-            final TrackData t = tb.getTrack (i);
+            final ITrack t = tb.getTrack (i);
             final String n = this.optimizeName (t.getName (), isSel ? 7 : 8);
             d.setCell (3, i, isSel ? PushDisplay.RIGHT_ARROW + n : n);
         }
@@ -312,13 +311,13 @@ public abstract class AbstractTrackMode extends BaseMode
     }
 
 
-    protected int getTrackButtonColor (final TrackData track)
+    protected int getTrackButtonColor (final ITrack track)
     {
         if (!track.doesExist () || !track.isActivated ())
             return this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selTrack = tb.getSelectedTrack ();
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
         final boolean isSel = track.getIndex () == selIndex;
 
@@ -337,12 +336,13 @@ public abstract class AbstractTrackMode extends BaseMode
         this.updateTrackMenu ();
 
         final PushConfiguration config = this.surface.getConfiguration ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         final ValueChanger valueChanger = this.model.getValueChanger ();
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final ITrack t = tb.getTrack (i);
 
             // The menu item
             String topMenu;
@@ -371,13 +371,13 @@ public abstract class AbstractTrackMode extends BaseMode
             message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", t.getType (), tb.getTrackColorEntry (i), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecArm (), "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
         }
 
-        message.send ();
+        display.send (message);
     }
 
 
     protected void updateTrackMenu ()
     {
-        final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
         final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
         if (this.model.isEffectTrackBankActive ())

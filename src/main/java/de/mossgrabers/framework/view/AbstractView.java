@@ -12,9 +12,9 @@ import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -102,7 +102,7 @@ public abstract class AbstractView<S extends ControlSurface<C>, C extends Config
     @Override
     public void selectTrack (final int index)
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         tb.select (index);
         tb.makeVisible (index);
     }
@@ -272,7 +272,7 @@ public abstract class AbstractView<S extends ControlSurface<C>, C extends Config
      *            the default color
      * @return The color ID
      */
-    public String getColor (final int pad, final TrackData track)
+    public String getColor (final int pad, final ITrack track)
     {
         final String colorID = this.scales.getColor (this.noteMap, pad);
         // Replace the octave color with the track color

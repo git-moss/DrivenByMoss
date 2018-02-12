@@ -10,7 +10,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.data.ChannelData;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.view.AbstractDrumView;
 
 
@@ -35,7 +35,7 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
 
     /** {@inheritDoc} */
     @Override
-    protected String getPadContentColor (final ChannelData drumPad)
+    protected String getPadContentColor (final IChannel drumPad)
     {
         return this.surface.isMkII () ? BitwigColors.getColorIndex (drumPad.getColor ()) : AbstractDrumView.COLOR_PAD_HAS_CONTENT;
     }

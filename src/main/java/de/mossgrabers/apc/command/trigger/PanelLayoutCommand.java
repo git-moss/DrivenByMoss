@@ -9,7 +9,7 @@ import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.ApplicationProxy;
+import de.mossgrabers.framework.daw.IApplication;
 
 
 /**
@@ -38,7 +38,7 @@ public class PanelLayoutCommand extends AbstractTriggerCommand<APCControlSurface
         if (event != ButtonEvent.DOWN)
             return;
 
-        final ApplicationProxy app = this.model.getApplication ();
+        final IApplication app = this.model.getApplication ();
         switch (app.getPanelLayout ())
         {
             case "ARRANGE":

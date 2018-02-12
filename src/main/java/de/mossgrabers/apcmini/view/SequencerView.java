@@ -8,7 +8,7 @@ import de.mossgrabers.apcmini.APCminiConfiguration;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.CursorClipProxy;
+import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -73,7 +73,7 @@ public class SequencerView extends AbstractNoteSequencerView<APCminiControlSurfa
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON2, octave > -Scales.OCTAVE_RANGE ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
         final View activeView = this.surface.getViewManager ().getActiveView ();
-        final CursorClipProxy clip = activeView instanceof AbstractSequencerView ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
+        final ICursorClip clip = activeView instanceof AbstractSequencerView ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3, clip != null && clip.canScrollStepsBackwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON4, clip != null && clip.canScrollStepsForwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         for (int i = 0; i < 4; i++)

@@ -7,8 +7,8 @@ package de.mossgrabers.push.mode.track;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
 
@@ -46,7 +46,7 @@ public class CrossfaderMode extends AbstractTrackMode
                 return;
             }
 
-            final TrackData t = this.model.getCurrentTrackBank ().getTrack (index);
+            final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
             if (t.doesExist ())
                 this.surface.getDisplay ().notify ("Crossfader: " + t.getCrossfadeMode ());
         }
@@ -69,11 +69,11 @@ public class CrossfaderMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final ITrack t = tb.getTrack (i);
             d.setCell (0, i, t.doesExist () ? "Crossfdr" : "");
             if (t.doesExist ())
             {

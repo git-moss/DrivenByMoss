@@ -6,8 +6,8 @@ package de.mossgrabers.push.command.pitchbend;
 
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
 
@@ -79,8 +79,8 @@ public class PitchbendCommand extends AbstractPitchbendCommand<PushControlSurfac
                 break;
 
             case PushConfiguration.RIBBON_MODE_FADER:
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final TrackData selTrack = tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack selTrack = tb.getSelectedTrack ();
                 if (selTrack != null)
                     tb.setVolume (selTrack.getIndex (), this.model.getValueChanger ().toDAWValue (data2));
                 return;
@@ -102,7 +102,7 @@ public class PitchbendCommand extends AbstractPitchbendCommand<PushControlSurfac
                 break;
 
             case PushConfiguration.RIBBON_MODE_FADER:
-                final TrackData t = this.model.getCurrentTrackBank ().getSelectedTrack ();
+                final ITrack t = this.model.getCurrentTrackBank ().getSelectedTrack ();
                 this.surface.setRibbonValue (t == null ? 0 : this.model.getValueChanger ().toMidiValue (config.isEnableVUMeters () ? t.getVu () : t.getVolume ()));
                 break;
 

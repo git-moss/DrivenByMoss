@@ -7,9 +7,9 @@ package de.mossgrabers.push.mode.track;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushColors;
@@ -88,8 +88,8 @@ public class TrackDetailsMode extends BaseMode
 
     private void onFirstRowTrack (final int index)
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData t = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getSelectedTrack ();
         if (t == null)
             return;
 
@@ -129,7 +129,7 @@ public class TrackDetailsMode extends BaseMode
     @Override
     public void updateFirstRow ()
     {
-        final TrackData deviceChain = this.getSelectedTrack ();
+        final ITrack deviceChain = this.getSelectedTrack ();
         if (deviceChain == null)
         {
             this.disableFirstRow ();
@@ -152,7 +152,7 @@ public class TrackDetailsMode extends BaseMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final TrackData deviceChain = this.getSelectedTrack ();
+        final ITrack deviceChain = this.getSelectedTrack ();
         if (deviceChain == null)
             d.setRow (1, "                     Please selecta track...                        ").clearRow (0).clearRow (2).done (0).done (2);
         else
@@ -178,9 +178,10 @@ public class TrackDetailsMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
 
-        final TrackData deviceChain = this.getSelectedTrack ();
+        final ITrack deviceChain = this.getSelectedTrack ();
         if (deviceChain == null)
             message.setMessage (3, "Please select a track...");
         else
@@ -194,17 +195,17 @@ public class TrackDetailsMode extends BaseMode
             message.addOptionElement ("", "", false, "", "Pin Track", this.model.isCursorTrackPinned (), false);
             message.addOptionElement ("", "", false, "", "Select Color", false, false);
         }
-        message.send ();
+        display.send (message);
     }
 
 
-    private TrackData getSelectedTrack ()
+    private ITrack getSelectedTrack ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData t = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getSelectedTrack ();
         if (t != null)
             return t;
-        final MasterTrackProxy master = this.model.getMasterTrack ();
+        final IMasterTrack master = this.model.getMasterTrack ();
         return master.isSelected () ? master : null;
     }
 }

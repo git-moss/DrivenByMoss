@@ -6,7 +6,7 @@ package de.mossgrabers.apc.mode;
 
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.BrowserProxy;
+import de.mossgrabers.framework.daw.IBrowser;
 
 
 /**
@@ -45,7 +45,7 @@ public class BrowserMode extends BaseMode
     @Override
     public void setValue (final int index, final int value)
     {
-        final BrowserProxy browser = this.model.getBrowser ();
+        final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
             return;
 

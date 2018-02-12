@@ -9,9 +9,9 @@ import de.mossgrabers.apcmini.controller.APCminiColors;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
 
@@ -48,8 +48,8 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
         final int channel = note % 8;
         final int scene = 7 - note / 8;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final SlotData slot = tb.getTrack (channel).getSlots ()[scene];
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ISlot slot = tb.getTrack (channel).getSlots ()[scene];
 
         if (tb.getTrack (channel).isRecArm ())
         {
@@ -75,10 +75,10 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
     @Override
     public void drawGrid ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         for (int x = 0; x < 8; x++)
         {
-            final TrackData t = tb.getTrack (x);
+            final ITrack t = tb.getTrack (x);
             for (int y = 0; y < 8; y++)
                 this.drawPad (t.getSlots ()[y], x, y, t.isRecArm ());
         }
@@ -87,7 +87,7 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
 
     /** {@inheritDoc} */
     @Override
-    public void drawPad (final SlotData slot, final int x, final int y, final boolean isArmed)
+    public void drawPad (final ISlot slot, final int x, final int y, final boolean isArmed)
     {
         int color = APCminiColors.APC_COLOR_BLACK;
 

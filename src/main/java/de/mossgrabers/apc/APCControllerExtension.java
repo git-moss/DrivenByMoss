@@ -30,7 +30,6 @@ import de.mossgrabers.apc.command.trigger.StopClipCommand;
 import de.mossgrabers.apc.command.trigger.ToggleDeviceFrameCommand;
 import de.mossgrabers.apc.controller.APCColors;
 import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.apc.controller.APCMidiInput;
 import de.mossgrabers.apc.mode.BrowserMode;
 import de.mossgrabers.apc.mode.Modes;
 import de.mossgrabers.apc.mode.PanMode;
@@ -62,13 +61,13 @@ import de.mossgrabers.framework.controller.AbstractControllerExtension;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
@@ -143,7 +142,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
     protected void createModel ()
     {
         this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 5, 8, 16, 16, true, -1, -1, -1, -1);
-        final TrackBankProxy trackBank = this.model.getTrackBank ();
+        final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
     }
@@ -154,9 +153,14 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
     protected void createSurface ()
     {
         final ControllerHost host = this.getHost ();
+
+        final MidiDeviceImpl midiDevice = new MidiDeviceImpl (host);
+
         final MidiOutput output = new MidiOutput (host);
-        final MidiInput input = new APCMidiInput (this.isMkII);
-        final APCControlSurface surface = new APCControlSurface (host, this.colorManager, this.configuration, output, input, this.isMkII);
+        final IMidiInput input = midiDevice.createInput (this.isMkII ? "Akai APC40 mkII" : "Akai APC40",
+                "B040??" /* Sustainpedal */);
+
+        final APCControlSurface surface = new APCControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, this.isMkII);
         this.surfaces.add (surface);
         surface.setDisplay (new DummyDisplay (host));
         for (int i = 0; i < 8; i++)
@@ -353,19 +357,19 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         final boolean isShift = surface.isShiftPressed ();
         final boolean isSendA = surface.isPressed (APCControlSurface.APC_BUTTON_SEND_A);
 
-        final TransportProxy t = this.model.getTransport ();
+        final ITransport t = this.model.getTransport ();
         surface.updateButton (APCControlSurface.APC_BUTTON_PLAY, t.isPlaying () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         surface.updateButton (APCControlSurface.APC_BUTTON_RECORD, t.isRecording () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
 
         // Activator, Solo, Record Arm
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selTrack = tb.getSelectedTrack ();
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
         final int clipLength = surface.getConfiguration ().getNewClipLength ();
         final ModeManager modeManager = surface.getModeManager ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData track = tb.getTrack (i);
+            final ITrack track = tb.getTrack (i);
             boolean isOn;
             if (isShift)
                 isOn = i == clipLength;
@@ -390,7 +394,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         }
         surface.updateButton (APCControlSurface.APC_BUTTON_MASTER, this.model.getMasterTrack ().isSelected () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
 
-        final CursorDeviceProxy device = this.model.getCursorDevice ();
+        final ICursorDevice device = this.model.getCursorDevice ();
 
         if (this.isMkII)
         {
@@ -453,7 +457,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         if (view == null)
             return;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         for (int i = 0; i < 8; i++)
         {
 
@@ -466,8 +470,8 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
 
     private void updateIndication (final Integer mode)
     {
-        final TrackBankProxy tb = this.model.getTrackBank ();
-        final EffectTrackBankProxy tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tb = this.model.getTrackBank ();
+        final IChannelBank tbe = this.model.getEffectTrackBank ();
         final APCControlSurface surface = this.getSurface ();
         final boolean isSession = surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
@@ -476,7 +480,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         tb.setIndication (!isEffect && isSession);
         tbe.setIndication (isEffect && isSession);
 
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         for (int i = 0; i < 8; i++)
         {
             tb.setVolumeIndication (i, !isEffect);
@@ -508,7 +512,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
         final ViewManager viewManager = surface.getViewManager ();
         if (!viewManager.isActiveView (Views.VIEW_SESSION))
         {
-            final TrackData selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
             if (selectedTrack != null)
             {
                 final Integer preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());

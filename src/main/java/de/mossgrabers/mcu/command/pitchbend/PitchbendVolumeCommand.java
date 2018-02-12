@@ -6,9 +6,9 @@ package de.mossgrabers.mcu.command.pitchbend;
 
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
@@ -46,7 +46,7 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
         }
 
         final int extenderOffset = this.surface.getExtenderOffset ();
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         if (this.surface.getConfiguration ().useFadersAsKnobs ())
         {
             final ModeManager modeManager = this.surface.getModeManager ();
@@ -57,21 +57,21 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
             else if (modeManager.isActiveMode (Modes.MODE_TRACK))
                 this.handleTrack (channel, value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND1))
-                ((TrackBankProxy) tb).setSend (extenderOffset + channel, 0, value);
+                ((ITrackBank) tb).setSend (extenderOffset + channel, 0, value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND2))
-                ((TrackBankProxy) tb).setSend (extenderOffset + channel, 1, value);
+                ((ITrackBank) tb).setSend (extenderOffset + channel, 1, value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND3))
-                ((TrackBankProxy) tb).setSend (extenderOffset + channel, 2, value);
+                ((ITrackBank) tb).setSend (extenderOffset + channel, 2, value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND4))
-                ((TrackBankProxy) tb).setSend (extenderOffset + channel, 3, value);
+                ((ITrackBank) tb).setSend (extenderOffset + channel, 3, value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND5))
-                ((TrackBankProxy) tb).setSend (extenderOffset + channel, 4, value);
+                ((ITrackBank) tb).setSend (extenderOffset + channel, 4, value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND6))
-                ((TrackBankProxy) tb).setSend (extenderOffset + channel, 5, value);
+                ((ITrackBank) tb).setSend (extenderOffset + channel, 5, value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND7))
-                ((TrackBankProxy) tb).setSend (extenderOffset + channel, 6, value);
+                ((ITrackBank) tb).setSend (extenderOffset + channel, 6, value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND8))
-                ((TrackBankProxy) tb).setSend (extenderOffset + channel, 7, value);
+                ((ITrackBank) tb).setSend (extenderOffset + channel, 7, value);
             else if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
                 this.model.getCursorDevice ().setParameter (extenderOffset + channel, (int) value);
             return;
@@ -85,8 +85,8 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
     {
         final boolean effectTrackBankActive = this.model.isEffectTrackBankActive ();
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
 
         switch (index)
         {
@@ -108,9 +108,9 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
                 tb.setCrossfadeModeAsNumber (selectedTrack.getIndex (), (int) Math.round (value / range));
             }
             else if (!effectTrackBankActive)
-                ((TrackBankProxy) tb).setSend (selectedTrack.getIndex (), 0, value);
+                ((ITrackBank) tb).setSend (selectedTrack.getIndex (), 0, value);
         }
         else if (!effectTrackBankActive)
-            ((TrackBankProxy) tb).setSend (selectedTrack.getIndex (), index - (config.isDisplayCrossfader () ? 3 : 2), value);
+            ((ITrackBank) tb).setSend (selectedTrack.getIndex (), index - (config.isDisplayCrossfader () ? 3 : 2), value);
     }
 }

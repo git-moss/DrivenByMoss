@@ -9,7 +9,6 @@ import de.mossgrabers.beatstep.command.continuous.KnobRowViewCommand;
 import de.mossgrabers.beatstep.command.trigger.StepCommand;
 import de.mossgrabers.beatstep.controller.BeatstepColors;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.beatstep.controller.BeatstepMidiInput;
 import de.mossgrabers.beatstep.controller.BeatstepValueChanger;
 import de.mossgrabers.beatstep.view.BrowserView;
 import de.mossgrabers.beatstep.view.DeviceView;
@@ -26,12 +25,13 @@ import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCom
 import de.mossgrabers.framework.controller.AbstractControllerExtension;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.ViewManager;
@@ -158,9 +158,7 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
     protected void createModel ()
     {
         this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
-
-        final TrackBankProxy trackBank = this.model.getTrackBank ();
-        trackBank.addTrackSelectionObserver (this::handleTrackChange);
+        this.model.getTrackBank ().addTrackSelectionObserver (this::handleTrackChange);
     }
 
 
@@ -169,9 +167,23 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
     protected void createSurface ()
     {
         final ControllerHost host = this.getHost ();
+        final MidiDeviceImpl midiDevice = new MidiDeviceImpl (host);
         final MidiOutput output = new MidiOutput (host);
-        final MidiInput input = new BeatstepMidiInput (this.isPro);
-        final BeatstepControlSurface surface = new BeatstepControlSurface (host, this.colorManager, this.configuration, output, input, this.isPro);
+        final IMidiInput input = midiDevice.createInput ("Control", "82????", "92????", "A2????", "B2????");
+
+        // Sequencer 1 is on channel 1
+        input.createNoteInput ("Seq. 1", "90????", "80????");
+
+        // Setup the 2 note sequencers and 1 drum sequencer
+        if (this.isPro)
+        {
+            // Sequencer 2 is on channel 2
+            input.createNoteInput ("Seq. 2", "91????", "81????");
+            // Drum Sequencer is on channel 10
+            input.createNoteInput ("Drums", "99????", "89????");
+        }
+
+        final BeatstepControlSurface surface = new BeatstepControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, this.isPro);
         this.surfaces.add (surface);
         surface.setDisplay (new DummyDisplay (host));
     }
@@ -252,14 +264,14 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
         final boolean isDevice = viewManager.isActiveView (Views.VIEW_DEVICE);
         final boolean isSession = viewManager.isActiveView (Views.VIEW_SESSION);
 
-        final MasterTrackProxy mt = this.model.getMasterTrack ();
+        final IMasterTrack mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (!isDevice);
 
-        final TrackBankProxy tb = this.model.getTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
-        final EffectTrackBankProxy tbe = this.model.getEffectTrackBank ();
-        final TrackData selectedFXTrack = tbe.getSelectedTrack ();
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ITrackBank tb = this.model.getTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tbe = this.model.getEffectTrackBank ();
+        final ITrack selectedFXTrack = tbe.getSelectedTrack ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
 
         tb.setIndication (!isEffect && isSession);

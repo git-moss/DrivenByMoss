@@ -161,7 +161,8 @@ public class ScalesMode extends BaseMode
         final int offset = this.scales.getScaleOffset ();
         final Scale [] scaleValues = Scale.values ();
         final String rangeText = this.scales.getRangeText ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         final String [] items = new String [6];
         final boolean [] selected = new boolean [6];
         for (int i = 0; i < 6; i++)
@@ -174,7 +175,7 @@ public class ScalesMode extends BaseMode
         for (int i = 0; i < 6; i++)
             message.addOptionElement (i == 3 ? "Note range: " + rangeText : "", Scales.BASES[6 + i], offset == 6 + i, "", Scales.BASES[i], offset == i, false);
         message.addOptionElement ("", this.scales.isChromatic () ? "Chromatc" : "In Key", this.scales.isChromatic (), "", "", false, false);
-        message.send ();
+        display.send (message);
     }
 
 

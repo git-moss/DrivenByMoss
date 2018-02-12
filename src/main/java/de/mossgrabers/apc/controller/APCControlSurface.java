@@ -8,11 +8,10 @@ import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.framework.view.View;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.Arrays;
 
@@ -203,7 +202,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
      * @param input The midi input
      * @param isMkII
      */
-    public APCControlSurface (final ControllerHost host, final ColorManager colorManager, final APCConfiguration configuration, final MidiOutput output, final MidiInput input, final boolean isMkII)
+    public APCControlSurface (final IHost host, final ColorManager colorManager, final APCConfiguration configuration, final MidiOutput output, final IMidiInput input, final boolean isMkII)
     {
         super (host, configuration, colorManager, output, input, APC_BUTTONS_ALL);
 

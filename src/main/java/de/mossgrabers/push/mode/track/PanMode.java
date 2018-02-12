@@ -7,8 +7,8 @@ package de.mossgrabers.push.mode.track;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
 
@@ -54,7 +54,7 @@ public class PanMode extends AbstractTrackMode
                 return;
             }
 
-            final TrackData t = this.model.getCurrentTrackBank ().getTrack (index);
+            final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
             if (t.doesExist ())
                 this.surface.getDisplay ().notify ("Pan: " + t.getPanStr (8));
         }
@@ -69,11 +69,11 @@ public class PanMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final ITrack t = tb.getTrack (i);
             d.setCell (0, i, t.doesExist () ? "Pan" : "").setCell (1, i, t.getPanStr (8));
             if (t.doesExist ())
                 d.setCell (2, i, t.getPan (), Format.FORMAT_PAN);

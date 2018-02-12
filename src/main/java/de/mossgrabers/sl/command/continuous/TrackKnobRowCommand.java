@@ -6,9 +6,9 @@ package de.mossgrabers.sl.command.continuous;
 
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -60,8 +60,8 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData track = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getSelectedTrack ();
         if (track == null)
             return;
 
@@ -80,14 +80,14 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
             case 2:
                 if (this.surface.getConfiguration ().isDisplayCrossfader ())
                     tb.setCrossfadeModeAsNumber (track.getIndex (), value == 0 ? 0 : value == 127 ? 2 : 1);
-                else if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).setSend (track.getIndex (), 0, value);
+                else if (tb instanceof ITrackBank)
+                    ((ITrackBank) tb).setSend (track.getIndex (), 0, value);
                 break;
 
             // Send 1 - 5
             default:
-                if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).setSend (track.getIndex (), this.index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2), value);
+                if (tb instanceof ITrackBank)
+                    ((ITrackBank) tb).setSend (track.getIndex (), this.index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2), value);
                 break;
         }
     }

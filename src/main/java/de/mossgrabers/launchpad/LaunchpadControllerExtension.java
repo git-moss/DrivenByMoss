@@ -18,12 +18,13 @@ import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.SceneView;
@@ -50,7 +51,6 @@ import de.mossgrabers.launchpad.command.trigger.TrackSelectCommand;
 import de.mossgrabers.launchpad.command.trigger.VolumeCommand;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.launchpad.controller.LaunchpadMidiInput;
 import de.mossgrabers.launchpad.controller.LaunchpadScales;
 import de.mossgrabers.launchpad.mode.Modes;
 import de.mossgrabers.launchpad.mode.MuteMode;
@@ -131,7 +131,7 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
     {
         this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
 
-        final TrackBankProxy trackBank = this.model.getTrackBank ();
+        final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
     }
 
@@ -141,9 +141,13 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
     protected void createSurface ()
     {
         final ControllerHost host = this.getHost ();
+        final MidiDeviceImpl midiDevice = new MidiDeviceImpl (host);
+
         final MidiOutput output = new MidiOutput (host);
-        final MidiInput input = new LaunchpadMidiInput (this.isPro);
-        final LaunchpadControlSurface surface = new LaunchpadControlSurface (host, this.colorManager, this.configuration, output, input, this.isPro);
+        final IMidiInput input = midiDevice.createInput (this.isPro ? "Novation Launchpad Pro" : "Novation Launchpad MkII",
+                "80????" /* Note off */, "90????" /* Note on */);
+
+        final LaunchpadControlSurface surface = new LaunchpadControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, this.isPro);
         this.surfaces.add (surface);
         surface.setDisplay (new DummyDisplay (host));
         surface.setLaunchpadToStandalone ();
@@ -302,12 +306,12 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
         surface.setButton (LaunchpadControlSurface.LAUNCHPAD_PRO_BUTTON_USER, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
 
         final boolean isShift = surface.isShiftPressed ();
-        final TrackData selTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack selTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
         final int index = selTrack == null ? -1 : selTrack.getIndex ();
 
         final ModeManager modeManager = surface.getModeManager ();
 
-        final TransportProxy transport = this.model.getTransport ();
+        final ITransport transport = this.model.getTransport ();
 
         surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SHIFT, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
         surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_CLICK, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING : transport.isMetronomeOn () ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
@@ -329,7 +333,7 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
         surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_STOP_CLIP, modeManager.isActiveMode (Modes.MODE_STOP_CLIP) ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : index == 7 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
 
         // Update the front LED with the color of the current track
-        final TrackData track = index == -1 ? null : this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack track = index == -1 ? null : this.model.getCurrentTrackBank ().getTrack (index);
         final int color = track != null && track.doesExist () ? this.colorManager.getColor (BitwigColors.getColorIndex (track.getColor ())) : 0;
         surface.sendLaunchpadSysEx ("0A 63 " + MidiOutput.toHexStr (color));
     }
@@ -343,9 +347,9 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
         final boolean isSends = viewManager.isActiveView (Views.VIEW_SENDS);
         final boolean isDevice = viewManager.isActiveView (Views.VIEW_DEVICE);
 
-        final TrackBankProxy tb = this.model.getTrackBank ();
-        final EffectTrackBankProxy tbe = this.model.getEffectTrackBank ();
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ITrackBank tb = this.model.getTrackBank ();
+        final IChannelBank tbe = this.model.getEffectTrackBank ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final View view = viewManager.getActiveView ();
         final int selSend = view instanceof SendsView ? ((SendsView) view).getSelectedSend () : -1;
         final boolean isSession = view instanceof SessionView && !isVolume && !isPan && !isSends;
@@ -385,7 +389,7 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
         final ViewManager viewManager = this.getSurface ().getViewManager ();
         if (!viewManager.isActiveView (Views.VIEW_SESSION))
         {
-            final TrackData selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
             if (selectedTrack != null)
             {
                 final Integer preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());

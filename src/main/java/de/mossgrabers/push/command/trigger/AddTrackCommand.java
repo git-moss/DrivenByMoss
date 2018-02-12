@@ -7,8 +7,8 @@ package de.mossgrabers.push.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.ApplicationProxy;
+import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
 
@@ -39,8 +39,8 @@ public class AddTrackCommand extends AbstractTriggerCommand<PushControlSurface, 
         if (event != ButtonEvent.DOWN)
             return;
 
-        AbstractTrackBankProxy tb = this.model.getTrackBank ();
-        final ApplicationProxy application = this.model.getApplication ();
+        IChannelBank tb = this.model.getTrackBank ();
+        final IApplication application = this.model.getApplication ();
         if (this.surface.isShiftPressed ())
         {
             application.addEffectTrack ();
@@ -51,7 +51,7 @@ public class AddTrackCommand extends AbstractTriggerCommand<PushControlSurface, 
         else
             application.addInstrumentTrack ();
 
-        final AbstractTrackBankProxy bank = tb;
+        final IChannelBank bank = tb;
         this.surface.scheduleTask ( () -> {
             final int pos = bank.getTrackCount () - 1;
             bank.scrollToChannel (pos);

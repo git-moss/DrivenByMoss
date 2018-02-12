@@ -9,12 +9,14 @@ import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.AbstractControllerExtension;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
@@ -32,8 +34,6 @@ import de.mossgrabers.sl.command.trigger.P2ButtonCommand;
 import de.mossgrabers.sl.command.trigger.TransportButtonCommand;
 import de.mossgrabers.sl.controller.SLControlSurface;
 import de.mossgrabers.sl.controller.SLDisplay;
-import de.mossgrabers.sl.controller.SLKeysMidiInput;
-import de.mossgrabers.sl.controller.SLMidiInput;
 import de.mossgrabers.sl.mode.FixedMode;
 import de.mossgrabers.sl.mode.FrameMode;
 import de.mossgrabers.sl.mode.FunctionMode;
@@ -190,14 +190,13 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     protected void createSurface ()
     {
         final ControllerHost host = this.getHost ();
+        final IHost hostProxy = this.model.getHost ();
+        final MidiDeviceImpl midiDeviceImpl = new MidiDeviceImpl (host);
         final MidiOutput output = new MidiOutput (host);
-        final MidiInput input = new SLMidiInput (this.isMkII);
-        final MidiInput keysInput = new SLKeysMidiInput (this.isMkII);
-        keysInput.init (host);
-        keysInput.createNoteInput ();
-
-        final SLControlSurface surface = new SLControlSurface (host, this.colorManager, this.configuration, output, input, this.isMkII);
-        surface.setDisplay (new SLDisplay (host, output));
+        final IMidiInput input = midiDeviceImpl.createInput (this.isMkII ? "Novation SL MkII (Drumpads)" : "Novation SL MkI (Drumpads)", "90????", "80????");
+        midiDeviceImpl.createInput (1, this.isMkII ? "Novation SL MkII (Keyboard)" : "Novation SL MkI (Keyboard)", "80????", "90????", "B0????", "D0????", "E0????");
+        final SLControlSurface surface = new SLControlSurface (hostProxy, this.colorManager, this.configuration, output, input, this.isMkII);
+        surface.setDisplay (new SLDisplay (hostProxy, output));
         this.surfaces.add (surface);
     }
 
@@ -308,17 +307,17 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
         final SLControlSurface surface = this.getSurface ();
         final Integer mode = surface.getModeManager ().getActiveModeId ();
 
-        final MasterTrackProxy mt = this.model.getMasterTrack ();
+        final IMasterTrack mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (Modes.MODE_MASTER.equals (mode));
         mt.setPanIndication (Modes.MODE_MASTER.equals (mode));
 
-        final TrackBankProxy tb = this.model.getTrackBank ();
-        final EffectTrackBankProxy tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tb = this.model.getTrackBank ();
+        final IChannelBank tbe = this.model.getEffectTrackBank ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isVolume = Modes.MODE_VOLUME.equals (mode);
 
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         for (int i = 0; i < 8; i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);

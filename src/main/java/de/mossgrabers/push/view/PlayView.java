@@ -9,7 +9,7 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.SceneBankProxy;
+import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.SceneView;
@@ -108,7 +108,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
     @Override
     public void updateSceneButtons ()
     {
-        final SceneBankProxy sceneBank = this.model.getSceneBank ();
+        final ISceneBank sceneBank = this.model.getSceneBank ();
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
         final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;

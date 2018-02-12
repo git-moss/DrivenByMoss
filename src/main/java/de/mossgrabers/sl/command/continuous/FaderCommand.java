@@ -6,7 +6,7 @@ package de.mossgrabers.sl.command.continuous;
 
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -41,7 +41,7 @@ public class FaderCommand extends AbstractContinuousCommand<SLControlSurface, SL
     @Override
     public void execute (final int value)
     {
-        final MasterTrackProxy masterTrack = this.model.getMasterTrack ();
+        final IMasterTrack masterTrack = this.model.getMasterTrack ();
         if (masterTrack.isSelected ())
         {
             if (this.index == 0)

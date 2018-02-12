@@ -66,7 +66,8 @@ public class InfoMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         message.addOptionElement ("  Firmware: " + this.surface.getMajorVersion () + "." + this.surface.getMinorVersion () + " Build " + this.surface.getBuildNumber (), "Setup", false, "", "", false, true);
         message.addOptionElement ("", "Info", true, "", "", false, true);
         message.addEmptyElement ();
@@ -75,6 +76,6 @@ public class InfoMode extends BaseMode
         message.addOptionElement ("        Serial Number: " + this.surface.getSerialNumber (), "", false, "", "", false, false);
         message.addEmptyElement ();
         message.addEmptyElement ();
-        message.send ();
+        display.send (message);
     }
 }

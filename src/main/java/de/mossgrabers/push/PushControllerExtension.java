@@ -28,16 +28,16 @@ import de.mossgrabers.framework.command.trigger.UndoCommand;
 import de.mossgrabers.framework.controller.AbstractControllerExtension;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.CursorClipProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.TransportProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
+import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -80,7 +80,6 @@ import de.mossgrabers.push.command.trigger.VolumeCommand;
 import de.mossgrabers.push.controller.PushColors;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.controller.PushDisplay;
-import de.mossgrabers.push.controller.PushMidiInput;
 import de.mossgrabers.push.mode.AccentMode;
 import de.mossgrabers.push.mode.AutomationMode;
 import de.mossgrabers.push.mode.ConfigurationMode;
@@ -183,7 +182,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     {
         this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 8, this.isPush2 ? 8 : 6, this.isPush2 ? 48 : 16, this.isPush2 ? 48 : 16, false, -1, -1, -1, -1);
 
-        final TrackBankProxy trackBank = this.model.getTrackBank ();
+        final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
         this.model.getEffectTrackBank ().addTrackSelectionObserver (this::handleTrackChange);
@@ -203,11 +202,13 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     protected void createSurface ()
     {
         final ControllerHost host = this.getHost ();
+        final MidiDeviceImpl midiDeviceImpl = new MidiDeviceImpl (host);
         final MidiOutput output = new MidiOutput (host);
-        final MidiInput input = new PushMidiInput (this.isPush2);
-        final PushControlSurface surface = new PushControlSurface (host, this.colorManager, this.configuration, output, input);
+        final IMidiInput input = midiDeviceImpl.createInput (this.isPush2 ? "Ableton Push 2" : "Ableton Push 1",
+                "80????" /* Note off */, "90????" /* Note on */, "B040??" /* Sustainpedal */);
+        final PushControlSurface surface = new PushControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
-        final PushDisplay display = new PushDisplay (host, this.isPush2, this.valueChanger.getUpperBound (), output);
+        final PushDisplay display = new PushDisplay (this.model.getHost (), this.isPush2, this.valueChanger.getUpperBound (), output);
         display.setCommunicationPort (this.configuration.getSendPort ());
         surface.setDisplay (display);
         surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
@@ -333,6 +334,14 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
 
         this.configuration.addSettingObserver (PushConfiguration.RIBBON_MODE, this::updateRibbonMode);
         this.configuration.addSettingObserver (PushConfiguration.SEND_PORT, () -> ((PushDisplay) surface.getDisplay ()).setCommunicationPort (this.configuration.getSendPort ()));
+        this.configuration.addSettingObserver (PushConfiguration.DEBUG_MODE, () -> {
+            final ModeManager modeManager = surface.getModeManager ();
+            final Integer debugMode = this.configuration.getDebugMode ();
+            if (modeManager.getMode (debugMode) != null)
+                modeManager.setActiveMode (debugMode);
+            else
+                this.getHost ().errorln ("Mode " + debugMode + " not registered.");
+        });
 
         this.createScaleObservers (this.configuration);
     }
@@ -471,14 +480,13 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         this.getHost ().scheduleTask ( () -> {
             final PushControlSurface surface = this.getSurface ();
             surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
-            surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
         }, 200);
     }
 
 
     private void updateButtons ()
     {
-        final TransportProxy t = this.model.getTransport ();
+        final ITransport t = this.model.getTransport ();
         final PushControlSurface surface = this.getSurface ();
         surface.updateButton (PushControlSurface.PUSH_BUTTON_METRONOME, t.isMetronomeOn () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
         surface.updateButton (PushControlSurface.PUSH_BUTTON_PLAY, t.isPlaying () ? PushColors.PUSH_BUTTON_STATE_PLAY_HI : PushColors.PUSH_BUTTON_STATE_PLAY_ON);
@@ -501,15 +509,15 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
             final ModeManager modeManager = surface.getModeManager ();
             if (modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER))
             {
-                final CursorDeviceProxy cd = this.model.getCursorDevice ();
-                final ChannelData layer = cd.getSelectedLayerOrDrumPad ();
+                final ICursorDevice cd = this.model.getCursorDevice ();
+                final IChannel layer = cd.getSelectedLayerOrDrumPad ();
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, layer != null && layer.isMute () ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, layer != null && layer.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
             }
             else
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final TrackData selTrack = modeManager.isActiveMode (Modes.MODE_MASTER) ? this.model.getMasterTrack () : tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack selTrack = modeManager.isActiveMode (Modes.MODE_MASTER) ? this.model.getMasterTrack () : tb.getSelectedTrack ();
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, selTrack != null && selTrack.isMute () ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, selTrack != null && selTrack.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
             }
@@ -536,7 +544,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
             ((SceneView) activeView).updateSceneButtons ();
         }
 
-        final CursorClipProxy clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
+        final ICursorClip clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
         surface.updateButton (PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, clip != null && clip.canScrollStepsBackwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         surface.updateButton (PushControlSurface.PUSH_BUTTON_DEVICE_RIGHT, clip != null && clip.canScrollStepsForwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
     }
@@ -575,8 +583,8 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
 
     private void updateIndication (final Integer mode)
     {
-        final TrackBankProxy tb = this.model.getTrackBank ();
-        final EffectTrackBankProxy tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tb = this.model.getTrackBank ();
+        final IChannelBank tbe = this.model.getEffectTrackBank ();
         final PushControlSurface surface = this.getSurface ();
         final boolean isSession = surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
@@ -586,8 +594,8 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         tb.setIndication (!isEffect && isSession);
         tbe.setIndication (isEffect && isSession);
 
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         for (int i = 0; i < tb.getNumTracks (); i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
@@ -623,7 +631,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
         // Recall last used view (if we are not in session mode)
         if (!viewManager.isActiveView (Views.VIEW_SESSION))
         {
-            final TrackData selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
             if (selectedTrack != null)
             {
                 final Integer preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
@@ -646,14 +654,14 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
 
     private boolean canConvertClip ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         if (selectedTrack == null)
             return false;
-        final SlotData [] slots = tb.getSelectedSlots (selectedTrack.getIndex ());
+        final ISlot [] slots = tb.getSelectedSlots (selectedTrack.getIndex ());
         if (slots.length == 0)
             return false;
-        for (final SlotData slot: slots)
+        for (final ISlot slot: slots)
         {
             if (slot.hasContent ())
                 return true;

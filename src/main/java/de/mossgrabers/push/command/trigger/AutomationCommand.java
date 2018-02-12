@@ -7,7 +7,7 @@ package de.mossgrabers.push.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.mode.Modes;
@@ -74,7 +74,7 @@ public class AutomationCommand extends AbstractTriggerCommand<PushControlSurface
             this.model.getTransport ().toggleWriteClipLauncherAutomation ();
         else
         {
-            final TrackData selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
             if (selectedTrack != null)
                 this.model.getTransport ().toggleWriteArrangerAutomation ();
         }

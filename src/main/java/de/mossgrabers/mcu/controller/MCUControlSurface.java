@@ -6,11 +6,10 @@ package de.mossgrabers.mcu.controller;
 
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.mcu.MCUConfiguration;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.Arrays;
 
@@ -330,7 +329,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      * @param extenderOffset The channel/bank offset if multiple extenders are used
      * @param isMainDevice True if it is the main MCU controller (and not an extender)
      */
-    public MCUControlSurface (final ControllerHost host, final ColorManager colorManager, final MCUConfiguration configuration, final MidiOutput output, final MidiInput input, final int extenderOffset, final boolean isMainDevice)
+    public MCUControlSurface (final IHost host, final ColorManager colorManager, final MCUConfiguration configuration, final MidiOutput output, final IMidiInput input, final int extenderOffset, final boolean isMainDevice)
     {
         super (host, configuration, colorManager, output, input, MCU_BUTTONS_ALL);
 

@@ -3,7 +3,7 @@ package de.mossgrabers.sl.view;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
-import de.mossgrabers.framework.daw.TransportProxy;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -127,7 +127,7 @@ public class TransportControl
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final TransportProxy transport = this.model.getTransport ();
+        final ITransport transport = this.model.getTransport ();
         if (transport.isPlaying ())
             transport.play ();
         else

@@ -7,7 +7,7 @@ package de.mossgrabers.sl.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
 
@@ -43,7 +43,7 @@ public class P2ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SL
         if (event != ButtonEvent.DOWN)
             return;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         if (this.isUp)
         {
             if (!tb.canScrollTracksDown ())

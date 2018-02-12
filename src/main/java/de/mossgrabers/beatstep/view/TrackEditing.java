@@ -6,9 +6,9 @@ package de.mossgrabers.beatstep.view;
 
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -46,8 +46,8 @@ public class TrackEditing
         if (value == 64)
             return;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         if (selectedTrack == null)
             return;
 
@@ -89,8 +89,8 @@ public class TrackEditing
             case 9:
             case 10:
             case 11:
-                if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).changeSend (selectedTrack.getIndex (), index - 8, value);
+                if (tb instanceof ITrackBank)
+                    ((ITrackBank) tb).changeSend (selectedTrack.getIndex (), index - 8, value);
                 break;
         }
     }

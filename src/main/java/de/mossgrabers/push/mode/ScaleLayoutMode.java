@@ -96,13 +96,14 @@ public class ScaleLayoutMode extends BaseMode
         final int pos = sl / 2;
         final String [] names = ScaleLayout.getNames ();
 
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         for (int i = 0; i < names.length; i += 2)
             message.addOptionElement ("", "", false, i == 0 ? "Scale layout" : "", names[i].replace (" ^", ""), pos == i / 2, false);
 
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("", "", false, "", sl % 2 == 0 ? "Horizontal" : "Vertical", false, false);
-        message.send ();
+        display.send (message);
     }
 }

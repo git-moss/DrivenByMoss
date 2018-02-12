@@ -9,8 +9,8 @@ import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -149,8 +149,8 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
 
         // Steps with notes
         final int step = this.clip.getCurrentStep ();
@@ -187,7 +187,7 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
      * @param track A track from which to use the color
      * @return The color
      */
-    protected String getStepColor (final int isSet, final boolean hilite, final int note, final TrackData track)
+    protected String getStepColor (final int isSet, final boolean hilite, final int note, final ITrack track)
     {
         switch (isSet)
         {

@@ -7,8 +7,8 @@ package de.mossgrabers.launchpad.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.MetronomeCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
@@ -37,8 +37,8 @@ public class RightCommand extends MetronomeCommand<LaunchpadControlSurface, Laun
     @Override
     public void execute (final ButtonEvent event)
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData sel = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack sel = tb.getSelectedTrack ();
         final int index = sel == null ? 0 : sel.getIndex () + 1;
         final View view = this.surface.getViewManager ().getActiveView ();
         if (index == 8 || this.surface.isShiftPressed ())

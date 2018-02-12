@@ -6,8 +6,6 @@ package de.mossgrabers.mcu.controller;
 
 import de.mossgrabers.framework.midi.MidiOutput;
 
-import com.bitwig.extension.controller.api.ControllerHost;
-
 
 /**
  * The MCU segment display.
@@ -24,10 +22,9 @@ public class MCUSegmentDisplay
     /**
      * Constructor.
      *
-     * @param host The host
      * @param output The midi output which addresses the display
      */
-    public MCUSegmentDisplay (final ControllerHost host, final MidiOutput output)
+    public MCUSegmentDisplay (final MidiOutput output)
     {
         this.output = output;
     }

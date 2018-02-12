@@ -11,7 +11,7 @@ import de.mossgrabers.sl.controller.SLControlSurface;
 
 
 /**
- * Dedicated Tap Tempo and Tempo Data Input Knob on MKI.
+ * Dedicated Tap Tempo and Tempo Input Knob on MKI.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

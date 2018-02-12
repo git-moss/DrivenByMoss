@@ -114,9 +114,13 @@ public class Modes
     public static final Integer       MODE_INFO                 = Integer.valueOf (46);
     /** Select of session views. */
     public static final Integer       MODE_SESSION_VIEW_SELECT  = Integer.valueOf (47);
+    /** Session mode. */
+    public static final Integer       MODE_SESSION              = Integer.valueOf (48);
 
     private static final Set<Integer> TRACK_MODES               = new HashSet<> ();
     private static final Set<Integer> LAYER_MODES               = new HashSet<> ();
+    /** All modes. */
+    public static final Set<Integer>  ALL_MODES                 = new HashSet<> ();
 
     static
     {
@@ -148,6 +152,55 @@ public class Modes
         LAYER_MODES.add (MODE_DEVICE_LAYER_SEND8);
         LAYER_MODES.add (MODE_DEVICE_LAYER_SEND);
         LAYER_MODES.add (MODE_DEVICE_LAYER_DETAILS);
+
+        ALL_MODES.add (MODE_TRACK);
+        ALL_MODES.add (MODE_TRACK_DETAILS);
+        ALL_MODES.add (MODE_VOLUME);
+        ALL_MODES.add (MODE_CROSSFADER);
+        ALL_MODES.add (MODE_PAN);
+        ALL_MODES.add (MODE_SEND1);
+        ALL_MODES.add (MODE_SEND2);
+        ALL_MODES.add (MODE_SEND3);
+        ALL_MODES.add (MODE_SEND4);
+        ALL_MODES.add (MODE_SEND5);
+        ALL_MODES.add (MODE_SEND6);
+        ALL_MODES.add (MODE_SEND7);
+        ALL_MODES.add (MODE_SEND8);
+        ALL_MODES.add (MODE_SEND);
+        ALL_MODES.add (MODE_MASTER);
+        ALL_MODES.add (MODE_MASTER_TEMP);
+        ALL_MODES.add (MODE_DEVICE_PARAMS);
+        ALL_MODES.add (MODE_DEVICE_LAYER);
+        ALL_MODES.add (MODE_DEVICE_LAYER_VOLUME);
+        ALL_MODES.add (MODE_DEVICE_LAYER_PAN);
+        ALL_MODES.add (MODE_DEVICE_LAYER_SEND1);
+        ALL_MODES.add (MODE_DEVICE_LAYER_SEND2);
+        ALL_MODES.add (MODE_DEVICE_LAYER_SEND3);
+        ALL_MODES.add (MODE_DEVICE_LAYER_SEND4);
+        ALL_MODES.add (MODE_DEVICE_LAYER_SEND5);
+        ALL_MODES.add (MODE_DEVICE_LAYER_SEND6);
+        ALL_MODES.add (MODE_DEVICE_LAYER_SEND7);
+        ALL_MODES.add (MODE_DEVICE_LAYER_SEND8);
+        ALL_MODES.add (MODE_DEVICE_LAYER_SEND);
+        ALL_MODES.add (MODE_DEVICE_LAYER_DETAILS);
+        ALL_MODES.add (MODE_BROWSER);
+        ALL_MODES.add (MODE_CLIP);
+        ALL_MODES.add (MODE_NOTE);
+        ALL_MODES.add (MODE_FRAME);
+        ALL_MODES.add (MODE_GROOVE);
+        ALL_MODES.add (MODE_ACCENT);
+        ALL_MODES.add (MODE_SCALES);
+        ALL_MODES.add (MODE_SCALE_LAYOUT);
+        ALL_MODES.add (MODE_FIXED);
+        ALL_MODES.add (MODE_RIBBON);
+        ALL_MODES.add (MODE_VIEW_SELECT);
+        ALL_MODES.add (MODE_AUTOMATION);
+        ALL_MODES.add (MODE_TRANSPORT);
+        ALL_MODES.add (MODE_CONFIGURATION);
+        ALL_MODES.add (MODE_SETUP);
+        ALL_MODES.add (MODE_INFO);
+        ALL_MODES.add (MODE_SESSION_VIEW_SELECT);
+        // ALL_MODES.add (MODE_SESSION);
     }
 
 

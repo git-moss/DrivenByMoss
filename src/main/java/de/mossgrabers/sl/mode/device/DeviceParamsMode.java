@@ -7,7 +7,7 @@ package de.mossgrabers.sl.mode.device;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.data.ParameterData;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.midi.MidiOutput;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.sl.SLConfiguration;
@@ -46,7 +46,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
             d.clearRow (0);
             for (int i = 0; i < 8; i++)
             {
-                final ParameterData p = this.model.getCursorDevice ().getFXParam (i);
+                final IParameter p = this.model.getCursorDevice ().getFXParam (i);
                 final String name = p.getName (8);
                 if (!name.isEmpty ())
                     d.setCell (0, i, name).setCell (2, i, p.getDisplayedValue (8));

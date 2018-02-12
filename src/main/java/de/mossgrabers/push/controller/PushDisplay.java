@@ -6,9 +6,8 @@ package de.mossgrabers.push.controller;
 
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.midi.MidiOutput;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
@@ -85,7 +84,7 @@ public class PushDisplay extends AbstractDisplay
      * @param maxParameterValue
      * @param output
      */
-    public PushDisplay (final ControllerHost host, final boolean isPush2, final int maxParameterValue, final MidiOutput output)
+    public PushDisplay (final IHost host, final boolean isPush2, final int maxParameterValue, final MidiOutput output)
     {
         super (host, output, 4 /* No of rows */, 8 /* No of cells */, 68 /* No of characters */);
         this.maxParameterValue = maxParameterValue;
@@ -111,7 +110,20 @@ public class PushDisplay extends AbstractDisplay
      */
     public DisplayMessage createMessage ()
     {
-        return new DisplayMessage (this.host, this.port);
+        return new DisplayMessage ();
+    }
+
+
+    /**
+     * Send a message to the display.
+     *
+     * @param message The message to send
+     */
+    public void send (final DisplayMessage message)
+    {
+        if (this.port < 1)
+            return;
+        this.host.sendDatagramPacket ("127.0.0.1", this.port, message.getData ());
     }
 
 
@@ -120,7 +132,7 @@ public class PushDisplay extends AbstractDisplay
     public void shutdown ()
     {
         if (this.isPush2)
-            this.createMessage ().setMessage (3, "Please start Bitwig to play...").send ();
+            this.send (this.createMessage ().setMessage (3, "Please start Bitwig to play..."));
         else
             this.clear ().setBlock (1, 1, "     Please start").setBlock (1, 2, "Bitwig to play...").allDone ().flush ();
     }
@@ -187,7 +199,7 @@ public class PushDisplay extends AbstractDisplay
     protected void notifyOnDisplay (final String message)
     {
         if (this.isPush2)
-            this.createMessage ().setMessage (3, message).send ();
+            this.send (this.createMessage ().setMessage (3, message));
         else
             super.notifyOnDisplay (message);
     }
