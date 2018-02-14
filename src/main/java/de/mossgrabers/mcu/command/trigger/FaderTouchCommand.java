@@ -1,7 +1,7 @@
 package de.mossgrabers.mcu.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
@@ -22,7 +22,7 @@ public class FaderTouchCommand extends SelectCommand
      * @param model The model
      * @param surface The surface
      */
-    public FaderTouchCommand (final int index, final Model model, final MCUControlSurface surface)
+    public FaderTouchCommand (final int index, final IModel model, final MCUControlSurface surface)
     {
         super (index, model, surface);
     }

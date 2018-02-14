@@ -1,11 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.view;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
@@ -27,7 +27,7 @@ public class DeviceView extends AbstractFaderView
      * @param surface The surface
      * @param model The model
      */
-    public DeviceView (final LaunchpadControlSurface surface, final Model model)
+    public DeviceView (final LaunchpadControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.cursorDevice = this.model.getCursorDevice ();

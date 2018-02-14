@@ -1,11 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.sl.command.continuous;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -29,7 +29,7 @@ public class DeviceKnobRowCommand extends AbstractContinuousCommand<SLControlSur
      * @param model The model
      * @param surface The surface
      */
-    public DeviceKnobRowCommand (final int index, final Model model, final SLControlSurface surface)
+    public DeviceKnobRowCommand (final int index, final IModel model, final SLControlSurface surface)
     {
         super (model, surface);
         this.index = index;

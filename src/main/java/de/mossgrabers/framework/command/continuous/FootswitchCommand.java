@@ -1,11 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.continuous;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
@@ -14,6 +13,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 
@@ -34,7 +34,7 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
      * @param model The model
      * @param surface The surface
      */
-    public FootswitchCommand (final Model model, final S surface)
+    public FootswitchCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }

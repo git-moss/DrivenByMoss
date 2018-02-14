@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -40,7 +40,7 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
      * @param model The model
      * @param useTrackColor True to use the color of the current track for coloring the octaves
      */
-    public AbstractRaindropsView (final String name, final S surface, final Model model, final boolean useTrackColor)
+    public AbstractRaindropsView (final String name, final S surface, final IModel model, final boolean useTrackColor)
     {
         super (name, surface, model, 128, 32 * 16 /* Biggest number in Fixed Length */);
 

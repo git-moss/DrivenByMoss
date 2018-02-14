@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.controller.display;
@@ -19,7 +19,7 @@ public abstract class AbstractDisplay implements Display
     public static final int NOTIFICATION_TIME = 1000;
 
     protected IHost         host;
-    protected IMidiOutput    output;
+    protected IMidiOutput   output;
 
     protected int           noOfLines;
     protected int           noOfCells;

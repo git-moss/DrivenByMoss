@@ -1,8 +1,8 @@
 package de.mossgrabers.sl.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.sl.SLConfiguration;
@@ -18,7 +18,7 @@ import de.mossgrabers.sl.mode.Modes;
 public class TransportControl
 {
     private SLControlSurface                                     surface;
-    private Model                                                model;
+    private IModel                                               model;
     private boolean                                              isRewinding;
     private boolean                                              isForwarding;
     private final PlayCommand<SLControlSurface, SLConfiguration> playCommand;
@@ -30,7 +30,7 @@ public class TransportControl
      * @param surface The surface
      * @param model The model
      */
-    public TransportControl (final SLControlSurface surface, final Model model)
+    public TransportControl (final SLControlSurface surface, final IModel model)
     {
         this.surface = surface;
         this.model = model;

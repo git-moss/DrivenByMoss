@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.osc;
@@ -91,7 +91,7 @@ public class OSCExtensionDefinition extends AbstractControllerExtensionDefinitio
 
     /** {@inheritDoc} */
     @Override
-    protected IControllerSetup getControllerSetup (ControllerHost host)
+    protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
         // Not used
         return null;

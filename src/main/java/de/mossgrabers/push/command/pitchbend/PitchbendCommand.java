@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.command.pitchbend;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -28,7 +28,7 @@ public class PitchbendCommand extends AbstractPitchbendCommand<PushControlSurfac
      * @param model The model
      * @param surface The surface
      */
-    public PitchbendCommand (final Model model, final PushControlSurface surface)
+    public PitchbendCommand (final IModel model, final PushControlSurface surface)
     {
         super (model, surface);
     }

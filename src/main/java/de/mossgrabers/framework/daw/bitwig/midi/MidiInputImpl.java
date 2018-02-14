@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.bitwig.midi;
@@ -111,5 +111,13 @@ class MidiInputImpl implements IMidiInput
     public void setVelocityTranslationTable (final Object [] table)
     {
         this.noteInput.setVelocityTranslationTable (table);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void sendRawMidiEvent (final int status, final int data1, final int data2)
+    {
+        this.noteInput.sendRawMidiEvent (status, data1, data2);
     }
 }

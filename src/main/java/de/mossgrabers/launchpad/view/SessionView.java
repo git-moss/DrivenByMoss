@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -36,7 +36,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
      * @param surface The surface
      * @param model The model
      */
-    public SessionView (final LaunchpadControlSurface surface, final Model model)
+    public SessionView (final LaunchpadControlSurface surface, final IModel model)
     {
         super ("Session", surface, model, 8, 8, true);
 

@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
@@ -33,7 +33,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
      * @param surface The surface
      * @param model The model
      */
-    public PlayView (final PushControlSurface surface, final Model model)
+    public PlayView (final PushControlSurface surface, final IModel model)
     {
         this (Views.VIEW_NAME_PLAY, surface, model);
     }
@@ -46,7 +46,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
      * @param surface The surface
      * @param model The model
      */
-    public PlayView (final String name, final PushControlSurface surface, final Model model)
+    public PlayView (final String name, final PushControlSurface surface, final IModel model)
     {
         super (name, surface, model, true);
 

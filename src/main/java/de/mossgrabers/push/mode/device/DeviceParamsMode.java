@@ -1,17 +1,17 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -52,7 +52,7 @@ public class DeviceParamsMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public DeviceParamsMode (final PushControlSurface surface, final Model model)
+    public DeviceParamsMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
 

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.controller.grid;
@@ -17,7 +17,7 @@ import java.util.Arrays;
  */
 public class PadGridImpl implements PadGrid
 {
-    protected IMidiOutput   output;
+    protected IMidiOutput  output;
     protected ColorManager colorManager;
 
     protected int []       currentButtonColors;

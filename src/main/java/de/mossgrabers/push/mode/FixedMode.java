@@ -1,16 +1,16 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -30,7 +30,7 @@ public class FixedMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public FixedMode (final PushControlSurface surface, final Model model)
+    public FixedMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;

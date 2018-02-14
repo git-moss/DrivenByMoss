@@ -1,11 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apc.mode;
 
 import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 
 
@@ -22,7 +22,7 @@ public class PanMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public PanMode (final APCControlSurface surface, final Model model)
+    public PanMode (final APCControlSurface surface, final IModel model)
     {
         super (surface, model, 3, 64);
     }

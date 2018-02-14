@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apc.view;
@@ -9,9 +9,9 @@ import de.mossgrabers.apc.command.trigger.APCBrowserCommand;
 import de.mossgrabers.apc.controller.APCColors;
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractView;
@@ -53,7 +53,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
      * @param surface The surface
      * @param model The model
      */
-    public ShiftView (final APCControlSurface surface, final Model model)
+    public ShiftView (final APCControlSurface surface, final IModel model)
     {
         super ("Shift", surface, model);
     }

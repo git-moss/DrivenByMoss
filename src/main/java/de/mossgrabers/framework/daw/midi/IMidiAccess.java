@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2018
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.midi;
@@ -40,7 +40,7 @@ public interface IMidiAccess
 
     /**
      * Create a midi input.
-     * 
+     *
      * @param index The index of the midi input
      * @param name The name to use for the input
      * @param filters The filters to regiser for

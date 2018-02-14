@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework;
@@ -105,5 +105,24 @@ public class StringUtils
     {
         final String v = Integer.toHexString (number).toUpperCase ();
         return v.length () < 2 ? '0' + v : v;
+    }
+
+
+    /**
+     * Format the given time as measure.quarters.eights.
+     *
+     * @param quartersPerMeasure The number of quarters of a measure
+     * @param time The time to format
+     * @param startOffset An offset that is added to the measure, quarter and eights values
+     * @return The formatted text
+     */
+    public static String formatMeasures (final int quartersPerMeasure, final double time, final int startOffset)
+    {
+        final int measure = (int) Math.floor (time / quartersPerMeasure);
+        double t = time - measure * quartersPerMeasure;
+        final int quarters = (int) Math.floor (t); // :1
+        t = t - quarters; // *1
+        final int eights = (int) Math.floor (t / 0.25);
+        return measure + startOffset + "." + (quarters + startOffset) + "." + (eights + startOffset);
     }
 }

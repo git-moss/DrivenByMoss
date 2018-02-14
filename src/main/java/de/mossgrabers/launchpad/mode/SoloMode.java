@@ -1,6 +1,6 @@
 package de.mossgrabers.launchpad.mode;
 
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
@@ -17,7 +17,7 @@ public class SoloMode extends AbstractTrackMode
      * @param surface The surface
      * @param model The model
      */
-    public SoloMode (final LaunchpadControlSurface surface, final Model model)
+    public SoloMode (final LaunchpadControlSurface surface, final IModel model)
     {
         super (surface, model);
     }

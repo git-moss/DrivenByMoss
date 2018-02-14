@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.bitwig;
@@ -105,13 +105,5 @@ public class TrackBankProxy extends AbstractTrackBankProxy implements ITrackBank
     public void setSendIndication (final int index, final int sendIndex, final boolean indicate)
     {
         this.trackBank.getChannel (index).sendBank ().getItemAt (sendIndex).setIndication (indicate);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public CursorTrack getCursorTrack ()
-    {
-        return this.cursorTrack;
     }
 }

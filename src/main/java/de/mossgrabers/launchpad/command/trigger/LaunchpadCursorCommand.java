@@ -1,15 +1,15 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
@@ -41,7 +41,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
      * @param model The model
      * @param surface The surface
      */
-    public LaunchpadCursorCommand (final Direction direction, final Model model, final LaunchpadControlSurface surface)
+    public LaunchpadCursorCommand (final Direction direction, final IModel model, final LaunchpadControlSurface surface)
     {
         super (direction, model, surface);
     }

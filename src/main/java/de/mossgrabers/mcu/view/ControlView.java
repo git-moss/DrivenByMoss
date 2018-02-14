@@ -1,10 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.mcu.view;
 
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
@@ -23,7 +23,7 @@ public class ControlView extends AbstractView<MCUControlSurface, MCUConfiguratio
      * @param surface The surface
      * @param model The model
      */
-    public ControlView (final MCUControlSurface surface, final Model model)
+    public ControlView (final MCUControlSurface surface, final IModel model)
     {
         super ("Control", surface, model);
     }

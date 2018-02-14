@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apcmini.view;
@@ -8,9 +8,9 @@ import de.mossgrabers.apcmini.APCminiConfiguration;
 import de.mossgrabers.apcmini.controller.APCminiColors;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.ViewManager;
@@ -42,7 +42,7 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
      * @param surface The controller
      * @param model The model
      */
-    public BrowserView (final APCminiControlSurface surface, final Model model)
+    public BrowserView (final APCminiControlSurface surface, final IModel model)
     {
         super ("Browser", surface, model);
     }

@@ -1,11 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.view;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.push.controller.PushColors;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -27,7 +27,7 @@ public class DrumView8 extends DrumViewBase
      * @param surface The surface
      * @param model The model
      */
-    public DrumView8 (final PushControlSurface surface, final Model model)
+    public DrumView8 (final PushControlSurface surface, final IModel model)
     {
         super (Views.VIEW_NAME_DRUM8, surface, model, 1, 0);
     }

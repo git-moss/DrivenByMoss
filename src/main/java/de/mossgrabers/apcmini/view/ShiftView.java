@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apcmini.view;
@@ -9,11 +9,11 @@ import de.mossgrabers.apcmini.controller.APCminiColors;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.apcmini.mode.Modes;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -60,7 +60,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
      * @param surface The surface
      * @param model The model
      */
-    public ShiftView (final APCminiControlSurface surface, final Model model)
+    public ShiftView (final APCminiControlSurface surface, final IModel model)
     {
         super ("Shift", surface, model);
 

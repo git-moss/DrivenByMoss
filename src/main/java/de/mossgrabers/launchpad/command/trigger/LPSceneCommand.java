@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
@@ -26,7 +26,7 @@ public class LPSceneCommand extends SceneCommand<LaunchpadControlSurface, Launch
      * @param model The model
      * @param surface The surface
      */
-    public LPSceneCommand (final int index, final Model model, final LaunchpadControlSurface surface)
+    public LPSceneCommand (final int index, final IModel model, final LaunchpadControlSurface surface)
     {
         super (index, model, surface);
     }

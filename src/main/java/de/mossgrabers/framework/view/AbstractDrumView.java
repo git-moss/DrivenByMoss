@@ -1,16 +1,16 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.scale.Scales;
@@ -67,7 +67,7 @@ public abstract class AbstractDrumView<S extends ControlSurface<C>, C extends Co
      * @param numSequencerLines The number of rows to use for the sequencer
      * @param numPlayLines The number of rows to use for playing
      */
-    public AbstractDrumView (final String name, final S surface, final Model model, final int numSequencerLines, final int numPlayLines)
+    public AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayLines)
     {
         super (name, surface, model, 128, numSequencerLines * GRID_COLUMNS);
 

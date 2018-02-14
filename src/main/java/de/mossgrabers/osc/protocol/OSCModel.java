@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.osc.protocol;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.bitwig.Model;
 import de.mossgrabers.framework.scale.Scales;
 
 import com.bitwig.extension.controller.api.ControllerHost;

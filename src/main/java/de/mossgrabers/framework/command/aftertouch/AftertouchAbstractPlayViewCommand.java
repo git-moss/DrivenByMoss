@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.aftertouch;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractAftertouchCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractPlayView;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class AftertouchAbstractPlayViewCommand<S extends ControlSurface<C>, C ex
      * @param model The model
      * @param surface The surface
      */
-    public AftertouchAbstractPlayViewCommand (final AbstractPlayView<S, C> view, final Model model, final S surface)
+    public AftertouchAbstractPlayViewCommand (final AbstractPlayView<S, C> view, final IModel model, final S surface)
     {
         super (model, surface);
         this.view = view;

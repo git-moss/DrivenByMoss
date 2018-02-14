@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.sl.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -27,7 +27,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
      * @param surface The surface
      * @param model The model
      */
-    public DeviceParamsMode (final SLControlSurface surface, final Model model)
+    public DeviceParamsMode (final SLControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;

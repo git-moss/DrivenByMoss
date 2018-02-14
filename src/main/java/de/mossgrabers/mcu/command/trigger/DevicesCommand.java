@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2018
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.mcu.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.ModeSelectCommand;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.mode.Modes;
@@ -25,7 +25,7 @@ public class DevicesCommand extends ModeSelectCommand<MCUControlSurface, MCUConf
      * @param model The model
      * @param surface The surface
      */
-    public DevicesCommand (final Model model, final MCUControlSurface surface)
+    public DevicesCommand (final IModel model, final MCUControlSurface surface)
     {
         super (Modes.MODE_DEVICE_PARAMS, model, surface);
     }

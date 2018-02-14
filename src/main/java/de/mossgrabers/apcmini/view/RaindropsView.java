@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apcmini.view;
@@ -7,7 +7,7 @@ package de.mossgrabers.apcmini.view;
 import de.mossgrabers.apcmini.APCminiConfiguration;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractRaindropsView;
 
 
@@ -24,7 +24,7 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
      * @param surface The surface
      * @param model The model
      */
-    public RaindropsView (final APCminiControlSurface surface, final Model model)
+    public RaindropsView (final APCminiControlSurface surface, final IModel model)
     {
         super ("Raindrops", surface, model, false);
     }

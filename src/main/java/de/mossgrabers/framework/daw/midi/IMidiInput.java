@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2018
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.midi;
@@ -69,4 +69,14 @@ public interface IMidiInput
      *            channel 1 (0).
      */
     void createNoteInput (final String name, final String... filters);
+
+
+    /**
+     * Sends a midi short message to the DAW.
+     *
+     * @param status The MIDI status byte
+     * @param data1 The MIDI data byte 1
+     * @param data2 The MIDI data byte 2
+     */
+    void sendRawMidiEvent (int status, int data1, int data2);
 }

@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.mode;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.daw.IModel;
 
 
 /**
@@ -41,7 +41,7 @@ public abstract class AbstractMode<S extends ControlSurface<C>, C extends Config
     };
 
     protected S                  surface;
-    protected Model              model;
+    protected IModel             model;
     protected boolean            isTemporary;
 
 
@@ -51,7 +51,7 @@ public abstract class AbstractMode<S extends ControlSurface<C>, C extends Config
      * @param surface The control surface
      * @param model The model
      */
-    public AbstractMode (final S surface, final Model model)
+    public AbstractMode (final S surface, final IModel model)
     {
         this.surface = surface;
         this.model = model;

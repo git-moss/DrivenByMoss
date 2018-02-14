@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.mcu.mode.track;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
@@ -27,7 +27,7 @@ public class SendMode extends AbstractTrackMode
      * @param surface The control surface
      * @param model The model
      */
-    public SendMode (final MCUControlSurface surface, final Model model)
+    public SendMode (final MCUControlSurface surface, final IModel model)
     {
         super (surface, model);
     }

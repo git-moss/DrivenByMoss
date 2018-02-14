@@ -1,15 +1,15 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IMixer;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -105,7 +105,7 @@ public class FrameMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public FrameMode (final PushControlSurface surface, final Model model)
+    public FrameMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
     }

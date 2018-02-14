@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apcmini.view;
 
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
 
 
 /**
@@ -18,7 +18,7 @@ import de.mossgrabers.framework.daw.IChannelBank;
 public class TrackButtons
 {
     private APCminiControlSurface surface;
-    private Model                 model;
+    private IModel                model;
 
 
     /**
@@ -27,7 +27,7 @@ public class TrackButtons
      * @param surface The controller
      * @param model The model
      */
-    public TrackButtons (final APCminiControlSurface surface, final Model model)
+    public TrackButtons (final APCminiControlSurface surface, final IModel model)
     {
         this.surface = surface;
         this.model = model;

@@ -1,22 +1,18 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.bitwig.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.scale.Scales;
-
-import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
-import com.bitwig.extension.controller.api.PinnableCursorDevice;
 
 
 /**
@@ -52,7 +48,6 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
     protected int                 columns;
     protected int                 rows;
     protected int                 drumOctave;
-    protected ICursorDevice       primaryDevice;
 
 
     /**
@@ -61,7 +56,7 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
      * @param surface The surface
      * @param model The model
      */
-    public AbstractDrumView64 (final S surface, final Model model)
+    public AbstractDrumView64 (final S surface, final IModel model)
     {
         super ("Drum 64", surface, model);
 
@@ -82,9 +77,6 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
         // Light notes send from the sequencer
         tb.addNoteObserver ( (note, velocity) -> this.pressedKeys[note] = velocity);
         tb.addTrackSelectionObserver ( (final int index, final boolean isSelected) -> this.clearPressedKeys ());
-
-        final PinnableCursorDevice cd = tb.getCursorTrack ().createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
-        this.primaryDevice = new CursorDeviceProxy (model.getHost (), cd, this.model.getValueChanger (), 0, 0, 0, 64, 64);
     }
 
 
@@ -102,8 +94,9 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
     {
         super.onActivate ();
 
-        this.primaryDevice.enableObservers (true);
-        this.primaryDevice.setDrumPadIndication (true);
+        final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
+        drumDevice64.enableObservers (true);
+        drumDevice64.setDrumPadIndication (true);
     }
 
 
@@ -113,8 +106,9 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
     {
         super.onDeactivate ();
 
-        this.primaryDevice.enableObservers (false);
-        this.primaryDevice.setDrumPadIndication (false);
+        final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
+        drumDevice64.enableObservers (false);
+        drumDevice64.setDrumPadIndication (false);
     }
 
 
@@ -153,14 +147,15 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
         }
 
         // halfColumns x playLines Drum Pad Grid
-        final boolean hasDrumPads = this.primaryDevice.hasDrumPads ();
+        final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
+        final boolean hasDrumPads = drumDevice64.hasDrumPads ();
         boolean isSoloed = false;
         final int numPads = this.rows * this.columns;
         if (hasDrumPads)
         {
             for (int i = 0; i < numPads; i++)
             {
-                if (this.primaryDevice.getDrumPad (i).isSolo ())
+                if (drumDevice64.getDrumPad (i).isSolo ())
                 {
                     isSoloed = true;
                     break;
@@ -172,7 +167,7 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
         {
             final int x = index / 32 * 4 + index % 4;
             final int y = index / 4 % 8;
-            this.surface.getPadGrid ().lightEx (x, 7 - y, this.getPadColor (index, this.primaryDevice, isSoloed, isRecording));
+            this.surface.getPadGrid ().lightEx (x, 7 - y, this.getPadColor (index, drumDevice64, isSoloed, isRecording));
         }
     }
 
@@ -237,9 +232,10 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
 
         if (oldDrumOctave != this.drumOctave)
         {
+            final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
             // TODO Bugfix required: scrollChannelsUp scrolls the whole bank
             for (int i = 0; i < 16; i++)
-                this.primaryDevice.scrollDrumPadsUp ();
+                drumDevice64.scrollDrumPadsUp ();
         }
     }
 
@@ -259,9 +255,10 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
         this.surface.getDisplay ().notify (this.getDrumRangeText (), true, true);
         if (oldDrumOctave != this.drumOctave)
         {
+            final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
             // TODO Bugfix required: scrollChannelsUp scrolls the whole bank
             for (int i = 0; i < 16; i++)
-                this.primaryDevice.scrollDrumPadsDown ();
+                drumDevice64.scrollDrumPadsDown ();
         }
     }
 
@@ -303,14 +300,14 @@ public abstract class AbstractDrumView64<S extends ControlSurface<C>, C extends 
     protected void handleMuteButton (final int playedPad)
     {
         this.surface.setButtonConsumed (this.surface.getMuteButtonId ());
-        this.primaryDevice.toggleLayerOrDrumPadMute (playedPad);
+        this.model.getDrumDevice64 ().toggleLayerOrDrumPadMute (playedPad);
     }
 
 
     protected void handleSoloButton (final int playedPad)
     {
         this.surface.setButtonConsumed (this.surface.getSoloButtonId ());
-        this.primaryDevice.toggleLayerOrDrumPadSolo (playedPad);
+        this.model.getDrumDevice64 ().toggleLayerOrDrumPadSolo (playedPad);
     }
 
 

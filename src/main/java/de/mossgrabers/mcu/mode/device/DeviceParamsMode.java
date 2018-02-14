@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.mcu.mode.device;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.mode.BaseMode;
@@ -25,7 +25,7 @@ public class DeviceParamsMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public DeviceParamsMode (final MCUControlSurface surface, final Model model)
+    public DeviceParamsMode (final MCUControlSurface surface, final IModel model)
     {
         super (surface, model);
     }

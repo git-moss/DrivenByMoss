@@ -1,11 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AftertouchCommand;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
@@ -14,6 +13,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.scale.Scales;
@@ -35,7 +35,7 @@ public abstract class AbstractView<S extends ControlSurface<C>, C extends Config
     private static final int []                   EMPTY_TABLE        = Scales.getEmptyMatrix ();
 
     protected S                                   surface;
-    protected Model                               model;
+    protected IModel                              model;
     private AftertouchCommand                     aftertouchCommand;
     private PitchbendCommand                      pitchbendCommand;
 
@@ -61,7 +61,7 @@ public abstract class AbstractView<S extends ControlSurface<C>, C extends Config
      * @param surface The surface
      * @param model The model
      */
-    public AbstractView (final String name, final S surface, final Model model)
+    public AbstractView (final String name, final S surface, final IModel model)
     {
         this.name = name;
         this.surface = surface;

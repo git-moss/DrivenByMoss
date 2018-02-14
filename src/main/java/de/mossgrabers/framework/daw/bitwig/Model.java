@@ -1,8 +1,8 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework;
+package de.mossgrabers.framework.daw.bitwig;
 
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -15,22 +15,11 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMixer;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.bitwig.ApplicationProxy;
-import de.mossgrabers.framework.daw.bitwig.ArrangerProxy;
-import de.mossgrabers.framework.daw.bitwig.BrowserProxy;
-import de.mossgrabers.framework.daw.bitwig.CursorClipProxy;
-import de.mossgrabers.framework.daw.bitwig.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.bitwig.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.bitwig.GrooveProxy;
-import de.mossgrabers.framework.daw.bitwig.HostProxy;
-import de.mossgrabers.framework.daw.bitwig.MixerProxy;
-import de.mossgrabers.framework.daw.bitwig.ProjectProxy;
-import de.mossgrabers.framework.daw.bitwig.TrackBankProxy;
-import de.mossgrabers.framework.daw.bitwig.TransportProxy;
 import de.mossgrabers.framework.daw.bitwig.data.MasterTrackImpl;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -50,7 +39,7 @@ import com.bitwig.extension.controller.api.PinnableCursorDevice;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Model
+public class Model implements IModel
 {
     private int            numTracks;
     private int            numScenes;
@@ -74,7 +63,7 @@ public class Model
 
     private CursorTrack    cursorTrack;
     private IChannelBank   currentTrackBank;
-    private ITrackBank     trackBank;
+    private TrackBankProxy trackBank;
     private IChannelBank   effectTrackBank;
     private IMasterTrack   masterTrack;
     private BooleanValue   masterTrackEqualsValue;
@@ -82,6 +71,7 @@ public class Model
     private ColorManager   colorManager;
     private ICursorDevice  primaryDevice;
     private ICursorDevice  cursorDevice;
+    private ICursorDevice  drumDevice64;
 
 
     /**
@@ -128,9 +118,12 @@ public class Model
 
         this.trackBank = new TrackBankProxy (host, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
         this.effectTrackBank = new EffectTrackBankProxy (host, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
+
         this.primaryDevice = new CursorDeviceProxy (this.hostProxy, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
-        final PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", this.numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
+        PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", this.numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
         this.cursorDevice = new CursorDeviceProxy (this.hostProxy, cd, valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        cd = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
+        this.drumDevice64 = new CursorDeviceProxy (this.hostProxy, cd, valueChanger, 0, 0, 0, 64, 64);
 
         this.masterTrackEqualsValue = cd.channel ().createEqualsValue (master);
         this.masterTrackEqualsValue.markInterested ();
@@ -146,272 +139,200 @@ public class Model
     }
 
 
-    /**
-     * Get the host.
-     *
-     * @return The host
-     */
+    /** {@inheritDoc} */
+    @Override
     public IHost getHost ()
     {
         return this.hostProxy;
     }
 
 
-    /**
-     * Get the value changer.
-     *
-     * @return The value changer.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ValueChanger getValueChanger ()
     {
         return this.valueChanger;
     }
 
 
-    /**
-     * Get the project.
-     *
-     * @return The project
-     */
+    /** {@inheritDoc} */
+    @Override
     public IProject getProject ()
     {
         return this.project;
     }
 
 
-    /**
-     * Get the arranger.
-     *
-     * @return The arranger
-     */
+    /** {@inheritDoc} */
+    @Override
     public IArranger getArranger ()
     {
         return this.arranger;
     }
 
 
-    /**
-     * Get the mixer.
-     *
-     * @return The mixer
-     */
+    /** {@inheritDoc} */
+    @Override
     public IMixer getMixer ()
     {
         return this.mixer;
     }
 
 
-    /**
-     * Get the transport.
-     *
-     * @return The transport
-     */
+    /** {@inheritDoc} */
+    @Override
     public ITransport getTransport ()
     {
         return this.transport;
     }
 
 
-    /**
-     * Get the groove instance.
-     *
-     * @return The groove instance
-     */
+    /** {@inheritDoc} */
+    @Override
     public IGroove getGroove ()
     {
         return this.groove;
     }
 
 
-    /**
-     * Get the master track.
-     *
-     * @return The master track
-     */
+    /** {@inheritDoc} */
+    @Override
     public IMasterTrack getMasterTrack ()
     {
         return this.masterTrack;
     }
 
 
-    /**
-     * Get the color manager.
-     *
-     * @return The color manager
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorManager getColorManager ()
     {
         return this.colorManager;
     }
 
 
-    /**
-     * Get the scales.
-     *
-     * @return The scales
-     */
+    /** {@inheritDoc} */
+    @Override
     public Scales getScales ()
     {
         return this.scales;
     }
 
 
-    /**
-     * True if there is a selected device.
-     *
-     * @return True if there is a selected device.
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasSelectedDevice ()
     {
         return this.cursorDevice.doesExist ();
     }
 
 
-    /**
-     * Get the cursor device.
-     *
-     * @return The cursor device
-     */
+    /** {@inheritDoc} */
+    @Override
     public ICursorDevice getCursorDevice ()
     {
         return this.cursorDevice;
     }
 
 
-    /**
-     * Get the primary device. This is the first instrument in of the track.
-     *
-     * @return The device
-     */
+    /** {@inheritDoc} */
+    @Override
     public ICursorDevice getPrimaryDevice ()
     {
         return this.primaryDevice;
     }
 
 
-    /**
-     * Toggles the audio/instrument track bank with the effect track bank.
-     */
+    /** {@inheritDoc} */
+    @Override
+    public ICursorDevice getDrumDevice64 ()
+    {
+        return this.drumDevice64;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void toggleCurrentTrackBank ()
     {
         this.currentTrackBank = this.currentTrackBank == this.trackBank ? this.effectTrackBank : this.trackBank;
     }
 
 
-    /**
-     * Returns true if the effect track bank is active.
-     *
-     * @return True if the effect track bank is active
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isEffectTrackBankActive ()
     {
         return this.currentTrackBank == this.effectTrackBank;
     }
 
 
-    /**
-     * Get the current track bank (audio/instrument track bank or the effect track bank).
-     *
-     * @return The current track bank
-     */
+    /** {@inheritDoc} */
+    @Override
     public IChannelBank getCurrentTrackBank ()
     {
         return this.currentTrackBank;
     }
 
 
-    /**
-     * Get the track bank.
-     *
-     * @return The track bank
-     */
-    public ITrackBank getTrackBank ()
+    /** {@inheritDoc} */
+    @Override
+    public TrackBankProxy getTrackBank ()
     {
         return this.trackBank;
     }
 
 
-    /**
-     * Get the effect track bank.
-     *
-     * @return The effect track bank
-     */
+    /** {@inheritDoc} */
+    @Override
     public IChannelBank getEffectTrackBank ()
     {
         return this.effectTrackBank;
     }
 
 
-    /**
-     * Get the application.
-     *
-     * @return The application
-     */
+    /** {@inheritDoc} */
+    @Override
     public IApplication getApplication ()
     {
         return this.application;
     }
 
 
-    /**
-     * Get the scene bank.
-     *
-     * @return The scene bank
-     */
+    /** {@inheritDoc} */
+    @Override
     public ISceneBank getSceneBank ()
     {
         return this.trackBank.getSceneBank ();
     }
 
 
-    /**
-     * Get the browser.
-     *
-     * @return The browser
-     */
+    /** {@inheritDoc} */
+    @Override
     public IBrowser getBrowser ()
     {
         return this.browser;
     }
 
 
-    /**
-     * Creates a new track bank.
-     *
-     * @param cursorTrack The cursor track
-     * @param numTracks The number of tracks in a bank page
-     * @param numScenes The number of scenes in a bank page
-     * @param numSends The number of sends in a bank page
-     * @param hasFlatTrackList True if group navigation should not be supported, instead all tracks
-     *            are flat
-     * @return The track bank
-     */
-    public TrackBankProxy createTrackBank (final CursorTrack cursorTrack, final int numTracks, final int numScenes, final int numSends, final boolean hasFlatTrackList)
+    /** {@inheritDoc} */
+    @Override
+    public ITrackBank createSceneViewTrackBank (final int numTracks, final int numScenes)
     {
-        return new TrackBankProxy (this.host, this.valueChanger, cursorTrack, numTracks, numScenes, numSends, hasFlatTrackList);
+        return new TrackBankProxy (this.host, this.valueChanger, this.cursorTrack, numTracks, numScenes, 0, true);
     }
 
 
-    /***
-     * Create a new cursor clip.
-     *
-     * @param cols The columns of the clip
-     * @param rows The rows of the clip
-     * @return The cursor clip
-     */
+    /** {@inheritDoc} */
+    @Override
     public ICursorClip createCursorClip (final int cols, final int rows)
     {
         return new CursorClipProxy (this.host, this.valueChanger, cols, rows);
     }
 
 
-    /**
-     * Creates a new clip at the given track and slot index.
-     *
-     * @param trackIndex The index of the track on which to create the clip
-     * @param slotIndex The index of the slot (scene) in which to create the clip
-     * @param newCLipLength The length of the new clip
-     */
+    /** {@inheritDoc} */
+    @Override
     public void createClip (final int trackIndex, final int slotIndex, final int newCLipLength)
     {
         final int quartersPerMeasure = this.getQuartersPerMeasure ();
@@ -420,33 +341,24 @@ public class Model
     }
 
 
-    /**
-     * Returns true if session recording is enabled, a clip is recording or overdub is enabled.
-     *
-     * @return True if recording
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasRecordingState ()
     {
         return this.transport.isRecording () || this.transport.isLauncherOverdub () || this.currentTrackBank.isClipRecording ();
     }
 
 
-    /**
-     * Get the quarters per measure.
-     *
-     * @return The quarters per measure.
-     */
+    /** {@inheritDoc} */
+    @Override
     public int getQuartersPerMeasure ()
     {
         return 4 * this.transport.getNumerator () / this.transport.getDenominator ();
     }
 
 
-    /**
-     * Returns true if the current track can hold notes. Convenience method.
-     *
-     * @return True if the current track can hold notes.
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean canSelectedTrackHoldNotes ()
     {
         final ITrack t = this.getCurrentTrackBank ().getSelectedTrack ();
@@ -454,32 +366,24 @@ public class Model
     }
 
 
-    /**
-     * Returns true if the cursor track is pinned (aka does not follow the track selection in
-     * Bitwig).
-     *
-     * @return True if the cursor track is pinned
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isCursorTrackPinned ()
     {
         return this.cursorTrack.isPinned ().get ();
     }
 
 
-    /**
-     * Toggles if the cursor track is pinned.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void toggleCursorTrackPinned ()
     {
         this.cursorTrack.isPinned ().toggle ();
     }
 
 
-    /**
-     * Returns true if the cursor device is pointing to a device on the master track.
-     *
-     * @return True if the cursor device is pointing to a device on the master track
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isCursorDeviceOnMasterTrack ()
     {
         return this.masterTrackEqualsValue.get ();

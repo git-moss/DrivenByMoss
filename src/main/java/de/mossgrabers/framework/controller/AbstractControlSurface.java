@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.controller;
@@ -16,8 +16,6 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
-
-import com.bitwig.extension.controller.api.NoteInput;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,9 +38,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     protected IHost                               host;
     protected C                                   configuration;
     protected ColorManager                        colorManager;
-    protected IMidiOutput                          output;
+    protected IMidiOutput                         output;
     protected IMidiInput                          input;
-    protected NoteInput                           noteInput;
 
     protected ViewManager                         viewManager           = new ViewManager ();
     protected ModeManager                         modeManager           = new ModeManager ();
@@ -316,12 +313,12 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setKeyTranslationTable (final int [] table)
     {
-        if (this.noteInput == null)
+        if (this.input == null)
             return;
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
             t[i] = Integer.valueOf (table[i]);
-        this.noteInput.setKeyTranslationTable (t);
+        this.input.setKeyTranslationTable (t);
     }
 
 
@@ -329,12 +326,12 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setVelocityTranslationTable (final int [] table)
     {
-        if (this.noteInput == null)
+        if (this.input == null)
             return;
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
             t[i] = Integer.valueOf (table[i]);
-        this.noteInput.setVelocityTranslationTable (t);
+        this.input.setVelocityTranslationTable (t);
     }
 
 
@@ -668,7 +665,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void sendMidiEvent (final int status, final int data1, final int data2)
     {
-        this.noteInput.sendRawMidiEvent (status, data1, data2);
+        this.input.sendRawMidiEvent (status, data1, data2);
     }
 
 

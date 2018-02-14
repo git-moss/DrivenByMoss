@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apcmini.view;
@@ -8,8 +8,8 @@ import de.mossgrabers.apcmini.APCminiConfiguration;
 import de.mossgrabers.apcmini.controller.APCminiColors;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.view.AbstractSessionView;
@@ -31,7 +31,7 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
      * @param surface The surface
      * @param model The model
      */
-    public SessionView (final APCminiControlSurface surface, final Model model)
+    public SessionView (final APCminiControlSurface surface, final IModel model)
     {
         super ("Session", surface, model, 8, 8, false);
         this.extensions = new TrackButtons (surface, model);

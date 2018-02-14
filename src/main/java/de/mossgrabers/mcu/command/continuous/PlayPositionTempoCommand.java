@@ -1,11 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.mcu.command.continuous;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 
@@ -23,7 +23,7 @@ public class PlayPositionTempoCommand extends PlayPositionCommand<MCUControlSurf
      * @param model The model
      * @param surface The surface
      */
-    public PlayPositionTempoCommand (final Model model, final MCUControlSurface surface)
+    public PlayPositionTempoCommand (final IModel model, final MCUControlSurface surface)
     {
         super (model, surface);
     }

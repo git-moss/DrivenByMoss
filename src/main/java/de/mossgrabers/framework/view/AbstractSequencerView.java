@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IModel;
 
 
 /**
@@ -78,7 +78,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      * @param clipRows The rows of the monitored clip
      * @param clipCols The cols of the monitored clip
      */
-    public AbstractSequencerView (final String name, final S surface, final Model model, final int clipRows, final int clipCols)
+    public AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols)
     {
         this (name, surface, model, clipRows, clipCols, clipRows);
     }
@@ -94,7 +94,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      * @param clipCols The cols of the monitored clip
      * @param numSequencerRows The number of displayed rows of the sequencer
      */
-    public AbstractSequencerView (final String name, final S surface, final Model model, final int clipRows, final int clipCols, final int numSequencerRows)
+    public AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols, final int numSequencerRows)
     {
         super (name, surface, model);
         this.configuration = this.surface.getConfiguration ();

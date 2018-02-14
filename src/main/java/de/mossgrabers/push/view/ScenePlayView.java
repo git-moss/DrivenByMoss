@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
@@ -33,11 +33,10 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
      * @param surface The surface
      * @param model The model
      */
-    public ScenePlayView (final PushControlSurface surface, final Model model)
+    public ScenePlayView (final PushControlSurface surface, final IModel model)
     {
         super ("Scene Play", surface, model);
-
-        this.trackBank = model.createTrackBank (model.getTrackBank ().getCursorTrack (), 8, 64, 0, true);
+        this.trackBank = model.createSceneViewTrackBank (8, 64);
     }
 
 
@@ -62,35 +61,13 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     @Override
     public void drawGrid ()
     {
-        final ISceneBank sceneBank = this.getSceneBank ();
+        final ISceneBank sceneBank = this.trackBank.getSceneBank ();
         for (int i = 0; i < 64; i++)
         {
             final IScene scene = sceneBank.getScene (i);
             final String color = scene.doesExist () ? this.trackBank.getColorOfFirstClipInScene (i) : PadGrid.GRID_OFF;
             this.surface.getPadGrid ().light (36 + i, color);
         }
-    }
-
-
-    /**
-     * Get the scene bank with 64 entries.
-     *
-     * @return The scene bank with 64 entries
-     */
-    public ISceneBank getSceneBank ()
-    {
-        return this.trackBank.getSceneBank ();
-    }
-
-
-    /**
-     * Get the track bank with 64 scene entries.
-     *
-     * @return The scene bank with 64 entries
-     */
-    public ITrackBank getTrackBank ()
-    {
-        return this.trackBank;
     }
 
 
