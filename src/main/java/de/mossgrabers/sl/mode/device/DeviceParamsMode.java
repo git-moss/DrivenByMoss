@@ -8,7 +8,7 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -73,7 +73,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
     public void setLEDs ()
     {
         final boolean hasDevice = this.model.hasSelectedDevice ();
-        final MidiOutput output = this.surface.getOutput ();
+        final IMidiOutput output = this.surface.getOutput ();
         for (int i = 0; i < 8; i++)
         {
             final int value = hasDevice ? this.model.getCursorDevice ().getFXParam (i).getValue () : 0;

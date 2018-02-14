@@ -4,7 +4,7 @@
 
 package de.mossgrabers.mcu.controller;
 
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -14,7 +14,7 @@ import de.mossgrabers.framework.midi.MidiOutput;
  */
 public class MCUSegmentDisplay
 {
-    private MidiOutput output;
+    private IMidiOutput output;
     private int []     transportBuffer  = new int [10];
     private int []     assignmentBuffer = new int [2];
 
@@ -24,7 +24,7 @@ public class MCUSegmentDisplay
      *
      * @param output The midi output which addresses the display
      */
-    public MCUSegmentDisplay (final MidiOutput output)
+    public MCUSegmentDisplay (final IMidiOutput output)
     {
         this.output = output;
     }

@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.controller.grid;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 import java.util.Arrays;
 
@@ -17,7 +17,7 @@ import java.util.Arrays;
  */
 public class PadGridImpl implements PadGrid
 {
-    protected MidiOutput   output;
+    protected IMidiOutput   output;
     protected ColorManager colorManager;
 
     protected int []       currentButtonColors;
@@ -34,7 +34,7 @@ public class PadGridImpl implements PadGrid
      * @param colorManager The color manager for accessing specific colors to use
      * @param output The midi output which can address the pad states
      */
-    public PadGridImpl (final ColorManager colorManager, final MidiOutput output)
+    public PadGridImpl (final ColorManager colorManager, final IMidiOutput output)
     {
         this.colorManager = colorManager;
         this.output = output;

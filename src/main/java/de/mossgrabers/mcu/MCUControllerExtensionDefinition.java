@@ -5,10 +5,12 @@
 package de.mossgrabers.mcu;
 
 import de.mossgrabers.framework.controller.AbstractControllerExtensionDefinition;
+import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
+import de.mossgrabers.framework.daw.bitwig.HostProxy;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
-import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 
@@ -92,8 +94,8 @@ abstract class MCUControllerExtensionDefinition extends AbstractControllerExtens
 
     /** {@inheritDoc} */
     @Override
-    public ControllerExtension createInstance (final ControllerHost host)
+    protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new MCUControllerExtension (this, host, this.numMCUDevices);
+        return new MCUControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), host.getPreferences (), this.numMCUDevices);
     }
 }

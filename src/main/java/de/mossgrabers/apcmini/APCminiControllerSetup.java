@@ -22,27 +22,28 @@ import de.mossgrabers.apcmini.view.SequencerView;
 import de.mossgrabers.apcmini.view.SessionView;
 import de.mossgrabers.apcmini.view.ShiftView;
 import de.mossgrabers.apcmini.view.Views;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
-import de.mossgrabers.framework.controller.AbstractControllerExtension;
+import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
+import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
+import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
-import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.Preferences;
 
 
 /**
@@ -50,17 +51,18 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class APCminiControllerExtension extends AbstractControllerExtension<APCminiControlSurface, APCminiConfiguration>
+public class APCminiControllerSetup extends AbstractControllerSetup<APCminiControlSurface, APCminiConfiguration>
 {
     /**
      * Constructor.
      *
-     * @param extensionDefinition The extension definition
-     * @param host The Bitwig host
+     * @param host The DAW host
+     * @param factory The factory
+     * @param preferences The preferences
      */
-    protected APCminiControllerExtension (final APCminiControllerExtensionDefinition extensionDefinition, final ControllerHost host)
+    protected APCminiControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences)
     {
-        super (extensionDefinition, host);
+        super (factory, host, preferences);
         this.colorManager = new ColorManager ();
         APCminiColors.addColors (this.colorManager);
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
@@ -89,7 +91,7 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     @Override
     protected void createModel ()
     {
-        this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
@@ -100,14 +102,12 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     @Override
     protected void createSurface ()
     {
-        final ControllerHost host = this.getHost ();
-        final MidiDeviceImpl midiDevice = new MidiDeviceImpl (host);
-
-        final MidiOutput output = new MidiOutput (host);
-        final IMidiInput input = midiDevice.createInput ("Akai APCmini");
+        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
+        final IMidiOutput output = midiAccess.createOutput ();
+        final IMidiInput input = midiAccess.createInput ("Akai APCmini");
         final APCminiControlSurface surface = new APCminiControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
-        surface.setDisplay (new DummyDisplay (host));
+        surface.setDisplay (new DummyDisplay (this.host));
     }
 
 
@@ -237,7 +237,7 @@ public class APCminiControllerExtension extends AbstractControllerExtension<APCm
     @Override
     protected void startup ()
     {
-        this.getHost ().scheduleTask ( () -> {
+        this.host.scheduleTask ( () -> {
             final APCminiControlSurface surface = this.getSurface ();
             surface.getModeManager ().setActiveMode (Modes.MODE_VOLUME);
             surface.getViewManager ().setActiveView (Views.VIEW_SESSION);

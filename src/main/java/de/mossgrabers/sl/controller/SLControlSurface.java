@@ -8,7 +8,7 @@ import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.sl.SLConfiguration;
 
 
@@ -183,7 +183,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
      * @param input The midi input
      * @param isMkII Is Pro or MkII?
      */
-    public SLControlSurface (final IHost host, final ColorManager colorManager, final SLConfiguration configuration, final MidiOutput output, final IMidiInput input, final boolean isMkII)
+    public SLControlSurface (final IHost host, final ColorManager colorManager, final SLConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isMkII)
     {
         super (host, configuration, colorManager, output, input, SL_BUTTONS_ALL);
 

@@ -9,7 +9,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
@@ -54,7 +54,7 @@ public class PanView extends AbstractFaderView
     {
         final ColorManager cm = this.model.getColorManager ();
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final MidiOutput output = this.surface.getOutput ();
+        final IMidiOutput output = this.surface.getOutput ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getTrack (i);

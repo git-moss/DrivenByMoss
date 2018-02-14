@@ -4,12 +4,13 @@
 
 package de.mossgrabers.push.controller;
 
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.push.PushConfiguration;
 
 import java.util.Arrays;
@@ -567,7 +568,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      * @param output The midi output
      * @param input The midi input
      */
-    public PushControlSurface (final IHost host, final ColorManager colorManager, final PushConfiguration configuration, final MidiOutput output, final IMidiInput input)
+    public PushControlSurface (final IHost host, final ColorManager colorManager, final PushConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
         super (host, configuration, colorManager, output, input, PUSH_BUTTONS_ALL);
 
@@ -898,7 +899,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      */
     public void sendPush2SysEx (final int [] parameters)
     {
-        this.output.sendSysex ("F0 00 21 1D 01 01 " + MidiOutput.toHexStr (parameters) + "F7");
+        this.output.sendSysex ("F0 00 21 1D 01 01 " + StringUtils.toHexStr (parameters) + "F7");
     }
 
 

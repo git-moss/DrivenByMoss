@@ -10,12 +10,11 @@ import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.View;
 
-import com.bitwig.extension.controller.ControllerExtension;
-import com.bitwig.extension.controller.ControllerExtensionDefinition;
-import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,25 +28,32 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C extends Configuration> extends ControllerExtension
+public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C extends Configuration> implements IControllerSetup
 {
-    protected List<S>      surfaces = new ArrayList<> ();
-    protected Scales       scales;
-    protected Model        model;
-    protected C            configuration;
-    protected ColorManager colorManager;
-    protected ValueChanger valueChanger;
+    protected final List<S>       surfaces = new ArrayList<> ();
+    protected final IHost         host;
+    protected final Preferences   preferences;
+    protected final ISetupFactory factory;
+
+    protected Scales              scales;
+    protected Model               model;
+    protected C                   configuration;
+    protected ColorManager        colorManager;
+    protected ValueChanger        valueChanger;
 
 
     /**
      * Constructor.
-     *
-     * @param definition The definition
+     * 
+     * @param factory The factory
      * @param host The host
+     * @param preferences The preferences
      */
-    protected AbstractControllerExtension (final ControllerExtensionDefinition definition, final ControllerHost host)
+    protected AbstractControllerSetup (final ISetupFactory factory, final IHost host, final Preferences preferences)
     {
-        super (definition, host);
+        this.factory = factory;
+        this.host = host;
+        this.preferences = preferences;
     }
 
 
@@ -78,7 +84,7 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
     @Override
     public void init ()
     {
-        this.configuration.init (this.getHost ().getPreferences ());
+        this.configuration.init (this.preferences);
 
         this.createScales ();
         this.createModel ();
@@ -90,7 +96,7 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
         this.registerContinuousCommands ();
         this.startup ();
 
-        this.getHost ().println ("Initialized.");
+        this.host.println ("Initialized.");
     }
 
 
@@ -101,7 +107,7 @@ public abstract class AbstractControllerExtension<S extends ControlSurface<C>, C
         this.configuration.clearSettingObservers ();
         for (final S surface: this.surfaces)
             surface.shutdown ();
-        this.getHost ().println ("Exited.");
+        this.host.println ("Exited.");
     }
 
 

@@ -63,4 +63,47 @@ public class StringUtils
         }
         return str.toString ();
     }
+
+
+    /**
+     * Convert the bytes to a hex string
+     *
+     * @param data The data to convert
+     * @return The hex string
+     */
+    public static String toHexStr (final int [] data)
+    {
+        final StringBuilder sysex = new StringBuilder ();
+        for (final int d: data)
+            sysex.append (toHexStr (d)).append (' ');
+        return sysex.toString ();
+    }
+
+
+    /**
+     * Convert the bytes to a hex string
+     *
+     * @param data The data to convert
+     * @return The hex string
+     */
+    public static String toHexStr (final byte [] data)
+    {
+        final StringBuilder sysex = new StringBuilder ();
+        for (final byte d: data)
+            sysex.append (toHexStr (Byte.toUnsignedInt (d))).append (' ');
+        return sysex.toString ();
+    }
+
+
+    /**
+     * Convert the byte to a hex string
+     *
+     * @param number The value to convert
+     * @return The hex string
+     */
+    public static String toHexStr (final int number)
+    {
+        final String v = Integer.toHexString (number).toUpperCase ();
+        return v.length () < 2 ? '0' + v : v;
+    }
 }

@@ -4,9 +4,12 @@
 
 package de.mossgrabers.beatstep;
 
+import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
+import de.mossgrabers.framework.daw.bitwig.HostProxy;
+
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
-import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.UUID;
@@ -48,8 +51,8 @@ public class BeatstepProControllerExtensionDefinition extends BaseBeatstepContro
 
     /** {@inheritDoc} */
     @Override
-    public ControllerExtension createInstance (final ControllerHost host)
+    protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new BeatstepControllerExtension (this, host, true);
+        return new BeatstepControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), host.getPreferences (), true);
     }
 }

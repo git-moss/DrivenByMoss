@@ -7,7 +7,7 @@ package de.mossgrabers.push.controller;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -84,7 +84,7 @@ public class PushDisplay extends AbstractDisplay
      * @param maxParameterValue
      * @param output
      */
-    public PushDisplay (final IHost host, final boolean isPush2, final int maxParameterValue, final MidiOutput output)
+    public PushDisplay (final IHost host, final boolean isPush2, final int maxParameterValue, final IMidiOutput output)
     {
         super (host, output, 4 /* No of rows */, 8 /* No of cells */, 68 /* No of characters */);
         this.maxParameterValue = maxParameterValue;

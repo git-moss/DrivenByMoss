@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.bitwig.HostProxy;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
@@ -69,7 +70,7 @@ public class OSCParser implements OscMethodCallback
         this.configuration = configuration;
         this.model = model;
 
-        this.display = new DummyDisplay (host);
+        this.display = new DummyDisplay (new HostProxy (host));
 
         this.transport = this.model.getTransport ();
         this.masterTrack = this.model.getMasterTrack ();

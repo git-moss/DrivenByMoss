@@ -4,9 +4,10 @@
 
 package de.mossgrabers.beatstep.controller;
 
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -25,7 +26,7 @@ public class BeatstepPadGrid extends PadGridImpl
      * @param colorManager The color manager for accessing specific colors to use
      * @param output The midi output which can address the pad states
      */
-    public BeatstepPadGrid (final ColorManager colorManager, final MidiOutput output)
+    public BeatstepPadGrid (final ColorManager colorManager, final IMidiOutput output)
     {
         super (colorManager, output);
 
@@ -47,7 +48,7 @@ public class BeatstepPadGrid extends PadGridImpl
     {
         final int n = note - 36;
         final int pad = n < this.columns ? BeatstepControlSurface.BEATSTEP_PAD_9 + n : BeatstepControlSurface.BEATSTEP_PAD_1 + n - this.columns;
-        final String data = BeatstepControlSurface.SYSEX_HEADER + MidiOutput.toHexStr (new int []
+        final String data = BeatstepControlSurface.SYSEX_HEADER + StringUtils.toHexStr (new int []
         {
             pad,
             color

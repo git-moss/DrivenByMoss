@@ -4,8 +4,9 @@
 
 package de.mossgrabers.framework.daw.bitwig.midi;
 
-import de.mossgrabers.framework.daw.midi.IMidiDevice;
+import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 
@@ -15,7 +16,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MidiDeviceImpl implements IMidiDevice
+public class MidiDeviceImpl implements IMidiAccess
 {
     private ControllerHost host;
 
@@ -28,6 +29,22 @@ public class MidiDeviceImpl implements IMidiDevice
     public MidiDeviceImpl (final ControllerHost host)
     {
         this.host = host;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IMidiOutput createOutput ()
+    {
+        return new MidiOutputImpl (this.host);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IMidiOutput createOutput (final int index)
+    {
+        return new MidiOutputImpl (this.host, index);
     }
 
 

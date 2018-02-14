@@ -5,6 +5,7 @@
 package de.mossgrabers.osc;
 
 import de.mossgrabers.framework.controller.AbstractControllerExtensionDefinition;
+import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -85,5 +86,14 @@ public class OSCExtensionDefinition extends AbstractControllerExtensionDefinitio
     public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
     {
         // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected IControllerSetup getControllerSetup (ControllerHost host)
+    {
+        // Not used
+        return null;
     }
 }

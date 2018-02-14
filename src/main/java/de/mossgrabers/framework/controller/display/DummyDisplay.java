@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.controller.display;
 
-import com.bitwig.extension.controller.api.ControllerHost;
+import de.mossgrabers.framework.daw.IHost;
 
 
 /**
@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public class DummyDisplay implements Display
 {
-    private ControllerHost host;
+    private IHost host;
 
 
     /**
@@ -22,7 +22,7 @@ public class DummyDisplay implements Display
      *
      * @param host The host
      */
-    public DummyDisplay (final ControllerHost host)
+    public DummyDisplay (final IHost host)
     {
         this.host = host;
     }
@@ -128,7 +128,7 @@ public class DummyDisplay implements Display
     @Override
     public void notify (final String message)
     {
-        this.host.showPopupNotification (message);
+        this.host.showNotification (message);
     }
 
 
@@ -137,7 +137,7 @@ public class DummyDisplay implements Display
     public void notify (final String message, final boolean onDisplay, final boolean onScreen)
     {
         if (onScreen)
-            this.host.showPopupNotification (message);
+            this.host.showNotification (message);
     }
 
 

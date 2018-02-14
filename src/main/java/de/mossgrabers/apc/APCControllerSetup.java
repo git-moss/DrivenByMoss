@@ -41,7 +41,6 @@ import de.mossgrabers.apc.view.SequencerView;
 import de.mossgrabers.apc.view.SessionView;
 import de.mossgrabers.apc.view.ShiftView;
 import de.mossgrabers.apc.view.Views;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.continuous.FaderAbsoluteCommand;
@@ -57,25 +56,27 @@ import de.mossgrabers.framework.command.trigger.NewCommand;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
 import de.mossgrabers.framework.command.trigger.StopCommand;
 import de.mossgrabers.framework.command.trigger.TapTempoCommand;
-import de.mossgrabers.framework.controller.AbstractControllerExtension;
+import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
+import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
-import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.Preferences;
 
 
 /**
@@ -83,7 +84,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class APCControllerExtension extends AbstractControllerExtension<APCControlSurface, APCConfiguration>
+public class APCControllerSetup extends AbstractControllerSetup<APCControlSurface, APCConfiguration>
 {
     private static final int     COMMAND_SELECT         = 100;
     private static final int     COMMAND_SOLO           = 110;
@@ -105,13 +106,14 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
     /**
      * Constructor.
      *
-     * @param extensionDefinition The extension definition
-     * @param host The Bitwig host
+     * @param host The DAW host
+     * @param factory The factory
+     * @param preferences The preferences
      * @param isMkII True if is mkII
      */
-    protected APCControllerExtension (final APCControllerExtensionDefinition extensionDefinition, final ControllerHost host, final boolean isMkII)
+    protected APCControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences, final boolean isMkII)
     {
-        super (extensionDefinition, host);
+        super (factory, host, preferences);
         this.isMkII = isMkII;
         this.colorManager = new ColorManager ();
         APCColors.addColors (this.colorManager, isMkII);
@@ -141,7 +143,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
     @Override
     protected void createModel ()
     {
-        this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 5, 8, 16, 16, true, -1, -1, -1, -1);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 5, 8, 16, 16, true, -1, -1, -1, -1);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
@@ -152,17 +154,13 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
     @Override
     protected void createSurface ()
     {
-        final ControllerHost host = this.getHost ();
-
-        final MidiDeviceImpl midiDevice = new MidiDeviceImpl (host);
-
-        final MidiOutput output = new MidiOutput (host);
-        final IMidiInput input = midiDevice.createInput (this.isMkII ? "Akai APC40 mkII" : "Akai APC40",
+        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
+        final IMidiOutput output = midiAccess.createOutput ();
+        final IMidiInput input = midiAccess.createInput (this.isMkII ? "Akai APC40 mkII" : "Akai APC40",
                 "B040??" /* Sustainpedal */);
-
         final APCControlSurface surface = new APCControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, this.isMkII);
         this.surfaces.add (surface);
-        surface.setDisplay (new DummyDisplay (host));
+        surface.setDisplay (new DummyDisplay (this.host));
         for (int i = 0; i < 8; i++)
             surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_LED_1 + i, 1);
     }
@@ -335,7 +333,7 @@ public class APCControllerExtension extends AbstractControllerExtension<APCContr
     @Override
     protected void startup ()
     {
-        this.getHost ().scheduleTask ( () -> {
+        this.host.scheduleTask ( () -> {
             final APCControlSurface surface = this.getSurface ();
             surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
             surface.getViewManager ().setActiveView (Views.VIEW_PLAY);

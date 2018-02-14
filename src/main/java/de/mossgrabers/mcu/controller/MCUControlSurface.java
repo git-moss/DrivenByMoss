@@ -8,7 +8,7 @@ import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.mcu.MCUConfiguration;
 
 import java.util.Arrays;
@@ -329,7 +329,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      * @param extenderOffset The channel/bank offset if multiple extenders are used
      * @param isMainDevice True if it is the main MCU controller (and not an extender)
      */
-    public MCUControlSurface (final IHost host, final ColorManager colorManager, final MCUConfiguration configuration, final MidiOutput output, final IMidiInput input, final int extenderOffset, final boolean isMainDevice)
+    public MCUControlSurface (final IHost host, final ColorManager colorManager, final MCUConfiguration configuration, final IMidiOutput output, final IMidiInput input, final int extenderOffset, final boolean isMainDevice)
     {
         super (host, configuration, colorManager, output, input, MCU_BUTTONS_ALL);
 
@@ -507,7 +507,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
             else
                 this.activeVuMode = VUMODE_LED;
         }
-        final MidiOutput out = this.getOutput ();
+        final IMidiOutput out = this.getOutput ();
         // the mcu changes the vu-meter mode when receiving the
         // corresponding sysex message
         switch (this.activeVuMode)

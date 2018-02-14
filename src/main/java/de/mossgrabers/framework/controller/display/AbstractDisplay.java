@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.controller.display;
 
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -19,7 +19,7 @@ public abstract class AbstractDisplay implements Display
     public static final int NOTIFICATION_TIME = 1000;
 
     protected IHost         host;
-    protected MidiOutput    output;
+    protected IMidiOutput    output;
 
     protected int           noOfLines;
     protected int           noOfCells;
@@ -43,7 +43,7 @@ public abstract class AbstractDisplay implements Display
      * @param noOfCells The number of cells that the display supports
      * @param noOfCharacters The number of characters of 1 row that the display supports
      */
-    public AbstractDisplay (final IHost host, final MidiOutput output, final int noOfLines, final int noOfCells, final int noOfCharacters)
+    public AbstractDisplay (final IHost host, final IMidiOutput output, final int noOfLines, final int noOfCells, final int noOfCharacters)
     {
         this.host = host;
         this.output = output;

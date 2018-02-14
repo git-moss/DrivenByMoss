@@ -4,9 +4,12 @@
 
 package de.mossgrabers.sl;
 
+import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
+import de.mossgrabers.framework.daw.bitwig.HostProxy;
+
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
-import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.UUID;
@@ -70,8 +73,8 @@ public class SLMkIIControllerExtensionDefinition extends SLControllerExtensionDe
 
     /** {@inheritDoc} */
     @Override
-    public ControllerExtension createInstance (final ControllerHost host)
+    protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new SLControllerExtension (this, host, false);
+        return new SLControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), host.getPreferences (), true);
     }
 }

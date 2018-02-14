@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.NoteInput;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MidiInputImpl implements IMidiInput
+class MidiInputImpl implements IMidiInput
 {
     private final int portNumber;
     private MidiIn    port;

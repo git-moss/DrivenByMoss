@@ -4,7 +4,7 @@
 
 package de.mossgrabers.launchpad;
 
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
@@ -13,19 +13,21 @@ import de.mossgrabers.framework.command.trigger.NewCommand;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
 import de.mossgrabers.framework.command.trigger.RecordCommand;
 import de.mossgrabers.framework.command.trigger.UndoCommand;
-import de.mossgrabers.framework.controller.AbstractControllerExtension;
+import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
+import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
@@ -77,7 +79,7 @@ import de.mossgrabers.launchpad.view.ShiftView;
 import de.mossgrabers.launchpad.view.Views;
 import de.mossgrabers.launchpad.view.VolumeView;
 
-import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.Preferences;
 
 
 /**
@@ -85,7 +87,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchpadControllerExtension extends AbstractControllerExtension<LaunchpadControlSurface, LaunchpadConfiguration>
+public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     private final boolean isPro;
 
@@ -93,13 +95,14 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
     /**
      * Constructor.
      *
-     * @param extensionDefinition The extension definition
-     * @param host The Bitwig host
+     * @param host The DAW host
+     * @param factory The factory
+     * @param preferences The preferences
      * @param isPro True if Launchpad Pro
      */
-    protected LaunchpadControllerExtension (final LaunchpadControllerExtensionDefinition extensionDefinition, final ControllerHost host, final boolean isPro)
+    protected LaunchpadControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences, final boolean isPro)
     {
-        super (extensionDefinition, host);
+        super (factory, host, preferences);
         this.isPro = isPro;
         this.colorManager = new ColorManager ();
         LaunchpadColors.addColors (this.colorManager);
@@ -129,8 +132,7 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
     @Override
     protected void createModel ()
     {
-        this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
-
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
     }
@@ -140,16 +142,13 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
     @Override
     protected void createSurface ()
     {
-        final ControllerHost host = this.getHost ();
-        final MidiDeviceImpl midiDevice = new MidiDeviceImpl (host);
-
-        final MidiOutput output = new MidiOutput (host);
-        final IMidiInput input = midiDevice.createInput (this.isPro ? "Novation Launchpad Pro" : "Novation Launchpad MkII",
+        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
+        final IMidiOutput output = midiAccess.createOutput ();
+        final IMidiInput input = midiAccess.createInput (this.isPro ? "Novation Launchpad Pro" : "Novation Launchpad MkII",
                 "80????" /* Note off */, "90????" /* Note on */);
-
         final LaunchpadControlSurface surface = new LaunchpadControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, this.isPro);
         this.surfaces.add (surface);
-        surface.setDisplay (new DummyDisplay (host));
+        surface.setDisplay (new DummyDisplay (this.host));
         surface.setLaunchpadToStandalone ();
     }
 
@@ -282,7 +281,7 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
     @Override
     protected void startup ()
     {
-        this.getHost ().scheduleTask ( () -> this.getSurface ().getViewManager ().setActiveView (Views.VIEW_PLAY), 100);
+        this.host.scheduleTask ( () -> this.getSurface ().getViewManager ().setActiveView (Views.VIEW_PLAY), 100);
     }
 
 
@@ -335,7 +334,7 @@ public class LaunchpadControllerExtension extends AbstractControllerExtension<La
         // Update the front LED with the color of the current track
         final ITrack track = index == -1 ? null : this.model.getCurrentTrackBank ().getTrack (index);
         final int color = track != null && track.doesExist () ? this.colorManager.getColor (BitwigColors.getColorIndex (track.getColor ())) : 0;
-        surface.sendLaunchpadSysEx ("0A 63 " + MidiOutput.toHexStr (color));
+        surface.sendLaunchpadSysEx ("0A 63 " + StringUtils.toHexStr (color));
     }
 
 

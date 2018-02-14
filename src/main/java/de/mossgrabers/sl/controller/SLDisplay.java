@@ -4,11 +4,12 @@
 
 package de.mossgrabers.sl.controller;
 
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -43,7 +44,7 @@ public class SLDisplay extends AbstractDisplay
      * @param host The host
      * @param output The midi output which addresses the display
      */
-    public SLDisplay (final IHost host, final MidiOutput output)
+    public SLDisplay (final IHost host, final IMidiOutput output)
     {
         super (host, output, 4 /* No of rows */, 8 /* No of cells */, 8);
     }
@@ -110,7 +111,7 @@ public class SLDisplay extends AbstractDisplay
         final int [] array = new int [length];
         for (int i = 0; i < length; i++)
             array[i] = text.charAt (i);
-        this.output.sendSysex (SLControlSurface.SYSEX_HEADER + "02 01 00 " + uint7ToHex (row + 1) + "04 " + MidiOutput.toHexStr (array) + "00 F7");
+        this.output.sendSysex (SLControlSurface.SYSEX_HEADER + "02 01 00 " + uint7ToHex (row + 1) + "04 " + StringUtils.toHexStr (array) + "00 F7");
     }
 
 

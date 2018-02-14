@@ -9,8 +9,25 @@ package de.mossgrabers.framework.daw.midi;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IMidiDevice
+public interface IMidiAccess
 {
+    /**
+     * Create a midi output.
+     *
+     * @return The output
+     */
+    IMidiOutput createOutput ();
+
+
+    /**
+     * Create a midi output.
+     *
+     * @param index The index of the midi output
+     * @return The output
+     */
+    IMidiOutput createOutput (int index);
+
+
     /**
      * Create a midi input. Uses the first input.
      *

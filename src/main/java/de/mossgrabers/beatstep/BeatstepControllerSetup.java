@@ -19,24 +19,25 @@ import de.mossgrabers.beatstep.view.SessionView;
 import de.mossgrabers.beatstep.view.ShiftView;
 import de.mossgrabers.beatstep.view.TrackView;
 import de.mossgrabers.beatstep.view.Views;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
-import de.mossgrabers.framework.controller.AbstractControllerExtension;
+import de.mossgrabers.framework.controller.AbstractControllerSetup;
+import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.ViewManager;
 
-import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.Preferences;
 
 
 /**
@@ -44,7 +45,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BeatstepControllerExtension extends AbstractControllerExtension<BeatstepControlSurface, BeatstepConfiguration>
+public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepControlSurface, BeatstepConfiguration>
 {
     private static final int [] DRUM_MATRIX =
     {
@@ -120,13 +121,14 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
     /**
      * Constructor.
      *
-     * @param extensionDefinition The extension definition
-     * @param host The Bitwig host
+     * @param host The DAW host
+     * @param factory The factory
+     * @param preferences The preferences
      * @param isPro True if Beatstep Pro
      */
-    protected BeatstepControllerExtension (final BaseBeatstepControllerExtensionDefinition extensionDefinition, final ControllerHost host, final boolean isPro)
+    protected BeatstepControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences, final boolean isPro)
     {
-        super (extensionDefinition, host);
+        super (factory, host, preferences);
         this.isPro = isPro;
         this.colorManager = new ColorManager ();
         BeatstepColors.addColors (this.colorManager);
@@ -157,7 +159,7 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
     @Override
     protected void createModel ()
     {
-        this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
         this.model.getTrackBank ().addTrackSelectionObserver (this::handleTrackChange);
     }
 
@@ -166,10 +168,9 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
     @Override
     protected void createSurface ()
     {
-        final ControllerHost host = this.getHost ();
-        final MidiDeviceImpl midiDevice = new MidiDeviceImpl (host);
-        final MidiOutput output = new MidiOutput (host);
-        final IMidiInput input = midiDevice.createInput ("Control", "82????", "92????", "A2????", "B2????");
+        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
+        final IMidiOutput output = midiAccess.createOutput ();
+        final IMidiInput input = midiAccess.createInput ("Control", "82????", "92????", "A2????", "B2????");
 
         // Sequencer 1 is on channel 1
         input.createNoteInput ("Seq. 1", "90????", "80????");
@@ -185,7 +186,7 @@ public class BeatstepControllerExtension extends AbstractControllerExtension<Bea
 
         final BeatstepControlSurface surface = new BeatstepControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, this.isPro);
         this.surfaces.add (surface);
-        surface.setDisplay (new DummyDisplay (host));
+        surface.setDisplay (new DummyDisplay (this.host));
     }
 
 

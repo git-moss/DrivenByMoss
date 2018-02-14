@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -110,7 +110,7 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
      * @param input The midi input
      * @param isPro Is Pro or MkII?
      */
-    public BeatstepControlSurface (final IHost host, final ColorManager colorManager, final BeatstepConfiguration configuration, final MidiOutput output, final IMidiInput input, final boolean isPro)
+    public BeatstepControlSurface (final IHost host, final ColorManager colorManager, final BeatstepConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isPro)
     {
         super (host, configuration, colorManager, output, input, BEATSTEP_BUTTONS_ALL);
 

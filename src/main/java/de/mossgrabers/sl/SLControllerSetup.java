@@ -4,20 +4,20 @@
 
 package de.mossgrabers.sl;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
-import de.mossgrabers.framework.controller.AbstractControllerExtension;
+import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
+import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.ViewManager;
@@ -51,7 +51,7 @@ import de.mossgrabers.sl.view.ControlView;
 import de.mossgrabers.sl.view.PlayView;
 import de.mossgrabers.sl.view.Views;
 
-import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.Preferences;
 
 
 /**
@@ -59,7 +59,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SLControllerExtension extends AbstractControllerExtension<SLControlSurface, SLConfiguration>
+public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface, SLConfiguration>
 {
     private static final int [] DRUM_MATRIX =
     {
@@ -135,13 +135,14 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     /**
      * Constructor.
      *
-     * @param extensionDefinition The extension definition
-     * @param host The Bitwig host
+     * @param host The DAW host
+     * @param factory The factory
+     * @param preferences The preferences
      * @param isMkII True if SLMkII
      */
-    protected SLControllerExtension (final SLControllerExtensionDefinition extensionDefinition, final ControllerHost host, final boolean isMkII)
+    protected SLControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences, final boolean isMkII)
     {
-        super (extensionDefinition, host);
+        super (factory, host, preferences);
         this.isMkII = isMkII;
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
@@ -172,8 +173,7 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     @Override
     protected void createModel ()
     {
-        this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 8, 6, 16, 16, true, -1, -1, -1, -1);
-
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 6, 16, 16, true, -1, -1, -1, -1);
         this.model.getTrackBank ().addTrackSelectionObserver (this::handleTrackChange);
         this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
             if (!isSelected)
@@ -189,12 +189,11 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
     @Override
     protected void createSurface ()
     {
-        final ControllerHost host = this.getHost ();
+        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
+        final IMidiOutput output = midiAccess.createOutput ();
+        final IMidiInput input = midiAccess.createInput (this.isMkII ? "Novation SL MkII (Drumpads)" : "Novation SL MkI (Drumpads)", "90????", "80????");
+        midiAccess.createInput (1, this.isMkII ? "Novation SL MkII (Keyboard)" : "Novation SL MkI (Keyboard)", "80????", "90????", "B0????", "D0????", "E0????");
         final IHost hostProxy = this.model.getHost ();
-        final MidiDeviceImpl midiDeviceImpl = new MidiDeviceImpl (host);
-        final MidiOutput output = new MidiOutput (host);
-        final IMidiInput input = midiDeviceImpl.createInput (this.isMkII ? "Novation SL MkII (Drumpads)" : "Novation SL MkI (Drumpads)", "90????", "80????");
-        midiDeviceImpl.createInput (1, this.isMkII ? "Novation SL MkII (Keyboard)" : "Novation SL MkI (Keyboard)", "80????", "90????", "B0????", "D0????", "E0????");
         final SLControlSurface surface = new SLControlSurface (hostProxy, this.colorManager, this.configuration, output, input, this.isMkII);
         surface.setDisplay (new SLDisplay (hostProxy, output));
         this.surfaces.add (surface);
@@ -295,7 +294,7 @@ public class SLControllerExtension extends AbstractControllerExtension<SLControl
         final SLControlSurface surface = this.getSurface ();
         surface.getModeManager ().getMode (Modes.MODE_VOLUME).updateDisplay ();
 
-        this.getHost ().scheduleTask ( () -> {
+        this.host.scheduleTask ( () -> {
             surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
             surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
         }, 200);

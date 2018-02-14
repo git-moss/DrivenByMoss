@@ -12,7 +12,7 @@ import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
@@ -40,7 +40,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     protected IHost                               host;
     protected C                                   configuration;
     protected ColorManager                        colorManager;
-    protected MidiOutput                          output;
+    protected IMidiOutput                          output;
     protected IMidiInput                          input;
     protected NoteInput                           noteInput;
 
@@ -87,7 +87,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      * @param input The midi input
      * @param buttons All midi CC which should be treated as a button
      */
-    public AbstractControlSurface (final IHost host, final C configuration, final ColorManager colorManager, final MidiOutput output, final IMidiInput input, final int [] buttons)
+    public AbstractControlSurface (final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final int [] buttons)
     {
         this.host = host;
         this.configuration = configuration;
@@ -202,7 +202,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public MidiOutput getOutput ()
+    public IMidiOutput getOutput ()
     {
         return this.output;
     }

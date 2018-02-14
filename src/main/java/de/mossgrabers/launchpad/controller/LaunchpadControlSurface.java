@@ -4,11 +4,12 @@
 
 package de.mossgrabers.launchpad.controller;
 
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 
 
@@ -183,7 +184,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      * @param input The midi input
      * @param isPro Is Pro or MkII?
      */
-    public LaunchpadControlSurface (final IHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final MidiOutput output, final IMidiInput input, final boolean isPro)
+    public LaunchpadControlSurface (final IHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isPro)
     {
         super (host, configuration, colorManager, output, input, isPro ? LAUNCHPAD_PRO_BUTTONS_ALL : LAUNCHPAD_MKII_BUTTONS_ALL);
 
@@ -265,7 +266,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setupFader (final int number, final int color)
     {
-        this.sendLaunchpadSysEx ("2B 0" + Integer.toString (number) + " 00 " + MidiOutput.toHexStr (color) + " 00");
+        this.sendLaunchpadSysEx ("2B 0" + Integer.toString (number) + " 00 " + StringUtils.toHexStr (color) + " 00");
     }
 
 
@@ -277,7 +278,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setupPanFader (final int number, final int color)
     {
-        this.sendLaunchpadSysEx ("2B 0" + Integer.toString (number) + " 01 " + MidiOutput.toHexStr (color) + " 00");
+        this.sendLaunchpadSysEx ("2B 0" + Integer.toString (number) + " 01 " + StringUtils.toHexStr (color) + " 00");
     }
 
 

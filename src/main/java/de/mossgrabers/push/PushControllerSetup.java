@@ -4,7 +4,6 @@
 
 package de.mossgrabers.push;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
@@ -25,20 +24,22 @@ import de.mossgrabers.framework.command.trigger.RecordCommand;
 import de.mossgrabers.framework.command.trigger.StopClipCommand;
 import de.mossgrabers.framework.command.trigger.TapTempoCommand;
 import de.mossgrabers.framework.command.trigger.UndoCommand;
-import de.mossgrabers.framework.controller.AbstractControllerExtension;
+import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
+import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.SceneView;
@@ -126,7 +127,7 @@ import de.mossgrabers.push.view.SequencerView;
 import de.mossgrabers.push.view.SessionView;
 import de.mossgrabers.push.view.Views;
 
-import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.Preferences;
 
 
 /**
@@ -134,7 +135,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PushControllerExtension extends AbstractControllerExtension<PushControlSurface, PushConfiguration>
+public class PushControllerSetup extends AbstractControllerSetup<PushControlSurface, PushConfiguration>
 {
     final boolean isPush2;
 
@@ -142,13 +143,14 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     /**
      * Constructor.
      *
-     * @param extensionDefinition The extension definition
-     * @param host The Bitwig host
+     * @param host The DAW host
+     * @param factory The factory
+     * @param preferences The preferences
      * @param isPush2 True if Push 2
      */
-    protected PushControllerExtension (final PushControllerExtensionDefinition extensionDefinition, final ControllerHost host, final boolean isPush2)
+    protected PushControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences, final boolean isPush2)
     {
-        super (extensionDefinition, host);
+        super (factory, host, preferences);
         this.isPush2 = isPush2;
         this.colorManager = new ColorManager ();
         PushColors.addColors (this.colorManager, isPush2);
@@ -180,7 +182,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     @Override
     protected void createModel ()
     {
-        this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8, 8, this.isPush2 ? 8 : 6, this.isPush2 ? 48 : 16, this.isPush2 ? 48 : 16, false, -1, -1, -1, -1);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, this.isPush2 ? 8 : 6, this.isPush2 ? 48 : 16, this.isPush2 ? 48 : 16, false, -1, -1, -1, -1);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
@@ -201,10 +203,9 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     @Override
     protected void createSurface ()
     {
-        final ControllerHost host = this.getHost ();
-        final MidiDeviceImpl midiDeviceImpl = new MidiDeviceImpl (host);
-        final MidiOutput output = new MidiOutput (host);
-        final IMidiInput input = midiDeviceImpl.createInput (this.isPush2 ? "Ableton Push 2" : "Ableton Push 1",
+        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
+        final IMidiOutput output = midiAccess.createOutput ();
+        final IMidiInput input = midiAccess.createInput (this.isPush2 ? "Ableton Push 2" : "Ableton Push 1",
                 "80????" /* Note off */, "90????" /* Note on */, "B040??" /* Sustainpedal */);
         final PushControlSurface surface = new PushControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
@@ -340,7 +341,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
             if (modeManager.getMode (debugMode) != null)
                 modeManager.setActiveMode (debugMode);
             else
-                this.getHost ().errorln ("Mode " + debugMode + " not registered.");
+                this.host.error ("Mode " + debugMode + " not registered.");
         });
 
         this.createScaleObservers (this.configuration);
@@ -477,7 +478,7 @@ public class PushControllerExtension extends AbstractControllerExtension<PushCon
     @Override
     protected void startup ()
     {
-        this.getHost ().scheduleTask ( () -> {
+        this.host.scheduleTask ( () -> {
             final PushControlSurface surface = this.getSurface ();
             surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
         }, 200);

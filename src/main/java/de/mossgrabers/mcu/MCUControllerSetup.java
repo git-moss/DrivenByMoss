@@ -4,7 +4,6 @@
 
 package de.mossgrabers.mcu;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
@@ -32,18 +31,20 @@ import de.mossgrabers.framework.command.trigger.ToggleVUCommand;
 import de.mossgrabers.framework.command.trigger.UndoCommand;
 import de.mossgrabers.framework.command.trigger.WindCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
-import de.mossgrabers.framework.controller.AbstractControllerExtension;
+import de.mossgrabers.framework.controller.AbstractControllerSetup;
+import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.bitwig.midi.MidiDeviceImpl;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.View;
@@ -83,7 +84,7 @@ import de.mossgrabers.mcu.mode.track.VolumeMode;
 import de.mossgrabers.mcu.view.ControlView;
 import de.mossgrabers.mcu.view.Views;
 
-import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.Preferences;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -95,7 +96,7 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MCUControllerExtension extends AbstractControllerExtension<MCUControlSurface, MCUConfiguration>
+public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurface, MCUConfiguration>
 {
     /** State for button LED on. */
     public static final int                   MCU_BUTTON_STATE_ON       = 127;
@@ -157,13 +158,14 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     /**
      * Constructor.
      *
-     * @param extensionDefinition The extension definition
-     * @param host The Bitwig host
+     * @param host The DAW host
+     * @param factory The factory
+     * @param preferences The preferences
      * @param numMCUDevices The number of MCU devices (main device + extenders) to support
      */
-    public MCUControllerExtension (final MCUControllerExtensionDefinition extensionDefinition, final ControllerHost host, final int numMCUDevices)
+    public MCUControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences, final int numMCUDevices)
     {
-        super (extensionDefinition, host);
+        super (factory, host, preferences);
 
         this.numMCUDevices = numMCUDevices;
 
@@ -192,7 +194,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @Override
     protected void createModel ()
     {
-        this.model = new Model (this.getHost (), this.colorManager, this.valueChanger, this.scales, 8 * this.numMCUDevices, 8, 8, 8, 8, true, 8 * this.numMCUDevices, -1, -1, -1);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8 * this.numMCUDevices, 8, 8, 8, 8, true, 8 * this.numMCUDevices, -1, -1, -1);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
@@ -212,13 +214,12 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     @Override
     protected void createSurface ()
     {
-        final ControllerHost host = this.getHost ();
-        final MidiDeviceImpl midiDevice = new MidiDeviceImpl (host);
+        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
 
         for (int i = 0; i < this.numMCUDevices; i++)
         {
-            final MidiOutput output = new MidiOutput (host, i);
-            final IMidiInput input = midiDevice.createInput (i, null);
+            final IMidiOutput output = midiAccess.createOutput (i);
+            final IMidiInput input = midiAccess.createInput (i, null);
             final MCUControlSurface surface = new MCUControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1), i == 0);
             this.surfaces.add (surface);
             surface.setDisplay (new MCUDisplay (this.model.getHost (), output, true, false));
@@ -473,7 +474,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
             final MCUControlSurface surface = this.getSurface (index);
             surface.switchVuMode (MCUControlSurface.VUMODE_LED);
 
-            this.getHost ().scheduleTask ( () -> {
+            this.host.scheduleTask ( () -> {
                 surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
                 surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
             }, 200);
@@ -589,7 +590,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
         final boolean hasMotorFaders = this.configuration.hasMotorFaders ();
 
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        MidiOutput output;
+        IMidiOutput output;
         for (int index = 0; index < this.numMCUDevices; index++)
         {
             final MCUControlSurface surface = this.getSurface (index);
@@ -655,7 +656,7 @@ public class MCUControllerExtension extends AbstractControllerExtension<MCUContr
     }
 
 
-    private void updateFaders (final MidiOutput output, final int index, final int channel, final ITrack track)
+    private void updateFaders (final IMidiOutput output, final int index, final int channel, final ITrack track)
     {
         int value = track.getVolume ();
 

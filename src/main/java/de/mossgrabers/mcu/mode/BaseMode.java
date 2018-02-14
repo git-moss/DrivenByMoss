@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.mcu.MCUConfiguration;
-import de.mossgrabers.mcu.MCUControllerExtension;
+import de.mossgrabers.mcu.MCUControllerSetup;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 
 
@@ -88,10 +88,10 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getTrack (extenderOffset + i);
-            this.surface.updateButton (MCUControlSurface.MCU_ARM1 + i, track.isRecArm () ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);
-            this.surface.updateButton (MCUControlSurface.MCU_SOLO1 + i, track.isSolo () ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);
-            this.surface.updateButton (MCUControlSurface.MCU_MUTE1 + i, track.isMute () ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);
-            this.surface.updateButton (MCUControlSurface.MCU_SELECT1 + i, track.isSelected () ? MCUControllerExtension.MCU_BUTTON_STATE_ON : MCUControllerExtension.MCU_BUTTON_STATE_OFF);
+            this.surface.updateButton (MCUControlSurface.MCU_ARM1 + i, track.isRecArm () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF);
+            this.surface.updateButton (MCUControlSurface.MCU_SOLO1 + i, track.isSolo () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF);
+            this.surface.updateButton (MCUControlSurface.MCU_MUTE1 + i, track.isMute () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF);
+            this.surface.updateButton (MCUControlSurface.MCU_SELECT1 + i, track.isSelected () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF);
         }
 
         this.updateKnobLEDs ();

@@ -6,7 +6,9 @@ package de.mossgrabers.framework.controller;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
+import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.ControllerExtensionDefinition;
+import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
@@ -54,6 +56,23 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     {
         // Intentionally empty
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ControllerExtension createInstance (final ControllerHost host)
+    {
+        return new GenericControllerExtension (this.getControllerSetup (host), this, host);
+    }
+
+
+    /**
+     * Get the controller setup for this extension.
+     *
+     * @param host The host
+     * @return The controller setup
+     */
+    protected abstract IControllerSetup getControllerSetup (final ControllerHost host);
 
 
     /**
