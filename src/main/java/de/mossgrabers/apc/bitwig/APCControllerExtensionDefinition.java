@@ -2,9 +2,9 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc;
+package de.mossgrabers.apc.bitwig;
 
-import de.mossgrabers.framework.controller.AbstractControllerExtensionDefinition;
+import de.mossgrabers.framework.daw.bitwig.extension.AbstractControllerExtensionDefinition;
 
 
 /**

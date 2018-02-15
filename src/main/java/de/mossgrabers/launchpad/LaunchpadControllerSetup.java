@@ -13,6 +13,7 @@ import de.mossgrabers.framework.command.trigger.NewCommand;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
 import de.mossgrabers.framework.command.trigger.RecordCommand;
 import de.mossgrabers.framework.command.trigger.UndoCommand;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
@@ -79,8 +80,6 @@ import de.mossgrabers.launchpad.view.ShiftView;
 import de.mossgrabers.launchpad.view.Views;
 import de.mossgrabers.launchpad.view.VolumeView;
 
-import com.bitwig.extension.controller.api.Preferences;
-
 
 /**
  * Bitwig Studio extension to support the Novation Launchpad Pro and Launchpad MkII controllers.
@@ -97,12 +96,12 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param preferences The preferences
+     * @param settings The settings
      * @param isPro True if Launchpad Pro
      */
-    protected LaunchpadControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences, final boolean isPro)
+    public LaunchpadControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings, final boolean isPro)
     {
-        super (factory, host, preferences);
+        super (factory, host, settings);
         this.isPro = isPro;
         this.colorManager = new ColorManager ();
         LaunchpadColors.addColors (this.colorManager);

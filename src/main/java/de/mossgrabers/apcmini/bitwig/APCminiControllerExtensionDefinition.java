@@ -2,11 +2,14 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.sl;
+package de.mossgrabers.apcmini.bitwig;
 
+import de.mossgrabers.apcmini.APCminiControllerSetup;
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.daw.bitwig.HostProxy;
+import de.mossgrabers.framework.daw.bitwig.SettingsUI;
+import de.mossgrabers.framework.daw.bitwig.extension.AbstractControllerExtensionDefinition;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -16,20 +19,44 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Novation SLmkII controller extension.
+ * Definition class for the Akai APCmini controller.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SLMkIIControllerExtensionDefinition extends SLControllerExtensionDefinition
+public class APCminiControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("D1CEE920-1E51-11E4-8C21-0800200C9A66");
+    private static final UUID EXTENSION_ID = UUID.fromString ("E7E02A80-3657-11E4-8C21-0800200C9A66");
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getName ()
+    {
+        return "APCmini4Bitwig";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getHardwareVendor ()
+    {
+        return "Akai";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getVersion ()
+    {
+        return "5.02";
+    }
 
 
     /** {@inheritDoc} */
     @Override
     public String getHardwareModel ()
     {
-        return "SL MkII";
+        return "APCmini";
     }
 
 
@@ -45,29 +72,7 @@ public class SLMkIIControllerExtensionDefinition extends SLControllerExtensionDe
     @Override
     public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
     {
-        if (platformType == PlatformType.MAC)
-        {
-            list.add (new String []
-            {
-                "SL MkII MIDI 2",
-                "SL MkII MIDI 1"
-            }, new String []
-            {
-                "SL MkII MIDI 2"
-            });
-        }
-        else
-        {
-            // WINDOWS + MAC
-            list.add (new String []
-            {
-                "MIDIIN2 (SL MkII)",
-                "SL MkII"
-            }, new String []
-            {
-                "MIDIOUT2 (SL MkII)"
-            });
-        }
+        this.createDeviceDiscoveryPairs ("APC MINI", list);
     }
 
 
@@ -75,6 +80,6 @@ public class SLMkIIControllerExtensionDefinition extends SLControllerExtensionDe
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new SLControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), host.getPreferences (), true);
+        return new APCminiControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()));
     }
 }

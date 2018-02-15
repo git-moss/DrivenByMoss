@@ -5,10 +5,9 @@
 package de.mossgrabers.mcu;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.ValueChanger;
-
-import com.bitwig.extension.controller.api.Preferences;
-import com.bitwig.extension.controller.api.SettableEnumValue;
 
 import java.util.Arrays;
 
@@ -100,16 +99,16 @@ public class MCUConfiguration extends AbstractConfiguration
         "Tempo"
     };
 
-    private SettableEnumValue      zoomStateSetting;
-    private SettableEnumValue      tempoOrTicksSetting;
-    private SettableEnumValue      hasDisplay1Setting;
-    private SettableEnumValue      hasDisplay2Setting;
-    private SettableEnumValue      hasSegmentDisplaySetting;
-    private SettableEnumValue      hasAssignmentDisplaySetting;
-    private SettableEnumValue      hasMotorFadersSetting;
-    private SettableEnumValue      displayTrackNamesSetting;
-    private SettableEnumValue      useVertZoomForModesSetting;
-    private SettableEnumValue      useFadersAsKnobsSetting;
+    private IEnumSetting           zoomStateSetting;
+    private IEnumSetting           tempoOrTicksSetting;
+    private IEnumSetting           hasDisplay1Setting;
+    private IEnumSetting           hasDisplay2Setting;
+    private IEnumSetting           hasSegmentDisplaySetting;
+    private IEnumSetting           hasAssignmentDisplaySetting;
+    private IEnumSetting           hasMotorFadersSetting;
+    private IEnumSetting           displayTrackNamesSetting;
+    private IEnumSetting           useVertZoomForModesSetting;
+    private IEnumSetting           useFadersAsKnobsSetting;
 
     private boolean                zoomState;
     private boolean                displayTicks;
@@ -139,49 +138,49 @@ public class MCUConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final Preferences preferences)
+    public void init (final ISettingsUI settingsUI)
     {
         ///////////////////////////
         // Hardware
 
-        this.activateHardwareSettings (preferences);
-        this.activateEnableVUMetersSetting (preferences, CATEGORY_HARDWARE_SETUP);
+        this.activateHardwareSettings (settingsUI);
+        this.activateEnableVUMetersSetting (settingsUI, CATEGORY_HARDWARE_SETUP);
 
         ///////////////////////////
         // Assignable buttons
 
-        this.activateAssignableSettings (preferences);
+        this.activateAssignableSettings (settingsUI);
 
         ///////////////////////////
         // Transport
 
-        this.activateBehaviourOnStopSetting (preferences);
-        this.activateFlipRecordSetting (preferences);
+        this.activateBehaviourOnStopSetting (settingsUI);
+        this.activateFlipRecordSetting (settingsUI);
 
         ///////////////////////////
         // Play and Sequence
 
-        this.activateQuantizeAmountSetting (preferences);
+        this.activateQuantizeAmountSetting (settingsUI);
 
         ///////////////////////////
         // Workflow
 
-        this.activateDisplayCrossfaderSetting (preferences);
-        this.activateNewClipLengthSetting (preferences);
-        this.activateZoomStateSetting (preferences);
-        this.activateDisplayTempoOrTicksSetting (preferences);
-        this.activateChannelTouchSetting (preferences);
+        this.activateDisplayCrossfaderSetting (settingsUI);
+        this.activateNewClipLengthSetting (settingsUI);
+        this.activateZoomStateSetting (settingsUI);
+        this.activateDisplayTempoOrTicksSetting (settingsUI);
+        this.activateChannelTouchSetting (settingsUI);
 
         ///////////////////////////
         // Browser
 
-        this.activateBrowserSettings (preferences);
+        this.activateBrowserSettings (settingsUI);
     }
 
 
-    private void activateHardwareSettings (final Preferences prefs)
+    private void activateHardwareSettings (final ISettingsUI settingsUI)
     {
-        final SettableEnumValue profileSetting = prefs.getEnumSetting ("Profile", CATEGORY_HARDWARE_SETUP, DEVICE_OPTIONS, DEVICE_OPTIONS[0]);
+        final IEnumSetting profileSetting = settingsUI.getEnumSetting ("Profile", CATEGORY_HARDWARE_SETUP, DEVICE_OPTIONS, DEVICE_OPTIONS[0]);
         profileSetting.addValueObserver (value -> {
             switch (value)
             {
@@ -237,49 +236,49 @@ public class MCUConfiguration extends AbstractConfiguration
             profileSetting.set (DEVICE_SELECT);
         });
 
-        this.hasDisplay1Setting = prefs.getEnumSetting ("Has a display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.hasDisplay1Setting = settingsUI.getEnumSetting ("Has a display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         this.hasDisplay1Setting.addValueObserver (value -> {
             this.hasDisplay1 = "On".equals (value);
             this.notifyObservers (HAS_DISPLAY1);
         });
 
-        this.hasDisplay2Setting = prefs.getEnumSetting ("Has a second display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.hasDisplay2Setting = settingsUI.getEnumSetting ("Has a second display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         this.hasDisplay2Setting.addValueObserver (value -> {
             this.hasDisplay2 = "On".equals (value);
             this.notifyObservers (HAS_DISPLAY2);
         });
 
-        this.hasSegmentDisplaySetting = prefs.getEnumSetting ("Has a position/tempo display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.hasSegmentDisplaySetting = settingsUI.getEnumSetting ("Has a position/tempo display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         this.hasSegmentDisplaySetting.addValueObserver (value -> {
             this.hasSegmentDisplay = "On".equals (value);
             this.notifyObservers (HAS_SEGMENT_DISPLAY);
         });
 
-        this.hasAssignmentDisplaySetting = prefs.getEnumSetting ("Has an assignment display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.hasAssignmentDisplaySetting = settingsUI.getEnumSetting ("Has an assignment display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         this.hasAssignmentDisplaySetting.addValueObserver (value -> {
             this.hasAssignmentDisplay = "On".equals (value);
             this.notifyObservers (HAS_ASSIGNMENT_DISPLAY);
         });
 
-        this.hasMotorFadersSetting = prefs.getEnumSetting ("Has motor faders", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.hasMotorFadersSetting = settingsUI.getEnumSetting ("Has motor faders", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         this.hasMotorFadersSetting.addValueObserver (value -> {
             this.hasMotorFaders = "On".equals (value);
             this.notifyObservers (HAS_MOTOR_FADERS);
         });
 
-        this.displayTrackNamesSetting = prefs.getEnumSetting ("Display track names in 1st display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.displayTrackNamesSetting = settingsUI.getEnumSetting ("Display track names in 1st display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.displayTrackNamesSetting.addValueObserver (value -> {
             this.displayTrackNames = "On".equals (value);
             this.notifyObservers (DISPLAY_TRACK_NAMES);
         });
 
-        this.useVertZoomForModesSetting = prefs.getEnumSetting ("Use vertical zoom to change tracks", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.useVertZoomForModesSetting = settingsUI.getEnumSetting ("Use vertical zoom to change tracks", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.useVertZoomForModesSetting.addValueObserver (value -> {
             this.useVertZoomForModes = "On".equals (value);
             this.notifyObservers (USE_VERT_ZOOM_FOR_MODES);
         });
 
-        this.useFadersAsKnobsSetting = prefs.getEnumSetting ("Use faders like editing knobs", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.useFadersAsKnobsSetting = settingsUI.getEnumSetting ("Use faders like editing knobs", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.useFadersAsKnobsSetting.addValueObserver (value -> {
             this.useFadersAsKnobs = "On".equals (value);
             this.notifyObservers (USE_FADERS_AS_KNOBS);
@@ -287,12 +286,12 @@ public class MCUConfiguration extends AbstractConfiguration
     }
 
 
-    private void activateAssignableSettings (final Preferences prefs)
+    private void activateAssignableSettings (final ISettingsUI settingsUI)
     {
         for (int i = 0; i < this.assignableFunctions.length; i++)
         {
             final int pos = i;
-            final SettableEnumValue setting = prefs.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], "Assignable buttons", ASSIGNABLE_VALUES, ASSIGNABLE_VALUES[6]);
+            final IEnumSetting setting = settingsUI.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], "Assignable buttons", ASSIGNABLE_VALUES, ASSIGNABLE_VALUES[6]);
             setting.addValueObserver (value -> {
                 for (int f = 0; f < ASSIGNABLE_VALUES.length; f++)
                 {
@@ -307,11 +306,11 @@ public class MCUConfiguration extends AbstractConfiguration
     /**
      * Activate the Zoom state setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateZoomStateSetting (final Preferences prefs)
+    protected void activateZoomStateSetting (final ISettingsUI settingsUI)
     {
-        this.zoomStateSetting = prefs.getEnumSetting ("Zoom", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.zoomStateSetting = settingsUI.getEnumSetting ("Zoom", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.zoomStateSetting.addValueObserver (value -> {
             this.zoomState = "On".equals (value);
             this.notifyObservers (ZOOM_STATE);
@@ -322,11 +321,11 @@ public class MCUConfiguration extends AbstractConfiguration
     /**
      * Activate the channel touch select setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateChannelTouchSetting (final Preferences prefs)
+    protected void activateChannelTouchSetting (final ISettingsUI settingsUI)
     {
-        final SettableEnumValue touchChannelSetting = prefs.getEnumSetting ("Select Channel on Fader Touch", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        final IEnumSetting touchChannelSetting = settingsUI.getEnumSetting ("Select Channel on Fader Touch", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         touchChannelSetting.addValueObserver (value -> {
             this.touchChannel = "On".equals (value);
             this.notifyObservers (TOUCH_CHANNEL);
@@ -337,11 +336,11 @@ public class MCUConfiguration extends AbstractConfiguration
     /**
      * Activate the display Tempo or Ticks setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateDisplayTempoOrTicksSetting (final Preferences prefs)
+    protected void activateDisplayTempoOrTicksSetting (final ISettingsUI settingsUI)
     {
-        this.tempoOrTicksSetting = prefs.getEnumSetting ("Display tempo or ticks", CATEGORY_WORKFLOW, TEMPO_OR_TICKS_OPTIONS, TEMPO_OR_TICKS_OPTIONS[0]);
+        this.tempoOrTicksSetting = settingsUI.getEnumSetting ("Display tempo or ticks", CATEGORY_WORKFLOW, TEMPO_OR_TICKS_OPTIONS, TEMPO_OR_TICKS_OPTIONS[0]);
         this.tempoOrTicksSetting.addValueObserver (value -> {
             this.displayTicks = TEMPO_OR_TICKS_OPTIONS[0].equals (value);
             this.notifyObservers (DISPLAY_MODE_TICKS_OR_TEMPO);

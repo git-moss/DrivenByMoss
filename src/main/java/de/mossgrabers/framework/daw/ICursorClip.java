@@ -4,9 +4,6 @@
 
 package de.mossgrabers.framework.daw;
 
-import com.bitwig.extension.api.Color;
-
-
 /**
  * Interface to the Cursor clip.
  *
@@ -193,14 +190,6 @@ public interface ICursorClip extends ObserverManagement
      * @param control The control value
      */
     void changeAccent (int control);
-
-
-    /**
-     * Get the color of the clip.
-     *
-     * @return The color
-     */
-    Color getColor ();
 
 
     /**

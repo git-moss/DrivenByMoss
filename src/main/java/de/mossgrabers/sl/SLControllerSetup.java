@@ -5,6 +5,7 @@
 package de.mossgrabers.sl;
 
 import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
@@ -50,8 +51,6 @@ import de.mossgrabers.sl.mode.device.DevicePresetsMode;
 import de.mossgrabers.sl.view.ControlView;
 import de.mossgrabers.sl.view.PlayView;
 import de.mossgrabers.sl.view.Views;
-
-import com.bitwig.extension.controller.api.Preferences;
 
 
 /**
@@ -137,12 +136,12 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param preferences The preferences
+     * @param settings The settings
      * @param isMkII True if SLMkII
      */
-    protected SLControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences, final boolean isMkII)
+    public SLControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings, final boolean isMkII)
     {
-        super (factory, host, preferences);
+        super (factory, host, settings);
         this.isMkII = isMkII;
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);

@@ -2,12 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apcmini;
+package de.mossgrabers.beatstep.bitwig;
 
-import de.mossgrabers.framework.controller.AbstractControllerExtensionDefinition;
+import de.mossgrabers.beatstep.BeatstepControllerSetup;
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.daw.bitwig.HostProxy;
+import de.mossgrabers.framework.daw.bitwig.SettingsUI;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -17,44 +18,20 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Akai APCmini controller.
+ * Definition class for the Beatstep controller extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class APCminiControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+public class BeatstepControllerExtensionDefinition extends BaseBeatstepControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("E7E02A80-3657-11E4-8C21-0800200C9A66");
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName ()
-    {
-        return "APCmini4Bitwig";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareVendor ()
-    {
-        return "Akai";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getVersion ()
-    {
-        return "5.02";
-    }
+    private static final UUID EXTENSION_ID = UUID.fromString ("F7FF1750-7EC3-11E4-B4A9-0800200C9A66");
 
 
     /** {@inheritDoc} */
     @Override
     public String getHardwareModel ()
     {
-        return "APCmini";
+        return "Beatstep";
     }
 
 
@@ -70,7 +47,7 @@ public class APCminiControllerExtensionDefinition extends AbstractControllerExte
     @Override
     public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
     {
-        this.createDeviceDiscoveryPairs ("APC MINI", list);
+        this.createDeviceDiscoveryPairs ("Arturia BeatStep", list);
     }
 
 
@@ -78,6 +55,6 @@ public class APCminiControllerExtensionDefinition extends AbstractControllerExte
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new APCminiControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), host.getPreferences ());
+        return new BeatstepControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), false);
     }
 }

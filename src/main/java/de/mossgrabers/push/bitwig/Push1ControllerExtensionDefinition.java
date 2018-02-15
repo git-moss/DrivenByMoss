@@ -2,11 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc;
+package de.mossgrabers.push.bitwig;
 
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.daw.bitwig.HostProxy;
+import de.mossgrabers.framework.daw.bitwig.SettingsUI;
+import de.mossgrabers.push.PushControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -16,20 +18,20 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the APC40 mkII controller extension.
+ * Definition class for the Push 1 extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class APCmkIIControllerExtensionDefinition extends APCControllerExtensionDefinition
+public class Push1ControllerExtensionDefinition extends PushControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("14787D10-35DE-11E4-8C21-0800200C9A66");
+    private static final UUID EXTENSION_ID = UUID.fromString ("DBED9610-C474-11E6-9598-0800200C9A66");
 
 
     /** {@inheritDoc} */
     @Override
     public String getHardwareModel ()
     {
-        return "APC mkII";
+        return "Push 1";
     }
 
 
@@ -45,7 +47,20 @@ public class APCmkIIControllerExtensionDefinition extends APCControllerExtension
     @Override
     public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
     {
-        this.addDeviceDiscoveryPair ("APC40 mkII", list);
+        switch (platformType)
+        {
+            case WINDOWS:
+                this.addDeviceDiscoveryPair ("MIDIIN2 (Ableton Push)", "MIDIOUT2 (Ableton Push)", list);
+                break;
+
+            case LINUX:
+                this.addDeviceDiscoveryPair ("Ableton Push MIDI 2", list);
+                break;
+
+            case MAC:
+                this.addDeviceDiscoveryPair ("Ableton Push User Port", list);
+                break;
+        }
     }
 
 
@@ -53,6 +68,6 @@ public class APCmkIIControllerExtensionDefinition extends APCControllerExtension
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new APCControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), host.getPreferences (), true);
+        return new PushControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), false);
     }
 }

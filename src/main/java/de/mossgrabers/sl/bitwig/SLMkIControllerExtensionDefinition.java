@@ -2,11 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push;
+package de.mossgrabers.sl.bitwig;
 
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.daw.bitwig.HostProxy;
+import de.mossgrabers.framework.daw.bitwig.SettingsUI;
+import de.mossgrabers.sl.SLControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -16,20 +18,20 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Push 2 controller extension.
+ * Definition class for the Novation SLmkI controller extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Push2ControllerExtensionDefinition extends PushControllerExtensionDefinition
+public class SLMkIControllerExtensionDefinition extends SLControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("15176AA0-C476-11E6-9598-0800200C9A66");
+    private static final UUID EXTENSION_ID = UUID.fromString ("A9041F50-0407-11E5-B939-0800200C9A66");
 
 
     /** {@inheritDoc} */
     @Override
     public String getHardwareModel ()
     {
-        return "Push 2";
+        return "SL MkI";
     }
 
 
@@ -45,20 +47,14 @@ public class Push2ControllerExtensionDefinition extends PushControllerExtensionD
     @Override
     public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
     {
-        switch (platformType)
+        list.add (new String []
         {
-            case WINDOWS:
-                this.addDeviceDiscoveryPair ("Ableton Push 2", list);
-                break;
-
-            case LINUX:
-                this.addDeviceDiscoveryPair ("Ableton Push 2 MIDI 1", list);
-                break;
-
-            case MAC:
-                this.addDeviceDiscoveryPair ("Ableton Push 2 Live Port", list);
-                break;
-        }
+            "ReMOTE SL Port 2",
+            "ReMOTE SL Port 1"
+        }, new String []
+        {
+            "ReMOTE SL Port 2"
+        });
     }
 
 
@@ -66,6 +62,6 @@ public class Push2ControllerExtensionDefinition extends PushControllerExtensionD
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new PushControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), host.getPreferences (), true);
+        return new SLControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), false);
     }
 }

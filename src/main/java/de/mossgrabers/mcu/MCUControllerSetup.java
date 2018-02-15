@@ -31,6 +31,7 @@ import de.mossgrabers.framework.command.trigger.ToggleVUCommand;
 import de.mossgrabers.framework.command.trigger.UndoCommand;
 import de.mossgrabers.framework.command.trigger.WindCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -83,8 +84,6 @@ import de.mossgrabers.mcu.mode.track.TrackMode;
 import de.mossgrabers.mcu.mode.track.VolumeMode;
 import de.mossgrabers.mcu.view.ControlView;
 import de.mossgrabers.mcu.view.Views;
-
-import com.bitwig.extension.controller.api.Preferences;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -160,12 +159,12 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param preferences The preferences
+     * @param settings The settings
      * @param numMCUDevices The number of MCU devices (main device + extenders) to support
      */
-    public MCUControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences, final int numMCUDevices)
+    public MCUControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings, final int numMCUDevices)
     {
-        super (factory, host, preferences);
+        super (factory, host, settings);
 
         this.numMCUDevices = numMCUDevices;
 

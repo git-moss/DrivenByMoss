@@ -8,13 +8,12 @@ import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.View;
-
-import com.bitwig.extension.controller.api.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
 {
     protected final List<S>       surfaces = new ArrayList<> ();
     protected final IHost         host;
-    protected final Preferences   preferences;
+    protected final ISettingsUI   settings;
     protected final ISetupFactory factory;
 
     protected Scales              scales;
@@ -47,13 +46,13 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
      *
      * @param factory The factory
      * @param host The host
-     * @param preferences The preferences
+     * @param settings The settings
      */
-    protected AbstractControllerSetup (final ISetupFactory factory, final IHost host, final Preferences preferences)
+    protected AbstractControllerSetup (final ISetupFactory factory, final IHost host, final ISettingsUI settings)
     {
         this.factory = factory;
         this.host = host;
-        this.preferences = preferences;
+        this.settings = settings;
     }
 
 
@@ -84,7 +83,7 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
     @Override
     public void init ()
     {
-        this.configuration.init (this.preferences);
+        this.configuration.init (this.settings);
 
         this.createScales ();
         this.createModel ();

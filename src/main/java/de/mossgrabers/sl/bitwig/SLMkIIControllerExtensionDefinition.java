@@ -2,11 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push;
+package de.mossgrabers.sl.bitwig;
 
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.daw.bitwig.HostProxy;
+import de.mossgrabers.framework.daw.bitwig.SettingsUI;
+import de.mossgrabers.sl.SLControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -16,20 +18,20 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Push 1 extension.
+ * Definition class for the Novation SLmkII controller extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Push1ControllerExtensionDefinition extends PushControllerExtensionDefinition
+public class SLMkIIControllerExtensionDefinition extends SLControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("DBED9610-C474-11E6-9598-0800200C9A66");
+    private static final UUID EXTENSION_ID = UUID.fromString ("D1CEE920-1E51-11E4-8C21-0800200C9A66");
 
 
     /** {@inheritDoc} */
     @Override
     public String getHardwareModel ()
     {
-        return "Push 1";
+        return "SL MkII";
     }
 
 
@@ -45,19 +47,28 @@ public class Push1ControllerExtensionDefinition extends PushControllerExtensionD
     @Override
     public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
     {
-        switch (platformType)
+        if (platformType == PlatformType.MAC)
         {
-            case WINDOWS:
-                this.addDeviceDiscoveryPair ("MIDIIN2 (Ableton Push)", "MIDIOUT2 (Ableton Push)", list);
-                break;
-
-            case LINUX:
-                this.addDeviceDiscoveryPair ("Ableton Push MIDI 2", list);
-                break;
-
-            case MAC:
-                this.addDeviceDiscoveryPair ("Ableton Push User Port", list);
-                break;
+            list.add (new String []
+            {
+                "SL MkII MIDI 2",
+                "SL MkII MIDI 1"
+            }, new String []
+            {
+                "SL MkII MIDI 2"
+            });
+        }
+        else
+        {
+            // WINDOWS + MAC
+            list.add (new String []
+            {
+                "MIDIIN2 (SL MkII)",
+                "SL MkII"
+            }, new String []
+            {
+                "MIDIOUT2 (SL MkII)"
+            });
         }
     }
 
@@ -66,6 +77,6 @@ public class Push1ControllerExtensionDefinition extends PushControllerExtensionD
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new PushControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), host.getPreferences (), false);
+        return new SLControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), true);
     }
 }

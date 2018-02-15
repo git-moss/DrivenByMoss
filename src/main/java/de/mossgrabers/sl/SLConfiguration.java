@@ -5,10 +5,9 @@
 package de.mossgrabers.sl;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.ValueChanger;
-
-import com.bitwig.extension.controller.api.Preferences;
-import com.bitwig.extension.controller.api.SettableEnumValue;
 
 
 /**
@@ -61,12 +60,12 @@ public class SLConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final Preferences prefs)
+    public void init (final ISettingsUI settingsUI)
     {
         ///////////////////////////
         // Play and Sequence
 
-        final SettableEnumValue touchpadModeSetting = prefs.getEnumSetting ("Mode", "Touchpad", TOUCHPAD_OPTIONS, TOUCHPAD_OPTIONS[1]);
+        final IEnumSetting touchpadModeSetting = settingsUI.getEnumSetting ("Mode", "Touchpad", TOUCHPAD_OPTIONS, TOUCHPAD_OPTIONS[1]);
         touchpadModeSetting.addValueObserver ( (value) -> {
             this.touchpadMode = value;
             this.notifyObservers (TOUCHPAD_MODE);
@@ -75,8 +74,8 @@ public class SLConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
-        this.activateDisplayCrossfaderSetting (prefs);
-        this.activateNewClipLengthSetting (prefs);
+        this.activateDisplayCrossfaderSetting (settingsUI);
+        this.activateNewClipLengthSetting (settingsUI);
     }
 
 

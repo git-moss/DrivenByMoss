@@ -1,4 +1,6 @@
-package de.mossgrabers.framework.controller;
+package de.mossgrabers.framework.daw.bitwig.extension;
+
+import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.ControllerExtensionDefinition;

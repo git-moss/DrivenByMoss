@@ -5,9 +5,8 @@
 package de.mossgrabers.beatstep;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.ValueChanger;
-
-import com.bitwig.extension.controller.api.Preferences;
 
 
 /**
@@ -46,19 +45,19 @@ public class BeatstepConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final Preferences prefs)
+    public void init (final ISettingsUI settingsUI)
     {
         ///////////////////////////
         // Scale
 
-        this.activateScaleSetting (prefs);
-        this.activateScaleBaseSetting (prefs);
-        this.activateScaleInScaleSetting (prefs);
-        this.activateScaleLayoutSetting (prefs);
+        this.activateScaleSetting (settingsUI);
+        this.activateScaleBaseSetting (settingsUI);
+        this.activateScaleInScaleSetting (settingsUI);
+        this.activateScaleLayoutSetting (settingsUI);
 
         ///////////////////////////
         // Pad Sensitivity
 
-        this.activateConvertAftertouchSetting (prefs);
+        this.activateConvertAftertouchSetting (settingsUI);
     }
 }

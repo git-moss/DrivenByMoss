@@ -6,8 +6,6 @@ package de.mossgrabers.framework.configuration;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration.BehaviourOnStop;
 
-import com.bitwig.extension.controller.api.Preferences;
-
 
 /**
  * Interface to several configuration settings.
@@ -210,9 +208,9 @@ public interface Configuration
     /**
      * Overwrite this function to the settings which are supported by your extension.
      *
-     * @param prefs The preferences
+     * @param settings The user interface settings
      */
-    void init (Preferences prefs);
+    void init (ISettingsUI settings);
 
 
     /**
@@ -236,7 +234,7 @@ public interface Configuration
      *
      * @param value The accent value
      */
-    void setAccentValue (double value);
+    void setAccentValue (int value);
 
 
     /**

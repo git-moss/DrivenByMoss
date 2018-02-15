@@ -56,6 +56,7 @@ import de.mossgrabers.framework.command.trigger.NewCommand;
 import de.mossgrabers.framework.command.trigger.PlayCommand;
 import de.mossgrabers.framework.command.trigger.StopCommand;
 import de.mossgrabers.framework.command.trigger.TapTempoCommand;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
@@ -75,8 +76,6 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
-
-import com.bitwig.extension.controller.api.Preferences;
 
 
 /**
@@ -108,12 +107,12 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param preferences The preferences
+     * @param settingsUI The settings
      * @param isMkII True if is mkII
      */
-    protected APCControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences, final boolean isMkII)
+    public APCControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settingsUI, final boolean isMkII)
     {
-        super (factory, host, preferences);
+        super (factory, host, settingsUI);
         this.isMkII = isMkII;
         this.colorManager = new ColorManager ();
         APCColors.addColors (this.colorManager, isMkII);

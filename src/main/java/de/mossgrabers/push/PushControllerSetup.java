@@ -24,6 +24,7 @@ import de.mossgrabers.framework.command.trigger.RecordCommand;
 import de.mossgrabers.framework.command.trigger.StopClipCommand;
 import de.mossgrabers.framework.command.trigger.TapTempoCommand;
 import de.mossgrabers.framework.command.trigger.UndoCommand;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
@@ -127,8 +128,6 @@ import de.mossgrabers.push.view.SequencerView;
 import de.mossgrabers.push.view.SessionView;
 import de.mossgrabers.push.view.Views;
 
-import com.bitwig.extension.controller.api.Preferences;
-
 
 /**
  * Bitwig Studio extension to support the Ableton Push 1 and Push 2 controllers.
@@ -145,12 +144,12 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param preferences The preferences
+     * @param settings The settings
      * @param isPush2 True if Push 2
      */
-    protected PushControllerSetup (final IHost host, final ISetupFactory factory, final Preferences preferences, final boolean isPush2)
+    public PushControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings, final boolean isPush2)
     {
-        super (factory, host, preferences);
+        super (factory, host, settings);
         this.isPush2 = isPush2;
         this.colorManager = new ColorManager ();
         PushColors.addColors (this.colorManager, isPush2);

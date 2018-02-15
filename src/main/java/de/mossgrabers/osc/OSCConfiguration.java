@@ -5,12 +5,11 @@
 package de.mossgrabers.osc;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
+import de.mossgrabers.framework.configuration.IIntegerSetting;
+import de.mossgrabers.framework.configuration.ISettingsUI;
+import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.ValueChanger;
-
-import com.bitwig.extension.controller.api.Preferences;
-import com.bitwig.extension.controller.api.SettableEnumValue;
-import com.bitwig.extension.controller.api.SettableRangedValue;
-import com.bitwig.extension.controller.api.SettableStringValue;
 
 
 /**
@@ -50,44 +49,44 @@ public class OSCConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final Preferences prefs)
+    public void init (final ISettingsUI settingsUI)
     {
         ///////////////////////////
         // Network
 
-        final SettableRangedValue receivePortSetting = prefs.getNumberSetting ("Port", "Receive from (Script restart required)", 0, 65535, 1, "", 8000);
-        receivePortSetting.addValueObserver (65535, value -> {
-            this.receivePort = value;
+        final IIntegerSetting receivePortSetting = settingsUI.getRangeSetting ("Port", "Receive from (Script restart required)", 0, 65535, 1, "", 8000);
+        receivePortSetting.addValueObserver (value -> {
+            this.receivePort = value.intValue ();
             this.notifyObservers (OSCConfiguration.RECEIVE_PORT);
         });
 
-        final SettableStringValue sendHostSetting = prefs.getStringSetting ("Host", "Send to", 15, DEFAULT_SERVER);
+        final IStringSetting sendHostSetting = settingsUI.getStringSetting ("Host", "Send to", 15, DEFAULT_SERVER);
         sendHostSetting.addValueObserver (value -> {
             this.sendHost = value;
             this.notifyObservers (OSCConfiguration.SEND_HOST);
         });
 
-        final SettableRangedValue sendPortSetting = prefs.getNumberSetting ("Port", "Send to", 0, 65535, 1, "", 9000);
-        sendPortSetting.addValueObserver (65535, value -> {
-            this.sendPort = value;
+        final IIntegerSetting sendPortSetting = settingsUI.getRangeSetting ("Port", "Send to", 0, 65535, 1, "", 9000);
+        sendPortSetting.addValueObserver (value -> {
+            this.sendPort = value.intValue ();
             this.notifyObservers (SEND_PORT);
         });
 
         ///////////////////////////
         // Accent
 
-        this.activateAccentActiveSetting (prefs);
-        this.activateAccentValueSetting (prefs);
+        this.activateAccentActiveSetting (settingsUI);
+        this.activateAccentValueSetting (settingsUI);
 
         ///////////////////////////
         // Workflow
 
-        this.activateEnableVUMetersSetting (prefs);
+        this.activateEnableVUMetersSetting (settingsUI);
 
         ///////////////////////////
         // Debug
 
-        final SettableEnumValue debugCommandsSetting = prefs.getEnumSetting ("Debug commands", "Debug", ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        final IEnumSetting debugCommandsSetting = settingsUI.getEnumSetting ("Debug commands", "Debug", ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         debugCommandsSetting.addValueObserver (value -> {
             this.debugCommands = "On".equals (value);
             this.notifyObservers (DEBUG_COMMANDS);

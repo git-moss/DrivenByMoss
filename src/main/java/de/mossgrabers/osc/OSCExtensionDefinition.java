@@ -4,8 +4,8 @@
 
 package de.mossgrabers.osc;
 
-import de.mossgrabers.framework.controller.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.framework.daw.bitwig.extension.AbstractControllerExtensionDefinition;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;

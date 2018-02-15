@@ -102,7 +102,8 @@ class MidiInputImpl implements IMidiInput
     @Override
     public void setKeyTranslationTable (final Object [] table)
     {
-        this.noteInput.setKeyTranslationTable (table);
+        if (this.noteInput != null)
+            this.noteInput.setKeyTranslationTable (table);
     }
 
 
@@ -110,7 +111,8 @@ class MidiInputImpl implements IMidiInput
     @Override
     public void setVelocityTranslationTable (final Object [] table)
     {
-        this.noteInput.setVelocityTranslationTable (table);
+        if (this.noteInput != null)
+            this.noteInput.setVelocityTranslationTable (table);
     }
 
 
@@ -118,6 +120,7 @@ class MidiInputImpl implements IMidiInput
     @Override
     public void sendRawMidiEvent (final int status, final int data1, final int data2)
     {
-        this.noteInput.sendRawMidiEvent (status, data1, data2);
+        if (this.noteInput != null)
+            this.noteInput.sendRawMidiEvent (status, data1, data2);
     }
 }

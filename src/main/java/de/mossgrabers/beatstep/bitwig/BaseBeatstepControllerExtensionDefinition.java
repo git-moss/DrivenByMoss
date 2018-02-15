@@ -2,23 +2,23 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push;
+package de.mossgrabers.beatstep.bitwig;
 
-import de.mossgrabers.framework.controller.AbstractControllerExtensionDefinition;
+import de.mossgrabers.framework.daw.bitwig.extension.AbstractControllerExtensionDefinition;
 
 
 /**
- * Abstract definition class for the Push controllers.
+ * Abstract definition class for the Beatstep controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class PushControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+public abstract class BaseBeatstepControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
     /** {@inheritDoc} */
     @Override
     public String getName ()
     {
-        return "Push4Bitwig";
+        return "Beatstep4Bitwig";
     }
 
 
@@ -26,7 +26,7 @@ public abstract class PushControllerExtensionDefinition extends AbstractControll
     @Override
     public String getHardwareVendor ()
     {
-        return "Ableton";
+        return "Arturia";
     }
 
 
@@ -34,6 +34,6 @@ public abstract class PushControllerExtensionDefinition extends AbstractControll
     @Override
     public String getVersion ()
     {
-        return "9.41";
+        return "4.01";
     }
 }

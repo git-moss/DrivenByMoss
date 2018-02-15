@@ -2,11 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.beatstep;
+package de.mossgrabers.apc.bitwig;
 
+import de.mossgrabers.apc.APCControllerSetup;
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.daw.bitwig.HostProxy;
+import de.mossgrabers.framework.daw.bitwig.SettingsUI;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -16,20 +18,20 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Beatstep Pro extension.
+ * Definition class for the APC40 mkI extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BeatstepProControllerExtensionDefinition extends BaseBeatstepControllerExtensionDefinition
+public class APCmkIControllerExtensionDefinition extends APCControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("7264A210-5EFE-11E5-A837-0800200C9A66");
+    private static final UUID EXTENSION_ID = UUID.fromString ("35E958A0-345F-11E4-8C21-0800200C9A66");
 
 
     /** {@inheritDoc} */
     @Override
     public String getHardwareModel ()
     {
-        return "Beatstep Pro";
+        return "APC40";
     }
 
 
@@ -45,7 +47,7 @@ public class BeatstepProControllerExtensionDefinition extends BaseBeatstepContro
     @Override
     public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
     {
-        this.createDeviceDiscoveryPairs ("Arturia BeatStep Pro", list);
+        this.addDeviceDiscoveryPair ("Akai APC40", list);
     }
 
 
@@ -53,6 +55,6 @@ public class BeatstepProControllerExtensionDefinition extends BaseBeatstepContro
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new BeatstepControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), host.getPreferences (), true);
+        return new APCControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), false);
     }
 }

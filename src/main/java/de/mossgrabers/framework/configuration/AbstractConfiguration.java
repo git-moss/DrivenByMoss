@@ -9,10 +9,6 @@ import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
 
-import com.bitwig.extension.controller.api.Preferences;
-import com.bitwig.extension.controller.api.SettableEnumValue;
-import com.bitwig.extension.controller.api.SettableRangedValue;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -216,18 +212,18 @@ public abstract class AbstractConfiguration implements Configuration
         "On"
     };
 
-    private SettableEnumValue                        scaleBaseSetting;
-    private SettableEnumValue                        scaleInKeySetting;
-    private SettableEnumValue                        scaleLayoutSetting;
-    private SettableEnumValue                        scaleSetting;
-    private SettableEnumValue                        enableVUMetersSetting;
-    private SettableEnumValue                        displayCrossfaderSetting;
-    private SettableEnumValue                        flipSessionSetting;
-    private SettableEnumValue                        lockFlipSessionSetting;
-    private SettableEnumValue                        accentActiveSetting;
-    private SettableRangedValue                      accentValueSetting;
-    private SettableRangedValue                      quantizeAmountSetting;
-    private SettableEnumValue                        newClipLengthSetting;
+    private IEnumSetting                             scaleBaseSetting;
+    private IEnumSetting                             scaleInKeySetting;
+    private IEnumSetting                             scaleLayoutSetting;
+    private IEnumSetting                             scaleSetting;
+    private IEnumSetting                             enableVUMetersSetting;
+    private IEnumSetting                             displayCrossfaderSetting;
+    private IEnumSetting                             flipSessionSetting;
+    private IEnumSetting                             lockFlipSessionSetting;
+    private IEnumSetting                             accentActiveSetting;
+    private IIntegerSetting                          accentValueSetting;
+    private IIntegerSetting                          quantizeAmountSetting;
+    private IEnumSetting                             newClipLengthSetting;
 
     private final Map<Integer, Set<SettingObserver>> observers                   = new HashMap<> ();
     protected ValueChanger                           valueChanger;
@@ -422,9 +418,9 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public void setAccentValue (final double value)
+    public void setAccentValue (final int value)
     {
-        this.accentValueSetting.setRaw (value);
+        this.accentValueSetting.set (value);
     }
 
 
@@ -435,18 +431,7 @@ public abstract class AbstractConfiguration implements Configuration
      */
     public void changeQuantizeAmount (final int control)
     {
-        this.quantizeAmountSetting.setRaw (this.valueChanger.changeIntValue (control, this.quantizeAmount, 1, 101));
-    }
-
-
-    /**
-     * Sets the quantize amount.
-     *
-     * @param value The amount (0 - 1)
-     */
-    public void setQuantizeAmount (final double value)
-    {
-        this.quantizeAmountSetting.setRaw (value);
+        this.quantizeAmountSetting.set (this.valueChanger.changeIntValue (control, this.quantizeAmount, 1, 101));
     }
 
 
@@ -464,7 +449,7 @@ public abstract class AbstractConfiguration implements Configuration
      * @param setting The setting
      * @param enabled On or off
      */
-    protected void setOnOffSetting (final SettableEnumValue setting, final boolean enabled)
+    protected void setOnOffSetting (final IEnumSetting setting, final boolean enabled)
     {
         setting.set (enabled ? ON_OFF_OPTIONS[1] : ON_OFF_OPTIONS[0]);
     }
@@ -612,12 +597,12 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the scale setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateScaleSetting (final Preferences prefs)
+    protected void activateScaleSetting (final ISettingsUI settingsUI)
     {
         final String [] scaleNames = Scale.getNames ();
-        this.scaleSetting = prefs.getEnumSetting ("Scale", CATEGORY_SCALES, scaleNames, scaleNames[0]);
+        this.scaleSetting = settingsUI.getEnumSetting ("Scale", CATEGORY_SCALES, scaleNames, scaleNames[0]);
         this.scaleSetting.addValueObserver (value -> {
             this.scale = value;
             this.notifyObservers (AbstractConfiguration.SCALES_SCALE);
@@ -628,11 +613,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the scale base note setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateScaleBaseSetting (final Preferences prefs)
+    protected void activateScaleBaseSetting (final ISettingsUI settingsUI)
     {
-        this.scaleBaseSetting = prefs.getEnumSetting ("Base", CATEGORY_SCALES, Scales.BASES, Scales.BASES[0]);
+        this.scaleBaseSetting = settingsUI.getEnumSetting ("Base", CATEGORY_SCALES, Scales.BASES, Scales.BASES[0]);
         this.scaleBaseSetting.addValueObserver (value -> {
             this.scaleBase = value;
             this.notifyObservers (SCALES_BASE);
@@ -643,11 +628,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the scale in-scale setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateScaleInScaleSetting (final Preferences prefs)
+    protected void activateScaleInScaleSetting (final ISettingsUI settingsUI)
     {
-        this.scaleInKeySetting = prefs.getEnumSetting (SCALE_IN_KEY, CATEGORY_SCALES, new String []
+        this.scaleInKeySetting = settingsUI.getEnumSetting (SCALE_IN_KEY, CATEGORY_SCALES, new String []
         {
             SCALE_IN_KEY,
             SCALE_CHROMATIC
@@ -662,12 +647,12 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the scale layout setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateScaleLayoutSetting (final Preferences prefs)
+    protected void activateScaleLayoutSetting (final ISettingsUI settingsUI)
     {
         final String [] names = ScaleLayout.getNames ();
-        this.scaleLayoutSetting = prefs.getEnumSetting ("Layout", CATEGORY_SCALES, names, names[0]);
+        this.scaleLayoutSetting = settingsUI.getEnumSetting ("Layout", CATEGORY_SCALES, names, names[0]);
         this.scaleLayoutSetting.addValueObserver (value -> {
             this.scaleLayout = value;
             this.notifyObservers (AbstractConfiguration.SCALES_LAYOUT);
@@ -678,23 +663,23 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the VU meters setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateEnableVUMetersSetting (final Preferences prefs)
+    protected void activateEnableVUMetersSetting (final ISettingsUI settingsUI)
     {
-        this.activateEnableVUMetersSetting (prefs, CATEGORY_WORKFLOW);
+        this.activateEnableVUMetersSetting (settingsUI, CATEGORY_WORKFLOW);
     }
 
 
     /**
      * Activate the VU meters setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      * @param category The name for the category
      */
-    protected void activateEnableVUMetersSetting (final Preferences prefs, final String category)
+    protected void activateEnableVUMetersSetting (final ISettingsUI settingsUI, final String category)
     {
-        this.enableVUMetersSetting = prefs.getEnumSetting ("VU Meters", category, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.enableVUMetersSetting = settingsUI.getEnumSetting ("VU Meters", category, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         this.enableVUMetersSetting.addValueObserver (value -> {
             this.enableVUMeters = "On".equals (value);
             this.notifyObservers (AbstractConfiguration.ENABLE_VU_METERS);
@@ -705,11 +690,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the behaviour on stop setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateBehaviourOnStopSetting (final Preferences prefs)
+    protected void activateBehaviourOnStopSetting (final ISettingsUI settingsUI)
     {
-        final SettableEnumValue behaviourOnStopSetting = prefs.getEnumSetting ("Behaviour on Stop", CATEGORY_TRANSPORT, BEHAVIOUR_ON_STOP_VALUES, BEHAVIOUR_ON_STOP_VALUES[0]);
+        final IEnumSetting behaviourOnStopSetting = settingsUI.getEnumSetting ("Behaviour on Stop", CATEGORY_TRANSPORT, BEHAVIOUR_ON_STOP_VALUES, BEHAVIOUR_ON_STOP_VALUES[0]);
         behaviourOnStopSetting.addValueObserver (value -> {
             for (int i = 0; i < BEHAVIOUR_ON_STOP_VALUES.length; i++)
             {
@@ -724,11 +709,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the display crossfader setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateDisplayCrossfaderSetting (final Preferences prefs)
+    protected void activateDisplayCrossfaderSetting (final ISettingsUI settingsUI)
     {
-        this.displayCrossfaderSetting = prefs.getEnumSetting ("Display Crossfader on Track", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.displayCrossfaderSetting = settingsUI.getEnumSetting ("Display Crossfader on Track", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.displayCrossfaderSetting.addValueObserver (value -> {
             this.displayCrossfader = "On".equals (value);
             this.notifyObservers (AbstractConfiguration.DISPLAY_CROSSFADER);
@@ -739,11 +724,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the flip session setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateFlipSessionSetting (final Preferences prefs)
+    protected void activateFlipSessionSetting (final ISettingsUI settingsUI)
     {
-        this.flipSessionSetting = prefs.getEnumSetting ("Flip Session", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.flipSessionSetting = settingsUI.getEnumSetting ("Flip Session", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.flipSessionSetting.addValueObserver (value -> {
             this.flipSession = "On".equals (value);
             this.notifyObservers (AbstractConfiguration.FLIP_SESSION);
@@ -754,11 +739,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the lock flip session setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateLockFlipSessionSetting (final Preferences prefs)
+    protected void activateLockFlipSessionSetting (final ISettingsUI settingsUI)
     {
-        this.lockFlipSessionSetting = prefs.getEnumSetting ("Lock flip Session", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.lockFlipSessionSetting = settingsUI.getEnumSetting ("Lock flip Session", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.lockFlipSessionSetting.addValueObserver (value -> {
             this.lockFlipSession = "On".equals (value);
             this.notifyObservers (AbstractConfiguration.LOCK_FLIP_SESSION);
@@ -769,11 +754,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the select clip on launch setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateSelectClipOnLaunchSetting (final Preferences prefs)
+    protected void activateSelectClipOnLaunchSetting (final ISettingsUI settingsUI)
     {
-        final SettableEnumValue selectClipOnLaunchSetting = prefs.getEnumSetting ("Select clip on launch", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting selectClipOnLaunchSetting = settingsUI.getEnumSetting ("Select clip on launch", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         selectClipOnLaunchSetting.addValueObserver (value -> {
             this.selectClipOnLaunch = "On".equals (value);
             this.notifyObservers (AbstractConfiguration.SELECT_CLIP_ON_LAUNCH);
@@ -784,11 +769,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the draw record stripe setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateDrawRecordStripeSetting (final Preferences prefs)
+    protected void activateDrawRecordStripeSetting (final ISettingsUI settingsUI)
     {
-        final SettableEnumValue drawRecordStripeSetting = prefs.getEnumSetting ("Display clips of record enabled tracks in red", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        final IEnumSetting drawRecordStripeSetting = settingsUI.getEnumSetting ("Display clips of record enabled tracks in red", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         drawRecordStripeSetting.addValueObserver (value -> {
             this.drawRecordStripe = "On".equals (value);
             this.notifyObservers (AbstractConfiguration.DRAW_RECORD_STRIPE);
@@ -799,11 +784,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate action for rec armed pad setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateActionForRecArmedPad (final Preferences prefs)
+    protected void activateActionForRecArmedPad (final ISettingsUI settingsUI)
     {
-        final SettableEnumValue actionForRecArmedPadSetting = prefs.getEnumSetting ("Action for pressing rec armed empty clip", CATEGORY_SESSION, ACTIONS_REC_ARMED_PADS, ACTIONS_REC_ARMED_PADS[0]);
+        final IEnumSetting actionForRecArmedPadSetting = settingsUI.getEnumSetting ("Action for pressing rec armed empty clip", CATEGORY_SESSION, ACTIONS_REC_ARMED_PADS, ACTIONS_REC_ARMED_PADS[0]);
         actionForRecArmedPadSetting.addValueObserver (value -> {
             for (int i = 0; i < ACTIONS_REC_ARMED_PADS.length; i++)
             {
@@ -818,11 +803,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the convert aftertouch setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateConvertAftertouchSetting (final Preferences prefs)
+    protected void activateConvertAftertouchSetting (final ISettingsUI settingsUI)
     {
-        final SettableEnumValue convertAftertouchSetting = prefs.getEnumSetting ("Convert Poly Aftertouch to", CATEGORY_PADS, AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES, AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES[1]);
+        final IEnumSetting convertAftertouchSetting = settingsUI.getEnumSetting ("Convert Poly Aftertouch to", CATEGORY_PADS, AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES, AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES[1]);
         convertAftertouchSetting.addValueObserver (value -> {
             for (int i = 0; i < AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES.length; i++)
             {
@@ -840,11 +825,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the accent active setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateAccentActiveSetting (final Preferences prefs)
+    protected void activateAccentActiveSetting (final ISettingsUI settingsUI)
     {
-        this.accentActiveSetting = prefs.getEnumSetting ("Activate Fixed Accent", CATEGORY_PLAY_AND_SEQUENCE, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.accentActiveSetting = settingsUI.getEnumSetting ("Activate Fixed Accent", CATEGORY_PLAY_AND_SEQUENCE, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.accentActiveSetting.addValueObserver (value -> {
             this.accentActive = "On".equals (value);
             this.notifyObservers (AbstractConfiguration.ACTIVATE_FIXED_ACCENT);
@@ -855,13 +840,13 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the accent value setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateAccentValueSetting (final Preferences prefs)
+    protected void activateAccentValueSetting (final ISettingsUI settingsUI)
     {
-        this.accentValueSetting = prefs.getNumberSetting ("Fixed Accent Value", CATEGORY_PLAY_AND_SEQUENCE, 1, 127, 1, "", 127);
-        this.accentValueSetting.addValueObserver (127, value -> {
-            this.fixedAccentValue = value + 1;
+        this.accentValueSetting = settingsUI.getRangeSetting ("Fixed Accent Value", CATEGORY_PLAY_AND_SEQUENCE, 1, 127, 1, "", 127);
+        this.accentValueSetting.addValueObserver (value -> {
+            this.fixedAccentValue = value.intValue () + 1;
             this.notifyObservers (AbstractConfiguration.FIXED_ACCENT_VALUE);
         });
     }
@@ -870,11 +855,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the accent value setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateFlipRecordSetting (final Preferences prefs)
+    protected void activateFlipRecordSetting (final ISettingsUI settingsUI)
     {
-        final SettableEnumValue flipRecordSetting = prefs.getEnumSetting ("Flip arranger and clip record / automation", CATEGORY_TRANSPORT, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting flipRecordSetting = settingsUI.getEnumSetting ("Flip arranger and clip record / automation", CATEGORY_TRANSPORT, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         flipRecordSetting.addValueObserver (value -> {
             this.flipRecord = "On".equals (value);
             this.notifyObservers (FLIP_RECORD);
@@ -885,11 +870,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the accent value setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateNewClipLengthSetting (final Preferences prefs)
+    protected void activateNewClipLengthSetting (final ISettingsUI settingsUI)
     {
-        this.newClipLengthSetting = prefs.getEnumSetting ("New Clip Length", CATEGORY_WORKFLOW, NEW_CLIP_LENGTH_VALUES, NEW_CLIP_LENGTH_VALUES[2]);
+        this.newClipLengthSetting = settingsUI.getEnumSetting ("New Clip Length", CATEGORY_WORKFLOW, NEW_CLIP_LENGTH_VALUES, NEW_CLIP_LENGTH_VALUES[2]);
         this.newClipLengthSetting.addValueObserver (value -> {
             for (int i = 0; i < NEW_CLIP_LENGTH_VALUES.length; i++)
             {
@@ -904,13 +889,13 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the quantize amount setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateQuantizeAmountSetting (final Preferences prefs)
+    protected void activateQuantizeAmountSetting (final ISettingsUI settingsUI)
     {
-        this.quantizeAmountSetting = prefs.getNumberSetting ("Quantize Amount", CATEGORY_PLAY_AND_SEQUENCE, 1, 100, 1, "%", 100);
-        this.quantizeAmountSetting.addValueObserver (100, value -> {
-            this.quantizeAmount = value + 1;
+        this.quantizeAmountSetting = settingsUI.getRangeSetting ("Quantize Amount", CATEGORY_PLAY_AND_SEQUENCE, 1, 100, 1, "%", 100);
+        this.quantizeAmountSetting.addValueObserver (value -> {
+            this.quantizeAmount = value.intValue () + 1;
             this.notifyObservers (QUANTIZE_AMOUNT);
         });
     }
@@ -919,11 +904,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the auto select drum setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateAutoSelectDrumSetting (final Preferences prefs)
+    protected void activateAutoSelectDrumSetting (final ISettingsUI settingsUI)
     {
-        final SettableEnumValue autoSelectDrumSetting = prefs.getEnumSetting ("Auto-select drum settings", CATEGORY_DRUMS, new String []
+        final IEnumSetting autoSelectDrumSetting = settingsUI.getEnumSetting ("Auto-select drum settings", CATEGORY_DRUMS, new String []
         {
             "Off",
             "Channel"
@@ -938,11 +923,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the turn off empty drum pads setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateTurnOffEmptyDrumPadsSetting (final Preferences prefs)
+    protected void activateTurnOffEmptyDrumPadsSetting (final ISettingsUI settingsUI)
     {
-        final SettableEnumValue turnOffEmptyDrumPadsSetting = prefs.getEnumSetting ("Turn off empty drum pads", CATEGORY_DRUMS, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting turnOffEmptyDrumPadsSetting = settingsUI.getEnumSetting ("Turn off empty drum pads", CATEGORY_DRUMS, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         turnOffEmptyDrumPadsSetting.addValueObserver (value -> {
             this.turnOffEmptyDrumPads = "On".equals (value);
             this.notifyObservers (TURN_OFF_EMPTY_DRUM_PADS);
@@ -953,11 +938,11 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the footswitch setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateFootswitchSetting (final Preferences prefs)
+    protected void activateFootswitchSetting (final ISettingsUI settingsUI)
     {
-        final SettableEnumValue footswitch2Setting = prefs.getEnumSetting ("Footswitch 2", CATEGORY_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
+        final IEnumSetting footswitch2Setting = settingsUI.getEnumSetting ("Footswitch 2", CATEGORY_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
         footswitch2Setting.addValueObserver (value -> {
             for (int i = 0; i < FOOTSWITCH_VALUES.length; i++)
             {
@@ -972,13 +957,13 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Activate the browser settings.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    protected void activateBrowserSettings (final Preferences prefs)
+    protected void activateBrowserSettings (final ISettingsUI settingsUI)
     {
         for (int i = 0; i < BROWSER_FILTER_COLUMN_NAMES.length; i++)
         {
-            final SettableEnumValue browserDisplayFilterSetting = prefs.getEnumSetting (BROWSER_FILTER_COLUMN_NAMES[i], "Browser", COLUMN_VALUES, COLUMN_VALUES[1]);
+            final IEnumSetting browserDisplayFilterSetting = settingsUI.getEnumSetting (BROWSER_FILTER_COLUMN_NAMES[i], "Browser", COLUMN_VALUES, COLUMN_VALUES[1]);
             final int index = i;
             browserDisplayFilterSetting.addValueObserver (value -> {
                 this.browserDisplayFilter[index] = COLUMN_VALUES[1].equals (value);

@@ -2,11 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad;
+package de.mossgrabers.launchpad.bitwig;
 
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.daw.bitwig.HostProxy;
+import de.mossgrabers.framework.daw.bitwig.SettingsUI;
+import de.mossgrabers.launchpad.LaunchpadControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -66,6 +68,6 @@ public class LaunchpadProControllerExtensionDefinition extends LaunchpadControll
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new LaunchpadControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), host.getPreferences (), true);
+        return new LaunchpadControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), true);
     }
 }

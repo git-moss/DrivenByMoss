@@ -2,23 +2,23 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.beatstep;
+package de.mossgrabers.launchpad.bitwig;
 
-import de.mossgrabers.framework.controller.AbstractControllerExtensionDefinition;
+import de.mossgrabers.framework.daw.bitwig.extension.AbstractControllerExtensionDefinition;
 
 
 /**
- * Abstract definition class for the Beatstep controllers.
+ * Abstract definition class for the Launchpad controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class BaseBeatstepControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+public abstract class LaunchpadControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
     /** {@inheritDoc} */
     @Override
     public String getName ()
     {
-        return "Beatstep4Bitwig";
+        return "Launchpad4Bitwig";
     }
 
 
@@ -26,7 +26,7 @@ public abstract class BaseBeatstepControllerExtensionDefinition extends Abstract
     @Override
     public String getHardwareVendor ()
     {
-        return "Arturia";
+        return "Novation";
     }
 
 
@@ -34,6 +34,6 @@ public abstract class BaseBeatstepControllerExtensionDefinition extends Abstract
     @Override
     public String getVersion ()
     {
-        return "4.01";
+        return "3.30";
     }
 }

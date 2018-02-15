@@ -5,9 +5,8 @@
 package de.mossgrabers.launchpad;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.ValueChanger;
-
-import com.bitwig.extension.controller.api.Preferences;
 
 
 /**
@@ -46,36 +45,36 @@ public class LaunchpadConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final Preferences prefs)
+    public void init (final ISettingsUI settingsUI)
     {
         ///////////////////////////
         // Play and Sequence
 
-        this.activateQuantizeAmountSetting (prefs);
+        this.activateQuantizeAmountSetting (settingsUI);
 
         ///////////////////////////
         // Scale
 
-        this.activateScaleSetting (prefs);
-        this.activateScaleBaseSetting (prefs);
-        this.activateScaleInScaleSetting (prefs);
-        this.activateScaleLayoutSetting (prefs);
+        this.activateScaleSetting (settingsUI);
+        this.activateScaleBaseSetting (settingsUI);
+        this.activateScaleInScaleSetting (settingsUI);
+        this.activateScaleLayoutSetting (settingsUI);
 
         ///////////////////////////
         // Workflow
 
-        this.activateBehaviourOnStopSetting (prefs);
-        this.activateSelectClipOnLaunchSetting (prefs);
-        this.activateFlipSessionSetting (prefs);
+        this.activateBehaviourOnStopSetting (settingsUI);
+        this.activateSelectClipOnLaunchSetting (settingsUI);
+        this.activateFlipSessionSetting (settingsUI);
         if (this.isPro)
-            this.activateFlipRecordSetting (prefs);
-        this.activateAutoSelectDrumSetting (prefs);
-        this.activateTurnOffEmptyDrumPadsSetting (prefs);
-        this.activateNewClipLengthSetting (prefs);
+            this.activateFlipRecordSetting (settingsUI);
+        this.activateAutoSelectDrumSetting (settingsUI);
+        this.activateTurnOffEmptyDrumPadsSetting (settingsUI);
+        this.activateNewClipLengthSetting (settingsUI);
 
         ///////////////////////////
         // Pad Sensitivity
 
-        this.activateConvertAftertouchSetting (prefs);
+        this.activateConvertAftertouchSetting (settingsUI);
     }
 }

@@ -7,10 +7,8 @@ package de.mossgrabers.framework.daw.bitwig;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.daw.ICursorClip;
 
-import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.Clip;
 import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.SettableColorValue;
 
 import java.util.Arrays;
 
@@ -276,15 +274,6 @@ public class CursorClipProxy implements ICursorClip
     {
         final double speed = this.valueChanger.calcKnobSpeed (control, this.valueChanger.getFractionValue () / 100.0);
         this.clip.getAccent ().inc (speed);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public Color getColor ()
-    {
-        final SettableColorValue color = this.clip.color ();
-        return Color.fromRGB (color.red (), color.green (), color.blue ());
     }
 
 

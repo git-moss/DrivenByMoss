@@ -2,23 +2,23 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad;
+package de.mossgrabers.push.bitwig;
 
-import de.mossgrabers.framework.controller.AbstractControllerExtensionDefinition;
+import de.mossgrabers.framework.daw.bitwig.extension.AbstractControllerExtensionDefinition;
 
 
 /**
- * Abstract definition class for the Launchpad controllers.
+ * Abstract definition class for the Push controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class LaunchpadControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+public abstract class PushControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
     /** {@inheritDoc} */
     @Override
     public String getName ()
     {
-        return "Launchpad4Bitwig";
+        return "Push4Bitwig";
     }
 
 
@@ -26,7 +26,7 @@ public abstract class LaunchpadControllerExtensionDefinition extends AbstractCon
     @Override
     public String getHardwareVendor ()
     {
-        return "Novation";
+        return "Ableton";
     }
 
 
@@ -34,6 +34,6 @@ public abstract class LaunchpadControllerExtensionDefinition extends AbstractCon
     @Override
     public String getVersion ()
     {
-        return "3.30";
+        return "9.41";
     }
 }

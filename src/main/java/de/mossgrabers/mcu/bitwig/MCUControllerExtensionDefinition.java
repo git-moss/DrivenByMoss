@@ -2,12 +2,14 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.mcu;
+package de.mossgrabers.mcu.bitwig;
 
-import de.mossgrabers.framework.controller.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.daw.bitwig.HostProxy;
+import de.mossgrabers.framework.daw.bitwig.SettingsUI;
+import de.mossgrabers.framework.daw.bitwig.extension.AbstractControllerExtensionDefinition;
+import de.mossgrabers.mcu.MCUControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -96,6 +98,6 @@ abstract class MCUControllerExtensionDefinition extends AbstractControllerExtens
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new MCUControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), host.getPreferences (), this.numMCUDevices);
+        return new MCUControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), this.numMCUDevices);
     }
 }

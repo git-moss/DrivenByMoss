@@ -6,6 +6,7 @@ package de.mossgrabers.osc;
 
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.bitwig.SettingsUI;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.osc.protocol.OSCModel;
 import de.mossgrabers.osc.protocol.OSCParser;
@@ -50,7 +51,7 @@ public class OSCExtension extends ControllerExtension
     @Override
     public void init ()
     {
-        this.configuration.init (this.getHost ().getPreferences ());
+        this.configuration.init (new SettingsUI (this.getHost ().getPreferences ()));
 
         final Scales scales = new Scales (this.valueChanger, 0, 128, 128, 1);
         scales.setChromatic (true);
