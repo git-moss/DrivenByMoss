@@ -5,11 +5,11 @@
 package de.mossgrabers.apcmini.bitwig;
 
 import de.mossgrabers.apcmini.APCminiControllerSetup;
+import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
+import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
+import de.mossgrabers.framework.bitwig.daw.HostProxy;
+import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
-import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
-import de.mossgrabers.framework.daw.bitwig.HostProxy;
-import de.mossgrabers.framework.daw.bitwig.SettingsUI;
-import de.mossgrabers.framework.daw.bitwig.extension.AbstractControllerExtensionDefinition;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;

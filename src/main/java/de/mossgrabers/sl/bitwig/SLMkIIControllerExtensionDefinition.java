@@ -4,10 +4,10 @@
 
 package de.mossgrabers.sl.bitwig;
 
+import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
+import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
+import de.mossgrabers.framework.bitwig.daw.HostProxy;
 import de.mossgrabers.framework.controller.IControllerSetup;
-import de.mossgrabers.framework.daw.bitwig.BitwigSetupFactory;
-import de.mossgrabers.framework.daw.bitwig.HostProxy;
-import de.mossgrabers.framework.daw.bitwig.SettingsUI;
 import de.mossgrabers.sl.SLControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;

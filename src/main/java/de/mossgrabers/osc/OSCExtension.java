@@ -4,9 +4,9 @@
 
 package de.mossgrabers.osc;
 
+import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.bitwig.SettingsUI;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.osc.protocol.OSCModel;
 import de.mossgrabers.osc.protocol.OSCParser;

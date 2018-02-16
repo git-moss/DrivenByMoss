@@ -6,7 +6,6 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.bitwig.TrackBankProxy;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -157,7 +156,7 @@ public interface IModel
      *
      * @return The track bank
      */
-    TrackBankProxy getTrackBank ();
+    ITrackBank getTrackBank ();
 
 
     /**

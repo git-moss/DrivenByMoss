@@ -4,11 +4,11 @@
 
 package de.mossgrabers.osc.protocol;
 
+import de.mossgrabers.framework.bitwig.daw.Model;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.bitwig.Model;
 import de.mossgrabers.framework.scale.Scales;
 
 import com.bitwig.extension.controller.api.ControllerHost;

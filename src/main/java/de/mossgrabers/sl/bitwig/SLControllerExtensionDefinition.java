@@ -4,7 +4,7 @@
 
 package de.mossgrabers.sl.bitwig;
 
-import de.mossgrabers.framework.daw.bitwig.extension.AbstractControllerExtensionDefinition;
+import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 
 
 /**
