@@ -12,6 +12,22 @@ package de.mossgrabers.framework.daw;
 public interface IHost
 {
     /**
+     * Get the hosts name.
+     *
+     * @return The name
+     */
+    String getName ();
+
+
+    /**
+     * Returns true if the DAW supports a clip based view.
+     *
+     * @return True if the DAW supports a clip based view
+     */
+    boolean hasClips ();
+
+
+    /**
      * Schedules the given task for execution after the given delay.
      *
      * @param task The task to execute

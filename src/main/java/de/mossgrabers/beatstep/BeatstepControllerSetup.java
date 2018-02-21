@@ -40,7 +40,7 @@ import de.mossgrabers.framework.view.ViewManager;
 
 
 /**
- * Bitwig Studio extension to support the Arturia Beatstep and Beatstep Pro controllers.
+ * Support for the Arturia Beatstep and Beatstep Pro controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

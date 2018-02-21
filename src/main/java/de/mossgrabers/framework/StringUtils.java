@@ -12,6 +12,15 @@ package de.mossgrabers.framework;
 public class StringUtils
 {
     /**
+     * Construcotr, private due to help class.
+     */
+    private StringUtils ()
+    {
+        // Intentionally empty
+    }
+
+
+    /**
      * Replace umlauts with alternative writing.
      *
      * @param name The string to check

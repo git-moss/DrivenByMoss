@@ -37,8 +37,8 @@ public class ParameterImpl implements IParameter
         parameter.exists ().markInterested ();
         parameter.name ().markInterested ();
         parameter.displayedValue ().markInterested ();
-        parameter.value ().addValueObserver (maxParameterValue, value -> this.handleValue (value));
-        parameter.modulatedValue ().addValueObserver (maxParameterValue, value -> this.handleModulatedValue (value));
+        parameter.value ().addValueObserver (maxParameterValue, this::handleValue);
+        parameter.modulatedValue ().addValueObserver (maxParameterValue, this::handleModulatedValue);
     }
 
 

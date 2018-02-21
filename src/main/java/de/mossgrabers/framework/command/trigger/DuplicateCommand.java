@@ -45,12 +45,12 @@ public class DuplicateCommand<S extends ControlSurface<C>, C extends Configurati
 
         // Is there a selected track?
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack ITrack = tb.getSelectedTrack ();
-        if (ITrack == null || !ITrack.doesExist ())
+        final ITrack track = tb.getSelectedTrack ();
+        if (track == null || !track.doesExist ())
             return;
 
         // Is there a selected slot?
-        final int trackIndex = ITrack.getIndex ();
+        final int trackIndex = track.getIndex ();
         final ISlot slot = tb.getSelectedSlot (trackIndex);
         if (slot == null)
             return;

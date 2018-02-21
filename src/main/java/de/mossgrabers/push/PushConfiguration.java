@@ -296,7 +296,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changePadThreshold (final int control)
     {
-        final int value = this.valueChanger.changeIntValue (control, this.padThreshold, 1, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length);
+        final int value = this.valueChanger.changeValue (control, this.padThreshold, 1, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length);
         this.padThreshold = Math.max (0, Math.min (value, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length - 1));
         this.padThresholdSetting.set (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[this.padThreshold]);
     }
@@ -309,7 +309,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changeVelocityCurve (final int control)
     {
-        final int value = this.valueChanger.changeIntValue (control, this.velocityCurve, 1, PushControlSurface.PUSH_PAD_CURVES_NAME.length);
+        final int value = this.valueChanger.changeValue (control, this.velocityCurve, 1, PushControlSurface.PUSH_PAD_CURVES_NAME.length);
         this.velocityCurve = Math.max (0, Math.min (value, PushControlSurface.PUSH_PAD_CURVES_NAME.length - 1));
         this.velocityCurveSetting.set (PushControlSurface.PUSH_PAD_CURVES_NAME[this.velocityCurve]);
     }
@@ -322,7 +322,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changeDisplayBrightness (final int control)
     {
-        this.displayBrightnessSetting.set (this.valueChanger.changeIntValue (control, this.displayBrightness, 1, 101));
+        this.displayBrightnessSetting.set (this.valueChanger.changeValue (control, this.displayBrightness, 1, 101));
     }
 
 
@@ -333,7 +333,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changeLEDBrightness (final int control)
     {
-        this.ledBrightnessSetting.set (this.valueChanger.changeIntValue (control, this.ledBrightness, 1, 101));
+        this.ledBrightnessSetting.set (this.valueChanger.changeValue (control, this.ledBrightness, 1, 101));
     }
 
 
@@ -344,7 +344,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changePadSensitivity (final int control)
     {
-        this.padSensitivitySetting.set (this.valueChanger.changeIntValue (control, this.padSensitivity, 1, 11));
+        this.padSensitivitySetting.set (this.valueChanger.changeValue (control, this.padSensitivity, 1, 11));
     }
 
 
@@ -355,7 +355,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changePadGain (final int control)
     {
-        this.padGainSetting.set (this.valueChanger.changeIntValue (control, this.padGain, 1, 11));
+        this.padGainSetting.set (this.valueChanger.changeValue (control, this.padGain, 1, 11));
     }
 
 
@@ -366,7 +366,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changePadDynamics (final int control)
     {
-        this.padDynamicsSetting.set (this.valueChanger.changeIntValue (control, this.padDynamics, 1, 11));
+        this.padDynamicsSetting.set (this.valueChanger.changeValue (control, this.padDynamics, 1, 11));
     }
 
 

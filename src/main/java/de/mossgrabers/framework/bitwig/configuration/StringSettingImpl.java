@@ -43,6 +43,6 @@ public class StringSettingImpl implements IStringSetting
     @Override
     public void addValueObserver (final IValueObserver<String> observer)
     {
-        this.stringValue.addValueObserver (value -> observer.update (value));
+        this.stringValue.addValueObserver (observer::update);
     }
 }

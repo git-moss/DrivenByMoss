@@ -43,6 +43,6 @@ public class EnumSettingImpl implements IEnumSetting
     @Override
     public void addValueObserver (final IValueObserver<String> observer)
     {
-        this.enumValue.addValueObserver (value -> observer.update (value));
+        this.enumValue.addValueObserver (observer::update);
     }
 }

@@ -154,14 +154,28 @@ public class ModeManager
             oldModeId = this.temporaryModeId;
             this.getMode (this.temporaryModeId).onDeactivate ();
             this.temporaryModeId = null;
-            this.getMode (this.activeModeId).onActivate ();
+            Mode mode = this.getMode (this.activeModeId);
+            if (mode == null)
+            {
+                this.activeModeId = this.defaultModeId;
+                mode = this.getMode (this.activeModeId);
+            }
+            else
+                mode.onActivate ();
         }
         else if (this.previousModeId != null)
         {
             oldModeId = this.activeModeId;
             this.getMode (this.activeModeId).onDeactivate ();
             this.activeModeId = this.previousModeId;
-            this.getMode (this.activeModeId).onActivate ();
+            Mode mode = this.getMode (this.activeModeId);
+            if (mode == null)
+            {
+                this.activeModeId = this.defaultModeId;
+                mode = this.getMode (this.activeModeId);
+            }
+            else
+                mode.onActivate ();
         }
 
         if (oldModeId != null)

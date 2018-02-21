@@ -431,7 +431,7 @@ public abstract class AbstractConfiguration implements Configuration
      */
     public void changeQuantizeAmount (final int control)
     {
-        this.quantizeAmountSetting.set (this.valueChanger.changeIntValue (control, this.quantizeAmount, 1, 101));
+        this.quantizeAmountSetting.set (this.valueChanger.changeValue (control, this.quantizeAmount, 1, 101));
     }
 
 

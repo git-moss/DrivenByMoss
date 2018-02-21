@@ -123,7 +123,7 @@ public class MCUDisplay extends AbstractDisplay
         }
         catch (final ArrayIndexOutOfBoundsException ex)
         {
-            ex.printStackTrace ();
+            this.host.error ("Display array index out of bounds.", ex);
         }
         return this;
     }

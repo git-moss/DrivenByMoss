@@ -164,7 +164,9 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public static final String  LAUNCHPAD_PRO_SYSEX_HEADER    = "F0 00 20 29 02 10 ";
     public static final String  LAUNCHPAD_PRO_PRG_MODE        = "2C 03";
     public static final String  LAUNCHPAD_PRO_FADER_MODE      = "2C 02";
-    public static final String  LAUNCHPAD_PRO_PAN_MODE        = "2C 02";
+    public static final String  LAUNCHPAD_PRO_PAN_MODE        = "2C 02";             // TODO
+                                                                                     // Identisch zu
+                                                                                     // vorherigem?
 
     public static final String  LAUNCHPAD_MKII_SYSEX_HEADER   = "F0 00 20 29 02 18 ";
     public static final String  LAUNCHPAD_MKII_PRG_MODE       = "22 00";

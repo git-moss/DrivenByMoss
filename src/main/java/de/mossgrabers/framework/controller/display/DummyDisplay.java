@@ -8,7 +8,7 @@ import de.mossgrabers.framework.daw.IHost;
 
 
 /**
- * Only supports notification messages via Bitwigs notification dialog.
+ * Only supports notification messages via a notification dialog.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

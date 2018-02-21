@@ -52,34 +52,39 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         final ModeManager modeManager = this.surface.getModeManager ();
         final Integer currentMode = modeManager.getActiveModeId ();
 
-        if (config.isPush2 ())
+        if (currentMode != null)
         {
-            if (Modes.MODE_TRACK.equals (currentMode) || Modes.MODE_VOLUME.equals (currentMode) || Modes.MODE_CROSSFADER.equals (currentMode) || Modes.MODE_PAN.equals (currentMode))
+            if (config.isPush2 ())
             {
-                this.model.toggleCurrentTrackBank ();
-            }
-            else if (currentMode.intValue () >= Modes.MODE_SEND1.intValue () && currentMode.intValue () <= Modes.MODE_SEND8.intValue ())
-            {
-                modeManager.setActiveMode (Modes.MODE_TRACK);
-                this.model.toggleCurrentTrackBank ();
+                if (Modes.MODE_TRACK.equals (currentMode) || Modes.MODE_VOLUME.equals (currentMode) || Modes.MODE_CROSSFADER.equals (currentMode) || Modes.MODE_PAN.equals (currentMode))
+                {
+                    this.model.toggleCurrentTrackBank ();
+                }
+                else if (currentMode.intValue () >= Modes.MODE_SEND1.intValue () && currentMode.intValue () <= Modes.MODE_SEND8.intValue ())
+                {
+                    modeManager.setActiveMode (Modes.MODE_TRACK);
+                    this.model.toggleCurrentTrackBank ();
+                }
+                else
+                    modeManager.setActiveMode (config.getCurrentMixMode ());
             }
             else
-                modeManager.setActiveMode (config.getCurrentMixMode ());
+            {
+                // Layer mode selection for Push 1
+                if (this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
+                {
+                    modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
+                    return;
+                }
+
+                if (currentMode == Modes.MODE_TRACK)
+                    this.model.toggleCurrentTrackBank ();
+                else
+                    modeManager.setActiveMode (Modes.MODE_TRACK);
+            }
         }
         else
-        {
-            // Layer mode selection for Push 1
-            if (this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
-            {
-                modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
-                return;
-            }
-
-            if (currentMode == Modes.MODE_TRACK)
-                this.model.toggleCurrentTrackBank ();
-            else
-                modeManager.setActiveMode (Modes.MODE_TRACK);
-        }
+            modeManager.setActiveMode (Modes.MODE_TRACK);
 
         config.setDebugMode (modeManager.getActiveModeId ());
 

@@ -32,6 +32,22 @@ public class HostProxy implements IHost
 
     /** {@inheritDoc} */
     @Override
+    public String getName ()
+    {
+        return "Bitwig";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasClips ()
+    {
+        return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void scheduleTask (final Runnable task, final long delay)
     {
         this.host.scheduleTask (task, delay);

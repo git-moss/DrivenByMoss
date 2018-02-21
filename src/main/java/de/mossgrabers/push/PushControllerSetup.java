@@ -136,7 +136,7 @@ import de.mossgrabers.push.view.Views;
  */
 public class PushControllerSetup extends AbstractControllerSetup<PushControlSurface, PushConfiguration>
 {
-    final boolean isPush2;
+    protected final boolean isPush2;
 
 
     /**
@@ -208,10 +208,16 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 "80????" /* Note off */, "90????" /* Note on */, "B040??" /* Sustainpedal */);
         final PushControlSurface surface = new PushControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
+        surface.setDisplay (this.createDisplay (output));
+        surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
+    }
+
+
+    protected PushDisplay createDisplay (final IMidiOutput output)
+    {
         final PushDisplay display = new PushDisplay (this.model.getHost (), this.isPush2, this.valueChanger.getUpperBound (), output);
         display.setCommunicationPort (this.configuration.getSendPort ());
-        surface.setDisplay (display);
-        surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
+        return display;
     }
 
 
@@ -354,18 +360,22 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final PushControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
         viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM4, new DrumView4 (surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM8, new DrumView8 (surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM64, new DrumView64 (surface, this.model));
-        viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (surface, this.model));
         viewManager.registerView (Views.VIEW_PIANO, new PianoView (surface, this.model));
         viewManager.registerView (Views.VIEW_PRG_CHANGE, new PrgChangeView (surface, this.model));
         viewManager.registerView (Views.VIEW_CLIP, new ClipView (surface, this.model));
         viewManager.registerView (Views.VIEW_COLOR, new ColorView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SCENE_PLAY, new ScenePlayView (surface, this.model));
+
+        if (this.host.hasClips ())
+        {
+            viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
+            viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
+            viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
+            viewManager.registerView (Views.VIEW_DRUM4, new DrumView4 (surface, this.model));
+            viewManager.registerView (Views.VIEW_DRUM8, new DrumView8 (surface, this.model));
+            viewManager.registerView (Views.VIEW_DRUM64, new DrumView64 (surface, this.model));
+            viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (surface, this.model));
+            viewManager.registerView (Views.VIEW_SCENE_PLAY, new ScenePlayView (surface, this.model));
+        }
     }
 
 
@@ -469,7 +479,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         pianoView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (pianoView, this.model, surface));
 
         final SessionView sessionView = (SessionView) viewManager.getView (Views.VIEW_SESSION);
-        sessionView.registerPitchbendCommand (new PitchbendSessionCommand (this.model, surface));
+        if (sessionView != null)
+            sessionView.registerPitchbendCommand (new PitchbendSessionCommand (this.model, surface));
     }
 
 

@@ -260,7 +260,6 @@ public class DeviceBrowserMode extends BaseMode
                 break;
 
             case DeviceBrowserMode.SELECTION_PRESET:
-            {
                 final IBrowserColumnItem [] results = browser.getResultColumnItems ();
                 for (int i = 0; i < 8; i++)
                 {
@@ -275,10 +274,8 @@ public class DeviceBrowserMode extends BaseMode
                     message.addListElement (items, selected);
                 }
                 break;
-            }
 
             case DeviceBrowserMode.SELECTION_FILTER:
-            {
                 final IBrowserColumnItem [] item = browser.getFilterColumn (this.filterColumn).getItems ();
                 for (int i = 0; i < 8; i++)
                 {
@@ -296,7 +293,6 @@ public class DeviceBrowserMode extends BaseMode
                     message.addListElement (items, selected);
                 }
                 break;
-            }
         }
 
         display.send (message);

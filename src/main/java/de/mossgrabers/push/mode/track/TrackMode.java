@@ -377,12 +377,19 @@ public class TrackMode extends AbstractTrackMode
                 {
                     final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
                     final int sendPos = sendOffset + j;
+                    selected[j] = true;
+                    sendName[j] = "";
+                    valueStr[j] = "";
+                    value[j] = 0;
+                    if (selTrack == null)
+                        continue;
                     final ISend send = selTrack.getSends ()[sendPos];
+                    if (send == null)
+                        continue;
                     sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
                     valueStr[j] = send.doesExist () && this.isKnobTouched[4 + j] ? send.getDisplayedValue (8) : "";
                     value[j] = valueChanger.toDisplayValue (send.doesExist () ? send.getValue () : 0);
                     modulatedValue[j] = valueChanger.toDisplayValue (send.doesExist () ? send.getModulatedValue () : 0);
-                    selected[j] = true;
                 }
                 message.addSendsElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, sendName, valueStr, value, modulatedValue, selected, true);
             }

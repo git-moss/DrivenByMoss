@@ -79,7 +79,7 @@ import de.mossgrabers.framework.view.ViewManager;
 
 
 /**
- * Bitwig Studio extension to support the Akai APC40 mkI and APC40 mkII controllers.
+ * Support for the Akai APC40 mkI and APC40 mkII controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

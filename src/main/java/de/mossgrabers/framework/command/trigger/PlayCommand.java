@@ -111,8 +111,6 @@ public class PlayCommand<S extends ControlSurface<C>, C extends Configuration> e
     private void doubleClickTest ()
     {
         this.restartFlag = true;
-        this.surface.scheduleTask ( () -> {
-            this.restartFlag = false;
-        }, 250);
+        this.surface.scheduleTask ( () -> this.restartFlag = false, 250);
     }
 }

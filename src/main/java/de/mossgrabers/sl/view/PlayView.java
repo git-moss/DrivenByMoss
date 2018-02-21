@@ -62,13 +62,9 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         this.isPlayMode = true;
 
         final ITrackBank tb = model.getTrackBank ();
-        tb.addNoteObserver ( (note, velocity) -> {
-            // Light notes send from the sequencer
-            this.pressedKeys[note] = velocity;
-        });
-        tb.addTrackSelectionObserver ( (index, isSelected) -> {
-            this.clearPressedKeys ();
-        });
+        // Light notes send from the sequencer
+        tb.addNoteObserver ( (note, velocity) -> this.pressedKeys[note] = velocity);
+        tb.addTrackSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
     }
 
 
@@ -360,7 +356,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
                 final int isSet = this.clip.getStep (col, this.offsetY + this.selectedPad);
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
-                final double y = col / 8;
+                final double y = col / 8.0;
                 final int color = isSet > 0 ? SLControlSurface.MKII_BUTTON_STATE_ON : hilite ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
                 if (y == 0)
                     this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW3_1 + x, color);

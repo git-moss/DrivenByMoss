@@ -66,15 +66,15 @@ public class NoteMode extends BaseMode
         switch (index)
         {
             case 0:
-                this.noteLength = valueChanger.changeIntValue (value, (int) Math.floor (this.noteLength), 1, 1024);
+                this.noteLength = valueChanger.changeValue (value, (int) Math.floor (this.noteLength), 1, 1024);
                 this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);
                 break;
             case 1:
-                this.noteLength = valueChanger.changeValue (value, (int) this.noteLength, 0, 1024);
+                this.noteLength = valueChanger.changeValue (value, (int) this.noteLength, 1, 1024);
                 this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);
                 break;
             case 2:
-                this.noteVelocity = valueChanger.changeIntValue (value, this.noteVelocity, 1, 128);
+                this.noteVelocity = valueChanger.changeValue (value, this.noteVelocity, 1, 128);
                 this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);
                 break;
         }

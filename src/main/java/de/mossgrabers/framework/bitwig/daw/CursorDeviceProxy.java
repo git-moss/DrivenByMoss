@@ -131,9 +131,7 @@ public class CursorDeviceProxy implements ICursorDevice
             this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
 
             final int index = i;
-            layer.addIsSelectedInEditorObserver (isSelected -> {
-                this.deviceLayers[index].setSelected (isSelected);
-            });
+            layer.addIsSelectedInEditorObserver (this.deviceLayers[index]::setSelected);
         }
 
         // Monitor the drum pad layers of a container device (if any)
@@ -147,9 +145,7 @@ public class CursorDeviceProxy implements ICursorDevice
             this.drumPadBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
 
             final int index = i;
-            layer.addIsSelectedInEditorObserver (isSelected -> {
-                this.drumPadLayers[index].setSelected (isSelected);
-            });
+            layer.addIsSelectedInEditorObserver (this.drumPadLayers[index]::setSelected);
         }
     }
 

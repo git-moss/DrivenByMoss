@@ -27,7 +27,6 @@ import com.bitwig.extension.controller.api.ControllerHost;
 public class OSCExtension extends ControllerExtension
 {
     private OSCWriter           writer;
-    private OSCParser           parser;
     private OSCConfiguration    configuration;
     private DefaultValueChanger valueChanger;
 
@@ -57,28 +56,22 @@ public class OSCExtension extends ControllerExtension
         scales.setChromatic (true);
 
         final ControllerHost host = this.getHost ();
-
-        final OscModule oscModule = host.getOscModule ();
-        final OscAddressSpace addressSpace = oscModule.createAddressSpace ();
-
-        this.configuration.addSettingObserver (OSCConfiguration.DEBUG_COMMANDS, () -> {
-            addressSpace.setShouldLogMessages (this.configuration.getDebugCommands ());
-        });
-
         final OSCModel model = new OSCModel (host, new ColorManager (), this.valueChanger, scales);
-        this.parser = new OSCParser (host, this.writer, this.configuration, model);
+        final OscModule oscModule = host.getOscModule ();
 
-        addressSpace.registerDefaultMethod (this.parser);
-
-        final int sendPort = this.configuration.getSendPort ();
-        final OscConnection udpServer = oscModule.connectToUdpServer (this.configuration.getSendHost (), sendPort, oscModule.createAddressSpace ());
-
+        // Send OSC messages
+        final OscConnection udpServer = oscModule.connectToUdpServer (this.configuration.getSendHost (), this.configuration.getSendPort (), oscModule.createAddressSpace ());
         this.writer = new OSCWriter (model, this.configuration, udpServer);
 
-        final int receivePort = this.configuration.getReceivePort ();
-        oscModule.createUdpServer (receivePort, addressSpace);
+        // Receive OSC messages
+        final OscAddressSpace addressSpace = oscModule.createAddressSpace ();
+        this.configuration.addSettingObserver (OSCConfiguration.DEBUG_COMMANDS, () -> addressSpace.setShouldLogMessages (this.configuration.getDebugCommands ()));
+        addressSpace.registerDefaultMethod (new OSCParser (host, this.writer, this.configuration, model));
+        oscModule.createUdpServer (this.configuration.getReceivePort (), addressSpace);
 
+        // Initial flush of the whole DAW state
         host.scheduleTask ( () -> this.writer.flush (true), 1000);
+
         host.println ("Initialized.");
     }
 

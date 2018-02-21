@@ -97,7 +97,7 @@ public class SLDisplay extends AbstractDisplay
         }
         catch (final ArrayIndexOutOfBoundsException ex)
         {
-            ex.printStackTrace ();
+            this.host.error ("Display array index out of bounds.", ex);
         }
         return this;
     }
@@ -119,7 +119,7 @@ public class SLDisplay extends AbstractDisplay
     @Override
     public void shutdown ()
     {
-        this.notify ("Please start Bitwig to play...");
+        this.notify ("Please start " + this.host.getName () + " to play...");
     }
 
 

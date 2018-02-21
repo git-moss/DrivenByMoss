@@ -186,10 +186,10 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
         APC_BUTTON_UPDATE[APC_BUTTON_BANK] = false;
     }
 
-    private static String ID_APC_40      = "73";
-    private static String ID_APC_40_MKII = "29";
+    private static final String ID_APC_40      = "73";
+    private static final String ID_APC_40_MKII = "29";
 
-    private boolean       isMkII;
+    private boolean             isMkII;
 
 
     /**

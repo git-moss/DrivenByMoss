@@ -11,7 +11,6 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.SceneView;
 
@@ -82,24 +81,14 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
         switch (scene)
         {
             case 0:
-            {
-                final Scales scales = this.model.getScales ();
-                scales.nextScale ();
-                final String name = scales.getScale ().getName ();
-                this.surface.getConfiguration ().setScale (name);
-                this.surface.getDisplay ().notify (name);
+                this.scales.nextScale ();
+                this.updateScale ();
                 break;
-            }
 
             case 1:
-            {
-                final Scales scales = this.model.getScales ();
-                scales.prevScale ();
-                final String name = scales.getScale ().getName ();
-                this.surface.getConfiguration ().setScale (name);
-                this.surface.getDisplay ().notify (name);
+                this.scales.prevScale ();
+                this.updateScale ();
                 break;
-            }
 
             case 2:
                 this.scales.toggleChromatic ();
@@ -117,5 +106,13 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
                 break;
         }
         this.updateNoteMapping ();
+    }
+
+
+    private void updateScale ()
+    {
+        final String name = this.scales.getScale ().getName ();
+        this.surface.getConfiguration ().setScale (name);
+        this.surface.getDisplay ().notify (name);
     }
 }

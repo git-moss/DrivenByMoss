@@ -46,7 +46,7 @@ import de.mossgrabers.framework.view.ViewManager;
 
 
 /**
- * Bitwig Studio extension to support the Akai APCmini controller.
+ * Support for the Akai APCmini controller.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -194,12 +194,16 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         final APCminiControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
         viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
-        viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (surface, this.model));
         viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (surface, this.model));
         viewManager.registerView (Views.VIEW_BROWSER, new BrowserView (surface, this.model));
+
+        if (this.host.hasClips ())
+        {
+            viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
+            viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
+            viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
+            viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (surface, this.model));
+        }
     }
 
 
@@ -239,7 +243,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         this.host.scheduleTask ( () -> {
             final APCminiControlSurface surface = this.getSurface ();
             surface.getModeManager ().setActiveMode (Modes.MODE_VOLUME);
-            surface.getViewManager ().setActiveView (Views.VIEW_SESSION);
+            surface.getViewManager ().setActiveView (Views.VIEW_PLAY);
         }, 100);
     }
 

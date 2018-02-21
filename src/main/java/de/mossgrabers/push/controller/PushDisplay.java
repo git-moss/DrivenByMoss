@@ -132,9 +132,9 @@ public class PushDisplay extends AbstractDisplay
     public void shutdown ()
     {
         if (this.isPush2)
-            this.send (this.createMessage ().setMessage (3, "Please start Bitwig to play..."));
+            this.send (this.createMessage ().setMessage (3, "Please start " + this.host.getName () + " to play..."));
         else
-            this.clear ().setBlock (1, 1, "     Please start").setBlock (1, 2, "Bitwig to play...").allDone ().flush ();
+            this.clear ().setBlock (1, 1, "     Please start").setBlock (1, 2, this.host.getName () + " to play...").allDone ().flush ();
     }
 
 

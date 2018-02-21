@@ -109,6 +109,8 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
     public void updateSceneButtons ()
     {
         final ISceneBank sceneBank = this.model.getSceneBank ();
+        if (sceneBank == null)
+            return;
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
         final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;

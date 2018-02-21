@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.controller;
 
+import de.mossgrabers.framework.daw.IModel;
+
+
 /**
  * Interface to setting up a controller.
  *
@@ -27,4 +30,12 @@ public interface IControllerSetup
      * Update cycle. Use e.g. for display updates.
      */
     void flush ();
+
+
+    /**
+     * Get the DAW model.
+     *
+     * @return The model
+     */
+    IModel getModel ();
 }

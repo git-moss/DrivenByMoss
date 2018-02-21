@@ -81,6 +81,14 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
 
     /** {@inheritDoc} */
     @Override
+    public IModel getModel ()
+    {
+        return this.model;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void init ()
     {
         this.configuration.init (this.settings);
