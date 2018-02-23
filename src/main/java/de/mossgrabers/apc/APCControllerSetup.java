@@ -4,7 +4,6 @@
 
 package de.mossgrabers.apc;
 
-import de.mossgrabers.apc.command.continuous.CrossfaderCommand;
 import de.mossgrabers.apc.command.continuous.DeviceKnobRowCommand;
 import de.mossgrabers.apc.command.trigger.APCBrowserCommand;
 import de.mossgrabers.apc.command.trigger.APCCursorCommand;
@@ -12,11 +11,9 @@ import de.mossgrabers.apc.command.trigger.APCQuantizeCommand;
 import de.mossgrabers.apc.command.trigger.APCRecordCommand;
 import de.mossgrabers.apc.command.trigger.BankLeftCommand;
 import de.mossgrabers.apc.command.trigger.BankRightCommand;
-import de.mossgrabers.apc.command.trigger.CrossfadeCommand;
 import de.mossgrabers.apc.command.trigger.DeviceLeftCommand;
 import de.mossgrabers.apc.command.trigger.DeviceRightCommand;
 import de.mossgrabers.apc.command.trigger.MasterCommand;
-import de.mossgrabers.apc.command.trigger.MuteCommand;
 import de.mossgrabers.apc.command.trigger.NudgeCommand;
 import de.mossgrabers.apc.command.trigger.PanelLayoutCommand;
 import de.mossgrabers.apc.command.trigger.RecArmCommand;
@@ -24,10 +21,8 @@ import de.mossgrabers.apc.command.trigger.SelectCommand;
 import de.mossgrabers.apc.command.trigger.SendCommand;
 import de.mossgrabers.apc.command.trigger.SessionRecordCommand;
 import de.mossgrabers.apc.command.trigger.ShiftCommand;
-import de.mossgrabers.apc.command.trigger.SoloCommand;
 import de.mossgrabers.apc.command.trigger.StopAllClipsCommand;
 import de.mossgrabers.apc.command.trigger.StopClipCommand;
-import de.mossgrabers.apc.command.trigger.ToggleDeviceFrameCommand;
 import de.mossgrabers.apc.controller.APCColors;
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.apc.mode.BrowserMode;
@@ -43,19 +38,25 @@ import de.mossgrabers.apc.view.ShiftView;
 import de.mossgrabers.apc.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.SceneCommand;
+import de.mossgrabers.framework.command.continuous.CrossfaderCommand;
 import de.mossgrabers.framework.command.continuous.FaderAbsoluteCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.continuous.TempoCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
-import de.mossgrabers.framework.command.trigger.DeviceOnOffCommand;
-import de.mossgrabers.framework.command.trigger.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.ModeSelectCommand;
-import de.mossgrabers.framework.command.trigger.NewCommand;
-import de.mossgrabers.framework.command.trigger.PlayCommand;
-import de.mossgrabers.framework.command.trigger.StopCommand;
-import de.mossgrabers.framework.command.trigger.TapTempoCommand;
+import de.mossgrabers.framework.command.trigger.application.PaneCommand;
+import de.mossgrabers.framework.command.trigger.application.PaneCommand.Panels;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.device.DeviceOnOffCommand;
+import de.mossgrabers.framework.command.trigger.track.CrossfadeModeCommand;
+import de.mossgrabers.framework.command.trigger.track.MuteCommand;
+import de.mossgrabers.framework.command.trigger.track.SoloCommand;
+import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.StopCommand;
+import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
@@ -217,7 +218,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addTriggerCommand (Commands.COMMAND_QUANTIZE, APCControlSurface.APC_BUTTON_REC_QUANT, new APCQuantizeCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_PAN_SEND, APCControlSurface.APC_BUTTON_PAN, new ModeSelectCommand<> (Modes.MODE_PAN, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, APCControlSurface.APC_BUTTON_MASTER, new MasterCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_STOP_ALL_CLIPS, APCControlSurface.APC_BUTTON_STOP_ALL_CLIPS, new StopAllClipsCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_STOP_ALL_CLIPS, APCControlSurface.APC_BUTTON_STOP_ALL_CLIPS, new StopAllClipsCommand<> (this.model, surface));
         this.addTriggerCommand (Integer.valueOf (COMMAND_SEND), APCControlSurface.APC_BUTTON_SEND_A, new SendCommand (0, this.model, surface));
         this.addTriggerCommand (Integer.valueOf (COMMAND_SEND + 1), APCControlSurface.APC_BUTTON_SEND_B, new SendCommand (1, this.model, surface));
 
@@ -231,11 +232,11 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             final Integer stopClipCommand = Integer.valueOf (COMMAND_STOP_CLIP + i);
 
             viewManager.registerTriggerCommand (selectCommand, new SelectCommand (i, this.model, surface));
-            viewManager.registerTriggerCommand (soloCommand, new SoloCommand (i, this.model, surface));
-            viewManager.registerTriggerCommand (muteCommand, new MuteCommand (i, this.model, surface));
+            viewManager.registerTriggerCommand (soloCommand, new SoloCommand<> (i, this.model, surface));
+            viewManager.registerTriggerCommand (muteCommand, new MuteCommand<> (i, this.model, surface));
             viewManager.registerTriggerCommand (recArmCommand, new RecArmCommand (i, this.model, surface));
-            viewManager.registerTriggerCommand (crossfadeCommand, new CrossfadeCommand (i, this.model, surface));
-            viewManager.registerTriggerCommand (stopClipCommand, new StopClipCommand (i, this.model, surface));
+            viewManager.registerTriggerCommand (crossfadeCommand, new CrossfadeModeCommand<> (i, this.model, surface));
+            viewManager.registerTriggerCommand (stopClipCommand, new StopClipCommand<> (i, this.model, surface));
             surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_TRACK_SELECTION, i, selectCommand);
             surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SOLO, i, soloCommand);
             surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_ACTIVATOR, i, muteCommand);
@@ -252,7 +253,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         viewManager.registerTriggerCommand (Commands.COMMAND_NUDGE_PLUS, new NudgeCommand (false, this.model, surface));
         viewManager.registerTriggerCommand (Commands.COMMAND_LAYOUT, new PanelLayoutCommand (this.model, surface));
         viewManager.registerTriggerCommand (Commands.COMMAND_DEVICE_ON_OFF, new DeviceOnOffCommand<> (this.model, surface));
-        viewManager.registerTriggerCommand (COMMAND_TOGGLE_DEVICES, new ToggleDeviceFrameCommand (this.model, surface));
+        viewManager.registerTriggerCommand (COMMAND_TOGGLE_DEVICES, new PaneCommand<> (Panels.DEVICE, this.model, surface));
         if (this.isMkII)
         {
             surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SESSION, Commands.COMMAND_CLIP);
@@ -306,7 +307,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
         this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, APCControlSurface.APC_KNOB_MASTER_LEVEL, new MasterFaderAbsoluteCommand<> (this.model, surface));
         this.addContinuousCommand (Commands.CONT_COMMAND_PLAY_POSITION, APCControlSurface.APC_KNOB_CUE_LEVEL, new PlayPositionCommand<> (this.model, surface));
-        this.addContinuousCommand (Commands.CONT_COMMAND_CROSSFADER, APCControlSurface.APC_KNOB_CROSSFADER, new CrossfaderCommand (this.model, surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_CROSSFADER, APCControlSurface.APC_KNOB_CROSSFADER, new CrossfaderCommand<> (this.model, surface));
 
         for (int i = 0; i < 8; i++)
         {
@@ -484,7 +485,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             track.setVolumeIndication (!isEffect);
             track.setPanIndication (!isEffect && isPan);
             for (int j = 0; j < 8; j++)
-                tb.setSendIndication (i, j, !isEffect && (mode == Modes.MODE_SEND1 && j == 0 || mode == Modes.MODE_SEND2 && j == 1 || mode == Modes.MODE_SEND3 && j == 2 || mode == Modes.MODE_SEND4 && j == 3 || mode == Modes.MODE_SEND5 && j == 4 || mode == Modes.MODE_SEND6 && j == 5 || mode == Modes.MODE_SEND7 && j == 6 || mode == Modes.MODE_SEND8 && j == 7));
+                track.getSend (j).setIndication (!isEffect && (mode == Modes.MODE_SEND1 && j == 0 || mode == Modes.MODE_SEND2 && j == 1 || mode == Modes.MODE_SEND3 && j == 2 || mode == Modes.MODE_SEND4 && j == 3 || mode == Modes.MODE_SEND5 && j == 4 || mode == Modes.MODE_SEND6 && j == 5 || mode == Modes.MODE_SEND7 && j == 6 || mode == Modes.MODE_SEND8 && j == 7));
 
             final ITrack fxTrack = tbe.getTrack (i);
             fxTrack.setVolumeIndication (isEffect);

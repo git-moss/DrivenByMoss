@@ -7,7 +7,6 @@ package de.mossgrabers.mcu.command.pitchbend;
 import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.mcu.MCUConfiguration;
@@ -58,21 +57,21 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
             else if (modeManager.isActiveMode (Modes.MODE_TRACK))
                 this.handleTrack (channel, value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND1))
-                ((ITrackBank) tb).setSend (extenderOffset + channel, 0, value);
+                track.getSend (0).setValue (value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND2))
-                ((ITrackBank) tb).setSend (extenderOffset + channel, 1, value);
+                track.getSend (1).setValue (value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND3))
-                ((ITrackBank) tb).setSend (extenderOffset + channel, 2, value);
+                track.getSend (2).setValue (value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND4))
-                ((ITrackBank) tb).setSend (extenderOffset + channel, 3, value);
+                track.getSend (3).setValue (value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND5))
-                ((ITrackBank) tb).setSend (extenderOffset + channel, 4, value);
+                track.getSend (4).setValue (value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND6))
-                ((ITrackBank) tb).setSend (extenderOffset + channel, 5, value);
+                track.getSend (5).setValue (value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND7))
-                ((ITrackBank) tb).setSend (extenderOffset + channel, 6, value);
+                track.getSend (6).setValue (value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND8))
-                ((ITrackBank) tb).setSend (extenderOffset + channel, 7, value);
+                track.getSend (7).setValue (value);
             else if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
                 this.model.getCursorDevice ().setParameter (extenderOffset + channel, (int) value);
             return;
@@ -106,12 +105,12 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
             if (config.isDisplayCrossfader ())
             {
                 final double range = this.model.getValueChanger ().getUpperBound () / 3.0;
-                tb.setCrossfadeModeAsNumber (selectedTrack.getIndex (), (int) Math.round (value / range));
+                selectedTrack.setCrossfadeModeAsNumber ((int) Math.round (value / range));
             }
             else if (!effectTrackBankActive)
-                ((ITrackBank) tb).setSend (selectedTrack.getIndex (), 0, value);
+                selectedTrack.getSend (0).setValue (value);
         }
         else if (!effectTrackBankActive)
-            ((ITrackBank) tb).setSend (selectedTrack.getIndex (), index - (config.isDisplayCrossfader () ? 3 : 2), value);
+            selectedTrack.getSend (index - (config.isDisplayCrossfader () ? 3 : 2)).setValue (value);
     }
 }

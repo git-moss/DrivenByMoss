@@ -7,6 +7,7 @@ package de.mossgrabers.framework.bitwig.daw.data;
 import de.mossgrabers.framework.daw.data.ISlot;
 
 import com.bitwig.extension.controller.api.ClipLauncherSlot;
+import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
 import com.bitwig.extension.controller.api.ColorValue;
 
 
@@ -17,18 +18,22 @@ import com.bitwig.extension.controller.api.ColorValue;
  */
 public class SlotImpl implements ISlot
 {
-    private final int              index;
-    private final ClipLauncherSlot slot;
+    private final int                  index;
+    private final ClipLauncherSlot     slot;
+    private final ClipLauncherSlotBank csBank;
 
 
     /**
      * Constructor.
-     *
+     * 
+     * @param csBank The slot bank. Required since some functions are not avaiable on the slot but
+     *            on the bank
      * @param slot The slot
      * @param index The index of the slot
      */
-    public SlotImpl (final ClipLauncherSlot slot, final int index)
+    public SlotImpl (final ClipLauncherSlotBank csBank, final ClipLauncherSlot slot, final int index)
     {
+        this.csBank = csBank;
         this.index = index;
         this.slot = slot;
 
@@ -164,5 +169,61 @@ public class SlotImpl implements ISlot
     {
         // TODO API extension required - We need a setter
         // this.slot.color ().set ((float) red, (float) green, (float) blue);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void select ()
+    {
+        this.csBank.select (this.index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void launch ()
+    {
+        this.slot.launch ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void record ()
+    {
+        this.csBank.record (this.index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void create (final int length)
+    {
+        this.csBank.createEmptyClip (this.index, length);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void delete ()
+    {
+        this.csBank.deleteClip (this.index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void duplicate ()
+    {
+        this.csBank.duplicateClip (this.index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void browse ()
+    {
+        this.slot.browseToInsertClip ();
     }
 }

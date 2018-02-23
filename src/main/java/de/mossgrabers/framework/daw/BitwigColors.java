@@ -347,7 +347,7 @@ public class BitwigColors
         for (int i = 0; i < COLORS.length; i++)
         {
             final double [] color = (double []) COLORS[i];
-            double error = Math.pow (color[0] - red, 2.0) + Math.pow (color[1] - green, 2.0) + Math.pow (color[2] - blue, 2.0);
+            final double error = Math.pow (color[0] - red, 2.0) + Math.pow (color[1] - green, 2.0) + Math.pow (color[2] - blue, 2.0);
             if (error < minError)
             {
                 cid = BITWIG_COLORS[i];

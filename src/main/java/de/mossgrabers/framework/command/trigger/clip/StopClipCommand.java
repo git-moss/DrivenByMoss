@@ -2,33 +2,35 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.command.trigger;
+package de.mossgrabers.framework.command.trigger.clip;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * Command for toggling between the Instrument/Audio/Hybrid tracks and the Effect tracks.
+ * Command to stop all clips. Also sets a flag to use in combination with pads.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ToggleTrackBanksCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class StopClipCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
+    private boolean stopPressed = false;
+
+
     /**
      * Constructor.
      *
      * @param model The model
      * @param surface The surface
      */
-    public ToggleTrackBanksCommand (final IModel model, final S surface)
+    public StopClipCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }
@@ -38,12 +40,23 @@ public class ToggleTrackBanksCommand<S extends ControlSurface<C>, C extends Conf
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (this.surface.isShiftPressed ())
+        {
+            // Stop all clips
+            this.model.getCurrentTrackBank ().stop ();
             return;
+        }
+        this.stopPressed = event != ButtonEvent.UP;
+    }
 
-        this.model.toggleCurrentTrackBank ();
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        if (currentTrackBank.getSelectedTrack () == null)
-            currentTrackBank.getTrack (0).select ();
+
+    /**
+     * Is the stop clip button pressed?
+     *
+     * @return True if the stop clip button is pressed
+     */
+    public boolean isStopPressed ()
+    {
+        return this.stopPressed;
     }
 }

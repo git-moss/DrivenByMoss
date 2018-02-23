@@ -126,11 +126,85 @@ public interface ITrack extends IChannel
 
 
     /**
-     * Get the clip slots of the track.
+     * Change the crossfade mode.
      *
-     * @return The clip slots
+     * @param control The control value
      */
-    ISlot [] getSlots ();
+    void changeCrossfadeModeAsNumber (final int control);
+
+
+    /**
+     * Set the crossfade mode.
+     *
+     * @param mode The crossfade mode A, AB or B
+     */
+    void setCrossfadeMode (final String mode);
+
+
+    /**
+     * Get the crossfade mode as a number.
+     *
+     * @return The crossfade mode 0, 1 or 2
+     */
+    int getCrossfadeModeAsNumber ();
+
+
+    /**
+     * Set the crossfade mode as a number.
+     *
+     * @param modeValue The crossfade mode 0, 1 or 2
+     */
+    void setCrossfadeModeAsNumber (final int modeValue);
+
+
+    /**
+     * Set the crossfade mode to the next value.
+     */
+    void toggleCrossfadeMode ();
+
+
+    /**
+     * Get the number of slots (of a page).
+     *
+     * @return The number of slots
+     */
+    int getNumSlots ();
+
+
+    /**
+     * Get a clip slot of the track.
+     * 
+     * @param slotIndex The index of the slot
+     * @return The slot
+     */
+    ISlot getSlot (final int slotIndex);
+
+
+    /**
+     * Returns an array with the selected slots of a track.
+     *
+     * @return The array is empty if none is selected.
+     */
+    ISlot [] getSelectedSlots ();
+
+
+    /**
+     * Returns the first selected slot or null if none is selected.
+     *
+     * @return The first selected slot or null if none is selected
+     */
+    ISlot getSelectedSlot ();
+
+
+    /**
+     * Returns the first empty slot in the current clip window. If none is empty null is returned.
+     * If startFrom is set the search starts from the given index (and wraps around after the last
+     * one to 0).
+     *
+     * @param startFrom At what index to start the search
+     * @return The empty slot or null if none is found
+     */
+    ISlot getEmptySlot (final int startFrom);
 
 
     /**
@@ -139,4 +213,22 @@ public interface ITrack extends IChannel
      * @return True if a clip is playing on the track.
      */
     boolean isPlaying ();
+
+
+    /**
+     * Stop playback on the track.
+     */
+    void stop ();
+
+
+    /**
+     * Switch playback back to the arrangement.
+     */
+    void returnToArrangement ();
+
+
+    /**
+     * Scroll to the next clip page.
+     */
+    void scrollClipPageForwards ();
 }

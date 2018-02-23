@@ -64,22 +64,24 @@ public abstract class AbstractTrackMode extends BaseMode
             return;
 
         final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getTrack (index);
 
         if (event == ButtonEvent.UP)
         {
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
             {
                 this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
-                tb.duplicate (index);
+                track.duplicate ();
                 return;
             }
+
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
             {
                 this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_CLIP_STOP);
-                tb.stop (index);
+                track.stop ();
                 return;
             }
-            ITrack track = tb.getTrack (index);
+
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_RECORD))
             {
                 this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_RECORD);
@@ -120,11 +122,11 @@ public abstract class AbstractTrackMode extends BaseMode
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
         {
-            tb.stop (index);
+            track.stop ();
             return;
         }
 
@@ -132,9 +134,9 @@ public abstract class AbstractTrackMode extends BaseMode
         if (!this.isPush2 || config.isMuteLongPressed () || config.isSoloLongPressed () || config.isMuteSoloLocked ())
         {
             if (config.isMuteState ())
-                tb.getTrack (index).toggleMute ();
+                track.toggleMute ();
             else
-                tb.getTrack (index).toggleSolo ();
+                track.toggleSolo ();
             return;
         }
 
@@ -370,7 +372,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 isTopMenuOn = i == selectedMenu - 1 || i == 7;
             }
 
-            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", t.getType (), tb.getTrackColorEntry (i), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecArm (), "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
+            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", t.getType (), t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecArm (), "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
         }
 
         display.send (message);
@@ -398,7 +400,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 final ITrack selTrack = this.model.getTrackBank ().getSelectedTrack ();
                 if (selTrack == null)
                     continue;
-                final ISend send = selTrack.getSends ()[sendOffset + i];
+                final ISend send = selTrack.getSend (sendOffset + i);
                 if (send != null)
                     this.menu[4 + i] = send.getName ();
             }

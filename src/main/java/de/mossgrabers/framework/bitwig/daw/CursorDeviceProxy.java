@@ -104,7 +104,7 @@ public class CursorDeviceProxy implements ICursorDevice
         for (int i = 0; i < this.numParams; i++)
         {
             final RemoteControl p = this.getParameter (i);
-            this.fxparams[i] = new ParameterImpl (p, valueChanger.getUpperBound ());
+            this.fxparams[i] = new ParameterImpl (valueChanger, p, valueChanger.getUpperBound ());
         }
 
         // Monitor the sibling devices of the cursor device

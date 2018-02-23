@@ -166,7 +166,6 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
 
     private double getQuartersPerPad ()
     {
-        return this.model.getQuartersPerMeasure () / (double) this.padResolutions[this.padResolution];
+        return this.model.getTransport ().getQuartersPerMeasure () / (double) this.padResolutions[this.padResolution];
     }
-
 }

@@ -7,7 +7,7 @@ package de.mossgrabers.apc.command.trigger;
 import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.command.trigger.NewCommand;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.daw.IModel;
 
 

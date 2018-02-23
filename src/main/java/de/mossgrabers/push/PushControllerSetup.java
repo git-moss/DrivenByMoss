@@ -14,16 +14,18 @@ import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
-import de.mossgrabers.framework.command.trigger.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.KnobRowTouchModeCommand;
-import de.mossgrabers.framework.command.trigger.MetronomeCommand;
-import de.mossgrabers.framework.command.trigger.NewCommand;
-import de.mossgrabers.framework.command.trigger.PlayCommand;
-import de.mossgrabers.framework.command.trigger.RecordCommand;
-import de.mossgrabers.framework.command.trigger.StopClipCommand;
-import de.mossgrabers.framework.command.trigger.TapTempoCommand;
-import de.mossgrabers.framework.command.trigger.UndoCommand;
+import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
+import de.mossgrabers.framework.command.trigger.application.UndoCommand;
+import de.mossgrabers.framework.command.trigger.clip.ConvertCommand;
+import de.mossgrabers.framework.command.trigger.clip.DoubleCommand;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.clip.StopClipCommand;
+import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
+import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
@@ -56,9 +58,7 @@ import de.mossgrabers.push.command.trigger.AddEffectCommand;
 import de.mossgrabers.push.command.trigger.AddTrackCommand;
 import de.mossgrabers.push.command.trigger.AutomationCommand;
 import de.mossgrabers.push.command.trigger.ClipCommand;
-import de.mossgrabers.push.command.trigger.ConvertCommand;
 import de.mossgrabers.push.command.trigger.DeviceCommand;
-import de.mossgrabers.push.command.trigger.DoubleCommand;
 import de.mossgrabers.push.command.trigger.FixedLengthCommand;
 import de.mossgrabers.push.command.trigger.LayoutCommand;
 import de.mossgrabers.push.command.trigger.MastertrackCommand;
@@ -395,7 +395,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addTriggerCommand (Commands.COMMAND_FIXED_LENGTH, PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, new FixedLengthCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_QUANTIZE, PushControlSurface.PUSH_BUTTON_QUANTIZE, new PushQuantizeCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_DELETE, PushControlSurface.PUSH_BUTTON_DELETE, new DeleteCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_DOUBLE, PushControlSurface.PUSH_BUTTON_DOUBLE, new DoubleCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_DOUBLE, PushControlSurface.PUSH_BUTTON_DOUBLE, new DoubleCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_UNDO, PushControlSurface.PUSH_BUTTON_UNDO, new UndoCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_DEVICE, PushControlSurface.PUSH_BUTTON_DEVICE, new DeviceCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_BROWSE, PushControlSurface.PUSH_BUTTON_BROWSE, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
@@ -439,7 +439,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         if (this.isPush2)
         {
             surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SETUP, Commands.COMMAND_SETUP);
-            this.addTriggerCommand (Commands.COMMAND_CONVERT, PushControlSurface.PUSH_BUTTON_CONVERT, new ConvertCommand (this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_CONVERT, PushControlSurface.PUSH_BUTTON_CONVERT, new ConvertCommand<> (this.model, surface));
         }
         else
             surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_USER_MODE, Commands.COMMAND_SETUP);
@@ -613,16 +613,18 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         for (int i = 0; i < tb.getNumTracks (); i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
-            tb.getTrack (i).setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
-            tb.getTrack (i).setPanIndication (!isEffect && (isPan || hasTrackSel));
+            final ITrack track = tb.getTrack (i);
+            track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
+            track.setPanIndication (!isEffect && (isPan || hasTrackSel));
 
             for (int j = 0; j < tb.getNumSends (); j++)
-                tb.setSendIndication (i, j, !isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
+                track.getSend (j).setIndication (!isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
 
             if (tbe != null)
             {
-                tbe.getTrack (i).setVolumeIndication (isEffect);
-                tbe.getTrack (i).setPanIndication (isEffect && isPan);
+                final ITrack fxTrack = tbe.getTrack (i);
+                fxTrack.setVolumeIndication (isEffect);
+                fxTrack.setPanIndication (isEffect && isPan);
             }
 
             cursorDevice.indicateParameter (i, true);
@@ -675,7 +677,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final ITrack selectedTrack = tb.getSelectedTrack ();
         if (selectedTrack == null)
             return false;
-        final ISlot [] slots = tb.getSelectedSlots (selectedTrack.getIndex ());
+        final ISlot [] slots = selectedTrack.getSelectedSlots ();
         if (slots.length == 0)
             return false;
         for (final ISlot slot: slots)

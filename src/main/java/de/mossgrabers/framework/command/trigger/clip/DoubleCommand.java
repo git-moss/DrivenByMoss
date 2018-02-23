@@ -2,44 +2,42 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.command.trigger;
+package de.mossgrabers.framework.command.trigger.clip;
 
-import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * A solo button command.
+ * Command to double the currently selected clip.
+ *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class CrossfadeCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
+public class DoubleCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private int index;
-
-
     /**
      * Constructor.
      *
-     * @param index The channel index
      * @param model The model
      * @param surface The surface
      */
-    public CrossfadeCommand (final int index, final IModel model, final APCControlSurface surface)
+    public DoubleCommand (final IModel model, final S surface)
     {
         super (model, surface);
-        this.index = index;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (final ButtonEvent event)
+    public void execute (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().toggleCrossfadeMode (this.index);
+            this.model.getCursorClip ().duplicateContent ();
     }
 }

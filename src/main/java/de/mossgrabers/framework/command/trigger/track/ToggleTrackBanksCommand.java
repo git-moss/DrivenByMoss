@@ -2,25 +2,25 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.command.trigger;
+package de.mossgrabers.framework.command.trigger.track;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITransport;
 
 
 /**
- * Command handle the stop button.
+ * Command for toggling between the Instrument/Audio/Hybrid tracks and the Effect tracks.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class StopCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class ToggleTrackBanksCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -28,7 +28,7 @@ public class StopCommand<S extends ControlSurface<C>, C extends Configuration> e
      * @param model The model
      * @param surface The surface
      */
-    public StopCommand (final IModel model, final S surface)
+    public ToggleTrackBanksCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }
@@ -36,14 +36,14 @@ public class StopCommand<S extends ControlSurface<C>, C extends Configuration> e
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (final ButtonEvent event)
+    public void execute (final ButtonEvent event)
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final ITransport transport = this.model.getTransport ();
-        if (transport.isPlaying ())
-            transport.stop ();
-        else
-            transport.stopAndRewind ();
+
+        this.model.toggleCurrentTrackBank ();
+        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
+        if (currentTrackBank.getSelectedTrack () == null)
+            currentTrackBank.getTrack (0).select ();
     }
 }

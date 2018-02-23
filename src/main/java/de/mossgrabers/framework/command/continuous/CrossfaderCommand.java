@@ -2,20 +2,23 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.command.continuous;
+package de.mossgrabers.framework.command.continuous;
 
-import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 
 
 /**
  * Command to change the crossfader.
  *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class CrossfaderCommand extends AbstractContinuousCommand<APCControlSurface, APCConfiguration>
+public class CrossfaderCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
 {
     /**
      * Constructor.
@@ -23,7 +26,7 @@ public class CrossfaderCommand extends AbstractContinuousCommand<APCControlSurfa
      * @param model The model
      * @param surface The surface
      */
-    public CrossfaderCommand (final IModel model, final APCControlSurface surface)
+    public CrossfaderCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }

@@ -8,28 +8,28 @@ import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.ButtonRowModeCommand;
-import de.mossgrabers.framework.command.trigger.DeviceOnOffCommand;
 import de.mossgrabers.framework.command.trigger.DuplicateCommand;
-import de.mossgrabers.framework.command.trigger.LayoutCommand;
-import de.mossgrabers.framework.command.trigger.LoopCommand;
 import de.mossgrabers.framework.command.trigger.MarkerCommand;
-import de.mossgrabers.framework.command.trigger.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.MoveTrackBankCommand;
-import de.mossgrabers.framework.command.trigger.NewCommand;
 import de.mossgrabers.framework.command.trigger.NopCommand;
-import de.mossgrabers.framework.command.trigger.PaneCommand;
-import de.mossgrabers.framework.command.trigger.PlayCommand;
-import de.mossgrabers.framework.command.trigger.PunchInCommand;
-import de.mossgrabers.framework.command.trigger.PunchOutCommand;
-import de.mossgrabers.framework.command.trigger.RecordCommand;
-import de.mossgrabers.framework.command.trigger.SaveCommand;
-import de.mossgrabers.framework.command.trigger.StopCommand;
-import de.mossgrabers.framework.command.trigger.TapTempoCommand;
-import de.mossgrabers.framework.command.trigger.ToggleTrackBanksCommand;
-import de.mossgrabers.framework.command.trigger.ToggleVUCommand;
-import de.mossgrabers.framework.command.trigger.UndoCommand;
-import de.mossgrabers.framework.command.trigger.WindCommand;
+import de.mossgrabers.framework.command.trigger.application.LayoutCommand;
+import de.mossgrabers.framework.command.trigger.application.PaneCommand;
+import de.mossgrabers.framework.command.trigger.application.SaveCommand;
+import de.mossgrabers.framework.command.trigger.application.UndoCommand;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.device.DeviceOnOffCommand;
+import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
+import de.mossgrabers.framework.command.trigger.track.ToggleVUCommand;
+import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
+import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.PunchInCommand;
+import de.mossgrabers.framework.command.trigger.transport.PunchOutCommand;
+import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
+import de.mossgrabers.framework.command.trigger.transport.StopCommand;
+import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
+import de.mossgrabers.framework.command.trigger.transport.WindCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -315,7 +315,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         // Navigation
         this.addTriggerCommand (Commands.COMMAND_REWIND, MCUControlSurface.MCU_REWIND, new WindCommand<> (this.model, surface, false));
         this.addTriggerCommand (Commands.COMMAND_FORWARD, MCUControlSurface.MCU_FORWARD, new WindCommand<> (this.model, surface, true));
-        this.addTriggerCommand (Commands.COMMAND_LOOP, MCUControlSurface.MCU_REPEAT, new LoopCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_LOOP, MCUControlSurface.MCU_REPEAT, new ToggleLoopCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_STOP, MCUControlSurface.MCU_STOP, new StopCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_PLAY, MCUControlSurface.MCU_PLAY, new PlayCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_RECORD, MCUControlSurface.MCU_RECORD, new RecordCommand<> (this.model, surface));
@@ -689,34 +689,34 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                             {
                                 if (this.configuration.isDisplayCrossfader ())
                                 {
-                                    final int crossfadeMode = tb.getCrossfadeModeAsNumber (selectedTrack.getIndex ());
+                                    final int crossfadeMode = selectedTrack.getCrossfadeModeAsNumber ();
                                     value = crossfadeMode == 2 ? this.valueChanger.getUpperBound () : crossfadeMode == 1 ? this.valueChanger.getUpperBound () / 2 : 0;
                                 }
                                 else if (!effectTrackBankActive)
-                                    value = selTrack.getSends ()[0].getValue ();
+                                    value = selTrack.getSend (0).getValue ();
                             }
                             else if (!effectTrackBankActive)
-                                value = selTrack.getSends ()[index - (this.configuration.isDisplayCrossfader () ? 3 : 2)].getValue ();
+                                value = selTrack.getSend (index - (this.configuration.isDisplayCrossfader () ? 3 : 2)).getValue ();
                             break;
                     }
                 }
             }
             else if (modeManager.isActiveMode (Modes.MODE_SEND1))
-                value = track.getSends ()[0].getValue ();
+                value = track.getSend (0).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND2))
-                value = track.getSends ()[1].getValue ();
+                value = track.getSend (1).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND3))
-                value = track.getSends ()[2].getValue ();
+                value = track.getSend (2).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND4))
-                value = track.getSends ()[3].getValue ();
+                value = track.getSend (3).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND5))
-                value = track.getSends ()[4].getValue ();
+                value = track.getSend (4).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND6))
-                value = track.getSends ()[5].getValue ();
+                value = track.getSend (5).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND7))
-                value = track.getSends ()[6].getValue ();
+                value = track.getSend (6).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND8))
-                value = track.getSends ()[7].getValue ();
+                value = track.getSend (7).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
                 value = this.model.getCursorDevice ().getFXParam (channel).getValue ();
         }
@@ -762,7 +762,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             track.setPanIndication (!isEffect && (isPan || hasTrackSel));
 
             for (int j = 0; j < tb.getNumSends (); j++)
-                tb.setSendIndication (i, j, !isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
+                track.getSend (j).setIndication (!isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
 
             final ITrack fxTrack = tbe.getTrack (i);
             fxTrack.setVolumeIndication (isEffect);

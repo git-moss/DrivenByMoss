@@ -71,7 +71,7 @@ public class TrackMode extends AbstractMode<SLControlSurface, SLConfiguration>
                 final ITrack fxTrack = fxTrackBank.getTrack (i);
                 final boolean isEmpty = isFX || !fxTrack.doesExist ();
                 pos = sendStart + i;
-                d.setCell (0, pos, isEmpty ? "" : fxTrack.getName ()).setCell (2, pos, isEmpty ? "" : t.getSends ()[i].getDisplayedValue (8));
+                d.setCell (0, pos, isEmpty ? "" : fxTrack.getName ()).setCell (2, pos, isEmpty ? "" : t.getSend (i).getDisplayedValue (8));
             }
 
             if (isFX)
@@ -82,7 +82,7 @@ public class TrackMode extends AbstractMode<SLControlSurface, SLConfiguration>
             for (int i = 0; i < sendCount; i++)
             {
                 pos = sendStart + i;
-                final ISend send = t.getSends ()[i];
+                final ISend send = t.getSend (i);
                 d.setCell (0, pos, send.getName (8)).setCell (2, pos, send.getDisplayedValue (8));
             }
         }

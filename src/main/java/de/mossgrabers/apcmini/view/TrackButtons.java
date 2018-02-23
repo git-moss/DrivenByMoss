@@ -8,6 +8,7 @@ import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -77,19 +78,20 @@ public class TrackButtons
             return;
 
         final int trackState = this.surface.getTrackState ();
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
         switch (trackState)
         {
             case APCminiControlSurface.TRACK_STATE_CLIP_STOP:
-                this.model.getCurrentTrackBank ().stop (index);
+                track.stop ();
                 break;
             case APCminiControlSurface.TRACK_STATE_SOLO:
-                this.model.getCurrentTrackBank ().getTrack (index).toggleSolo ();
+                track.toggleSolo ();
                 break;
             case APCminiControlSurface.TRACK_STATE_REC_ARM:
-                this.model.getCurrentTrackBank ().getTrack (index).toggleRecArm ();
+                track.toggleRecArm ();
                 break;
             case APCminiControlSurface.TRACK_STATE_MUTE:
-                this.model.getCurrentTrackBank ().getTrack (index).toggleMute ();
+                track.toggleMute ();
                 break;
             case APCminiControlSurface.TRACK_STATE_SELECT:
                 this.surface.getViewManager ().getActiveView ().selectTrack (index);

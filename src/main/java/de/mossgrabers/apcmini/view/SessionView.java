@@ -49,17 +49,14 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
         final int scene = 7 - note / 8;
 
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ISlot slot = tb.getTrack (channel).getSlots ()[scene];
+        final ITrack track = tb.getTrack (channel);
+        final ISlot slot = track.getSlot (scene);
 
-        if (tb.getTrack (channel).isRecArm ())
-        {
-            if (!slot.isRecording ())
-                tb.recordClip (channel, scene);
-        }
-        tb.launchClip (channel, scene);
-
+        if (track.isRecArm () && !slot.isRecording ())
+            slot.record ();
+        slot.launch ();
         if (this.doSelectClipOnLaunch ())
-            tb.selectClip (channel, scene);
+            slot.select ();
     }
 
 
@@ -80,7 +77,7 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
         {
             final ITrack t = tb.getTrack (x);
             for (int y = 0; y < 8; y++)
-                this.drawPad (t.getSlots ()[y], x, y, t.isRecArm ());
+                this.drawPad (t.getSlot (y), x, y, t.isRecArm ());
         }
     }
 

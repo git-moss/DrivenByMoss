@@ -8,12 +8,13 @@ import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
-import de.mossgrabers.framework.command.trigger.DeleteCommand;
-import de.mossgrabers.framework.command.trigger.NewCommand;
-import de.mossgrabers.framework.command.trigger.PlayCommand;
-import de.mossgrabers.framework.command.trigger.QuantizeCommand;
-import de.mossgrabers.framework.command.trigger.RecordCommand;
-import de.mossgrabers.framework.command.trigger.UndoCommand;
+import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
+import de.mossgrabers.framework.command.trigger.application.UndoCommand;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
+import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
@@ -37,7 +38,6 @@ import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.launchpad.command.continuous.FaderCommand;
 import de.mossgrabers.launchpad.command.trigger.ClickCommand;
 import de.mossgrabers.launchpad.command.trigger.DoubleCommand;
-import de.mossgrabers.launchpad.command.trigger.DuplicateCommand;
 import de.mossgrabers.launchpad.command.trigger.LPSceneCommand;
 import de.mossgrabers.launchpad.command.trigger.LaunchpadCursorCommand;
 import de.mossgrabers.launchpad.command.trigger.MuteCommand;
@@ -215,7 +215,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.addTriggerCommand (Commands.COMMAND_UNDO, LaunchpadControlSurface.LAUNCHPAD_BUTTON_UNDO, new UndoCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_DELETE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DELETE, new DeleteCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_QUANTIZE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_QUANTIZE, new QuantizeCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_DUPLICATE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE, new DuplicateCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_DUPLICATE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE, new ToggleLoopCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_DOUBLE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DOUBLE, new DoubleCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_RECORD, LaunchpadControlSurface.LAUNCHPAD_BUTTON_RECORD, new RecordCommand<> (this.model, surface));
 
@@ -363,7 +363,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
             track.setVolumeIndication (!isEffect && isVolume);
             track.setPanIndication (!isEffect && isPan);
             for (int j = 0; j < 8; j++)
-                tb.setSendIndication (i, j, !isEffect && isSends && selSend == j);
+                track.getSend (j).setIndication (!isEffect && isSends && selSend == j);
 
             final ITrack fxTrack = tbe.getTrack (i);
             fxTrack.setVolumeIndication (isEffect && isVolume);

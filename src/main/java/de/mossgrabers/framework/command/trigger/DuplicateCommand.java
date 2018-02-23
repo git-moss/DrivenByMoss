@@ -50,34 +50,33 @@ public class DuplicateCommand<S extends ControlSurface<C>, C extends Configurati
             return;
 
         // Is there a selected slot?
-        final int trackIndex = track.getIndex ();
-        final ISlot slot = tb.getSelectedSlot (trackIndex);
+        final ISlot slot = track.getSelectedSlot ();
         if (slot == null)
             return;
 
         final boolean isPlaying = slot.isPlaying ();
 
         // Duplicate the clip in the selected slot
-        tb.duplicateClip (trackIndex, slot.getIndex ());
+        slot.duplicate ();
 
         if (!isPlaying)
             return;
 
         // Need to wait a bit with starting the duplicated clip until it is selected
         this.model.getHost ().scheduleTask ( () -> {
-            final ISlot slotNew = tb.getSelectedSlot (trackIndex);
+            final ISlot slotNew = track.getSelectedSlot ();
             if (slotNew != null)
             {
-                tb.launchClip (trackIndex, slotNew.getIndex ());
+                slotNew.launch ();
                 return;
             }
 
             // Try to find the clip in the next page...
-            tb.scrollClipPageForwards (trackIndex);
+            track.scrollClipPageForwards ();
             this.model.getHost ().scheduleTask ( () -> {
-                final ISlot slotNew2 = tb.getSelectedSlot (trackIndex);
+                final ISlot slotNew2 = track.getSelectedSlot ();
                 if (slotNew2 != null)
-                    tb.launchClip (trackIndex, slotNew2.getIndex ());
+                    slotNew2.launch ();
             }, 200);
         }, 200);
     }

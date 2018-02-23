@@ -1,7 +1,7 @@
 package de.mossgrabers.sl.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.command.trigger.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.mode.ModeManager;

@@ -112,19 +112,18 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
                 final ITrack t = tb.getSelectedTrack ();
                 if (t != null)
                 {
-                    final int trackIndex = t.getIndex ();
-                    final ISlot [] slotIndexes = tb.getSelectedSlots (trackIndex);
+                    final ISlot [] slotIndexes = t.getSelectedSlots ();
                     final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
                     for (int i = 0; i < 8; i++)
                     {
                         final int sIndex = (slotIndex + i) % 8;
-                        final ISlot s = t.getSlots ()[sIndex];
+                        final ISlot s = t.getSlot (sIndex);
                         if (!s.hasContent ())
                         {
-                            tb.createClip (trackIndex, sIndex, (int) Math.pow (2, this.surface.getConfiguration ().getNewClipLength ()));
+                            this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());
                             if (slotIndex != sIndex)
-                                tb.selectClip (trackIndex, sIndex);
-                            tb.launchClip (trackIndex, sIndex);
+                                s.select ();
+                            s.launch ();
                             this.model.getTransport ().setLauncherOverdub (true);
                             return;
                         }

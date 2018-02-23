@@ -201,17 +201,33 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public ISend [] getSends ()
+    public int getNumSends ()
     {
-        return new ISend [0];
+        return 0;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public ISlot [] getSlots ()
+    public ISend getSend (int sendIndex)
     {
-        return new ISlot [0];
+        return null;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumSlots ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISlot getSlot (final int slotIndex)
+    {
+        return null;
     }
 
 
@@ -265,7 +281,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void changeVolume (int control)
+    public void changeVolume (final int control)
     {
         // Intentionally empty
     }
@@ -273,7 +289,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setVolume (double value)
+    public void setVolume (final double value)
     {
         // Intentionally empty
     }
@@ -289,7 +305,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void touchVolume (boolean isBeingTouched)
+    public void touchVolume (final boolean isBeingTouched)
     {
         // Intentionally empty
     }
@@ -297,7 +313,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setVolumeIndication (boolean indicate)
+    public void setVolumeIndication (final boolean indicate)
     {
         // Intentionally empty
     }
@@ -305,7 +321,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void changePan (int control)
+    public void changePan (final int control)
     {
         // Intentionally empty
     }
@@ -313,7 +329,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setPan (double value)
+    public void setPan (final double value)
     {
         // Intentionally empty
     }
@@ -329,7 +345,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void touchPan (boolean isBeingTouched)
+    public void touchPan (final boolean isBeingTouched)
     {
         // Intentionally empty
     }
@@ -337,7 +353,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setPanIndication (boolean indicate)
+    public void setPanIndication (final boolean indicate)
     {
         // Intentionally empty
     }
@@ -345,7 +361,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setColor (double red, double green, double blue)
+    public void setColor (final double red, final double green, final double blue)
     {
         // Intentionally empty
     }
@@ -353,7 +369,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setIsActivated (boolean value)
+    public void setIsActivated (final boolean value)
     {
         // Intentionally empty
     }
@@ -369,7 +385,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setMute (boolean value)
+    public void setMute (final boolean value)
     {
         // Intentionally empty
     }
@@ -385,7 +401,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setSolo (boolean value)
+    public void setSolo (final boolean value)
     {
         // Intentionally empty
     }
@@ -401,7 +417,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setRecArm (boolean value)
+    public void setRecArm (final boolean value)
     {
         // Intentionally empty
     }
@@ -417,7 +433,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setMonitor (boolean value)
+    public void setMonitor (final boolean value)
     {
         // Intentionally empty
     }
@@ -433,7 +449,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setAutoMonitor (boolean value)
+    public void setAutoMonitor (final boolean value)
     {
         // Intentionally empty
     }
@@ -458,6 +474,114 @@ public class EmptyTrackData implements ITrack
     /** {@inheritDoc} */
     @Override
     public void makeVisible ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void duplicate ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectAndMakeVisible ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeCrossfadeModeAsNumber (final int control)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setCrossfadeMode (final String mode)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getCrossfadeModeAsNumber ()
+    {
+        // Intentionally empty
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setCrossfadeModeAsNumber (final int modeValue)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleCrossfadeMode ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISlot [] getSelectedSlots ()
+    {
+        // Intentionally empty
+        return null;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISlot getSelectedSlot ()
+    {
+        // Intentionally empty
+        return null;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISlot getEmptySlot (final int startFrom)
+    {
+        // Intentionally empty
+        return null;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void stop ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void returnToArrangement ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollClipPageForwards ()
     {
         // Intentionally empty
     }

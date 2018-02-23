@@ -2,21 +2,24 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.command.trigger;
+package de.mossgrabers.framework.command.trigger.application;
 
-import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * The device left command.
+ * Command for saving the current project.
+ *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ToggleDeviceFrameCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
+public class SaveCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -24,7 +27,7 @@ public class ToggleDeviceFrameCommand extends AbstractTriggerCommand<APCControlS
      * @param model The model
      * @param surface The surface
      */
-    public ToggleDeviceFrameCommand (final IModel model, final APCControlSurface surface)
+    public SaveCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }
@@ -32,9 +35,9 @@ public class ToggleDeviceFrameCommand extends AbstractTriggerCommand<APCControlS
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (final ButtonEvent event)
+    public void execute (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getApplication ().toggleDevices ();
+            this.model.getApplication ().invokeAction ("Save");
     }
 }

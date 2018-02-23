@@ -97,10 +97,11 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             {
                 this.surface.setButtonConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
                 final IChannelBank tb = this.model.getCurrentTrackBank ();
-                if (tb.getTrack (t).doesExist ())
+                final ITrack track = tb.getTrack (t);
+                if (track.doesExist ())
                 {
                     final int s = this.rows - 1 - index / this.columns;
-                    tb.duplicateClip (t, s);
+                    track.getSlot (s).duplicate ();
                 }
                 return;
             }
@@ -240,24 +241,24 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     {
         // First row mode handling
         final int index = note - 36;
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
 
         if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
         {
             this.surface.setButtonConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
-            tb.duplicate (index);
+            track.duplicate ();
             return;
         }
 
         if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
-            tb.getTrack (index).toggleRecArm ();
+            track.toggleRecArm ();
         else if (modeManager.isActiveMode (Modes.MODE_TRACK_SELECT))
             this.selectTrack (index);
         else if (modeManager.isActiveMode (Modes.MODE_MUTE))
-            tb.getTrack (index).toggleMute ();
+            track.toggleMute ();
         else if (modeManager.isActiveMode (Modes.MODE_SOLO))
-            tb.getTrack (index).toggleSolo ();
+            track.toggleSolo ();
         else if (modeManager.isActiveMode (Modes.MODE_STOP_CLIP))
-            tb.stop (index);
+            track.stop ();
     }
 }

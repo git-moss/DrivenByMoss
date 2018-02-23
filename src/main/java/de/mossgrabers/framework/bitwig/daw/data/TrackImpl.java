@@ -11,6 +11,9 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
 import com.bitwig.extension.controller.api.Track;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * The data of a track.
@@ -55,7 +58,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         this.slots = new SlotImpl [numScenes];
         final ClipLauncherSlotBank cs = track.clipLauncherSlotBank ();
         for (int i = 0; i < numScenes; i++)
-            this.slots[i] = new SlotImpl (cs.getItemAt (i), i);
+            this.slots[i] = new SlotImpl (cs, cs.getItemAt (i), i);
     }
 
 
@@ -203,9 +206,125 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public ISlot [] getSlots ()
+    public void changeCrossfadeModeAsNumber (final int control)
     {
-        return this.slots;
+        this.setCrossfadeModeAsNumber (this.valueChanger.changeValue (control, this.getCrossfadeModeAsNumber (), 1, 3));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setCrossfadeMode (final String mode)
+    {
+        this.track.crossFadeMode ().set (mode);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getCrossfadeModeAsNumber ()
+    {
+        switch (this.getCrossfadeMode ())
+        {
+            case "A":
+                return 0;
+            case "AB":
+                return 1;
+            case "B":
+                return 2;
+            default:
+                // Not possible
+                break;
+        }
+        return -1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setCrossfadeModeAsNumber (final int modeValue)
+    {
+        this.setCrossfadeMode (modeValue == 0 ? "A" : modeValue == 1 ? "AB" : "B");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleCrossfadeMode ()
+    {
+        switch (this.getCrossfadeMode ())
+        {
+            case "A":
+                this.setCrossfadeMode ("B");
+                break;
+            case "B":
+                this.setCrossfadeMode ("AB");
+                break;
+            case "AB":
+                this.setCrossfadeMode ("A");
+                break;
+            default:
+                // Not possible
+                break;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumSlots ()
+    {
+        return this.slots.length;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISlot getSlot (final int slotIndex)
+    {
+        return this.slots[slotIndex];
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISlot [] getSelectedSlots ()
+    {
+        final List<ISlot> selection = new ArrayList<> ();
+        for (final ISlot slot: this.slots)
+        {
+            if (slot.isSelected ())
+                selection.add (slot);
+        }
+        return selection.toArray (new SlotImpl [selection.size ()]);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISlot getSelectedSlot ()
+    {
+        for (final ISlot slot: this.slots)
+        {
+            if (slot.isSelected ())
+                return slot;
+        }
+        return null;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISlot getEmptySlot (final int startFrom)
+    {
+        final int start = startFrom >= 0 ? startFrom : 0;
+        for (int i = 0; i < this.slots.length; i++)
+        {
+            final int pos = (start + i) % this.slots.length;
+            if (!this.slots[pos].hasContent ())
+                return this.slots[pos];
+        }
+        return null;
     }
 
 
@@ -214,5 +333,29 @@ public class TrackImpl extends ChannelImpl implements ITrack
     public boolean isPlaying ()
     {
         return !this.track.isStopped ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void stop ()
+    {
+        this.track.stop ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void returnToArrangement ()
+    {
+        this.track.returnToArrangement ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollClipPageForwards ()
+    {
+        this.track.clipLauncherSlotBank ().scrollPageForwards ();
     }
 }

@@ -44,7 +44,7 @@ public class SettingsUI implements ISettingsUI
 
     /** {@inheritDoc} */
     @Override
-    public IStringSetting getStringSetting (String label, String category, int numChars, String initialText)
+    public IStringSetting getStringSetting (final String label, final String category, final int numChars, final String initialText)
     {
         return new StringSettingImpl (this.preferences.getStringSetting (label, category, numChars, initialText));
     }
@@ -52,7 +52,7 @@ public class SettingsUI implements ISettingsUI
 
     /** {@inheritDoc} */
     @Override
-    public IDoubleSetting getNumberSetting (String label, String category, double minValue, double maxValue, double stepResolution, String unit, double initialValue)
+    public IDoubleSetting getNumberSetting (final String label, final String category, final double minValue, final double maxValue, final double stepResolution, final String unit, final double initialValue)
     {
         return new DoubleSettingImpl (this.preferences.getNumberSetting (label, category, minValue, maxValue, stepResolution, unit, initialValue));
     }

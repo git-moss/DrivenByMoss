@@ -126,7 +126,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
                             master.setColor (entry[0], entry[1], entry[2]);
                     }
                     else
-                        tb.setTrackColor (t.getIndex (), entry[0], entry[1], entry[2]);
+                        t.setColor (entry[0], entry[1], entry[2]);
                     break;
 
                 case MODE_LAYER:

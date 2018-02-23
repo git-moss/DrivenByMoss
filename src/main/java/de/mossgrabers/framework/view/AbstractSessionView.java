@@ -88,36 +88,35 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
             s = dummy;
         }
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (t);
+        final ISlot slot = track.getSlot (s);
 
         // Delete selected clip
         if (this.surface.isDeletePressed ())
         {
             this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-            tb.deleteClip (t, s);
+            slot.delete ();
             return;
         }
 
         if (this.surface.isSelectPressed ())
         {
-            tb.selectClip (t, s);
+            slot.select ();
             return;
         }
 
         if (this.doSelectClipOnLaunch ())
-            tb.selectClip (t, s);
+            slot.select ();
 
-        final ITrack track = tb.getTrack (t);
         if (!track.isRecArm ())
         {
-            tb.launchClip (t, s);
+            slot.launch ();
             return;
         }
 
-        final ISlot slot = track.getSlots ()[s];
         if (slot.hasContent ())
         {
-            tb.launchClip (t, s);
+            slot.launch ();
             return;
         }
 
@@ -126,13 +125,16 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
             case 0:
                 // Record clip
                 if (!slot.isRecording ())
-                    tb.recordClip (t, s);
-                tb.launchClip (t, s);
+                    slot.record ();
+                slot.launch ();
                 break;
 
             case 1:
                 // Execute new clip
-                this.createClip (track, slot);
+                this.model.createClip (slot, this.surface.getConfiguration ().getNewClipLength ());
+                slot.select ();
+                slot.launch ();
+                this.model.getTransport ().setLauncherOverdub (true);
                 break;
 
             case 2:
@@ -164,7 +166,7 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
         {
             final ITrack t = tb.getTrack (x);
             for (int y = 0; y < this.rows; y++)
-                this.drawPad (t.getSlots ()[y], flipSession ? y : x, flipSession ? x : y, t.isRecArm ());
+                this.drawPad (t.getSlot (y), flipSession ? y : x, flipSession ? x : y, t.isRecArm ());
         }
     }
 
@@ -283,20 +285,5 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
         }
 
         return isArmed && this.surface.getConfiguration ().isDrawRecordStripe () ? this.clipColorIsRecArmed : this.clipColorHasNoContent;
-    }
-
-
-    private void createClip (final ITrack track, final ISlot slot)
-    {
-        final int trackIndex = track.getIndex ();
-        final int slotIndex = slot.getIndex ();
-        final int quartersPerMeasure = this.model.getQuartersPerMeasure ();
-        final int newCLipLength = this.surface.getConfiguration ().getNewClipLength ();
-        final int beats = (int) (newCLipLength < 2 ? Math.pow (2, newCLipLength) : Math.pow (2, newCLipLength - 2) * quartersPerMeasure);
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        tb.createClip (trackIndex, slotIndex, beats);
-        tb.selectClip (trackIndex, slotIndex);
-        tb.launchClip (trackIndex, slotIndex);
-        this.model.getTransport ().setLauncherOverdub (true);
     }
 }

@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.bitwig.daw;
 
 import de.mossgrabers.framework.bitwig.daw.data.ParameterImpl;
+import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.data.IParameter;
 
@@ -27,18 +28,19 @@ public class GrooveProxy implements IGroove
      * Constructor.
      *
      * @param host The host
-     * @param maxParameterValue The maximum number for values (range is 0 till maxParameterValue-1)
+     * @param valueChanger The value changer
      */
-    public GrooveProxy (final ControllerHost host, final int maxParameterValue)
+    public GrooveProxy (final ControllerHost host, final ValueChanger valueChanger)
     {
         this.groove = host.createGroove ();
 
-        this.parameters[0] = new ParameterImpl (this.groove.getEnabled (), maxParameterValue);
-        this.parameters[1] = new ParameterImpl (this.groove.getShuffleAmount (), maxParameterValue);
-        this.parameters[2] = new ParameterImpl (this.groove.getShuffleRate (), maxParameterValue);
-        this.parameters[3] = new ParameterImpl (this.groove.getAccentAmount (), maxParameterValue);
-        this.parameters[4] = new ParameterImpl (this.groove.getAccentRate (), maxParameterValue);
-        this.parameters[5] = new ParameterImpl (this.groove.getAccentPhase (), maxParameterValue);
+        final int maxParameterValue = valueChanger.getUpperBound ();
+        this.parameters[0] = new ParameterImpl (valueChanger, this.groove.getEnabled (), maxParameterValue);
+        this.parameters[1] = new ParameterImpl (valueChanger, this.groove.getShuffleAmount (), maxParameterValue);
+        this.parameters[2] = new ParameterImpl (valueChanger, this.groove.getShuffleRate (), maxParameterValue);
+        this.parameters[3] = new ParameterImpl (valueChanger, this.groove.getAccentAmount (), maxParameterValue);
+        this.parameters[4] = new ParameterImpl (valueChanger, this.groove.getAccentRate (), maxParameterValue);
+        this.parameters[5] = new ParameterImpl (valueChanger, this.groove.getAccentPhase (), maxParameterValue);
     }
 
 

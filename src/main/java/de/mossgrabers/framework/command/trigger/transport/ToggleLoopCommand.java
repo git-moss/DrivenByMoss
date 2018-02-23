@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.command.trigger;
+package de.mossgrabers.framework.command.trigger.transport;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
@@ -12,14 +12,14 @@ import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * Command handle the device on/off button.
+ * Command handle the Loop/Repeat button.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceOnOffCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class ToggleLoopCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -27,7 +27,7 @@ public class DeviceOnOffCommand<S extends ControlSurface<C>, C extends Configura
      * @param model The model
      * @param surface The surface
      */
-    public DeviceOnOffCommand (final IModel model, final S surface)
+    public ToggleLoopCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }
@@ -35,9 +35,9 @@ public class DeviceOnOffCommand<S extends ControlSurface<C>, C extends Configura
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (final ButtonEvent event)
+    public void execute (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCursorDevice ().toggleEnabledState ();
+            this.model.getTransport ().toggleLoop ();
     }
 }

@@ -6,8 +6,8 @@ package de.mossgrabers.launchpad.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.command.trigger.NewCommand;
-import de.mossgrabers.framework.command.trigger.PlayCommand;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;

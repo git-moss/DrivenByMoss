@@ -5,9 +5,7 @@
 package de.mossgrabers.apcmini.mode;
 
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 
 
 /**
@@ -38,8 +36,6 @@ public class SendMode extends BaseMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        if (currentTrackBank instanceof ITrackBank)
-            ((ITrackBank) currentTrackBank).setSend (index, this.sendIndex, value);
+        this.model.getCurrentTrackBank ().getTrack (index).getSend (this.sendIndex).setValue (value);
     }
 }

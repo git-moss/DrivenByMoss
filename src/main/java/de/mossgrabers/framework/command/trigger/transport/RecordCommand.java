@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.command.trigger;
+package de.mossgrabers.framework.command.trigger.transport;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
@@ -12,14 +12,14 @@ import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * Delete command.
+ * Command handle the record button.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeleteCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class RecordCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -27,7 +27,7 @@ public class DeleteCommand<S extends ControlSurface<C>, C extends Configuration>
      * @param model The model
      * @param surface The surface
      */
-    public DeleteCommand (final IModel model, final S surface)
+    public RecordCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }
@@ -37,10 +37,26 @@ public class DeleteCommand<S extends ControlSurface<C>, C extends Configuration>
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        // Update for key combinations
-        this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
-
         if (event == ButtonEvent.UP)
-            this.model.getApplication ().deleteSelection ();
+            this.handleExecute (false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.UP)
+            this.handleExecute (true);
+    }
+
+
+    protected void handleExecute (final boolean isShiftPressed)
+    {
+        final boolean flipRecord = this.surface.getConfiguration ().isFlipRecord ();
+        if (isShiftPressed && !flipRecord || !isShiftPressed && flipRecord)
+            this.model.getTransport ().toggleLauncherOverdub ();
+        else
+            this.model.getTransport ().record ();
     }
 }

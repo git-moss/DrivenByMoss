@@ -23,7 +23,7 @@ public class IntegerSettingImpl implements IIntegerSetting
 
     /**
      * Constructor.
-     * 
+     *
      * @param rangedValue The ranged value
      * @param range The range
      */

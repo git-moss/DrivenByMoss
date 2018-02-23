@@ -81,6 +81,14 @@ public interface IParameter extends ObserverManagement
 
 
     /**
+     * Change the value.
+     *
+     * @param value The control value
+     */
+    void changeValue (int value);
+
+
+    /**
      * Reset the value to its default value.
      */
     void resetValue ();

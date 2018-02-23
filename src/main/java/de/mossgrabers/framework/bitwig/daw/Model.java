@@ -65,7 +65,7 @@ public class Model extends AbstractModel
         this.mixer = new MixerProxy (controllerHost.createMixer ());
         this.browser = new BrowserProxy (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
         this.transport = new TransportProxy (controllerHost, valueChanger);
-        this.groove = new GrooveProxy (controllerHost, valueChanger.getUpperBound ());
+        this.groove = new GrooveProxy (controllerHost, valueChanger);
         final MasterTrack master = controllerHost.createMasterTrack (0);
         this.masterTrack = new MasterTrackImpl (master, valueChanger);
 

@@ -79,15 +79,15 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
 
             case 2:
                 if (this.surface.getConfiguration ().isDisplayCrossfader ())
-                    tb.setCrossfadeModeAsNumber (track.getIndex (), value == 0 ? 0 : value == 127 ? 2 : 1);
+                    track.setCrossfadeModeAsNumber (value == 0 ? 0 : value == 127 ? 2 : 1);
                 else if (tb instanceof ITrackBank)
-                    ((ITrackBank) tb).setSend (track.getIndex (), 0, value);
+                    track.getSend (0).setValue (value);
                 break;
 
             // Send 1 - 5
             default:
                 if (tb instanceof ITrackBank)
-                    ((ITrackBank) tb).setSend (track.getIndex (), this.index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2), value);
+                    track.getSend (this.index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).setValue (value);
                 break;
         }
     }

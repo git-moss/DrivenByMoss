@@ -7,6 +7,7 @@ package de.mossgrabers.framework.daw;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -270,11 +271,9 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public void createClip (final int trackIndex, final int slotIndex, final int newCLipLength)
+    public void createClip (final ISlot slot, final int clipLength)
     {
-        final int quartersPerMeasure = this.getQuartersPerMeasure ();
-        final int beats = (int) (newCLipLength < 2 ? Math.pow (2, newCLipLength) : Math.pow (2, newCLipLength - 2.0) * quartersPerMeasure);
-        this.getCurrentTrackBank ().createClip (trackIndex, slotIndex, beats);
+        slot.create ((int) (clipLength < 2 ? Math.pow (2, clipLength) : Math.pow (2, clipLength - 2.0) * this.transport.getQuartersPerMeasure ()));
     }
 
 
@@ -283,14 +282,6 @@ public abstract class AbstractModel implements IModel
     public boolean hasRecordingState ()
     {
         return this.transport.isRecording () || this.transport.isLauncherOverdub () || this.currentTrackBank.isClipRecording ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getQuartersPerMeasure ()
-    {
-        return 4 * this.transport.getNumerator () / this.transport.getDenominator ();
     }
 
 

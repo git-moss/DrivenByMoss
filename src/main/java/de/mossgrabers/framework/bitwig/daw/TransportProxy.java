@@ -546,6 +546,14 @@ public class TransportProxy implements ITransport
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public int getQuartersPerMeasure ()
+    {
+        return 4 * this.getNumerator () / this.getDenominator ();
+    }
+
+
     private void handleTempo (final double value)
     {
         this.tempo = Math.min (TransportProxy.TEMPO_MAX, Math.max (TransportProxy.TEMPO_MIN, value));

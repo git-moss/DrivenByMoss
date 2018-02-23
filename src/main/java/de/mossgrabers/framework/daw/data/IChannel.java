@@ -219,34 +219,6 @@ public interface IChannel extends ObserverManagement
 
 
     /**
-     * Turn on/off mute.
-     *
-     * @param value True to turn on mute, otherwise off
-     */
-    void setMute (boolean value);
-
-
-    /**
-     * Toggle mute.
-     */
-    void toggleMute ();
-
-
-    /**
-     * Turn on/off solo.
-     *
-     * @param value True to turn on solo, otherwise off
-     */
-    void setSolo (boolean value);
-
-
-    /**
-     * Toggle solo.
-     */
-    void toggleSolo ();
-
-
-    /**
      * Get the color of the channel.
      *
      * @return The color in RGB
@@ -273,11 +245,45 @@ public interface IChannel extends ObserverManagement
 
 
     /**
+     * Turn on/off mute.
+     *
+     * @param value True to turn on mute, otherwise off
+     */
+    void setMute (boolean value);
+
+
+    /**
+     * Toggle mute.
+     */
+    void toggleMute ();
+
+
+    /**
      * True if soloed.
      *
      * @return True if soloed.
      */
     boolean isSolo ();
+
+
+    /**
+     * Turn on/off solo.
+     *
+     * @param value True to turn on solo, otherwise off
+     */
+    void setSolo (boolean value);
+
+
+    /**
+     * Toggle solo.
+     */
+    void toggleSolo ();
+
+
+    /**
+     * Duplicate the track.
+     */
+    void duplicate ();
 
 
     /**
@@ -287,9 +293,15 @@ public interface IChannel extends ObserverManagement
 
 
     /**
-     * Make the master track visible (scrolls to the track in Bitwig).
+     * Make the master track visible (scrolls to the track in the DAW).
      */
     void makeVisible ();
+
+
+    /**
+     * Select the master track and make it visible.
+     */
+    void selectAndMakeVisible ();
 
 
     /**
@@ -301,9 +313,18 @@ public interface IChannel extends ObserverManagement
 
 
     /**
-     * Get the sends of the channel.
+     * Get the number of sends (of a page).
      *
-     * @return The sends
+     * @return The number of sends
      */
-    ISend [] getSends ();
+    int getNumSends ();
+
+
+    /**
+     * Get the send of a channel.
+     * 
+     * @param sendIndex The index of the send
+     * @return The send
+     */
+    ISend getSend (int sendIndex);
 }

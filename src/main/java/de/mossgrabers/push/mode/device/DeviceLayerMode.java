@@ -131,9 +131,9 @@ public class DeviceLayerMode extends BaseMode
                         break;
                     final int sendIndex = index - (this.isPush2 ? this.surface.getConfiguration ().isSendsAreToggled () ? 0 : 4 : 2);
                     final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
-                    final String name = fxTrackBank == null ? l.getSends ()[sendIndex].getName () : fxTrackBank.getTrack (sendIndex).getName ();
+                    final String name = fxTrackBank == null ? l.getSend (sendIndex).getName () : fxTrackBank.getTrack (sendIndex).getName ();
                     if (!name.isEmpty ())
-                        this.surface.getDisplay ().notify ("Send " + name + ": " + l.getSends ()[sendIndex].getDisplayedValue ());
+                        this.surface.getDisplay ().notify ("Send " + name + ": " + l.getSend (sendIndex).getDisplayedValue ());
                     break;
             }
         }
@@ -329,7 +329,7 @@ public class DeviceLayerMode extends BaseMode
                     for (int i = 0; i < 6; i++)
                     {
                         final int pos = 2 + i;
-                        final ISend send = l.getSends ()[i];
+                        final ISend send = l.getSend (i);
                         d.setCell (0, pos, send.getName ()).setCell (1, pos, send.getDisplayedValue (8)).setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
                     }
                 }
@@ -348,8 +348,9 @@ public class DeviceLayerMode extends BaseMode
                         }
                         else
                         {
-                            d.setCell (0, pos, fxTrack.getName ()).setCell (1, pos, l.getSends ()[i].getDisplayedValue (8));
-                            d.setCell (2, pos, l.getSends ()[i].getValue (), Format.FORMAT_VALUE);
+                            final ISend send = l.getSend (i);
+                            d.setCell (0, pos, fxTrack.getName ()).setCell (1, pos, send.getDisplayedValue (8));
+                            d.setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
                         }
                     }
                 }
@@ -455,7 +456,7 @@ public class DeviceLayerMode extends BaseMode
                 {
                     final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
                     final int sendPos = sendOffset + j;
-                    final ISend send = l.getSends ()[sendPos];
+                    final ISend send = l.getSend (sendPos);
                     sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
                     final boolean doesExist = send.doesExist ();
                     valueStr[j] = doesExist && this.isKnobTouched[4 + j] ? send.getDisplayedValue () : "";

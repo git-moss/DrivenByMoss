@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.command.trigger;
+package de.mossgrabers.framework.command.trigger.clip;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
@@ -65,21 +65,19 @@ public class NewCommand<S extends ControlSurface<C>, C extends Configuration> ex
             return;
         }
 
-        final int trackIndex = track.getIndex ();
-        final ISlot selectedSlot = tb.getSelectedSlot (trackIndex);
+        final ISlot selectedSlot = track.getSelectedSlot ();
         final int slotIndex = selectedSlot == null ? 0 : selectedSlot.getIndex ();
-        final ISlot slot = tb.getEmptySlot (trackIndex, slotIndex);
+        final ISlot slot = track.getEmptySlot (slotIndex);
         if (slot == null)
         {
             this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.", true, true);
             return;
         }
 
-        final int index = slot.getIndex ();
-        this.model.createClip (trackIndex, index, this.getClipLength ());
-        if (slotIndex != index)
-            tb.selectClip (trackIndex, index);
-        tb.launchClip (trackIndex, index);
+        this.model.createClip (slot, this.getClipLength ());
+        if (slotIndex != slot.getIndex ())
+            slot.select ();
+        slot.launch ();
         if (enableOverdub)
             this.model.getTransport ().setLauncherOverdub (true);
     }

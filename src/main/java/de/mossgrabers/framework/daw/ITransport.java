@@ -437,4 +437,12 @@ public interface ITransport extends ObserverManagement
      * @return The denominator
      */
     int getDenominator ();
+
+
+    /**
+     * Get the quarters per measure calculated from the numerator and denominator.
+     *
+     * @return The quarters per measure.
+     */
+    int getQuartersPerMeasure ();
 }

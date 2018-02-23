@@ -4,7 +4,6 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 
 
@@ -15,6 +14,14 @@ import de.mossgrabers.framework.daw.data.ITrack;
  */
 public interface IChannelBank extends ObserverManagement
 {
+    /**
+     * Registers a track selection observer.
+     *
+     * @param observer The observer to register
+     */
+    void addTrackSelectionObserver (final TrackSelectionObserver observer);
+
+
     /**
      * Get the number of all tracks.
      *
@@ -56,14 +63,6 @@ public interface IChannelBank extends ObserverManagement
 
 
     /**
-     * Registers a track selection observer.
-     *
-     * @param observer The observer to register
-     */
-    void addTrackSelectionObserver (final TrackSelectionObserver observer);
-
-
-    /**
      * Returns true if one of the clips of the current bank page is recording.
      *
      * @return True if one of the clips of the current bank page is recording
@@ -97,95 +96,6 @@ public interface IChannelBank extends ObserverManagement
 
 
     /**
-     * Duplicate a track in the current bank page.
-     *
-     * @param index The index in the page
-     */
-    void duplicate (final int index);
-
-
-    /**
-     * Change the crossfade mode.
-     *
-     * @param index The index of the track
-     * @param control The control value
-     */
-    void changeCrossfadeModeAsNumber (final int index, final int control);
-
-
-    /**
-     * Get the crossfade mode.
-     *
-     * @param index The index of the track
-     * @return The crossfade mode A, AB or B
-     */
-    String getCrossfadeMode (final int index);
-
-
-    /**
-     * Set the crossfade mode.
-     *
-     * @param index The index of the track
-     * @param mode The crossfade mode A, AB or B
-     */
-    void setCrossfadeMode (final int index, final String mode);
-
-
-    /**
-     * Get the crossfade mode as a number.
-     *
-     * @param index The index of the track
-     * @return The crossfade mode 0, 1 or 2
-     */
-    int getCrossfadeModeAsNumber (final int index);
-
-
-    /**
-     * Set the crossfade mode as a number.
-     *
-     * @param index The index of the track
-     * @param modeValue The crossfade mode 0, 1 or 2
-     */
-    void setCrossfadeModeAsNumber (final int index, final int modeValue);
-
-
-    /**
-     * Set the crossfade mode to the next value.
-     *
-     * @param index The index of the track
-     */
-    void toggleCrossfadeMode (final int index);
-
-
-    /**
-     * Set the color of a track as a RGB value.
-     *
-     * @param index The index of the track
-     * @param red The red part of the color
-     * @param green The green part of the color
-     * @param blue The blue part of the color
-     */
-    void setTrackColor (final int index, final double red, final double green, final double blue);
-
-
-    /**
-     * Get the color of a track.
-     *
-     * @param index The index of the track
-     * @return The color as RGB, 0 = red, 1 = green, 2 = blue
-     */
-    double [] getTrackColorEntry (final int index);
-
-
-    /**
-     * Stop playback on the track.
-     *
-     * @param index The index of the track
-     */
-    void stop (final int index);
-
-
-    /**
      * Stop all playing clips.
      */
     void stop ();
@@ -214,14 +124,6 @@ public interface IChannelBank extends ObserverManagement
      * @param scene The index of the scene
      */
     void launchScene (final int scene);
-
-
-    /**
-     * Switch playback back to the arrangement.
-     *
-     * @param index The index of the track
-     */
-    void returnToArrangement (final int index);
 
 
     /**
@@ -295,108 +197,6 @@ public interface IChannelBank extends ObserverManagement
      * @param enable True to enable
      */
     void setIndication (final boolean enable);
-
-
-    /**
-     * Select a clip.
-     *
-     * @param trackIndex The index of the track
-     * @param slotIndex The index of the slot
-     */
-    void selectClip (final int trackIndex, final int slotIndex);
-
-
-    /**
-     * Launch a clip.
-     *
-     * @param trackIndex The index of the track
-     * @param slotIndex The index of the slot
-     */
-    void launchClip (final int trackIndex, final int slotIndex);
-
-
-    /**
-     * Record a clip.
-     *
-     * @param trackIndex The index of the track
-     * @param slotIndex The index of the slot
-     */
-    void recordClip (final int trackIndex, final int slotIndex);
-
-
-    /**
-     * Create a clip.
-     *
-     * @param trackIndex The index of the track
-     * @param slotIndex The index of the slot
-     * @param length The length of the clip
-     */
-    void createClip (final int trackIndex, final int slotIndex, final int length);
-
-
-    /**
-     * Delete a clip.
-     *
-     * @param trackIndex The index of the track
-     * @param slotIndex The index of the slot
-     */
-    void deleteClip (final int trackIndex, final int slotIndex);
-
-
-    /**
-     * Duplicate a clip.
-     *
-     * @param trackIndex The index of the track
-     * @param slotIndex The index of the slot
-     */
-    void duplicateClip (final int trackIndex, final int slotIndex);
-
-
-    /**
-     * Opens the context browser to insert a clip.
-     *
-     * @param trackIndex The index of the track
-     * @param slotIndex The index of the slot
-     */
-    void browseToInsertClip (final int trackIndex, final int slotIndex);
-
-
-    /**
-     * Scroll to the next clip page.
-     *
-     * @param trackIndex The index of the track
-     */
-    void scrollClipPageForwards (final int trackIndex);
-
-
-    /**
-     * Returns an array with the selected slots of a track.
-     *
-     * @param index The index of the track
-     * @return The array is empty if none is selected.
-     */
-    ISlot [] getSelectedSlots (final int index);
-
-
-    /**
-     * Returns the first selected slot or null if none is selected.
-     *
-     * @param index The index of the track
-     * @return The first selected slot or null if none is selected
-     */
-    ISlot getSelectedSlot (final int index);
-
-
-    /**
-     * Returns the first empty slot in the current clip window. If none is empty null is returned.
-     * If startFrom is set the search starts from the given index (and wraps around after the last
-     * one to 0).
-     *
-     * @param index The index of the track
-     * @param startFrom At what index to start the search
-     * @return The empty slot or null if none is found
-     */
-    ISlot getEmptySlot (final int index, final int startFrom);
 
 
     /**

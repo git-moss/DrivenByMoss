@@ -69,7 +69,7 @@ public class TrackEditing
                 break;
 
             case 4:
-                tb.changeCrossfadeModeAsNumber (selectedTrack.getIndex (), value);
+                selectedTrack.changeCrossfadeModeAsNumber (value);
                 break;
 
             case 5:
@@ -90,7 +90,7 @@ public class TrackEditing
             case 10:
             case 11:
                 if (tb instanceof ITrackBank)
-                    ((ITrackBank) tb).changeSend (selectedTrack.getIndex (), index - 8, value);
+                    selectedTrack.getSend (index - 8).changeValue (value);
                 break;
         }
     }

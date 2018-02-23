@@ -9,7 +9,6 @@ import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.push.PushConfiguration;
@@ -42,10 +41,7 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final int sendIndex = this.getCurrentSendIndex ();
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        if (currentTrackBank instanceof ITrackBank)
-            ((ITrackBank) currentTrackBank).changeSend (index, sendIndex, value);
+        this.model.getCurrentTrackBank ().getTrack (index).getSend (this.getCurrentSendIndex ()).changeValue (value);
     }
 
 
@@ -57,25 +53,22 @@ public class SendMode extends AbstractTrackMode
 
         this.isKnobTouched[index] = isTouched;
 
+        final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
+        final ISend send = t.getSend (sendIndex);
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
             {
-                final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-                if (currentTrackBank instanceof ITrackBank)
-                    ((ITrackBank) currentTrackBank).resetSend (index, sendIndex);
+                send.resetValue ();
                 return;
             }
 
             final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
-            final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
             if (t.doesExist ())
-                this.surface.getDisplay ().notify ("Send " + (fxTrackBank == null ? t.getSends ()[sendIndex].getName () : fxTrackBank.getTrack (sendIndex).getName ()) + ": " + t.getSends ()[sendIndex].getValue ());
+                this.surface.getDisplay ().notify ("Send " + (fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendIndex).getName ()) + ": " + send.getValue ());
         }
 
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        if (currentTrackBank instanceof ITrackBank)
-            ((ITrackBank) currentTrackBank).touchSend (index, sendIndex, isTouched);
+        send.touchValue (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 
@@ -92,7 +85,7 @@ public class SendMode extends AbstractTrackMode
             final ITrack t = tb.getTrack (i);
             if (t.doesExist ())
             {
-                final ISend send = t.getSends ()[sendIndex];
+                final ISend send = t.getSend (sendIndex);
                 d.setCell (0, i, send.getName ());
                 d.setCell (1, i, send.getDisplayedValue (8));
                 d.setCell (2, i, send.getValue (), Format.FORMAT_VALUE);
@@ -157,7 +150,7 @@ public class SendMode extends AbstractTrackMode
             for (int j = 0; j < 4; j++)
             {
                 final int sendPos = sendOffset + j;
-                final ISend send = t.getSends ()[sendPos];
+                final ISend send = t.getSend (sendPos);
                 sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
                 valueStr[j] = send != null && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue (8) : "";
                 value[j] = valueChanger.toDisplayValue (send != null ? send.getValue () : -1);
@@ -165,7 +158,7 @@ public class SendMode extends AbstractTrackMode
                 selected[j] = sendIndex == sendPos;
             }
 
-            message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", t.getType (), tb.getTrackColorEntry (i), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
+            message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", t.getType (), t.getColor (), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
         }
 
         display.send (message);

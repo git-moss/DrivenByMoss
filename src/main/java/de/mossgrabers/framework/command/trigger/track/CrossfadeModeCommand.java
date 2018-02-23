@@ -2,21 +2,24 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apcmini.command.trigger;
+package de.mossgrabers.framework.command.trigger.track;
 
-import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * A solo button command.
+ * Command to toggle the crossfade mode of the current track.
+ *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SoloCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
+public class CrossfadeModeCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     private int index;
 
@@ -28,7 +31,7 @@ public class SoloCommand extends AbstractTriggerCommand<APCControlSurface, APCCo
      * @param model The model
      * @param surface The surface
      */
-    public SoloCommand (final int index, final IModel model, final APCControlSurface surface)
+    public CrossfadeModeCommand (final int index, final IModel model, final S surface)
     {
         super (model, surface);
         this.index = index;
@@ -40,15 +43,6 @@ public class SoloCommand extends AbstractTriggerCommand<APCControlSurface, APCCo
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getTrack (this.index).toggleSolo ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void executeShifted (final ButtonEvent event)
-    {
-        if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getTrack (this.index).toggleAutoMonitor ();
+            this.model.getCurrentTrackBank ().getTrack (this.index).toggleCrossfadeMode ();
     }
 }

@@ -4,20 +4,23 @@
 
 package de.mossgrabers.apc.command.trigger;
 
-import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 
 
 /**
  * The Stop all clips command.
  *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class StopAllClipsCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
+public class StopAllClipsCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -25,7 +28,7 @@ public class StopAllClipsCommand extends AbstractTriggerCommand<APCControlSurfac
      * @param model The model
      * @param surface The surface
      */
-    public StopAllClipsCommand (final IModel model, final APCControlSurface surface)
+    public StopAllClipsCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }

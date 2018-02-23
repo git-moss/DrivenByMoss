@@ -5,7 +5,7 @@
 package de.mossgrabers.push.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.command.trigger.TemporaryNewCommand;
+import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;

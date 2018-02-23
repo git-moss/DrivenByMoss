@@ -76,12 +76,9 @@ public abstract class AbstractChannelBank implements IChannelBank
     {
         for (int t = 0; t < this.numTracks; t++)
         {
-            final ISlot [] slots = this.tracks[t].getSlots ();
-            if (slots == null)
-                continue;
             for (int s = 0; s < this.numScenes; s++)
             {
-                if (slots[s].isRecording ())
+                if (this.tracks[t].getSlot (s).isRecording ())
                     return true;
             }
         }
@@ -128,14 +125,10 @@ public abstract class AbstractChannelBank implements IChannelBank
     {
         for (int t = 0; t < this.getNumTracks (); t++)
         {
-            final ISlot [] slots = this.getTrack (t).getSlots ();
-            if (slots == null)
-                continue;
-            final ISlot slotData = slots[scene];
-            if (slotData.doesExist () && slotData.hasContent ())
-                return BitwigColors.getColorIndex (slotData.getColor ());
+            final ISlot slot = this.getTrack (t).getSlot (scene);
+            if (slot.doesExist () && slot.hasContent ())
+                return BitwigColors.getColorIndex (slot.getColor ());
         }
-
         return BitwigColors.BITWIG_COLOR_GREEN;
     }
 

@@ -4,21 +4,16 @@
 
 package de.mossgrabers.framework.bitwig.daw;
 
-import de.mossgrabers.framework.bitwig.daw.data.SlotImpl;
 import de.mossgrabers.framework.bitwig.daw.data.TrackImpl;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.daw.AbstractChannelBank;
 import de.mossgrabers.framework.daw.TrackSelectionObserver;
-import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 
 import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
 import com.bitwig.extension.controller.api.PlayingNote;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -122,122 +117,6 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
 
     /** {@inheritDoc} */
     @Override
-    public void duplicate (final int index)
-    {
-        final Track t = this.trackBank.getChannel (index);
-        if (t != null)
-            t.duplicate ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void changeCrossfadeModeAsNumber (final int index, final int control)
-    {
-        this.setCrossfadeModeAsNumber (index, this.valueChanger.changeValue (control, this.getCrossfadeModeAsNumber (index), 1, 3));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCrossfadeMode (final int index)
-    {
-        return this.tracks[index].getCrossfadeMode ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setCrossfadeMode (final int index, final String mode)
-    {
-        this.trackBank.getChannel (index).crossFadeMode ().set (mode);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getCrossfadeModeAsNumber (final int index)
-    {
-        switch (this.getCrossfadeMode (index))
-        {
-            case "A":
-                return 0;
-            case "AB":
-                return 1;
-            case "B":
-                return 2;
-            default:
-                // Not possible
-                break;
-        }
-        return -1;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setCrossfadeModeAsNumber (final int index, final int modeValue)
-    {
-        this.setCrossfadeMode (index, modeValue == 0 ? "A" : modeValue == 1 ? "AB" : "B");
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleCrossfadeMode (final int index)
-    {
-        switch (this.getCrossfadeMode (index))
-        {
-            case "A":
-                this.setCrossfadeMode (index, "B");
-                break;
-            case "B":
-                this.setCrossfadeMode (index, "AB");
-                break;
-            case "AB":
-                this.setCrossfadeMode (index, "A");
-                break;
-            default:
-                // Not possible
-                break;
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setTrackColor (final int index, final double red, final double green, final double blue)
-    {
-        this.trackBank.getChannel (index).color ().set ((float) red, (float) green, (float) blue);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double [] getTrackColorEntry (final int index)
-    {
-        return this.getTrack (index).getColor ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void stop (final int index)
-    {
-        this.trackBank.getChannel (index).stop ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void returnToArrangement (final int index)
-    {
-        this.trackBank.getChannel (index).returnToArrangement ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void scrollTracksUp ()
     {
         this.trackBank.scrollChannelsUp ();
@@ -294,70 +173,6 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void selectClip (final int trackIndex, final int slotIndex)
-    {
-        this.getClipLauncherSlots (trackIndex).select (slotIndex);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void launchClip (final int trackIndex, final int slotIndex)
-    {
-        this.getClipLauncherSlots (trackIndex).launch (slotIndex);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void recordClip (final int trackIndex, final int slotIndex)
-    {
-        this.getClipLauncherSlots (trackIndex).record (slotIndex);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void createClip (final int trackIndex, final int slotIndex, final int length)
-    {
-        this.getClipLauncherSlots (trackIndex).createEmptyClip (slotIndex, length);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void deleteClip (final int trackIndex, final int slotIndex)
-    {
-        this.getClipLauncherSlots (trackIndex).deleteClip (slotIndex);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void duplicateClip (final int trackIndex, final int slotIndex)
-    {
-        this.getClipLauncherSlots (trackIndex).duplicateClip (slotIndex);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void browseToInsertClip (final int trackIndex, final int slotIndex)
-    {
-        this.getClipLauncherSlots (trackIndex).getItemAt (slotIndex).browseToInsertClip ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollClipPageForwards (final int trackIndex)
-    {
-        this.getClipLauncherSlots (trackIndex).scrollPageForwards ();
-    }
-
-
     /**
      * Get the clip launcher slots of a track.
      *
@@ -367,52 +182,6 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
     private ClipLauncherSlotBank getClipLauncherSlots (final int index)
     {
         return this.trackBank.getChannel (index).clipLauncherSlotBank ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISlot [] getSelectedSlots (final int index)
-    {
-        final ITrack track = this.getTrack (index);
-        final List<ISlot> selection = new ArrayList<> ();
-        final ISlot [] slots = track.getSlots ();
-        for (final ISlot slot: slots)
-        {
-            if (slot.isSelected ())
-                selection.add (slot);
-        }
-        return selection.toArray (new SlotImpl [selection.size ()]);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISlot getSelectedSlot (final int index)
-    {
-        for (final ISlot slot: this.getTrack (index).getSlots ())
-        {
-            if (slot.isSelected ())
-                return slot;
-        }
-        return null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISlot getEmptySlot (final int index, final int startFrom)
-    {
-        final int start = startFrom >= 0 ? startFrom : 0;
-        final ITrack track = this.getTrack (index);
-        final ISlot [] slots = track.getSlots ();
-        for (int i = 0; i < slots.length; i++)
-        {
-            final int pos = (start + i) % slots.length;
-            if (!slots[pos].hasContent ())
-                return slots[pos];
-        }
-        return null;
     }
 
 

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.daw.data;
 
+import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.daw.data.ISend;
 
 import com.bitwig.extension.controller.api.Parameter;
@@ -21,14 +22,15 @@ public class SendImpl extends ParameterImpl implements ISend
 
     /**
      * Constructor.
-     *
+     * 
+     * @param valueChanger The value changer
      * @param parameter The parameter
      * @param maxParameterValue The maximum number for values (range is 0 till maxParameterValue-1)
      * @param index The index of the send
      */
-    public SendImpl (final Parameter parameter, final int maxParameterValue, final int index)
+    public SendImpl (final ValueChanger valueChanger, final Parameter parameter, final int maxParameterValue, final int index)
     {
-        super (parameter, maxParameterValue);
+        super (valueChanger, parameter, maxParameterValue);
         this.index = index;
     }
 

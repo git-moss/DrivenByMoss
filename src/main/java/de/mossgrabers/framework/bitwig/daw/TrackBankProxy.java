@@ -65,45 +65,4 @@ public class TrackBankProxy extends AbstractTrackBankProxy implements ITrackBank
     {
         this.cursorTrack.selectParent ();
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void changeSend (final int index, final int sendIndex, final int value)
-    {
-        final Double newValue = Double.valueOf (this.valueChanger.calcKnobSpeed (value));
-        this.trackBank.getChannel (index).sendBank ().getItemAt (sendIndex).inc (newValue, Integer.valueOf (this.valueChanger.getUpperBound ()));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setSend (final int index, final int sendIndex, final double value)
-    {
-        this.getTrack (index).getSends ()[sendIndex].setValue (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void resetSend (final int index, final int sendIndex)
-    {
-        this.trackBank.getChannel (index).sendBank ().getItemAt (sendIndex).reset ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void touchSend (final int index, final int sendIndex, final boolean isBeingTouched)
-    {
-        this.trackBank.getChannel (index).sendBank ().getItemAt (sendIndex).touch (isBeingTouched);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setSendIndication (final int index, final int sendIndex, final boolean indicate)
-    {
-        this.trackBank.getChannel (index).sendBank ().getItemAt (sendIndex).setIndication (indicate);
-    }
 }

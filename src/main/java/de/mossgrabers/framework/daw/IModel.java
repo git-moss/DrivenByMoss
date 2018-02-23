@@ -7,6 +7,7 @@ package de.mossgrabers.framework.daw;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -213,7 +214,7 @@ public interface IModel
 
     /***
      * Create or get the default cursor clip of size numTracks x numScenes.
-     * 
+     *
      * @return The cursor clip
      */
     ICursorClip getCursorClip ();
@@ -221,12 +222,11 @@ public interface IModel
 
     /**
      * Creates a new clip at the given track and slot index.
-     *
-     * @param trackIndex The index of the track on which to create the clip
-     * @param slotIndex The index of the slot (scene) in which to create the clip
-     * @param newCLipLength The length of the new clip
+     * 
+     * @param slot The slot in which to create a clip
+     * @param clipLength The length of the new clip as read from the configuration
      */
-    void createClip (int trackIndex, int slotIndex, int newCLipLength);
+    void createClip (ISlot slot, int clipLength);
 
 
     /**
@@ -235,14 +235,6 @@ public interface IModel
      * @return True if recording
      */
     boolean hasRecordingState ();
-
-
-    /**
-     * Get the quarters per measure.
-     *
-     * @return The quarters per measure.
-     */
-    int getQuartersPerMeasure ();
 
 
     /**

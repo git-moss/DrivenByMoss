@@ -9,7 +9,7 @@ import de.mossgrabers.apcmini.controller.APCminiColors;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.apcmini.mode.Modes;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.command.trigger.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -392,19 +392,18 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         final ITrack t = tb.getSelectedTrack ();
         if (t != null)
         {
-            final int trackIndex = t.getIndex ();
-            final ISlot [] slotIndexes = tb.getSelectedSlots (trackIndex);
+            final ISlot [] slotIndexes = t.getSelectedSlots ();
             final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
             for (int i = 0; i < 8; i++)
             {
                 final int sIndex = (slotIndex + i) % 8;
-                final ISlot s = t.getSlots ()[sIndex];
+                final ISlot s = t.getSlot (sIndex);
                 if (s.hasContent ())
                     continue;
-                tb.createClip (trackIndex, sIndex, (int) Math.pow (2, this.surface.getConfiguration ().getNewClipLength ()));
+                this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());
                 if (slotIndex != sIndex)
-                    tb.selectClip (trackIndex, sIndex);
-                tb.launchClip (trackIndex, sIndex);
+                    s.select ();
+                s.launch ();
                 this.model.getTransport ().setLauncherOverdub (true);
                 return;
             }

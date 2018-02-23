@@ -8,7 +8,7 @@ import de.mossgrabers.beatstep.BeatstepConfiguration;
 import de.mossgrabers.beatstep.controller.BeatstepColors;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.command.trigger.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;

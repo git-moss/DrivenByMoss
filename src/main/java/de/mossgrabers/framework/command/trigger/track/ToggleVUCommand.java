@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.command.trigger;
+package de.mossgrabers.framework.command.trigger.track;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
@@ -12,14 +12,14 @@ import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * The Punch In command. Toggles punch in.
+ * Toggle the VU meter setting.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PunchInCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class ToggleVUCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -27,7 +27,7 @@ public class PunchInCommand<S extends ControlSurface<C>, C extends Configuration
      * @param model The model
      * @param surface The surface
      */
-    public PunchInCommand (final IModel model, final S surface)
+    public ToggleVUCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }
@@ -35,9 +35,11 @@ public class PunchInCommand<S extends ControlSurface<C>, C extends Configuration
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.model.getTransport ().togglePunchIn ();
+        if (event != ButtonEvent.DOWN)
+            return;
+        final C configuration = this.surface.getConfiguration ();
+        configuration.setVUMetersEnabled (!configuration.isEnableVUMeters ());
     }
 }

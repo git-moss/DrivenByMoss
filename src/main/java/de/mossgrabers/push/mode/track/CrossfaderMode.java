@@ -40,15 +40,16 @@ public class CrossfaderMode extends AbstractTrackMode
 
         if (isTouched)
         {
-            if (this.surface.isDeletePressed ())
-            {
-                this.model.getCurrentTrackBank ().setCrossfadeMode (index, "AB");
-                return;
-            }
-
             final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
             if (t.doesExist ())
+            {
+                if (this.surface.isDeletePressed ())
+                {
+                    t.setCrossfadeMode ("AB");
+                    return;
+                }
                 this.surface.getDisplay ().notify ("Crossfader: " + t.getCrossfadeMode ());
+            }
         }
 
         this.checkStopAutomationOnKnobRelease (isTouched);
@@ -60,7 +61,7 @@ public class CrossfaderMode extends AbstractTrackMode
     public void onValueKnob (final int index, final int value)
     {
         if (this.increaseKnobMovement ())
-            this.model.getCurrentTrackBank ().changeCrossfadeModeAsNumber (index, value);
+            this.model.getCurrentTrackBank ().getTrack (index).changeCrossfadeModeAsNumber (value);
     }
 
 

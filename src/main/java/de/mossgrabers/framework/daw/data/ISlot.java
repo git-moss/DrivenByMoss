@@ -111,4 +111,48 @@ public interface ISlot extends ObserverManagement
      * @param blue The blue
      */
     void setColor (double red, double green, double blue);
+
+
+    /**
+     * Select a clip.
+     */
+    void select ();
+
+
+    /**
+     * Launch a clip.
+     */
+    void launch ();
+
+
+    /**
+     * Record a clip.
+     */
+    void record ();
+
+
+    /**
+     * Create a clip.
+     *
+     * @param length The length of the clip
+     */
+    void create (final int length);
+
+
+    /**
+     * Delete a clip.
+     */
+    void delete ();
+
+
+    /**
+     * Duplicate a clip.
+     */
+    void duplicate ();
+
+
+    /**
+     * Opens the context browser to insert a clip.
+     */
+    void browse ();
 }

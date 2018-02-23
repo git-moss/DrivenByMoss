@@ -59,7 +59,7 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
             case 12:
             case 13:
                 if (tb instanceof ITrackBank)
-                    ((ITrackBank) tb).changeSend (selectedTrack.getIndex (), index - 8, value);
+                    selectedTrack.getSend (index - 8).changeValue (value);
                 break;
 
             case 14:

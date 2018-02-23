@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
@@ -97,11 +98,12 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         }
 
         // Duplicate a clip
+        final ITrack track = tb.getTrack (t);
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
         {
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
-            if (tb.getTrack (t).doesExist ())
-                tb.duplicateClip (t, s);
+            if (track.doesExist ())
+                track.getSlot (s).duplicate ();
             return;
         }
 
@@ -109,7 +111,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
         {
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_CLIP_STOP);
-            tb.stop (t);
+            track.stop ();
             return;
         }
 
@@ -117,9 +119,9 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_BROWSE))
         {
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
-            if (!tb.getTrack (t).doesExist ())
+            if (!track.doesExist ())
                 return;
-            tb.browseToInsertClip (t, s);
+            track.getSlot (s).browse ();
             final ModeManager modeManager = this.surface.getModeManager ();
             if (!modeManager.isActiveMode (Modes.MODE_BROWSER))
                 modeManager.setActiveMode (Modes.MODE_BROWSER);

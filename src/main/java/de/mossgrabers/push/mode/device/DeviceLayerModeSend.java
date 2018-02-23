@@ -76,9 +76,9 @@ public class DeviceLayerModeSend extends DeviceLayerMode
             }
 
             final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
-            final String name = fxTrackBank == null ? layer.getSends ()[sendIndex].getName () : fxTrackBank.getTrack (sendIndex).getName ();
+            final String name = fxTrackBank == null ? layer.getSend (sendIndex).getName () : fxTrackBank.getTrack (sendIndex).getName ();
             if (!name.isEmpty ())
-                this.surface.getDisplay ().notify ("Send " + name + ": " + layer.getSends ()[sendIndex].getDisplayedValue ());
+                this.surface.getDisplay ().notify ("Send " + name + ": " + layer.getSend (sendIndex).getDisplayedValue ());
         }
 
         cd.touchLayerOrDrumPadSend (offset + index, sendIndex, isTouched);
@@ -100,9 +100,10 @@ public class DeviceLayerModeSend extends DeviceLayerMode
         {
             final IChannel layer = cd.getLayerOrDrumPad (offset + i);
             final boolean exists = layer.doesExist ();
-            d.setCell (0, i, exists ? layer.getSends ()[sendIndex].getName () : "").setCell (1, i, layer.getSends ()[sendIndex].getDisplayedValue (8));
+            final ISend send = layer.getSend (sendIndex);
+            d.setCell (0, i, exists ? send.getName () : "").setCell (1, i, send.getDisplayedValue (8));
             if (exists)
-                d.setCell (2, i, layer.getSends ()[sendIndex].getValue (), Format.FORMAT_VALUE);
+                d.setCell (2, i, send.getValue (), Format.FORMAT_VALUE);
             else
                 d.clearCell (2, i);
         }
@@ -158,7 +159,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
             for (int j = 0; j < 4; j++)
             {
                 final int sendPos = sendOffset + j;
-                final ISend send = layer.getSends ()[sendPos];
+                final ISend send = layer.getSend (sendPos);
                 sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
                 valueStr[j] = send.doesExist () && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue () : "";
                 value[j] = send.doesExist () ? send.getValue () : 0;

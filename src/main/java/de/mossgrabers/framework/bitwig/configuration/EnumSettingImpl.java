@@ -22,7 +22,7 @@ public class EnumSettingImpl implements IEnumSetting
 
     /**
      * Constructor.
-     * 
+     *
      * @param enumValue The enum value
      */
     public EnumSettingImpl (final SettableEnumValue enumValue)

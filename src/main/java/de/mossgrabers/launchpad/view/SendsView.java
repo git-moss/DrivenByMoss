@@ -43,7 +43,7 @@ public class SendsView extends AbstractFaderView
     public void onValueKnob (final int index, final int value)
     {
         if (!this.model.isEffectTrackBankActive ())
-            this.model.getTrackBank ().setSend (index, this.selectedSend, value);
+            this.model.getTrackBank ().getTrack (index).getSend (this.selectedSend).setValue (value);
     }
 
 
@@ -66,7 +66,7 @@ public class SendsView extends AbstractFaderView
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getTrack (i);
-            final ISend send = track.getSends ()[this.selectedSend];
+            final ISend send = track.getSend (this.selectedSend);
             final int color = cm.getColor (BitwigColors.getColorIndex (track.getColor ()));
             if (this.trackColors[i] != color || !track.doesExist () || send.getName ().isEmpty ())
                 this.setupFader (i);

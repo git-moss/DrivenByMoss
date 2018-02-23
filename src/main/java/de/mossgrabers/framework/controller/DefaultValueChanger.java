@@ -143,7 +143,7 @@ public class DefaultValueChanger implements ValueChanger
     @Override
     public double toNormalizedValue (final int value)
     {
-        return Math.min (((double) value) / (this.getUpperBound () - 1), 1.0);
+        return Math.min ((double) value / (this.getUpperBound () - 1), 1.0);
     }
 
 

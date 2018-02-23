@@ -58,8 +58,8 @@ public class ChannelImpl implements IChannel
 
         final int maxParameterValue = valueChanger.getUpperBound ();
 
-        this.volumeParameter = new ParameterImpl (channel.volume (), maxParameterValue);
-        this.panParameter = new ParameterImpl (channel.pan (), maxParameterValue);
+        this.volumeParameter = new ParameterImpl (valueChanger, channel.volume (), maxParameterValue);
+        this.panParameter = new ParameterImpl (valueChanger, channel.pan (), maxParameterValue);
 
         channel.addVuMeterObserver (maxParameterValue, -1, true, value -> this.handleVUMeters (maxParameterValue, value));
 
@@ -68,7 +68,7 @@ public class ChannelImpl implements IChannel
             return;
         final SendBank sendBank = channel.sendBank ();
         for (int i = 0; i < numSends; i++)
-            this.sends[i] = new SendImpl (sendBank.getItemAt (i), maxParameterValue, i);
+            this.sends[i] = new SendImpl (valueChanger, sendBank.getItemAt (i), maxParameterValue, i);
     }
 
 
@@ -134,6 +134,22 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
+    public void setIsActivated (final boolean value)
+    {
+        this.channel.isActivated ().set (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleIsActivated ()
+    {
+        this.channel.isActivated ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getName ()
     {
         return this.channel.name ().get ();
@@ -166,17 +182,9 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
-    public void setColor (final double red, final double green, final double blue)
-    {
-        this.channel.color ().set ((float) red, (float) green, (float) blue);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void changeVolume (final int control)
     {
-        this.volumeParameter.inc (this.valueChanger.calcKnobSpeed (control));
+        this.volumeParameter.changeValue (control);
     }
 
 
@@ -248,7 +256,7 @@ public class ChannelImpl implements IChannel
     @Override
     public void changePan (final int control)
     {
-        this.panParameter.inc (this.valueChanger.calcKnobSpeed (control));
+        this.panParameter.changeValue (control);
     }
 
 
@@ -294,17 +302,9 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
-    public void setIsActivated (final boolean value)
+    public boolean isMute ()
     {
-        this.channel.isActivated ().set (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleIsActivated ()
-    {
-        this.channel.isActivated ().toggle ();
+        return this.channel.mute ().get ();
     }
 
 
@@ -321,6 +321,14 @@ public class ChannelImpl implements IChannel
     public void toggleMute ()
     {
         this.channel.mute ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isSolo ()
+    {
+        return this.channel.solo ().get ();
     }
 
 
@@ -356,17 +364,9 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
-    public boolean isMute ()
+    public void setColor (final double red, final double green, final double blue)
     {
-        return this.channel.mute ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isSolo ()
-    {
-        return this.channel.solo ().get ();
+        this.channel.color ().set ((float) red, (float) green, (float) blue);
     }
 
 
@@ -380,9 +380,25 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
-    public ISend [] getSends ()
+    public int getNumSends ()
     {
-        return this.sends;
+        return this.sends.length;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISend getSend (int sendIndex)
+    {
+        return this.sends[sendIndex];
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void duplicate ()
+    {
+        this.channel.duplicate ();
     }
 
 
@@ -401,6 +417,15 @@ public class ChannelImpl implements IChannel
     {
         this.channel.makeVisibleInArranger ();
         this.channel.makeVisibleInMixer ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectAndMakeVisible ()
+    {
+        this.select ();
+        this.makeVisible ();
     }
 
 

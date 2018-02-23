@@ -93,8 +93,8 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
                     return;
                 }
 
-                final ISlot selectedSlot = tb.getSelectedSlot (track.getIndex ());
-                final ISlot slot = selectedSlot == null ? track.getSlots ()[0] : selectedSlot;
+                final ISlot selectedSlot = track.getSelectedSlot ();
+                final ISlot slot = selectedSlot == null ? track.getSlot (0) : selectedSlot;
                 if (event == ButtonEvent.DOWN)
                 {
                     if (slot.hasContent ())
@@ -108,7 +108,7 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
                         // If there is no clip in the selected slot, create a clip and begin record
                         // mode. Releasing it ends record mode.
                         this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_NEW, event);
-                        tb.selectClip (track.getIndex (), slot.getIndex ());
+                        slot.select ();
                         this.model.getTransport ().setLauncherOverdub (true);
                     }
                 }
@@ -118,7 +118,7 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
                     this.model.getTransport ().setLauncherOverdub (false);
                 }
                 // Start transport if not already playing
-                tb.launchClip (track.getIndex (), slot.getIndex ());
+                slot.launch ();
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_ARRANGE:

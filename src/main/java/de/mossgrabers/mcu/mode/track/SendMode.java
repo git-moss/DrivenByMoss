@@ -8,7 +8,6 @@ import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.mode.Modes;
@@ -37,12 +36,8 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final int sendIndex = this.getCurrentSendIndex ();
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        if (!(currentTrackBank instanceof ITrackBank))
-            return;
         final int extenderOffset = this.surface.getExtenderOffset ();
-        ((ITrackBank) currentTrackBank).changeSend (extenderOffset + index, sendIndex, value);
+        this.model.getCurrentTrackBank ().getTrack (extenderOffset + index).getSend (this.getCurrentSendIndex ()).changeValue (value);
     }
 
 
@@ -66,7 +61,7 @@ public class SendMode extends AbstractTrackMode
         final Display d = this.surface.getDisplay ();
         final int sendIndex = this.getCurrentSendIndex ();
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.getTrack (0).getSends ()[sendIndex].doesExist ())
+        if (!tb.getTrack (0).getSend (sendIndex).doesExist ())
         {
             d.notify ("Send channel " + (sendIndex + 1) + " does not exist.", true, false);
             return;
@@ -75,7 +70,7 @@ public class SendMode extends AbstractTrackMode
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getTrack (extenderOffset + i);
-            d.setCell (1, i, t.getSends ()[sendIndex].getDisplayedValue (6));
+            d.setCell (1, i, t.getSend (sendIndex).getDisplayedValue (6));
         }
         d.done (1);
 
@@ -106,7 +101,7 @@ public class SendMode extends AbstractTrackMode
         {
             final ITrack t = tb.getTrack (extenderOffset + i);
             if (t.doesExist ())
-                d.setCell (0, i, this.optimizeName (StringUtils.fixASCII (t.getSends ()[sendIndex].getName (6)), 6));
+                d.setCell (0, i, this.optimizeName (StringUtils.fixASCII (t.getSend (sendIndex).getName (6)), 6));
             else
                 d.clearCell (0, i);
         }
@@ -132,7 +127,7 @@ public class SendMode extends AbstractTrackMode
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getTrack (extenderOffset + i);
-            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, t.getSends ()[sendIndex].getValue (), upperBound);
+            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, t.getSend (sendIndex).getValue (), upperBound);
         }
     }
 
@@ -142,7 +137,7 @@ public class SendMode extends AbstractTrackMode
     protected void resetParameter (final int index)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        ((ITrackBank) this.model.getCurrentTrackBank ()).resetSend (extenderOffset + index, this.getCurrentSendIndex ());
+        this.model.getCurrentTrackBank ().getTrack (extenderOffset + index).getSend (this.getCurrentSendIndex ()).resetValue ();
     }
 
 

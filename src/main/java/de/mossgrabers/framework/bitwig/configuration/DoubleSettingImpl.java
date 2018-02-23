@@ -22,7 +22,7 @@ public class DoubleSettingImpl implements IDoubleSetting
 
     /**
      * Constructor.
-     * 
+     *
      * @param rangedValue The range value
      */
     public DoubleSettingImpl (final SettableRangedValue rangedValue)

@@ -19,7 +19,6 @@ import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.IScene;
-import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
@@ -216,23 +215,22 @@ public class OSCWriter
         this.sendOSC (trackAddress + "canHoldAudioData", track.canHoldAudioData (), dump);
         this.sendOSC (trackAddress + "position", track.getPosition (), dump);
 
-        final ISend [] sends = track.getSends ();
-        for (int i = 0; i < sends.length; i++)
-            this.flushParameterData (trackAddress + "send/" + (i + 1) + "/", sends[i], dump);
+        for (int i = 0; i < track.getNumSends (); i++)
+            this.flushParameterData (trackAddress + "send/" + (i + 1) + "/", track.getSend (i), dump);
 
-        final ISlot [] slots = track.getSlots ();
-        for (int i = 0; i < slots.length; i++)
+        for (int i = 0; i < track.getNumSlots (); i++)
         {
+            final ISlot slot = track.getSlot (i);
             final String clipAddress = trackAddress + "clip/" + (i + 1) + "/";
-            this.sendOSC (clipAddress + "name", slots[i].getName (), dump);
-            this.sendOSC (clipAddress + "isSelected", slots[i].isSelected (), dump);
-            this.sendOSC (clipAddress + "hasContent", slots[i].hasContent (), dump);
-            this.sendOSC (clipAddress + "isPlaying", slots[i].isPlaying (), dump);
-            this.sendOSC (clipAddress + "isRecording", slots[i].isRecording (), dump);
-            this.sendOSC (clipAddress + "isPlayingQueued", slots[i].isPlayingQueued (), dump);
-            this.sendOSC (clipAddress + "isRecordingQueued", slots[i].isRecordingQueued (), dump);
+            this.sendOSC (clipAddress + "name", slot.getName (), dump);
+            this.sendOSC (clipAddress + "isSelected", slot.isSelected (), dump);
+            this.sendOSC (clipAddress + "hasContent", slot.hasContent (), dump);
+            this.sendOSC (clipAddress + "isPlaying", slot.isPlaying (), dump);
+            this.sendOSC (clipAddress + "isRecording", slot.isRecording (), dump);
+            this.sendOSC (clipAddress + "isPlayingQueued", slot.isPlayingQueued (), dump);
+            this.sendOSC (clipAddress + "isRecordingQueued", slot.isRecordingQueued (), dump);
 
-            final double [] color = slots[i].getColor ();
+            final double [] color = slot.getColor ();
             this.sendOSCColor (clipAddress + "color", color[0], color[1], color[2], dump);
         }
 
@@ -331,9 +329,8 @@ public class OSCWriter
         this.sendOSC (deviceAddress + "mute", device.isMute (), dump);
         this.sendOSC (deviceAddress + "solo", device.isSolo (), dump);
 
-        final ISend [] sends = device.getSends ();
-        for (int i = 0; i < sends.length; i++)
-            this.flushParameterData (deviceAddress + "send/" + (i + 1) + "/", sends[i], dump);
+        for (int i = 0; i < device.getNumSends (); i++)
+            this.flushParameterData (deviceAddress + "send/" + (i + 1) + "/", device.getSend (i), dump);
 
         if (this.configuration.isEnableVUMeters ())
             this.sendOSC (deviceAddress + "vu", device.getVu (), dump);
