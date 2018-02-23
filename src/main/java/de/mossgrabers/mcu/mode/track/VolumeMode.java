@@ -35,7 +35,7 @@ public class VolumeMode extends AbstractTrackMode
     public void onValueKnob (final int index, final int value)
     {
         final int channel = this.surface.getExtenderOffset () + index;
-        this.model.getCurrentTrackBank ().changeVolume (channel, value);
+        this.model.getCurrentTrackBank ().getTrack (channel).changeVolume (value);
     }
 
 
@@ -108,6 +108,6 @@ public class VolumeMode extends AbstractTrackMode
     protected void resetParameter (final int index)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        this.model.getCurrentTrackBank ().resetVolume (extenderOffset + index);
+        this.model.getCurrentTrackBank ().getTrack (extenderOffset + index).resetVolume ();
     }
 }

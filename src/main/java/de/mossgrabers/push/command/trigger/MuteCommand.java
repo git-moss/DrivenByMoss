@@ -90,7 +90,7 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
             final IChannelBank tb = this.model.getCurrentTrackBank ();
             final ITrack selTrack = tb.getSelectedTrack ();
             if (selTrack != null)
-                tb.toggleMute (selTrack.getIndex ());
+                selTrack.toggleMute ();
         }
         else if (Modes.isLayerMode (activeModeId))
         {

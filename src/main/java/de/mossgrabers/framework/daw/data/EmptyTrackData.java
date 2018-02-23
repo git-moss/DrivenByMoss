@@ -261,4 +261,204 @@ public class EmptyTrackData implements ITrack
     {
         return false;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeVolume (int control)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setVolume (double value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void resetVolume ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void touchVolume (boolean isBeingTouched)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setVolumeIndication (boolean indicate)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changePan (int control)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPan (double value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void resetPan ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void touchPan (boolean isBeingTouched)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPanIndication (boolean indicate)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setColor (double red, double green, double blue)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setIsActivated (boolean value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleIsActivated ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setMute (boolean value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleMute ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSolo (boolean value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleSolo ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setRecArm (boolean value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleRecArm ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setMonitor (boolean value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleMonitor ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAutoMonitor (boolean value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleAutoMonitor ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void select ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void makeVisible ()
+    {
+        // Intentionally empty
+    }
 }

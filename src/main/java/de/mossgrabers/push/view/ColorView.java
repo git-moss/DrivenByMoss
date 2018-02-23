@@ -136,7 +136,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
                     break;
 
                 case MODE_CLIP:
-                    final ICursorClip clip = ((DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM)).getClip ();
+                    final ICursorClip clip = this.model.getCursorClip ();
                     if (clip != null)
                         clip.setColor (entry[0], entry[1], entry[2]);
                     break;

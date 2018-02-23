@@ -6,10 +6,8 @@ package de.mossgrabers.apc.command.trigger;
 
 import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.apc.view.DrumView;
-import de.mossgrabers.apc.view.Views;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.command.trigger.QuantizeCommand;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 
@@ -19,7 +17,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class QuantizeCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
+public class APCQuantizeCommand extends QuantizeCommand<APCControlSurface, APCConfiguration>
 {
     /**
      * Constructor.
@@ -27,21 +25,9 @@ public class QuantizeCommand extends AbstractTriggerCommand<APCControlSurface, A
      * @param model The model
      * @param surface The surface
      */
-    public QuantizeCommand (final IModel model, final APCControlSurface surface)
+    public APCQuantizeCommand (final IModel model, final APCControlSurface surface)
     {
         super (model, surface);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void executeNormal (final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-        // We can use any cursor clip, e.g. the one of the drum view
-        final DrumView view = (DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM);
-        view.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
     }
 
 

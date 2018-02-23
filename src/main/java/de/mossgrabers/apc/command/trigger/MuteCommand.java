@@ -40,7 +40,7 @@ public class MuteCommand extends AbstractTriggerCommand<APCControlSurface, APCCo
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().toggleMute (this.index);
+            this.model.getCurrentTrackBank ().getTrack (this.index).toggleMute ();
     }
 
 
@@ -49,6 +49,6 @@ public class MuteCommand extends AbstractTriggerCommand<APCControlSurface, APCCo
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().toggleMonitor (this.index);
+            this.model.getCurrentTrackBank ().getTrack (this.index).toggleMonitor ();
     }
 }

@@ -50,9 +50,9 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
     {
         final boolean isInc = value >= 65;
         if (isInc)
-            this.clip.scrollStepsPageForward ();
+            this.getClip ().scrollStepsPageForward ();
         else
-            this.clip.scrollStepsPageBackwards ();
+            this.getClip ().scrollStepsPageBackwards ();
     }
 
 
@@ -60,7 +60,7 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
     {
         final boolean isInc = value >= 65;
         this.selectedIndex = Math.max (0, Math.min (RESOLUTIONS.length - 1, isInc ? this.selectedIndex + 1 : this.selectedIndex - 1));
-        this.clip.setStepLength (RESOLUTIONS[this.selectedIndex]);
+        this.getClip ().setStepLength (RESOLUTIONS[this.selectedIndex]);
     }
 
 

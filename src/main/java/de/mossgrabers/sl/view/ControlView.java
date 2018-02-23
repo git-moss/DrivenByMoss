@@ -186,7 +186,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
                 tb = this.model.getCurrentTrackBank ();
                 track = tb.getSelectedTrack ();
                 if (track != null)
-                    tb.toggleMute (track.getIndex ());
+                    track.toggleMute ();
                 break;
 
             // Solo
@@ -194,7 +194,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
                 tb = this.model.getCurrentTrackBank ();
                 track = tb.getSelectedTrack ();
                 if (track != null)
-                    tb.toggleSolo (track.getIndex ());
+                    track.toggleSolo ();
                 break;
 
             // Arm
@@ -202,7 +202,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
                 tb = this.model.getCurrentTrackBank ();
                 track = tb.getSelectedTrack ();
                 if (track != null)
-                    tb.toggleArm (track.getIndex ());
+                    track.toggleRecArm ();
                 break;
 
             // Write

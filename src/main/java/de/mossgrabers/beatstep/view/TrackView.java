@@ -94,7 +94,7 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
             case 0:
                 selectedTrack = tb.getSelectedTrack ();
                 if (selectedTrack != null)
-                    tb.toggleIsActivated (selectedTrack.getIndex ());
+                    selectedTrack.toggleIsActivated ();
                 break;
 
             // Track left

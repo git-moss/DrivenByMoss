@@ -34,8 +34,7 @@ public class PanMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final int channel = this.surface.getExtenderOffset () + index;
-        this.model.getCurrentTrackBank ().changePan (channel, value);
+        this.model.getCurrentTrackBank ().getTrack (this.surface.getExtenderOffset () + index).changePan (value);
     }
 
 
@@ -108,6 +107,6 @@ public class PanMode extends AbstractTrackMode
     protected void resetParameter (final int index)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        this.model.getCurrentTrackBank ().resetPan (extenderOffset + index);
+        this.model.getCurrentTrackBank ().getTrack (extenderOffset + index).resetPan ();
     }
 }

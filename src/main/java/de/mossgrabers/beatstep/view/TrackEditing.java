@@ -54,18 +54,18 @@ public class TrackEditing
         switch (index)
         {
             case 0:
-                tb.changeVolume (selectedTrack.getIndex (), value);
+                selectedTrack.changeVolume (value);
                 break;
             case 1:
-                tb.changePan (selectedTrack.getIndex (), value);
+                selectedTrack.changePan (value);
                 break;
 
             case 2:
-                tb.setMute (selectedTrack.getIndex (), value > 64);
+                selectedTrack.setMute (value > 64);
                 break;
 
             case 3:
-                tb.setSolo (selectedTrack.getIndex (), value > 64);
+                selectedTrack.setSolo (value > 64);
                 break;
 
             case 4:

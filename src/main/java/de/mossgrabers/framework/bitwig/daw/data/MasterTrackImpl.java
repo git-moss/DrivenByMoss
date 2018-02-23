@@ -22,7 +22,6 @@ import java.util.List;
 public class MasterTrackImpl extends TrackImpl implements IMasterTrack
 {
     private final List<TrackSelectionObserver> observers = new ArrayList<> ();
-    private ValueChanger                       valueChanger;
     private int                                vuLeft;
     private int                                vuRight;
 
@@ -35,11 +34,11 @@ public class MasterTrackImpl extends TrackImpl implements IMasterTrack
      */
     public MasterTrackImpl (final MasterTrack master, final ValueChanger valueChanger)
     {
-        super (master, valueChanger.getUpperBound (), -1, 0, 0);
-        this.valueChanger = valueChanger;
+        super (master, valueChanger, -1, 0, 0);
+
         this.track.addIsSelectedInEditorObserver (this::handleIsSelected);
 
-        final int maxParameterValue = valueChanger.getUpperBound ();
+        final int maxParameterValue = this.valueChanger.getUpperBound ();
         this.track.addVuMeterObserver (maxParameterValue, 0, true, value -> this.handleVULeftMeter (maxParameterValue, value));
         this.track.addVuMeterObserver (maxParameterValue, 1, true, value -> this.handleVURightMeter (maxParameterValue, value));
     }
@@ -50,208 +49,6 @@ public class MasterTrackImpl extends TrackImpl implements IMasterTrack
     public void addTrackSelectionObserver (final TrackSelectionObserver observer)
     {
         this.observers.add (observer);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setColor (final double red, final double green, final double blue)
-    {
-        this.track.color ().set ((float) red, (float) green, (float) blue);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void changeVolume (final int control)
-    {
-        this.track.volume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setVolume (final double value)
-    {
-        this.track.volume ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void resetVolume ()
-    {
-        this.track.volume ().reset ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void touchVolume (final boolean isBeingTouched)
-    {
-        this.track.volume ().touch (isBeingTouched);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setVolumeIndication (final boolean indicate)
-    {
-        this.track.volume ().setIndication (indicate);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void changePan (final int control)
-    {
-        this.track.pan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setPan (final double value)
-    {
-        this.track.pan ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void resetPan ()
-    {
-        this.track.pan ().reset ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void touchPan (final boolean isBeingTouched)
-    {
-        this.track.pan ().touch (isBeingTouched);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setPanIndication (final boolean indicate)
-    {
-        this.track.pan ().setIndication (indicate);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setIsActivated (final boolean value)
-    {
-        this.track.isActivated ().set (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleIsActivated ()
-    {
-        this.track.isActivated ().toggle ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setMute (final boolean value)
-    {
-        this.track.mute ().set (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleMute ()
-    {
-        this.track.mute ().toggle ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setSolo (final boolean value)
-    {
-        this.track.solo ().set (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleSolo ()
-    {
-        this.track.solo ().toggle ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setArm (final boolean value)
-    {
-        this.track.arm ().set (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleArm ()
-    {
-        this.track.arm ().toggle ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setMonitor (final boolean value)
-    {
-        this.track.monitor ().set (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleMonitor ()
-    {
-        this.track.monitor ().toggle ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setAutoMonitor (final boolean value)
-    {
-        this.track.autoMonitor ().set (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleAutoMonitor ()
-    {
-        this.track.autoMonitor ().toggle ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void select ()
-    {
-        this.track.selectInEditor ();
-        this.track.selectInMixer ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void makeVisible ()
-    {
-        this.track.makeVisibleInArranger ();
-        this.track.makeVisibleInMixer ();
     }
 
 

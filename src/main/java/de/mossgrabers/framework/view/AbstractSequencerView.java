@@ -65,8 +65,10 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     protected int                    numSequencerRows;
     protected int                    selectedIndex;
     protected int                    offsetY;
-    protected ICursorClip            clip;
     protected final Configuration    configuration;
+
+    protected final int              clipRows;
+    protected final int              clipCols;
 
 
     /**
@@ -97,6 +99,10 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     public AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols, final int numSequencerRows)
     {
         super (name, surface, model);
+
+        this.clipRows = clipRows;
+        this.clipCols = clipCols;
+
         this.configuration = this.surface.getConfiguration ();
 
         this.selectedIndex = 4;
@@ -105,8 +111,8 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
         this.offsetY = 0;
 
         this.numSequencerRows = numSequencerRows;
-        this.clip = this.model.createCursorClip (clipCols, clipRows);
-        this.clip.setStepLength (RESOLUTIONS[this.selectedIndex]);
+
+        this.model.getCursorClip (clipCols, clipRows);
     }
 
 
@@ -115,7 +121,9 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     public void onActivate ()
     {
         super.onActivate ();
-        this.clip.enableObservers (true);
+        final ICursorClip clip = this.getClip ();
+        clip.enableObservers (true);
+        clip.setStepLength (RESOLUTIONS[this.selectedIndex]);
     }
 
 
@@ -124,7 +132,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     public void onDeactivate ()
     {
         super.onDeactivate ();
-        this.clip.enableObservers (true);
+        this.getClip ().enableObservers (false);
     }
 
 
@@ -135,7 +143,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
         if (event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
             return;
         this.selectedIndex = 7 - index;
-        this.clip.setStepLength (RESOLUTIONS[this.selectedIndex]);
+        this.getClip ().setStepLength (RESOLUTIONS[this.selectedIndex]);
         this.surface.getDisplay ().notify (RESOLUTION_TEXTS[this.selectedIndex]);
     }
 
@@ -148,7 +156,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     public void onLeft (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.clip.scrollStepsPageBackwards ();
+            this.getClip ().scrollStepsPageBackwards ();
     }
 
 
@@ -160,7 +168,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     public void onRight (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.clip.scrollStepsPageForward ();
+            this.getClip ().scrollStepsPageForward ();
     }
 
 
@@ -171,7 +179,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      */
     public ICursorClip getClip ()
     {
-        return this.clip;
+        return this.model.getCursorClip (this.clipCols, this.clipRows);
     }
 
 
@@ -183,8 +191,9 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      */
     protected boolean isInXRange (final int x)
     {
-        final int stepSize = this.clip.getNumSteps ();
-        final int start = this.clip.getEditPage () * stepSize;
+        final ICursorClip clip = this.getClip ();
+        final int stepSize = clip.getNumSteps ();
+        final int start = clip.getEditPage () * stepSize;
         return x >= start && x < start + stepSize;
     }
 

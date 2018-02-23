@@ -85,6 +85,10 @@ public class Model extends AbstractModel
         this.masterTrackEqualsValue.markInterested ();
 
         this.currentTrackBank = this.trackBank;
+
+        // Make sure there is at least 1 cursor clip for quantization, even if there are no
+        // sequencers
+        this.getCursorClip ();
     }
 
 
@@ -98,9 +102,9 @@ public class Model extends AbstractModel
 
     /** {@inheritDoc} */
     @Override
-    public ICursorClip createCursorClip (final int cols, final int rows)
+    public ICursorClip getCursorClip (final int cols, final int rows)
     {
-        return new CursorClipProxy (this.controllerHost, this.valueChanger, cols, rows);
+        return this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipProxy (this.controllerHost, this.valueChanger, cols, rows));
     }
 
 

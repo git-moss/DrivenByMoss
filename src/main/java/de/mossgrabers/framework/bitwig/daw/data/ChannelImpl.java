@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.daw.data;
 
+import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -20,26 +21,29 @@ import com.bitwig.extension.controller.api.SettableColorValue;
  */
 public class ChannelImpl implements IChannel
 {
-    protected Channel  channel;
-    private ISend []   sends;
-    private int        index;
-    private boolean    selected;
-    private int        vu;
-    private IParameter volumeParameter;
-    private IParameter panParameter;
+    protected ValueChanger valueChanger;
+    protected Channel      channel;
+
+    private ISend []       sends;
+    private int            index;
+    private boolean        selected;
+    private int            vu;
+    private IParameter     volumeParameter;
+    private IParameter     panParameter;
 
 
     /**
      * Constructor.
      *
      * @param channel The channel
-     * @param maxParameterValue The maximum parameter value, remove when clipping bug is fixed
+     * @param valueChanger The valueChanger
      * @param index The index of the channel in the page
      * @param numSends The number of sends of a bank
      */
-    public ChannelImpl (final Channel channel, final int maxParameterValue, final int index, final int numSends)
+    public ChannelImpl (final Channel channel, final ValueChanger valueChanger, final int index, final int numSends)
     {
         this.channel = channel;
+        this.valueChanger = valueChanger;
         this.index = index;
 
         if (channel == null)
@@ -51,6 +55,8 @@ public class ChannelImpl implements IChannel
         channel.mute ().markInterested ();
         channel.solo ().markInterested ();
         channel.color ().markInterested ();
+
+        final int maxParameterValue = valueChanger.getUpperBound ();
 
         this.volumeParameter = new ParameterImpl (channel.volume (), maxParameterValue);
         this.panParameter = new ParameterImpl (channel.pan (), maxParameterValue);
@@ -160,6 +166,54 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
+    public void setColor (final double red, final double green, final double blue)
+    {
+        this.channel.color ().set ((float) red, (float) green, (float) blue);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeVolume (final int control)
+    {
+        this.volumeParameter.inc (this.valueChanger.calcKnobSpeed (control));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setVolume (final double value)
+    {
+        this.volumeParameter.setValue (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void resetVolume ()
+    {
+        this.volumeParameter.resetValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void touchVolume (final boolean isBeingTouched)
+    {
+        this.volumeParameter.touchValue (isBeingTouched);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setVolumeIndication (final boolean indicate)
+    {
+        this.volumeParameter.setIndication (indicate);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getModulatedVolume ()
     {
         return this.volumeParameter.getModulatedValue ();
@@ -192,9 +246,97 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
+    public void changePan (final int control)
+    {
+        this.panParameter.inc (this.valueChanger.calcKnobSpeed (control));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPan (final double value)
+    {
+        this.panParameter.setValue (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void resetPan ()
+    {
+        this.panParameter.resetValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void touchPan (final boolean isBeingTouched)
+    {
+        this.panParameter.touchValue (isBeingTouched);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPanIndication (final boolean indicate)
+    {
+        this.panParameter.setIndication (indicate);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getModulatedPan ()
     {
         return this.panParameter.getModulatedValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setIsActivated (final boolean value)
+    {
+        this.channel.isActivated ().set (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleIsActivated ()
+    {
+        this.channel.isActivated ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setMute (final boolean value)
+    {
+        this.channel.mute ().set (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleMute ()
+    {
+        this.channel.mute ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSolo (final boolean value)
+    {
+        this.channel.solo ().set (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleSolo ()
+    {
+        this.channel.solo ().toggle ();
     }
 
 
@@ -241,6 +383,24 @@ public class ChannelImpl implements IChannel
     public ISend [] getSends ()
     {
         return this.sends;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void select ()
+    {
+        this.channel.selectInEditor ();
+        this.channel.selectInMixer ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void makeVisible ()
+    {
+        this.channel.makeVisibleInArranger ();
+        this.channel.makeVisibleInMixer ();
     }
 
 

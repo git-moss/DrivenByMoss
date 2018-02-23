@@ -62,6 +62,6 @@ public class MasterCommand extends AbstractTriggerCommand<APCControlSurface, APC
         final IChannelBank tb = this.model.getCurrentTrackBank ();
         final ITrack track = tb.getSelectedTrack ();
         if (track == null)
-            tb.select (0);
+            tb.getTrack (0).select ();
     }
 }

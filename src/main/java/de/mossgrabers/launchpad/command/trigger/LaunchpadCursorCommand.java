@@ -71,7 +71,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             final int octave = this.model.getScales ().getDrumOctave ();
             this.canScrollUp = octave < 5;
             this.canScrollDown = octave > -3;
-            this.canScrollLeft = ((DrumView) viewManager.getView (Views.VIEW_DRUM)).getClip ().getEditPage () > 0;
+            this.canScrollLeft = this.model.getCursorClip ().getEditPage () > 0;
             // TODO API extension required - We do not know the number of steps
             this.canScrollRight = true;
             return;
@@ -93,7 +93,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             final int octave = this.model.getScales ().getOctave ();
             this.canScrollUp = octave < Scales.OCTAVE_RANGE;
             this.canScrollDown = octave > -Scales.OCTAVE_RANGE;
-            this.canScrollLeft = ((SequencerView) viewManager.getView (Views.VIEW_SEQUENCER)).getClip ().getEditPage () > 0;
+            this.canScrollLeft = this.model.getCursorClip ().getEditPage () > 0;
             // TODO API extension required - We do not know the number of steps
             this.canScrollRight = true;
             return;

@@ -5,14 +5,12 @@
 package de.mossgrabers.push.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.command.trigger.QuantizeCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.mode.Modes;
-import de.mossgrabers.push.view.DrumView;
-import de.mossgrabers.push.view.Views;
 
 
 /**
@@ -20,7 +18,7 @@ import de.mossgrabers.push.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class QuantizeCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
+public class PushQuantizeCommand extends QuantizeCommand<PushControlSurface, PushConfiguration>
 {
     /**
      * Constructor.
@@ -28,7 +26,7 @@ public class QuantizeCommand extends AbstractTriggerCommand<PushControlSurface, 
      * @param model The model
      * @param surface The surface
      */
-    public QuantizeCommand (final IModel model, final PushControlSurface surface)
+    public PushQuantizeCommand (final IModel model, final PushControlSurface surface)
     {
         super (model, surface);
     }
@@ -46,17 +44,12 @@ public class QuantizeCommand extends AbstractTriggerCommand<PushControlSurface, 
             return;
         }
 
-        if (event == ButtonEvent.UP)
-        {
-            if (Modes.MODE_GROOVE.equals (modeManager.getActiveModeId ()))
-            {
-                modeManager.restoreMode ();
-                return;
-            }
+        if (event != ButtonEvent.UP)
+            return;
 
-            // We can use any cursor clip, e.g. the one of the drum view
-            final DrumView view = (DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM);
-            view.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
-        }
+        if (Modes.MODE_GROOVE.equals (modeManager.getActiveModeId ()))
+            modeManager.restoreMode ();
+        else
+            this.quantize ();
     }
 }

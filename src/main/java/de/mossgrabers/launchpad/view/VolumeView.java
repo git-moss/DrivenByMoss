@@ -39,7 +39,7 @@ public class VolumeView extends AbstractFaderView
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().setVolume (index, value);
+        this.model.getCurrentTrackBank ().getTrack (index).setVolume (value);
     }
 
 

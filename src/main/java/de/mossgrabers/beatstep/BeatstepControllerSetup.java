@@ -280,14 +280,16 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         for (int i = 0; i < 8; i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i;
-            tb.setVolumeIndication (i, !isEffect && hasTrackSel && !isDevice);
-            tb.setPanIndication (i, !isEffect && hasTrackSel && !isDevice);
+            final ITrack track = tb.getTrack (i);
+            track.setVolumeIndication (!isEffect && hasTrackSel && !isDevice);
+            track.setPanIndication (!isEffect && hasTrackSel && !isDevice);
             for (int j = 0; j < 6; j++)
                 tb.setSendIndication (i, j, !isEffect && hasTrackSel && isTrack);
 
             final boolean hasFXTrackSel = selectedFXTrack != null && selectedFXTrack.getIndex () == i;
-            tbe.setVolumeIndication (i, isEffect && hasFXTrackSel && isTrack);
-            tbe.setPanIndication (i, isEffect && hasFXTrackSel && isTrack);
+            final ITrack fxTrack = tbe.getTrack (i);
+            fxTrack.setVolumeIndication (isEffect && hasFXTrackSel && isTrack);
+            fxTrack.setPanIndication (isEffect && hasFXTrackSel && isTrack);
 
             cursorDevice.indicateParameter (i, isDevice);
         }

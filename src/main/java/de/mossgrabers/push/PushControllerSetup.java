@@ -68,7 +68,7 @@ import de.mossgrabers.push.command.trigger.PageLeftCommand;
 import de.mossgrabers.push.command.trigger.PageRightCommand;
 import de.mossgrabers.push.command.trigger.PanSendCommand;
 import de.mossgrabers.push.command.trigger.PushCursorCommand;
-import de.mossgrabers.push.command.trigger.QuantizeCommand;
+import de.mossgrabers.push.command.trigger.PushQuantizeCommand;
 import de.mossgrabers.push.command.trigger.RasteredKnobCommand;
 import de.mossgrabers.push.command.trigger.ScalesCommand;
 import de.mossgrabers.push.command.trigger.SelectCommand;
@@ -186,7 +186,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addTrackSelectionObserver (this::handleTrackChange);
-        this.model.getEffectTrackBank ().addTrackSelectionObserver (this::handleTrackChange);
+        final IChannelBank effectTrackBank = this.model.getEffectTrackBank ();
+        if (effectTrackBank != null)
+            effectTrackBank.addTrackSelectionObserver (this::handleTrackChange);
         this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
             final PushControlSurface surface = this.getSurface ();
             final ModeManager modeManager = surface.getModeManager ();
@@ -391,7 +393,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addTriggerCommand (Commands.COMMAND_DUPLICATE, PushControlSurface.PUSH_BUTTON_DUPLICATE, new DuplicateCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_AUTOMATION, PushControlSurface.PUSH_BUTTON_AUTOMATION, new AutomationCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_FIXED_LENGTH, PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, new FixedLengthCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_QUANTIZE, PushControlSurface.PUSH_BUTTON_QUANTIZE, new QuantizeCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_QUANTIZE, PushControlSurface.PUSH_BUTTON_QUANTIZE, new PushQuantizeCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_DELETE, PushControlSurface.PUSH_BUTTON_DELETE, new DeleteCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_DOUBLE, PushControlSurface.PUSH_BUTTON_DOUBLE, new DoubleCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_UNDO, PushControlSurface.PUSH_BUTTON_UNDO, new UndoCommand<> (this.model, surface));
@@ -603,21 +605,25 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final boolean isVolume = Modes.MODE_VOLUME.equals (mode);
 
         tb.setIndication (!isEffect && isSession);
-        tbe.setIndication (isEffect && isSession);
+        if (tbe != null)
+            tbe.setIndication (isEffect && isSession);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final ITrack selectedTrack = tb.getSelectedTrack ();
         for (int i = 0; i < tb.getNumTracks (); i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
-            tb.setVolumeIndication (i, !isEffect && (isVolume || hasTrackSel));
-            tb.setPanIndication (i, !isEffect && (isPan || hasTrackSel));
+            tb.getTrack (i).setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
+            tb.getTrack (i).setPanIndication (!isEffect && (isPan || hasTrackSel));
 
             for (int j = 0; j < tb.getNumSends (); j++)
                 tb.setSendIndication (i, j, !isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
 
-            tbe.setVolumeIndication (i, isEffect);
-            tbe.setPanIndication (i, isEffect && isPan);
+            if (tbe != null)
+            {
+                tbe.getTrack (i).setVolumeIndication (isEffect);
+                tbe.getTrack (i).setPanIndication (isEffect && isPan);
+            }
 
             cursorDevice.indicateParameter (i, true);
         }

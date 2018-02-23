@@ -56,7 +56,7 @@ public class OSCModel extends Model
         });
         tb.addTrackSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
 
-        this.clip = this.createCursorClip (8, 8);
+        this.clip = this.getCursorClip (8, 8);
     }
 
 

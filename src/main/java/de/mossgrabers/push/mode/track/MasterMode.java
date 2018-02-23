@@ -158,7 +158,7 @@ public class MasterMode extends BaseMode
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_RECORD))
         {
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_RECORD);
-            this.model.getMasterTrack ().toggleArm ();
+            this.model.getMasterTrack ().toggleRecArm ();
             return;
         }
 

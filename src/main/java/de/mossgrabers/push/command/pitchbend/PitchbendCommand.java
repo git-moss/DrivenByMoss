@@ -82,7 +82,7 @@ public class PitchbendCommand extends AbstractPitchbendCommand<PushControlSurfac
                 final IChannelBank tb = this.model.getCurrentTrackBank ();
                 final ITrack selTrack = tb.getSelectedTrack ();
                 if (selTrack != null)
-                    tb.setVolume (selTrack.getIndex (), this.model.getValueChanger ().toDAWValue (data2));
+                    selTrack.setVolume (this.model.getValueChanger ().toDAWValue (data2));
                 return;
         }
 

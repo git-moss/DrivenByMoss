@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.daw.data;
 
+import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 
@@ -26,14 +27,14 @@ public class TrackImpl extends ChannelImpl implements ITrack
      * Constructor.
      *
      * @param track The track
-     * @param maxParameterValue The maximum parameter value, remove when clipping bug is fixed
+     * @param valueChanger The valueChanger
      * @param index The index of the track in the page
      * @param numSends The number of sends of a bank
      * @param numScenes The number of scenes of a bank
      */
-    public TrackImpl (final Track track, final int maxParameterValue, final int index, final int numSends, final int numScenes)
+    public TrackImpl (final Track track, final ValueChanger valueChanger, final int index, final int numSends, final int numScenes)
     {
-        super (track, maxParameterValue, index, numSends);
+        super (track, valueChanger, index, numSends);
 
         this.track = track;
 
@@ -114,6 +115,22 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
+    public void setRecArm (final boolean value)
+    {
+        this.track.arm ().set (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleRecArm ()
+    {
+        this.track.arm ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isMonitor ()
     {
         return this.track.monitor ().get ();
@@ -122,9 +139,41 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
+    public void setMonitor (final boolean value)
+    {
+        this.track.monitor ().set (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleMonitor ()
+    {
+        this.track.monitor ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isAutoMonitor ()
     {
         return this.track.autoMonitor ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAutoMonitor (final boolean value)
+    {
+        this.track.autoMonitor ().set (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleAutoMonitor ()
+    {
+        this.track.autoMonitor ().toggle ();
     }
 
 

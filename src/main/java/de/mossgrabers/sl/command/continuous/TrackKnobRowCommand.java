@@ -69,12 +69,12 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
         {
             // Volume
             case 0:
-                tb.setVolume (track.getIndex (), value);
+                track.setVolume (value);
                 break;
 
             // Pan
             case 1:
-                tb.setPan (track.getIndex (), value);
+                track.setPan (value);
                 break;
 
             case 2:

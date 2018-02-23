@@ -7,8 +7,8 @@ package de.mossgrabers.mcu.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.mode.Modes;
@@ -66,9 +66,9 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             return;
         }
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        tb.select (this.channel);
-        tb.makeVisible (this.channel);
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (this.channel);
+        track.select ();
+        track.makeVisible ();
     }
 
 

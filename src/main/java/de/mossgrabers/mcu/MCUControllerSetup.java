@@ -757,14 +757,16 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         for (int i = 0; i < tb.getNumTracks (); i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrack;
-            tb.setVolumeIndication (i, !isEffect && (isTrack || hasTrackSel));
-            tb.setPanIndication (i, !isEffect && (isPan || hasTrackSel));
+            final ITrack track = tb.getTrack (i);
+            track.setVolumeIndication (!isEffect && (isTrack || hasTrackSel));
+            track.setPanIndication (!isEffect && (isPan || hasTrackSel));
 
             for (int j = 0; j < tb.getNumSends (); j++)
                 tb.setSendIndication (i, j, !isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
 
-            tbe.setVolumeIndication (i, isEffect);
-            tbe.setPanIndication (i, isEffect && isPan);
+            final ITrack fxTrack = tbe.getTrack (i);
+            fxTrack.setVolumeIndication (isEffect);
+            fxTrack.setPanIndication (isEffect && isPan);
         }
 
         for (int i = 0; i < cursorDevice.getNumParameters (); i++)

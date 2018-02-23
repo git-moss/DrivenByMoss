@@ -44,6 +44,20 @@ public interface ITrack extends IChannel
 
 
     /**
+     * Turn on/off record arm.
+     *
+     * @param value True to turn arm the track for recording, otherwise off
+     */
+    void setRecArm (boolean value);
+
+
+    /**
+     * Toggle record arm.
+     */
+    void toggleRecArm ();
+
+
+    /**
      * True if monitoring is on.
      *
      * @return True if monitoring is on.
@@ -52,11 +66,39 @@ public interface ITrack extends IChannel
 
 
     /**
+     * Turn on/off track monitoring.
+     *
+     * @param value True to turn on track monitoring, otherwise off
+     */
+    void setMonitor (boolean value);
+
+
+    /**
+     * Toggle monitor.
+     */
+    void toggleMonitor ();
+
+
+    /**
      * True if auto monitoring is on.
      *
      * @return True if auto monitoring is on.
      */
     boolean isAutoMonitor ();
+
+
+    /**
+     * Turn on/off auto track monitoring.
+     *
+     * @param value True to turn on auto track monitoring, otherwise off
+     */
+    void setAutoMonitor (boolean value);
+
+
+    /**
+     * Toggle auto monitor.
+     */
+    void toggleAutoMonitor ();
 
 
     /**

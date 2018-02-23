@@ -127,7 +127,7 @@ public class CursorDeviceProxy implements ICursorDevice
         for (int i = 0; i < this.numDeviceLayers; i++)
         {
             final Channel layer = this.layerBank.getChannel (i);
-            this.deviceLayers[i] = new ChannelImpl (layer, valueChanger.getUpperBound (), i, numSends);
+            this.deviceLayers[i] = new ChannelImpl (layer, valueChanger, i, numSends);
             this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
 
             final int index = i;
@@ -141,7 +141,7 @@ public class CursorDeviceProxy implements ICursorDevice
         for (int i = 0; i < this.numDrumPadLayers; i++)
         {
             final Channel layer = this.drumPadBank.getChannel (i);
-            this.drumPadLayers[i] = new ChannelImpl (layer, valueChanger.getUpperBound (), i, numSends);
+            this.drumPadLayers[i] = new ChannelImpl (layer, valueChanger, i, numSends);
             this.drumPadBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
 
             final int index = i;

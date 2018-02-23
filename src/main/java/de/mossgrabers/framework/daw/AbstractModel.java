@@ -10,6 +10,9 @@ import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Base class for DAW models.
@@ -18,34 +21,35 @@ import de.mossgrabers.framework.scale.Scales;
  */
 public abstract class AbstractModel implements IModel
 {
-    protected IHost         host;
-    protected IApplication  application;
-    protected IArranger     arranger;
-    protected IMixer        mixer;
-    protected ITransport    transport;
-    protected IGroove       groove;
-    protected IProject      project;
-    protected IBrowser      browser;
+    protected IHost                    host;
+    protected IApplication             application;
+    protected IArranger                arranger;
+    protected IMixer                   mixer;
+    protected ITransport               transport;
+    protected IGroove                  groove;
+    protected IProject                 project;
+    protected IBrowser                 browser;
 
-    protected IChannelBank  currentTrackBank;
-    protected ITrackBank    trackBank;
-    protected IChannelBank  effectTrackBank;
-    protected IMasterTrack  masterTrack;
+    protected IChannelBank             currentTrackBank;
+    protected ITrackBank               trackBank;
+    protected IChannelBank             effectTrackBank;
+    protected IMasterTrack             masterTrack;
 
-    protected ICursorDevice primaryDevice;
-    protected ICursorDevice cursorDevice;
-    protected ICursorDevice drumDevice64;
+    protected ICursorDevice            primaryDevice;
+    protected ICursorDevice            cursorDevice;
+    protected ICursorDevice            drumDevice64;
+    protected Map<String, ICursorClip> cursorClips = new HashMap<> ();
 
-    protected Scales        scales;
-    protected ColorManager  colorManager;
-    protected ValueChanger  valueChanger;
+    protected Scales                   scales;
+    protected ColorManager             colorManager;
+    protected ValueChanger             valueChanger;
 
-    protected int           numTracks;
-    protected int           numScenes;
-    protected int           numSends;
-    protected int           numFilterColumnEntries;
-    protected int           numResults;
-    protected boolean       hasFlatTrackList;
+    protected int                      numTracks;
+    protected int                      numScenes;
+    protected int                      numSends;
+    protected int                      numFilterColumnEntries;
+    protected int                      numResults;
+    protected boolean                  hasFlatTrackList;
 
 
     /**
@@ -181,6 +185,14 @@ public abstract class AbstractModel implements IModel
     public ICursorDevice getDrumDevice64 ()
     {
         return this.drumDevice64;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ICursorClip getCursorClip ()
+    {
+        return this.getCursorClip (this.numTracks, this.numScenes);
     }
 
 

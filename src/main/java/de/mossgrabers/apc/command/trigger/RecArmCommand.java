@@ -40,6 +40,6 @@ public class RecArmCommand extends AbstractTriggerCommand<APCControlSurface, APC
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().toggleArm (this.index);
+            this.model.getCurrentTrackBank ().getTrack (this.index).toggleRecArm ();
     }
 }

@@ -6,6 +6,7 @@ package de.mossgrabers.push.view;
 
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -92,9 +93,10 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
 
             // Set a new loop between the 2 selected pads
             final double newStart = start * quartersPerPad;
-            this.clip.setLoopStart (newStart);
-            this.clip.setLoopLength ((int) ((end - start) * quartersPerPad));
-            this.clip.setPlayRange (newStart, end * quartersPerPad);
+            final ICursorClip clip = this.getClip ();
+            clip.setLoopStart (newStart);
+            clip.setLoopLength ((int) ((end - start) * quartersPerPad));
+            clip.setPlayRange (newStart, end * quartersPerPad);
 
             this.loopPadPressed = -1;
         }

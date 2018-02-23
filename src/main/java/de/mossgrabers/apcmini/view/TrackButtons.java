@@ -83,13 +83,13 @@ public class TrackButtons
                 this.model.getCurrentTrackBank ().stop (index);
                 break;
             case APCminiControlSurface.TRACK_STATE_SOLO:
-                this.model.getCurrentTrackBank ().toggleSolo (index);
+                this.model.getCurrentTrackBank ().getTrack (index).toggleSolo ();
                 break;
             case APCminiControlSurface.TRACK_STATE_REC_ARM:
-                this.model.getCurrentTrackBank ().toggleArm (index);
+                this.model.getCurrentTrackBank ().getTrack (index).toggleRecArm ();
                 break;
             case APCminiControlSurface.TRACK_STATE_MUTE:
-                this.model.getCurrentTrackBank ().toggleMute (index);
+                this.model.getCurrentTrackBank ().getTrack (index).toggleMute ();
                 break;
             case APCminiControlSurface.TRACK_STATE_SELECT:
                 this.surface.getViewManager ().getActiveView ().selectTrack (index);

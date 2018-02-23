@@ -8,19 +8,18 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * Command for toggling between the Instrument/Audio/Hybrid tracks and the Effect tracks.
+ * Command to quantize the currently selected clip.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ToggleTrackBanksCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class QuantizeCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -28,7 +27,7 @@ public class ToggleTrackBanksCommand<S extends ControlSurface<C>, C extends Conf
      * @param model The model
      * @param surface The surface
      */
-    public ToggleTrackBanksCommand (final IModel model, final S surface)
+    public QuantizeCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }
@@ -36,14 +35,15 @@ public class ToggleTrackBanksCommand<S extends ControlSurface<C>, C extends Conf
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
+        if (event == ButtonEvent.DOWN)
+            quantize ();
+    }
 
-        this.model.toggleCurrentTrackBank ();
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        if (currentTrackBank.getSelectedTrack () == null)
-            currentTrackBank.getTrack (0).select ();
+
+    protected void quantize ()
+    {
+        this.model.getCursorClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
     }
 }

@@ -47,13 +47,14 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
 
         final int extenderOffset = this.surface.getExtenderOffset ();
         final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getTrack (extenderOffset + channel);
         if (this.surface.getConfiguration ().useFadersAsKnobs ())
         {
             final ModeManager modeManager = this.surface.getModeManager ();
             if (modeManager.isActiveMode (Modes.MODE_VOLUME))
-                tb.setVolume (extenderOffset + channel, value);
+                track.setVolume (value);
             else if (modeManager.isActiveMode (Modes.MODE_PAN))
-                tb.setPan (extenderOffset + channel, value);
+                track.setPan (value);
             else if (modeManager.isActiveMode (Modes.MODE_TRACK))
                 this.handleTrack (channel, value);
             else if (modeManager.isActiveMode (Modes.MODE_SEND1))
@@ -77,7 +78,7 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
             return;
         }
 
-        tb.setVolume (extenderOffset + channel, value);
+        track.setVolume (value);
     }
 
 
@@ -91,10 +92,10 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
         switch (index)
         {
             case 0:
-                tb.setVolume (selectedTrack.getIndex (), value);
+                selectedTrack.setVolume (value);
                 return;
             case 1:
-                tb.setPan (selectedTrack.getIndex (), value);
+                selectedTrack.setPan (value);
                 return;
         }
 

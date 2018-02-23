@@ -59,12 +59,14 @@ public class TransportMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        if (index == 2)
+        if (index == 0)
             this.model.getTransport ().setPreroll (ITransport.PREROLL_NONE);
-        else if (index == 3)
+        else if (index == 1)
+            this.model.getTransport ().setPreroll (ITransport.PREROLL_1_BAR);
+        else if (index == 2)
             this.model.getTransport ().setPreroll (ITransport.PREROLL_2_BARS);
-        else if (index == 5)
-            this.model.getTransport ().togglePrerollMetronome ();
+        else if (index == 3)
+            this.model.getTransport ().setPreroll (ITransport.PREROLL_4_BARS);
     }
 
 
@@ -74,10 +76,8 @@ public class TransportMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        if (index == 2)
-            this.model.getTransport ().setPreroll (ITransport.PREROLL_1_BAR);
-        else if (index == 3)
-            this.model.getTransport ().setPreroll (ITransport.PREROLL_4_BARS);
+        if (index == 0)
+            this.model.getTransport ().togglePrerollMetronome ();
     }
 
 
@@ -87,12 +87,12 @@ public class TransportMode extends BaseMode
     {
         final ITransport transport = this.model.getTransport ();
         final String preroll = transport.getPreroll ();
-        this.surface.updateButton (20, AbstractMode.BUTTON_COLOR_OFF);
-        this.surface.updateButton (21, AbstractMode.BUTTON_COLOR_OFF);
-        this.surface.updateButton (22, ITransport.PREROLL_NONE.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
-        this.surface.updateButton (23, ITransport.PREROLL_2_BARS.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateButton (20, ITransport.PREROLL_NONE.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateButton (21, ITransport.PREROLL_1_BAR.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateButton (22, ITransport.PREROLL_2_BARS.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateButton (23, ITransport.PREROLL_4_BARS.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
         this.surface.updateButton (24, AbstractMode.BUTTON_COLOR_OFF);
-        this.surface.updateButton (25, transport.isPrerollMetronomeEnabled () ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateButton (25, AbstractMode.BUTTON_COLOR_OFF);
         this.surface.updateButton (26, AbstractMode.BUTTON_COLOR_OFF);
         this.surface.updateButton (27, AbstractMode.BUTTON_COLOR_OFF);
     }
@@ -103,11 +103,10 @@ public class TransportMode extends BaseMode
     public void updateSecondRow ()
     {
         final ITransport transport = this.model.getTransport ();
-        final String preroll = transport.getPreroll ();
-        this.surface.updateButton (102, AbstractMode.BUTTON_COLOR_OFF);
+        this.surface.updateButton (102, transport.isPrerollMetronomeEnabled () ? AbstractMode.BUTTON_COLOR2_HI : AbstractMode.BUTTON_COLOR_ON);
         this.surface.updateButton (103, AbstractMode.BUTTON_COLOR_OFF);
-        this.surface.updateButton (104, ITransport.PREROLL_1_BAR.equals (preroll) ? AbstractMode.BUTTON_COLOR2_HI : AbstractMode.BUTTON_COLOR2_ON);
-        this.surface.updateButton (105, ITransport.PREROLL_4_BARS.equals (preroll) ? AbstractMode.BUTTON_COLOR2_HI : AbstractMode.BUTTON_COLOR2_ON);
+        this.surface.updateButton (104, AbstractMode.BUTTON_COLOR_OFF);
+        this.surface.updateButton (105, AbstractMode.BUTTON_COLOR_OFF);
         this.surface.updateButton (106, AbstractMode.BUTTON_COLOR_OFF);
         this.surface.updateButton (107, AbstractMode.BUTTON_COLOR_OFF);
         this.surface.updateButton (108, AbstractMode.BUTTON_COLOR_OFF);
@@ -123,12 +122,17 @@ public class TransportMode extends BaseMode
         final ITransport transport = this.model.getTransport ();
         final String preroll = transport.getPreroll ();
         final double tempo = transport.getTempo ();
-        d.clear ().setCell (0, 0, "Tempo").setCell (1, 0, transport.formatTempo (tempo)).setCell (2, 0, formatTempoBars (tempo));
-        d.setCell (0, 2, "Pre-Roll").setCell (2, 2, (preroll == ITransport.PREROLL_NONE ? PushDisplay.RIGHT_ARROW : " ") + "None");
-        d.setCell (3, 2, (preroll == ITransport.PREROLL_1_BAR ? PushDisplay.RIGHT_ARROW : " ") + "1 Bar");
-        d.setCell (2, 3, (preroll == ITransport.PREROLL_2_BARS ? PushDisplay.RIGHT_ARROW : " ") + "2 Bars");
+        d.clear ();
+        d.setBlock (2, 0, "Pre-roll");
+        d.setCell (3, 0, (preroll == ITransport.PREROLL_NONE ? PushDisplay.RIGHT_ARROW : " ") + "None");
+        d.setCell (3, 1, (preroll == ITransport.PREROLL_1_BAR ? PushDisplay.RIGHT_ARROW : " ") + "1 Bar");
+        d.setCell (3, 2, (preroll == ITransport.PREROLL_2_BARS ? PushDisplay.RIGHT_ARROW : " ") + "2 Bars");
         d.setCell (3, 3, (preroll == ITransport.PREROLL_4_BARS ? PushDisplay.RIGHT_ARROW : " ") + "4 Bars");
-        d.setBlock (0, 2, "Play Metronome").setBlock (1, 2, "during Pre-Roll?").setCell (3, 5, transport.isPrerollMetronomeEnabled () ? "  Yes" : "  No").setBlock (0, 3, "Play Position").setBlock (1, 3, transport.getPositionText ()).allDone ();
+        d.setBlock (0, 0, "Play Metro during").setBlock (0, 1, "Pre-roll?");
+        d.setCell (1, 0, transport.isPrerollMetronomeEnabled () ? " Yes" : " No");
+        d.setCell (0, 4, "Tempo").setCell (1, 4, transport.formatTempo (tempo)).setCell (2, 4, formatTempoBars (tempo));
+        d.setCell (0, 5, "Time Sig.").setCell (1, 5, transport.getNumerator () + " / " + transport.getDenominator ());
+        d.setBlock (0, 3, "Play Position").setBlock (1, 3, transport.getPositionText ()).allDone ();
     }
 
 
@@ -142,12 +146,12 @@ public class TransportMode extends BaseMode
 
         final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
         final DisplayMessage message = display.createMessage ();
+        message.addOptionElement ("Play Metronome during Pre-Roll?", transport.isPrerollMetronomeEnabled () ? "Yes" : "No", transport.isPrerollMetronomeEnabled (), "Pre-roll", "None", preroll == ITransport.PREROLL_NONE, false);
+        message.addOptionElement ("", "", false, "", "1 Bar", preroll == ITransport.PREROLL_1_BAR, false);
+        message.addOptionElement ("", "", false, "", "2 Bars", preroll == ITransport.PREROLL_2_BARS, false);
+        message.addOptionElement ("", "", false, "", "4 Bars", preroll == ITransport.PREROLL_4_BARS, false);
         message.addParameterElement ("Tempo", (int) this.convertTempo (tempo), transport.formatTempo (tempo), this.isKnobTouched[0], -1);
-        message.addOptionElement ("", "", false, "", "", false, false);
-        message.addOptionElement ("Pre-", "1 Bar", preroll == ITransport.PREROLL_1_BAR, "Roll", "None", preroll == ITransport.PREROLL_NONE, false);
-        message.addOptionElement ("", "4 Bars", preroll == ITransport.PREROLL_4_BARS, "", "2 Bars", preroll == ITransport.PREROLL_2_BARS, false);
-        message.addOptionElement ("          Play Metronome", "", false, "          during Pre-Roll?", "", false, false);
-        message.addOptionElement ("", "", false, "", transport.isPrerollMetronomeEnabled () ? "Yes" : "No", transport.isPrerollMetronomeEnabled (), false);
+        message.addOptionElement ("  Time Sig.", "", false, "       " + transport.getNumerator () + " / " + transport.getDenominator (), "", false, false);
         message.addOptionElement ("        Play Position", "", false, "        " + transport.getPositionText (), "", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
         display.send (message);

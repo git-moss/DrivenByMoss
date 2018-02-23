@@ -88,6 +88,44 @@ public interface IChannel extends ObserverManagement
 
 
     /**
+     * Change the volume.
+     *
+     * @param control The control value
+     */
+    void changeVolume (int control);
+
+
+    /**
+     * Set the volume.
+     *
+     * @param value The new value
+     */
+    void setVolume (double value);
+
+
+    /**
+     * Reset the volume to its default value.
+     */
+    void resetVolume ();
+
+
+    /**
+     * Signal that the volume fader/knob is touched for automation recording.
+     *
+     * @param isBeingTouched True if touched
+     */
+    void touchVolume (boolean isBeingTouched);
+
+
+    /**
+     * Signal that the volume is edited.
+     *
+     * @param indicate True if edited
+     */
+    void setVolumeIndication (boolean indicate);
+
+
+    /**
      * Get the modulated volume.
      *
      * @return The modulated volume
@@ -121,6 +159,44 @@ public interface IChannel extends ObserverManagement
 
 
     /**
+     * Change the panorama.
+     *
+     * @param control The control value
+     */
+    void changePan (int control);
+
+
+    /**
+     * Set the panorama.
+     *
+     * @param value The new value
+     */
+    void setPan (double value);
+
+
+    /**
+     * Reset the panorama to its default value.
+     */
+    void resetPan ();
+
+
+    /**
+     * Signal that the panorama fader/knob is touched for automation recording.
+     *
+     * @param isBeingTouched True if touched
+     */
+    void touchPan (boolean isBeingTouched);
+
+
+    /**
+     * Signal that the panorama is edited.
+     *
+     * @param indicate True if edited
+     */
+    void setPanIndication (boolean indicate);
+
+
+    /**
      * Get the modulated panorama.
      *
      * @return The modulated panorama
@@ -129,11 +205,63 @@ public interface IChannel extends ObserverManagement
 
 
     /**
+     * Sets the activated state of the track.
+     *
+     * @param value True to activate
+     */
+    void setIsActivated (boolean value);
+
+
+    /**
+     * Toggle the activated state of the track.
+     */
+    void toggleIsActivated ();
+
+
+    /**
+     * Turn on/off mute.
+     *
+     * @param value True to turn on mute, otherwise off
+     */
+    void setMute (boolean value);
+
+
+    /**
+     * Toggle mute.
+     */
+    void toggleMute ();
+
+
+    /**
+     * Turn on/off solo.
+     *
+     * @param value True to turn on solo, otherwise off
+     */
+    void setSolo (boolean value);
+
+
+    /**
+     * Toggle solo.
+     */
+    void toggleSolo ();
+
+
+    /**
      * Get the color of the channel.
      *
      * @return The color in RGB
      */
     double [] getColor ();
+
+
+    /**
+     * Set the color of the track as a RGB value.
+     *
+     * @param red The red part of the color
+     * @param green The green part of the color
+     * @param blue The blue part of the color
+     */
+    void setColor (double red, double green, double blue);
 
 
     /**
@@ -150,6 +278,18 @@ public interface IChannel extends ObserverManagement
      * @return True if soloed.
      */
     boolean isSolo ();
+
+
+    /**
+     * Select the master track.
+     */
+    void select ();
+
+
+    /**
+     * Make the master track visible (scrolls to the track in Bitwig).
+     */
+    void makeVisible ();
 
 
     /**

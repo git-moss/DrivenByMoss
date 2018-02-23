@@ -202,13 +202,21 @@ public interface IModel
 
 
     /***
-     * Create a new cursor clip.
+     * Create or get a new cursor clip.
      *
      * @param cols The columns of the clip
      * @param rows The rows of the clip
      * @return The cursor clip
      */
-    ICursorClip createCursorClip (int cols, int rows);
+    ICursorClip getCursorClip (int cols, int rows);
+
+
+    /***
+     * Create or get the default cursor clip of size numTracks x numScenes.
+     * 
+     * @return The cursor clip
+     */
+    ICursorClip getCursorClip ();
 
 
     /**

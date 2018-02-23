@@ -36,7 +36,7 @@ public class PanMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().changePan (index, value);
+        this.model.getCurrentTrackBank ().getTrack (index).changePan (value);
     }
 
 
@@ -46,20 +46,20 @@ public class PanMode extends AbstractTrackMode
     {
         this.isKnobTouched[index] = isTouched;
 
+        final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
             {
-                this.model.getCurrentTrackBank ().resetPan (index);
+                t.resetPan ();
                 return;
             }
 
-            final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
             if (t.doesExist ())
                 this.surface.getDisplay ().notify ("Pan: " + t.getPanStr (8));
         }
 
-        this.model.getCurrentTrackBank ().touchPan (index, isTouched);
+        t.touchPan (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 

@@ -250,13 +250,13 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         }
 
         if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
-            tb.toggleArm (index);
+            tb.getTrack (index).toggleRecArm ();
         else if (modeManager.isActiveMode (Modes.MODE_TRACK_SELECT))
             this.selectTrack (index);
         else if (modeManager.isActiveMode (Modes.MODE_MUTE))
-            tb.toggleMute (index);
+            tb.getTrack (index).toggleMute ();
         else if (modeManager.isActiveMode (Modes.MODE_SOLO))
-            tb.toggleSolo (index);
+            tb.getTrack (index).toggleSolo ();
         else if (modeManager.isActiveMode (Modes.MODE_STOP_CLIP))
             tb.stop (index);
     }

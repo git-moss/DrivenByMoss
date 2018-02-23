@@ -40,7 +40,7 @@ public class SoloCommand extends AbstractTriggerCommand<APCControlSurface, APCCo
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().toggleSolo (this.index);
+            this.model.getCurrentTrackBank ().getTrack (this.index).toggleSolo ();
     }
 
 
@@ -49,6 +49,6 @@ public class SoloCommand extends AbstractTriggerCommand<APCControlSurface, APCCo
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().toggleAutoMonitor (this.index);
+            this.model.getCurrentTrackBank ().getTrack (this.index).toggleAutoMonitor ();
     }
 }

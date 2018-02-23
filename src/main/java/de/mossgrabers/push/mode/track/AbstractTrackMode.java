@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
@@ -78,10 +79,11 @@ public abstract class AbstractTrackMode extends BaseMode
                 tb.stop (index);
                 return;
             }
+            ITrack track = tb.getTrack (index);
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_RECORD))
             {
                 this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_RECORD);
-                tb.toggleArm (index);
+                track.toggleRecArm ();
                 return;
             }
 
@@ -97,8 +99,8 @@ public abstract class AbstractTrackMode extends BaseMode
             }
             else
             {
-                tb.select (index);
-                tb.makeVisible (index);
+                track.select ();
+                track.makeVisible ();
             }
             return;
         }
@@ -130,9 +132,9 @@ public abstract class AbstractTrackMode extends BaseMode
         if (!this.isPush2 || config.isMuteLongPressed () || config.isSoloLongPressed () || config.isMuteSoloLocked ())
         {
             if (config.isMuteState ())
-                tb.toggleMute (index);
+                tb.getTrack (index).toggleMute ();
             else
-                tb.toggleSolo (index);
+                tb.getTrack (index).toggleSolo ();
             return;
         }
 
@@ -389,7 +391,20 @@ public abstract class AbstractTrackMode extends BaseMode
         }
 
         for (int i = 0; i < 3; i++)
-            this.menu[4 + i] = fxTrackBank.getTrack (sendOffset + i).getName ();
+        {
+            if (fxTrackBank == null)
+            {
+                this.menu[4 + i] = "";
+                final ITrack selTrack = this.model.getTrackBank ().getSelectedTrack ();
+                if (selTrack == null)
+                    continue;
+                final ISend send = selTrack.getSends ()[sendOffset + i];
+                if (send != null)
+                    this.menu[4 + i] = send.getName ();
+            }
+            else
+                this.menu[4 + i] = fxTrackBank.getTrack (sendOffset + i).getName ();
+        }
         this.menu[3] = config.isSendsAreToggled () ? "Sends 5-8" : "Sends 1-4";
     }
 }

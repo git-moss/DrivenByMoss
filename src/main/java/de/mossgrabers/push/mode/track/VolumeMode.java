@@ -37,7 +37,7 @@ public class VolumeMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().changeVolume (index, value);
+        this.model.getCurrentTrackBank ().getTrack (index).changeVolume (value);
     }
 
 
@@ -47,20 +47,20 @@ public class VolumeMode extends AbstractTrackMode
     {
         this.isKnobTouched[index] = isTouched;
 
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getTrack (index);
+        if (!t.doesExist ())
+            return;
+
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
-            {
-                this.model.getCurrentTrackBank ().resetVolume (index);
-                return;
-            }
-
-            final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
-            if (t.doesExist ())
+                t.resetVolume ();
+            else
                 this.surface.getDisplay ().notify ("Volume: " + t.getVolumeStr (8));
         }
 
-        this.model.getCurrentTrackBank ().touchVolume (index, isTouched);
+        t.touchVolume (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 

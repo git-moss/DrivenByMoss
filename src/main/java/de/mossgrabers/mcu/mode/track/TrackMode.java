@@ -48,10 +48,10 @@ public class TrackMode extends AbstractTrackMode
         switch (index)
         {
             case 0:
-                tb.changeVolume (selectedTrack.getIndex (), value);
+                selectedTrack.changeVolume (value);
                 return;
             case 1:
-                tb.changePan (selectedTrack.getIndex (), value);
+                selectedTrack.changePan (value);
                 return;
         }
 
@@ -176,24 +176,23 @@ public class TrackMode extends AbstractTrackMode
         final ITrack selectedTrack = tb.getSelectedTrack ();
         if (selectedTrack == null)
             return;
-        final int trackIndex = selectedTrack.getIndex ();
         switch (index)
         {
             case 0:
-                tb.resetVolume (trackIndex);
+                selectedTrack.resetVolume ();
                 break;
             case 1:
-                tb.resetPan (trackIndex);
+                selectedTrack.resetPan ();
                 break;
             case 2:
                 if (this.surface.getConfiguration ().isDisplayCrossfader ())
-                    tb.setCrossfadeMode (trackIndex, "AB");
+                    tb.setCrossfadeMode (selectedTrack.getIndex (), "AB");
                 else if (!this.model.isEffectTrackBankActive ())
-                    ((ITrackBank) tb).resetSend (trackIndex, 0);
+                    ((ITrackBank) tb).resetSend (selectedTrack.getIndex (), 0);
                 break;
             default:
                 if (!this.model.isEffectTrackBankActive ())
-                    ((ITrackBank) tb).resetSend (trackIndex, index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2));
+                    ((ITrackBank) tb).resetSend (selectedTrack.getIndex (), index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2));
                 break;
         }
     }

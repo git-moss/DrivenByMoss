@@ -5,6 +5,7 @@
 package de.mossgrabers.sl.view;
 
 import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -348,12 +349,13 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         }
         else
         {
+            final ICursorClip clip = this.getClip ();
             // Paint the sequencer steps
-            final int step = this.clip.getCurrentStep ();
+            final int step = clip.getCurrentStep ();
             final int hiStep = this.isInXRange (step) ? step % PlayView.NUM_DISPLAY_COLS : -1;
             for (int col = 0; col < PlayView.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = this.clip.getStep (col, this.offsetY + this.selectedPad);
+                final int isSet = clip.getStep (col, this.offsetY + this.selectedPad);
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
                 final double y = col / 8.0;
@@ -402,7 +404,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         else
         {
             if (velocity != 0)
-                this.clip.toggleStep (index < 8 ? index + 8 : index - 8, this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                this.getClip ().toggleStep (index < 8 ? index + 8 : index - 8, this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
         }
     }
 
@@ -439,9 +441,9 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     {
         final boolean isInc = value >= 65;
         if (isInc)
-            this.clip.scrollStepsPageForward ();
+            this.getClip ().scrollStepsPageForward ();
         else
-            this.clip.scrollStepsPageBackwards ();
+            this.getClip ().scrollStepsPageBackwards ();
     }
 
 
@@ -449,7 +451,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     {
         final boolean isInc = value >= 65;
         this.selectedIndex = Math.max (0, Math.min (RESOLUTIONS.length - 1, isInc ? this.selectedIndex + 1 : this.selectedIndex - 1));
-        this.clip.setStepLength (RESOLUTIONS[this.selectedIndex]);
+        this.getClip ().setStepLength (RESOLUTIONS[this.selectedIndex]);
     }
 
 

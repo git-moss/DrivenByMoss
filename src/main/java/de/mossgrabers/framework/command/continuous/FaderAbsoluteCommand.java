@@ -44,15 +44,16 @@ public class FaderAbsoluteCommand<S extends ControlSurface<C>, C extends Configu
     public void execute (final int value)
     {
         final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack track = currentTrackBank.getTrack (this.index);
+        if (!track.doesExist ())
+            return;
+
         if (this.surface.isShiftPressed ())
         {
-            final ITrack track = currentTrackBank.getTrack (this.index);
-            if (!track.doesExist ())
-                return;
             final int volume = track.getVolume ();
             this.surface.getDisplay ().notify (volume < value ? "Move down" : volume > value ? "Move up" : "Perfect!");
         }
         else
-            currentTrackBank.setVolume (this.index, value);
+            track.setVolume (value);
     }
 }

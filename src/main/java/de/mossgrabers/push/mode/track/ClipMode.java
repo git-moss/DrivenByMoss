@@ -17,7 +17,6 @@ import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.controller.PushDisplay;
 import de.mossgrabers.push.view.ColorView;
 import de.mossgrabers.push.view.ColorView.SelectMode;
-import de.mossgrabers.push.view.DrumView;
 import de.mossgrabers.push.view.Views;
 
 
@@ -47,7 +46,7 @@ public class ClipMode extends AbstractTrackMode
         this.isKnobTouched[index] = isTouched;
 
         if (index == 7 && isTouched && this.surface.isDeletePressed ())
-            this.getClip ().resetAccent ();
+            this.model.getCursorClip ().resetAccent ();
     }
 
 
@@ -58,7 +57,7 @@ public class ClipMode extends AbstractTrackMode
         if (!this.increaseKnobMovement ())
             return;
 
-        final ICursorClip clip = this.getClip ();
+        final ICursorClip clip = this.model.getCursorClip ();
         switch (index)
         {
             case 0:
@@ -94,7 +93,7 @@ public class ClipMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final ICursorClip clip = this.getClip ();
+        final ICursorClip clip = this.model.getCursorClip ();
         d.setCell (0, 0, "PlayStrt").setCell (1, 0, this.formatMeasures (clip.getPlayStart (), 1));
         d.setCell (0, 1, "Play End").setCell (1, 1, this.formatMeasures (clip.getPlayEnd (), 1));
         d.setCell (0, 2, "LoopStrt").setCell (1, 2, this.formatMeasures (clip.getLoopStart (), 1));
@@ -111,7 +110,7 @@ public class ClipMode extends AbstractTrackMode
     public void updateDisplay2 ()
     {
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ICursorClip clip = this.getClip ();
+        final ICursorClip clip = this.model.getCursorClip ();
         final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
         final DisplayMessage message = display.createMessage ();
 
@@ -147,12 +146,6 @@ public class ClipMode extends AbstractTrackMode
         final ViewManager viewManager = this.surface.getViewManager ();
         ((ColorView) viewManager.getView (Views.VIEW_COLOR)).setMode (SelectMode.MODE_CLIP);
         viewManager.setActiveView (Views.VIEW_COLOR);
-    }
-
-
-    private ICursorClip getClip ()
-    {
-        return ((DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM)).getClip ();
     }
 
 

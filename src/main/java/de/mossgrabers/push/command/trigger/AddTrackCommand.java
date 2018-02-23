@@ -55,7 +55,7 @@ public class AddTrackCommand extends AbstractTriggerCommand<PushControlSurface, 
         this.surface.scheduleTask ( () -> {
             final int pos = bank.getTrackCount () - 1;
             bank.scrollToChannel (pos);
-            bank.select (pos % bank.getNumTracks ());
+            bank.getTrack (pos % bank.getNumTracks ()).select ();
         }, 200);
     }
 }

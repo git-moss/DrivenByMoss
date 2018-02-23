@@ -48,7 +48,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     protected void handleDeleteButton (final int playedPad)
     {
         this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-        ((DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM)).getClip ().clearRow (this.offsetY + playedPad);
+        this.model.getCursorClip ().clearRow (this.offsetY + playedPad);
     }
 
 

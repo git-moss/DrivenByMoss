@@ -134,6 +134,22 @@ public class ParameterImpl implements IParameter
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void resetValue ()
+    {
+        this.parameter.reset ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void touchValue (boolean isBeingTouched)
+    {
+        this.parameter.touch (isBeingTouched);
+    }
+
+
     private void handleValue (final int value)
     {
         this.value = value;

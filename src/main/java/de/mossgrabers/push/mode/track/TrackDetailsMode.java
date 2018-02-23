@@ -60,7 +60,7 @@ public class TrackDetailsMode extends BaseMode
                 this.model.getMasterTrack ().toggleIsActivated ();
                 break;
             case 1:
-                this.model.getMasterTrack ().toggleArm ();
+                this.model.getMasterTrack ().toggleRecArm ();
                 break;
             case 2:
                 this.model.getMasterTrack ().toggleMute ();
@@ -96,22 +96,22 @@ public class TrackDetailsMode extends BaseMode
         switch (index)
         {
             case 0:
-                this.model.getCurrentTrackBank ().toggleIsActivated (t.getIndex ());
+                t.toggleIsActivated ();
                 break;
             case 1:
-                this.model.getCurrentTrackBank ().toggleArm (t.getIndex ());
+                t.toggleRecArm ();
                 break;
             case 2:
-                this.model.getCurrentTrackBank ().toggleMute (t.getIndex ());
+                t.toggleMute ();
                 break;
             case 3:
-                this.model.getCurrentTrackBank ().toggleSolo (t.getIndex ());
+                t.toggleSolo ();
                 break;
             case 4:
-                this.model.getCurrentTrackBank ().toggleMonitor (t.getIndex ());
+                t.toggleMonitor ();
                 break;
             case 5:
-                this.model.getCurrentTrackBank ().toggleAutoMonitor (t.getIndex ());
+                t.toggleAutoMonitor ();
                 break;
             case 6:
                 this.model.toggleCursorTrackPinned ();

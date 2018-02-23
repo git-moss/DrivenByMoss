@@ -36,7 +36,7 @@ public class PanView extends AbstractFaderView
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().setPan (index, value);
+        this.model.getCurrentTrackBank ().getTrack (index).setPan (value);
     }
 
 

@@ -8,6 +8,7 @@ import de.mossgrabers.apc.command.continuous.CrossfaderCommand;
 import de.mossgrabers.apc.command.continuous.DeviceKnobRowCommand;
 import de.mossgrabers.apc.command.trigger.APCBrowserCommand;
 import de.mossgrabers.apc.command.trigger.APCCursorCommand;
+import de.mossgrabers.apc.command.trigger.APCQuantizeCommand;
 import de.mossgrabers.apc.command.trigger.APCRecordCommand;
 import de.mossgrabers.apc.command.trigger.BankLeftCommand;
 import de.mossgrabers.apc.command.trigger.BankRightCommand;
@@ -18,7 +19,6 @@ import de.mossgrabers.apc.command.trigger.MasterCommand;
 import de.mossgrabers.apc.command.trigger.MuteCommand;
 import de.mossgrabers.apc.command.trigger.NudgeCommand;
 import de.mossgrabers.apc.command.trigger.PanelLayoutCommand;
-import de.mossgrabers.apc.command.trigger.QuantizeCommand;
 import de.mossgrabers.apc.command.trigger.RecArmCommand;
 import de.mossgrabers.apc.command.trigger.SelectCommand;
 import de.mossgrabers.apc.command.trigger.SendCommand;
@@ -214,7 +214,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addTriggerCommand (Commands.COMMAND_PLAY, APCControlSurface.APC_BUTTON_PLAY, new PlayCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_RECORD, APCControlSurface.APC_BUTTON_RECORD, new APCRecordCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_TAP_TEMPO, APCControlSurface.APC_BUTTON_TAP_TEMPO, new TapTempoCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_QUANTIZE, APCControlSurface.APC_BUTTON_REC_QUANT, new QuantizeCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_QUANTIZE, APCControlSurface.APC_BUTTON_REC_QUANT, new APCQuantizeCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_PAN_SEND, APCControlSurface.APC_BUTTON_PAN, new ModeSelectCommand<> (Modes.MODE_PAN, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, APCControlSurface.APC_BUTTON_MASTER, new MasterCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_STOP_ALL_CLIPS, APCControlSurface.APC_BUTTON_STOP_ALL_CLIPS, new StopAllClipsCommand (this.model, surface));
@@ -480,13 +480,15 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         for (int i = 0; i < 8; i++)
         {
-            tb.setVolumeIndication (i, !isEffect);
-            tb.setPanIndication (i, !isEffect && isPan);
+            final ITrack track = tb.getTrack (i);
+            track.setVolumeIndication (!isEffect);
+            track.setPanIndication (!isEffect && isPan);
             for (int j = 0; j < 8; j++)
                 tb.setSendIndication (i, j, !isEffect && (mode == Modes.MODE_SEND1 && j == 0 || mode == Modes.MODE_SEND2 && j == 1 || mode == Modes.MODE_SEND3 && j == 2 || mode == Modes.MODE_SEND4 && j == 3 || mode == Modes.MODE_SEND5 && j == 4 || mode == Modes.MODE_SEND6 && j == 5 || mode == Modes.MODE_SEND7 && j == 6 || mode == Modes.MODE_SEND8 && j == 7));
 
-            tbe.setVolumeIndication (i, isEffect);
-            tbe.setPanIndication (i, isEffect && isPan);
+            final ITrack fxTrack = tbe.getTrack (i);
+            fxTrack.setVolumeIndication (isEffect);
+            fxTrack.setPanIndication (isEffect && isPan);
 
             cursorDevice.indicateParameter (i, true);
         }

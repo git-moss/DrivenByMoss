@@ -186,9 +186,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 this.surface.getDisplay ().notify ("Toggle Launcher Overdub");
                 break;
             case 46:
-                // We can use any cursor clip, e.g. the one of the drum view
-                final DrumView view = (DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM);
-                view.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+                this.model.getCursorClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
                 this.surface.getDisplay ().notify ("Quantize");
                 break;
             case 38:

@@ -9,8 +9,6 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.view.DrumView;
-import de.mossgrabers.push.view.Views;
 
 
 /**
@@ -36,9 +34,7 @@ public class DoubleCommand extends AbstractTriggerCommand<PushControlSurface, Pu
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        final DrumView view = (DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM);
-        view.getClip ().duplicateContent ();
+        if (event == ButtonEvent.DOWN)
+            this.model.getCursorClip ().duplicateContent ();
     }
 }

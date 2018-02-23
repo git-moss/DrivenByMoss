@@ -12,7 +12,6 @@ import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Mode;
@@ -102,9 +101,9 @@ public abstract class AbstractView<S extends ControlSurface<C>, C extends Config
     @Override
     public void selectTrack (final int index)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        tb.select (index);
-        tb.makeVisible (index);
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
+        track.select ();
+        track.makeVisible ();
     }
 
 

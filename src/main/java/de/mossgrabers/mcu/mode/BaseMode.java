@@ -57,21 +57,21 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         final IChannelBank tb = this.model.getCurrentTrackBank ();
         if (row == 1)
         {
-            tb.toggleArm (channel);
+            tb.getTrack (channel).toggleRecArm ();
         }
         else if (row == 2)
         {
             if (this.surface.isShiftPressed ())
-                tb.toggleAutoMonitor (channel);
+                tb.getTrack (channel).toggleAutoMonitor ();
             else
-                tb.toggleSolo (channel);
+                tb.getTrack (channel).toggleSolo ();
         }
         else if (row == 3)
         {
             if (this.surface.isShiftPressed ())
-                tb.toggleMonitor (channel);
+                tb.getTrack (channel).toggleMonitor ();
             else
-                tb.toggleMute (channel);
+                tb.getTrack (channel).toggleMute ();
         }
     }
 

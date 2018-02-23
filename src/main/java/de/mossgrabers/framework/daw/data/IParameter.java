@@ -81,6 +81,20 @@ public interface IParameter extends ObserverManagement
 
 
     /**
+     * Reset the value to its default value.
+     */
+    void resetValue ();
+
+
+    /**
+     * Signal that the value fader/knob is touched for automation recording.
+     *
+     * @param isBeingTouched True if touched
+     */
+    void touchValue (boolean isBeingTouched);
+
+
+    /**
      * Get the value which is modulated. If it is currently not modulated it is identical to
      * getValue.
      *

@@ -498,11 +498,11 @@ public class OSCParser implements OscMethodCallback
                 {
                     case "volume":
                         for (int i = 0; i < tb.getNumTracks (); i++)
-                            tb.setVolumeIndication (i, isTrue);
+                            tb.getTrack (i).setVolumeIndication (isTrue);
                         break;
                     case "pan":
                         for (int i = 0; i < tb.getNumTracks (); i++)
-                            tb.setPanIndication (i, isTrue);
+                            tb.getTrack (i).setPanIndication (isTrue);
                         break;
                     case "send":
                         if (tb instanceof ITrackBank)
@@ -609,16 +609,18 @@ public class OSCParser implements OscMethodCallback
                 // Make sure a track is selected
                 final IChannelBank tb = this.model.getCurrentTrackBank ();
                 final IChannelBank tbOther = this.model.isEffectTrackBankActive () ? this.model.getTrackBank () : this.model.getEffectTrackBank ();
-                final ITrack track = tb.getSelectedTrack ();
-                if (track == null)
+                final ITrack selectedTrack = tb.getSelectedTrack ();
+                if (selectedTrack == null)
                     this.selectTrack (0);
                 // Move the indication to the other bank
                 for (int i = 0; i < tb.getNumTracks (); i++)
                 {
-                    tbOther.setVolumeIndication (i, false);
-                    tbOther.setPanIndication (i, false);
-                    tb.setVolumeIndication (i, true);
-                    tb.setPanIndication (i, true);
+                    final ITrack otherTrack = tbOther.getTrack (i);
+                    otherTrack.setVolumeIndication (false);
+                    otherTrack.setPanIndication (false);
+                    final ITrack track = tb.getTrack (i);
+                    track.setVolumeIndication (true);
+                    track.setPanIndication (true);
                 }
                 break;
             }
@@ -649,7 +651,7 @@ public class OSCParser implements OscMethodCallback
                 if (trackIndex == -1)
                     this.masterTrack.setIsActivated (intValue > 0);
                 else
-                    this.model.getCurrentTrackBank ().setIsActivated (trackIndex, intValue > 0);
+                    this.model.getCurrentTrackBank ().getTrack (trackIndex).setIsActivated (intValue > 0);
                 break;
 
             case "crossfadeMode":
@@ -672,14 +674,14 @@ public class OSCParser implements OscMethodCallback
                     if (trackIndex == -1)
                         this.masterTrack.setVolume (numValue);
                     else
-                        this.model.getCurrentTrackBank ().setVolume (trackIndex, numValue);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).setVolume (numValue);
                 }
                 else if ("indicate".equals (parts.get (0)))
                 {
                     if (trackIndex == -1)
                         this.masterTrack.setVolumeIndication (numValue > 0);
                     else
-                        this.model.getCurrentTrackBank ().setVolumeIndication (trackIndex, numValue > 0);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).setVolumeIndication (numValue > 0);
                 }
                 break;
 
@@ -689,14 +691,14 @@ public class OSCParser implements OscMethodCallback
                     if (trackIndex == -1)
                         this.masterTrack.setPan (numValue);
                     else
-                        this.model.getCurrentTrackBank ().setPan (trackIndex, numValue);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).setPan (numValue);
                 }
                 else if ("indicate".equals (parts.get (0)))
                 {
                     if (trackIndex == -1)
                         this.masterTrack.setPanIndication (numValue > 0);
                     else
-                        this.model.getCurrentTrackBank ().setPanIndication (trackIndex, numValue > 0);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).setPanIndication (numValue > 0);
                 }
                 break;
 
@@ -711,9 +713,9 @@ public class OSCParser implements OscMethodCallback
                 else
                 {
                     if (numValue < 0)
-                        this.model.getCurrentTrackBank ().toggleMute (trackIndex);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).toggleMute ();
                     else
-                        this.model.getCurrentTrackBank ().setMute (trackIndex, numValue > 0);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).setMute (numValue > 0);
                 }
                 break;
 
@@ -728,9 +730,9 @@ public class OSCParser implements OscMethodCallback
                 else
                 {
                     if (numValue < 0)
-                        this.model.getCurrentTrackBank ().toggleSolo (trackIndex);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).toggleSolo ();
                     else
-                        this.model.getCurrentTrackBank ().setSolo (trackIndex, numValue > 0);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).setSolo (numValue > 0);
                 }
                 break;
 
@@ -738,16 +740,16 @@ public class OSCParser implements OscMethodCallback
                 if (trackIndex == -1)
                 {
                     if (numValue < 0)
-                        this.masterTrack.toggleArm ();
+                        this.masterTrack.toggleRecArm ();
                     else
-                        this.masterTrack.setArm (numValue > 0);
+                        this.masterTrack.setRecArm (numValue > 0);
                 }
                 else
                 {
                     if (numValue < 0)
-                        this.model.getCurrentTrackBank ().toggleArm (trackIndex);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).toggleRecArm ();
                     else
-                        this.model.getCurrentTrackBank ().setArm (trackIndex, numValue > 0);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).setRecArm (numValue > 0);
                 }
                 break;
 
@@ -769,13 +771,13 @@ public class OSCParser implements OscMethodCallback
                 {
                     if (numValue < 0)
                         if (isAuto)
-                            this.model.getCurrentTrackBank ().toggleAutoMonitor (trackIndex);
+                            this.model.getCurrentTrackBank ().getTrack (trackIndex).toggleAutoMonitor ();
                         else
-                            this.model.getCurrentTrackBank ().toggleMonitor (trackIndex);
+                            this.model.getCurrentTrackBank ().getTrack (trackIndex).toggleMonitor ();
                     else if (isAuto)
-                        this.model.getCurrentTrackBank ().setAutoMonitor (trackIndex, numValue > 0);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).setAutoMonitor (numValue > 0);
                     else
-                        this.model.getCurrentTrackBank ().setMonitor (trackIndex, numValue > 0);
+                        this.model.getCurrentTrackBank ().getTrack (trackIndex).setMonitor (numValue > 0);
                 }
                 break;
 
@@ -1245,8 +1247,8 @@ public class OSCParser implements OscMethodCallback
 
     private void selectTrack (final int index)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        tb.select (index);
-        tb.makeVisible (index);
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
+        track.select ();
+        track.makeVisible ();
     }
 }

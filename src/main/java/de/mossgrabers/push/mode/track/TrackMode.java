@@ -49,10 +49,10 @@ public class TrackMode extends AbstractTrackMode
         switch (index)
         {
             case 0:
-                tb.changeVolume (selectedTrack.getIndex (), value);
+                selectedTrack.changeVolume (value);
                 return;
             case 1:
-                tb.changePan (selectedTrack.getIndex (), value);
+                selectedTrack.changePan (value);
                 return;
         }
 
@@ -118,10 +118,10 @@ public class TrackMode extends AbstractTrackMode
                     switch (index)
                     {
                         case 0:
-                            tb.resetVolume (selectedTrack.getIndex ());
+                            selectedTrack.resetVolume ();
                             break;
                         case 1:
-                            tb.resetPan (selectedTrack.getIndex ());
+                            selectedTrack.resetPan ();
                             break;
                         case 2:
                             tb.setCrossfadeMode (selectedTrack.getIndex (), "AB");
@@ -164,10 +164,10 @@ public class TrackMode extends AbstractTrackMode
             switch (index)
             {
                 case 0:
-                    tb.touchVolume (selectedTrack.getIndex (), isTouched);
+                    selectedTrack.touchVolume (isTouched);
                     break;
                 case 1:
-                    tb.touchPan (selectedTrack.getIndex (), isTouched);
+                    selectedTrack.touchPan (isTouched);
                     break;
                 case 2:
                 case 3:
@@ -191,10 +191,10 @@ public class TrackMode extends AbstractTrackMode
                 switch (index)
                 {
                     case 0:
-                        tb.resetVolume (selectedTrack.getIndex ());
+                        selectedTrack.resetVolume ();
                         break;
                     case 1:
-                        tb.resetPan (selectedTrack.getIndex ());
+                        selectedTrack.resetPan ();
                         break;
                     case 2:
                         if (config.isDisplayCrossfader ())
@@ -243,10 +243,10 @@ public class TrackMode extends AbstractTrackMode
         switch (index)
         {
             case 0:
-                tb.touchVolume (selectedTrack.getIndex (), isTouched);
+                selectedTrack.touchVolume (isTouched);
                 break;
             case 1:
-                tb.touchPan (selectedTrack.getIndex (), isTouched);
+                selectedTrack.touchPan (isTouched);
                 break;
             case 2:
                 if (!config.isDisplayCrossfader ())

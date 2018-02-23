@@ -7,6 +7,7 @@ package de.mossgrabers.beatstep.view;
 import de.mossgrabers.beatstep.controller.BeatstepColors;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -113,7 +114,7 @@ public class DrumView extends BaseSequencerView
         else
         {
             if (velocity != 0)
-                this.clip.toggleStep (index < 8 ? index + 8 : index - 8, this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                this.getClip ().toggleStep (index < 8 ? index + 8 : index - 8, this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
         }
     }
 
@@ -165,12 +166,13 @@ public class DrumView extends BaseSequencerView
         }
         else
         {
+            final ICursorClip clip = this.getClip ();
             // Paint the sequencer steps
-            final int step = this.clip.getCurrentStep ();
+            final int step = clip.getCurrentStep ();
             final int hiStep = this.isInXRange (step) ? step % DrumView.NUM_DISPLAY_COLS : -1;
             for (int col = 0; col < DrumView.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = this.clip.getStep (col, this.offsetY + this.selectedPad);
+                final int isSet = clip.getStep (col, this.offsetY + this.selectedPad);
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
                 final int y = col / 8;
