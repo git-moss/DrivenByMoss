@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apc.controller;
@@ -8,11 +8,10 @@ import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.midi.MidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.view.View;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.Arrays;
 
@@ -187,10 +186,10 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
         APC_BUTTON_UPDATE[APC_BUTTON_BANK] = false;
     }
 
-    private static String ID_APC_40      = "73";
-    private static String ID_APC_40_MKII = "29";
+    private static final String ID_APC_40      = "73";
+    private static final String ID_APC_40_MKII = "29";
 
-    private boolean       isMkII;
+    private boolean             isMkII;
 
 
     /**
@@ -203,7 +202,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
      * @param input The midi input
      * @param isMkII
      */
-    public APCControlSurface (final ControllerHost host, final ColorManager colorManager, final APCConfiguration configuration, final MidiOutput output, final MidiInput input, final boolean isMkII)
+    public APCControlSurface (final IHost host, final ColorManager colorManager, final APCConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isMkII)
     {
         super (host, configuration, colorManager, output, input, APC_BUTTONS_ALL);
 

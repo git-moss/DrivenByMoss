@@ -1,16 +1,16 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.mcu.controller;
 
 import de.mossgrabers.framework.LatestTaskExecutor;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.midi.MidiOutput;
-
-import com.bitwig.extension.controller.api.ControllerHost;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -53,7 +53,7 @@ public class MCUDisplay extends AbstractDisplay
      * @param isFirst True if it is the first display, otherwise the second
      * @param hasMaster True if a 9th master cell should be added
      */
-    public MCUDisplay (final ControllerHost host, final MidiOutput output, final boolean isFirst, final boolean hasMaster)
+    public MCUDisplay (final IHost host, final IMidiOutput output, final boolean isFirst, final boolean hasMaster)
     {
         super (host, output, 2 /* No of rows */, !isFirst && hasMaster ? 9 : 8 /* No of cells */, 56);
 
@@ -123,7 +123,7 @@ public class MCUDisplay extends AbstractDisplay
         }
         catch (final ArrayIndexOutOfBoundsException ex)
         {
-            ex.printStackTrace ();
+            this.host.error ("Display array index out of bounds.", ex);
         }
         return this;
     }
@@ -155,7 +155,7 @@ public class MCUDisplay extends AbstractDisplay
                 code.append ("00 ");
             else
                 code.append ("38 ");
-            this.output.sendSysex (code.append (MidiOutput.toHexStr (array)).append ("F7").toString ());
+            this.output.sendSysex (code.append (StringUtils.toHexStr (array)).append ("F7").toString ());
         });
     }
 

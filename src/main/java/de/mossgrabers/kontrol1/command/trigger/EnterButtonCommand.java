@@ -5,12 +5,11 @@
 package de.mossgrabers.kontrol1.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
@@ -31,7 +30,7 @@ public class EnterButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSu
      * @param model The model
      * @param surface The surface
      */
-    public EnterButtonCommand (final Model model, final Kontrol1ControlSurface surface)
+    public EnterButtonCommand (final IModel model, final Kontrol1ControlSurface surface)
     {
         super (model, surface);
     }
@@ -58,12 +57,8 @@ public class EnterButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSu
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
-        if (selectedTrack == null)
-            return;
-        final int index = selectedTrack.getIndex ();
-        if (index >= 0 && index < 8)
-            tb.toggleSolo (index);
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+        if (selectedTrack != null)
+            selectedTrack.toggleSolo ();
     }
 }

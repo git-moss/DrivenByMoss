@@ -1,18 +1,16 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode.track;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.SendData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
@@ -34,7 +32,7 @@ public class SendMode extends AbstractTrackMode
      * @param surface The control surface
      * @param model The model
      */
-    public SendMode (final PushControlSurface surface, final Model model)
+    public SendMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -44,10 +42,7 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final int sendIndex = this.getCurrentSendIndex ();
-        final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
-        if (currentTrackBank instanceof TrackBankProxy)
-            ((TrackBankProxy) currentTrackBank).changeSend (index, sendIndex, value);
+        this.model.getCurrentTrackBank ().getTrack (index).getSend (this.getCurrentSendIndex ()).changeValue (value);
     }
 
 
@@ -59,25 +54,22 @@ public class SendMode extends AbstractTrackMode
 
         this.isKnobTouched[index] = isTouched;
 
+        final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
+        final ISend send = t.getSend (sendIndex);
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
             {
-                final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
-                if (currentTrackBank instanceof TrackBankProxy)
-                    ((TrackBankProxy) currentTrackBank).resetSend (index, sendIndex);
+                send.resetValue ();
                 return;
             }
 
-            final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
-            final TrackData t = this.model.getCurrentTrackBank ().getTrack (index);
+            final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
             if (t.doesExist ())
-                this.surface.getDisplay ().notify ("Send " + (fxTrackBank == null ? t.getSends ()[sendIndex].getName () : fxTrackBank.getTrack (sendIndex).getName ()) + ": " + t.getSends ()[sendIndex].getValue ());
+                this.surface.getDisplay ().notify ("Send " + (fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendIndex).getName ()) + ": " + send.getValue ());
         }
 
-        final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
-        if (currentTrackBank instanceof TrackBankProxy)
-            ((TrackBankProxy) currentTrackBank).touchSend (index, sendIndex, isTouched);
+        send.touchValue (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 
@@ -88,16 +80,16 @@ public class SendMode extends AbstractTrackMode
     {
         final Display d = this.surface.getDisplay ();
         final int sendIndex = this.getCurrentSendIndex ();
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final ITrack t = tb.getTrack (i);
             if (t.doesExist ())
             {
-                final SendData sendData = t.getSends ()[sendIndex];
-                d.setCell (0, i, sendData.getName ());
-                d.setCell (1, i, sendData.getDisplayedValue (8));
-                d.setCell (2, i, sendData.getValue (), Format.FORMAT_VALUE);
+                final ISend send = t.getSend (sendIndex);
+                d.setCell (0, i, send.getName ());
+                d.setCell (1, i, send.getDisplayedValue (8));
+                d.setCell (2, i, send.getValue (), Format.FORMAT_VALUE);
             }
             else
                 d.clearColumn (i);
@@ -115,15 +107,16 @@ public class SendMode extends AbstractTrackMode
         this.updateTrackMenu ();
 
         final int sendIndex = this.getCurrentSendIndex ();
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
 
         final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final ITrack t = tb.getTrack (i);
 
             // The menu item
             String topMenu;
@@ -158,7 +151,7 @@ public class SendMode extends AbstractTrackMode
             for (int j = 0; j < 4; j++)
             {
                 final int sendPos = sendOffset + j;
-                final SendData send = t.getSends ()[sendPos];
+                final ISend send = t.getSend (sendPos);
                 sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
                 valueStr[j] = send != null && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue (8) : "";
                 value[j] = valueChanger.toDisplayValue (send != null ? send.getValue () : -1);
@@ -168,10 +161,10 @@ public class SendMode extends AbstractTrackMode
 
             final String typeID = t.getType ();
             final ChannelType type = typeID.isEmpty () ? null : ChannelType.valueOf (typeID.toUpperCase ());
-            message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", type, tb.getTrackColorEntry (i), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
+            message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", type, t.getColor (), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
         }
 
-        message.send ();
+        display.send (message);
     }
 
 

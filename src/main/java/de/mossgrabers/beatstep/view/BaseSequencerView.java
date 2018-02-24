@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.beatstep.view;
 
 import de.mossgrabers.beatstep.BeatstepConfiguration;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 
@@ -35,7 +35,7 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
      * @param rows The number of rows of the sequencer
      * @param cols The number of columns of the sequencer
      */
-    public BaseSequencerView (final String name, final BeatstepControlSurface surface, final Model model, final int rows, final int cols)
+    public BaseSequencerView (final String name, final BeatstepControlSurface surface, final IModel model, final int rows, final int cols)
     {
         super (name, surface, model, rows, cols);
 
@@ -50,9 +50,9 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
     {
         final boolean isInc = value >= 65;
         if (isInc)
-            this.clip.scrollStepsPageForward ();
+            this.getClip ().scrollStepsPageForward ();
         else
-            this.clip.scrollStepsPageBackwards ();
+            this.getClip ().scrollStepsPageBackwards ();
     }
 
 
@@ -60,7 +60,7 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
     {
         final boolean isInc = value >= 65;
         this.selectedIndex = Math.max (0, Math.min (RESOLUTIONS.length - 1, isInc ? this.selectedIndex + 1 : this.selectedIndex - 1));
-        this.clip.setStepLength (RESOLUTIONS[this.selectedIndex]);
+        this.getClip ().setStepLength (RESOLUTIONS[this.selectedIndex]);
     }
 
 

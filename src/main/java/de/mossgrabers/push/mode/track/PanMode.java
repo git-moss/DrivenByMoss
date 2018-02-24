@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode.track;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
 
@@ -26,7 +26,7 @@ public class PanMode extends AbstractTrackMode
      * @param surface The control surface
      * @param model The model
      */
-    public PanMode (final PushControlSurface surface, final Model model)
+    public PanMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -36,7 +36,7 @@ public class PanMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().changePan (index, value);
+        this.model.getCurrentTrackBank ().getTrack (index).changePan (value);
     }
 
 
@@ -46,20 +46,20 @@ public class PanMode extends AbstractTrackMode
     {
         this.isKnobTouched[index] = isTouched;
 
+        final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
             {
-                this.model.getCurrentTrackBank ().resetPan (index);
+                t.resetPan ();
                 return;
             }
 
-            final TrackData t = this.model.getCurrentTrackBank ().getTrack (index);
             if (t.doesExist ())
                 this.surface.getDisplay ().notify ("Pan: " + t.getPanStr (8));
         }
 
-        this.model.getCurrentTrackBank ().touchPan (index, isTouched);
+        t.touchPan (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 
@@ -69,11 +69,11 @@ public class PanMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final ITrack t = tb.getTrack (i);
             d.setCell (0, i, t.doesExist () ? "Pan" : "").setCell (1, i, t.getPanStr (8));
             if (t.doesExist ())
                 d.setCell (2, i, t.getPan (), Format.FORMAT_PAN);

@@ -1,14 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apcmini;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.ValueChanger;
-
-import com.bitwig.extension.controller.api.Preferences;
-import com.bitwig.extension.controller.api.SettableEnumValue;
 
 
 /**
@@ -51,8 +50,8 @@ public class APCminiConfiguration extends AbstractConfiguration
     private String                 faderCtrl          = FADER_CTRL_OPTIONS[0];
     private String                 softKeys           = SOFT_KEYS_OPTIONS[0];
 
-    private SettableEnumValue      faderCtrlSetting;
-    private SettableEnumValue      softKeysSetting;
+    private IEnumSetting           faderCtrlSetting;
+    private IEnumSetting           softKeysSetting;
 
 
     /**
@@ -68,38 +67,38 @@ public class APCminiConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final Preferences prefs)
+    public void init (final ISettingsUI settingsUI)
     {
         ///////////////////////////
         // Play and Sequence
 
-        this.activateQuantizeAmountSetting (prefs);
+        this.activateQuantizeAmountSetting (settingsUI);
 
         ///////////////////////////
         // Scale
 
-        this.activateScaleSetting (prefs);
-        this.activateScaleBaseSetting (prefs);
-        this.activateScaleInScaleSetting (prefs);
-        this.activateScaleLayoutSetting (prefs);
+        this.activateScaleSetting (settingsUI);
+        this.activateScaleBaseSetting (settingsUI);
+        this.activateScaleInScaleSetting (settingsUI);
+        this.activateScaleLayoutSetting (settingsUI);
 
         ///////////////////////////
         // Workflow
 
-        this.activateBehaviourOnStopSetting (prefs);
-        this.activateSelectClipOnLaunchSetting (prefs);
-        this.activateNewClipLengthSetting (prefs);
+        this.activateBehaviourOnStopSetting (settingsUI);
+        this.activateSelectClipOnLaunchSetting (settingsUI);
+        this.activateNewClipLengthSetting (settingsUI);
 
         ///////////////////////////
         // Button Control
 
-        this.faderCtrlSetting = prefs.getEnumSetting ("Fader Ctrl", "Button Control", FADER_CTRL_OPTIONS, FADER_CTRL_OPTIONS[0]);
+        this.faderCtrlSetting = settingsUI.getEnumSetting ("Fader Ctrl", "Button Control", FADER_CTRL_OPTIONS, FADER_CTRL_OPTIONS[0]);
         this.faderCtrlSetting.addValueObserver (value -> {
             this.faderCtrl = value;
             this.notifyObservers (FADER_CTRL);
         });
 
-        this.softKeysSetting = prefs.getEnumSetting ("Soft Keys", "Button Control", SOFT_KEYS_OPTIONS, SOFT_KEYS_OPTIONS[0]);
+        this.softKeysSetting = settingsUI.getEnumSetting ("Soft Keys", "Button Control", SOFT_KEYS_OPTIONS, SOFT_KEYS_OPTIONS[0]);
         this.softKeysSetting.addValueObserver (value -> {
             this.softKeys = value;
             this.notifyObservers (SOFT_KEYS);

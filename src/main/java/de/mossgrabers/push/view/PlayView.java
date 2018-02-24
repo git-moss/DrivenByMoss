@@ -1,15 +1,15 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.SceneBankProxy;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.SceneView;
@@ -33,7 +33,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
      * @param surface The surface
      * @param model The model
      */
-    public PlayView (final PushControlSurface surface, final Model model)
+    public PlayView (final PushControlSurface surface, final IModel model)
     {
         this (Views.VIEW_NAME_PLAY, surface, model);
     }
@@ -46,7 +46,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
      * @param surface The surface
      * @param model The model
      */
-    public PlayView (final String name, final PushControlSurface surface, final Model model)
+    public PlayView (final String name, final PushControlSurface surface, final IModel model)
     {
         super (name, surface, model, true);
 
@@ -108,7 +108,9 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
     @Override
     public void updateSceneButtons ()
     {
-        final SceneBankProxy sceneBank = this.model.getSceneBank ();
+        final ISceneBank sceneBank = this.model.getSceneBank ();
+        if (sceneBank == null)
+            return;
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
         final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;
@@ -124,8 +126,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
         if (this.surface.isDeletePressed ())
         {
             this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-            final SequencerView view = (SequencerView) this.surface.getViewManager ().getView (Views.VIEW_SEQUENCER);
-            view.getClip ().clearRow (this.noteMap[note]);
+            this.model.getCursorClip ().clearRow (this.noteMap[note]);
             return;
         }
 

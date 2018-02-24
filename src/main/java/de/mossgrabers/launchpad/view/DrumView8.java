@@ -1,11 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.view;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
@@ -27,7 +28,7 @@ public class DrumView8 extends DrumViewBase
      * @param surface The surface
      * @param model The model
      */
-    public DrumView8 (final LaunchpadControlSurface surface, final Model model)
+    public DrumView8 (final LaunchpadControlSurface surface, final IModel model)
     {
         super ("Drum 8", surface, model, 1, 0);
     }
@@ -47,7 +48,7 @@ public class DrumView8 extends DrumViewBase
         final int sound = y + this.soundOffset;
         final int col = x;
 
-        this.clip.toggleStep (col, this.offsetY + this.selectedPad + sound, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+        this.getClip ().toggleStep (col, this.offsetY + this.selectedPad + sound, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
     }
 
 
@@ -63,7 +64,8 @@ public class DrumView8 extends DrumViewBase
         }
 
         // Clip length/loop area
-        final int step = this.clip.getCurrentStep ();
+        final ICursorClip clip = this.getClip ();
+        final int step = clip.getCurrentStep ();
 
         // Paint the sequencer steps
         final int hiStep = this.isInXRange (step) ? step % DrumView8.NUM_DISPLAY_COLS : -1;
@@ -71,7 +73,7 @@ public class DrumView8 extends DrumViewBase
         {
             for (int col = 0; col < DrumView8.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = this.clip.getStep (col, this.offsetY + this.selectedPad + sound + this.soundOffset);
+                final int isSet = clip.getStep (col, this.offsetY + this.selectedPad + sound + this.soundOffset);
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
                 int y = col / 8;

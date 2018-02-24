@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.controller;
@@ -96,7 +96,7 @@ public interface ValueChanger
 
 
     /**
-     * Change a value by the amount of the control speed. The lower bound is 0.
+     * Change an integer value by the amount of the control speed.
      *
      * @param control The control speed, depending on the specific hardware controller
      * @param value The current value
@@ -109,32 +109,7 @@ public interface ValueChanger
 
 
     /**
-     * Change an integer value by the amount of the control speed. The lower bound is 0.
-     *
-     * @param control The control speed, depending on the specific hardware controller
-     * @param value The current value
-     * @param fractionValue The value for de-/incrementing values
-     * @param upperBound The maximum value for parameters plus 1
-     * @return The new value
-     */
-    int changeIntValue (int control, int value, double fractionValue, int upperBound);
-
-
-    /**
-     * Change an integer value by the amount of the control speed. The lower bound is 0.
-     *
-     * @param control The control speed, depending on the specific hardware controller
-     * @param value The current value
-     * @param fractionValue The value for de-/incrementing values
-     * @param upperBound The maximum value for parameters plus 1
-     * @param lowerBound A lower bound for the value
-     * @return The new value
-     */
-    int changeIntValue (int control, int value, double fractionValue, int upperBound, int lowerBound);
-
-
-    /**
-     * Translate the value in the range from 0 to max-1 to 0-127.
+     * Translate the value in the range from [0, max-1] to [0, 127].
      *
      * @param value The DAW value
      * @return The midi value
@@ -143,7 +118,7 @@ public interface ValueChanger
 
 
     /**
-     * Translate the value in the range from 0-127 to 0 to max-1 .
+     * Translate the value in the range from [0, 127] to [0, max-1].
      *
      * @param value The midi value
      * @return The DAW value
@@ -152,11 +127,29 @@ public interface ValueChanger
 
 
     /**
-     * Translate the value in the range from 0 to max-1 to the range necessary for addressing a
+     * Translate the value in the range from [0, max-1] to the range necessary for addressing a
      * display.
      *
      * @param value The DAW value
      * @return The display value
      */
     int toDisplayValue (int value);
+
+
+    /**
+     * Translate the value in the range from [0, max-1] to [0.0, 1.0].
+     *
+     * @param value The DAW value
+     * @return The midi value
+     */
+    double toNormalizedValue (int value);
+
+
+    /**
+     * Translate the value in the range from [0.0, 1.0] to [0, max-1].
+     *
+     * @param value The DAW value
+     * @return The midi value
+     */
+    int fromNormalizedValue (double value);
 }

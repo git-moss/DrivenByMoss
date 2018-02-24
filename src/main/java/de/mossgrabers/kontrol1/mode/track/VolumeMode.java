@@ -5,10 +5,10 @@
 package de.mossgrabers.kontrol1.mode.track;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.StringUtils;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
@@ -28,7 +28,7 @@ public class VolumeMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
      * @param surface The surface
      * @param model The model
      */
-    public VolumeMode (final Kontrol1ControlSurface surface, final Model model)
+    public VolumeMode (final Kontrol1ControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;
@@ -43,7 +43,7 @@ public class VolumeMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
 
         d.clear ();
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
         final StringBuilder sb = new StringBuilder ();
         final int positionFirst = tb.getTrackPositionFirst ();
@@ -57,13 +57,13 @@ public class VolumeMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
 
         d.setCell (0, 0, this.model.isEffectTrackBankActive () ? "VOL-FX" : "VOLUME").setCell (1, 0, sb.toString ());
 
-        final TrackData selTrack = tb.getSelectedTrack ();
+        final ITrack selTrack = tb.getSelectedTrack ();
 
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
         for (int i = 0; i < 8; i++)
         {
             final boolean isSel = i == selIndex;
-            final TrackData t = tb.getTrack (i);
+            final ITrack t = tb.getTrack (i);
             final String n = this.optimizeName (StringUtils.fixASCII (t.getName ()), isSel ? 7 : 8).toUpperCase ();
             d.setCell (0, 1 + i, isSel ? ">" + n : n).setCell (1, 1 + i, t.isMute () ? "-MUTED-" : t.isSolo () ? "-SOLO-" : t.getVolumeStr (8));
 
@@ -77,7 +77,7 @@ public class VolumeMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().changeVolume (index, value);
+        this.model.getCurrentTrackBank ().getTrack (index).changeVolume (value);
     }
 
 

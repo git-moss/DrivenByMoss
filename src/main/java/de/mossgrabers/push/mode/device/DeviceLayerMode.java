@@ -1,20 +1,20 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
-import de.mossgrabers.framework.daw.data.SendData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
@@ -52,7 +52,7 @@ public class DeviceLayerMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public DeviceLayerMode (final PushControlSurface surface, final Model model)
+    public DeviceLayerMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;
@@ -63,8 +63,8 @@ public class DeviceLayerMode extends BaseMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
-        final ChannelData selectedDeviceLayer = cd.getSelectedLayerOrDrumPad ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        final IChannel selectedDeviceLayer = cd.getSelectedLayerOrDrumPad ();
         if (selectedDeviceLayer == null)
             return;
         switch (index)
@@ -89,8 +89,8 @@ public class DeviceLayerMode extends BaseMode
     @Override
     public void onValueKnobTouch (final int index, final boolean isTouched)
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
-        final ChannelData l = cd.getSelectedLayerOrDrumPad ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        final IChannel l = cd.getSelectedLayerOrDrumPad ();
         if (l == null)
             return;
 
@@ -131,10 +131,10 @@ public class DeviceLayerMode extends BaseMode
                     if (this.isPush2 && index < 4)
                         break;
                     final int sendIndex = index - (this.isPush2 ? this.surface.getConfiguration ().isSendsAreToggled () ? 0 : 4 : 2);
-                    final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
-                    final String name = fxTrackBank == null ? l.getSends ()[sendIndex].getName () : fxTrackBank.getTrack (sendIndex).getName ();
+                    final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
+                    final String name = fxTrackBank == null ? l.getSend (sendIndex).getName () : fxTrackBank.getTrack (sendIndex).getName ();
                     if (!name.isEmpty ())
-                        this.surface.getDisplay ().notify ("Send " + name + ": " + l.getSends ()[sendIndex].getDisplayedValue ());
+                        this.surface.getDisplay ().notify ("Send " + name + ": " + l.getSend (sendIndex).getDisplayedValue ());
                     break;
             }
         }
@@ -168,12 +168,12 @@ public class DeviceLayerMode extends BaseMode
 
         if (event == ButtonEvent.UP)
         {
-            final CursorDeviceProxy cd = this.model.getCursorDevice ();
+            final ICursorDevice cd = this.model.getCursorDevice ();
             if (!cd.hasSelectedDevice ())
                 return;
 
             final int offset = getDrumPadIndex (cd);
-            final ChannelData layer = cd.getLayerOrDrumPad (offset + index);
+            final IChannel layer = cd.getLayerOrDrumPad (offset + index);
             if (!layer.doesExist ())
                 return;
 
@@ -204,7 +204,7 @@ public class DeviceLayerMode extends BaseMode
     protected void moveUp ()
     {
         // There is no device on the track move upwards to the track view
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
             this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
@@ -227,7 +227,7 @@ public class DeviceLayerMode extends BaseMode
         final PushConfiguration config = this.surface.getConfiguration ();
         if (!this.isPush2 || config.isMuteLongPressed () || config.isSoloLongPressed () || config.isMuteSoloLocked ())
         {
-            final CursorDeviceProxy cd = this.model.getCursorDevice ();
+            final ICursorDevice cd = this.model.getCursorDevice ();
             final int offset = getDrumPadIndex (cd);
             if (config.isMuteState ())
                 cd.toggleLayerOrDrumPadMute (offset + index);
@@ -237,7 +237,7 @@ public class DeviceLayerMode extends BaseMode
         }
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        EffectTrackBankProxy fxTrackBank;
+        IChannelBank fxTrackBank;
         switch (index)
         {
             case 0:
@@ -304,7 +304,7 @@ public class DeviceLayerMode extends BaseMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ().clear ();
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
             d.setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
@@ -318,20 +318,20 @@ public class DeviceLayerMode extends BaseMode
         }
         else
         {
-            final ChannelData l = cd.getSelectedLayerOrDrumPad ();
+            final IChannel l = cd.getSelectedLayerOrDrumPad ();
             if (l != null)
             {
                 d.setCell (0, 0, "Volume").setCell (1, 0, l.getVolumeStr (8)).setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? l.getVu () : l.getVolume (), Format.FORMAT_VALUE);
                 d.setCell (0, 1, "Pan").setCell (1, 1, l.getPanStr (8)).setCell (2, 1, l.getPan (), Format.FORMAT_PAN);
 
-                final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+                final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
                 if (fxTrackBank == null)
                 {
                     for (int i = 0; i < 6; i++)
                     {
                         final int pos = 2 + i;
-                        final SendData sendData = l.getSends ()[i];
-                        d.setCell (0, pos, sendData.getName ()).setCell (1, pos, sendData.getDisplayedValue (8)).setCell (2, pos, sendData.getValue (), Format.FORMAT_VALUE);
+                        final ISend send = l.getSend (i);
+                        d.setCell (0, pos, send.getName ()).setCell (1, pos, send.getDisplayedValue (8)).setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
                     }
                 }
                 else
@@ -339,7 +339,7 @@ public class DeviceLayerMode extends BaseMode
                     final boolean isFX = this.model.isEffectTrackBankActive ();
                     for (int i = 0; i < 6; i++)
                     {
-                        final TrackData fxTrack = fxTrackBank.getTrack (i);
+                        final ITrack fxTrack = fxTrackBank.getTrack (i);
                         final boolean isEmpty = isFX || !fxTrack.doesExist ();
                         final int pos = 2 + i;
                         if (isEmpty)
@@ -349,8 +349,9 @@ public class DeviceLayerMode extends BaseMode
                         }
                         else
                         {
-                            d.setCell (0, pos, fxTrack.getName ()).setCell (1, pos, l.getSends ()[i].getDisplayedValue (8));
-                            d.setCell (2, pos, l.getSends ()[i].getValue (), Format.FORMAT_VALUE);
+                            final ISend send = l.getSend (i);
+                            d.setCell (0, pos, fxTrack.getName ()).setCell (1, pos, send.getDisplayedValue (8));
+                            d.setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
                         }
                     }
                 }
@@ -365,13 +366,14 @@ public class DeviceLayerMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         if (!cd.hasSelectedDevice ())
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
-            message.send ();
+            display.send (message);
             return;
         }
 
@@ -380,12 +382,13 @@ public class DeviceLayerMode extends BaseMode
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 3 ? "Please create a " + (cd.hasDrumPads () ? "Drum Pad..." : "Device Layer...") : "", i == 7 ? "Up" : "", true, "", "", false, true);
-            message.send ();
+            display.send (message);
             return;
         }
 
         this.updateMenu ();
         this.updateDisplayElements (message, cd, cd.getSelectedLayerOrDrumPad ());
+        display.send (message);
     }
 
 
@@ -396,7 +399,7 @@ public class DeviceLayerMode extends BaseMode
      * @param cd The cursor device
      * @param l The channel data
      */
-    protected void updateDisplayElements (final DisplayMessage message, final CursorDeviceProxy cd, final ChannelData l)
+    protected void updateDisplayElements (final DisplayMessage message, final ICursorDevice cd, final IChannel l)
     {
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
@@ -410,7 +413,7 @@ public class DeviceLayerMode extends BaseMode
 
         for (int i = 0; i < 8; i++)
         {
-            final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
+            final IChannel layer = cd.getLayerOrDrumPad (offset + i);
 
             // The menu
             String topMenu;
@@ -443,7 +446,7 @@ public class DeviceLayerMode extends BaseMode
             }
             else if (sendsIndex == i && l != null)
             {
-                final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+                final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
                 final String [] sendName = new String [4];
                 final String [] valueStr = new String [4];
                 final int [] value = new int [4];
@@ -453,7 +456,7 @@ public class DeviceLayerMode extends BaseMode
                 {
                     final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
                     final int sendPos = sendOffset + j;
-                    final SendData send = l.getSends ()[sendPos];
+                    final ISend send = l.getSend (sendPos);
                     sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
                     final boolean doesExist = send.doesExist ();
                     valueStr[j] = doesExist && this.isKnobTouched[4 + j] ? send.getDisplayedValue () : "";
@@ -466,13 +469,11 @@ public class DeviceLayerMode extends BaseMode
             else
                 message.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn);
         }
-
-        message.send ();
     }
 
 
     // Called from sub-classes
-    protected void updateChannelDisplay (final DisplayMessage message, final CursorDeviceProxy cd, final int selectedMenu, final boolean isVolume, final boolean isPan)
+    protected void updateChannelDisplay (final DisplayMessage message, final ICursorDevice cd, final int selectedMenu, final boolean isVolume, final boolean isPan)
     {
         this.updateMenu ();
 
@@ -484,7 +485,7 @@ public class DeviceLayerMode extends BaseMode
         final ValueChanger valueChanger = this.model.getValueChanger ();
         for (int i = 0; i < 8; i++)
         {
-            final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
+            final IChannel layer = cd.getLayerOrDrumPad (offset + i);
 
             // The menu item
             String topMenu;
@@ -506,14 +507,12 @@ public class DeviceLayerMode extends BaseMode
             }
             message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), isPan && this.isKnobTouched[i] ? layer.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
         }
-
-        message.send ();
     }
 
 
     protected void updateMenu ()
     {
-        final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
         final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
         for (int i = 0; i < 3; i++)
@@ -526,7 +525,7 @@ public class DeviceLayerMode extends BaseMode
     @Override
     public void updateFirstRow ()
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (cd == null || !cd.hasLayers ())
         {
             this.disableFirstRow ();
@@ -536,7 +535,7 @@ public class DeviceLayerMode extends BaseMode
         final int offset = getDrumPadIndex (cd);
         for (int i = 0; i < 8; i++)
         {
-            final ChannelData dl = cd.getLayerOrDrumPad (offset + i);
+            final IChannel dl = cd.getLayerOrDrumPad (offset + i);
             this.surface.updateButton (20 + i, dl.doesExist () && dl.isActivated () ? dl.isSelected () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_LO : PushColors.PUSH1_COLOR_YELLOW_LO : this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK);
         }
     }
@@ -546,7 +545,7 @@ public class DeviceLayerMode extends BaseMode
     @Override
     public void updateSecondRow ()
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
 
         final PushConfiguration config = this.surface.getConfiguration ();
         final boolean muteState = config.isMuteState ();
@@ -559,7 +558,7 @@ public class DeviceLayerMode extends BaseMode
 
                 for (int i = 0; i < 8; i++)
                 {
-                    final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
+                    final IChannel layer = cd.getLayerOrDrumPad (offset + i);
 
                     int color = PushColors.PUSH2_COLOR_BLACK;
                     if (layer.doesExist ())
@@ -600,7 +599,7 @@ public class DeviceLayerMode extends BaseMode
         final int offset = getDrumPadIndex (cd);
         for (int i = 0; i < 8; i++)
         {
-            final ChannelData dl = cd.getLayerOrDrumPad (offset + i);
+            final IChannel dl = cd.getLayerOrDrumPad (offset + i);
             int color = PushColors.PUSH1_COLOR_BLACK;
             if (dl.doesExist ())
             {
@@ -623,13 +622,13 @@ public class DeviceLayerMode extends BaseMode
      * @param d The display
      * @param cd The cursor device
      */
-    protected void drawRow4 (final Display d, final CursorDeviceProxy cd)
+    protected void drawRow4 (final Display d, final ICursorDevice cd)
     {
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
         for (int i = 0; i < 8; i++)
         {
-            final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
+            final IChannel layer = cd.getLayerOrDrumPad (offset + i);
             final String n = this.optimizeName (layer.getName (), layer.isSelected () ? 7 : 8);
             d.setCell (3, i, layer.isSelected () ? PushDisplay.RIGHT_ARROW + n : n);
         }
@@ -637,11 +636,11 @@ public class DeviceLayerMode extends BaseMode
     }
 
 
-    protected static int getDrumPadIndex (final CursorDeviceProxy cd)
+    protected static int getDrumPadIndex (final ICursorDevice cd)
     {
         if (cd.hasDrumPads ())
         {
-            final ChannelData selectedDrumPad = cd.getSelectedDrumPad ();
+            final IChannel selectedDrumPad = cd.getSelectedDrumPad ();
             if (selectedDrumPad != null && selectedDrumPad.getIndex () > 7)
                 return 8;
         }

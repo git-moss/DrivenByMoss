@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apc.mode;
@@ -7,7 +7,7 @@ package de.mossgrabers.apc.mode;
 import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 
 import java.util.Date;
@@ -34,7 +34,7 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
      * @param ledMode The mode for the knob LEDs
      * @param defaultValue Default value to use
      */
-    public BaseMode (final APCControlSurface surface, final Model model, final int ledMode, final int defaultValue)
+    public BaseMode (final APCControlSurface surface, final IModel model, final int ledMode, final int defaultValue)
     {
         super (surface, model);
 

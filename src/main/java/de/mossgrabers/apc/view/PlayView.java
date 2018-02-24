@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apc.view;
@@ -7,11 +7,10 @@ package de.mossgrabers.apc.view;
 import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
-import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.SceneView;
 
@@ -29,7 +28,7 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
      * @param surface The surface
      * @param model The model
      */
-    public PlayView (final APCControlSurface surface, final Model model)
+    public PlayView (final APCControlSurface surface, final IModel model)
     {
         super ("Play", surface, model, surface.isMkII ());
     }
@@ -63,8 +62,8 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
     @Override
     public void updateArrows ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData sel = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack sel = tb.getSelectedTrack ();
         this.canScrollLeft = sel != null && sel.getIndex () > 0 || tb.canScrollTracksUp ();
         this.canScrollRight = sel != null && sel.getIndex () < 7 || tb.canScrollTracksDown ();
 
@@ -82,24 +81,14 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
         switch (scene)
         {
             case 0:
-            {
-                final Scales scales = this.model.getScales ();
-                scales.nextScale ();
-                final String name = scales.getScale ().getName ();
-                this.surface.getConfiguration ().setScale (name);
-                this.surface.getDisplay ().notify (name);
+                this.scales.nextScale ();
+                this.updateScale ();
                 break;
-            }
 
             case 1:
-            {
-                final Scales scales = this.model.getScales ();
-                scales.prevScale ();
-                final String name = scales.getScale ().getName ();
-                this.surface.getConfiguration ().setScale (name);
-                this.surface.getDisplay ().notify (name);
+                this.scales.prevScale ();
+                this.updateScale ();
                 break;
-            }
 
             case 2:
                 this.scales.toggleChromatic ();
@@ -117,5 +106,13 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
                 break;
         }
         this.updateNoteMapping ();
+    }
+
+
+    private void updateScale ()
+    {
+        final String name = this.scales.getScale ().getName ();
+        this.surface.getConfiguration ().setScale (name);
+        this.surface.getDisplay ().notify (name);
     }
 }

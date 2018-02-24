@@ -5,9 +5,9 @@
 package de.mossgrabers.kontrol1.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.data.ParameterData;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
@@ -38,7 +38,7 @@ public class ParamsMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
      * @param surface The surface
      * @param model The model
      */
-    public ParamsMode (final Kontrol1ControlSurface surface, final Model model)
+    public ParamsMode (final Kontrol1ControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;
@@ -54,12 +54,12 @@ public class ParamsMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
 
         if (this.model.hasSelectedDevice ())
         {
-            final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             d.setCell (0, 0, cursorDevice.getName ().toUpperCase ()).setCell (1, 0, cursorDevice.getSelectedParameterPageName ().toUpperCase ());
 
             for (int i = 0; i < 8; i++)
             {
-                final ParameterData p = cursorDevice.getFXParam (i);
+                final IParameter p = cursorDevice.getFXParam (i);
                 final String name = p.getName (8).toUpperCase ();
                 if (!name.isEmpty ())
                     d.setCell (0, 1 + i, name).setCell (1, 1 + i, checkForUpperCase (p.getDisplayedValue (8)));

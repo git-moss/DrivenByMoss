@@ -1,15 +1,16 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.sl.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -45,7 +46,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
      * @param surface The surface
      * @param model The model
      */
-    public PlayView (final SLControlSurface surface, final Model model)
+    public PlayView (final SLControlSurface surface, final IModel model)
     {
         super ("Play", surface, model, 128, NUM_DISPLAY_COLS);
 
@@ -61,14 +62,10 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         this.isPlayMode = true;
 
-        final TrackBankProxy tb = model.getTrackBank ();
-        tb.addNoteObserver ( (note, velocity) -> {
-            // Light notes send from the sequencer
-            this.pressedKeys[note] = velocity;
-        });
-        tb.addTrackSelectionObserver ( (index, isSelected) -> {
-            this.clearPressedKeys ();
-        });
+        final ITrackBank tb = model.getTrackBank ();
+        // Light notes send from the sequencer
+        tb.addNoteObserver ( (note, velocity) -> this.pressedKeys[note] = velocity);
+        tb.addTrackSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
     }
 
 
@@ -323,7 +320,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         if (this.isPlayMode)
         {
-            final CursorDeviceProxy primary = this.model.getPrimaryDevice ();
+            final ICursorDevice primary = this.model.getPrimaryDevice ();
             final boolean hasDrumPads = primary.hasDrumPads ();
             boolean isSoloed = false;
             if (hasDrumPads)
@@ -352,15 +349,16 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         }
         else
         {
+            final ICursorClip clip = this.getClip ();
             // Paint the sequencer steps
-            final int step = this.clip.getCurrentStep ();
+            final int step = clip.getCurrentStep ();
             final int hiStep = this.isInXRange (step) ? step % PlayView.NUM_DISPLAY_COLS : -1;
             for (int col = 0; col < PlayView.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = this.clip.getStep (col, this.offsetY + this.selectedPad);
+                final int isSet = clip.getStep (col, this.offsetY + this.selectedPad);
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
-                final double y = col / 8;
+                final double y = col / 8.0;
                 final int color = isSet > 0 ? SLControlSurface.MKII_BUTTON_STATE_ON : hilite ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
                 if (y == 0)
                     this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW3_1 + x, color);
@@ -406,7 +404,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         else
         {
             if (velocity != 0)
-                this.clip.toggleStep (index < 8 ? index + 8 : index - 8, this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                this.getClip ().toggleStep (index < 8 ? index + 8 : index - 8, this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
         }
     }
 
@@ -420,7 +418,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     }
 
 
-    private int getPadColor (final int index, final CursorDeviceProxy primary, final boolean isSoloed)
+    private int getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed)
     {
         // Playing note?
         if (this.pressedKeys[this.offsetY + index] > 0)
@@ -429,7 +427,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (this.selectedPad == index)
             return SLControlSurface.MKII_BUTTON_STATE_ON;
         // Exists and active?
-        final ChannelData drumPad = primary.getDrumPad (index);
+        final IChannel drumPad = primary.getDrumPad (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
         // Muted or soloed?
@@ -443,9 +441,9 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     {
         final boolean isInc = value >= 65;
         if (isInc)
-            this.clip.scrollStepsPageForward ();
+            this.getClip ().scrollStepsPageForward ();
         else
-            this.clip.scrollStepsPageBackwards ();
+            this.getClip ().scrollStepsPageBackwards ();
     }
 
 
@@ -453,7 +451,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     {
         final boolean isInc = value >= 65;
         this.selectedIndex = Math.max (0, Math.min (RESOLUTIONS.length - 1, isInc ? this.selectedIndex + 1 : this.selectedIndex - 1));
-        this.clip.setStepLength (RESOLUTIONS[this.selectedIndex]);
+        this.getClip ().setStepLength (RESOLUTIONS[this.selectedIndex]);
     }
 
 

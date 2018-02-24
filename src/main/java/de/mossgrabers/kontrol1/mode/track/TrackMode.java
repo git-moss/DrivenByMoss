@@ -5,12 +5,11 @@
 package de.mossgrabers.kontrol1.mode.track;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.StringUtils;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.SendData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
@@ -30,7 +29,7 @@ public class TrackMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
      * @param surface The surface
      * @param model The model
      */
-    public TrackMode (final Kontrol1ControlSurface surface, final Model model)
+    public TrackMode (final Kontrol1ControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;
@@ -41,8 +40,8 @@ public class TrackMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
     @Override
     public void updateDisplay ()
     {
-        final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
-        final TrackData t = currentTrackBank.getSelectedTrack ();
+        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack t = currentTrackBank.getSelectedTrack ();
         final Kontrol1Display d = (Kontrol1Display) this.surface.getDisplay ();
 
         d.clear ();
@@ -66,7 +65,7 @@ public class TrackMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
             for (int i = 0; i < 6; i++)
             {
                 final int pos = 3 + i;
-                final SendData sendData = t.getSends ()[i];
+                final ISend sendData = t.getSend (i);
                 d.setCell (0, pos, this.optimizeName (StringUtils.fixASCII (sendData.getName (8)), 8).toUpperCase ()).setCell (1, pos, sendData.getDisplayedValue (8));
                 d.setBar (pos, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_1 + 2 + i) && sendData.doesExist (), sendData.getValue ());
             }
@@ -79,21 +78,21 @@ public class TrackMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         if (selectedTrack == null)
             return;
 
         switch (index)
         {
             case 0:
-                tb.changeVolume (selectedTrack.getIndex (), value);
+                selectedTrack.changeVolume (value);
                 return;
             case 1:
-                tb.changePan (selectedTrack.getIndex (), value);
+                selectedTrack.changePan (value);
                 return;
             default:
-                ((TrackBankProxy) tb).changeSend (selectedTrack.getIndex (), index - 2, value);
+                selectedTrack.getSend (index - 2).changeValue (value);
                 break;
         }
     }

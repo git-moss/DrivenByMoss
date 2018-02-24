@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.controller;
@@ -90,22 +90,6 @@ public class DefaultValueChanger implements ValueChanger
 
     /** {@inheritDoc} */
     @Override
-    public int changeValue (final int control, final int value, final double fractionValue, final int upperBound)
-    {
-        return this.changeIntValue (control, value, fractionValue, upperBound);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int changeValue (final int control, final int value, final double fractionValue, final int upperBound, final int lowerBound)
-    {
-        return this.changeIntValue (control, value, fractionValue, upperBound, lowerBound);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public int changeValue (final int control, final int value)
     {
         return this.changeValue (control, value, this.isSlow ? this.slowFractionValue : this.fractionValue, this.upperBound);
@@ -114,15 +98,15 @@ public class DefaultValueChanger implements ValueChanger
 
     /** {@inheritDoc} */
     @Override
-    public int changeIntValue (final int control, final int value, final double fractionValue, final int maxParameterValue)
+    public int changeValue (final int control, final int value, final double fractionValue, final int upperBound)
     {
-        return this.changeIntValue (control, value, fractionValue, maxParameterValue, 0);
+        return this.changeValue (control, value, fractionValue, upperBound, 0);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public int changeIntValue (final int control, final int value, final double fractionValue, final int maxParameterValue, final int minParameterValue)
+    public int changeValue (final int control, final int value, final double fractionValue, final int maxParameterValue, final int minParameterValue)
     {
         final double speed = this.calcKnobSpeed (control, fractionValue);
         return (int) Math.max (Math.min (value + speed, maxParameterValue - 1.0), minParameterValue);
@@ -152,5 +136,21 @@ public class DefaultValueChanger implements ValueChanger
         // No conversion since the default value range of the script is the same as of the display
         // application (1024)
         return value;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public double toNormalizedValue (final int value)
+    {
+        return Math.min ((double) value / (this.getUpperBound () - 1), 1.0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int fromNormalizedValue (final double value)
+    {
+        return (int) Math.round (value * (this.getUpperBound () - 1));
     }
 }

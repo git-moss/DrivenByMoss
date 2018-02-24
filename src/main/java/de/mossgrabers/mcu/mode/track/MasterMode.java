@@ -1,15 +1,15 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.mcu.mode.track;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IApplication;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.mode.BaseMode;
 
@@ -28,7 +28,7 @@ public class MasterMode extends BaseMode
      * @param model The model
      * @param isTemporary If true treat this mode only as temporary
      */
-    public MasterMode (final MCUControlSurface surface, final Model model, final boolean isTemporary)
+    public MasterMode (final MCUControlSurface surface, final IModel model, final boolean isTemporary)
     {
         super (surface, model);
         this.isTemporary = isTemporary;
@@ -106,7 +106,7 @@ public class MasterMode extends BaseMode
 
         final Display d = this.surface.getDisplay ().clear ();
         final String projectName = StringUtils.fixASCII (this.model.getProject ().getName ());
-        final MasterTrackProxy master = this.model.getMasterTrack ();
+        final IMasterTrack master = this.model.getMasterTrack ();
 
         final IApplication application = this.model.getApplication ();
         d.setCell (0, 0, "Volume").setCell (0, 1, "Pan").setBlock (0, 1, "Audio Engine:").setCell (0, 4, application.isEngineActive () ? " On" : " Off");
@@ -118,7 +118,7 @@ public class MasterMode extends BaseMode
 
     private void setActive (final boolean enable)
     {
-        final MasterTrackProxy mt = this.model.getMasterTrack ();
+        final IMasterTrack mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (enable);
         mt.setPanIndication (enable);
     }
@@ -128,7 +128,7 @@ public class MasterMode extends BaseMode
     @Override
     protected void updateKnobLEDs ()
     {
-        final MasterTrackProxy masterTrack = this.model.getMasterTrack ();
+        final IMasterTrack masterTrack = this.model.getMasterTrack ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         this.surface.setKnobLED (0, MCUControlSurface.KNOB_LED_MODE_WRAP, masterTrack.getVolume (), upperBound);
         this.surface.setKnobLED (1, MCUControlSurface.KNOB_LED_MODE_BOOST_CUT, masterTrack.getPan (), upperBound);
@@ -141,7 +141,7 @@ public class MasterMode extends BaseMode
     @Override
     protected void resetParameter (final int index)
     {
-        final MasterTrackProxy masterTrack = this.model.getMasterTrack ();
+        final IMasterTrack masterTrack = this.model.getMasterTrack ();
         switch (index)
         {
             case 0:

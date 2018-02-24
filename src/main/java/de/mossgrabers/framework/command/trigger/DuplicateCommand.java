@@ -1,17 +1,17 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -30,7 +30,7 @@ public class DuplicateCommand<S extends ControlSurface<C>, C extends Configurati
      * @param model The model
      * @param surface The surface
      */
-    public DuplicateCommand (final Model model, final S surface)
+    public DuplicateCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }
@@ -44,40 +44,39 @@ public class DuplicateCommand<S extends ControlSurface<C>, C extends Configurati
             return;
 
         // Is there a selected track?
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData trackData = tb.getSelectedTrack ();
-        if (trackData == null || !trackData.doesExist ())
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getSelectedTrack ();
+        if (track == null || !track.doesExist ())
             return;
 
         // Is there a selected slot?
-        final int trackIndex = trackData.getIndex ();
-        final SlotData slotData = tb.getSelectedSlot (trackIndex);
-        if (slotData == null)
+        final ISlot slot = track.getSelectedSlot ();
+        if (slot == null)
             return;
 
-        final boolean isPlaying = slotData.isPlaying ();
+        final boolean isPlaying = slot.isPlaying ();
 
         // Duplicate the clip in the selected slot
-        tb.duplicateClip (trackIndex, slotData.getIndex ());
+        slot.duplicate ();
 
         if (!isPlaying)
             return;
 
         // Need to wait a bit with starting the duplicated clip until it is selected
         this.model.getHost ().scheduleTask ( () -> {
-            final SlotData slotDataNew = tb.getSelectedSlot (trackIndex);
-            if (slotDataNew != null)
+            final ISlot slotNew = track.getSelectedSlot ();
+            if (slotNew != null)
             {
-                tb.launchClip (trackIndex, slotDataNew.getIndex ());
+                slotNew.launch ();
                 return;
             }
 
             // Try to find the clip in the next page...
-            tb.scrollClipPageForwards (trackIndex);
+            track.scrollClipPageForwards ();
             this.model.getHost ().scheduleTask ( () -> {
-                final SlotData slotDataNew2 = tb.getSelectedSlot (trackIndex);
-                if (slotDataNew2 != null)
-                    tb.launchClip (trackIndex, slotDataNew2.getIndex ());
+                final ISlot slotNew2 = track.getSelectedSlot ();
+                if (slotNew2 != null)
+                    slotNew2.launch ();
             }, 200);
         }, 200);
     }

@@ -5,8 +5,8 @@
 package de.mossgrabers.kontrol1.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
@@ -27,7 +27,7 @@ public class MainEncoderButtonCommand extends AbstractTriggerCommand<Kontrol1Con
      * @param model The model
      * @param surface The surface
      */
-    public MainEncoderButtonCommand (final Model model, final Kontrol1ControlSurface surface)
+    public MainEncoderButtonCommand (final IModel model, final Kontrol1ControlSurface surface)
     {
         super (model, surface);
     }

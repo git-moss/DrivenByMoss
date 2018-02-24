@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.mcu.mode.track;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 import de.mossgrabers.mcu.mode.BaseMode;
 
@@ -26,7 +26,7 @@ public abstract class AbstractTrackMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public AbstractTrackMode (final MCUControlSurface surface, final Model model)
+    public AbstractTrackMode (final MCUControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -34,7 +34,7 @@ public abstract class AbstractTrackMode extends BaseMode
 
     protected boolean drawTrackHeader ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
         final Display d = this.surface.getDisplay ().clear ();
 
@@ -42,7 +42,7 @@ public abstract class AbstractTrackMode extends BaseMode
         final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (extenderOffset + i);
+            final ITrack t = tb.getTrack (extenderOffset + i);
             final String name = t.getName ();
             d.setCell (0, i, this.optimizeName (StringUtils.fixASCII (name), 6));
         }

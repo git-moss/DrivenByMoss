@@ -4,10 +4,10 @@
 
 package de.mossgrabers.kontrol1.command.trigger;
 
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
@@ -30,7 +30,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
      * @param model The model
      * @param surface The surface
      */
-    public Kontrol1CursorCommand (final Direction direction, final Model model, final Kontrol1ControlSurface surface)
+    public Kontrol1CursorCommand (final Direction direction, final IModel model, final Kontrol1ControlSurface surface)
     {
         super (direction, model, surface);
     }
@@ -40,7 +40,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void updateArrowStates ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         this.canScrollUp = tb.canScrollScenesUp ();
         this.canScrollDown = tb.canScrollScenesDown ();
 
@@ -62,7 +62,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
             return;
         }
 
-        final TrackData sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedTrack ();
         final int selIndex = sel != null ? sel.getIndex () : -1;
         this.canScrollLeft = selIndex > 0 || tb.canScrollTracksUp ();
         this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getTrack (selIndex + 1).doesExist () || tb.canScrollTracksDown ();

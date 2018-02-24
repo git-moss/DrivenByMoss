@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.controller;
 
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
-import de.mossgrabers.framework.midi.MidiOutput;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -115,7 +115,7 @@ public class LaunchpadPadGrid extends PadGridImpl
     @Override
     protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
     {
-        this.surface.sendLaunchpadSysEx ("23 " + MidiOutput.toHexStr (note) + " " + MidiOutput.toHexStr (blinkColor));
+        this.surface.sendLaunchpadSysEx ("23 " + StringUtils.toHexStr (note) + " " + StringUtils.toHexStr (blinkColor));
     }
 
 

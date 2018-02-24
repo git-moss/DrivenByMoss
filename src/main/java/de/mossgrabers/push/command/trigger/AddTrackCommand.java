@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
 
@@ -26,7 +26,7 @@ public class AddTrackCommand extends AbstractTriggerCommand<PushControlSurface, 
      * @param model The model
      * @param surface The surface
      */
-    public AddTrackCommand (final Model model, final PushControlSurface surface)
+    public AddTrackCommand (final IModel model, final PushControlSurface surface)
     {
         super (model, surface);
     }
@@ -39,7 +39,7 @@ public class AddTrackCommand extends AbstractTriggerCommand<PushControlSurface, 
         if (event != ButtonEvent.DOWN)
             return;
 
-        AbstractTrackBankProxy tb = this.model.getTrackBank ();
+        IChannelBank tb = this.model.getTrackBank ();
         final IApplication application = this.model.getApplication ();
         if (this.surface.isShiftPressed ())
         {
@@ -51,11 +51,11 @@ public class AddTrackCommand extends AbstractTriggerCommand<PushControlSurface, 
         else
             application.addInstrumentTrack ();
 
-        final AbstractTrackBankProxy bank = tb;
+        final IChannelBank bank = tb;
         this.surface.scheduleTask ( () -> {
             final int pos = bank.getTrackCount () - 1;
             bank.scrollToChannel (pos);
-            bank.select (pos % bank.getNumTracks ());
+            bank.getTrack (pos % bank.getNumTracks ()).select ();
         }, 200);
     }
 }

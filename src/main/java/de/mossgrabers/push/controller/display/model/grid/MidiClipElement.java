@@ -4,7 +4,8 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
-import de.mossgrabers.framework.daw.CursorClipProxy;
+import de.mossgrabers.framework.StringUtils;
+import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.push.PushConfiguration;
 
@@ -22,8 +23,8 @@ import com.bitwig.extension.api.graphics.GraphicsOutput.AntialiasMode;
  */
 public class MidiClipElement extends AbstractGridElement
 {
-    private final CursorClipProxy clip;
-    private int                   quartersPerMeasure;
+    private final ICursorClip clip;
+    private int               quartersPerMeasure;
 
 
     /**
@@ -32,7 +33,7 @@ public class MidiClipElement extends AbstractGridElement
      * @param clip The clip to display
      * @param quartersPerMeasure The quarters of a measure
      */
-    public MidiClipElement (final CursorClipProxy clip, final int quartersPerMeasure)
+    public MidiClipElement (final ICursorClip clip, final int quartersPerMeasure)
     {
         super (null, false, null, null, null, false);
         this.clip = clip;
@@ -86,13 +87,13 @@ public class MidiClipElement extends AbstractGridElement
         }
         // Draw play start in header
         gc.setAntialias (AntialiasMode.BEST);
-        final Color clipColor = this.clip.getColor ();
+        final double [] clipColor = this.clip.getColor ();
         final double playStart = this.clip.getPlayStart ();
         if (playStart >= startPos && playStart <= endPos)
         {
             final double start = playStart - startPos;
             final double x = width * start / pageLength;
-            gc.setColor (clipColor);
+            gc.setColor (Color.fromRGB (clipColor[0], clipColor[1], clipColor[2]));
             gc.moveTo (x + 1, 0);
             gc.lineTo (x + 1 + len, len / 2);
             gc.lineTo (x + 1, len);
@@ -105,7 +106,7 @@ public class MidiClipElement extends AbstractGridElement
         {
             final double end = playEnd - startPos;
             final double x = width * end / pageLength;
-            gc.setColor (clipColor);
+            gc.setColor (Color.fromRGB (clipColor[0], clipColor[1], clipColor[2]));
             gc.moveTo (x + 1, 0);
             gc.lineTo (x + 1, len);
             gc.lineTo (x + 1 - top, len / 2);
@@ -129,7 +130,7 @@ public class MidiClipElement extends AbstractGridElement
                 gc.setAntialias (AntialiasMode.BEST);
                 gc.setFontSize (top);
                 final double time = startPos + step * stepLength;
-                final String measureText = CursorClipProxy.formatMeasures (this.quartersPerMeasure, time, 1);
+                final String measureText = StringUtils.formatMeasures (this.quartersPerMeasure, time, 1);
                 drawTextInHeight (gc, measureText, x, 0, top - 1, Color.whiteColor ());
                 gc.setAntialias (AntialiasMode.OFF);
             }
@@ -176,7 +177,7 @@ public class MidiClipElement extends AbstractGridElement
                 gc.rectangle (x, top + (range - row - 1) * stepHeight + 2, w, stepHeight - 2);
                 gc.stroke ();
 
-                gc.setColor (clipColor);
+                gc.setColor (Color.fromRGB (clipColor[0], clipColor[1], clipColor[2]));
                 gc.rectangle (x + (isStart ? 0 : -2), top + (range - row - 1) * stepHeight + 2, w - 1 + (isStart ? 0 : 2), stepHeight - 3);
                 gc.fill ();
 

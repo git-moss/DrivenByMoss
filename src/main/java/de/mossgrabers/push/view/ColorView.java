@@ -1,19 +1,19 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.CursorClipProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
@@ -49,7 +49,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
      * @param surface The surface
      * @param model The model
      */
-    public ColorView (final PushControlSurface surface, final Model model)
+    public ColorView (final PushControlSurface surface, final IModel model)
     {
         super ("Color", surface, model);
         this.mode = SelectMode.MODE_TRACK;
@@ -117,26 +117,26 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
             switch (this.mode)
             {
                 case MODE_TRACK:
-                    final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                    final TrackData t = tb.getSelectedTrack ();
+                    final IChannelBank tb = this.model.getCurrentTrackBank ();
+                    final ITrack t = tb.getSelectedTrack ();
                     if (t == null)
                     {
-                        final MasterTrackProxy master = this.model.getMasterTrack ();
+                        final IMasterTrack master = this.model.getMasterTrack ();
                         if (master.isSelected ())
                             master.setColor (entry[0], entry[1], entry[2]);
                     }
                     else
-                        tb.setTrackColor (t.getIndex (), entry[0], entry[1], entry[2]);
+                        t.setColor (entry[0], entry[1], entry[2]);
                     break;
 
                 case MODE_LAYER:
-                    final CursorDeviceProxy cd = this.model.getCursorDevice ();
-                    final ChannelData deviceChain = cd.getSelectedLayerOrDrumPad ();
+                    final ICursorDevice cd = this.model.getCursorDevice ();
+                    final IChannel deviceChain = cd.getSelectedLayerOrDrumPad ();
                     cd.setLayerOrDrumPadColor (deviceChain.getIndex (), entry[0], entry[1], entry[2]);
                     break;
 
                 case MODE_CLIP:
-                    final CursorClipProxy clip = ((DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM)).getClip ();
+                    final ICursorClip clip = this.model.getCursorClip ();
                     if (clip != null)
                         clip.setColor (entry[0], entry[1], entry[2]);
                     break;

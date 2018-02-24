@@ -1,15 +1,15 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.sl.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.data.BrowserColumnData;
-import de.mossgrabers.framework.daw.data.BrowserColumnItemData;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IBrowserColumn;
+import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -39,7 +39,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
      * @param surface The surface
      * @param model The model
      */
-    public DevicePresetsMode (final SLControlSurface surface, final Model model)
+    public DevicePresetsMode (final SLControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;
@@ -137,19 +137,19 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
                 d.setBlock (0, 0, "Preset:").setBlock (2, 0, selectedResult == null ? "None" : selectedResult);
                 for (int i = 0; i < 6; i++)
                 {
-                    final BrowserColumnData column = browser.getFilterColumn (i);
+                    final IBrowserColumn column = browser.getFilterColumn (i);
                     d.setCell (0, 2 + i, this.optimizeName (column.getName () + ":", 8)).setCell (2, 2 + i, column.doesCursorExist () ? column.getCursorName () : "");
                 }
                 break;
 
             case DevicePresetsMode.SELECTION_PRESET:
-                final BrowserColumnItemData [] results = browser.getResultColumnItems ();
+                final IBrowserColumnItem [] results = browser.getResultColumnItems ();
                 for (int i = 0; i < 16; i++)
                     d.setCell (i % 2 * 2, i / 2, (results[i].isSelected () ? SLDisplay.RIGHT_ARROW : " ") + results[i].getName ());
                 break;
 
             case DevicePresetsMode.SELECTION_FILTER:
-                final BrowserColumnItemData [] items = browser.getFilterColumn (this.filterColumn).getItems ();
+                final IBrowserColumnItem [] items = browser.getFilterColumn (this.filterColumn).getItems ();
                 for (int i = 0; i < 16; i++)
                 {
                     final String name = items[i].getName ();

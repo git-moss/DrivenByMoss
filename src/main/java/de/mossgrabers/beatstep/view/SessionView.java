@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.beatstep.view;
@@ -7,8 +7,8 @@ package de.mossgrabers.beatstep.view;
 import de.mossgrabers.beatstep.BeatstepConfiguration;
 import de.mossgrabers.beatstep.controller.BeatstepColors;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractView;
 
 
@@ -28,7 +28,7 @@ public class SessionView extends AbstractView<BeatstepControlSurface, BeatstepCo
      * @param surface The controller
      * @param model The model
      */
-    public SessionView (final BeatstepControlSurface surface, final Model model)
+    public SessionView (final BeatstepControlSurface surface, final IModel model)
     {
         super ("Session", surface, model);
         this.extensions = new TrackEditing (surface, model);

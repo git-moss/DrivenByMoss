@@ -1,17 +1,17 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public abstract class AbstractPlayView<S extends ControlSurface<C>, C extends Co
      * @param model The model
      * @param useTrackColor True to use the color of the current track for coloring the octaves
      */
-    public AbstractPlayView (final S surface, final Model model, final boolean useTrackColor)
+    public AbstractPlayView (final S surface, final IModel model, final boolean useTrackColor)
     {
         this ("Play", surface, model, useTrackColor);
     }
@@ -62,7 +62,7 @@ public abstract class AbstractPlayView<S extends ControlSurface<C>, C extends Co
      * @param model The model
      * @param useTrackColor True to use the color of the current track for coloring the octaves
      */
-    public AbstractPlayView (final String name, final S surface, final Model model, final boolean useTrackColor)
+    public AbstractPlayView (final String name, final S surface, final IModel model, final boolean useTrackColor)
     {
         super (name, surface, model);
 
@@ -76,7 +76,7 @@ public abstract class AbstractPlayView<S extends ControlSurface<C>, C extends Co
         for (int i = 0; i < 128; i++)
             this.defaultVelocity[i] = i;
 
-        final TrackBankProxy tb = model.getTrackBank ();
+        final ITrackBank tb = model.getTrackBank ();
         // Light notes sent from the sequencer
         tb.addNoteObserver (this::setPressedKeys);
         tb.addTrackSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
@@ -90,8 +90,8 @@ public abstract class AbstractPlayView<S extends ControlSurface<C>, C extends Co
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
         final boolean isRecording = this.model.hasRecordingState ();
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         final PadGrid gridPad = this.surface.getPadGrid ();
         for (int i = this.scales.getStartNote (); i < this.scales.getEndNote (); i++)
             gridPad.light (i, this.getGridColor (isKeyboardEnabled, isRecording, selectedTrack, i));
@@ -107,7 +107,7 @@ public abstract class AbstractPlayView<S extends ControlSurface<C>, C extends Co
      * @param note The note of the pad
      * @return The ID of the color
      */
-    protected String getGridColor (final boolean isKeyboardEnabled, final boolean isRecording, final TrackData track, final int note)
+    protected String getGridColor (final boolean isKeyboardEnabled, final boolean isRecording, final ITrack track, final int note)
     {
         if (isKeyboardEnabled)
         {

@@ -1,13 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apcmini.view;
 
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -18,7 +19,7 @@ import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 public class TrackButtons
 {
     private APCminiControlSurface surface;
-    private Model                 model;
+    private IModel                model;
 
 
     /**
@@ -27,7 +28,7 @@ public class TrackButtons
      * @param surface The controller
      * @param model The model
      */
-    public TrackButtons (final APCminiControlSurface surface, final Model model)
+    public TrackButtons (final APCminiControlSurface surface, final IModel model)
     {
         this.surface = surface;
         this.model = model;
@@ -39,7 +40,7 @@ public class TrackButtons
      */
     public void updateTrackButtons ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final int trackState = this.surface.getTrackState ();
         for (int i = 0; i < 8; i++)
         {
@@ -77,19 +78,20 @@ public class TrackButtons
             return;
 
         final int trackState = this.surface.getTrackState ();
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
         switch (trackState)
         {
             case APCminiControlSurface.TRACK_STATE_CLIP_STOP:
-                this.model.getCurrentTrackBank ().stop (index);
+                track.stop ();
                 break;
             case APCminiControlSurface.TRACK_STATE_SOLO:
-                this.model.getCurrentTrackBank ().toggleSolo (index);
+                track.toggleSolo ();
                 break;
             case APCminiControlSurface.TRACK_STATE_REC_ARM:
-                this.model.getCurrentTrackBank ().toggleArm (index);
+                track.toggleRecArm ();
                 break;
             case APCminiControlSurface.TRACK_STATE_MUTE:
-                this.model.getCurrentTrackBank ().toggleMute (index);
+                track.toggleMute ();
                 break;
             case APCminiControlSurface.TRACK_STATE_SELECT:
                 this.surface.getViewManager ().getActiveView ().selectTrack (index);

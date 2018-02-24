@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apc.command.trigger;
@@ -8,8 +8,8 @@ import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.apc.controller.APCControlSurface;
 import de.mossgrabers.apc.mode.Modes;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.daw.IModel;
 
 
 /**
@@ -29,7 +29,7 @@ public class SendCommand extends AbstractTriggerCommand<APCControlSurface, APCCo
      * @param model The model
      * @param surface The surface
      */
-    public SendCommand (final int sendIndex, final Model model, final APCControlSurface surface)
+    public SendCommand (final int sendIndex, final IModel model, final APCControlSurface surface)
     {
         super (model, surface);
         this.sendIndex = sendIndex;

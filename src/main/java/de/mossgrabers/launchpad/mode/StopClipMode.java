@@ -1,6 +1,6 @@
 package de.mossgrabers.launchpad.mode;
 
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
@@ -17,7 +17,7 @@ public class StopClipMode extends AbstractTrackMode
      * @param surface The surface
      * @param model The model
      */
-    public StopClipMode (final LaunchpadControlSurface surface, final Model model)
+    public StopClipMode (final LaunchpadControlSurface surface, final IModel model)
     {
         super (surface, model);
     }

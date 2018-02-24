@@ -4,8 +4,9 @@
 
 package de.mossgrabers.push.controller.display;
 
+import de.mossgrabers.framework.daw.IHost;
+
 import com.bitwig.extension.api.graphics.Bitmap;
-import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.UsbDevice;
 import com.bitwig.extension.controller.api.UsbEndpoint;
 import com.bitwig.extension.controller.api.UsbTransferResult;
@@ -62,7 +63,7 @@ public class USBDisplay
     private final ByteBuffer     imageBuffer;
 
     private boolean              isSending        = false;
-    private ControllerHost       host;
+    private IHost                host;
 
 
     /**
@@ -70,7 +71,7 @@ public class USBDisplay
      *
      * @param host The controller host
      */
-    public USBDisplay (final ControllerHost host)
+    public USBDisplay (final IHost host)
     {
         this.host = host;
 
@@ -83,7 +84,7 @@ public class USBDisplay
         {
             this.usbDevice = null;
             this.usbEndpoint = null;
-            host.errorln ("Could not open USB output.");
+            host.error ("Could not open USB output.");
         }
 
         this.headerBuffer = host.createByteBuffer (DISPLAY_HEADER.length);
@@ -137,10 +138,10 @@ public class USBDisplay
             result = this.usbEndpoint.bulkTransfer (this.imageBuffer, TIMEOUT);
             status = result.status ();
             if (status != UsbTransferStatus.Completed)
-                this.host.errorln ("USB transmission error: " + status);
+                this.host.error ("USB transmission error: " + status);
         }
         else
-            this.host.errorln ("USB transmission error: " + status);
+            this.host.error ("USB transmission error: " + status);
 
         this.isSending = false;
     }

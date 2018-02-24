@@ -4,15 +4,14 @@
 
 package de.mossgrabers.push.controller.display.model;
 
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.grid.GridElement;
 
 import com.bitwig.extension.api.graphics.Bitmap;
-import com.bitwig.extension.api.graphics.BitmapFormat;
 import com.bitwig.extension.api.graphics.GraphicsOutput;
 import com.bitwig.extension.api.graphics.GraphicsOutput.AntialiasMode;
-import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.List;
 
@@ -39,13 +38,13 @@ public class VirtualDisplay
      * @param model Stores the data for drawing the display
      * @param configuration The configuration to use for drawing, e.g. colors
      */
-    public VirtualDisplay (final ControllerHost host, final DisplayModel model, final PushConfiguration configuration)
+    public VirtualDisplay (final IHost host, final DisplayModel model, final PushConfiguration configuration)
     {
         this.model = model;
 
         ResourceHandler.init (host);
 
-        this.image = host.createBitmap (DISPLAY_WIDTH, DISPLAY_HEIGHT, BitmapFormat.ARGB32);
+        this.image = host.createBitmap (DISPLAY_WIDTH, DISPLAY_HEIGHT);
         this.image.setDisplayWindowTitle ("Push 2 Display");
 
         this.model.addGridElementChangeListener (this::redrawGrid);

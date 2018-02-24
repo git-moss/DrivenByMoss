@@ -1,19 +1,18 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller;
 
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.USBDisplay;
 import de.mossgrabers.push.controller.display.model.DisplayModel;
 import de.mossgrabers.push.controller.display.model.VirtualDisplay;
 import de.mossgrabers.push.controller.display.model.grid.GridChangeListener;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
@@ -92,9 +91,9 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
      * @param isPush2 True if Push 2
      * @param maxParameterValue
      * @param output The midi output
-     * @param configuration The configuration
+     * @param configuration The Push configuration
      */
-    public PushDisplay (final ControllerHost host, final boolean isPush2, final int maxParameterValue, final MidiOutput output, final PushConfiguration configuration)
+    public PushDisplay (final IHost host, final boolean isPush2, final int maxParameterValue, final IMidiOutput output, final PushConfiguration configuration)
     {
         super (host, output, 4 /* No of rows */, 8 /* No of cells */, 68 /* No of characters */);
         this.maxParameterValue = maxParameterValue;
@@ -118,18 +117,29 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     }
 
 
+    /**
+     * Send a message to the display.
+     *
+     * @param message The message to send
+     */
+    public void send (final DisplayMessage message)
+    {
+        message.send ();
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void shutdown ()
     {
         if (this.isPush2)
         {
-            this.createMessage ().setMessage (3, "Please start Bitwig to play...").send ();
+            this.send (this.createMessage ().setMessage (3, "Please start " + this.host.getName () + " to play..."));
             if (this.usbDisplay != null)
                 this.usbDisplay.shutdown ();
         }
         else
-            this.clear ().setBlock (1, 1, "     Please start").setBlock (1, 2, "Bitwig to play...").allDone ().flush ();
+            this.clear ().setBlock (1, 1, "     Please start").setBlock (1, 2, this.host.getName () + " to play...").allDone ().flush ();
     }
 
 
@@ -194,7 +204,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     protected void notifyOnDisplay (final String message)
     {
         if (this.isPush2)
-            this.createMessage ().setMessage (3, message).send ();
+            this.send (this.createMessage ().setMessage (3, message));
         else
             super.notifyOnDisplay (message);
     }

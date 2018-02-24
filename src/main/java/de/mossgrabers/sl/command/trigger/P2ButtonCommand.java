@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.sl.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
 
@@ -29,7 +29,7 @@ public class P2ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SL
      * @param model The model
      * @param surface The surface
      */
-    public P2ButtonCommand (final boolean isUp, final Model model, final SLControlSurface surface)
+    public P2ButtonCommand (final boolean isUp, final IModel model, final SLControlSurface surface)
     {
         super (model, surface);
         this.isUp = isUp;
@@ -43,7 +43,7 @@ public class P2ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SL
         if (event != ButtonEvent.DOWN)
             return;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         if (this.isUp)
         {
             if (!tb.canScrollTracksDown ())

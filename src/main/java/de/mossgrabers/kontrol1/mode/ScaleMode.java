@@ -5,7 +5,7 @@
 package de.mossgrabers.kontrol1.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
@@ -29,7 +29,7 @@ public class ScaleMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
      * @param surface The surface
      * @param model The model
      */
-    public ScaleMode (final Kontrol1ControlSurface surface, final Model model)
+    public ScaleMode (final Kontrol1ControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = true;

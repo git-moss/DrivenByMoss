@@ -5,19 +5,19 @@
 package de.mossgrabers.push.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.SceneBankProxy;
-import de.mossgrabers.framework.daw.data.SceneData;
-import de.mossgrabers.framework.daw.data.SlotData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.controller.PushDisplay;
-import de.mossgrabers.push.view.ScenePlayView;
 import de.mossgrabers.push.view.Views;
 
 import java.util.ArrayList;
@@ -46,6 +46,7 @@ public class SessionMode extends BaseMode
     }
 
     private RowDisplayMode rowDisplayMode;
+    private ITrackBank     trackBank;
 
 
     /**
@@ -54,11 +55,12 @@ public class SessionMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public SessionMode (final PushControlSurface surface, final Model model)
+    public SessionMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;
         this.rowDisplayMode = this.isPush2 ? RowDisplayMode.ALL : RowDisplayMode.UPPER;
+        this.trackBank = model.createSceneViewTrackBank (8, 64);
     }
 
 
@@ -147,8 +149,7 @@ public class SessionMode extends BaseMode
 
     private void updateDisplay1Scenes ()
     {
-        final AbstractTrackBankProxy tb = ((ScenePlayView) this.surface.getViewManager ().getView (Views.VIEW_SCENE_PLAY)).getTrackBank ();
-        final SceneBankProxy sceneBank = tb.getSceneBank ();
+        final ISceneBank sceneBank = this.trackBank.getSceneBank ();
 
         final int maxCols = 8;
         final int maxRows = this.rowDisplayMode == RowDisplayMode.ALL ? 8 : 4;
@@ -162,7 +163,7 @@ public class SessionMode extends BaseMode
                 if (this.rowDisplayMode == RowDisplayMode.LOWER)
                     sceneIndex += 32;
 
-                final SceneData scene = sceneBank.getScene (sceneIndex);
+                final IScene scene = sceneBank.getScene (sceneIndex);
                 if (scene.doesExist ())
                     d.setCell (row, col, this.optimizeName (scene.getName (8), 8));
             }
@@ -173,7 +174,7 @@ public class SessionMode extends BaseMode
 
     private void updateDisplay1Clips ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
 
         final int numTracks = tb.getNumTracks ();
@@ -200,15 +201,15 @@ public class SessionMode extends BaseMode
                         y += maxRows;
                 }
 
-                final SlotData [] slots = tb.getTrack (x).getSlots ();
-                if (slots[y].doesExist ())
+                final ISlot slot = tb.getTrack (x).getSlot (y);
+                if (slot.doesExist ())
                 {
-                    String optimizedName = this.optimizeName (slots[y].getName (8), 8);
+                    String optimizedName = this.optimizeName (slot.getName (8), 8);
                     // TODO Bugfix required: Workaround to displaying unnamed clips, since
                     // doesExist does not work reliably
                     if (optimizedName.length () == 0)
                     {
-                        double [] color = slots[y].getColor ();
+                        double [] color = slot.getColor ();
                         if (color[0] != 0 || color[1] != 0 || color[2] != 0)
                             optimizedName = "[------]";
                     }
@@ -223,8 +224,7 @@ public class SessionMode extends BaseMode
 
     private void updateDisplay2Scenes ()
     {
-        final AbstractTrackBankProxy tb = ((ScenePlayView) this.surface.getViewManager ().getView (Views.VIEW_SCENE_PLAY)).getTrackBank ();
-        final SceneBankProxy sceneBank = tb.getSceneBank ();
+        final ISceneBank sceneBank = this.trackBank.getSceneBank ();
 
         final int maxCols = 8;
         final int maxRows = this.rowDisplayMode == RowDisplayMode.ALL ? 8 : 4;
@@ -241,9 +241,9 @@ public class SessionMode extends BaseMode
                 if (this.rowDisplayMode == RowDisplayMode.LOWER)
                     sceneIndex += 32;
 
-                final SceneData scene = sceneBank.getScene (sceneIndex);
+                final IScene scene = sceneBank.getScene (sceneIndex);
                 items[row] = scene.doesExist () ? scene.getName () : "";
-                slotColors.add (scene.doesExist () ? BitwigColors.getColorEntry (tb.getColorOfFirstClipInScene (sceneIndex)) : BLACK);
+                slotColors.add (scene.doesExist () ? BitwigColors.getColorEntry (this.trackBank.getColorOfFirstClipInScene (sceneIndex)) : BLACK);
             }
             message.addBoxListElement (items, slotColors);
         }
@@ -253,7 +253,7 @@ public class SessionMode extends BaseMode
 
     private void updateDisplay2Clips ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
 
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
@@ -284,9 +284,9 @@ public class SessionMode extends BaseMode
                         y += maxRows;
                 }
 
-                final SlotData [] slots = tb.getTrack (x).getSlots ();
-                items[row] = slots[y].doesExist () ? slots[y].getName () : "";
-                slotColors.add (slots[y].getColor ());
+                final ISlot slot = tb.getTrack (x).getSlot (y);
+                items[row] = slot.doesExist () ? slot.getName () : "";
+                slotColors.add (slot.getColor ());
             }
             message.addBoxListElement (items, slotColors);
         }

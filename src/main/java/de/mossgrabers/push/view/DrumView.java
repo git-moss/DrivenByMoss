@@ -1,11 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.view;
 
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.mode.Modes;
 
@@ -23,7 +23,7 @@ public class DrumView extends DrumViewBase
      * @param surface The surface
      * @param model The model
      */
-    public DrumView (final PushControlSurface surface, final Model model)
+    public DrumView (final PushControlSurface surface, final IModel model)
     {
         super (Views.VIEW_NAME_DRUM, surface, model, 4, 4);
     }
@@ -33,7 +33,7 @@ public class DrumView extends DrumViewBase
     @Override
     public void handleSelectButton (final int playedPad)
     {
-        final CursorDeviceProxy primary = this.model.getPrimaryDevice ();
+        final ICursorDevice primary = this.model.getPrimaryDevice ();
         if (!primary.hasDrumPads ())
             return;
 
@@ -41,7 +41,7 @@ public class DrumView extends DrumViewBase
         if (primary.getDrumPad (playedPad).isSelected ())
             return;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (cd.isNested ())
             cd.selectParent ();
 

@@ -1,16 +1,16 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.controller;
 
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.midi.MidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
@@ -164,7 +164,9 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public static final String  LAUNCHPAD_PRO_SYSEX_HEADER    = "F0 00 20 29 02 10 ";
     public static final String  LAUNCHPAD_PRO_PRG_MODE        = "2C 03";
     public static final String  LAUNCHPAD_PRO_FADER_MODE      = "2C 02";
-    public static final String  LAUNCHPAD_PRO_PAN_MODE        = "2C 02";
+    public static final String  LAUNCHPAD_PRO_PAN_MODE        = "2C 02";             // TODO
+                                                                                     // Identisch zu
+                                                                                     // vorherigem?
 
     public static final String  LAUNCHPAD_MKII_SYSEX_HEADER   = "F0 00 20 29 02 18 ";
     public static final String  LAUNCHPAD_MKII_PRG_MODE       = "22 00";
@@ -184,7 +186,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      * @param input The midi input
      * @param isPro Is Pro or MkII?
      */
-    public LaunchpadControlSurface (final ControllerHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final MidiOutput output, final MidiInput input, final boolean isPro)
+    public LaunchpadControlSurface (final IHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isPro)
     {
         super (host, configuration, colorManager, output, input, isPro ? LAUNCHPAD_PRO_BUTTONS_ALL : LAUNCHPAD_MKII_BUTTONS_ALL);
 
@@ -266,7 +268,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setupFader (final int number, final int color)
     {
-        this.sendLaunchpadSysEx ("2B 0" + Integer.toString (number) + " 00 " + MidiOutput.toHexStr (color) + " 00");
+        this.sendLaunchpadSysEx ("2B 0" + Integer.toString (number) + " 00 " + StringUtils.toHexStr (color) + " 00");
     }
 
 
@@ -278,7 +280,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setupPanFader (final int number, final int color)
     {
-        this.sendLaunchpadSysEx ("2B 0" + Integer.toString (number) + " 01 " + MidiOutput.toHexStr (color) + " 00");
+        this.sendLaunchpadSysEx ("2B 0" + Integer.toString (number) + " 01 " + StringUtils.toHexStr (color) + " 00");
     }
 
 

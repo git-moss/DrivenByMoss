@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.beatstep.command.continuous;
 
 import de.mossgrabers.beatstep.BeatstepConfiguration;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
+import de.mossgrabers.framework.daw.IModel;
 
 
 /**
@@ -23,7 +23,7 @@ public class BeatstepPlayPositionCommand extends PlayPositionCommand<BeatstepCon
      * @param model The model
      * @param surface The surface
      */
-    public BeatstepPlayPositionCommand (final Model model, final BeatstepControlSurface surface)
+    public BeatstepPlayPositionCommand (final IModel model, final BeatstepControlSurface surface)
     {
         super (model, surface);
     }

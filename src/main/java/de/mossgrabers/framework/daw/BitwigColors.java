@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw;
@@ -342,12 +342,18 @@ public class BitwigColors
      */
     public static String getColorIndex (final double red, final double green, final double blue)
     {
+        String cid = COLOR_OFF;
+        double minError = 1.0;
         for (int i = 0; i < COLORS.length; i++)
         {
             final double [] color = (double []) COLORS[i];
-            if (Math.abs (color[0] - red) < 0.0001 && Math.abs (color[1] - green) < 0.0001 && Math.abs (color[2] - blue) < 0.0001)
-                return BITWIG_COLORS[i];
+            final double error = Math.pow (color[0] - red, 2.0) + Math.pow (color[1] - green, 2.0) + Math.pow (color[2] - blue, 2.0);
+            if (error < minError)
+            {
+                cid = BITWIG_COLORS[i];
+                minError = error;
+            }
         }
-        return COLOR_OFF;
+        return cid;
     }
 }

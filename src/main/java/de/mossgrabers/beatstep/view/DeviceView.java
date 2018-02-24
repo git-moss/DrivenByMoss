@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.beatstep.view;
@@ -7,10 +7,10 @@ package de.mossgrabers.beatstep.view;
 import de.mossgrabers.beatstep.BeatstepConfiguration;
 import de.mossgrabers.beatstep.controller.BeatstepColors;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.view.AbstractView;
 
 
@@ -31,7 +31,7 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
      * @param surface The controller
      * @param model The model
      */
-    public DeviceView (final BeatstepControlSurface surface, final Model model)
+    public DeviceView (final BeatstepControlSurface surface, final IModel model)
     {
         super ("Device", surface, model);
         this.extensions = new TrackEditing (surface, model);
@@ -43,7 +43,7 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
     @Override
     public void onKnob (final int index, final int value)
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (index < 8)
         {
             this.extensions.onTrackKnob (index, value);
@@ -64,11 +64,11 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
         if (!this.model.hasSelectedDevice ())
             return;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
 
-        ChannelData sel;
+        IChannel sel;
         int index;
-        ChannelData dl;
+        IChannel dl;
         int bank;
         int offset;
         switch (note - 36)
@@ -164,7 +164,7 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
     @Override
     public void drawGrid ()
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         final int offset = cd.getSelectedParameterPage () / 8 * 8;
         final PadGrid padGrid = this.surface.getPadGrid ();
         for (int i = 0; i < 8; i++)

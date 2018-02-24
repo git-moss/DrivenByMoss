@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.sl.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -28,7 +28,7 @@ public class MasterMode extends AbstractMode<SLControlSurface, SLConfiguration>
      * @param surface The surface
      * @param model The model
      */
-    public MasterMode (final SLControlSurface surface, final Model model)
+    public MasterMode (final SLControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;
@@ -39,7 +39,7 @@ public class MasterMode extends AbstractMode<SLControlSurface, SLConfiguration>
     @Override
     public void updateDisplay ()
     {
-        final MasterTrackProxy master = this.model.getMasterTrack ();
+        final IMasterTrack master = this.model.getMasterTrack ();
         this.surface.getDisplay ().setRow (0, MasterMode.PARAM_NAMES).clearRow (2).setCell (2, 0, master.getVolumeStr (8)).setCell (2, 1, master.getPanStr (8)).done (2);
     }
 

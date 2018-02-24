@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apcmini.mode;
@@ -7,7 +7,7 @@ package de.mossgrabers.apcmini.mode;
 import de.mossgrabers.apcmini.APCminiConfiguration;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 
 
@@ -24,7 +24,7 @@ public abstract class BaseMode extends AbstractMode<APCminiControlSurface, APCmi
      * @param surface The control surface
      * @param model The model
      */
-    public BaseMode (final APCminiControlSurface surface, final Model model)
+    public BaseMode (final APCminiControlSurface surface, final IModel model)
     {
         super (surface, model);
     }

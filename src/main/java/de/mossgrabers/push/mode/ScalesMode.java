@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
@@ -34,7 +34,7 @@ public class ScalesMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public ScalesMode (final PushControlSurface surface, final Model model)
+    public ScalesMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;
@@ -161,7 +161,8 @@ public class ScalesMode extends BaseMode
         final int offset = this.scales.getScaleOffset ();
         final Scale [] scaleValues = Scale.values ();
         final String rangeText = this.scales.getRangeText ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         final String [] items = new String [6];
         final boolean [] selected = new boolean [6];
         for (int i = 0; i < 6; i++)
@@ -174,7 +175,7 @@ public class ScalesMode extends BaseMode
         for (int i = 0; i < 6; i++)
             message.addOptionElement (i == 3 ? "Note range: " + rangeText : "", Scales.BASES[6 + i], offset == 6 + i, "", Scales.BASES[i], offset == i, false);
         message.addOptionElement ("", this.scales.isChromatic () ? "Chromatc" : "In Key", this.scales.isChromatic (), "", "", false, false);
-        message.send ();
+        display.send (message);
     }
 
 

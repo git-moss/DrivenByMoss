@@ -1,15 +1,15 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.sl.controller;
 
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.midi.MidiOutput;
-
-import com.bitwig.extension.controller.api.ControllerHost;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -44,7 +44,7 @@ public class SLDisplay extends AbstractDisplay
      * @param host The host
      * @param output The midi output which addresses the display
      */
-    public SLDisplay (final ControllerHost host, final MidiOutput output)
+    public SLDisplay (final IHost host, final IMidiOutput output)
     {
         super (host, output, 4 /* No of rows */, 8 /* No of cells */, 8);
     }
@@ -97,7 +97,7 @@ public class SLDisplay extends AbstractDisplay
         }
         catch (final ArrayIndexOutOfBoundsException ex)
         {
-            ex.printStackTrace ();
+            this.host.error ("Display array index out of bounds.", ex);
         }
         return this;
     }
@@ -111,7 +111,7 @@ public class SLDisplay extends AbstractDisplay
         final int [] array = new int [length];
         for (int i = 0; i < length; i++)
             array[i] = text.charAt (i);
-        this.output.sendSysex (SLControlSurface.SYSEX_HEADER + "02 01 00 " + uint7ToHex (row + 1) + "04 " + MidiOutput.toHexStr (array) + "00 F7");
+        this.output.sendSysex (SLControlSurface.SYSEX_HEADER + "02 01 00 " + uint7ToHex (row + 1) + "04 " + StringUtils.toHexStr (array) + "00 F7");
     }
 
 
@@ -119,7 +119,7 @@ public class SLDisplay extends AbstractDisplay
     @Override
     public void shutdown ()
     {
-        this.notify ("Please start Bitwig to play...");
+        this.notify ("Please start " + this.host.getName () + " to play...");
     }
 
 

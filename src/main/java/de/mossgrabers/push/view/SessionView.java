@@ -1,15 +1,16 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.view;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.SceneBankProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
@@ -33,7 +34,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
      * @param surface The surface
      * @param model The model
      */
-    public SessionView (final PushControlSurface surface, final Model model)
+    public SessionView (final PushControlSurface surface, final IModel model)
     {
         super ("Session", surface, model, 8, 8, true);
 
@@ -75,7 +76,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
             t = s;
             s = dummy;
         }
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
         // Birds-eye-view navigation
         if (this.surface.isShiftPressed ())
@@ -97,11 +98,12 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         }
 
         // Duplicate a clip
+        final ITrack track = tb.getTrack (t);
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
         {
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
-            if (tb.getTrack (t).doesExist ())
-                tb.duplicateClip (t, s);
+            if (track.doesExist ())
+                track.getSlot (s).duplicate ();
             return;
         }
 
@@ -109,7 +111,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
         {
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_CLIP_STOP);
-            tb.stop (t);
+            track.stop ();
             return;
         }
 
@@ -117,9 +119,9 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_BROWSE))
         {
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
-            if (!tb.getTrack (t).doesExist ())
+            if (!track.doesExist ())
                 return;
-            tb.browseToInsertClip (t, s);
+            track.getSlot (s).browse ();
             final ModeManager modeManager = this.surface.getModeManager ();
             if (!modeManager.isActiveMode (Modes.MODE_BROWSER))
                 modeManager.setActiveMode (Modes.MODE_BROWSER);
@@ -143,7 +145,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     @Override
     public void updateSceneButtons ()
     {
-        final SceneBankProxy sceneBank = this.model.getSceneBank ();
+        final ISceneBank sceneBank = this.model.getSceneBank ();
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
         final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;

@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -28,7 +28,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
      * @param model The model
      * @param surface The surface
      */
-    public TrackCommand (final Model model, final PushControlSurface surface)
+    public TrackCommand (final IModel model, final PushControlSurface surface)
     {
         super (model, surface);
     }
@@ -52,40 +52,45 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         final ModeManager modeManager = this.surface.getModeManager ();
         final Integer currentMode = modeManager.getActiveModeId ();
 
-        if (config.isPush2 ())
+        if (currentMode != null)
         {
-            if (Modes.MODE_TRACK.equals (currentMode) || Modes.MODE_VOLUME.equals (currentMode) || Modes.MODE_CROSSFADER.equals (currentMode) || Modes.MODE_PAN.equals (currentMode))
+            if (config.isPush2 ())
             {
-                this.model.toggleCurrentTrackBank ();
-            }
-            else if (currentMode.intValue () >= Modes.MODE_SEND1.intValue () && currentMode.intValue () <= Modes.MODE_SEND8.intValue ())
-            {
-                modeManager.setActiveMode (Modes.MODE_TRACK);
-                this.model.toggleCurrentTrackBank ();
+                if (Modes.MODE_TRACK.equals (currentMode) || Modes.MODE_VOLUME.equals (currentMode) || Modes.MODE_CROSSFADER.equals (currentMode) || Modes.MODE_PAN.equals (currentMode))
+                {
+                    this.model.toggleCurrentTrackBank ();
+                }
+                else if (currentMode.intValue () >= Modes.MODE_SEND1.intValue () && currentMode.intValue () <= Modes.MODE_SEND8.intValue ())
+                {
+                    modeManager.setActiveMode (Modes.MODE_TRACK);
+                    this.model.toggleCurrentTrackBank ();
+                }
+                else
+                    modeManager.setActiveMode (config.getCurrentMixMode ());
             }
             else
-                modeManager.setActiveMode (config.getCurrentMixMode ());
+            {
+                // Layer mode selection for Push 1
+                if (this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
+                {
+                    modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
+                    return;
+                }
+
+                if (currentMode == Modes.MODE_TRACK)
+                    this.model.toggleCurrentTrackBank ();
+                else
+                    modeManager.setActiveMode (Modes.MODE_TRACK);
+            }
         }
         else
-        {
-            // Layer mode selection for Push 1
-            if (this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
-            {
-                modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
-                return;
-            }
-
-            if (currentMode == Modes.MODE_TRACK)
-                this.model.toggleCurrentTrackBank ();
-            else
-                modeManager.setActiveMode (Modes.MODE_TRACK);
-        }
+            modeManager.setActiveMode (Modes.MODE_TRACK);
 
         config.setDebugMode (modeManager.getActiveModeId ());
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData track = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getSelectedTrack ();
         if (track == null)
-            tb.select (0);
+            tb.getTrack (0).select ();
     }
 }

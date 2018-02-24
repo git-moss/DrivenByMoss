@@ -1,10 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IColorSetting;
+import de.mossgrabers.framework.configuration.IEnumSetting;
+import de.mossgrabers.framework.configuration.IIntegerSetting;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.controller.display.model.grid.ColorEx;
@@ -12,10 +16,6 @@ import de.mossgrabers.push.mode.Modes;
 import de.mossgrabers.push.view.Views;
 
 import com.bitwig.extension.api.Color;
-import com.bitwig.extension.controller.api.Preferences;
-import com.bitwig.extension.controller.api.SettableColorValue;
-import com.bitwig.extension.controller.api.SettableEnumValue;
-import com.bitwig.extension.controller.api.SettableRangedValue;
 
 import java.util.Set;
 
@@ -46,6 +46,7 @@ public class PushConfiguration extends AbstractConfiguration
     public static final Integer    VELOCITY_CURVE                   = Integer.valueOf (32);
     /** Setting for the pad threshold. */
     public static final Integer    PAD_THRESHOLD                    = Integer.valueOf (33);
+
     /** Setting for the display brightness. */
     public static final Integer    DISPLAY_BRIGHTNESS               = Integer.valueOf (34);
     /** Setting for the pad LED brightness. */
@@ -127,6 +128,8 @@ public class PushConfiguration extends AbstractConfiguration
         "Fader"
     };
 
+    private Integer                defaultNoteView                  = Views.VIEW_PLAY;
+
     /** What does the ribbon send? **/
     private int                    ribbonMode                       = RIBBON_MODE_PITCH;
     private int                    ribbonModeCCVal                  = 1;
@@ -160,29 +163,27 @@ public class PushConfiguration extends AbstractConfiguration
 
     private boolean                isPush2;
 
-    private SettableRangedValue    displayBrightnessSetting;
-    private SettableRangedValue    ledBrightnessSetting;
-    private SettableEnumValue      ribbonModeSetting;
-    private SettableRangedValue    ribbonModeCCSetting;
-    private SettableRangedValue    padSensitivitySetting;
-    private SettableRangedValue    padGainSetting;
-    private SettableRangedValue    padDynamicsSetting;
-    private SettableEnumValue      velocityCurveSetting;
-    private SettableEnumValue      padThresholdSetting;
-    private Integer                defaultNoteView                  = Views.VIEW_PLAY;
-
-    private SettableColorValue     colorBackgroundSetting;
-    private SettableColorValue     colorBackgroundDarkerSetting;
-    private SettableColorValue     colorBackgroundLighterSetting;
-    private SettableColorValue     colorBorderSetting;
-    private SettableColorValue     colorTextSetting;
-    private SettableColorValue     colorFaderSetting;
-    private SettableColorValue     colorVUSetting;
-    private SettableColorValue     colorEditSetting;
-    private SettableColorValue     colorRecordSetting;
-    private SettableColorValue     colorSoloSetting;
-    private SettableColorValue     colorMuteSetting;
-    private SettableEnumValue      debugModeSetting;
+    private IIntegerSetting        displayBrightnessSetting;
+    private IIntegerSetting        ledBrightnessSetting;
+    private IEnumSetting           ribbonModeSetting;
+    private IIntegerSetting        ribbonModeCCSetting;
+    private IIntegerSetting        padSensitivitySetting;
+    private IIntegerSetting        padGainSetting;
+    private IIntegerSetting        padDynamicsSetting;
+    private IEnumSetting           velocityCurveSetting;
+    private IEnumSetting           padThresholdSetting;
+    private IEnumSetting           debugModeSetting;
+    private IColorSetting          colorBackgroundSetting;
+    private IColorSetting          colorBackgroundDarkerSetting;
+    private IColorSetting          colorBackgroundLighterSetting;
+    private IColorSetting          colorBorderSetting;
+    private IColorSetting          colorTextSetting;
+    private IColorSetting          colorFaderSetting;
+    private IColorSetting          colorVUSetting;
+    private IColorSetting          colorEditSetting;
+    private IColorSetting          colorRecordSetting;
+    private IColorSetting          colorSoloSetting;
+    private IColorSetting          colorMuteSetting;
 
 
     /**
@@ -200,85 +201,85 @@ public class PushConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final Preferences preferences)
+    public void init (final ISettingsUI settingsUI)
     {
         ///////////////////////////
         // Scale
 
-        this.activateScaleSetting (preferences);
-        this.activateScaleBaseSetting (preferences);
-        this.activateScaleInScaleSetting (preferences);
-        this.activateScaleLayoutSetting (preferences);
+        this.activateScaleSetting (settingsUI);
+        this.activateScaleBaseSetting (settingsUI);
+        this.activateScaleInScaleSetting (settingsUI);
+        this.activateScaleLayoutSetting (settingsUI);
 
         ///////////////////////////
         // Session
 
-        this.activateFlipSessionSetting (preferences);
-        this.activateLockFlipSessionSetting (preferences);
-        this.activateSelectClipOnLaunchSetting (preferences);
-        this.activateDrawRecordStripeSetting (preferences);
-        this.activateActionForRecArmedPad (preferences);
+        this.activateFlipSessionSetting (settingsUI);
+        this.activateLockFlipSessionSetting (settingsUI);
+        this.activateSelectClipOnLaunchSetting (settingsUI);
+        this.activateDrawRecordStripeSetting (settingsUI);
+        this.activateActionForRecArmedPad (settingsUI);
 
         ///////////////////////////
         // Transport
 
-        this.activateBehaviourOnStopSetting (preferences);
-        this.activateFlipRecordSetting (preferences);
+        this.activateBehaviourOnStopSetting (settingsUI);
+        this.activateFlipRecordSetting (settingsUI);
 
         ///////////////////////////
         // Play and Sequence
 
-        this.activateAccentActiveSetting (preferences);
-        this.activateAccentValueSetting (preferences);
-        this.activateQuantizeAmountSetting (preferences);
-        this.activateDefaultNoteViewSetting (preferences);
+        this.activateAccentActiveSetting (settingsUI);
+        this.activateAccentValueSetting (settingsUI);
+        this.activateQuantizeAmountSetting (settingsUI);
+        this.activateDefaultNoteViewSetting (settingsUI);
 
         ///////////////////////////
         // Drum Sequencer
 
-        this.activateAutoSelectDrumSetting (preferences);
-        this.activateTurnOffEmptyDrumPadsSetting (preferences);
+        this.activateAutoSelectDrumSetting (settingsUI);
+        this.activateTurnOffEmptyDrumPadsSetting (settingsUI);
 
         ///////////////////////////
         // Workflow
 
-        this.activateEnableVUMetersSetting (preferences);
+        this.activateEnableVUMetersSetting (settingsUI);
         if (!this.isPush2)
-            this.activateDisplayCrossfaderSetting (preferences);
-        this.activateFootswitchSetting (preferences);
-        this.activateStopAutomationOnKnobReleaseSetting (preferences);
-        this.activateNewClipLengthSetting (preferences);
+            this.activateDisplayCrossfaderSetting (settingsUI);
+        this.activateFootswitchSetting (settingsUI);
+        this.activateStopAutomationOnKnobReleaseSetting (settingsUI);
+        this.activateNewClipLengthSetting (settingsUI);
 
         ///////////////////////////
         // Ribbon
 
-        this.activateRibbonSettings (preferences);
+        this.activateRibbonSettings (settingsUI);
 
         ///////////////////////////
         // Pad Sensitivity
 
         if (this.isPush2)
-            this.activatePush2PadSettings (preferences);
+            this.activatePush2PadSettings (settingsUI);
         else
-            this.activatePush1PadSettings (preferences);
+            this.activatePush1PadSettings (settingsUI);
 
-        this.activateConvertAftertouchSetting (preferences);
+        this.activateConvertAftertouchSetting (settingsUI);
 
         ///////////////////////////
         // Browser
 
-        this.activateBrowserSettings (preferences);
+        this.activateBrowserSettings (settingsUI);
 
         ///////////////////////////
         // Push 2 Hardware
 
-        this.activatePush2HardwareSettings (preferences);
-        this.activatePush2DisplayColorsSettings (preferences);
+        this.activatePush2HardwareSettings (settingsUI);
+        this.activatePush2DisplayColorsSettings (settingsUI);
 
         ///////////////////////////
         // Debugging
 
-        this.activateDebugSettings (preferences);
+        this.activateDebugSettings (settingsUI);
     }
 
 
@@ -311,7 +312,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void setRibbonModeCC (final int value)
     {
-        this.ribbonModeCCSetting.setRaw (value);
+        this.ribbonModeCCSetting.set (value);
     }
 
 
@@ -333,7 +334,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changePadThreshold (final int control)
     {
-        final int value = this.valueChanger.changeIntValue (control, this.padThreshold, 1, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length);
+        final int value = this.valueChanger.changeValue (control, this.padThreshold, 1, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length);
         this.padThreshold = Math.max (0, Math.min (value, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length - 1));
         this.padThresholdSetting.set (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[this.padThreshold]);
     }
@@ -346,7 +347,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changeVelocityCurve (final int control)
     {
-        final int value = this.valueChanger.changeIntValue (control, this.velocityCurve, 1, PushControlSurface.PUSH_PAD_CURVES_NAME.length);
+        final int value = this.valueChanger.changeValue (control, this.velocityCurve, 1, PushControlSurface.PUSH_PAD_CURVES_NAME.length);
         this.velocityCurve = Math.max (0, Math.min (value, PushControlSurface.PUSH_PAD_CURVES_NAME.length - 1));
         this.velocityCurveSetting.set (PushControlSurface.PUSH_PAD_CURVES_NAME[this.velocityCurve]);
     }
@@ -359,7 +360,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changeDisplayBrightness (final int control)
     {
-        this.displayBrightnessSetting.setRaw (this.valueChanger.changeIntValue (control, this.displayBrightness, 1, 101));
+        this.displayBrightnessSetting.set (this.valueChanger.changeValue (control, this.displayBrightness, 1, 101));
     }
 
 
@@ -370,7 +371,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changeLEDBrightness (final int control)
     {
-        this.ledBrightnessSetting.setRaw (this.valueChanger.changeIntValue (control, this.ledBrightness, 1, 101));
+        this.ledBrightnessSetting.set (this.valueChanger.changeValue (control, this.ledBrightness, 1, 101));
     }
 
 
@@ -381,7 +382,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changePadSensitivity (final int control)
     {
-        this.padSensitivitySetting.setRaw (this.valueChanger.changeIntValue (control, this.padSensitivity, 1, 11));
+        this.padSensitivitySetting.set (this.valueChanger.changeValue (control, this.padSensitivity, 1, 11));
     }
 
 
@@ -392,7 +393,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changePadGain (final int control)
     {
-        this.padGainSetting.setRaw (this.valueChanger.changeIntValue (control, this.padGain, 1, 11));
+        this.padGainSetting.set (this.valueChanger.changeValue (control, this.padGain, 1, 11));
     }
 
 
@@ -403,7 +404,7 @@ public class PushConfiguration extends AbstractConfiguration
      */
     public void changePadDynamics (final int control)
     {
-        this.padDynamicsSetting.setRaw (this.valueChanger.changeIntValue (control, this.padDynamics, 1, 11));
+        this.padDynamicsSetting.set (this.valueChanger.changeValue (control, this.padDynamics, 1, 11));
     }
 
 
@@ -883,22 +884,22 @@ public class PushConfiguration extends AbstractConfiguration
     /**
      * Activate the Push 2 hardware settings.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    private void activatePush2HardwareSettings (final Preferences prefs)
+    private void activatePush2HardwareSettings (final ISettingsUI settingsUI)
     {
         if (!this.isPush2)
             return;
 
-        this.displayBrightnessSetting = prefs.getNumberSetting ("Display Brightness", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
-        this.displayBrightnessSetting.addValueObserver (101, value -> {
-            this.displayBrightness = value;
+        this.displayBrightnessSetting = settingsUI.getRangeSetting ("Display Brightness", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
+        this.displayBrightnessSetting.addValueObserver (value -> {
+            this.displayBrightness = value.intValue ();
             this.notifyObservers (DISPLAY_BRIGHTNESS);
         });
 
-        this.ledBrightnessSetting = prefs.getNumberSetting ("LED Brightness", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
-        this.ledBrightnessSetting.addValueObserver (101, value -> {
-            this.ledBrightness = value;
+        this.ledBrightnessSetting = settingsUI.getRangeSetting ("LED Brightness", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
+        this.ledBrightnessSetting.addValueObserver (value -> {
+            this.ledBrightness = value.intValue ();
             this.notifyObservers (LED_BRIGHTNESS);
         });
     }
@@ -907,11 +908,11 @@ public class PushConfiguration extends AbstractConfiguration
     /**
      * Activate the ribbon settings.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    private void activateRibbonSettings (final Preferences prefs)
+    private void activateRibbonSettings (final ISettingsUI settingsUI)
     {
-        this.ribbonModeSetting = prefs.getEnumSetting ("Mode", CATEGORY_RIBBON, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES[0]);
+        this.ribbonModeSetting = settingsUI.getEnumSetting ("Mode", CATEGORY_RIBBON, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES[0]);
         this.ribbonModeSetting.addValueObserver (value -> {
             for (int i = 0; i < RIBBON_MODE_VALUES.length; i++)
             {
@@ -921,9 +922,9 @@ public class PushConfiguration extends AbstractConfiguration
             this.notifyObservers (RIBBON_MODE);
         });
 
-        this.ribbonModeCCSetting = prefs.getNumberSetting ("CC", CATEGORY_RIBBON, 0, 127, 1, "", 1);
-        this.ribbonModeCCSetting.addValueObserver (128, value -> {
-            this.ribbonModeCCVal = value;
+        this.ribbonModeCCSetting = settingsUI.getRangeSetting ("CC", CATEGORY_RIBBON, 0, 127, 1, "", 1);
+        this.ribbonModeCCSetting.addValueObserver (value -> {
+            this.ribbonModeCCVal = value.intValue ();
             this.notifyObservers (RIBBON_MODE_CC_VAL);
         });
     }
@@ -932,11 +933,11 @@ public class PushConfiguration extends AbstractConfiguration
     /**
      * Activate the stop automation on knob release setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    private void activateStopAutomationOnKnobReleaseSetting (final Preferences prefs)
+    private void activateStopAutomationOnKnobReleaseSetting (final ISettingsUI settingsUI)
     {
-        prefs.getEnumSetting ("Stop automation recording on knob release", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]).addValueObserver (value -> {
+        settingsUI.getEnumSetting ("Stop automation recording on knob release", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]).addValueObserver (value -> {
             this.stopAutomationOnKnobRelease = "On".equals (value);
             this.notifyObservers (STOP_AUTOMATION_ON_KNOB_RELEASE);
         });
@@ -946,11 +947,11 @@ public class PushConfiguration extends AbstractConfiguration
     /**
      * Activate the Push 1 pad settings.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    private void activatePush1PadSettings (final Preferences prefs)
+    private void activatePush1PadSettings (final ISettingsUI settingsUI)
     {
-        this.velocityCurveSetting = prefs.getEnumSetting ("Velocity Curve", CATEGORY_PADS, PushControlSurface.PUSH_PAD_CURVES_NAME, PushControlSurface.PUSH_PAD_CURVES_NAME[1]);
+        this.velocityCurveSetting = settingsUI.getEnumSetting ("Velocity Curve", CATEGORY_PADS, PushControlSurface.PUSH_PAD_CURVES_NAME, PushControlSurface.PUSH_PAD_CURVES_NAME[1]);
         this.velocityCurveSetting.addValueObserver (value -> {
             for (int i = 0; i < PushControlSurface.PUSH_PAD_CURVES_NAME.length; i++)
             {
@@ -963,7 +964,7 @@ public class PushConfiguration extends AbstractConfiguration
             this.notifyObservers (VELOCITY_CURVE);
         });
 
-        this.padThresholdSetting = prefs.getEnumSetting ("Pad Threshold", CATEGORY_PADS, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[20]);
+        this.padThresholdSetting = settingsUI.getEnumSetting ("Pad Threshold", CATEGORY_PADS, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[20]);
         this.padThresholdSetting.addValueObserver (value -> {
             for (int i = 0; i < PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length; i++)
             {
@@ -981,25 +982,25 @@ public class PushConfiguration extends AbstractConfiguration
     /**
      * Activate the Push 2 pad settings.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    private void activatePush2PadSettings (final Preferences prefs)
+    private void activatePush2PadSettings (final ISettingsUI settingsUI)
     {
-        this.padSensitivitySetting = prefs.getNumberSetting ("Sensitivity", CATEGORY_PADS, 0, 10, 1, "", 5);
-        this.padSensitivitySetting.addValueObserver (11, value -> {
-            this.padSensitivity = value;
+        this.padSensitivitySetting = settingsUI.getRangeSetting ("Sensitivity", CATEGORY_PADS, 0, 10, 1, "", 5);
+        this.padSensitivitySetting.addValueObserver (value -> {
+            this.padSensitivity = value.intValue ();
             this.notifyObservers (PAD_SENSITIVITY);
         });
 
-        this.padGainSetting = prefs.getNumberSetting ("Gain", CATEGORY_PADS, 0, 10, 1, "", 5);
-        this.padGainSetting.addValueObserver (11, value -> {
-            this.padGain = value;
+        this.padGainSetting = settingsUI.getRangeSetting ("Gain", CATEGORY_PADS, 0, 10, 1, "", 5);
+        this.padGainSetting.addValueObserver (value -> {
+            this.padGain = value.intValue ();
             this.notifyObservers (PAD_GAIN);
         });
 
-        this.padDynamicsSetting = prefs.getNumberSetting ("Dynamics", CATEGORY_PADS, 0, 10, 1, "", 5);
-        this.padDynamicsSetting.addValueObserver (11, value -> {
-            this.padDynamics = value;
+        this.padDynamicsSetting = settingsUI.getRangeSetting ("Dynamics", CATEGORY_PADS, 0, 10, 1, "", 5);
+        this.padDynamicsSetting.addValueObserver (value -> {
+            this.padDynamics = value.intValue ();
             this.notifyObservers (PAD_DYNAMICS);
         });
     }
@@ -1008,12 +1009,12 @@ public class PushConfiguration extends AbstractConfiguration
     /**
      * Activate the default note view setting.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    private void activateDefaultNoteViewSetting (final Preferences prefs)
+    private void activateDefaultNoteViewSetting (final ISettingsUI settingsUI)
     {
         final String [] noteViewNames = Views.getNoteViewNames ();
-        final SettableEnumValue defaultNoteViewSetting = prefs.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, noteViewNames, noteViewNames[0]);
+        final IEnumSetting defaultNoteViewSetting = settingsUI.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, noteViewNames, noteViewNames[0]);
         defaultNoteViewSetting.addValueObserver (value -> {
             for (int i = 0; i < noteViewNames.length; i++)
             {
@@ -1028,14 +1029,14 @@ public class PushConfiguration extends AbstractConfiguration
     /**
      * Activate the color settings for the Push 2 display.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    private void activatePush2DisplayColorsSettings (final Preferences prefs)
+    private void activatePush2DisplayColorsSettings (final ISettingsUI settingsUI)
     {
         if (!this.isPush2)
             return;
 
-        prefs.getSignalSetting ("Reset colors to default", CATEGORY_COLORS, "Reset").addSignalObserver ( () -> {
+        settingsUI.getSignalSetting ("Reset colors to default", CATEGORY_COLORS, "Reset").addValueObserver (value -> {
             this.colorBackgroundSetting.set ((float) DEFAULT_COLOR_BACKGROUND.getRed (), (float) DEFAULT_COLOR_BACKGROUND.getGreen (), (float) DEFAULT_COLOR_BACKGROUND.getBlue ());
             this.colorBackgroundDarkerSetting.set ((float) DEFAULT_COLOR_BACKGROUND_DARKER.getRed (), (float) DEFAULT_COLOR_BACKGROUND_DARKER.getGreen (), (float) DEFAULT_COLOR_BACKGROUND_DARKER.getBlue ());
             this.colorBackgroundLighterSetting.set ((float) DEFAULT_COLOR_BACKGROUND_LIGHTER.getRed (), (float) DEFAULT_COLOR_BACKGROUND_LIGHTER.getGreen (), (float) DEFAULT_COLOR_BACKGROUND_LIGHTER.getBlue ());
@@ -1049,69 +1050,69 @@ public class PushConfiguration extends AbstractConfiguration
             this.colorMuteSetting.set ((float) DEFAULT_COLOR_MUTE.getRed (), (float) DEFAULT_COLOR_MUTE.getGreen (), (float) DEFAULT_COLOR_MUTE.getBlue ());
         });
 
-        this.colorBackgroundSetting = prefs.getColorSetting ("Background", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND);
-        this.colorBackgroundSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorBackground = Color.fromRGB (red, green, blue);
+        this.colorBackgroundSetting = settingsUI.getColorSetting ("Background", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND);
+        this.colorBackgroundSetting.addValueObserver (color -> {
+            this.colorBackground = Color.fromRGB (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_BACKGROUND);
         });
 
-        this.colorBackgroundDarkerSetting = prefs.getColorSetting ("Background Darker", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND_DARKER);
-        this.colorBackgroundDarkerSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorBackgroundDarker = Color.fromRGB (red, green, blue);
+        this.colorBackgroundDarkerSetting = settingsUI.getColorSetting ("Background Darker", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND_DARKER);
+        this.colorBackgroundDarkerSetting.addValueObserver (color -> {
+            this.colorBackgroundDarker = Color.fromRGB (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_BACKGROUND_DARKER);
         });
 
-        this.colorBackgroundLighterSetting = prefs.getColorSetting ("Background Selected", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND_LIGHTER);
-        this.colorBackgroundLighterSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorBackgroundLighter = Color.fromRGB (red, green, blue);
+        this.colorBackgroundLighterSetting = settingsUI.getColorSetting ("Background Selected", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND_LIGHTER);
+        this.colorBackgroundLighterSetting.addValueObserver (color -> {
+            this.colorBackgroundLighter = Color.fromRGB (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_BACKGROUND_LIGHTER);
         });
 
-        this.colorBorderSetting = prefs.getColorSetting ("Border", CATEGORY_COLORS, DEFAULT_COLOR_BORDER);
-        this.colorBorderSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorBorder = Color.fromRGB (red, green, blue);
+        this.colorBorderSetting = settingsUI.getColorSetting ("Border", CATEGORY_COLORS, DEFAULT_COLOR_BORDER);
+        this.colorBorderSetting.addValueObserver (color -> {
+            this.colorBorder = Color.fromRGB (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_BORDER);
         });
 
-        this.colorTextSetting = prefs.getColorSetting ("Text", CATEGORY_COLORS, DEFAULT_COLOR_TEXT);
-        this.colorTextSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorText = Color.fromRGB (red, green, blue);
+        this.colorTextSetting = settingsUI.getColorSetting ("Text", CATEGORY_COLORS, DEFAULT_COLOR_TEXT);
+        this.colorTextSetting.addValueObserver (color -> {
+            this.colorText = Color.fromRGB (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_TEXT);
         });
 
-        this.colorFaderSetting = prefs.getColorSetting ("Fader", CATEGORY_COLORS, DEFAULT_COLOR_FADER);
-        this.colorFaderSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorFader = Color.fromRGB (red, green, blue);
+        this.colorFaderSetting = settingsUI.getColorSetting ("Fader", CATEGORY_COLORS, DEFAULT_COLOR_FADER);
+        this.colorFaderSetting.addValueObserver (color -> {
+            this.colorFader = Color.fromRGB (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_FADER);
         });
 
-        this.colorVUSetting = prefs.getColorSetting ("VU", CATEGORY_COLORS, DEFAULT_COLOR_VU);
-        this.colorVUSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorVU = Color.fromRGB (red, green, blue);
+        this.colorVUSetting = settingsUI.getColorSetting ("VU", CATEGORY_COLORS, DEFAULT_COLOR_VU);
+        this.colorVUSetting.addValueObserver (color -> {
+            this.colorVU = Color.fromRGB (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_VU);
         });
 
-        this.colorEditSetting = prefs.getColorSetting ("Edit", CATEGORY_COLORS, DEFAULT_COLOR_EDIT);
-        this.colorEditSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorVU = Color.fromRGB (red, green, blue);
+        this.colorEditSetting = settingsUI.getColorSetting ("Edit", CATEGORY_COLORS, DEFAULT_COLOR_EDIT);
+        this.colorEditSetting.addValueObserver (color -> {
+            this.colorVU = Color.fromRGB (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_EDIT);
         });
 
-        this.colorRecordSetting = prefs.getColorSetting ("Record", CATEGORY_COLORS, DEFAULT_COLOR_RECORD);
-        this.colorRecordSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorRecord = Color.fromRGB (red, green, blue);
+        this.colorRecordSetting = settingsUI.getColorSetting ("Record", CATEGORY_COLORS, DEFAULT_COLOR_RECORD);
+        this.colorRecordSetting.addValueObserver (color -> {
+            this.colorRecord = Color.fromRGB (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_RECORD);
         });
 
-        this.colorSoloSetting = prefs.getColorSetting ("Solo", CATEGORY_COLORS, DEFAULT_COLOR_SOLO);
-        this.colorSoloSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorSolo = Color.fromRGB (red, green, blue);
+        this.colorSoloSetting = settingsUI.getColorSetting ("Solo", CATEGORY_COLORS, DEFAULT_COLOR_SOLO);
+        this.colorSoloSetting.addValueObserver (color -> {
+            this.colorSolo = Color.fromRGB (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_SOLO);
         });
 
-        this.colorMuteSetting = prefs.getColorSetting ("Mute", CATEGORY_COLORS, DEFAULT_COLOR_MUTE);
-        this.colorMuteSetting.addValueObserver ( (red, green, blue) -> {
-            this.colorMute = Color.fromRGB (red, green, blue);
+        this.colorMuteSetting = settingsUI.getColorSetting ("Mute", CATEGORY_COLORS, DEFAULT_COLOR_MUTE);
+        this.colorMuteSetting.addValueObserver (color -> {
+            this.colorMute = Color.fromRGB (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_MUTE);
         });
     }
@@ -1120,9 +1121,9 @@ public class PushConfiguration extends AbstractConfiguration
     /**
      * Activate the debug settings.
      *
-     * @param prefs The preferences
+     * @param settingsUI The settings
      */
-    private void activateDebugSettings (final Preferences prefs)
+    private void activateDebugSettings (final ISettingsUI settingsUI)
     {
         final Set<Integer> allModes = Modes.ALL_MODES;
         final String [] modes = new String [allModes.size ()];
@@ -1133,7 +1134,7 @@ public class PushConfiguration extends AbstractConfiguration
             i++;
         }
 
-        this.debugModeSetting = prefs.getEnumSetting ("Display Mode", CATEGORY_DEBUG, modes, Modes.MODE_TRACK.toString ());
+        this.debugModeSetting = settingsUI.getEnumSetting ("Display Mode", CATEGORY_DEBUG, modes, Modes.MODE_TRACK.toString ());
         this.debugModeSetting.addValueObserver (value -> {
             this.debugMode = Integer.valueOf (value);
             this.notifyObservers (DEBUG_MODE);
@@ -1142,7 +1143,7 @@ public class PushConfiguration extends AbstractConfiguration
         if (!this.isPush2)
             return;
 
-        prefs.getEnumSetting ("Display window", CATEGORY_DEBUG, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]).addValueObserver (value -> {
+        settingsUI.getEnumSetting ("Display window", CATEGORY_DEBUG, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]).addValueObserver (value -> {
             this.isDisplayWindowVisible = "On".equals (value);
             this.notifyObservers (DEBUG_WINDOW);
         });

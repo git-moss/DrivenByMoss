@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.CursorClipProxy;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.controller.PushDisplay;
@@ -20,11 +20,11 @@ import de.mossgrabers.push.controller.PushDisplay;
  */
 public class NoteMode extends BaseMode
 {
-    CursorClipProxy clip         = null;
-    double          noteLength   = 1.0;
-    int             noteVelocity = 127;
-    int             step         = 0;
-    int             note         = 60;
+    ICursorClip clip         = null;
+    double      noteLength   = 1.0;
+    int         noteVelocity = 127;
+    int         step         = 0;
+    int         note         = 60;
 
 
     /**
@@ -33,7 +33,7 @@ public class NoteMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public NoteMode (final PushControlSurface surface, final Model model)
+    public NoteMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -48,7 +48,7 @@ public class NoteMode extends BaseMode
      * @param noteLength The note length to edit
      * @param noteVelocity The note velocity to edit
      */
-    public void setValues (final CursorClipProxy clip, final int step, final int note, final double noteLength, final int noteVelocity)
+    public void setValues (final ICursorClip clip, final int step, final int note, final double noteLength, final int noteVelocity)
     {
         this.clip = clip;
         this.step = step;
@@ -66,15 +66,15 @@ public class NoteMode extends BaseMode
         switch (index)
         {
             case 0:
-                this.noteLength = valueChanger.changeIntValue (value, (int) Math.floor (this.noteLength), 1, 1024);
+                this.noteLength = valueChanger.changeValue (value, (int) Math.floor (this.noteLength), 1, 1024);
                 this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);
                 break;
             case 1:
-                this.noteLength = valueChanger.changeValue (value, (int) this.noteLength, 0, 1024);
+                this.noteLength = valueChanger.changeValue (value, (int) this.noteLength, 1, 1024);
                 this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);
                 break;
             case 2:
-                this.noteVelocity = valueChanger.changeIntValue (value, this.noteVelocity, 1, 128);
+                this.noteVelocity = valueChanger.changeValue (value, this.noteVelocity, 1, 128);
                 this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);
                 break;
         }
@@ -101,12 +101,13 @@ public class NoteMode extends BaseMode
         final int quarters = (int) Math.floor (this.noteLength);
         final int fine = (int) Math.floor (this.noteLength * 100) % 100;
 
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         message.addParameterElement ("Quarters", quarters, Integer.toString (quarters), this.isKnobTouched[0], -1);
         message.addParameterElement ("Fine", fine, Integer.toString (fine), this.isKnobTouched[1], -1);
         message.addParameterElement ("Velocity", this.noteVelocity * 1023 / 127, Integer.toString (this.noteVelocity), this.isKnobTouched[2], -1);
         for (int i = 3; i < 8; i++)
             message.addOptionElement ("", "", false, "", "", false, false);
-        message.send ();
+        display.send (message);
     }
 }

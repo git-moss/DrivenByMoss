@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.controller;
@@ -10,14 +10,12 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
-import de.mossgrabers.framework.midi.MidiInput;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
-
-import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.NoteInput;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,12 +35,11 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 {
     protected static final int                    BUTTON_STATE_INTERVAL = 400;
 
-    protected ControllerHost                      host;
+    protected IHost                               host;
     protected C                                   configuration;
     protected ColorManager                        colorManager;
-    protected MidiOutput                          output;
-    protected MidiInput                           input;
-    protected NoteInput                           noteInput;
+    protected IMidiOutput                         output;
+    protected IMidiInput                          input;
 
     protected ViewManager                         viewManager           = new ViewManager ();
     protected ModeManager                         modeManager           = new ModeManager ();
@@ -87,7 +84,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      * @param input The midi input
      * @param buttons All midi CC which should be treated as a button
      */
-    public AbstractControlSurface (final ControllerHost host, final C configuration, final ColorManager colorManager, final MidiOutput output, final MidiInput input, final int [] buttons)
+    public AbstractControlSurface (final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final int [] buttons)
     {
         this.host = host;
         this.configuration = configuration;
@@ -96,11 +93,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         this.output = output;
         this.input = input;
         if (this.input != null)
-        {
-            this.input.init (host);
             this.input.setMidiCallback (this::handleMidi);
-            this.noteInput = this.input.createNoteInput ();
-        }
 
         this.gridNotes = new int [64];
 
@@ -206,7 +199,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public MidiOutput getOutput ()
+    public IMidiOutput getOutput ()
     {
         return this.output;
     }
@@ -320,12 +313,12 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setKeyTranslationTable (final int [] table)
     {
-        if (this.noteInput == null)
+        if (this.input == null)
             return;
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
             t[i] = Integer.valueOf (table[i]);
-        this.noteInput.setKeyTranslationTable (t);
+        this.input.setKeyTranslationTable (t);
     }
 
 
@@ -333,12 +326,12 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setVelocityTranslationTable (final int [] table)
     {
-        if (this.noteInput == null)
+        if (this.input == null)
             return;
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
             t[i] = Integer.valueOf (table[i]);
-        this.noteInput.setVelocityTranslationTable (t);
+        this.input.setVelocityTranslationTable (t);
     }
 
 
@@ -664,7 +657,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void errorln (final String message)
     {
-        this.host.errorln (message);
+        this.host.error (message);
     }
 
 
@@ -672,7 +665,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void sendMidiEvent (final int status, final int data1, final int data2)
     {
-        this.noteInput.sendRawMidiEvent (status, data1, data2);
+        this.input.sendRawMidiEvent (status, data1, data2);
     }
 
 

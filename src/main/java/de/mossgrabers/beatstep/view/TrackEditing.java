@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.beatstep.view;
 
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -19,7 +19,7 @@ import de.mossgrabers.framework.daw.data.TrackData;
 public class TrackEditing
 {
     private BeatstepControlSurface surface;
-    private Model                  model;
+    private IModel                 model;
 
 
     /**
@@ -28,7 +28,7 @@ public class TrackEditing
      * @param surface The controller
      * @param model The model
      */
-    public TrackEditing (final BeatstepControlSurface surface, final Model model)
+    public TrackEditing (final BeatstepControlSurface surface, final IModel model)
     {
         this.surface = surface;
         this.model = model;
@@ -46,30 +46,30 @@ public class TrackEditing
         if (value == 64)
             return;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         if (selectedTrack == null)
             return;
 
         switch (index)
         {
             case 0:
-                tb.changeVolume (selectedTrack.getIndex (), value);
+                selectedTrack.changeVolume (value);
                 break;
             case 1:
-                tb.changePan (selectedTrack.getIndex (), value);
+                selectedTrack.changePan (value);
                 break;
 
             case 2:
-                tb.setMute (selectedTrack.getIndex (), value > 64);
+                selectedTrack.setMute (value > 64);
                 break;
 
             case 3:
-                tb.setSolo (selectedTrack.getIndex (), value > 64);
+                selectedTrack.setSolo (value > 64);
                 break;
 
             case 4:
-                tb.changeCrossfadeModeAsNumber (selectedTrack.getIndex (), value);
+                selectedTrack.changeCrossfadeModeAsNumber (value);
                 break;
 
             case 5:
@@ -89,8 +89,8 @@ public class TrackEditing
             case 9:
             case 10:
             case 11:
-                if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).changeSend (selectedTrack.getIndex (), index - 8, value);
+                if (tb instanceof ITrackBank)
+                    selectedTrack.getSend (index - 8).changeValue (value);
                 break;
         }
     }

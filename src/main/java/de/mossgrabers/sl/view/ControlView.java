@@ -1,16 +1,16 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.sl.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.sl.SLConfiguration;
@@ -40,7 +40,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
      * @param surface The surface
      * @param model The model
      */
-    public ControlView (final SLControlSurface surface, final Model model)
+    public ControlView (final SLControlSurface surface, final IModel model)
     {
         super ("Control", surface, model);
         this.transportControl = new TransportControl (surface, model);
@@ -108,23 +108,22 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
 
             // New
             case 4:
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final TrackData t = tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack t = tb.getSelectedTrack ();
                 if (t != null)
                 {
-                    final int trackIndex = t.getIndex ();
-                    final SlotData [] slotIndexes = tb.getSelectedSlots (trackIndex);
+                    final ISlot [] slotIndexes = t.getSelectedSlots ();
                     final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
                     for (int i = 0; i < 8; i++)
                     {
                         final int sIndex = (slotIndex + i) % 8;
-                        final SlotData s = t.getSlots ()[sIndex];
+                        final ISlot s = t.getSlot (sIndex);
                         if (!s.hasContent ())
                         {
-                            tb.createClip (trackIndex, sIndex, (int) Math.pow (2, this.surface.getConfiguration ().getNewClipLength ()));
+                            this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());
                             if (slotIndex != sIndex)
-                                tb.selectClip (trackIndex, sIndex);
-                            tb.launchClip (trackIndex, sIndex);
+                                s.select ();
+                            s.launch ();
                             this.model.getTransport ().setLauncherOverdub (true);
                             return;
                         }
@@ -177,8 +176,8 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
             return;
         }
 
-        AbstractTrackBankProxy tb;
-        TrackData track;
+        IChannelBank tb;
+        ITrack track;
         switch (index)
         {
             // Mute
@@ -186,7 +185,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
                 tb = this.model.getCurrentTrackBank ();
                 track = tb.getSelectedTrack ();
                 if (track != null)
-                    tb.toggleMute (track.getIndex ());
+                    track.toggleMute ();
                 break;
 
             // Solo
@@ -194,7 +193,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
                 tb = this.model.getCurrentTrackBank ();
                 track = tb.getSelectedTrack ();
                 if (track != null)
-                    tb.toggleSolo (track.getIndex ());
+                    track.toggleSolo ();
                 break;
 
             // Arm
@@ -202,7 +201,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
                 tb = this.model.getCurrentTrackBank ();
                 track = tb.getSelectedTrack ();
                 if (track != null)
-                    tb.toggleArm (track.getIndex ());
+                    track.toggleRecArm ();
                 break;
 
             // Write
@@ -345,8 +344,8 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     @Override
     public void updateButtons ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         final ITransport transport = this.model.getTransport ();
         final int clipLength = this.surface.getConfiguration ().getNewClipLength ();
 
@@ -395,7 +394,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
         else
         {
             final boolean isNoOverlayMode = mode != Modes.MODE_FRAME && mode != Modes.MODE_BROWSER;
-            final TrackData track = tb.getSelectedTrack ();
+            final ITrack track = tb.getSelectedTrack ();
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW2_1, isNoOverlayMode && track != null && track.isMute () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW2_2, isNoOverlayMode && track != null && track.isSolo () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW2_3, isNoOverlayMode && track != null && track.isRecArm () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);

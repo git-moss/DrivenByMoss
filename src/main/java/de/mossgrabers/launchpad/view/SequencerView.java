@@ -1,10 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.view;
 
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;
@@ -24,7 +24,7 @@ public class SequencerView extends AbstractNoteSequencerView<LaunchpadControlSur
      * @param surface The surface
      * @param model The model
      */
-    public SequencerView (final LaunchpadControlSurface surface, final Model model)
+    public SequencerView (final LaunchpadControlSurface surface, final IModel model)
     {
         super ("Sequencer", surface, model, true);
     }

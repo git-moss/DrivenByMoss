@@ -1,16 +1,16 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.PushConfiguration.TrackState;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -30,7 +30,7 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
      * @param model The model
      * @param surface The surface
      */
-    public MuteCommand (final Model model, final PushControlSurface surface)
+    public MuteCommand (final IModel model, final PushControlSurface surface)
     {
         super (model, surface);
     }
@@ -87,15 +87,15 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
         final Integer activeModeId = this.surface.getModeManager ().getActiveModeId ();
         if (Modes.isTrackMode (activeModeId))
         {
-            final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-            final TrackData selTrack = tb.getSelectedTrack ();
+            final IChannelBank tb = this.model.getCurrentTrackBank ();
+            final ITrack selTrack = tb.getSelectedTrack ();
             if (selTrack != null)
-                tb.toggleMute (selTrack.getIndex ());
+                selTrack.toggleMute ();
         }
         else if (Modes.isLayerMode (activeModeId))
         {
-            final CursorDeviceProxy cd = this.model.getCursorDevice ();
-            final ChannelData layer = cd.getSelectedLayerOrDrumPad ();
+            final ICursorDevice cd = this.model.getCursorDevice ();
+            final IChannel layer = cd.getSelectedLayerOrDrumPad ();
             if (layer != null)
                 cd.toggleLayerOrDrumPadMute (layer.getIndex ());
         }

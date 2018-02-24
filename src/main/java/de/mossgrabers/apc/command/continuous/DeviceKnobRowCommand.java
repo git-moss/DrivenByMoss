@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apc.command.continuous;
 
 import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 
 import java.util.Date;
 
@@ -32,7 +32,7 @@ public class DeviceKnobRowCommand extends AbstractContinuousCommand<APCControlSu
      * @param model The model
      * @param surface The surface
      */
-    public DeviceKnobRowCommand (final int index, final Model model, final APCControlSurface surface)
+    public DeviceKnobRowCommand (final int index, final IModel model, final APCControlSurface surface)
     {
         super (model, surface);
         this.index = index;
@@ -43,7 +43,7 @@ public class DeviceKnobRowCommand extends AbstractContinuousCommand<APCControlSu
     @Override
     public void execute (final int value)
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
             return;
         cd.setParameter (this.index, value);

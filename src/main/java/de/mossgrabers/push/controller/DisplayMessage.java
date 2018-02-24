@@ -1,11 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller;
 
 import de.mossgrabers.framework.Pair;
-import de.mossgrabers.framework.daw.CursorClipProxy;
+import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.push.controller.display.model.DisplayModel;
 import de.mossgrabers.push.controller.display.model.grid.BoxListGridElement;
@@ -80,7 +80,7 @@ public class DisplayMessage
      * @param clip The clip to display
      * @param quartersPerMeasure The quarters of a measure
      */
-    public void setMidiClipElement (final CursorClipProxy clip, final int quartersPerMeasure)
+    public void setMidiClipElement (final ICursorClip clip, final int quartersPerMeasure)
     {
         this.elements.clear ();
         this.elements.add (new MidiClipElement (clip, quartersPerMeasure));

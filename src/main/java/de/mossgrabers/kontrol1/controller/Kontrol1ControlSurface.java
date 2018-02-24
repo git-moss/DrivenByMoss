@@ -1,14 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.kontrol1.controller;
 
 import de.mossgrabers.framework.controller.AbstractControlSurface;
-import de.mossgrabers.framework.midi.MidiInput;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
@@ -169,7 +168,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
      * @param input
      * @param usbDevice
      */
-    public Kontrol1ControlSurface (final ControllerHost host, final Kontrol1Configuration configuration, final MidiInput input, final Kontrol1USBDevice usbDevice)
+    public Kontrol1ControlSurface (final IHost host, final Kontrol1Configuration configuration, final IMidiInput input, final Kontrol1USBDevice usbDevice)
     {
         super (host, configuration, null, null, input, KONTROL1_BUTTONS_ALL);
 

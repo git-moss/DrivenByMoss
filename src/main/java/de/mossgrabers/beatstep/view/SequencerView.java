@@ -1,14 +1,15 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.beatstep.view;
 
 import de.mossgrabers.beatstep.controller.BeatstepColors;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.TrackBankProxy;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -29,13 +30,13 @@ public class SequencerView extends BaseSequencerView
      * @param surface The controller
      * @param model The model
      */
-    public SequencerView (final BeatstepControlSurface surface, final Model model)
+    public SequencerView (final BeatstepControlSurface surface, final IModel model)
     {
         super ("Sequencer", surface, model, 128, SequencerView.NUM_DISPLAY_COLS);
 
         this.offsetY = SequencerView.START_KEY;
 
-        final TrackBankProxy tb = model.getTrackBank ();
+        final ITrackBank tb = model.getTrackBank ();
         tb.addNoteObserver ( (note, velocity) -> {
             // Light notes send from the sequencer
             for (int i = 0; i < 128; i++)
@@ -122,7 +123,7 @@ public class SequencerView extends BaseSequencerView
         else
         {
             if (velocity != 0)
-                this.clip.toggleStep (index < 8 ? index + 8 : index - 8, /* this.noteMap[] */ this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                this.getClip ().toggleStep (index < 8 ? index + 8 : index - 8, /* this.noteMap[] */ this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
         }
     }
 
@@ -156,12 +157,13 @@ public class SequencerView extends BaseSequencerView
         }
         else
         {
+            final ICursorClip clip = this.getClip ();
             // Paint the sequencer steps
-            final int step = this.clip.getCurrentStep ();
+            final int step = clip.getCurrentStep ();
             final int hiStep = this.isInXRange (step) ? step % SequencerView.NUM_DISPLAY_COLS : -1;
             for (int col = 0; col < SequencerView.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = this.clip.getStep (col, this.offsetY + this.selectedPad);
+                final int isSet = clip.getStep (col, this.offsetY + this.selectedPad);
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
                 final int y = col / 8;

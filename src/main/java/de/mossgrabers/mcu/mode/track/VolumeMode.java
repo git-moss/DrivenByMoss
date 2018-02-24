@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.mcu.mode.track;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 
 
@@ -24,7 +24,7 @@ public class VolumeMode extends AbstractTrackMode
      * @param surface The control surface
      * @param model The model
      */
-    public VolumeMode (final MCUControlSurface surface, final Model model)
+    public VolumeMode (final MCUControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -35,7 +35,7 @@ public class VolumeMode extends AbstractTrackMode
     public void onValueKnob (final int index, final int value)
     {
         final int channel = this.surface.getExtenderOffset () + index;
-        this.model.getCurrentTrackBank ().changeVolume (channel, value);
+        this.model.getCurrentTrackBank ().getTrack (channel).changeVolume (value);
     }
 
 
@@ -51,11 +51,11 @@ public class VolumeMode extends AbstractTrackMode
             return;
 
         final Display d = this.surface.getDisplay ();
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (extenderOffset + i);
+            final ITrack t = tb.getTrack (extenderOffset + i);
             d.setCell (1, i, t.getVolumeStr (6));
         }
         d.done (1);
@@ -72,7 +72,7 @@ public class VolumeMode extends AbstractTrackMode
         if (this.surface.getConfiguration ().isDisplayTrackNames ())
             return true;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final Display d = this.surface.getDisplay ();
         final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
@@ -92,12 +92,12 @@ public class VolumeMode extends AbstractTrackMode
     @Override
     protected void updateKnobLEDs ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (extenderOffset + i);
+            final ITrack t = tb.getTrack (extenderOffset + i);
             this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, t.getVolume (), upperBound);
         }
     }
@@ -108,6 +108,6 @@ public class VolumeMode extends AbstractTrackMode
     protected void resetParameter (final int index)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        this.model.getCurrentTrackBank ().resetVolume (extenderOffset + index);
+        this.model.getCurrentTrackBank ().getTrack (extenderOffset + index).resetVolume ();
     }
 }

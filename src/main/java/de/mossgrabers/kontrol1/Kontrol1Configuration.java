@@ -5,10 +5,9 @@
 package de.mossgrabers.kontrol1;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
+import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.ValueChanger;
-
-import com.bitwig.extension.controller.api.Preferences;
-import com.bitwig.extension.controller.api.SettableEnumValue;
 
 
 /**
@@ -20,7 +19,7 @@ public class Kontrol1Configuration extends AbstractConfiguration
 {
     private static final Integer SCALE_IS_ACTIVE = Integer.valueOf (40);
 
-    private SettableEnumValue    scaleIsActiveSetting;
+    private IEnumSetting         scaleIsActiveSetting;
     private boolean              scaleIsActive;
 
 
@@ -37,31 +36,31 @@ public class Kontrol1Configuration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final Preferences preferences)
+    public void init (final ISettingsUI settingsUI)
     {
         ///////////////////////////
         // Scale
 
-        this.scaleIsActiveSetting = preferences.getEnumSetting ("Is active", CATEGORY_SCALES, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.scaleIsActiveSetting = settingsUI.getEnumSetting ("Is active", CATEGORY_SCALES, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.scaleIsActiveSetting.addValueObserver (value -> {
             this.scaleIsActive = "On".equals (value);
             this.notifyObservers (SCALE_IS_ACTIVE);
         });
 
-        this.activateScaleSetting (preferences);
-        this.activateScaleBaseSetting (preferences);
-        this.activateScaleInScaleSetting (preferences);
+        this.activateScaleSetting (settingsUI);
+        this.activateScaleBaseSetting (settingsUI);
+        this.activateScaleInScaleSetting (settingsUI);
 
         ///////////////////////////
         // Transport
 
-        this.activateBehaviourOnStopSetting (preferences);
-        this.activateFlipRecordSetting (preferences);
+        this.activateBehaviourOnStopSetting (settingsUI);
+        this.activateFlipRecordSetting (settingsUI);
 
         ///////////////////////////
         // Workflow
 
-        this.activateEnableVUMetersSetting (preferences);
+        this.activateEnableVUMetersSetting (settingsUI);
     }
 
 

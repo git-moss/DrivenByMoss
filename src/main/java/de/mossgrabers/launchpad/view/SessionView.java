@@ -1,15 +1,15 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
@@ -36,7 +36,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
      * @param surface The surface
      * @param model The model
      */
-    public SessionView (final LaunchpadControlSurface surface, final Model model)
+    public SessionView (final LaunchpadControlSurface surface, final IModel model)
     {
         super ("Session", surface, model, 8, 8, true);
 
@@ -96,11 +96,12 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
             {
                 this.surface.setButtonConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                if (tb.getTrack (t).doesExist ())
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack track = tb.getTrack (t);
+                if (track.doesExist ())
                 {
                     final int s = this.rows - 1 - index / this.columns;
-                    tb.duplicateClip (t, s);
+                    track.getSlot (s).duplicate ();
                 }
                 return;
             }
@@ -129,12 +130,12 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         if (isOff)
             return;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final PadGrid pads = this.surface.getPadGrid ();
         final ModeManager modeManager = this.surface.getModeManager ();
         for (int x = 0; x < this.columns; x++)
         {
-            final TrackData track = tb.getTrack (x);
+            final ITrack track = tb.getTrack (x);
             final boolean exists = track.doesExist ();
             if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
                 pads.lightEx (x, 7, exists ? track.isRecArm () ? LaunchpadColors.LAUNCHPAD_COLOR_RED_HI : LaunchpadColors.LAUNCHPAD_COLOR_RED_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
@@ -194,8 +195,8 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
                 this.isTemporary = false;
 
                 final ViewManager viewManager = this.surface.getViewManager ();
-                final TrackBankProxy tb = this.model.getTrackBank ();
-                final TrackData selectedTrack = tb.getSelectedTrack ();
+                final ITrackBank tb = this.model.getTrackBank ();
+                final ITrack selectedTrack = tb.getSelectedTrack ();
                 if (selectedTrack == null)
                     return;
                 final Integer viewId = viewManager.getPreferredView (selectedTrack.getPosition ());
@@ -219,7 +220,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final int x = index % this.columns;
         final int y = this.rows - 1 - index / this.columns;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
         // Calculate page offsets
         final int trackPosition = tb.getTrack (0).getPosition () / tb.getNumTracks ();
@@ -240,24 +241,24 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     {
         // First row mode handling
         final int index = note - 36;
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
 
         if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
         {
             this.surface.setButtonConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
-            tb.duplicate (index);
+            track.duplicate ();
             return;
         }
 
         if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
-            tb.toggleArm (index);
+            track.toggleRecArm ();
         else if (modeManager.isActiveMode (Modes.MODE_TRACK_SELECT))
             this.selectTrack (index);
         else if (modeManager.isActiveMode (Modes.MODE_MUTE))
-            tb.toggleMute (index);
+            track.toggleMute ();
         else if (modeManager.isActiveMode (Modes.MODE_SOLO))
-            tb.toggleSolo (index);
+            track.toggleSolo ();
         else if (modeManager.isActiveMode (Modes.MODE_STOP_CLIP))
-            tb.stop (index);
+            track.stop ();
     }
 }

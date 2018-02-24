@@ -1,7 +1,7 @@
 package de.mossgrabers.launchpad.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
@@ -20,7 +20,7 @@ public class AbstractTrackMode extends AbstractMode<LaunchpadControlSurface, Lau
      * @param surface The surface
      * @param model The model
      */
-    public AbstractTrackMode (final LaunchpadControlSurface surface, final Model model)
+    public AbstractTrackMode (final LaunchpadControlSurface surface, final IModel model)
     {
         super (surface, model);
     }

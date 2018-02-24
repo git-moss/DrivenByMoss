@@ -5,11 +5,11 @@
 package de.mossgrabers.kontrol1.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.data.BrowserColumnData;
-import de.mossgrabers.framework.daw.data.BrowserColumnItemData;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IBrowserColumn;
+import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
@@ -38,7 +38,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
      * @param surface The surface
      * @param model The model
      */
-    public BrowseMode (final Kontrol1ControlSurface surface, final Model model)
+    public BrowseMode (final Kontrol1ControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;
@@ -70,7 +70,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
         else
         {
             final IBrowser browser = this.model.getBrowser ();
-            final BrowserColumnData fc = browser.getFilterColumn (index);
+            final IBrowserColumn fc = browser.getFilterColumn (index);
             if (fc != null && fc.doesExist ())
             {
                 this.selectionMode = BrowseMode.SELECTION_FILTER;
@@ -109,22 +109,22 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
                 d.setCell (0, 8, "SELECTED").setCell (1, 8, selectedResult == null ? "NONE" : selectedResult);
                 for (int i = 0; i < 7; i++)
                 {
-                    final BrowserColumnData column = browser.getFilterColumn (i);
+                    final IBrowserColumn column = browser.getFilterColumn (i);
                     d.setCell (0, 1 + i, this.optimizeName (column.getName () + ":", 8).toUpperCase ()).setCell (1, 1 + i, column.doesCursorExist () ? column.getCursorName ().toUpperCase () : "");
                 }
                 break;
 
             case BrowseMode.SELECTION_PRESET:
                 d.setCell (0, 0, "SELECTED");
-                final BrowserColumnItemData [] results = browser.getResultColumnItems ();
+                final IBrowserColumnItem [] results = browser.getResultColumnItems ();
                 for (int i = 0; i < 16; i++)
                     d.setCell (i % 2, 1 + i / 2, (results[i].isSelected () ? ">" : " ") + results[i].getName ().toUpperCase ());
                 break;
 
             case BrowseMode.SELECTION_FILTER:
-                final BrowserColumnData fc = browser.getFilterColumn (this.filterColumn);
+                final IBrowserColumn fc = browser.getFilterColumn (this.filterColumn);
                 d.setCell (0, 0, fc.getName ().toUpperCase ());
-                final BrowserColumnItemData [] items = fc.getItems ();
+                final IBrowserColumnItem [] items = fc.getItems ();
                 for (int i = 0; i < 16; i++)
                 {
                     final String name = items[i].getName ().toUpperCase ();
@@ -196,7 +196,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
         final IBrowser browser = this.model.getBrowser ();
         if (index < 7)
         {
-            final BrowserColumnData fc = browser.getFilterColumn (index);
+            final IBrowserColumn fc = browser.getFilterColumn (index);
             if (fc != null && fc.doesExist ())
             {
                 this.filterColumn = fc.getIndex ();
@@ -228,7 +228,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
         {
             if (index < 7)
             {
-                final BrowserColumnData fc = browser.getFilterColumn (index);
+                final IBrowserColumn fc = browser.getFilterColumn (index);
                 if (fc != null && fc.doesExist ())
                 {
                     this.filterColumn = fc.getIndex ();

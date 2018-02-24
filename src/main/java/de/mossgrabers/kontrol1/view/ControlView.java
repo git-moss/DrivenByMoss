@@ -4,10 +4,10 @@
 
 package de.mossgrabers.kontrol1.view;
 
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.view.AbstractView;
@@ -29,7 +29,7 @@ public class ControlView extends AbstractView<Kontrol1ControlSurface, Kontrol1Co
      * @param surface The surface
      * @param model The model
      */
-    public ControlView (final Kontrol1ControlSurface surface, final Model model)
+    public ControlView (final Kontrol1ControlSurface surface, final IModel model)
     {
         super ("Control", surface, model);
         this.scales = model.getScales ();
@@ -43,8 +43,8 @@ public class ControlView extends AbstractView<Kontrol1ControlSurface, Kontrol1Co
         final ModeManager modeManager = this.surface.getModeManager ();
         final boolean isBrowseMode = modeManager.isActiveMode (Modes.MODE_BROWSER);
         final ITransport transport = this.model.getTransport ();
-        final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
-        final TrackData t = currentTrackBank.getSelectedTrack ();
+        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack t = currentTrackBank.getSelectedTrack ();
         final Kontrol1Configuration configuration = this.surface.getConfiguration ();
 
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_SHIFT, this.surface.isShiftPressed () ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);

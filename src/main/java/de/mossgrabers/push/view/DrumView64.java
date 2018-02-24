@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.view;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView64;
 import de.mossgrabers.push.PushConfiguration;
@@ -28,7 +28,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
      * @param surface The surface
      * @param model The model
      */
-    public DrumView64 (final PushControlSurface surface, final Model model)
+    public DrumView64 (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -48,7 +48,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     protected void handleDeleteButton (final int playedPad)
     {
         this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-        ((DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM)).getClip ().clearRow (this.offsetY + playedPad);
+        this.model.getCursorClip ().clearRow (this.offsetY + playedPad);
     }
 
 
@@ -56,19 +56,20 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     @Override
     protected void handleSelectButton (final int playedPad)
     {
-        if (!this.primaryDevice.hasDrumPads ())
+        final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
+        if (!drumDevice64.hasDrumPads ())
             return;
 
         // Do not reselect
-        if (this.primaryDevice.getDrumPad (playedPad).isSelected ())
+        if (drumDevice64.getDrumPad (playedPad).isSelected ())
             return;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (cd.isNested ())
             cd.selectParent ();
 
         this.surface.getModeManager ().setActiveMode (Modes.MODE_DEVICE_LAYER);
-        this.primaryDevice.selectDrumPad (playedPad);
+        drumDevice64.selectDrumPad (playedPad);
     }
 
 

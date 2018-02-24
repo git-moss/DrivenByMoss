@@ -1,21 +1,22 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.osc.protocol;
 
+import de.mossgrabers.framework.bitwig.daw.HostProxy;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IMixer;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.osc.OSCConfiguration;
 
@@ -44,7 +45,7 @@ public class OSCParser implements OscMethodCallback
 
     private final OSCModel         model;
     private final ITransport       transport;
-    private final MasterTrackProxy masterTrack;
+    private final IMasterTrack     masterTrack;
     private final Scales           scales;
     private final MidiIn           port;
     private final NoteInput        noteInput;
@@ -69,7 +70,7 @@ public class OSCParser implements OscMethodCallback
         this.configuration = configuration;
         this.model = model;
 
-        this.display = new DummyDisplay (host);
+        this.display = new DummyDisplay (new HostProxy (host));
 
         this.transport = this.model.getTransport ();
         this.masterTrack = this.model.getMasterTrack ();
@@ -416,7 +417,7 @@ public class OSCParser implements OscMethodCallback
                 {
                     final int trackNo = Integer.parseInt (oscParts.get (0));
                     oscParts.removeFirst ();
-                    this.parseTrackValue (trackNo - 1, oscParts, value);
+                    this.parseTrackValue (this.model.getCurrentTrackBank ().getTrack (trackNo - 1), oscParts, value);
                 }
                 catch (final NumberFormatException ex)
                 {
@@ -425,7 +426,7 @@ public class OSCParser implements OscMethodCallback
                 break;
 
             case "master":
-                this.parseTrackValue (-1, oscParts, value);
+                this.parseTrackValue (this.masterTrack, oscParts, value);
                 break;
 
             //
@@ -434,7 +435,7 @@ public class OSCParser implements OscMethodCallback
 
             case "device":
             {
-                final CursorDeviceProxy cd = this.model.getCursorDevice ();
+                final ICursorDevice cd = this.model.getCursorDevice ();
                 this.parseDeviceValue (cd, oscParts, value);
                 break;
             }
@@ -491,24 +492,24 @@ public class OSCParser implements OscMethodCallback
         {
             case "indicate":
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
                 final boolean isTrue = value != null && value instanceof Number && ((Number) value).intValue () > 0;
                 switch (parts.removeFirst ())
                 {
                     case "volume":
                         for (int i = 0; i < tb.getNumTracks (); i++)
-                            tb.setVolumeIndication (i, isTrue);
+                            tb.getTrack (i).setVolumeIndication (isTrue);
                         break;
                     case "pan":
                         for (int i = 0; i < tb.getNumTracks (); i++)
-                            tb.setPanIndication (i, isTrue);
+                            tb.getTrack (i).setPanIndication (isTrue);
                         break;
                     case "send":
-                        if (tb instanceof TrackBankProxy)
+                        if (tb instanceof ITrackBank)
                         {
                             final int sendIndex = Integer.parseInt (parts.get (0));
                             for (int i = 0; i < tb.getNumTracks (); i++)
-                                ((TrackBankProxy) tb).setSendIndication (i, sendIndex - 1, isTrue);
+                                tb.getTrack (i).getSend (sendIndex - 1).setIndication (isTrue);
                         }
                         break;
                 }
@@ -519,20 +520,20 @@ public class OSCParser implements OscMethodCallback
                 switch (parts.removeFirst ())
                 {
                     case "page":
-                        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+                        final IChannelBank tb = this.model.getCurrentTrackBank ();
                         if ("+".equals (parts.removeFirst ()))
                         {
                             if (!tb.canScrollTracksDown ())
                                 return;
                             tb.scrollTracksPageDown ();
-                            this.host.scheduleTask ( () -> this.selectTrack (0), 75);
+                            this.host.scheduleTask ( () -> tb.getTrack (0).selectAndMakeVisible (), 75);
                         }
                         else // "-"
                         {
                             if (!tb.canScrollTracksUp ())
                                 return;
                             tb.scrollTracksPageUp ();
-                            this.host.scheduleTask ( () -> this.selectTrack (7), 75);
+                            this.host.scheduleTask ( () -> tb.getTrack (7).selectAndMakeVisible (), 75);
                         }
                         break;
 
@@ -548,34 +549,34 @@ public class OSCParser implements OscMethodCallback
 
             case "+":
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final TrackData sel = tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack sel = tb.getSelectedTrack ();
                 final int index = sel == null ? 0 : sel.getIndex () + 1;
                 if (index == tb.getNumTracks ())
                 {
                     if (!tb.canScrollTracksDown ())
                         return;
                     tb.scrollTracksPageDown ();
-                    this.host.scheduleTask ( () -> this.selectTrack (0), 75);
+                    this.host.scheduleTask ( () -> tb.getTrack (0).selectAndMakeVisible (), 75);
                 }
-                this.selectTrack (index);
+                tb.getTrack (index).selectAndMakeVisible ();
                 break;
             }
 
             case "-":
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final TrackData sel = tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack sel = tb.getSelectedTrack ();
                 final int index = sel == null ? 0 : sel.getIndex () - 1;
                 if (index == -1)
                 {
                     if (!tb.canScrollTracksUp ())
                         return;
                     tb.scrollTracksPageUp ();
-                    this.host.scheduleTask ( () -> this.selectTrack (7), 75);
+                    this.host.scheduleTask ( () -> tb.getTrack (7).selectAndMakeVisible (), 75);
                     return;
                 }
-                this.selectTrack (index);
+                tb.getTrack (index).selectAndMakeVisible ();
                 break;
             }
 
@@ -606,27 +607,29 @@ public class OSCParser implements OscMethodCallback
             {
                 this.model.toggleCurrentTrackBank ();
                 // Make sure a track is selected
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final AbstractTrackBankProxy tbOther = this.model.isEffectTrackBankActive () ? this.model.getTrackBank () : this.model.getEffectTrackBank ();
-                final TrackData track = tb.getSelectedTrack ();
-                if (track == null)
-                    this.selectTrack (0);
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final IChannelBank tbOther = this.model.isEffectTrackBankActive () ? this.model.getTrackBank () : this.model.getEffectTrackBank ();
+                final ITrack selectedTrack = tb.getSelectedTrack ();
+                if (selectedTrack == null)
+                    tb.getTrack (0).selectAndMakeVisible ();
                 // Move the indication to the other bank
                 for (int i = 0; i < tb.getNumTracks (); i++)
                 {
-                    tbOther.setVolumeIndication (i, false);
-                    tbOther.setPanIndication (i, false);
-                    tb.setVolumeIndication (i, true);
-                    tb.setPanIndication (i, true);
+                    final ITrack otherTrack = tbOther.getTrack (i);
+                    otherTrack.setVolumeIndication (false);
+                    otherTrack.setPanIndication (false);
+                    final ITrack track = tb.getTrack (i);
+                    track.setVolumeIndication (true);
+                    track.setPanIndication (true);
                 }
                 break;
             }
 
             case "parent":
             {
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).selectParent ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                if (tb instanceof ITrackBank)
+                    ((ITrackBank) tb).selectParent ();
                 break;
             }
 
@@ -637,7 +640,7 @@ public class OSCParser implements OscMethodCallback
     }
 
 
-    private void parseTrackValue (final int trackIndex, final LinkedList<String> parts, final Object value)
+    private void parseTrackValue (final ITrack track, final LinkedList<String> parts, final Object value)
     {
         final double numValue = value instanceof Number ? ((Number) value).doubleValue () : -1;
         final int intValue = value instanceof Number ? ((Number) value).intValue () : -1;
@@ -645,142 +648,72 @@ public class OSCParser implements OscMethodCallback
         switch (p)
         {
             case "activated":
-                if (trackIndex == -1)
-                    this.masterTrack.setIsActivated (intValue > 0);
-                else
-                    this.model.getCurrentTrackBank ().setIsActivated (trackIndex, intValue > 0);
+                track.setIsActivated (intValue > 0);
                 break;
 
             case "crossfadeMode":
-                if (trackIndex >= 0 && numValue == 1)
-                    this.model.getCurrentTrackBank ().setCrossfadeMode (trackIndex, parts.removeFirst ());
+                if (numValue == 1)
+                    track.setCrossfadeMode (parts.removeFirst ());
                 break;
 
             case "select":
-                if (intValue == 0)
-                    return;
-                if (trackIndex == -1)
-                    this.masterTrack.select ();
-                else
-                    this.selectTrack (trackIndex);
+                if (intValue > 0)
+                    track.selectAndMakeVisible ();
                 break;
 
             case "volume":
                 if (parts.isEmpty ())
-                {
-                    if (trackIndex == -1)
-                        this.masterTrack.setVolume (numValue);
-                    else
-                        this.model.getCurrentTrackBank ().setVolume (trackIndex, numValue);
-                }
+                    track.setVolume (numValue);
                 else if ("indicate".equals (parts.get (0)))
-                {
-                    if (trackIndex == -1)
-                        this.masterTrack.setVolumeIndication (numValue > 0);
-                    else
-                        this.model.getCurrentTrackBank ().setVolumeIndication (trackIndex, numValue > 0);
-                }
+                    track.setVolumeIndication (numValue > 0);
                 break;
 
             case "pan":
                 if (parts.isEmpty ())
-                {
-                    if (trackIndex == -1)
-                        this.masterTrack.setPan (numValue);
-                    else
-                        this.model.getCurrentTrackBank ().setPan (trackIndex, numValue);
-                }
+                    track.setPan (numValue);
                 else if ("indicate".equals (parts.get (0)))
-                {
-                    if (trackIndex == -1)
-                        this.masterTrack.setPanIndication (numValue > 0);
-                    else
-                        this.model.getCurrentTrackBank ().setPanIndication (trackIndex, numValue > 0);
-                }
+                    track.setPanIndication (numValue > 0);
                 break;
 
             case "mute":
-                if (trackIndex == -1)
-                {
-                    if (numValue < 0)
-                        this.masterTrack.toggleMute ();
-                    else
-                        this.masterTrack.setMute (numValue > 0);
-                }
+                if (numValue < 0)
+                    track.toggleMute ();
                 else
-                {
-                    if (numValue < 0)
-                        this.model.getCurrentTrackBank ().toggleMute (trackIndex);
-                    else
-                        this.model.getCurrentTrackBank ().setMute (trackIndex, numValue > 0);
-                }
+                    track.setMute (numValue > 0);
                 break;
 
             case "solo":
-                if (trackIndex == -1)
-                {
-                    if (numValue < 0)
-                        this.masterTrack.toggleSolo ();
-                    else
-                        this.masterTrack.setSolo (numValue > 0);
-                }
+                if (numValue < 0)
+                    track.toggleSolo ();
                 else
-                {
-                    if (numValue < 0)
-                        this.model.getCurrentTrackBank ().toggleSolo (trackIndex);
-                    else
-                        this.model.getCurrentTrackBank ().setSolo (trackIndex, numValue > 0);
-                }
+                    track.setSolo (numValue > 0);
                 break;
 
             case "recarm":
-                if (trackIndex == -1)
-                {
-                    if (numValue < 0)
-                        this.masterTrack.toggleArm ();
-                    else
-                        this.masterTrack.setArm (numValue > 0);
-                }
+                if (numValue < 0)
+                    track.toggleRecArm ();
                 else
-                {
-                    if (numValue < 0)
-                        this.model.getCurrentTrackBank ().toggleArm (trackIndex);
-                    else
-                        this.model.getCurrentTrackBank ().setArm (trackIndex, numValue > 0);
-                }
+                    track.setRecArm (numValue > 0);
                 break;
 
             case "monitor":
                 final boolean isAuto = !parts.isEmpty () && "auto".equals (parts.get (0));
-                if (trackIndex == -1)
+                if (numValue < 0)
                 {
-                    if (numValue < 0)
-                        if (isAuto)
-                            this.masterTrack.toggleAutoMonitor ();
-                        else
-                            this.masterTrack.toggleMonitor ();
-                    else if (isAuto)
-                        this.masterTrack.setAutoMonitor (numValue > 0);
+                    if (isAuto)
+                        track.toggleAutoMonitor ();
                     else
-                        this.masterTrack.setMonitor (numValue > 0);
+                        track.toggleMonitor ();
                 }
+                else if (isAuto)
+                    track.setAutoMonitor (numValue > 0);
                 else
-                {
-                    if (numValue < 0)
-                        if (isAuto)
-                            this.model.getCurrentTrackBank ().toggleAutoMonitor (trackIndex);
-                        else
-                            this.model.getCurrentTrackBank ().toggleMonitor (trackIndex);
-                    else if (isAuto)
-                        this.model.getCurrentTrackBank ().setAutoMonitor (trackIndex, numValue > 0);
-                    else
-                        this.model.getCurrentTrackBank ().setMonitor (trackIndex, numValue > 0);
-                }
+                    track.setMonitor (numValue > 0);
                 break;
 
             case "send":
                 final int sendNo = Integer.parseInt (parts.removeFirst ());
-                this.parseSendValue (trackIndex, sendNo - 1, parts, value);
+                this.parseSendValue (track, sendNo - 1, parts, value);
                 break;
 
             case "clip":
@@ -792,13 +725,13 @@ public class OSCParser implements OscMethodCallback
                     switch (p)
                     {
                         case "select":
-                            this.model.getCurrentTrackBank ().selectClip (trackIndex, clipNo - 1);
+                            track.getSlot (clipNo - 1).select ();
                             break;
                         case "launch":
-                            this.model.getCurrentTrackBank ().launchClip (trackIndex, clipNo - 1);
+                            track.getSlot (clipNo - 1).launch ();
                             break;
                         case "record":
-                            this.model.getCurrentTrackBank ().recordClip (trackIndex, clipNo - 1);
+                            track.getSlot (clipNo - 1).record ();
                             break;
                         case "color":
                             final Matcher matcher = RGB_COLOR_PATTERN.matcher (value.toString ());
@@ -810,7 +743,7 @@ public class OSCParser implements OscMethodCallback
                             final double red = Double.parseDouble (matcher.group (2));
                             final double green = Double.parseDouble (matcher.group (4));
                             final double blue = Double.parseDouble (matcher.group (6));
-                            this.model.getCurrentTrackBank ().getTrack (trackIndex).getSlots ()[clipNo - 1].setColor (red, green, blue);
+                            track.getSlot (clipNo - 1).setColor (red, green, blue);
                             break;
                         default:
                             this.host.println ("Unhandled clip parameter: " + p);
@@ -822,10 +755,10 @@ public class OSCParser implements OscMethodCallback
                     switch (p)
                     {
                         case "stop":
-                            this.model.getCurrentTrackBank ().stop (trackIndex);
+                            track.stop ();
                             break;
                         case "returntoarrangement":
-                            this.model.getCurrentTrackBank ().returnToArrangement (trackIndex);
+                            track.returnToArrangement ();
                             break;
                         default:
                             this.host.println ("Unhandled clip command: " + p);
@@ -835,11 +768,11 @@ public class OSCParser implements OscMethodCallback
                 break;
 
             case "enter":
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
                 // TODO API extension required - selectChildren() should be available for Track as
                 // well
-                if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).selectChildren ();
+                if (tb instanceof ITrackBank)
+                    ((ITrackBank) tb).selectChildren ();
                 break;
 
             case "color":
@@ -847,12 +780,8 @@ public class OSCParser implements OscMethodCallback
                 if (!matcher.matches ())
                     return;
                 final int count = matcher.groupCount ();
-                if (count != 7)
-                    return;
-                final double red = Double.parseDouble (matcher.group (2));
-                final double green = Double.parseDouble (matcher.group (4));
-                final double blue = Double.parseDouble (matcher.group (6));
-                this.model.getCurrentTrackBank ().setTrackColor (trackIndex, red, green, blue);
+                if (count == 7)
+                    track.setColor (Double.parseDouble (matcher.group (2)), Double.parseDouble (matcher.group (4)), Double.parseDouble (matcher.group (6)));
                 break;
 
             default:
@@ -862,12 +791,8 @@ public class OSCParser implements OscMethodCallback
     }
 
 
-    private void parseSendValue (final int trackIndex, final int sendIndex, final LinkedList<String> parts, final Object value)
+    private void parseSendValue (final ITrack track, final int sendIndex, final LinkedList<String> parts, final Object value)
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        if (!(tb instanceof TrackBankProxy))
-            return;
-
         final double numValue = value instanceof Number ? ((Number) value).doubleValue () : -1;
 
         final String p = parts.removeFirst ();
@@ -875,9 +800,9 @@ public class OSCParser implements OscMethodCallback
         {
             case "volume":
                 if (parts.isEmpty ())
-                    ((TrackBankProxy) tb).setSend (trackIndex, sendIndex, numValue);
+                    track.getSend (sendIndex).setValue (numValue);
                 else if ("indicate".equals (parts.get (0)))
-                    ((TrackBankProxy) tb).setSendIndication (trackIndex, sendIndex, numValue > 0);
+                    track.getSend (sendIndex).setIndication (numValue > 0);
                 break;
 
             default:
@@ -887,7 +812,7 @@ public class OSCParser implements OscMethodCallback
     }
 
 
-    private void parseDeviceValue (final CursorDeviceProxy cursorDevice, final LinkedList<String> parts, final Object value)
+    private void parseDeviceValue (final ICursorDevice cursorDevice, final LinkedList<String> parts, final Object value)
     {
         final int numValue = value instanceof Number ? ((Number) value).intValue () : -1;
         final String p = parts.removeFirst ();
@@ -1046,7 +971,7 @@ public class OSCParser implements OscMethodCallback
     }
 
 
-    private void parseDeviceLayerValue (final CursorDeviceProxy cursorDevice, final int layer, final LinkedList<String> parts, final Object value)
+    private void parseDeviceLayerValue (final ICursorDevice cursorDevice, final int layer, final LinkedList<String> parts, final Object value)
     {
         final String p = parts.removeFirst ();
         final int numValue = value instanceof Number ? ((Number) value).intValue () : -1;
@@ -1095,7 +1020,7 @@ public class OSCParser implements OscMethodCallback
     }
 
 
-    private void parseFXParamValue (final CursorDeviceProxy cursorDevice, final int fxparamIndex, final LinkedList<String> parts, final Object value)
+    private void parseFXParamValue (final ICursorDevice cursorDevice, final int fxparamIndex, final LinkedList<String> parts, final Object value)
     {
         final int numValue = value instanceof Number ? ((Number) value).intValue () : -1;
         switch (parts.get (0))
@@ -1239,13 +1164,5 @@ public class OSCParser implements OscMethodCallback
                 this.host.println ("Unhandled Midi Parameter:" + p);
                 break;
         }
-    }
-
-
-    private void selectTrack (final int index)
-    {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        tb.select (index);
-        tb.makeVisible (index);
     }
 }

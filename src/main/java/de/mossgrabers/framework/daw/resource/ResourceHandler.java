@@ -4,8 +4,9 @@
 
 package de.mossgrabers.framework.daw.resource;
 
+import de.mossgrabers.framework.daw.IHost;
+
 import com.bitwig.extension.api.graphics.Image;
-import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.Map;
 public final class ResourceHandler
 {
     private static final Map<String, Image> CACHE = new HashMap<> ();
-    private static ControllerHost           theHost;
+    private static IHost                    theHost;
 
 
     /**
@@ -27,7 +28,7 @@ public final class ResourceHandler
      *
      * @param host The controller host
      */
-    public static void init (final ControllerHost host)
+    public static void init (final IHost host)
     {
         theHost = host;
 

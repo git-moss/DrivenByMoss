@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.data.ParameterData;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.controller.PushDisplay;
@@ -26,7 +26,7 @@ public class GrooveMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public GrooveMode (final PushControlSurface surface, final Model model)
+    public GrooveMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -64,7 +64,7 @@ public class GrooveMode extends BaseMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final ParameterData [] parameters = this.model.getGroove ().getParameters ();
+        final IParameter [] parameters = this.model.getGroove ().getParameters ();
         final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
         d.clear ().setCell (0, 0, "Quant Amnt").setCell (1, 0, quantizeAmount + "%").setCell (2, 0, quantizeAmount * 1023 / 100, Format.FORMAT_VALUE);
         for (int i = 0; i < 6; i++)
@@ -77,14 +77,15 @@ public class GrooveMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final ParameterData [] parameters = this.model.getGroove ().getParameters ();
+        final IParameter [] parameters = this.model.getGroove ().getParameters ();
         final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         message.addParameterElement ("Quant Amnt", quantizeAmount * 1023 / 100, quantizeAmount + "%", this.isKnobTouched[0], -1);
         message.addOptionElement ("     Groove", "", false, "", "", false, false);
         for (int i = 0; i < 6; i++)
             message.addParameterElement (parameters[i].getName (10), parameters[i].getValue (), parameters[i].getDisplayedValue (8), this.isKnobTouched[i], -1);
-        message.send ();
+        display.send (message);
     }
 
 

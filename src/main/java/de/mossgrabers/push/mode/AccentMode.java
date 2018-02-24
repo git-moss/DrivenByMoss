@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -27,7 +27,7 @@ public class AccentMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public AccentMode (final PushControlSurface surface, final Model model)
+    public AccentMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -70,9 +70,10 @@ public class AccentMode extends BaseMode
     {
         final int fixedAccentValue = this.surface.getConfiguration ().getFixedAccentValue ();
         final ValueChanger valueChanger = this.model.getValueChanger ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         for (int i = 0; i < 8; i++)
             message.addParameterElement (i == 7 ? "Accent" : "", i == 7 ? valueChanger.toDisplayValue (valueChanger.toDAWValue (fixedAccentValue)) : 0, i == 7 ? Integer.toString (fixedAccentValue) : "", this.isKnobTouched[i], -1);
-        message.send ();
+        display.send (message);
     }
 }

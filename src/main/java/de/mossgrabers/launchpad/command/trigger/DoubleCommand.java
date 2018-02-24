@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.command.trigger.NewCommand;
-import de.mossgrabers.framework.command.trigger.PlayCommand;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
@@ -30,7 +30,7 @@ public class DoubleCommand extends AbstractTriggerCommand<LaunchpadControlSurfac
      * @param model The model
      * @param surface The surface
      */
-    public DoubleCommand (final Model model, final LaunchpadControlSurface surface)
+    public DoubleCommand (final IModel model, final LaunchpadControlSurface surface)
     {
         super (model, surface);
 

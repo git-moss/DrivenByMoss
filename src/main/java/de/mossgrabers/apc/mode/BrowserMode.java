@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apc.mode;
 
 import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IModel;
 
 
 /**
@@ -35,7 +35,7 @@ public class BrowserMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public BrowserMode (final APCControlSurface surface, final Model model)
+    public BrowserMode (final APCControlSurface surface, final IModel model)
     {
         super (surface, model, 0, 0);
     }

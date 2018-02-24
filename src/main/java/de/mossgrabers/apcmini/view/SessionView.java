@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apcmini.view;
@@ -8,10 +8,10 @@ import de.mossgrabers.apcmini.APCminiConfiguration;
 import de.mossgrabers.apcmini.controller.APCminiColors;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
 
@@ -31,7 +31,7 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
      * @param surface The surface
      * @param model The model
      */
-    public SessionView (final APCminiControlSurface surface, final Model model)
+    public SessionView (final APCminiControlSurface surface, final IModel model)
     {
         super ("Session", surface, model, 8, 8, false);
         this.extensions = new TrackButtons (surface, model);
@@ -48,18 +48,15 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
         final int channel = note % 8;
         final int scene = 7 - note / 8;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final SlotData slot = tb.getTrack (channel).getSlots ()[scene];
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getTrack (channel);
+        final ISlot slot = track.getSlot (scene);
 
-        if (tb.getTrack (channel).isRecArm ())
-        {
-            if (!slot.isRecording ())
-                tb.recordClip (channel, scene);
-        }
-        tb.launchClip (channel, scene);
-
+        if (track.isRecArm () && !slot.isRecording ())
+            slot.record ();
+        slot.launch ();
         if (this.doSelectClipOnLaunch ())
-            tb.selectClip (channel, scene);
+            slot.select ();
     }
 
 
@@ -75,19 +72,19 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
     @Override
     public void drawGrid ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         for (int x = 0; x < 8; x++)
         {
-            final TrackData t = tb.getTrack (x);
+            final ITrack t = tb.getTrack (x);
             for (int y = 0; y < 8; y++)
-                this.drawPad (t.getSlots ()[y], x, y, t.isRecArm ());
+                this.drawPad (t.getSlot (y), x, y, t.isRecArm ());
         }
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void drawPad (final SlotData slot, final int x, final int y, final boolean isArmed)
+    public void drawPad (final ISlot slot, final int x, final int y, final boolean isArmed)
     {
         int color = APCminiColors.APC_COLOR_BLACK;
 

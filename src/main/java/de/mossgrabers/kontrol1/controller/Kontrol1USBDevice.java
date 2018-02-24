@@ -4,7 +4,8 @@
 
 package de.mossgrabers.kontrol1.controller;
 
-import com.bitwig.extension.controller.api.ControllerHost;
+import de.mossgrabers.framework.daw.IHost;
+
 import com.bitwig.extension.controller.api.UsbDevice;
 import com.bitwig.extension.controller.api.UsbEndpoint;
 import com.bitwig.extension.controller.api.UsbTransferResult;
@@ -403,7 +404,7 @@ public class Kontrol1USBDevice
 
     private final static Map<Integer, Integer> LED_MAPPING              = new HashMap<> (21);
 
-    private ControllerHost                     host;
+    private IHost                              host;
     private UsbDevice                          usbDevice;
     private UsbEndpoint                        usbEndpointDisplay;
     private UsbEndpoint                        usbEndpointUI;
@@ -466,7 +467,7 @@ public class Kontrol1USBDevice
      *
      * @param host The controller host
      */
-    public Kontrol1USBDevice (final ControllerHost host)
+    public Kontrol1USBDevice (final IHost host)
     {
         this.host = host;
 
@@ -481,7 +482,7 @@ public class Kontrol1USBDevice
             this.usbDevice = null;
             this.usbEndpointDisplay = null;
             this.usbEndpointUI = null;
-            host.errorln ("Could not open USB connection.");
+            host.error ("Could not open USB connection.");
         }
 
         this.displayBuffer = host.createByteBuffer (DATA_SZ);
@@ -517,7 +518,7 @@ public class Kontrol1USBDevice
         final UsbTransferResult result = this.usbEndpointDisplay.bulkTransfer (this.initBuffer, TIMEOUT);
         final UsbTransferStatus status = result.status ();
         if (status != UsbTransferStatus.Completed)
-            this.host.errorln ("USB transmission error: " + status);
+            this.host.error ("USB transmission error: " + status);
 
     }
 
@@ -535,7 +536,7 @@ public class Kontrol1USBDevice
             if (status == UsbTransferStatus.Completed)
                 this.processMessage (result.actualLength ());
             else
-                this.host.errorln ("USB receive error: " + status);
+                this.host.error ("USB receive error: " + status);
             this.uiBuffer.clear ();
             this.host.scheduleTask ( () -> this.pollUI (), 10);
         }, TIMEOUT);
@@ -733,7 +734,7 @@ public class Kontrol1USBDevice
         final Integer pos = LED_MAPPING.get (Integer.valueOf (buttonID));
         if (pos == null)
         {
-            this.host.errorln ("Illegal button LED: " + buttonID);
+            this.host.error ("Illegal button LED: " + buttonID);
             return;
         }
 
@@ -764,7 +765,7 @@ public class Kontrol1USBDevice
         final UsbTransferStatus status = result.status ();
         this.busySendingLEDs = false;
         if (status != UsbTransferStatus.Completed)
-            this.host.errorln ("USB transmission error: " + status);
+            this.host.error ("USB transmission error: " + status);
     }
 
 
@@ -810,7 +811,7 @@ public class Kontrol1USBDevice
         final UsbTransferStatus status = result.status ();
         this.busySendingKeyLEDs = false;
         if (status != UsbTransferStatus.Completed)
-            this.host.errorln ("USB transmission error: " + status);
+            this.host.error ("USB transmission error: " + status);
     }
 
 

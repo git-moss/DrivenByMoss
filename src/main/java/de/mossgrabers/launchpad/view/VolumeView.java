@@ -1,17 +1,17 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.MasterTrackProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
@@ -29,7 +29,7 @@ public class VolumeView extends AbstractFaderView
      * @param surface The surface
      * @param model The model
      */
-    public VolumeView (final LaunchpadControlSurface surface, final Model model)
+    public VolumeView (final LaunchpadControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -39,7 +39,7 @@ public class VolumeView extends AbstractFaderView
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().setVolume (index, value);
+        this.model.getCurrentTrackBank ().getTrack (index).setVolume (value);
     }
 
 
@@ -48,11 +48,11 @@ public class VolumeView extends AbstractFaderView
     public void drawGrid ()
     {
         final ColorManager cm = this.model.getColorManager ();
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final MidiOutput output = this.surface.getOutput ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final IMidiOutput output = this.surface.getOutput ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData track = tb.getTrack (i);
+            final ITrack track = tb.getTrack (i);
             final int color = cm.getColor (BitwigColors.getColorIndex (track.getColor ()));
             if (this.trackColors[i] != color || !track.doesExist ())
                 this.setupFader (i);
@@ -67,7 +67,7 @@ public class VolumeView extends AbstractFaderView
     public void updateSceneButtons ()
     {
         final ColorManager cm = this.model.getColorManager ();
-        final MasterTrackProxy track = this.model.getMasterTrack ();
+        final IMasterTrack track = this.model.getMasterTrack ();
         final int sceneMax = 9 * track.getVolume () / this.model.getValueChanger ().getUpperBound ();
         for (int i = 0; i < 8; i++)
         {
@@ -83,7 +83,7 @@ public class VolumeView extends AbstractFaderView
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final MasterTrackProxy track = this.model.getMasterTrack ();
+        final IMasterTrack track = this.model.getMasterTrack ();
         track.setVolume (Math.min (127, (7 - scene) * this.model.getValueChanger ().getUpperBound () / 7));
     }
 }

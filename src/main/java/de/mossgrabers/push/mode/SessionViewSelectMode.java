@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.controller.DisplayMessage;
@@ -56,7 +56,7 @@ public class SessionViewSelectMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public SessionViewSelectMode (final PushControlSurface surface, final Model model)
+    public SessionViewSelectMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -97,13 +97,14 @@ public class SessionViewSelectMode extends BaseMode
     public void updateDisplay2 ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         for (int i = 0; i < VIEWS.length; i++)
         {
             final boolean isMenuBottomSelected = VIEWS[i] != null && this.isSelected (viewManager, i);
             message.addOptionElement ("", "", false, i == 0 ? "Session view" : "", VIEW_NAMES[i], isMenuBottomSelected, false);
         }
-        message.send ();
+        display.send (message);
     }
 
 

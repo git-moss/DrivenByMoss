@@ -7,9 +7,8 @@ package de.mossgrabers.kontrol1.controller;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
@@ -49,7 +48,7 @@ public class Kontrol1Display extends AbstractDisplay
      * @param configuration The configuration
      * @param usbDevice The USB device
      */
-    public Kontrol1Display (final ControllerHost host, final int maxParameterValue, final Kontrol1Configuration configuration, final Kontrol1USBDevice usbDevice)
+    public Kontrol1Display (final IHost host, final int maxParameterValue, final Kontrol1Configuration configuration, final Kontrol1USBDevice usbDevice)
     {
         super (host, null, 2 /* No of rows */, 9 /* No of cells */, 72 /* No of characters */);
         this.maxParameterValue = maxParameterValue;

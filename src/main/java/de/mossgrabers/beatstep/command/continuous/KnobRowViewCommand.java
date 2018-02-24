@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.beatstep.command.continuous;
@@ -7,8 +7,8 @@ package de.mossgrabers.beatstep.command.continuous;
 import de.mossgrabers.beatstep.BeatstepConfiguration;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.beatstep.view.BeatstepView;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.View;
 
 
@@ -29,7 +29,7 @@ public class KnobRowViewCommand extends AbstractContinuousCommand<BeatstepContro
      * @param model The model
      * @param surface The surface
      */
-    public KnobRowViewCommand (final int index, final Model model, final BeatstepControlSurface surface)
+    public KnobRowViewCommand (final int index, final IModel model, final BeatstepControlSurface surface)
     {
         super (model, surface);
         this.index = index;

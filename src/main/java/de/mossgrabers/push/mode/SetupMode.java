@@ -1,11 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
@@ -26,7 +26,7 @@ public class SetupMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public SetupMode (final PushControlSurface surface, final Model model)
+    public SetupMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;
@@ -105,7 +105,8 @@ public class SetupMode extends BaseMode
     public void updateDisplay2 ()
     {
         final PushConfiguration config = this.surface.getConfiguration ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         message.addOptionElement ("", "Setup", true, "", "", false, true);
         message.addOptionElement ("Brightness", "Info", false, "", "", false, true);
         message.addParameterElement ("Display", config.getDisplayBrightness () * 1023 / 100, config.getDisplayBrightness () + "%", this.isKnobTouched[2], -1);
@@ -114,6 +115,6 @@ public class SetupMode extends BaseMode
         message.addParameterElement ("Sensitivity", config.getPadSensitivity () * 1023 / 10, Integer.toString (config.getPadSensitivity ()), this.isKnobTouched[5], -1);
         message.addParameterElement ("Gain", config.getPadGain () * 1023 / 10, Integer.toString (config.getPadGain ()), this.isKnobTouched[6], -1);
         message.addParameterElement ("Dynamics", config.getPadDynamics () * 1023 / 10, Integer.toString (config.getPadDynamics ()), this.isKnobTouched[7], -1);
-        message.send ();
+        display.send (message);
     }
 }

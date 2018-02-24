@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.ViewManager;
@@ -52,7 +52,7 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
      * @param surface The surface
      * @param model The model
      */
-    public BrowserView (final LaunchpadControlSurface surface, final Model model)
+    public BrowserView (final LaunchpadControlSurface surface, final IModel model)
     {
         super ("Browser", surface, model);
     }

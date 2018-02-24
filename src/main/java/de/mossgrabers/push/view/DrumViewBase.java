@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.push.PushConfiguration;
@@ -35,7 +35,7 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
      * @param numSequencerLines The number of rows to use for the sequencer
      * @param numPlayLines The number of rows to use for playing
      */
-    public DrumViewBase (final String name, final PushControlSurface surface, final Model model, final int numSequencerLines, final int numPlayLines)
+    public DrumViewBase (final String name, final PushControlSurface surface, final IModel model, final int numSequencerLines, final int numPlayLines)
     {
         super (name, surface, model, numSequencerLines, numPlayLines);
     }
@@ -64,8 +64,8 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         if (selectedTrack != null)
             this.onLowerScene (index);
     }

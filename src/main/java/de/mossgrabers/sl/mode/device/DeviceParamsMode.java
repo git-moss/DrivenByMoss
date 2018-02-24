@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.sl.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.data.ParameterData;
-import de.mossgrabers.framework.midi.MidiOutput;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -27,7 +27,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
      * @param surface The surface
      * @param model The model
      */
-    public DeviceParamsMode (final SLControlSurface surface, final Model model)
+    public DeviceParamsMode (final SLControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;
@@ -46,7 +46,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
             d.clearRow (0);
             for (int i = 0; i < 8; i++)
             {
-                final ParameterData p = this.model.getCursorDevice ().getFXParam (i);
+                final IParameter p = this.model.getCursorDevice ().getFXParam (i);
                 final String name = p.getName (8);
                 if (!name.isEmpty ())
                     d.setCell (0, i, name).setCell (2, i, p.getDisplayedValue (8));
@@ -73,7 +73,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
     public void setLEDs ()
     {
         final boolean hasDevice = this.model.hasSelectedDevice ();
-        final MidiOutput output = this.surface.getOutput ();
+        final IMidiOutput output = this.surface.getOutput ();
         for (int i = 0; i < 8; i++)
         {
             final int value = hasDevice ? this.model.getCursorDevice ().getFXParam (i).getValue () : 0;

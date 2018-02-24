@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.sl.command.continuous;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.controller.SLControlSurface;
@@ -32,7 +32,7 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
      * @param model The model
      * @param surface The surface
      */
-    public TrackKnobRowCommand (final int index, final Model model, final SLControlSurface surface)
+    public TrackKnobRowCommand (final int index, final IModel model, final SLControlSurface surface)
     {
         super (model, surface);
         this.index = index;
@@ -60,8 +60,8 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData track = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getSelectedTrack ();
         if (track == null)
             return;
 
@@ -69,25 +69,25 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
         {
             // Volume
             case 0:
-                tb.setVolume (track.getIndex (), value);
+                track.setVolume (value);
                 break;
 
             // Pan
             case 1:
-                tb.setPan (track.getIndex (), value);
+                track.setPan (value);
                 break;
 
             case 2:
                 if (this.surface.getConfiguration ().isDisplayCrossfader ())
-                    tb.setCrossfadeModeAsNumber (track.getIndex (), value == 0 ? 0 : value == 127 ? 2 : 1);
-                else if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).setSend (track.getIndex (), 0, value);
+                    track.setCrossfadeModeAsNumber (value == 0 ? 0 : value == 127 ? 2 : 1);
+                else if (tb instanceof ITrackBank)
+                    track.getSend (0).setValue (value);
                 break;
 
             // Send 1 - 5
             default:
-                if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).setSend (track.getIndex (), this.index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2), value);
+                if (tb instanceof ITrackBank)
+                    track.getSend (this.index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).setValue (value);
                 break;
         }
     }

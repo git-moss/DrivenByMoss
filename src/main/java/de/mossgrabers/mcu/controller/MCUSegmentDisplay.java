@@ -1,12 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.mcu.controller;
 
-import de.mossgrabers.framework.midi.MidiOutput;
-
-import com.bitwig.extension.controller.api.ControllerHost;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -16,18 +14,17 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public class MCUSegmentDisplay
 {
-    private MidiOutput output;
-    private int []     transportBuffer  = new int [10];
-    private int []     assignmentBuffer = new int [2];
+    private IMidiOutput output;
+    private int []      transportBuffer  = new int [10];
+    private int []      assignmentBuffer = new int [2];
 
 
     /**
      * Constructor.
      *
-     * @param host The host
      * @param output The midi output which addresses the display
      */
-    public MCUSegmentDisplay (final ControllerHost host, final MidiOutput output)
+    public MCUSegmentDisplay (final IMidiOutput output)
     {
         this.output = output;
     }

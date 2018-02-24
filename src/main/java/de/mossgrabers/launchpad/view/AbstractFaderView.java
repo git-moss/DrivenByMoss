@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
@@ -28,7 +28,7 @@ public abstract class AbstractFaderView extends SessionView
      * @param surface The surface
      * @param model The model
      */
-    public AbstractFaderView (final LaunchpadControlSurface surface, final Model model)
+    public AbstractFaderView (final LaunchpadControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -108,7 +108,7 @@ public abstract class AbstractFaderView extends SessionView
      */
     public void setupFader (final int index)
     {
-        final TrackData track = this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
         final int color = this.model.getColorManager ().getColor (BitwigColors.getColorIndex (track.getColor ()));
         this.surface.setupFader (index, color);
     }

@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode.track;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -27,7 +27,7 @@ public class VolumeMode extends AbstractTrackMode
      * @param surface The control surface
      * @param model The model
      */
-    public VolumeMode (final PushControlSurface surface, final Model model)
+    public VolumeMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -37,7 +37,7 @@ public class VolumeMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().changeVolume (index, value);
+        this.model.getCurrentTrackBank ().getTrack (index).changeVolume (value);
     }
 
 
@@ -47,20 +47,20 @@ public class VolumeMode extends AbstractTrackMode
     {
         this.isKnobTouched[index] = isTouched;
 
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getTrack (index);
+        if (!t.doesExist ())
+            return;
+
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
-            {
-                this.model.getCurrentTrackBank ().resetVolume (index);
-                return;
-            }
-
-            final TrackData t = this.model.getCurrentTrackBank ().getTrack (index);
-            if (t.doesExist ())
+                t.resetVolume ();
+            else
                 this.surface.getDisplay ().notify ("Volume: " + t.getVolumeStr (8));
         }
 
-        this.model.getCurrentTrackBank ().touchVolume (index, isTouched);
+        t.touchVolume (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 
@@ -70,11 +70,11 @@ public class VolumeMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
         for (int i = 0; i < 8; i++)
         {
-            final TrackData t = tb.getTrack (i);
+            final ITrack t = tb.getTrack (i);
             d.setCell (0, i, t.doesExist () ? "Volume" : "").setCell (1, i, t.getVolumeStr (8));
             if (t.doesExist ())
                 d.setCell (2, i, config.isEnableVUMeters () ? t.getVu () : t.getVolume (), Format.FORMAT_VALUE);

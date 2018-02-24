@@ -1,12 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
@@ -31,7 +31,7 @@ public class ScaleLayoutMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public ScaleLayoutMode (final PushControlSurface surface, final Model model)
+    public ScaleLayoutMode (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.scales = model.getScales ();
@@ -96,13 +96,14 @@ public class ScaleLayoutMode extends BaseMode
         final int pos = sl / 2;
         final String [] names = ScaleLayout.getNames ();
 
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
         for (int i = 0; i < names.length; i += 2)
             message.addOptionElement ("", "", false, i == 0 ? "Scale layout" : "", names[i].replace (" ^", ""), pos == i / 2, false);
 
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("", "", false, "", sl % 2 == 0 ? "Horizontal" : "Vertical", false, false);
-        message.send ();
+        display.send (message);
     }
 }

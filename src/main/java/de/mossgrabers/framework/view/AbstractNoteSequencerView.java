@@ -1,16 +1,17 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -40,7 +41,7 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
      * @param model The model
      * @param useTrackColor True to use the color of the current track for coloring the octaves
      */
-    public AbstractNoteSequencerView (final String name, final S surface, final Model model, final boolean useTrackColor)
+    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final boolean useTrackColor)
     {
         this (name, surface, model, 8, useTrackColor);
     }
@@ -55,15 +56,13 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
      * @param numDisplayCols The number of grid columns
      * @param useTrackColor True to use the color of the current track for coloring the octaves
      */
-    public AbstractNoteSequencerView (final String name, final S surface, final Model model, final int numDisplayCols, final boolean useTrackColor)
+    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final boolean useTrackColor)
     {
         super (name, surface, model, 128, numDisplayCols, 7);
 
         this.useTrackColor = useTrackColor;
         this.numDisplayCols = numDisplayCols;
         this.offsetY = this.startKey;
-
-        this.clip.scrollTo (0, this.startKey);
     }
 
 
@@ -73,6 +72,7 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
     {
         this.updateScale ();
         super.onActivate ();
+        this.getClip ().scrollTo (0, this.offsetY);
     }
 
 
@@ -95,10 +95,11 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
         final int x = index % 8;
         final int y = index / 8;
 
+        final ICursorClip clip = this.getClip ();
         if (y < this.numSequencerRows)
         {
             if (velocity != 0)
-                this.clip.toggleStep (x, this.noteMap[y], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                clip.toggleStep (x, this.noteMap[y], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
             return;
         }
 
@@ -117,10 +118,10 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
         if (this.loopPadPressed == -1)
             return;
 
-        if (pad == this.loopPadPressed && pad != this.clip.getEditPage ())
+        if (pad == this.loopPadPressed && pad != clip.getEditPage ())
         {
             // Only single pad pressed -> page selection
-            this.clip.scrollToPage (pad);
+            clip.scrollToPage (pad);
         }
         else
         {
@@ -129,9 +130,9 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
             final int end = (this.loopPadPressed < pad ? pad : this.loopPadPressed) + 1;
             final int lengthOfOnePad = this.getLengthOfOnePage (this.numDisplayCols);
             final double newStart = start * lengthOfOnePad;
-            this.clip.setLoopStart (newStart);
-            this.clip.setLoopLength ((end - start) * lengthOfOnePad);
-            this.clip.setPlayRange (newStart, (double) end * lengthOfOnePad);
+            clip.setLoopStart (newStart);
+            clip.setLoopLength ((end - start) * lengthOfOnePad);
+            clip.setPlayRange (newStart, (double) end * lengthOfOnePad);
         }
 
         this.loopPadPressed = -1;
@@ -149,18 +150,19 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
 
         // Steps with notes
-        final int step = this.clip.getCurrentStep ();
+        final ICursorClip clip = this.getClip ();
+        final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % this.numDisplayCols : -1;
         for (int x = 0; x < this.numDisplayCols; x++)
         {
             for (int y = 0; y < this.numSequencerRows; y++)
             {
                 // 0: not set, 1: note continues playing, 2: start of note
-                final int isSet = this.clip.getStep (x, this.noteMap[y]);
+                final int isSet = clip.getStep (x, this.noteMap[y]);
                 gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (isSet, x == hiStep, y, selectedTrack));
             }
         }
@@ -169,12 +171,12 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
             return;
 
         final int lengthOfOnePad = this.getLengthOfOnePage (this.numDisplayCols);
-        final double loopStart = this.clip.getLoopStart ();
+        final double loopStart = clip.getLoopStart ();
         final int loopStartPad = (int) Math.ceil (loopStart / lengthOfOnePad);
-        final int loopEndPad = (int) Math.ceil ((loopStart + this.clip.getLoopLength ()) / lengthOfOnePad);
+        final int loopEndPad = (int) Math.ceil ((loopStart + clip.getLoopLength ()) / lengthOfOnePad);
         final int currentPage = step / this.numDisplayCols;
         for (int pad = 0; pad < 8; pad++)
-            gridPad.lightEx (pad, 0, this.getPageColor (loopStartPad, loopEndPad, currentPage, this.clip.getEditPage (), pad));
+            gridPad.lightEx (pad, 0, this.getPageColor (loopStartPad, loopEndPad, currentPage, clip.getEditPage (), pad));
     }
 
 
@@ -187,7 +189,7 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
      * @param track A track from which to use the color
      * @return The color
      */
-    protected String getStepColor (final int isSet, final boolean hilite, final int note, final TrackData track)
+    protected String getStepColor (final int isSet, final boolean hilite, final int note, final ITrack track)
     {
         switch (isSet)
         {
@@ -220,7 +222,7 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
         if (event != ButtonEvent.DOWN)
             return;
         final int offset = this.getScrollOffset ();
-        if (this.offsetY + offset < this.clip.getNumRows ())
+        if (this.offsetY + offset < this.getClip ().getNumRows ())
             this.updateOctave (this.offsetY + offset);
     }
 

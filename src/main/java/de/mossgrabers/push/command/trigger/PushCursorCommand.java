@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.command.trigger;
 
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -31,7 +31,7 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
      * @param model The model
      * @param surface The surface
      */
-    public PushCursorCommand (final Direction direction, final Model model, final PushControlSurface surface)
+    public PushCursorCommand (final Direction direction, final IModel model, final PushControlSurface surface)
     {
         super (direction, model, surface);
     }
@@ -41,7 +41,7 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
     @Override
     protected void updateArrowStates ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         this.canScrollUp = tb.canScrollScenesUp ();
         this.canScrollDown = tb.canScrollScenesDown ();
 
@@ -65,13 +65,13 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
 
         if (Modes.isLayerMode (modeManager.getActiveModeId ()))
         {
-            final CursorDeviceProxy cd = this.model.getCursorDevice ();
+            final ICursorDevice cd = this.model.getCursorDevice ();
             this.canScrollLeft = cd.canScrollLayersOrDrumPadsUp ();
             this.canScrollRight = cd.canScrollLayersOrDrumPadsDown ();
             return;
         }
 
-        final TrackData sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedTrack ();
         final int selIndex = sel != null ? sel.getIndex () : -1;
         this.canScrollLeft = selIndex > 0 || tb.canScrollTracksUp ();
         this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getTrack (selIndex + 1).doesExist () || tb.canScrollTracksDown ();

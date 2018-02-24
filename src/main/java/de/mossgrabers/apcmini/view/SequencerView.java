@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apcmini.view;
@@ -7,12 +7,10 @@ package de.mossgrabers.apcmini.view;
 import de.mossgrabers.apcmini.APCminiConfiguration;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.CursorClipProxy;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
-import de.mossgrabers.framework.view.AbstractSequencerView;
-import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -28,7 +26,7 @@ public class SequencerView extends AbstractNoteSequencerView<APCminiControlSurfa
      * @param surface The controller
      * @param model The model
      */
-    public SequencerView (final APCminiControlSurface surface, final Model model)
+    public SequencerView (final APCminiControlSurface surface, final IModel model)
     {
         super ("Sequencer", surface, model, false);
     }
@@ -72,8 +70,7 @@ public class SequencerView extends AbstractNoteSequencerView<APCminiControlSurfa
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1, octave < Scales.OCTAVE_RANGE ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON2, octave > -Scales.OCTAVE_RANGE ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
-        final View activeView = this.surface.getViewManager ().getActiveView ();
-        final CursorClipProxy clip = activeView instanceof AbstractSequencerView ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
+        final ICursorClip clip = this.getClip ();
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3, clip != null && clip.canScrollStepsBackwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON4, clip != null && clip.canScrollStepsForwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         for (int i = 0; i < 4; i++)

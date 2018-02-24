@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.mode.device;
 
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.data.ChannelData;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
 
@@ -26,7 +26,7 @@ public class DeviceLayerModePan extends DeviceLayerMode
      * @param surface The control surface
      * @param model The model
      */
-    public DeviceLayerModePan (final PushControlSurface surface, final Model model)
+    public DeviceLayerModePan (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -36,11 +36,11 @@ public class DeviceLayerModePan extends DeviceLayerMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final ChannelData layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
         if (layer.doesExist ())
             cd.changeLayerOrDrumPadPan (offset + index, value);
     }
@@ -52,11 +52,11 @@ public class DeviceLayerModePan extends DeviceLayerMode
     {
         this.isKnobTouched[index] = isTouched;
 
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final ChannelData layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
         if (!layer.doesExist ())
             return;
 
@@ -82,13 +82,13 @@ public class DeviceLayerModePan extends DeviceLayerMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final CursorDeviceProxy cd = this.model.getCursorDevice ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
 
         for (int i = 0; i < 8; i++)
         {
-            final ChannelData layer = cd.getLayerOrDrumPad (offset + i);
+            final IChannel layer = cd.getLayerOrDrumPad (offset + i);
             d.setCell (0, i, layer.doesExist () ? "Pan" : "").setCell (1, i, layer.getPanStr (8));
             if (layer.doesExist ())
                 d.setCell (2, i, layer.getPan (), Format.FORMAT_VALUE);
@@ -103,7 +103,7 @@ public class DeviceLayerModePan extends DeviceLayerMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplayElements (final DisplayMessage message, final CursorDeviceProxy cd, final ChannelData l)
+    public void updateDisplayElements (final DisplayMessage message, final ICursorDevice cd, final IChannel l)
     {
         this.updateChannelDisplay (message, cd, DisplayMessage.GRID_ELEMENT_CHANNEL_PAN, false, true);
     }

@@ -1,14 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apc.mode;
 
 import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -28,7 +26,7 @@ public class SendMode extends BaseMode
      * @param model The model
      * @param sendIndex The index of the send
      */
-    public SendMode (final APCControlSurface surface, final Model model, final int sendIndex)
+    public SendMode (final APCControlSurface surface, final IModel model, final int sendIndex)
     {
         super (surface, model, 2, 0);
         this.sendIndex = sendIndex;
@@ -39,9 +37,7 @@ public class SendMode extends BaseMode
     @Override
     public void setValue (final int index, final int value)
     {
-        final AbstractTrackBankProxy currentTrackBank = this.model.getCurrentTrackBank ();
-        if (currentTrackBank instanceof TrackBankProxy)
-            ((TrackBankProxy) currentTrackBank).setSend (index, this.sendIndex, value);
+        this.model.getCurrentTrackBank ().getTrack (index).getSend (this.sendIndex).setValue (value);
     }
 
 
@@ -51,7 +47,7 @@ public class SendMode extends BaseMode
     {
         if (this.model.isEffectTrackBankActive ())
             return Integer.valueOf (0);
-        final TrackData track = this.model.getCurrentTrackBank ().getTrack (index);
-        return track.doesExist () ? Integer.valueOf (track.getSends ()[this.sendIndex].getValue ()) : null;
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
+        return track.doesExist () ? Integer.valueOf (track.getSend (this.sendIndex).getValue ()) : null;
     }
 }

@@ -1,21 +1,21 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.continuous;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
 import de.mossgrabers.framework.daw.IApplication;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -34,7 +34,7 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
      * @param model The model
      * @param surface The surface
      */
-    public FootswitchCommand (final Model model, final S surface)
+    public FootswitchCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }
@@ -85,16 +85,16 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
-                final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-                final TrackData track = tb.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack track = tb.getSelectedTrack ();
                 if (track == null)
                 {
                     this.surface.getDisplay ().notify ("Please select an Instrument track first.", true, true);
                     return;
                 }
 
-                final SlotData selectedSlot = tb.getSelectedSlot (track.getIndex ());
-                final SlotData slot = selectedSlot == null ? track.getSlots ()[0] : selectedSlot;
+                final ISlot selectedSlot = track.getSelectedSlot ();
+                final ISlot slot = selectedSlot == null ? track.getSlot (0) : selectedSlot;
                 if (event == ButtonEvent.DOWN)
                 {
                     if (slot.hasContent ())
@@ -108,7 +108,7 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
                         // If there is no clip in the selected slot, create a clip and begin record
                         // mode. Releasing it ends record mode.
                         this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_NEW, event);
-                        tb.selectClip (track.getIndex (), slot.getIndex ());
+                        slot.select ();
                         this.model.getTransport ().setLauncherOverdub (true);
                     }
                 }
@@ -118,7 +118,7 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
                     this.model.getTransport ().setLauncherOverdub (false);
                 }
                 // Start transport if not already playing
-                tb.launchClip (track.getIndex (), slot.getIndex ());
+                slot.launch ();
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_ARRANGE:

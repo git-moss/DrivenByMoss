@@ -1,16 +1,16 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.launchpad.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.trigger.CursorCommand;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -41,7 +41,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
      * @param model The model
      * @param surface The surface
      */
-    public LaunchpadCursorCommand (final Direction direction, final Model model, final LaunchpadControlSurface surface)
+    public LaunchpadCursorCommand (final Direction direction, final IModel model, final LaunchpadControlSurface surface)
     {
         super (direction, model, surface);
     }
@@ -51,7 +51,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     @Override
     protected void updateArrowStates ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final ViewManager viewManager = this.surface.getViewManager ();
 
         if (viewManager.isActiveView (Views.VIEW_PLAY))
@@ -71,7 +71,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             final int octave = this.model.getScales ().getDrumOctave ();
             this.canScrollUp = octave < 5;
             this.canScrollDown = octave > -3;
-            this.canScrollLeft = ((DrumView) viewManager.getView (Views.VIEW_DRUM)).getClip ().getEditPage () > 0;
+            this.canScrollLeft = this.model.getCursorClip ().getEditPage () > 0;
             // TODO API extension required - We do not know the number of steps
             this.canScrollRight = true;
             return;
@@ -93,7 +93,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             final int octave = this.model.getScales ().getOctave ();
             this.canScrollUp = octave < Scales.OCTAVE_RANGE;
             this.canScrollDown = octave > -Scales.OCTAVE_RANGE;
-            this.canScrollLeft = ((SequencerView) viewManager.getView (Views.VIEW_SEQUENCER)).getClip ().getEditPage () > 0;
+            this.canScrollLeft = this.model.getCursorClip ().getEditPage () > 0;
             // TODO API extension required - We do not know the number of steps
             this.canScrollRight = true;
             return;
@@ -101,7 +101,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         if (viewManager.isActiveView (Views.VIEW_DEVICE))
         {
-            final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             this.canScrollUp = cursorDevice.canSelectNextFX ();
             this.canScrollDown = cursorDevice.canSelectPreviousFX ();
             this.canScrollLeft = cursorDevice.hasPreviousParameterPage ();
@@ -131,7 +131,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
 
-        final TrackData sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedTrack ();
         final int selIndex = sel != null ? sel.getIndex () : -1;
         this.canScrollLeft = selIndex > 0 || tb.canScrollTracksUp ();
         this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getTrack (selIndex + 1).doesExist () || tb.canScrollTracksDown ();
@@ -188,7 +188,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         if (viewManager.isActiveView (Views.VIEW_DEVICE))
         {
-            final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             cursorDevice.previousParameterPage ();
             this.surface.getDisplay ().notify (cursorDevice.getSelectedParameterPageName ());
             return;
@@ -235,7 +235,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         if (viewManager.isActiveView (Views.VIEW_DEVICE))
         {
-            final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             cursorDevice.nextParameterPage ();
             this.surface.getDisplay ().notify (cursorDevice.getSelectedParameterPageName ());
             return;

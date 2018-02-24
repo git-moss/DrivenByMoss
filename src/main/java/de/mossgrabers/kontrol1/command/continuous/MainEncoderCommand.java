@@ -5,9 +5,9 @@
 package de.mossgrabers.kontrol1.command.continuous;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
@@ -29,7 +29,7 @@ public class MainEncoderCommand extends MasterVolumeCommand<Kontrol1ControlSurfa
      * @param model The model
      * @param surface The surface
      */
-    public MainEncoderCommand (final Model model, final Kontrol1ControlSurface surface)
+    public MainEncoderCommand (final IModel model, final Kontrol1ControlSurface surface)
     {
         super (model, surface);
     }

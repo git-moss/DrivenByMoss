@@ -5,9 +5,9 @@
 package de.mossgrabers.kontrol1.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.command.trigger.NewCommand;
-import de.mossgrabers.framework.command.trigger.PlayCommand;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
 
@@ -28,7 +28,7 @@ public class Kontrol1PlayCommand extends PlayCommand<Kontrol1ControlSurface, Kon
      * @param model The model
      * @param surface The surface
      */
-    public Kontrol1PlayCommand (final Model model, final Kontrol1ControlSurface surface)
+    public Kontrol1PlayCommand (final IModel model, final Kontrol1ControlSurface surface)
     {
         super (model, surface);
         this.newCommand = new NewCommand<> (model, surface);

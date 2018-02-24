@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.beatstep.view;
@@ -7,11 +7,11 @@ package de.mossgrabers.beatstep.view;
 import de.mossgrabers.beatstep.BeatstepConfiguration;
 import de.mossgrabers.beatstep.controller.BeatstepColors;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.TrackBankProxy;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.view.AbstractView;
 
 
@@ -31,7 +31,7 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
      * @param surface The controller
      * @param model The model
      */
-    public TrackView (final BeatstepControlSurface surface, final Model model)
+    public TrackView (final BeatstepControlSurface surface, final IModel model)
     {
         super ("Track", surface, model);
         this.extensions = new TrackEditing (surface, model);
@@ -48,8 +48,8 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
             return;
         }
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData selectedTrack = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         if (selectedTrack == null)
             return;
 
@@ -58,8 +58,8 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
             // Send 5 - 6
             case 12:
             case 13:
-                if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).changeSend (selectedTrack.getIndex (), index - 8, value);
+                if (tb instanceof ITrackBank)
+                    selectedTrack.getSend (index - 8).changeValue (value);
                 break;
 
             case 14:
@@ -81,11 +81,11 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
         if (velocity == 0)
             return;
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
 
         int track;
-        TrackData selectedTrack;
-        TrackData sel;
+        ITrack selectedTrack;
+        ITrack sel;
         int index;
         int newSel;
         switch (note - 36)
@@ -94,7 +94,7 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
             case 0:
                 selectedTrack = tb.getSelectedTrack ();
                 if (selectedTrack != null)
-                    tb.toggleIsActivated (selectedTrack.getIndex ());
+                    selectedTrack.toggleIsActivated ();
                 break;
 
             // Track left
@@ -131,14 +131,14 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
             // Move down
             case 3:
-                if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).selectChildren ();
+                if (tb instanceof ITrackBank)
+                    ((ITrackBank) tb).selectChildren ();
                 break;
 
             // Move up
             case 4:
-                if (tb instanceof TrackBankProxy)
-                    ((TrackBankProxy) tb).selectParent ();
+                if (tb instanceof ITrackBank)
+                    ((ITrackBank) tb).selectParent ();
                 break;
 
             // Unused
@@ -167,12 +167,12 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
     @Override
     public void drawGrid ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final PadGrid padGrid = this.surface.getPadGrid ();
         for (int i = 0; i < 8; i++)
             padGrid.light (44 + i, tb.getTrack (i).isSelected () ? BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
 
-        final TrackData sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedTrack ();
         padGrid.light (36, sel != null && sel.isActivated () ? BeatstepColors.BEATSTEP_BUTTON_STATE_RED : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
         padGrid.light (37, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
         padGrid.light (38, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
@@ -186,10 +186,10 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
     private void scrollTracksLeft ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         if (!tb.canScrollTracksUp ())
             return;
-        final TrackData sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedTrack ();
         final int index = sel == null ? 0 : sel.getIndex () - 1;
         tb.scrollTracksPageUp ();
         final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
@@ -199,10 +199,10 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
     private void scrollTracksRight ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         if (!tb.canScrollTracksDown ())
             return;
-        final TrackData sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedTrack ();
         final int index = sel == null ? 0 : sel.getIndex () + 1;
         tb.scrollTracksPageDown ();
         final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();

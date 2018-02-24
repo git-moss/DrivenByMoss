@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.command.trigger;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -31,7 +31,7 @@ public class MastertrackCommand extends AbstractTriggerCommand<PushControlSurfac
      * @param model The model
      * @param surface The surface
      */
-    public MastertrackCommand (final Model model, final PushControlSurface surface)
+    public MastertrackCommand (final IModel model, final PushControlSurface surface)
     {
         super (model, surface);
     }
@@ -74,13 +74,13 @@ public class MastertrackCommand extends AbstractTriggerCommand<PushControlSurfac
 
         if (modeManager.getActiveModeId () == Modes.MODE_MASTER)
         {
-            this.model.getCurrentTrackBank ().select (this.selectedTrackBeforeMasterMode);
+            this.model.getCurrentTrackBank ().getTrack (this.selectedTrackBeforeMasterMode).select ();
             return;
         }
 
         modeManager.setActiveMode (Modes.MODE_MASTER);
         this.model.getMasterTrack ().select ();
-        final TrackData track = this.model.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack track = this.model.getCurrentTrackBank ().getSelectedTrack ();
         this.selectedTrackBeforeMasterMode = track == null ? -1 : track.getIndex ();
     }
 }

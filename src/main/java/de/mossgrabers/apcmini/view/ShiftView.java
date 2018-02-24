@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.apcmini.view;
@@ -9,15 +9,14 @@ import de.mossgrabers.apcmini.controller.APCminiColors;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.apcmini.mode.Modes;
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.Model;
-import de.mossgrabers.framework.command.trigger.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.AbstractTrackBankProxy;
-import de.mossgrabers.framework.daw.CursorDeviceProxy;
-import de.mossgrabers.framework.daw.EffectTrackBankProxy;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.data.SlotData;
-import de.mossgrabers.framework.daw.data.TrackData;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractView;
@@ -61,7 +60,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
      * @param surface The surface
      * @param model The model
      */
-    public ShiftView (final APCminiControlSurface surface, final Model model)
+    public ShiftView (final APCminiControlSurface surface, final IModel model)
     {
         super ("Shift", surface, model);
 
@@ -134,7 +133,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         if (velocity == 0)
             return;
 
-        final CursorDeviceProxy cursorDevice = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         switch (note)
         {
             // Flip views
@@ -187,9 +186,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 this.surface.getDisplay ().notify ("Toggle Launcher Overdub");
                 break;
             case 46:
-                // We can use any cursor clip, e.g. the one of the drum view
-                final DrumView view = (DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM);
-                view.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+                this.model.getCursorClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
                 this.surface.getDisplay ().notify ("Quantize");
                 break;
             case 38:
@@ -294,7 +291,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 if (!Modes.isSendMode (mode))
                     mode = Modes.MODE_SEND1;
                 // Check if Send channel exists
-                final EffectTrackBankProxy fxTrackBank = this.model.getEffectTrackBank ();
+                final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
                 if (Modes.isSendMode (mode) && fxTrackBank != null && !fxTrackBank.getTrack (mode.intValue () - Modes.MODE_SEND1.intValue ()).doesExist ())
                     mode = Modes.MODE_SEND1;
                 modeManager.setActiveMode (mode);
@@ -374,7 +371,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON7, APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON8, APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1, tb.canScrollScenesUp () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON2, tb.canScrollScenesDown () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3, tb.canScrollTracksUp () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
@@ -391,23 +388,22 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
     private void onNew ()
     {
-        final AbstractTrackBankProxy tb = this.model.getCurrentTrackBank ();
-        final TrackData t = tb.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getSelectedTrack ();
         if (t != null)
         {
-            int trackIndex = t.getIndex ();
-            final SlotData [] slotIndexes = tb.getSelectedSlots (trackIndex);
+            final ISlot [] slotIndexes = t.getSelectedSlots ();
             final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
             for (int i = 0; i < 8; i++)
             {
                 final int sIndex = (slotIndex + i) % 8;
-                final SlotData s = t.getSlots ()[sIndex];
+                final ISlot s = t.getSlot (sIndex);
                 if (s.hasContent ())
                     continue;
-                tb.createClip (trackIndex, sIndex, (int) Math.pow (2, this.surface.getConfiguration ().getNewClipLength ()));
+                this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());
                 if (slotIndex != sIndex)
-                    tb.selectClip (trackIndex, sIndex);
-                tb.launchClip (trackIndex, sIndex);
+                    s.select ();
+                s.launch ();
                 this.model.getTransport ().setLauncherOverdub (true);
                 return;
             }
