@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.configuration;
 
+import com.bitwig.extension.api.Color;
+
+
 /**
  * An interface to create user interface widgets for settings.
  *
@@ -66,4 +69,26 @@ public interface ISettingsUI
      * @return The object that encapsulates the requested setting
      */
     IDoubleSetting getNumberSetting (final String label, final String category, final double minValue, final double maxValue, final double stepResolution, final String unit, final double initialValue);
+
+
+    /**
+     * Returns a signal setting.
+     *
+     * @param label The name of the setting, must not be null
+     * @param category The name of the category, may not be null
+     * @param title The title of the signal UI widget
+     * @return The object that encapsulates the requested setting
+     */
+    ISignalSetting getSignalSetting (final String label, final String category, final String title);
+
+
+    /**
+     * Returns a color setting.
+     *
+     * @param label The name of the setting, must not be null
+     * @param category The name of the category, may not be null
+     * @param defaultColor The default color (RGB)
+     * @return The object that encapsulates the requested setting
+     */
+    IColorSetting getColorSetting (final String label, final String category, final Color defaultColor);
 }

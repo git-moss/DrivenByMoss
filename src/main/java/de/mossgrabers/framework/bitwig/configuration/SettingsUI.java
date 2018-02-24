@@ -4,12 +4,15 @@
 
 package de.mossgrabers.framework.bitwig.configuration;
 
+import de.mossgrabers.framework.configuration.IColorSetting;
 import de.mossgrabers.framework.configuration.IDoubleSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
+import de.mossgrabers.framework.configuration.ISignalSetting;
 import de.mossgrabers.framework.configuration.IStringSetting;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.Preferences;
 
 
@@ -64,5 +67,21 @@ public class SettingsUI implements ISettingsUI
 
     {
         return new IntegerSettingImpl (this.preferences.getNumberSetting (label, category, minValue, maxValue, stepResolution, unit, initialValue), maxValue - minValue + 1);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISignalSetting getSignalSetting (final String label, final String category, final String action)
+    {
+        return new SignalSettingImpl (this.preferences.getSignalSetting (label, category, action));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IColorSetting getColorSetting (String label, String category, Color defaultColor)
+    {
+        return new ColorSettingImpl (this.preferences.getColorSetting (label, category, defaultColor));
     }
 }

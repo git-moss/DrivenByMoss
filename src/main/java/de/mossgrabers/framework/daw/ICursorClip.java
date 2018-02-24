@@ -12,6 +12,14 @@ package de.mossgrabers.framework.daw;
 public interface ICursorClip extends ObserverManagement
 {
     /**
+     * Get the color of the clip.
+     *
+     * @return The color
+     */
+    double [] getColor ();
+
+
+    /**
      * Set the color of the clip.
      *
      * @param red The red

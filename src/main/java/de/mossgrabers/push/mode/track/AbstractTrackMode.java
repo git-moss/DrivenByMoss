@@ -100,10 +100,7 @@ public abstract class AbstractTrackMode extends BaseMode
                     this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_DEVICE, ButtonEvent.DOWN);
             }
             else
-            {
-                track.select ();
-                track.makeVisible ();
-            }
+                track.selectAndMakeVisible ();
             return;
         }
 

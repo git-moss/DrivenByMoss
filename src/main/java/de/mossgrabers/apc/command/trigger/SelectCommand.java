@@ -11,7 +11,6 @@ import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -52,9 +51,7 @@ public class SelectCommand extends AbstractTriggerCommand<APCControlSurface, APC
             return;
         }
 
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (this.index);
-        track.select ();
-        track.makeVisible ();
+        this.model.getCurrentTrackBank ().getTrack (this.index).selectAndMakeVisible ();
     }
 
 

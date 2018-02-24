@@ -50,7 +50,7 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
         for (int i = 0; i < this.numTracks; i++)
         {
             final int index = i;
-            final Track t = this.trackBank.getChannel (i);
+            final Track t = this.trackBank.getItemAt (i);
             t.playingNotes ().addValueObserver (value -> this.handleNotes (index, value));
         }
 
@@ -79,7 +79,7 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
         for (final ITrack track: this.tracks)
         {
             track.enableObservers (enable);
-            this.trackBank.getChannel (track.getIndex ()).playingNotes ().setIsSubscribed (enable);
+            this.trackBank.getItemAt (track.getIndex ()).playingNotes ().setIsSubscribed (enable);
         }
 
         this.trackBank.channelCount ().setIsSubscribed (enable);
@@ -119,7 +119,7 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
     @Override
     public void scrollTracksUp ()
     {
-        this.trackBank.scrollChannelsUp ();
+        this.trackBank.scrollBackwards ();
     }
 
 
@@ -127,7 +127,7 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
     @Override
     public void scrollTracksDown ()
     {
-        this.trackBank.scrollChannelsDown ();
+        this.trackBank.scrollForwards ();
     }
 
 
@@ -135,7 +135,7 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
     @Override
     public void scrollTracksPageUp ()
     {
-        this.trackBank.scrollChannelsPageUp ();
+        this.trackBank.scrollPageBackwards ();
     }
 
 
@@ -143,7 +143,7 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
     @Override
     public void scrollTracksPageDown ()
     {
-        this.trackBank.scrollChannelsPageDown ();
+        this.trackBank.scrollPageForwards ();
     }
 
 
@@ -152,7 +152,7 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
     public void scrollToChannel (final int channel)
     {
         if (channel >= 0 && channel < this.getTrackCount ())
-            this.trackBank.scrollToChannel (channel / this.numTracks * this.numTracks);
+            this.trackBank.scrollPosition ().set (channel / this.numTracks * this.numTracks);
     }
 
 
@@ -173,6 +173,28 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public int getTrackPositionFirst ()
+    {
+        return this.getTrack (0).getPosition ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getTrackPositionLast ()
+    {
+        for (int i = 7; i >= 0; i--)
+        {
+            final int pos = this.getTrack (i).getPosition ();
+            if (pos >= 0)
+                return pos;
+        }
+        return -1;
+    }
+
+
     /**
      * Get the clip launcher slots of a track.
      *
@@ -181,7 +203,7 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
      */
     private ClipLauncherSlotBank getClipLauncherSlots (final int index)
     {
-        return this.trackBank.getChannel (index).clipLauncherSlotBank ();
+        return this.trackBank.getItemAt (index).clipLauncherSlotBank ();
     }
 
 
@@ -195,7 +217,7 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
     {
         final ITrack [] trackData = new TrackImpl [count];
         for (int i = 0; i < count; i++)
-            trackData[i] = new TrackImpl (this.trackBank.getChannel (i), this.valueChanger, i, this.numSends, this.numScenes);
+            trackData[i] = new TrackImpl (this.trackBank.getItemAt (i), this.valueChanger, i, this.numSends, this.numScenes);
         return trackData;
     }
 

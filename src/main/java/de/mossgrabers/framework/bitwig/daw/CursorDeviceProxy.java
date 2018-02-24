@@ -126,7 +126,7 @@ public class CursorDeviceProxy implements ICursorDevice
         this.deviceBanks = new DeviceBank [this.numDeviceLayers];
         for (int i = 0; i < this.numDeviceLayers; i++)
         {
-            final Channel layer = this.layerBank.getChannel (i);
+            final Channel layer = this.layerBank.getItemAt (i);
             this.deviceLayers[i] = new ChannelImpl (layer, valueChanger, i, numSends);
             this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
 
@@ -140,7 +140,7 @@ public class CursorDeviceProxy implements ICursorDevice
         this.drumPadBanks = new DeviceBank [this.numDrumPadLayers];
         for (int i = 0; i < this.numDrumPadLayers; i++)
         {
-            final Channel layer = this.drumPadBank.getChannel (i);
+            final Channel layer = this.drumPadBank.getItemAt (i);
             this.drumPadLayers[i] = new ChannelImpl (layer, valueChanger, i, numSends);
             this.drumPadBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
 
@@ -1000,7 +1000,7 @@ public class CursorDeviceProxy implements ICursorDevice
     {
         if (index >= this.numDeviceLayers)
             return;
-        final DeviceLayer channel = this.layerBank.getChannel (index);
+        final DeviceLayer channel = this.layerBank.getItemAt (index);
         if (channel != null)
             channel.selectInEditor ();
     }
@@ -1059,7 +1059,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void enterLayer (final int index)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).selectInMixer ();
+            this.layerBank.getItemAt (index).selectInMixer ();
     }
 
 
@@ -1091,7 +1091,7 @@ public class CursorDeviceProxy implements ICursorDevice
     @Override
     public void scrollLayersPageUp ()
     {
-        this.layerBank.scrollChannelsPageUp ();
+        this.layerBank.scrollPageBackwards ();
     }
 
 
@@ -1099,7 +1099,7 @@ public class CursorDeviceProxy implements ICursorDevice
     @Override
     public void scrollLayersPageDown ()
     {
-        this.layerBank.scrollChannelsPageDown ();
+        this.layerBank.scrollPageForwards ();
     }
 
 
@@ -1108,7 +1108,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setLayerColor (final int index, final double red, final double green, final double blue)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).color ().set ((float) red, (float) green, (float) blue);
+            this.layerBank.getItemAt (index).color ().set ((float) red, (float) green, (float) blue);
     }
 
 
@@ -1117,7 +1117,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void changeLayerVolume (final int index, final int control)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).volume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.layerBank.getItemAt (index).volume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1126,7 +1126,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setLayerVolume (final int index, final int value)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).volume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.layerBank.getItemAt (index).volume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1135,7 +1135,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void resetLayerVolume (final int index)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).volume ().reset ();
+            this.layerBank.getItemAt (index).volume ().reset ();
     }
 
 
@@ -1144,7 +1144,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void touchLayerVolume (final int index, final boolean isBeingTouched)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).volume ().touch (isBeingTouched);
+            this.layerBank.getItemAt (index).volume ().touch (isBeingTouched);
     }
 
 
@@ -1153,7 +1153,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void changeLayerPan (final int index, final int control)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).pan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.layerBank.getItemAt (index).pan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1162,7 +1162,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setLayerPan (final int index, final int value)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).pan ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.layerBank.getItemAt (index).pan ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1171,7 +1171,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void resetLayerPan (final int index)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).pan ().reset ();
+            this.layerBank.getItemAt (index).pan ().reset ();
     }
 
 
@@ -1180,7 +1180,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void touchLayerPan (final int index, final boolean isBeingTouched)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).pan ().touch (isBeingTouched);
+            this.layerBank.getItemAt (index).pan ().touch (isBeingTouched);
     }
 
 
@@ -1189,7 +1189,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void changeLayerSend (final int index, final int sendIndex, final int control)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).sendBank ().getItemAt (sendIndex).inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.layerBank.getItemAt (index).sendBank ().getItemAt (sendIndex).inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1198,7 +1198,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setLayerSend (final int index, final int sendIndex, final int value)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).sendBank ().getItemAt (sendIndex).set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.layerBank.getItemAt (index).sendBank ().getItemAt (sendIndex).set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1207,7 +1207,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void resetLayerSend (final int index, final int sendIndex)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).sendBank ().getItemAt (sendIndex).reset ();
+            this.layerBank.getItemAt (index).sendBank ().getItemAt (sendIndex).reset ();
     }
 
 
@@ -1216,7 +1216,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void touchLayerSend (final int index, final int sendIndex, final boolean isBeingTouched)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).sendBank ().getItemAt (sendIndex).touch (isBeingTouched);
+            this.layerBank.getItemAt (index).sendBank ().getItemAt (sendIndex).touch (isBeingTouched);
     }
 
 
@@ -1225,7 +1225,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void toggleLayerIsActivated (final int index)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).isActivated ().toggle ();
+            this.layerBank.getItemAt (index).isActivated ().toggle ();
     }
 
 
@@ -1234,7 +1234,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void toggleLayerMute (final int index)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).mute ().toggle ();
+            this.layerBank.getItemAt (index).mute ().toggle ();
     }
 
 
@@ -1243,7 +1243,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setLayerMute (final int index, final boolean value)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).mute ().set (value);
+            this.layerBank.getItemAt (index).mute ().set (value);
     }
 
 
@@ -1252,7 +1252,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void toggleLayerSolo (final int index)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).solo ().toggle ();
+            this.layerBank.getItemAt (index).solo ().toggle ();
     }
 
 
@@ -1261,7 +1261,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setLayerSolo (final int index, final boolean value)
     {
         if (index < this.numDeviceLayers)
-            this.layerBank.getChannel (index).solo ().set (value);
+            this.layerBank.getItemAt (index).solo ().set (value);
     }
 
 
@@ -1300,7 +1300,7 @@ public class CursorDeviceProxy implements ICursorDevice
     {
         if (index >= this.numDrumPadLayers)
             return;
-        final Channel channel = this.drumPadBank.getChannel (index);
+        final Channel channel = this.drumPadBank.getItemAt (index);
         if (channel != null)
             channel.selectInEditor ();
     }
@@ -1363,7 +1363,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void enterDrumPad (final int index)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).selectInMixer ();
+            this.drumPadBank.getItemAt (index).selectInMixer ();
     }
 
 
@@ -1395,7 +1395,7 @@ public class CursorDeviceProxy implements ICursorDevice
     @Override
     public void scrollDrumPadsPageUp ()
     {
-        this.drumPadBank.scrollChannelsPageUp ();
+        this.drumPadBank.scrollPageBackwards ();
     }
 
 
@@ -1403,7 +1403,7 @@ public class CursorDeviceProxy implements ICursorDevice
     @Override
     public void scrollDrumPadsPageDown ()
     {
-        this.drumPadBank.scrollChannelsPageDown ();
+        this.drumPadBank.scrollPageForwards ();
     }
 
 
@@ -1411,7 +1411,7 @@ public class CursorDeviceProxy implements ICursorDevice
     @Override
     public void scrollDrumPadsUp ()
     {
-        this.drumPadBank.scrollChannelsUp ();
+        this.drumPadBank.scrollBackwards ();
     }
 
 
@@ -1419,7 +1419,7 @@ public class CursorDeviceProxy implements ICursorDevice
     @Override
     public void scrollDrumPadsDown ()
     {
-        this.drumPadBank.scrollChannelsDown ();
+        this.drumPadBank.scrollForwards ();
     }
 
 
@@ -1428,7 +1428,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setDrumPadColor (final int index, final double red, final double green, final double blue)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).color ().set ((float) red, (float) green, (float) blue);
+            this.drumPadBank.getItemAt (index).color ().set ((float) red, (float) green, (float) blue);
     }
 
 
@@ -1437,7 +1437,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void changeDrumPadVolume (final int index, final int control)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).volume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.drumPadBank.getItemAt (index).volume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1446,7 +1446,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setDrumPadVolume (final int index, final int value)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).volume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.drumPadBank.getItemAt (index).volume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1455,7 +1455,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void resetDrumPadVolume (final int index)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).volume ().reset ();
+            this.drumPadBank.getItemAt (index).volume ().reset ();
     }
 
 
@@ -1464,7 +1464,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void touchDrumPadVolume (final int index, final boolean isBeingTouched)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).volume ().touch (isBeingTouched);
+            this.drumPadBank.getItemAt (index).volume ().touch (isBeingTouched);
     }
 
 
@@ -1473,7 +1473,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void changeDrumPadPan (final int index, final int control)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).pan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.drumPadBank.getItemAt (index).pan ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1482,7 +1482,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setDrumPadPan (final int index, final int value)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).pan ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.drumPadBank.getItemAt (index).pan ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1491,7 +1491,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void resetDrumPadPan (final int index)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).pan ().reset ();
+            this.drumPadBank.getItemAt (index).pan ().reset ();
     }
 
 
@@ -1500,7 +1500,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void touchDrumPadPan (final int index, final boolean isBeingTouched)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).pan ().touch (isBeingTouched);
+            this.drumPadBank.getItemAt (index).pan ().touch (isBeingTouched);
     }
 
 
@@ -1509,7 +1509,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void changeDrumPadSend (final int index, final int sendIndex, final int control)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).sendBank ().getItemAt (sendIndex).inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.drumPadBank.getItemAt (index).sendBank ().getItemAt (sendIndex).inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1518,7 +1518,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setDrumPadSend (final int index, final int sendIndex, final int value)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).sendBank ().getItemAt (sendIndex).set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+            this.drumPadBank.getItemAt (index).sendBank ().getItemAt (sendIndex).set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -1527,7 +1527,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void resetDrumPadSend (final int index, final int sendIndex)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).sendBank ().getItemAt (sendIndex).reset ();
+            this.drumPadBank.getItemAt (index).sendBank ().getItemAt (sendIndex).reset ();
     }
 
 
@@ -1536,7 +1536,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void touchDrumPadSend (final int index, final int sendIndex, final boolean isBeingTouched)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).sendBank ().getItemAt (sendIndex).touch (isBeingTouched);
+            this.drumPadBank.getItemAt (index).sendBank ().getItemAt (sendIndex).touch (isBeingTouched);
     }
 
 
@@ -1545,7 +1545,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void toggleDrumPadIsActivated (final int index)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).isActivated ().toggle ();
+            this.drumPadBank.getItemAt (index).isActivated ().toggle ();
     }
 
 
@@ -1554,7 +1554,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void toggleDrumPadMute (final int index)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).mute ().toggle ();
+            this.drumPadBank.getItemAt (index).mute ().toggle ();
     }
 
 
@@ -1563,7 +1563,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setDrumPadMute (final int index, final boolean value)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).mute ().set (value);
+            this.drumPadBank.getItemAt (index).mute ().set (value);
     }
 
 
@@ -1572,7 +1572,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void toggleDrumPadSolo (final int index)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).solo ().toggle ();
+            this.drumPadBank.getItemAt (index).solo ().toggle ();
     }
 
 
@@ -1581,7 +1581,7 @@ public class CursorDeviceProxy implements ICursorDevice
     public void setDrumPadSolo (final int index, final boolean value)
     {
         if (index < this.numDrumPadLayers)
-            this.drumPadBank.getChannel (index).solo ().set (value);
+            this.drumPadBank.getItemAt (index).solo ().set (value);
     }
 
 

@@ -103,7 +103,7 @@ public class PitchbendCommand extends AbstractPitchbendCommand<PushControlSurfac
 
             case PushConfiguration.RIBBON_MODE_FADER:
                 final ITrack t = this.model.getCurrentTrackBank ().getSelectedTrack ();
-                this.surface.setRibbonValue (t == null ? 0 : this.model.getValueChanger ().toMidiValue (config.isEnableVUMeters () ? t.getVu () : t.getVolume ()));
+                this.surface.setRibbonValue (t == null ? 0 : this.model.getValueChanger ().toMidiValue (t.getVolume ()));
                 break;
 
             default:

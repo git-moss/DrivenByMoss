@@ -101,9 +101,7 @@ public abstract class AbstractView<S extends ControlSurface<C>, C extends Config
     @Override
     public void selectTrack (final int index)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
-        track.select ();
-        track.makeVisible ();
+        this.model.getCurrentTrackBank ().getTrack (index).selectAndMakeVisible ();
     }
 
 

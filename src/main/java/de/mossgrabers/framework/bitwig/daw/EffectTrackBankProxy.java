@@ -50,6 +50,6 @@ public class EffectTrackBankProxy extends AbstractTrackBankProxy
     {
         final int chann = channel - this.audioInstrumentTrackBank.getTrackCount ();
         if (chann >= 0 && chann < this.getTrackCount ())
-            this.trackBank.scrollToChannel (chann / this.numTracks * this.numTracks);
+            this.trackBank.scrollPosition ().set (chann / this.numTracks * this.numTracks);
     }
 }

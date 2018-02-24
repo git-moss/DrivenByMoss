@@ -237,4 +237,22 @@ public interface IChannelBank extends ObserverManagement
      * @return The number of sends of a bank page
      */
     int getNumSends ();
+
+
+    /**
+     * Get the position of the first track of the current bank page.
+     *
+     * @return The position
+     */
+    int getTrackPositionFirst ();
+
+
+    /**
+     * Get the position of the last track of the current bank page. E.g. if the current bank page
+     * contains only 5 tracks, the position of the 5th track is returned. If there are no tracks -1
+     * is returned.
+     *
+     * @return The position or -1
+     */
+    int getTrackPositionLast ();
 }

@@ -9,6 +9,7 @@ import de.mossgrabers.framework.daw.ICursorClip;
 
 import com.bitwig.extension.controller.api.Clip;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.SettableColorValue;
 
 import java.util.Arrays;
 
@@ -94,6 +95,20 @@ public class CursorClipProxy implements ICursorClip
     public void setColor (final double red, final double green, final double blue)
     {
         this.clip.color ().set ((float) red, (float) green, (float) blue);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public double [] getColor ()
+    {
+        final SettableColorValue color = this.clip.color ();
+        return new double []
+        {
+            color.red (),
+            color.green (),
+            color.blue ()
+        };
     }
 
 
