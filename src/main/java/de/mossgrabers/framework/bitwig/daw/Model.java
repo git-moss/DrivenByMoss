@@ -63,7 +63,6 @@ public class Model extends AbstractModel
         this.project = new ProjectProxy (controllerHost.getProject (), app);
         this.arranger = new ArrangerProxy (controllerHost.createArranger ());
         this.mixer = new MixerProxy (controllerHost.createMixer ());
-        this.browser = new BrowserProxy (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
         this.transport = new TransportProxy (controllerHost, valueChanger);
         this.groove = new GrooveProxy (controllerHost, valueChanger);
         final MasterTrack master = controllerHost.createMasterTrack (0);
@@ -80,6 +79,7 @@ public class Model extends AbstractModel
         this.cursorDevice = new CursorDeviceProxy (this.host, cd, valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
         cd = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
         this.drumDevice64 = new CursorDeviceProxy (this.host, cd, valueChanger, 0, 0, 0, 64, 64);
+        this.browser = new BrowserProxy (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
 
         this.masterTrackEqualsValue = cd.channel ().createEqualsValue (master);
         this.masterTrackEqualsValue.markInterested ();
