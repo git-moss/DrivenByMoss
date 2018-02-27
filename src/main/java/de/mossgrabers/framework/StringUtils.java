@@ -62,6 +62,9 @@ public class StringUtils
                     case 'é':
                         str.append ("e");
                         break;
+                    case '→':
+                        str.append ("->");
+                        break;
                     default:
                         str.append ("?");
                         break;

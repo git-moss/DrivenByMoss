@@ -48,6 +48,22 @@ public class HostProxy implements IHost
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasPinning ()
+    {
+        return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasGroove ()
+    {
+        return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void scheduleTask (final Runnable task, final long delay)
     {
         this.host.scheduleTask (task, delay);

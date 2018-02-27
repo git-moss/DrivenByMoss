@@ -22,7 +22,7 @@ public class SendImpl extends ParameterImpl implements ISend
 
     /**
      * Constructor.
-     * 
+     *
      * @param valueChanger The value changer
      * @param parameter The parameter
      * @param maxParameterValue The maximum number for values (range is 0 till maxParameterValue-1)

@@ -86,6 +86,9 @@ public class LayoutCommand extends AbstractTriggerCommand<PushControlSurface, Pu
         if (Views.isSequencerView (viewManager.getActiveViewId ()))
             viewManager.setActiveView (Views.VIEW_PLAY);
         else
-            viewManager.setActiveView (Views.VIEW_SEQUENCER);
+        {
+            if (viewManager.getView (Views.VIEW_SEQUENCER) != null)
+                viewManager.setActiveView (Views.VIEW_SEQUENCER);
+        }
     }
 }

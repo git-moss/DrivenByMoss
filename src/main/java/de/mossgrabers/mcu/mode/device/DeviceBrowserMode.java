@@ -4,6 +4,7 @@
 
 package de.mossgrabers.mcu.mode.device;
 
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -106,7 +107,7 @@ public class DeviceBrowserMode extends BaseMode
                 for (int i = 0; i < browser.getNumFilterColumnEntries (); i++)
                 {
                     if (i < results.length)
-                        d.setBlock (i / 4, i % 4, (results[i].isSelected () ? ">" : " ") + results[i].getName ());
+                        d.setBlock (i / 4, i % 4, (results[i].isSelected () ? ">" : " ") + StringUtils.fixASCII (results[i].getName ()));
                     else
                         break;
                 }
@@ -115,7 +116,7 @@ public class DeviceBrowserMode extends BaseMode
             case SELECTION_FILTER:
                 final IBrowserColumnItem [] items = browser.getFilterColumn (this.filterColumn).getItems ();
                 for (int i = 0; i < browser.getNumResults (); i++)
-                    d.setBlock (i / 4, i % 4, (items[i].isSelected () ? ">" : " ") + items[i].getName ());
+                    d.setBlock (i / 4, i % 4, (items[i].isSelected () ? ">" : " ") + StringUtils.fixASCII (items[i].getName ()));
                 break;
         }
         d.allDone ();

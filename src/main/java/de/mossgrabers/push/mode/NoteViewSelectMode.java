@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -91,7 +92,10 @@ public class NoteViewSelectMode extends BaseMode
         for (int i = 0; i < VIEWS.length; i++)
         {
             if (VIEWS[i] != null)
-                d.setCell (3, i, (viewManager.isActiveView (VIEWS[i]) ? PushDisplay.RIGHT_ARROW : "") + viewManager.getView (VIEWS[i]).getName ());
+            {
+                final View view = viewManager.getView (VIEWS[i]);
+                d.setCell (3, i, view == null ? "" : ((viewManager.isActiveView (VIEWS[i]) ? PushDisplay.RIGHT_ARROW : "") + view.getName ()));
+            }
             if (VIEWS_TOP[i] != null)
                 d.setCell (0, i, (viewManager.isActiveView (VIEWS_TOP[i]) ? PushDisplay.RIGHT_ARROW : "") + viewManager.getView (VIEWS_TOP[i]).getName ());
         }
@@ -108,7 +112,13 @@ public class NoteViewSelectMode extends BaseMode
         final DisplayMessage message = display.createMessage ();
         for (int i = 0; i < VIEWS.length; i++)
         {
-            final String menuBottomName = VIEWS[i] == null ? "" : viewManager.getView (VIEWS[i]).getName ();
+            String menuBottomName = "";
+            if (VIEWS[i] != null)
+            {
+                final View view = viewManager.getView (VIEWS[i]);
+                if (view != null)
+                    menuBottomName = view.getName ();
+            }
             final String menuTopName = VIEWS_TOP[i] == null ? "" : viewManager.getView (VIEWS_TOP[i]).getName ();
             final boolean isMenuBottomSelected = VIEWS[i] != null && viewManager.isActiveView (VIEWS[i]);
             final boolean isMenuTopSelected = VIEWS_TOP[i] != null && viewManager.isActiveView (VIEWS_TOP[i]);
@@ -146,6 +156,8 @@ public class NoteViewSelectMode extends BaseMode
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.getView (viewID) == null)
+            return;
         viewManager.setActiveView (viewID);
 
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();

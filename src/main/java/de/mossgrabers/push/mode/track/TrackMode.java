@@ -323,6 +323,7 @@ public class TrackMode extends AbstractTrackMode
         final PushConfiguration config = this.surface.getConfiguration ();
         final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
         final DisplayMessage message = display.createMessage ();
+        final boolean displayCrossfader = config.isDisplayCrossfader ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getTrack (i);
@@ -330,7 +331,7 @@ public class TrackMode extends AbstractTrackMode
             // The menu item
             String topMenu;
             boolean topMenuSelected;
-            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
+            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP) && this.model.getHost ().hasClips ())
             {
                 topMenu = t.doesExist () ? "Stop Clip" : "";
                 topMenuSelected = t.isPlaying ();
@@ -360,7 +361,7 @@ public class TrackMode extends AbstractTrackMode
             final ValueChanger valueChanger = this.model.getValueChanger ();
             if (t.isSelected ())
             {
-                final int crossfadeMode = "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1;
+                final int crossfadeMode = displayCrossfader ? t.getCrossfadeModeAsNumber () : -1;
                 message.addChannelElement (topMenu, topMenuSelected, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), this.isKnobTouched[0] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), this.isKnobTouched[1] ? t.getPanStr (8) : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecArm (), crossfadeMode);
             }
             else if (sendsIndex == i)

@@ -28,6 +28,22 @@ public interface IHost
 
 
     /**
+     * Returns true if the DAW supports track/device pinning.
+     *
+     * @return True if the DAW supports track/device pinning
+     */
+    boolean hasPinning ();
+
+
+    /**
+     * Returns true if the DAW supports Groove options.
+     *
+     * @return True if the DAW supports Groove options
+     */
+    boolean hasGroove ();
+
+
+    /**
      * Schedules the given task for execution after the given delay.
      *
      * @param task The task to execute

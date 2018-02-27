@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.configuration;
 
+import de.mossgrabers.framework.ColorEx;
+
+
 /**
  * A color setting.
  *
@@ -12,13 +15,21 @@ package de.mossgrabers.framework.configuration;
 public interface IColorSetting
 {
     /**
-     * Set the string value.
-     * 
+     * Set the RGB color value.
+     *
      * @param red The red component
      * @param green The green component
      * @param blue The blue component
      */
     void set (double red, double green, double blue);
+
+
+    /**
+     * Set the color.
+     *
+     * @param color The color
+     */
+    void set (ColorEx color);
 
 
     /**

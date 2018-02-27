@@ -4,6 +4,7 @@
 
 package de.mossgrabers.mcu.mode.device;
 
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -60,7 +61,7 @@ public class DeviceParamsMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final IParameter param = cd.getFXParam (extenderOffset + i);
-            d.setCell (0, i, param.doesExist () ? param.getName () : "").setCell (1, i, param.getDisplayedValue (8));
+            d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName ()) : "").setCell (1, i, param.getDisplayedValue (8));
         }
 
         d.allDone ();

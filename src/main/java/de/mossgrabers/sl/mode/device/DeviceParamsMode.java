@@ -5,7 +5,9 @@
 package de.mossgrabers.sl.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -38,24 +40,20 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
     @Override
     public void updateDisplay ()
     {
-        final Display d = this.surface.getDisplay ();
-        d.clearRow (2);
+        final Display d = this.surface.getDisplay ().clearRow (0).clearRow (2);
 
-        if (this.model.hasSelectedDevice ())
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        if (cd.hasSelectedDevice ())
         {
-            d.clearRow (0);
             for (int i = 0; i < 8; i++)
             {
-                final IParameter p = this.model.getCursorDevice ().getFXParam (i);
-                final String name = p.getName (8);
-                if (!name.isEmpty ())
-                    d.setCell (0, i, name).setCell (2, i, p.getDisplayedValue (8));
+                final IParameter param = cd.getFXParam (i);
+                d.setCell (0, i, param.doesExist () ? this.optimizeName (StringUtils.fixASCII (param.getName ()), 8) : "").setCell (2, i, param.getDisplayedValue (8));
             }
-            d.done (0);
         }
         else
             d.setRow (0, "                       Please select a device...                       ");
-        d.done (2);
+        d.done (0).done (2);
     }
 
 

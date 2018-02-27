@@ -39,6 +39,8 @@ public class PushQuantizeCommand extends QuantizeCommand<PushControlSurface, Pus
         final ModeManager modeManager = this.surface.getModeManager ();
         if (event == ButtonEvent.LONG || event == ButtonEvent.DOWN && this.surface.isShiftPressed ())
         {
+            if (!this.model.getHost ().hasGroove ())
+                return;
             modeManager.setActiveMode (Modes.MODE_GROOVE);
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_QUANTIZE);
             return;

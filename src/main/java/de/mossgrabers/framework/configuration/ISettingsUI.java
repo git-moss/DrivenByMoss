@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.configuration;
 
-import com.bitwig.extension.api.Color;
+import de.mossgrabers.framework.ColorEx;
 
 
 /**
@@ -90,5 +90,5 @@ public interface ISettingsUI
      * @param defaultColor The default color (RGB)
      * @return The object that encapsulates the requested setting
      */
-    IColorSetting getColorSetting (final String label, final String category, final Color defaultColor);
+    IColorSetting getColorSetting (final String label, final String category, final ColorEx defaultColor);
 }

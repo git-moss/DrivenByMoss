@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.configuration;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.framework.configuration.IColorSetting;
 import de.mossgrabers.framework.configuration.IDoubleSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
@@ -12,7 +13,6 @@ import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.ISignalSetting;
 import de.mossgrabers.framework.configuration.IStringSetting;
 
-import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.Preferences;
 
 
@@ -80,8 +80,9 @@ public class SettingsUI implements ISettingsUI
 
     /** {@inheritDoc} */
     @Override
-    public IColorSetting getColorSetting (String label, String category, Color defaultColor)
+    public IColorSetting getColorSetting (final String label, final String category, final ColorEx defaultColor)
     {
-        return new ColorSettingImpl (this.preferences.getColorSetting (label, category, defaultColor));
+        final com.bitwig.extension.api.Color color = com.bitwig.extension.api.Color.fromRGB (defaultColor.getRed (), defaultColor.getGreen (), defaultColor.getBlue ());
+        return new ColorSettingImpl (this.preferences.getColorSetting (label, category, color));
     }
 }

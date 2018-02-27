@@ -100,7 +100,7 @@ class MidiInputImpl implements IMidiInput
 
     /** {@inheritDoc} */
     @Override
-    public void setKeyTranslationTable (final Object [] table)
+    public void setKeyTranslationTable (final Integer [] table)
     {
         if (this.noteInput != null)
             this.noteInput.setKeyTranslationTable (table);
@@ -109,7 +109,7 @@ class MidiInputImpl implements IMidiInput
 
     /** {@inheritDoc} */
     @Override
-    public void setVelocityTranslationTable (final Object [] table)
+    public void setVelocityTranslationTable (final Integer [] table)
     {
         if (this.noteInput != null)
             this.noteInput.setVelocityTranslationTable (table);

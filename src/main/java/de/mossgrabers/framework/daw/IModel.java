@@ -222,7 +222,7 @@ public interface IModel
 
     /**
      * Creates a new clip at the given track and slot index.
-     * 
+     *
      * @param slot The slot in which to create a clip
      * @param clipLength The length of the new clip as read from the configuration
      */

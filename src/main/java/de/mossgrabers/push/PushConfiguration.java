@@ -206,8 +206,7 @@ public class PushConfiguration extends AbstractConfiguration
         // Workflow
 
         this.activateEnableVUMetersSetting (settingsUI);
-        if (!this.isPush2)
-            this.activateDisplayCrossfaderSetting (settingsUI);
+        this.activateDisplayCrossfaderSetting (settingsUI);
         this.activateFootswitchSetting (settingsUI);
         this.activateStopAutomationOnKnobReleaseSetting (settingsUI);
         this.activateNewClipLengthSetting (settingsUI);

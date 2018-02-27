@@ -40,7 +40,7 @@ public interface IMidiInput
      * @param table An array which should contain 128 entries. Each entry should be a note value in
      *            the range [0..127] or -1 in case of filtering.
      */
-    void setKeyTranslationTable (Object [] table);
+    void setKeyTranslationTable (Integer [] table);
 
 
     /**
@@ -55,7 +55,7 @@ public interface IMidiInput
      * @param table An array which should contain 128 entries. Each entry should be a note value in
      *            the range [0..127] or -1 in case of filtering.
      */
-    void setVelocityTranslationTable (Object [] table);
+    void setVelocityTranslationTable (Integer [] table);
 
 
     /**

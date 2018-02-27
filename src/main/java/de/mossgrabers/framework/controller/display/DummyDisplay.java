@@ -151,6 +151,14 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
+    public void forceFlush ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void shutdown ()
     {
         // Intentionally empty

@@ -5,6 +5,7 @@
 package de.mossgrabers.push.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
@@ -327,12 +328,11 @@ public class DeviceParamsMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final IParameter param = cd.getFXParam (i);
-            final boolean exists = param.doesExist ();
-            d.setCell (0, i, exists ? param.getName () : "").setCell (1, i, param.getDisplayedValue (8));
+            d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName ()) : "").setCell (1, i, param.getDisplayedValue (8));
         }
 
         // Row 3
-        d.setBlock (2, 0, "Selected Device:").setBlock (2, 1, this.model.getCursorDevice ().getName ());
+        d.setBlock (2, 0, "Selected Device:").setBlock (2, 1, cd.getName ());
 
         // Row 4
         if (this.showDevices)
@@ -363,7 +363,8 @@ public class DeviceParamsMode extends BaseMode
         final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
         final DisplayMessage message = display.createMessage ();
 
-        if (!this.model.getCursorDevice ().hasSelectedDevice ())
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        if (!cd.hasSelectedDevice ())
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
@@ -376,7 +377,6 @@ public class DeviceParamsMode extends BaseMode
 
         final ValueChanger valueChanger = this.model.getValueChanger ();
 
-        final ICursorDevice cd = this.model.getCursorDevice ();
         final String [] pages = cd.getParameterPageNames ();
         final int page = Math.min (Math.max (0, cd.getSelectedParameterPage ()), pages.length - 1);
         final int start = page / 8 * 8;
@@ -429,7 +429,7 @@ public class DeviceParamsMode extends BaseMode
             }
 
             final double [] bottomMenuColor = BitwigColors.getColorEntry (color);
-            final IParameter param = this.model.getCursorDevice ().getFXParam (i);
+            final IParameter param = cd.getFXParam (i);
             final boolean exists = param.doesExist ();
             final String parameterName = exists ? param.getName (9) : "";
             final int parameterValue = valueChanger.toDisplayValue (exists ? param.getValue () : 0);

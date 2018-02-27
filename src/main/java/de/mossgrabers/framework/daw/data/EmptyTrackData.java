@@ -209,7 +209,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public ISend getSend (int sendIndex)
+    public ISend getSend (final int sendIndex)
     {
         return null;
     }

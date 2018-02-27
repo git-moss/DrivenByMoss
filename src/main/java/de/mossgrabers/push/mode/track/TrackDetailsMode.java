@@ -167,8 +167,9 @@ public class TrackDetailsMode extends BaseMode
             d.setCell (3, 4, deviceChain.isMonitor () ? "On" : "Off");
             d.setCell (2, 5, "Auto Monitor");
             d.setCell (3, 5, deviceChain.isAutoMonitor () ? "On" : "Off");
-            d.setCell (2, 6, "Pin Trck");
-            d.setCell (3, 6, this.model.isCursorTrackPinned () ? "On" : "Off");
+            final boolean hasPinning = this.model.getHost ().hasPinning ();
+            d.setCell (2, 6, hasPinning ? "Pin Trck" : "");
+            d.setCell (3, 6, hasPinning ? (this.model.isCursorTrackPinned () ? "On" : "Off") : "");
             d.setCell (2, 7, "Select").setCell (3, 7, "Color").done (0).done (1).done (2).done (3);
         }
     }
@@ -192,7 +193,8 @@ public class TrackDetailsMode extends BaseMode
             message.addOptionElement ("", "", false, "", "Solo", deviceChain.isSolo (), false);
             message.addOptionElement ("", "", false, "", "Monitor", deviceChain.isMonitor (), false);
             message.addOptionElement ("", "", false, "", "Auto Monitor", deviceChain.isAutoMonitor (), false);
-            message.addOptionElement ("", "", false, "", "Pin Track", this.model.isCursorTrackPinned (), false);
+            final boolean hasPinning = this.model.getHost ().hasPinning ();
+            message.addOptionElement ("", "", false, "", hasPinning ? "Pin Track" : "", hasPinning && this.model.isCursorTrackPinned (), false);
             message.addOptionElement ("", "", false, "", "Select Color", false, false);
         }
         display.send (message);

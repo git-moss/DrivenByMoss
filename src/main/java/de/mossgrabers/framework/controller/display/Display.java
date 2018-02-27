@@ -155,4 +155,10 @@ public interface Display
      * If there is any cleanup necessary.
      */
     void shutdown ();
+
+
+    /**
+     * Forces the recreation of all row texts. The next call to flush will then send all rows.
+     */
+    void forceFlush ();
 }

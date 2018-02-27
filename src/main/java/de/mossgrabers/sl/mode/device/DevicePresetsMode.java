@@ -5,6 +5,7 @@
 package de.mossgrabers.sl.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
@@ -152,7 +153,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
                 final IBrowserColumnItem [] items = browser.getFilterColumn (this.filterColumn).getItems ();
                 for (int i = 0; i < 16; i++)
                 {
-                    final String name = items[i].getName ();
+                    final String name = StringUtils.fixASCII (items[i].getName ());
                     String text = (items[i].isSelected () ? SLDisplay.RIGHT_ARROW : " ") + name + "                ";
                     if (!name.isEmpty ())
                     {
