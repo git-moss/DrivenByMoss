@@ -4,9 +4,9 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.push.PushConfiguration;
 
-import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.graphics.GraphicsOutput;
 
 
@@ -67,7 +67,7 @@ public class OptionsGridElement extends AbstractGridElement
             return;
 
         final double headerHeight = (DISPLAY_HEIGHT - 2 * menuHeight) / 2;
-        final Color textColor = configuration.getColorText ();
+        final ColorEx textColor = configuration.getColorText ();
         gc.setFontSize (headerHeight / 2.0);
         if (hasTopHeader)
             drawTextInHeight (gc, this.headerTop, left, menuHeight, headerHeight, textColor);
@@ -93,9 +93,9 @@ public class OptionsGridElement extends AbstractGridElement
         if (menu == null || menu.length () == 0)
             return;
 
-        final Color textColor = configuration.getColorText ();
+        final ColorEx textColor = configuration.getColorText ();
 
-        gc.setColor (isSelected ? textColor : configuration.getColorBackground ());
+        setColor (gc, isSelected ? textColor : configuration.getColorBackground ());
         gc.rectangle (left, top, width, height);
         gc.fill ();
 

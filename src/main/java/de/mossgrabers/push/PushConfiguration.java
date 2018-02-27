@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IColorSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
@@ -11,11 +12,8 @@ import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.controller.display.model.grid.ColorEx;
 import de.mossgrabers.push.mode.Modes;
 import de.mossgrabers.push.view.Views;
-
-import com.bitwig.extension.api.Color;
 
 import java.util.Set;
 
@@ -88,17 +86,17 @@ public class PushConfiguration extends AbstractConfiguration
     /** Background color lighter of an element. */
     public static final Integer    COLOR_BACKGROUND_LIGHTER         = Integer.valueOf (60);
 
-    private static final Color     DEFAULT_COLOR_BACKGROUND         = Color.fromRGB255 (83, 83, 83);
-    private static final Color     DEFAULT_COLOR_BORDER             = ColorEx.BLACK;
-    private static final Color     DEFAULT_COLOR_TEXT               = ColorEx.WHITE;
-    private static final Color     DEFAULT_COLOR_FADER              = Color.fromRGB255 (69, 44, 19);
-    private static final Color     DEFAULT_COLOR_VU                 = ColorEx.GREEN;
-    private static final Color     DEFAULT_COLOR_EDIT               = Color.fromRGB255 (240, 127, 17);
-    private static final Color     DEFAULT_COLOR_RECORD             = ColorEx.RED;
-    private static final Color     DEFAULT_COLOR_SOLO               = ColorEx.YELLOW;
-    private static final Color     DEFAULT_COLOR_MUTE               = Color.fromRGB255 (245, 129, 17);
-    private static final Color     DEFAULT_COLOR_BACKGROUND_DARKER  = Color.fromRGB255 (58, 58, 58);
-    private static final Color     DEFAULT_COLOR_BACKGROUND_LIGHTER = Color.fromRGB255 (118, 118, 118);
+    private static final ColorEx   DEFAULT_COLOR_BACKGROUND         = ColorEx.fromRGB (83, 83, 83);
+    private static final ColorEx   DEFAULT_COLOR_BORDER             = ColorEx.BLACK;
+    private static final ColorEx   DEFAULT_COLOR_TEXT               = ColorEx.WHITE;
+    private static final ColorEx   DEFAULT_COLOR_FADER              = ColorEx.fromRGB (69, 44, 19);
+    private static final ColorEx   DEFAULT_COLOR_VU                 = ColorEx.GREEN;
+    private static final ColorEx   DEFAULT_COLOR_EDIT               = ColorEx.fromRGB (240, 127, 17);
+    private static final ColorEx   DEFAULT_COLOR_RECORD             = ColorEx.RED;
+    private static final ColorEx   DEFAULT_COLOR_SOLO               = ColorEx.YELLOW;
+    private static final ColorEx   DEFAULT_COLOR_MUTE               = ColorEx.fromRGB (245, 129, 17);
+    private static final ColorEx   DEFAULT_COLOR_BACKGROUND_DARKER  = ColorEx.fromRGB (58, 58, 58);
+    private static final ColorEx   DEFAULT_COLOR_BACKGROUND_LIGHTER = ColorEx.fromRGB (118, 118, 118);
 
     /** Use ribbon for pitch bend. */
     public static final int        RIBBON_MODE_PITCH                = 0;
@@ -149,17 +147,17 @@ public class PushConfiguration extends AbstractConfiguration
     private int                    padSensitivity                   = 5;
     private int                    padGain                          = 5;
     private int                    padDynamics                      = 5;
-    private Color                  colorBackground                  = DEFAULT_COLOR_BACKGROUND;
-    private Color                  colorBorder                      = DEFAULT_COLOR_BORDER;
-    private Color                  colorText                        = DEFAULT_COLOR_TEXT;
-    private Color                  colorFader                       = DEFAULT_COLOR_FADER;
-    private Color                  colorVU                          = DEFAULT_COLOR_VU;
-    private Color                  colorEdit                        = DEFAULT_COLOR_EDIT;
-    private Color                  colorRecord                      = DEFAULT_COLOR_RECORD;
-    private Color                  colorSolo                        = DEFAULT_COLOR_SOLO;
-    private Color                  colorMute                        = DEFAULT_COLOR_MUTE;
-    private Color                  colorBackgroundDarker            = DEFAULT_COLOR_BACKGROUND_DARKER;
-    private Color                  colorBackgroundLighter           = DEFAULT_COLOR_BACKGROUND_LIGHTER;
+    private ColorEx                colorBackground                  = DEFAULT_COLOR_BACKGROUND;
+    private ColorEx                colorBorder                      = DEFAULT_COLOR_BORDER;
+    private ColorEx                colorText                        = DEFAULT_COLOR_TEXT;
+    private ColorEx                colorFader                       = DEFAULT_COLOR_FADER;
+    private ColorEx                colorVU                          = DEFAULT_COLOR_VU;
+    private ColorEx                colorEdit                        = DEFAULT_COLOR_EDIT;
+    private ColorEx                colorRecord                      = DEFAULT_COLOR_RECORD;
+    private ColorEx                colorSolo                        = DEFAULT_COLOR_SOLO;
+    private ColorEx                colorMute                        = DEFAULT_COLOR_MUTE;
+    private ColorEx                colorBackgroundDarker            = DEFAULT_COLOR_BACKGROUND_DARKER;
+    private ColorEx                colorBackgroundLighter           = DEFAULT_COLOR_BACKGROUND_LIGHTER;
 
     private boolean                isPush2;
 
@@ -244,8 +242,7 @@ public class PushConfiguration extends AbstractConfiguration
         // Workflow
 
         this.activateEnableVUMetersSetting (settingsUI);
-        if (!this.isPush2)
-            this.activateDisplayCrossfaderSetting (settingsUI);
+        this.activateDisplayCrossfaderSetting (settingsUI);
         this.activateFootswitchSetting (settingsUI);
         this.activateStopAutomationOnKnobReleaseSetting (settingsUI);
         this.activateNewClipLengthSetting (settingsUI);
@@ -732,7 +729,7 @@ public class PushConfiguration extends AbstractConfiguration
      *
      * @return The background color of an element.
      */
-    public Color getColorBackground ()
+    public ColorEx getColorBackground ()
     {
         return this.colorBackground;
     }
@@ -743,7 +740,7 @@ public class PushConfiguration extends AbstractConfiguration
      *
      * @return The background color of an element.
      */
-    public Color getColorBackgroundDarker ()
+    public ColorEx getColorBackgroundDarker ()
     {
         return this.colorBackgroundDarker;
     }
@@ -754,7 +751,7 @@ public class PushConfiguration extends AbstractConfiguration
      *
      * @return The background color of an element.
      */
-    public Color getColorBackgroundLighter ()
+    public ColorEx getColorBackgroundLighter ()
     {
         return this.colorBackgroundLighter;
     }
@@ -765,7 +762,7 @@ public class PushConfiguration extends AbstractConfiguration
      *
      * @return The border color of an element.
      */
-    public Color getColorBorder ()
+    public ColorEx getColorBorder ()
     {
         return this.colorBorder;
     }
@@ -776,7 +773,7 @@ public class PushConfiguration extends AbstractConfiguration
      *
      * @return The text color of an element.
      */
-    public Color getColorText ()
+    public ColorEx getColorText ()
     {
         return this.colorText;
     }
@@ -787,7 +784,7 @@ public class PushConfiguration extends AbstractConfiguration
      *
      * @return The edit color of an element.
      */
-    public Color getColorEdit ()
+    public ColorEx getColorEdit ()
     {
         return this.colorEdit;
     }
@@ -798,7 +795,7 @@ public class PushConfiguration extends AbstractConfiguration
      *
      * @return The fader color of an element.
      */
-    public Color getColorFader ()
+    public ColorEx getColorFader ()
     {
         return this.colorFader;
     }
@@ -809,7 +806,7 @@ public class PushConfiguration extends AbstractConfiguration
      *
      * @return The VU color of an element.
      */
-    public Color getColorVu ()
+    public ColorEx getColorVu ()
     {
         return this.colorVU;
     }
@@ -820,7 +817,7 @@ public class PushConfiguration extends AbstractConfiguration
      *
      * @return The record color of an element.
      */
-    public Color getColorRecord ()
+    public ColorEx getColorRecord ()
     {
         return this.colorRecord;
     }
@@ -831,7 +828,7 @@ public class PushConfiguration extends AbstractConfiguration
      *
      * @return The solo color of an element.
      */
-    public Color getColorSolo ()
+    public ColorEx getColorSolo ()
     {
         return this.colorSolo;
     }
@@ -842,7 +839,7 @@ public class PushConfiguration extends AbstractConfiguration
      *
      * @return The border mute of an element.
      */
-    public Color getColorMute ()
+    public ColorEx getColorMute ()
     {
         return this.colorMute;
     }
@@ -1037,82 +1034,82 @@ public class PushConfiguration extends AbstractConfiguration
             return;
 
         settingsUI.getSignalSetting ("Reset colors to default", CATEGORY_COLORS, "Reset").addValueObserver (value -> {
-            this.colorBackgroundSetting.set ((float) DEFAULT_COLOR_BACKGROUND.getRed (), (float) DEFAULT_COLOR_BACKGROUND.getGreen (), (float) DEFAULT_COLOR_BACKGROUND.getBlue ());
-            this.colorBackgroundDarkerSetting.set ((float) DEFAULT_COLOR_BACKGROUND_DARKER.getRed (), (float) DEFAULT_COLOR_BACKGROUND_DARKER.getGreen (), (float) DEFAULT_COLOR_BACKGROUND_DARKER.getBlue ());
-            this.colorBackgroundLighterSetting.set ((float) DEFAULT_COLOR_BACKGROUND_LIGHTER.getRed (), (float) DEFAULT_COLOR_BACKGROUND_LIGHTER.getGreen (), (float) DEFAULT_COLOR_BACKGROUND_LIGHTER.getBlue ());
-            this.colorBorderSetting.set ((float) DEFAULT_COLOR_BORDER.getRed (), (float) DEFAULT_COLOR_BORDER.getGreen (), (float) DEFAULT_COLOR_BORDER.getBlue ());
-            this.colorTextSetting.set ((float) DEFAULT_COLOR_TEXT.getRed (), (float) DEFAULT_COLOR_TEXT.getGreen (), (float) DEFAULT_COLOR_TEXT.getBlue ());
-            this.colorFaderSetting.set ((float) DEFAULT_COLOR_FADER.getRed (), (float) DEFAULT_COLOR_FADER.getGreen (), (float) DEFAULT_COLOR_FADER.getBlue ());
-            this.colorVUSetting.set ((float) DEFAULT_COLOR_VU.getRed (), (float) DEFAULT_COLOR_VU.getGreen (), (float) DEFAULT_COLOR_VU.getBlue ());
-            this.colorEditSetting.set ((float) DEFAULT_COLOR_EDIT.getRed (), (float) DEFAULT_COLOR_EDIT.getGreen (), (float) DEFAULT_COLOR_EDIT.getBlue ());
-            this.colorRecordSetting.set ((float) DEFAULT_COLOR_RECORD.getRed (), (float) DEFAULT_COLOR_RECORD.getGreen (), (float) DEFAULT_COLOR_RECORD.getBlue ());
-            this.colorSoloSetting.set ((float) DEFAULT_COLOR_SOLO.getRed (), (float) DEFAULT_COLOR_SOLO.getGreen (), (float) DEFAULT_COLOR_SOLO.getBlue ());
-            this.colorMuteSetting.set ((float) DEFAULT_COLOR_MUTE.getRed (), (float) DEFAULT_COLOR_MUTE.getGreen (), (float) DEFAULT_COLOR_MUTE.getBlue ());
+            this.colorBackgroundSetting.set (DEFAULT_COLOR_BACKGROUND);
+            this.colorBackgroundDarkerSetting.set (DEFAULT_COLOR_BACKGROUND_DARKER);
+            this.colorBackgroundLighterSetting.set (DEFAULT_COLOR_BACKGROUND_LIGHTER);
+            this.colorBorderSetting.set (DEFAULT_COLOR_BORDER);
+            this.colorTextSetting.set (DEFAULT_COLOR_TEXT);
+            this.colorFaderSetting.set (DEFAULT_COLOR_FADER);
+            this.colorVUSetting.set (DEFAULT_COLOR_VU);
+            this.colorEditSetting.set (DEFAULT_COLOR_EDIT);
+            this.colorRecordSetting.set (DEFAULT_COLOR_RECORD);
+            this.colorSoloSetting.set (DEFAULT_COLOR_SOLO);
+            this.colorMuteSetting.set (DEFAULT_COLOR_MUTE);
         });
 
         this.colorBackgroundSetting = settingsUI.getColorSetting ("Background", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND);
         this.colorBackgroundSetting.addValueObserver (color -> {
-            this.colorBackground = Color.fromRGB (color[0], color[1], color[2]);
+            this.colorBackground = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_BACKGROUND);
         });
 
         this.colorBackgroundDarkerSetting = settingsUI.getColorSetting ("Background Darker", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND_DARKER);
         this.colorBackgroundDarkerSetting.addValueObserver (color -> {
-            this.colorBackgroundDarker = Color.fromRGB (color[0], color[1], color[2]);
+            this.colorBackgroundDarker = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_BACKGROUND_DARKER);
         });
 
         this.colorBackgroundLighterSetting = settingsUI.getColorSetting ("Background Selected", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND_LIGHTER);
         this.colorBackgroundLighterSetting.addValueObserver (color -> {
-            this.colorBackgroundLighter = Color.fromRGB (color[0], color[1], color[2]);
+            this.colorBackgroundLighter = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_BACKGROUND_LIGHTER);
         });
 
         this.colorBorderSetting = settingsUI.getColorSetting ("Border", CATEGORY_COLORS, DEFAULT_COLOR_BORDER);
         this.colorBorderSetting.addValueObserver (color -> {
-            this.colorBorder = Color.fromRGB (color[0], color[1], color[2]);
+            this.colorBorder = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_BORDER);
         });
 
         this.colorTextSetting = settingsUI.getColorSetting ("Text", CATEGORY_COLORS, DEFAULT_COLOR_TEXT);
         this.colorTextSetting.addValueObserver (color -> {
-            this.colorText = Color.fromRGB (color[0], color[1], color[2]);
+            this.colorText = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_TEXT);
         });
 
         this.colorFaderSetting = settingsUI.getColorSetting ("Fader", CATEGORY_COLORS, DEFAULT_COLOR_FADER);
         this.colorFaderSetting.addValueObserver (color -> {
-            this.colorFader = Color.fromRGB (color[0], color[1], color[2]);
+            this.colorFader = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_FADER);
         });
 
         this.colorVUSetting = settingsUI.getColorSetting ("VU", CATEGORY_COLORS, DEFAULT_COLOR_VU);
         this.colorVUSetting.addValueObserver (color -> {
-            this.colorVU = Color.fromRGB (color[0], color[1], color[2]);
+            this.colorVU = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_VU);
         });
 
         this.colorEditSetting = settingsUI.getColorSetting ("Edit", CATEGORY_COLORS, DEFAULT_COLOR_EDIT);
         this.colorEditSetting.addValueObserver (color -> {
-            this.colorVU = Color.fromRGB (color[0], color[1], color[2]);
+            this.colorVU = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_EDIT);
         });
 
         this.colorRecordSetting = settingsUI.getColorSetting ("Record", CATEGORY_COLORS, DEFAULT_COLOR_RECORD);
         this.colorRecordSetting.addValueObserver (color -> {
-            this.colorRecord = Color.fromRGB (color[0], color[1], color[2]);
+            this.colorRecord = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_RECORD);
         });
 
         this.colorSoloSetting = settingsUI.getColorSetting ("Solo", CATEGORY_COLORS, DEFAULT_COLOR_SOLO);
         this.colorSoloSetting.addValueObserver (color -> {
-            this.colorSolo = Color.fromRGB (color[0], color[1], color[2]);
+            this.colorSolo = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_SOLO);
         });
 
         this.colorMuteSetting = settingsUI.getColorSetting ("Mute", CATEGORY_COLORS, DEFAULT_COLOR_MUTE);
         this.colorMuteSetting.addValueObserver (color -> {
-            this.colorMute = Color.fromRGB (color[0], color[1], color[2]);
+            this.colorMute = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_MUTE);
         });
     }

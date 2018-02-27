@@ -4,9 +4,9 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.push.PushConfiguration;
 
-import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.graphics.GraphicsOutput;
 
 
@@ -22,7 +22,7 @@ public abstract class AbstractGridElement implements GridElement
 
     private final String    name;
     private final String    icon;
-    private final Color     color;
+    private final ColorEx   color;
     private final boolean   isSelected;
 
     protected final boolean isMenuSelected;
@@ -46,7 +46,7 @@ public abstract class AbstractGridElement implements GridElement
      * @param color The color to use for the header, may be null
      * @param isSelected True if the grid element is selected
      */
-    public AbstractGridElement (final String menuName, final boolean isMenuSelected, final String icon, final String name, final Color color, final boolean isSelected)
+    public AbstractGridElement (final String menuName, final boolean isMenuSelected, final String icon, final String name, final ColorEx color, final boolean isSelected)
     {
         this.name = name;
         this.icon = icon;
@@ -84,7 +84,7 @@ public abstract class AbstractGridElement implements GridElement
      *
      * @return The color or null if not set
      */
-    public Color getColor ()
+    public ColorEx getColor ()
     {
         return this.color;
     }
@@ -114,7 +114,7 @@ public abstract class AbstractGridElement implements GridElement
      * @param alignment The alignment of the text: Label.LEFT or Label.CENTER
      * @param color The color of the text
      */
-    public static void drawTextInBounds (final GraphicsOutput g, final String text, final double x, final double y, final double width, final double height, final Align alignment, final Color color)
+    public static void drawTextInBounds (final GraphicsOutput g, final String text, final double x, final double y, final double width, final double height, final Align alignment, final ColorEx color)
     {
         if (text == null || text.length () == 0)
             return;
@@ -127,7 +127,7 @@ public abstract class AbstractGridElement implements GridElement
         g.save ();
         g.rectangle (x, y, width, height);
         g.clip ();
-        g.setColor (color);
+        setColor (g, color);
         g.moveTo (pos, y + (height + h) / 2);
         g.showText (text);
         g.resetClip ();
@@ -145,7 +145,7 @@ public abstract class AbstractGridElement implements GridElement
      * @param height The height position of the boundary
      * @param color The color of the text
      */
-    public static void drawTextInHeight (final GraphicsOutput g, final String text, final double x, final double y, final double height, final Color color)
+    public static void drawTextInHeight (final GraphicsOutput g, final String text, final double x, final double y, final double height, final ColorEx color)
     {
         if (text == null || text.length () == 0)
             return;
@@ -155,7 +155,7 @@ public abstract class AbstractGridElement implements GridElement
         final double h = g.getTextExtents ("T").getHeight ();
 
         g.save ();
-        g.setColor (color);
+        setColor (g, color);
         g.moveTo (x, y + (height + h) / 2);
         g.showText (text);
         g.restore ();
@@ -172,26 +172,26 @@ public abstract class AbstractGridElement implements GridElement
      */
     protected void drawMenu (final GraphicsOutput gc, final double left, final double width, final PushConfiguration configuration)
     {
-        final Color borderColor = configuration.getColorBorder ();
+        final ColorEx borderColor = configuration.getColorBorder ();
         if (this.menuName == null || this.menuName.length () == 0)
         {
             // Remove the 2 pixels of the previous menus border line
-            gc.setColor (borderColor);
+            setColor (gc, borderColor);
             gc.rectangle (left - SEPARATOR_SIZE, MENU_HEIGHT - 2, SEPARATOR_SIZE, 1);
             gc.fill ();
             return;
         }
 
-        final Color textColor = configuration.getColorText ();
-        gc.setColor (this.isMenuSelected ? textColor : borderColor);
+        final ColorEx textColor = configuration.getColorText ();
+        setColor (gc, this.isMenuSelected ? textColor : borderColor);
         gc.rectangle (left, 0, width, MENU_HEIGHT - 1.0);
         gc.fill ();
 
-        gc.setColor (textColor);
+        setColor (gc, textColor);
         gc.rectangle (left, MENU_HEIGHT - 2.0, width + SEPARATOR_SIZE, 1);
         gc.fill ();
 
-        gc.setColor (this.isMenuSelected ? borderColor : textColor);
+        setColor (gc, this.isMenuSelected ? borderColor : textColor);
         gc.setFontSize (UNIT);
         drawTextInBounds (gc, this.menuName, left, 1, width, UNIT + SEPARATOR_SIZE, Align.CENTER, this.isMenuSelected ? borderColor : textColor);
     }
@@ -216,5 +216,11 @@ public abstract class AbstractGridElement implements GridElement
     public static void setMaxValue (final double maxValue)
     {
         AbstractGridElement.maxValue = maxValue;
+    }
+
+
+    protected static void setColor (final GraphicsOutput gc, final ColorEx color)
+    {
+        gc.setColor (color.getRed (), color.getGreen (), color.getBlue ());
     }
 }

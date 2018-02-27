@@ -5,6 +5,7 @@
 package de.mossgrabers.sl.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
@@ -43,7 +44,7 @@ public class SessionMode extends AbstractMode<SLControlSurface, SLConfiguration>
         for (int i = 0; i < 8; i++)
         {
             final IScene scene = sceneBank.getScene (i);
-            final String name = scene.getName ();
+            final String name = StringUtils.fixASCII (scene.getName ());
             d.setCell (2, i, name.isEmpty () ? "Scene " + (i + 1) : name);
         }
         d.clearRow (0).done (0).done (2);

@@ -388,7 +388,7 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
-    public ISend getSend (int sendIndex)
+    public ISend getSend (final int sendIndex)
     {
         return this.sends[sendIndex];
     }

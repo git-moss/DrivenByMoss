@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push.controller;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.framework.Pair;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -17,8 +18,6 @@ import de.mossgrabers.push.controller.display.model.grid.MidiClipElement;
 import de.mossgrabers.push.controller.display.model.grid.OptionsGridElement;
 import de.mossgrabers.push.controller.display.model.grid.ParamGridElement;
 import de.mossgrabers.push.controller.display.model.grid.SendsGridElement;
-
-import com.bitwig.extension.api.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +122,7 @@ public class DisplayMessage
      */
     public void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn)
     {
-        this.elements.add (new ChannelSelectionGridElement (topMenu, isTopMenuOn, bottomMenu, Color.fromRGB (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type));
+        this.elements.add (new ChannelSelectionGridElement (topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type));
     }
 
 
@@ -194,7 +193,7 @@ public class DisplayMessage
                 editType = ChannelGridElement.EDIT_TYPE_ALL;
                 break;
         }
-        this.elements.add (new ChannelGridElement (editType, topMenu, isTopMenuOn, bottomMenu, Color.fromRGB (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vu, mute, solo, recarm, crossfadeMode));
+        this.elements.add (new ChannelGridElement (editType, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vu, mute, solo, recarm, crossfadeMode));
     }
 
 
@@ -216,7 +215,7 @@ public class DisplayMessage
      */
     public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String [] sendName, final String [] valueStr, final int [] value, final int [] modulatedValue, final boolean [] selected, final boolean isTrackMode)
     {
-        this.elements.add (new SendsGridElement (sendName, valueStr, value, modulatedValue, selected, topMenu, isTopMenuOn, bottomMenu, Color.fromRGB (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, isTrackMode));
+        this.elements.add (new SendsGridElement (sendName, valueStr, value, modulatedValue, selected, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, isTrackMode));
 
     }
 
@@ -258,7 +257,7 @@ public class DisplayMessage
      */
     public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        this.elements.add (new ParamGridElement (topMenu, isTopMenuOn, bottomMenu, type, Color.fromRGB (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+        this.elements.add (new ParamGridElement (topMenu, isTopMenuOn, bottomMenu, type, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
     }
 
 
@@ -279,7 +278,7 @@ public class DisplayMessage
      */
     public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String deviceName, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        this.elements.add (new ParamGridElement (topMenu, isTopMenuOn, bottomMenu, deviceName, Color.fromRGB (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+        this.elements.add (new ParamGridElement (topMenu, isTopMenuOn, bottomMenu, deviceName, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
     }
 
 

@@ -4,9 +4,9 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.push.PushConfiguration;
 
-import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.graphics.GraphicsOutput;
 import com.bitwig.extension.api.graphics.GraphicsOutput.AntialiasMode;
 
@@ -49,8 +49,8 @@ public class BoxListGridElement extends AbstractGridElement
         final int size = this.items.length;
         final double itemHeight = DISPLAY_HEIGHT / (double) size;
 
-        final Color textColor = configuration.getColorText ();
-        final Color borderColor = configuration.getColorBackgroundLighter ();
+        final ColorEx textColor = configuration.getColorText ();
+        final ColorEx borderColor = configuration.getColorBackgroundLighter ();
 
         for (int i = 0; i < size; i++)
         {
@@ -66,7 +66,7 @@ public class BoxListGridElement extends AbstractGridElement
 
             // Element border
             gc.setAntialias (AntialiasMode.OFF);
-            gc.setColor (borderColor);
+            setColor (gc, borderColor);
             gc.setLineWidth (1);
             gc.rectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE);
             gc.stroke ();

@@ -173,7 +173,7 @@ public interface ITrack extends IChannel
 
     /**
      * Get a clip slot of the track.
-     * 
+     *
      * @param slotIndex The index of the slot
      * @return The slot
      */

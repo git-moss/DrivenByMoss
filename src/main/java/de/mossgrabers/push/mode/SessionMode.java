@@ -180,7 +180,7 @@ public class SessionMode extends BaseMode
         final int numTracks = tb.getNumTracks ();
         final int numScenes = tb.getNumScenes ();
 
-        int maxCols = flipSession ? numScenes : numTracks;
+        final int maxCols = flipSession ? numScenes : numTracks;
         int maxRows = flipSession ? numTracks : numScenes;
         if (this.rowDisplayMode != RowDisplayMode.ALL)
             maxRows = maxRows / 2;
@@ -209,7 +209,7 @@ public class SessionMode extends BaseMode
                     // doesExist does not work reliably
                     if (optimizedName.length () == 0)
                     {
-                        double [] color = slot.getColor ();
+                        final double [] color = slot.getColor ();
                         if (color[0] != 0 || color[1] != 0 || color[2] != 0)
                             optimizedName = "[------]";
                     }
@@ -261,7 +261,7 @@ public class SessionMode extends BaseMode
         final int numTracks = tb.getNumTracks ();
         final int numScenes = tb.getNumScenes ();
 
-        int maxCols = flipSession ? numScenes : numTracks;
+        final int maxCols = flipSession ? numScenes : numTracks;
         int maxRows = flipSession ? numTracks : numScenes;
         if (this.rowDisplayMode != RowDisplayMode.ALL)
             maxRows = maxRows / 2;

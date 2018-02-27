@@ -4,11 +4,11 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
 
-import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.graphics.GraphicsOutput;
 import com.bitwig.extension.api.graphics.Image;
 
@@ -50,7 +50,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
      * @param isSelected True if the grid element is selected
      * @param type The type of the track
      */
-    public ChannelSelectionGridElement (final String menuName, final boolean isMenuSelected, final String name, final Color color, final boolean isSelected, final ChannelType type)
+    public ChannelSelectionGridElement (final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type)
     {
         super (menuName, isMenuSelected, null, name, color, isSelected);
         this.type = type;
@@ -106,8 +106,8 @@ public class ChannelSelectionGridElement extends AbstractGridElement
     protected void drawTrackInfo (final GraphicsOutput gc, final double left, final double width, final double height, final double trackRowTop, final String name, final PushConfiguration configuration)
     {
         // Draw the background
-        final Color backgroundColor = configuration.getColorBackground ();
-        gc.setColor (this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
+        final ColorEx backgroundColor = configuration.getColorBackground ();
+        setColor (gc, this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
         gc.rectangle (left, trackRowTop + 1, width, height - UNIT - 1);
         gc.fill ();
 
@@ -116,12 +116,12 @@ public class ChannelSelectionGridElement extends AbstractGridElement
         if (iconName != null)
         {
             final Image icon = ResourceHandler.getSVGImage (iconName);
-            final Color maskColor = this.getMaskColor (configuration);
+            final ColorEx maskColor = this.getMaskColor (configuration);
             if (maskColor == null)
                 gc.drawImage (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2.0);
             else
             {
-                gc.setColor (maskColor);
+                setColor (gc, maskColor);
                 gc.mask (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2.0);
                 gc.fill ();
             }
@@ -131,13 +131,13 @@ public class ChannelSelectionGridElement extends AbstractGridElement
         drawTextInBounds (gc, name, left + DOUBLE_UNIT, height - TRACK_ROW_HEIGHT - UNIT, width - DOUBLE_UNIT, TRACK_ROW_HEIGHT, Align.LEFT, configuration.getColorText ());
 
         // The track color section
-        gc.setColor (this.getColor ());
+        setColor (gc, this.getColor ());
         gc.rectangle (left, height - UNIT, width, UNIT);
         gc.fill ();
     }
 
 
-    protected Color getMaskColor (final PushConfiguration configuration)
+    protected ColorEx getMaskColor (final PushConfiguration configuration)
     {
         return configuration.getColorText ();
     }

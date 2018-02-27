@@ -4,11 +4,11 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.daw.resource.DeviceTypes;
 import de.mossgrabers.push.PushConfiguration;
 
-import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.graphics.GraphicsOutput;
 
 
@@ -44,7 +44,7 @@ public class ParamGridElement extends ChannelSelectionGridElement
      * @param paramValueText The textual form of the faders value
      * @param isTouched True if touched
      */
-    public ParamGridElement (final String menuName, final boolean isMenuSelected, final String name, final ChannelType type, final Color color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
+    public ParamGridElement (final String menuName, final boolean isMenuSelected, final String name, final ChannelType type, final ColorEx color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
     {
         this (menuName, isMenuSelected, name, null, type, color, isSelected, paramName, paramValue, modulatedParamValue, paramValueText, isTouched);
     }
@@ -65,7 +65,7 @@ public class ParamGridElement extends ChannelSelectionGridElement
      * @param paramValueText The textual form of the faders value
      * @param isTouched True if touched
      */
-    public ParamGridElement (final String menuName, final boolean isMenuSelected, final String name, final String deviceName, final Color color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
+    public ParamGridElement (final String menuName, final boolean isMenuSelected, final String name, final String deviceName, final ColorEx color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
     {
         this (menuName, isMenuSelected, name, deviceName, null, color, isSelected, paramName, paramValue, modulatedParamValue, paramValueText, isTouched);
     }
@@ -87,7 +87,7 @@ public class ParamGridElement extends ChannelSelectionGridElement
      * @param paramValueText The textual form of the faders value
      * @param isTouched True if touched
      */
-    private ParamGridElement (final String menuName, final boolean isMenuSelected, final String name, final String deviceName, final ChannelType type, final Color color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
+    private ParamGridElement (final String menuName, final boolean isMenuSelected, final String name, final String deviceName, final ChannelType type, final ColorEx color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
     {
         super (menuName, isMenuSelected, name, color, isSelected, type);
 
@@ -122,13 +122,13 @@ public class ParamGridElement extends ChannelSelectionGridElement
         final double elementHeight = (trackRowTop - CONTROLS_TOP - INSET) / 3;
 
         // Draw the background
-        final Color backgroundColor = configuration.getColorBackground ();
-        gc.setColor (this.isTouched ? configuration.getColorBackgroundLighter () : backgroundColor);
+        final ColorEx backgroundColor = configuration.getColorBackground ();
+        setColor (gc, this.isTouched ? configuration.getColorBackgroundLighter () : backgroundColor);
         gc.rectangle (left, MENU_HEIGHT + 1, width, trackRowTop - (isValueMissing ? CONTROLS_TOP + elementHeight : MENU_HEIGHT + 1));
         gc.fill ();
 
         // Draw the name and value texts
-        final Color textColor = configuration.getColorText ();
+        final ColorEx textColor = configuration.getColorText ();
         gc.setFontSize (elementHeight * 2 / 3);
         drawTextInBounds (gc, this.paramName, left + INSET - 1, CONTROLS_TOP - INSET, elementWidth, elementHeight, Align.CENTER, textColor);
         drawTextInBounds (gc, this.paramValueText, left + INSET - 1, CONTROLS_TOP - INSET + elementHeight, elementWidth, elementHeight, Align.CENTER, textColor);
@@ -141,14 +141,14 @@ public class ParamGridElement extends ChannelSelectionGridElement
         final double value = isModulated ? this.modulatedParamValue : this.paramValue;
         final double valueSliderWidth = value >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * value / maxValue;
         final double innerTop = CONTROLS_TOP + 2 * elementHeight + 1;
-        final Color borderColor = configuration.getColorBorder ();
-        gc.setColor (borderColor);
+        final ColorEx borderColor = configuration.getColorBorder ();
+        setColor (gc, borderColor);
         gc.rectangle (left + INSET - 1, CONTROLS_TOP + 2 * elementHeight, elementWidth, elementHeight);
         gc.fill ();
-        gc.setColor (configuration.getColorFader ());
+        setColor (gc, configuration.getColorFader ());
         gc.rectangle (left + INSET, innerTop, valueSliderWidth, elementHeight - 2);
         gc.fill ();
-        gc.setColor (configuration.getColorEdit ());
+        setColor (gc, configuration.getColorEdit ());
         final double w = this.isTouched ? 3 : 1;
         final double valueWidth = this.paramValue >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * this.paramValue / maxValue;
         gc.rectangle (left + INSET + Math.max (0, valueWidth - w), innerTop, w, elementHeight - 2);

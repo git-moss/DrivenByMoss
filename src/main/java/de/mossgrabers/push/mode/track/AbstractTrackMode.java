@@ -11,7 +11,6 @@ import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -156,24 +155,19 @@ public abstract class AbstractTrackMode extends BaseMode
                 break;
 
             case 2:
-                if (modeManager.isActiveMode (Modes.MODE_CROSSFADER))
-                    modeManager.setActiveMode (Modes.MODE_TRACK);
-                else
-                    modeManager.setActiveMode (Modes.MODE_CROSSFADER);
+                if (config.isDisplayCrossfader ())
+                {
+                    if (modeManager.isActiveMode (Modes.MODE_CROSSFADER))
+                        modeManager.setActiveMode (Modes.MODE_TRACK);
+                    else
+                        modeManager.setActiveMode (Modes.MODE_CROSSFADER);
+                }
                 break;
 
             case 3:
                 if (!this.model.isEffectTrackBankActive ())
                 {
-                    // Check if there are more than 4 FX channels
-                    if (!config.isSendsAreToggled ())
-                    {
-                        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
-                        if (fxTrackBank == null || !fxTrackBank.getTrack (4).doesExist ())
-                            return;
-                    }
                     config.setSendsAreToggled (!config.isSendsAreToggled ());
-
                     if (!modeManager.isActiveMode (Modes.MODE_TRACK))
                         modeManager.setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + (config.isSendsAreToggled () ? 4 : 0)));
                 }
@@ -342,6 +336,7 @@ public abstract class AbstractTrackMode extends BaseMode
         final DisplayMessage message = display.createMessage ();
         final ValueChanger valueChanger = this.model.getValueChanger ();
         final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final boolean displayCrossfader = config.isDisplayCrossfader ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getTrack (i);
@@ -349,7 +344,7 @@ public abstract class AbstractTrackMode extends BaseMode
             // The menu item
             String topMenu;
             boolean isTopMenuOn;
-            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
+            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP) && this.model.getHost ().hasClips ())
             {
                 topMenu = t.doesExist () ? "Stop Clip" : "";
                 isTopMenuOn = t.isPlaying ();
@@ -372,7 +367,8 @@ public abstract class AbstractTrackMode extends BaseMode
 
             final String typeID = t.getType ();
             final ChannelType type = typeID.isEmpty () ? null : ChannelType.valueOf (typeID.toUpperCase ());
-            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", type, t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecArm (), "A".equals (t.getCrossfadeMode ()) ? 0 : "B".equals (t.getCrossfadeMode ()) ? 2 : 1);
+            final int crossfadeMode = displayCrossfader ? t.getCrossfadeModeAsNumber () : -1;
+            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", type, t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecArm (), crossfadeMode);
         }
 
         display.send (message);
@@ -387,25 +383,18 @@ public abstract class AbstractTrackMode extends BaseMode
         if (this.model.isEffectTrackBankActive ())
         {
             // No sends for FX tracks
-            for (int i = 3; i < 8; i++)
-                this.menu[i] = "";
+            for (int i = 3; i < 7; i++)
+                this.menu[i] = " ";
             return;
         }
 
+        this.menu[2] = config.isDisplayCrossfader () ? "Crossfader" : " ";
+
         for (int i = 0; i < 3; i++)
         {
-            if (fxTrackBank == null)
-            {
-                this.menu[4 + i] = "";
-                final ITrack selTrack = this.model.getTrackBank ().getSelectedTrack ();
-                if (selTrack == null)
-                    continue;
-                final ISend send = selTrack.getSend (sendOffset + i);
-                if (send != null)
-                    this.menu[4 + i] = send.getName ();
-            }
-            else
-                this.menu[4 + i] = fxTrackBank.getTrack (sendOffset + i).getName ();
+            this.menu[4 + i] = fxTrackBank == null ? " " : fxTrackBank.getTrack (sendOffset + i).getName ();
+            if (this.menu[4 + i].isEmpty ())
+                this.menu[4 + i] = " ";
         }
         this.menu[3] = config.isSendsAreToggled () ? "Sends 5-8" : "Sends 1-4";
     }

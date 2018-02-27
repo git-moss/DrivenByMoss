@@ -25,7 +25,7 @@ public class SlotImpl implements ISlot
 
     /**
      * Constructor.
-     * 
+     *
      * @param csBank The slot bank. Required since some functions are not avaiable on the slot but
      *            on the bank
      * @param slot The slot

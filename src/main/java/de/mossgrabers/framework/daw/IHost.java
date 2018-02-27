@@ -35,6 +35,22 @@ public interface IHost
 
 
     /**
+     * Returns true if the DAW supports track/device pinning.
+     *
+     * @return True if the DAW supports track/device pinning
+     */
+    boolean hasPinning ();
+
+
+    /**
+     * Returns true if the DAW supports Groove options.
+     *
+     * @return True if the DAW supports Groove options
+     */
+    boolean hasGroove ();
+
+
+    /**
      * Schedules the given task for execution after the given delay.
      *
      * @param task The task to execute
@@ -89,7 +105,7 @@ public interface IHost
     /**
      * Loads a SVG image. The memory used by this image is guaranteed to be freed once this
      * extension exits.
-     * 
+     *
      * @param imageName The path to the image
      * @param scale The scaling factor
      * @return The loaded SVG image
@@ -100,7 +116,7 @@ public interface IHost
     /**
      * Creates an offscreen bitmap that the extension can use to render into. The memory used by
      * this bitmap is guaranteed to be freed once this extension exits.
-     * 
+     *
      * @param width The width of the bitmap
      * @param height The height of the bitmap
      * @return The created bitmap
@@ -111,7 +127,7 @@ public interface IHost
     /**
      * Creates a direct byte buffer of the supplied size that is guaranteed to be freed once this
      * extension exits.
-     * 
+     *
      * @param size The size of the buffer
      * @return The created buffer
      */

@@ -322,7 +322,7 @@ public interface IChannel extends ObserverManagement
 
     /**
      * Get the send of a channel.
-     * 
+     *
      * @param sendIndex The index of the send
      * @return The send
      */

@@ -201,7 +201,7 @@ public abstract class AbstractModel implements IModel
     @Override
     public void toggleCurrentTrackBank ()
     {
-        this.currentTrackBank = this.currentTrackBank == this.trackBank ? this.effectTrackBank : this.trackBank;
+        this.currentTrackBank = this.currentTrackBank == this.trackBank && this.effectTrackBank != null ? this.effectTrackBank : this.trackBank;
     }
 
 

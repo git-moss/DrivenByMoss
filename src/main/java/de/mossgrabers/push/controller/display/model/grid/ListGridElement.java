@@ -4,10 +4,10 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.framework.Pair;
 import de.mossgrabers.push.PushConfiguration;
 
-import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.graphics.GraphicsOutput;
 
 import java.util.ArrayList;
@@ -45,8 +45,8 @@ public class ListGridElement extends AbstractGridElement
         final int size = this.items.size ();
         final double itemHeight = DISPLAY_HEIGHT / (double) size;
 
-        final Color textColor = configuration.getColorText ();
-        final Color borderColor = configuration.getColorBorder ();
+        final ColorEx textColor = configuration.getColorText ();
+        final ColorEx borderColor = configuration.getColorBorder ();
 
         for (int i = 0; i < size; i++)
         {
@@ -56,7 +56,7 @@ public class ListGridElement extends AbstractGridElement
             final double itemTop = i * itemHeight;
             final double itemWidth = width - SEPARATOR_SIZE;
 
-            gc.setColor (isSelected ? textColor : borderColor);
+            setColor (gc, isSelected ? textColor : borderColor);
             gc.rectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE);
             gc.fill ();
 

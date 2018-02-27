@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.scale.Scales;
@@ -131,7 +132,7 @@ public class MidiClipElement extends AbstractGridElement
                 gc.setFontSize (top);
                 final double time = startPos + step * stepLength;
                 final String measureText = StringUtils.formatMeasures (this.quartersPerMeasure, time, 1);
-                drawTextInHeight (gc, measureText, x, 0, top - 1, Color.whiteColor ());
+                drawTextInHeight (gc, measureText, x, 0, top - 1, ColorEx.WHITE);
                 gc.setAntialias (AntialiasMode.OFF);
             }
         }
@@ -185,7 +186,7 @@ public class MidiClipElement extends AbstractGridElement
                 {
                     gc.setAntialias (AntialiasMode.BEST);
                     final String text = Scales.formatDrumNote (note);
-                    drawTextInBounds (gc, text, x, top + (range - row - 1) * stepHeight + 2, w - 1, stepHeight - 3, Align.CENTER, Color.blackColor ());
+                    drawTextInBounds (gc, text, x, top + (range - row - 1) * stepHeight + 2, w - 1, stepHeight - 3, Align.CENTER, ColorEx.BLACK);
                     gc.setAntialias (AntialiasMode.OFF);
                 }
             }

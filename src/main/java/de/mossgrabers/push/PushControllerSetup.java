@@ -16,6 +16,7 @@ import de.mossgrabers.framework.command.trigger.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.KnobRowTouchModeCommand;
+import de.mossgrabers.framework.command.trigger.NopCommand;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.ConvertCommand;
@@ -257,7 +258,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.MODE_RIBBON, new RibbonMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_GROOVE, new GrooveMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_VIEW_SELECT, new NoteViewSelectMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_SESSION_VIEW_SELECT, new SessionViewSelectMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_SESSION, new SessionMode (surface, this.model));
 
         modeManager.registerMode (Modes.MODE_AUTOMATION, new AutomationMode (surface, this.model));
@@ -289,6 +289,11 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         }
         else
             modeManager.registerMode (Modes.MODE_CONFIGURATION, new ConfigurationMode (surface, this.model));
+
+        if (this.host.hasClips ())
+        {
+            modeManager.registerMode (Modes.MODE_SESSION_VIEW_SELECT, new SessionViewSelectMode (surface, this.model));
+        }
     }
 
 
@@ -416,7 +421,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addTriggerCommand (Commands.COMMAND_TAP_TEMPO, PushControlSurface.PUSH_BUTTON_TAP, new TapTempoCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_METRONOME, PushControlSurface.PUSH_BUTTON_METRONOME, new MetronomeCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, PushControlSurface.PUSH_BUTTON_MASTER, new MastertrackCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_STOP_CLIP, PushControlSurface.PUSH_BUTTON_CLIP_STOP, new StopClipCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_PAGE_LEFT, PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, new PageLeftCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_PAGE_RIGHT, PushControlSurface.PUSH_BUTTON_DEVICE_RIGHT, new PageRightCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_MUTE, PushControlSurface.PUSH_BUTTON_MUTE, new MuteCommand (this.model, surface));
@@ -426,7 +430,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addTriggerCommand (Commands.COMMAND_ADD_EFFECT, PushControlSurface.PUSH_BUTTON_ADD_EFFECT, new AddEffectCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_ADD_TRACK, PushControlSurface.PUSH_BUTTON_ADD_TRACK, new AddTrackCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, PushControlSurface.PUSH_BUTTON_NOTE, new SelectPlayViewCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, PushControlSurface.PUSH_BUTTON_SESSION, new SelectSessionViewCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, PushControlSurface.PUSH_BUTTON_DOWN, new PushCursorCommand (Direction.DOWN, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_ARROW_UP, PushControlSurface.PUSH_BUTTON_UP, new PushCursorCommand (Direction.UP, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, PushControlSurface.PUSH_BUTTON_LEFT, new PushCursorCommand (Direction.LEFT, this.model, surface));
@@ -442,6 +445,14 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         }
         else
             surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_USER_MODE, Commands.COMMAND_SETUP);
+
+        if (this.host.hasClips ())
+        {
+            this.addTriggerCommand (Commands.COMMAND_STOP_CLIP, PushControlSurface.PUSH_BUTTON_CLIP_STOP, new StopClipCommand<> (this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, PushControlSurface.PUSH_BUTTON_SESSION, new SelectSessionViewCommand (this.model, surface));
+        }
+        else
+            this.addTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, PushControlSurface.PUSH_BUTTON_SESSION, new NopCommand<> (this.model, surface));
     }
 
 
@@ -479,9 +490,10 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final PlayView pianoView = (PlayView) viewManager.getView (Views.VIEW_PIANO);
         pianoView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (pianoView, this.model, surface));
 
-        final SessionView sessionView = (SessionView) viewManager.getView (Views.VIEW_SESSION);
-        if (sessionView != null)
-            sessionView.registerPitchbendCommand (new PitchbendSessionCommand (this.model, surface));
+        if (this.host.hasClips ())
+        {
+            viewManager.getView (Views.VIEW_SESSION).registerPitchbendCommand (new PitchbendSessionCommand (this.model, surface));
+        }
     }
 
 
@@ -502,10 +514,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final PushControlSurface surface = this.getSurface ();
         surface.updateButton (PushControlSurface.PUSH_BUTTON_METRONOME, t.isMetronomeOn () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
         surface.updateButton (PushControlSurface.PUSH_BUTTON_PLAY, t.isPlaying () ? PushColors.PUSH_BUTTON_STATE_PLAY_HI : PushColors.PUSH_BUTTON_STATE_PLAY_ON);
-        final boolean isFlipRecord = this.configuration.isFlipRecord ();
-        surface.updateButton (PushControlSurface.PUSH_BUTTON_CLIP_STOP, surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP) ? PushColors.PUSH_BUTTON_STATE_STOP_HI : PushColors.PUSH_BUTTON_STATE_STOP_ON);
 
         final boolean isShift = surface.isShiftPressed ();
+        final boolean isFlipRecord = this.configuration.isFlipRecord ();
         final boolean isRecordShifted = isShift && !isFlipRecord || !isShift && isFlipRecord;
         if (isRecordShifted)
             surface.updateButton (PushControlSurface.PUSH_BUTTON_AUTOMATION, t.isWritingClipLauncherAutomation () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
@@ -546,7 +557,17 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final ViewManager viewManager = surface.getViewManager ();
         final boolean isSessionView = Views.isSessionView (viewManager.getActiveViewId ());
         surface.updateButton (PushControlSurface.PUSH_BUTTON_NOTE, isSessionView ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_HI);
-        surface.updateButton (PushControlSurface.PUSH_BUTTON_SESSION, isSessionView ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        if (this.host.hasClips ())
+        {
+            surface.updateButton (PushControlSurface.PUSH_BUTTON_CLIP_STOP, surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP) ? PushColors.PUSH_BUTTON_STATE_STOP_HI : PushColors.PUSH_BUTTON_STATE_STOP_ON);
+            surface.updateButton (PushControlSurface.PUSH_BUTTON_SESSION, isSessionView ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        }
+        else
+        {
+            surface.updateButton (PushControlSurface.PUSH_BUTTON_CLIP_STOP, ColorManager.BUTTON_STATE_OFF);
+            surface.updateButton (PushControlSurface.PUSH_BUTTON_SESSION, ColorManager.BUTTON_STATE_OFF);
+        }
+
         surface.updateButton (PushControlSurface.PUSH_BUTTON_ACCENT, config.isAccentActive () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
 
         final View activeView = viewManager.getActiveView ();

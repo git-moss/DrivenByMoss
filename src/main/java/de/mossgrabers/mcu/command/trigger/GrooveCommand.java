@@ -35,7 +35,7 @@ public class GrooveCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (!this.model.getHost ().hasGroove () || event != ButtonEvent.DOWN)
             return;
 
         final IParameter parameter = this.model.getGroove ().getParameters ()[0];

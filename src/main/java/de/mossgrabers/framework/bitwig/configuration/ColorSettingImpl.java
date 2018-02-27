@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.configuration;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.framework.configuration.IColorSetting;
 import de.mossgrabers.framework.configuration.IValueObserver;
 
@@ -36,6 +37,14 @@ public class ColorSettingImpl implements IColorSetting
     public void set (final double red, final double green, final double blue)
     {
         this.colorValue.set ((float) red, (float) green, (float) blue);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void set (final ColorEx color)
+    {
+        this.set (color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0);
     }
 
 

@@ -54,6 +54,22 @@ public class HostProxy implements IHost
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasPinning ()
+    {
+        return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasGroove ()
+    {
+        return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void scheduleTask (final Runnable task, final long delay)
     {
         this.host.scheduleTask (task, delay);
@@ -119,7 +135,7 @@ public class HostProxy implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public ByteBuffer createByteBuffer (int size)
+    public ByteBuffer createByteBuffer (final int size)
     {
         return this.host.createByteBuffer (size);
     }
@@ -127,7 +143,7 @@ public class HostProxy implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public UsbDevice getUsbDevice (int index)
+    public UsbDevice getUsbDevice (final int index)
     {
         return this.host.getUsbDevice (index);
     }

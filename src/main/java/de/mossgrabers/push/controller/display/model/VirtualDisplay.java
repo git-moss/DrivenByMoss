@@ -4,6 +4,7 @@
 
 package de.mossgrabers.push.controller.display.model;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
@@ -83,7 +84,8 @@ public class VirtualDisplay
             configureGraphics (gc);
 
             // Clear display
-            gc.setColor (this.configuration.getColorBorder ());
+            final ColorEx colorBorder = this.configuration.getColorBorder ();
+            gc.setColor (colorBorder.getRed (), colorBorder.getGreen (), colorBorder.getBlue ());
             gc.rectangle (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
             gc.fill ();
 

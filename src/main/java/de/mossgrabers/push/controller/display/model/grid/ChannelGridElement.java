@@ -4,11 +4,11 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.push.PushConfiguration;
 
-import com.bitwig.extension.api.Color;
 import com.bitwig.extension.api.graphics.GradientPattern;
 import com.bitwig.extension.api.graphics.GraphicsOutput;
 import com.bitwig.extension.api.graphics.Image;
@@ -67,7 +67,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
      * @param isArm True if recording is armed
      * @param crossfadeMode The crossfader mode: 0 = A, 1 = AB, B = 2, -1 turns it off
      */
-    public ChannelGridElement (final double editType, final String menuName, final boolean isMenuSelected, final String name, final Color color, final boolean isSelected, final ChannelType type, final double volumeValue, final double modulatedVolumeValue, final String volumeText, final double panValue, final double modulatedPanValue, final String panText, final double vuValue, final boolean isMute, final boolean isSolo, final boolean isArm, final double crossfadeMode)
+    public ChannelGridElement (final double editType, final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type, final double volumeValue, final double modulatedVolumeValue, final String volumeText, final double panValue, final double modulatedPanValue, final String panText, final double vuValue, final boolean isMute, final boolean isSolo, final boolean isArm, final double crossfadeMode)
     {
         super (menuName, isMenuSelected, name, color, isSelected, type);
 
@@ -118,7 +118,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         // Drawing
         //
 
-        final Color textColor = configuration.getColorText ();
+        final ColorEx textColor = configuration.getColorText ();
         this.drawMenu (gc, left, width, configuration);
 
         final String name = this.getName ();
@@ -126,49 +126,49 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         if (name == null || name.length () == 0)
             return;
 
-        final Color backgroundColor = configuration.getColorBackground ();
+        final ColorEx backgroundColor = configuration.getColorBackground ();
         this.drawTrackInfo (gc, left, width, height, trackRowTop, name, configuration);
 
         // Draw the background
-        gc.setColor (this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
+        setColor (gc, this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
         gc.rectangle (left, MENU_HEIGHT + 1, width, trackRowTop - (MENU_HEIGHT + 1));
         gc.fill ();
 
         // Background of pan and slider area
-        final Color borderColor = configuration.getColorBorder ();
-        gc.setColor (borderColor);
+        final ColorEx borderColor = configuration.getColorBorder ();
+        setColor (gc, borderColor);
         gc.rectangle (controlStart, CONTROLS_TOP, halfWidth - UNIT + HALF_UNIT / 2, UNIT);
         gc.rectangle (controlStart, faderTop, controlWidth, faderHeight);
         gc.fill ();
 
-        final Color backgroundDarker = configuration.getColorBackgroundDarker ();
-        final Color editColor = configuration.getColorEdit ();
+        final ColorEx backgroundDarker = configuration.getColorBackgroundDarker ();
+        final ColorEx editColor = configuration.getColorEdit ();
 
         final ChannelType type = this.getType ();
         if (type != ChannelType.MASTER && type != ChannelType.LAYER && this.crossfadeMode != -1)
         {
             // Crossfader A|B
             final double crossWidth = controlWidth / 3;
-            final Color selColor = this.editType == EDIT_TYPE_CROSSFADER || this.editType == EDIT_TYPE_ALL ? editColor : textColor;
-            gc.setColor (this.crossfadeMode == 0 ? selColor : backgroundDarker);
+            final ColorEx selColor = this.editType == EDIT_TYPE_CROSSFADER || this.editType == EDIT_TYPE_ALL ? editColor : textColor;
+            setColor (gc, this.crossfadeMode == 0 ? selColor : backgroundDarker);
             final Image crossfaderAIcon = ResourceHandler.getSVGImage ("track/crossfade_a.svg");
             gc.mask (crossfaderAIcon, left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
             gc.fill ();
-            gc.setColor (this.crossfadeMode == 1 ? selColor : backgroundDarker);
+            setColor (gc, this.crossfadeMode == 1 ? selColor : backgroundDarker);
             final Image crossfaderABIcon = ResourceHandler.getSVGImage ("track/crossfade_ab.svg");
             gc.mask (crossfaderABIcon, crossWidth + left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
             gc.fill ();
-            gc.setColor (this.crossfadeMode == 2 ? selColor : backgroundDarker);
+            setColor (gc, this.crossfadeMode == 2 ? selColor : backgroundDarker);
             final Image crossfaderBIcon = ResourceHandler.getSVGImage ("track/crossfade_b.svg");
             gc.mask (crossfaderBIcon, 2 * crossWidth + left + INSET + (crossWidth - crossfaderAIcon.getWidth ()) / 2, CONTROLS_TOP + (panHeight - crossfaderAIcon.getHeight ()) / 2);
             gc.fill ();
         }
 
         // Panorama
-        gc.setColor (backgroundDarker);
+        setColor (gc, backgroundDarker);
         gc.rectangle (panStart, panTop, panWidth, panHeight);
         gc.fill ();
-        gc.setColor (borderColor);
+        setColor (gc, borderColor);
         final double panRange = panWidth / 2;
         final double panMiddle = panStart + panRange;
         gc.moveTo (panMiddle, panTop);
@@ -176,8 +176,8 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         gc.stroke ();
         final double maxValue = getMaxValue ();
         final double halfMax = maxValue / 2;
-        final Color faderColor = configuration.getColorFader ();
-        gc.setColor (faderColor);
+        final ColorEx faderColor = configuration.getColorFader ();
+        setColor (gc, faderColor);
         final boolean isPanTouched = this.panText.length () > 0;
 
         // Panned to the left or right?
@@ -190,7 +190,7 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         gc.fill ();
         if (this.editType == EDIT_TYPE_PAN || this.editType == EDIT_TYPE_ALL)
         {
-            gc.setColor (editColor);
+            setColor (gc, editColor);
             final double w = isPanTouched ? 3 : 1;
             final double start = isRight ? Math.min (panMiddle + panRange - w, panMiddle + v) : Math.max (panMiddle - panRange, panMiddle - v);
             gc.rectangle (start, CONTROLS_TOP + 1, w, panHeight);
@@ -205,25 +205,25 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         final double modulatedVolumeHeight = isVolumeModulated ? (double) (this.modulatedVolumeValue >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.modulatedVolumeValue / maxValue) : volumeHeight;
         final double volumeTop = faderTop + SEPARATOR_SIZE + faderInnerHeight - volumeHeight;
         final double modulatedVolumeTop = isVolumeModulated ? faderTop + SEPARATOR_SIZE + faderInnerHeight - modulatedVolumeHeight : volumeTop;
-        gc.setColor (faderColor);
+        setColor (gc, faderColor);
         gc.rectangle (faderLeft, modulatedVolumeTop, volumeWidth, modulatedVolumeHeight);
         gc.fill ();
         final boolean isVolumeTouched = this.volumeText.length () > 0;
         if (this.editType == EDIT_TYPE_VOLUME || this.editType == EDIT_TYPE_ALL)
         {
-            gc.setColor (editColor);
+            setColor (gc, editColor);
             final double h = isVolumeTouched ? 3 : 1;
             gc.rectangle (faderLeft, Math.min (volumeTop + volumeHeight - h, volumeTop), volumeWidth, h);
             gc.fill ();
         }
 
         // VU
-        gc.setColor (backgroundDarker);
+        setColor (gc, backgroundDarker);
         final double vuHeight = this.vuValue >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.vuValue / maxValue;
         final double vuOffset = faderInnerHeight - vuHeight;
         gc.rectangle (controlStart + SEPARATOR_SIZE, faderTop + SEPARATOR_SIZE, faderOffset - SEPARATOR_SIZE, faderInnerHeight);
         gc.fill ();
-        gc.setColor (configuration.getColorVu ());
+        setColor (gc, configuration.getColorVu ());
         gc.rectangle (controlStart + SEPARATOR_SIZE, faderTop + SEPARATOR_SIZE + vuOffset, faderOffset - SEPARATOR_SIZE, vuHeight);
         gc.fill ();
 
@@ -246,10 +246,10 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         // Draw panorama text on top if set
         if (isPanTouched)
         {
-            gc.setColor (backgroundDarker);
+            setColor (gc, backgroundDarker);
             gc.rectangle (controlStart, panTextTop, controlWidth, UNIT);
             gc.fill ();
-            gc.setColor (borderColor);
+            setColor (gc, borderColor);
             gc.rectangle (controlStart, panTextTop, controlWidth - 1, UNIT);
             gc.stroke ();
             gc.setFontSize (UNIT);
@@ -260,10 +260,10 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         if (isVolumeTouched)
         {
             final double volumeTextTop = this.volumeValue >= maxValue - 1 ? faderTop : Math.min (volumeTop - 1, faderTop + faderInnerHeight + SEPARATOR_SIZE - UNIT + 1);
-            gc.setColor (backgroundDarker);
+            setColor (gc, backgroundDarker);
             gc.rectangle (volumeTextLeft, volumeTextTop, volumeTextWidth, UNIT);
             gc.fill ();
-            gc.setColor (borderColor);
+            setColor (gc, borderColor);
             gc.rectangle (volumeTextLeft, volumeTextTop, volumeTextWidth - 1, UNIT);
             gc.stroke ();
             gc.setFontSize (UNIT);
@@ -287,9 +287,9 @@ public class ChannelGridElement extends ChannelSelectionGridElement
      * @param iconName The name of the buttons icon
      * @param configuration The layout settings
      */
-    private static void drawButton (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final Color backgroundColor, final Color isOnColor, final Color textColor, final boolean isOn, final String iconName, final PushConfiguration configuration)
+    private static void drawButton (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final ColorEx backgroundColor, final ColorEx isOnColor, final ColorEx textColor, final boolean isOn, final String iconName, final PushConfiguration configuration)
     {
-        final Color borderColor = configuration.getColorBorder ();
+        final ColorEx borderColor = configuration.getColorBorder ();
         final double radius = 2.0;
 
         drawRoundedRect (gc, left, top, width, height, radius, borderColor);
@@ -298,31 +298,31 @@ public class ChannelGridElement extends ChannelSelectionGridElement
             drawFilledRoundedRect (gc, left + 1, top + 1, width - 2, height - 2, radius, isOnColor);
         else
         {
-            final Color brighter = ColorEx.brighter (backgroundColor);
+            final ColorEx brighter = ColorEx.brighter (backgroundColor);
             final GradientPattern linearGradient = gc.createLinearGradient (left, top + 1, left, top + height);
             linearGradient.addColorStop (0, backgroundColor.getRed (), backgroundColor.getGreen (), backgroundColor.getBlue ());
             linearGradient.addColorStop (1, brighter.getRed (), brighter.getGreen (), brighter.getBlue ());
             drawPatternFilledRoundedRect (gc, left + 1, top + 1, width - 2, height - 2, radius, linearGradient);
         }
 
-        gc.setColor (isOn ? borderColor : textColor);
+        setColor (gc, isOn ? borderColor : textColor);
         final Image icon = ResourceHandler.getSVGImage (iconName);
         gc.mask (icon, left + (width - icon.getWidth ()) / 2, top + (height - icon.getHeight ()) / 2);
         gc.fill ();
     }
 
 
-    private static void drawRoundedRect (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final double radius, final Color backgroundColor)
+    private static void drawRoundedRect (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final double radius, final ColorEx backgroundColor)
     {
-        gc.setColor (backgroundColor);
+        setColor (gc, backgroundColor);
         drawRoundedRectInternal (gc, left, top, width, height, radius);
         gc.fill ();
     }
 
 
-    private static void drawFilledRoundedRect (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final double radius, final Color backgroundColor)
+    private static void drawFilledRoundedRect (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final double radius, final ColorEx backgroundColor)
     {
-        gc.setColor (backgroundColor);
+        setColor (gc, backgroundColor);
         drawRoundedRectInternal (gc, left, top, width, height, radius);
         gc.fill ();
     }
