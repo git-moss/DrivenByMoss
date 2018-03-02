@@ -5,6 +5,7 @@
 package de.mossgrabers.kontrol1.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
@@ -110,7 +111,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
                 for (int i = 0; i < 7; i++)
                 {
                     final IBrowserColumn column = browser.getFilterColumn (i);
-                    d.setCell (0, 1 + i, this.optimizeName (column.getName () + ":", 8).toUpperCase ()).setCell (1, 1 + i, column.doesCursorExist () ? column.getCursorName ().toUpperCase () : "");
+                    d.setCell (0, 1 + i, StringUtils.shortenAndFixASCII (column.getName () + ":", 8).toUpperCase ()).setCell (1, 1 + i, column.doesCursorExist () ? column.getCursorName ().toUpperCase () : "");
                 }
                 break;
 

@@ -6,7 +6,7 @@ package de.mossgrabers.kontrol1.bitwig;
 
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
-import de.mossgrabers.framework.bitwig.daw.HostProxy;
+import de.mossgrabers.framework.bitwig.daw.HostImpl;
 import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.kontrol1.Kontrol1ControllerSetup;
@@ -125,6 +125,6 @@ public abstract class AbstractKontrol1ExtensionDefinition extends AbstractContro
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new Kontrol1ControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()));
+        return new Kontrol1ControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()));
     }
 }

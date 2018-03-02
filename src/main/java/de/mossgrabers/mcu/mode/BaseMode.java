@@ -54,24 +54,22 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
             return;
         }
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = this.model.getCurrentTrackBank ().getTrack (channel);
         if (row == 1)
-        {
-            tb.getTrack (channel).toggleRecArm ();
-        }
+            track.toggleRecArm ();
         else if (row == 2)
         {
             if (this.surface.isShiftPressed ())
-                tb.getTrack (channel).toggleAutoMonitor ();
+                track.toggleAutoMonitor ();
             else
-                tb.getTrack (channel).toggleSolo ();
+                track.toggleSolo ();
         }
         else if (row == 3)
         {
             if (this.surface.isShiftPressed ())
-                tb.getTrack (channel).toggleMonitor ();
+                track.toggleMonitor ();
             else
-                tb.getTrack (channel).toggleMute ();
+                track.toggleMute ();
         }
     }
 
@@ -117,7 +115,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getTrack (extenderOffset + i);
-            d2.setCell (0, i, this.optimizeName (StringUtils.fixASCII (t.getName ()), isMainDevice ? 6 : 7));
+            d2.setCell (0, i, StringUtils.shortenAndFixASCII (t.getName (), isMainDevice ? 6 : 7));
         }
 
         if (isMainDevice)

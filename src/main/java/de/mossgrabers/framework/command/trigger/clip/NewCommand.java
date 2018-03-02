@@ -40,7 +40,8 @@ public class NewCommand<S extends ControlSurface<C>, C extends Configuration> ex
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        this.handleExecute (event, true);
+        if (event == ButtonEvent.DOWN)
+            this.handleExecute (true);
     }
 
 
@@ -48,15 +49,13 @@ public class NewCommand<S extends ControlSurface<C>, C extends Configuration> ex
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        this.handleExecute (event, false);
+        if (event == ButtonEvent.DOWN)
+            this.handleExecute (false);
     }
 
 
-    private void handleExecute (final ButtonEvent event, final boolean enableOverdub)
+    private void handleExecute (final boolean enableOverdub)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
         final IChannelBank tb = this.model.getCurrentTrackBank ();
         final ITrack track = tb.getSelectedTrack ();
         if (track == null)

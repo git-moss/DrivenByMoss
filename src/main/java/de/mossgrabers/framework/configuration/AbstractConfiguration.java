@@ -121,6 +121,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final int       FOOTSWITCH_2_ADD_AUDIO_TRACK      = 12;
     /** Use footswitch 2 to add a new effect track. */
     public static final int       FOOTSWITCH_2_ADD_EFFECT_TRACK     = 13;
+    /** Use footswitch 2 to quantize the selected clip. */
+    public static final int       FOOTSWITCH_2_QUANTIZE             = 14;
 
     /** The behaviour when the stop button is pressed. */
     public enum BehaviourOnStop
@@ -185,7 +187,8 @@ public abstract class AbstractConfiguration implements Configuration
         "Panel layout edit",
         "Add instrument track",
         "Add audio track",
-        "Add effect track"
+        "Add effect track",
+        "Quantize"
     };
 
     private static final String []                   BROWSER_FILTER_COLUMN_NAMES =

@@ -54,7 +54,7 @@ public class TrackMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
 
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
 
-        d.setCell (0, 0, (isEffectTrackBankActive ? "TR-FX " : "TRACK ") + (t.getPosition () + 1)).setCell (1, 0, this.optimizeName (StringUtils.fixASCII (t.getName ()), 8).toUpperCase ());
+        d.setCell (0, 0, (isEffectTrackBankActive ? "TR-FX " : "TRACK ") + (t.getPosition () + 1)).setCell (1, 0, StringUtils.shortenAndFixASCII (t.getName (), 8).toUpperCase ());
 
         d.setCell (0, 1, "VOLUME").setCell (1, 1, t.isMute () ? "-MUTED-" : t.isSolo () ? "-SOLO-" : t.getVolumeStr (8)).setCell (0, 2, "PAN").setCell (1, 2, t.getPanStr (8));
         d.setBar (1, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_1), t.getVolume ());
@@ -66,7 +66,7 @@ public class TrackMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
             {
                 final int pos = 3 + i;
                 final ISend sendData = t.getSend (i);
-                d.setCell (0, pos, this.optimizeName (StringUtils.fixASCII (sendData.getName (8)), 8).toUpperCase ()).setCell (1, pos, sendData.getDisplayedValue (8));
+                d.setCell (0, pos, StringUtils.shortenAndFixASCII (sendData.getName (8), 8).toUpperCase ()).setCell (1, pos, sendData.getDisplayedValue (8));
                 d.setBar (pos, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_1 + 2 + i) && sendData.doesExist (), sendData.getValue ());
             }
         }

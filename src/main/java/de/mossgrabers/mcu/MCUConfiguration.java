@@ -43,9 +43,9 @@ public class MCUConfiguration extends AbstractConfiguration
     private static final Integer   TOUCH_CHANNEL               = Integer.valueOf (40);
 
     /** Use a Function button to switch to previous mode. */
-    public static final int        FOOTSWITCH_2_PREV_MODE      = 14;
+    public static final int        FOOTSWITCH_2_PREV_MODE      = 15;
     /** Use a Function button to switch to next mode. */
-    public static final int        FOOTSWITCH_2_NEXT_MODE      = 15;
+    public static final int        FOOTSWITCH_2_NEXT_MODE      = 16;
 
     private static final String    DEVICE_SELECT               = "<Select a profile>";
     private static final String    DEVICE_ICON_PLATFORM_M      = "icon Platform M / M+";
@@ -78,6 +78,7 @@ public class MCUConfiguration extends AbstractConfiguration
         "Add instrument track",
         "Add audio track",
         "Add effect track",
+        "Quantize",
         "Previous mode",
         "Next mode"
     };

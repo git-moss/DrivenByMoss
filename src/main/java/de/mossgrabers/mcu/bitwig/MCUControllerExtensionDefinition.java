@@ -6,7 +6,7 @@ package de.mossgrabers.mcu.bitwig;
 
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
-import de.mossgrabers.framework.bitwig.daw.HostProxy;
+import de.mossgrabers.framework.bitwig.daw.HostImpl;
 import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.mcu.MCUControllerSetup;
@@ -65,7 +65,7 @@ abstract class MCUControllerExtensionDefinition extends AbstractControllerExtens
     @Override
     public String getVersion ()
     {
-        return "2.5";
+        return "2.6";
     }
 
 
@@ -98,6 +98,6 @@ abstract class MCUControllerExtensionDefinition extends AbstractControllerExtens
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new MCUControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), this.numMCUDevices);
+        return new MCUControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), this.numMCUDevices);
     }
 }

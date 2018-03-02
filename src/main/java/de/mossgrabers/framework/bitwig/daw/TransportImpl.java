@@ -20,7 +20,7 @@ import java.text.DecimalFormat;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TransportProxy implements ITransport
+public class TransportImpl implements ITransport
 {
     /** 1 beat. */
     private static final double INC_FRACTION_TIME      = 1.0;
@@ -35,6 +35,7 @@ public class TransportProxy implements ITransport
 
     private int                 crossfade              = 0;
     private double              tempo;
+    private int                 metronomeValue;
 
 
     /**
@@ -43,7 +44,7 @@ public class TransportProxy implements ITransport
      * @param host The host
      * @param valueChanger The value changer
      */
-    public TransportProxy (final ControllerHost host, final ValueChanger valueChanger)
+    public TransportImpl (final ControllerHost host, final ValueChanger valueChanger)
     {
         this.host = host;
         this.valueChanger = valueChanger;
@@ -70,6 +71,7 @@ public class TransportProxy implements ITransport
         final SettableRangedValue metronomeVolume = this.transport.metronomeVolume ();
         metronomeVolume.markInterested ();
         metronomeVolume.displayedValue ().markInterested ();
+        metronomeVolume.addValueObserver (valueChanger.getUpperBound (), this::handleMetronomeValue);
 
         final TimeSignatureValue ts = this.transport.timeSignature ();
         ts.numerator ().markInterested ();
@@ -257,9 +259,25 @@ public class TransportProxy implements ITransport
 
     /** {@inheritDoc} */
     @Override
+    public int getMetronomeVolume ()
+    {
+        return this.metronomeValue;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void changeMetronomeVolume (final int control)
     {
         this.transport.metronomeVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setMetronomeVolume (final double value)
+    {
+        this.transport.metronomeVolume ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -556,12 +574,18 @@ public class TransportProxy implements ITransport
 
     private void handleTempo (final double value)
     {
-        this.tempo = Math.min (TransportProxy.TEMPO_MAX, Math.max (TransportProxy.TEMPO_MIN, value));
+        this.tempo = Math.min (TransportImpl.TEMPO_MAX, Math.max (TransportImpl.TEMPO_MIN, value));
     }
 
 
     private void handleCrossfade (final int value)
     {
         this.crossfade = value;
+    }
+
+
+    private void handleMetronomeValue (final int value)
+    {
+        this.metronomeValue = value;
     }
 }

@@ -4,7 +4,7 @@
 
 package de.mossgrabers.osc.protocol;
 
-import de.mossgrabers.framework.bitwig.daw.Model;
+import de.mossgrabers.framework.bitwig.daw.ModelImpl;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.ICursorClip;
@@ -21,7 +21,7 @@ import java.util.Arrays;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class OSCModel extends Model
+public class OSCModel extends ModelImpl
 {
     private int []      keysTranslation  = null;
     private int []      drumsTranslation = null;

@@ -5,6 +5,7 @@
 package de.mossgrabers.push.mode.track;
 
 import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
@@ -300,7 +301,7 @@ public abstract class AbstractTrackMode extends BaseMode
         {
             final boolean isSel = i == selIndex;
             final ITrack t = tb.getTrack (i);
-            final String n = this.optimizeName (t.getName (), isSel ? 7 : 8);
+            final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8);
             d.setCell (3, i, isSel ? PushDisplay.RIGHT_ARROW + n : n);
         }
         d.done (3);

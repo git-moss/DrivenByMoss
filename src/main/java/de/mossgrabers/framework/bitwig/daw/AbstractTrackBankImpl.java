@@ -21,7 +21,7 @@ import com.bitwig.extension.controller.api.TrackBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractTrackBankProxy extends AbstractChannelBank
+public abstract class AbstractTrackBankImpl extends AbstractChannelBank
 {
     protected TrackBank trackBank;
 
@@ -34,7 +34,7 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractTrackBankProxy (final ValueChanger valueChanger, final int numTracks, final int numScenes, final int numSends)
+    public AbstractTrackBankImpl (final ValueChanger valueChanger, final int numTracks, final int numScenes, final int numSends)
     {
         super (valueChanger, numTracks, numScenes, numSends);
     }
@@ -68,7 +68,7 @@ public abstract class AbstractTrackBankProxy extends AbstractChannelBank
         this.trackBank.canScrollChannelsUp ().markInterested ();
         this.trackBank.canScrollChannelsDown ().markInterested ();
         if (this.numScenes > 0)
-            this.sceneBank = new SceneBankProxy (this.trackBank.sceneBank (), this.numScenes);
+            this.sceneBank = new SceneBankImpl (this.trackBank.sceneBank (), this.numScenes);
     }
 
 

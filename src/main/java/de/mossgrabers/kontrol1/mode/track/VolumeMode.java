@@ -64,7 +64,7 @@ public class VolumeMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
         {
             final boolean isSel = i == selIndex;
             final ITrack t = tb.getTrack (i);
-            final String n = this.optimizeName (StringUtils.fixASCII (t.getName ()), isSel ? 7 : 8).toUpperCase ();
+            final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8).toUpperCase ();
             d.setCell (0, 1 + i, isSel ? ">" + n : n).setCell (1, 1 + i, t.isMute () ? "-MUTED-" : t.isSolo () ? "-SOLO-" : t.getVolumeStr (8));
 
             d.setBar (1 + i, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_1 + i) && t.doesExist (), t.getVolume ());

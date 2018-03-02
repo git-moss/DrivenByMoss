@@ -20,29 +20,19 @@ import de.mossgrabers.framework.daw.IModel;
 public abstract class AbstractMode<S extends ControlSurface<C>, C extends Configuration> implements Mode
 {
     /** Color identifier for a mode button which is off. */
-    public static final String   BUTTON_COLOR_OFF = "BUTTON_COLOR_OFF";
+    public static final String BUTTON_COLOR_OFF = "BUTTON_COLOR_OFF";
     /** Color identifier for a mode button which is on. */
-    public static final String   BUTTON_COLOR_ON  = "BUTTON_COLOR_ON";
+    public static final String BUTTON_COLOR_ON  = "BUTTON_COLOR_ON";
     /** Color identifier for a mode button which is hilighted. */
-    public static final String   BUTTON_COLOR_HI  = "BUTTON_COLOR_HI";
+    public static final String BUTTON_COLOR_HI  = "BUTTON_COLOR_HI";
     /** Color identifier for a mode button which is on (second row). */
-    public static final String   BUTTON_COLOR2_ON = "BUTTON_COLOR2_ON";
+    public static final String BUTTON_COLOR2_ON = "BUTTON_COLOR2_ON";
     /** Color identifier for a mode button which is hilighted (second row). */
-    public static final String   BUTTON_COLOR2_HI = "BUTTON_COLOR2_HI";
+    public static final String BUTTON_COLOR2_HI = "BUTTON_COLOR2_HI";
 
-    private static final char [] REMOVABLE_CHARS  =
-    {
-        ' ',
-        'e',
-        'a',
-        'u',
-        'i',
-        'o'
-    };
-
-    protected S                  surface;
-    protected IModel             model;
-    protected boolean            isTemporary;
+    protected S                surface;
+    protected IModel           model;
+    protected boolean          isTemporary;
 
 
     /**
@@ -112,34 +102,5 @@ public abstract class AbstractMode<S extends ControlSurface<C>, C extends Config
     public boolean isTemporary ()
     {
         return this.isTemporary;
-    }
-
-
-    /**
-     * Shortens a text to the given length.
-     *
-     * @param text The text to shorten
-     * @param length The length to shorten to
-     * @return The shortened text
-     */
-    protected String optimizeName (final String text, final int length)
-    {
-        if (text == null)
-            return "";
-
-        String shortened = text;
-        for (final char element: REMOVABLE_CHARS)
-        {
-            if (shortened.length () <= length)
-                return shortened;
-            int pos;
-            while ((pos = shortened.indexOf (element)) != -1)
-            {
-                shortened = shortened.substring (0, pos) + shortened.substring (pos + 1, shortened.length ());
-                if (shortened.length () <= length)
-                    return shortened;
-            }
-        }
-        return shortened.length () <= length ? shortened : shortened.substring (0, length);
     }
 }

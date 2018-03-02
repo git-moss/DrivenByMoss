@@ -15,7 +15,7 @@ import com.bitwig.extension.controller.api.Project;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ProjectProxy implements IProject
+public class ProjectImpl implements IProject
 {
     private Project     project;
     private Application application;
@@ -27,7 +27,7 @@ public class ProjectProxy implements IProject
      * @param project The project
      * @param application The application
      */
-    public ProjectProxy (final Project project, final Application application)
+    public ProjectImpl (final Project project, final Application application)
     {
         this.project = project;
         this.application = application;

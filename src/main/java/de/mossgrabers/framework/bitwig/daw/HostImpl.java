@@ -20,7 +20,7 @@ import java.nio.ByteBuffer;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class HostProxy implements IHost
+public class HostImpl implements IHost
 {
     private ControllerHost host;
 
@@ -30,7 +30,7 @@ public class HostProxy implements IHost
      *
      * @param host The host
      */
-    public HostProxy (final ControllerHost host)
+    public HostImpl (final ControllerHost host)
     {
         this.host = host;
     }

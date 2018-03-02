@@ -5,6 +5,7 @@
 package de.mossgrabers.push.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
@@ -629,7 +630,7 @@ public class DeviceLayerMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final IChannel layer = cd.getLayerOrDrumPad (offset + i);
-            final String n = this.optimizeName (layer.getName (), layer.isSelected () ? 7 : 8);
+            final String n = StringUtils.shortenAndFixASCII (layer.getName (), layer.isSelected () ? 7 : 8);
             d.setCell (3, i, layer.isSelected () ? PushDisplay.RIGHT_ARROW + n : n);
         }
         d.allDone ();

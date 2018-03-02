@@ -174,6 +174,22 @@ public interface ITransport extends ObserverManagement
 
 
     /**
+     * Set the metronome volume.
+     *
+     * @param value The value
+     */
+    void setMetronomeVolume (final double value);
+
+
+    /**
+     * Get the metronome volume.
+     *
+     * @return The value
+     */
+    int getMetronomeVolume ();
+
+
+    /**
      * Should the metronome be audible during pre-roll?
      *
      * @return True if the metronome should be audible during pre-roll

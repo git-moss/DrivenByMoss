@@ -7,7 +7,7 @@ package de.mossgrabers.apcmini.bitwig;
 import de.mossgrabers.apcmini.APCminiControllerSetup;
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
-import de.mossgrabers.framework.bitwig.daw.HostProxy;
+import de.mossgrabers.framework.bitwig.daw.HostImpl;
 import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
@@ -80,6 +80,6 @@ public class APCminiControllerExtensionDefinition extends AbstractControllerExte
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new APCminiControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()));
+        return new APCminiControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()));
     }
 }

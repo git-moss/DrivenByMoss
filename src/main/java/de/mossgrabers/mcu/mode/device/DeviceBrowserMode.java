@@ -95,7 +95,7 @@ public class DeviceBrowserMode extends BaseMode
                 {
                     final IBrowserColumn column = this.getFilterColumn (i);
                     final String value = column != null && column.doesCursorExist () ? column.getCursorName ().equals (column.getWildcard ()) ? "-" : column.getCursorName () : "";
-                    final String name = column == null ? "" : this.optimizeName (column.getName (), 6);
+                    final String name = column == null ? "" : StringUtils.shortenAndFixASCII (column.getName (), 6);
                     d.setCell (0, i, name).setCell (1, i, value);
                 }
                 final String selectedResult = browser.getSelectedResult ();

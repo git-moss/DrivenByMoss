@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.api.Mixer;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MixerProxy implements IMixer
+public class MixerImpl implements IMixer
 {
     private Mixer mixer;
 
@@ -24,7 +24,7 @@ public class MixerProxy implements IMixer
      *
      * @param mixer The mixer
      */
-    public MixerProxy (final Mixer mixer)
+    public MixerImpl (final Mixer mixer)
     {
         this.mixer = mixer;
 

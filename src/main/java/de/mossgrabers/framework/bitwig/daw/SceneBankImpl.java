@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.SceneBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SceneBankProxy implements ISceneBank
+public class SceneBankImpl implements ISceneBank
 {
     protected IScene [] scenes;
 
@@ -30,7 +30,7 @@ public class SceneBankProxy implements ISceneBank
      * @param sceneBank The scene bank
      * @param numScenes The number of scenes in the page of the bank
      */
-    public SceneBankProxy (final SceneBank sceneBank, final int numScenes)
+    public SceneBankImpl (final SceneBank sceneBank, final int numScenes)
     {
         this.numScenes = numScenes;
 

@@ -47,7 +47,7 @@ public class VolumeMode extends AbstractMode<SLControlSurface, SLConfiguration>
         if (masterTrack.isSelected ())
         {
             d.clear ();
-            final String n = this.optimizeName (StringUtils.fixASCII (masterTrack.getName ()), 7);
+            final String n = StringUtils.shortenAndFixASCII (masterTrack.getName (), 7);
             d.setCell (1, 0, SLDisplay.RIGHT_ARROW + n).setCell (3, 0, masterTrack.getVolumeStr (8)).done (1).done (3);
             return;
         }
@@ -60,7 +60,7 @@ public class VolumeMode extends AbstractMode<SLControlSurface, SLConfiguration>
         {
             final boolean isSel = i == selIndex;
             final ITrack t = tb.getTrack (i);
-            final String n = this.optimizeName (StringUtils.fixASCII (t.getName ()), isSel ? 7 : 8);
+            final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8);
             d.setCell (1, i, isSel ? SLDisplay.RIGHT_ARROW + n : n).setCell (3, i, t.getVolumeStr (8));
         }
         d.done (1).done (3);

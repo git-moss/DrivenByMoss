@@ -26,7 +26,7 @@ import com.bitwig.extension.controller.api.PinnableCursorDevice;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Model extends AbstractModel
+public class ModelImpl extends AbstractModel
 {
     private ControllerHost controllerHost;
     private CursorTrack    cursorTrack;
@@ -51,35 +51,35 @@ public class Model extends AbstractModel
      * @param numDeviceLayers The number of device layers to monitor
      * @param numDrumPadLayers The number of drum pad layers to monitor
      */
-    public Model (final ControllerHost controllerHost, final ColorManager colorManager, final ValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public ModelImpl (final ControllerHost controllerHost, final ColorManager colorManager, final ValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
         super (colorManager, valueChanger, scales, numTracks, numScenes, numSends, numFilterColumnEntries, numResults, hasFlatTrackList, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
 
         this.controllerHost = controllerHost;
-        this.host = new HostProxy (controllerHost);
+        this.host = new HostImpl (controllerHost);
 
         final Application app = controllerHost.createApplication ();
-        this.application = new ApplicationProxy (app);
-        this.project = new ProjectProxy (controllerHost.getProject (), app);
-        this.arranger = new ArrangerProxy (controllerHost.createArranger ());
-        this.mixer = new MixerProxy (controllerHost.createMixer ());
-        this.transport = new TransportProxy (controllerHost, valueChanger);
-        this.groove = new GrooveProxy (controllerHost, valueChanger);
+        this.application = new ApplicationImpl (app);
+        this.project = new ProjectImpl (controllerHost.getProject (), app);
+        this.arranger = new ArrangerImpl (controllerHost.createArranger ());
+        this.mixer = new MixerImpl (controllerHost.createMixer ());
+        this.transport = new TransportImpl (controllerHost, valueChanger);
+        this.groove = new GrooveImpl (controllerHost, valueChanger);
         final MasterTrack master = controllerHost.createMasterTrack (0);
         this.masterTrack = new MasterTrackImpl (master, valueChanger);
 
         this.cursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", 0, 0, true);
         this.cursorTrack.isPinned ().markInterested ();
 
-        this.trackBank = new TrackBankProxy (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
-        this.effectTrackBank = new EffectTrackBankProxy (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
+        this.trackBank = new TrackBankImpl (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
+        this.effectTrackBank = new EffectTrackBankImpl (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
 
-        this.primaryDevice = new CursorDeviceProxy (this.host, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.primaryDevice = new CursorDeviceImpl (this.host, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
         PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", this.numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
-        this.cursorDevice = new CursorDeviceProxy (this.host, cd, valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.cursorDevice = new CursorDeviceImpl (this.host, cd, valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
         cd = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
-        this.drumDevice64 = new CursorDeviceProxy (this.host, cd, valueChanger, 0, 0, 0, 64, 64);
-        this.browser = new BrowserProxy (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
+        this.drumDevice64 = new CursorDeviceImpl (this.host, cd, valueChanger, 0, 0, 0, 64, 64);
+        this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
 
         this.masterTrackEqualsValue = cd.channel ().createEqualsValue (master);
         this.masterTrackEqualsValue.markInterested ();
@@ -96,7 +96,7 @@ public class Model extends AbstractModel
     @Override
     public ITrackBank createSceneViewTrackBank (final int numTracks, final int numScenes)
     {
-        return new TrackBankProxy (this.controllerHost, this.valueChanger, this.cursorTrack, numTracks, numScenes, 0, true);
+        return new TrackBankImpl (this.controllerHost, this.valueChanger, this.cursorTrack, numTracks, numScenes, 0, true);
     }
 
 
@@ -104,7 +104,7 @@ public class Model extends AbstractModel
     @Override
     public ICursorClip getCursorClip (final int cols, final int rows)
     {
-        return this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipProxy (this.controllerHost, this.valueChanger, cols, rows));
+        return this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipImpl (this.controllerHost, this.valueChanger, cols, rows));
     }
 
 

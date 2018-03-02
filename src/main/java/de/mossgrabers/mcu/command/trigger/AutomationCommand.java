@@ -48,7 +48,9 @@ public class AutomationCommand extends AbstractTriggerCommand<MCUControlSurface,
         {
             // Read/Off
             case 0:
-                if (transport.isWritingArrangerAutomation ())
+                if (this.surface.isSelectPressed ())
+                    this.model.getTransport ().resetAutomationOverrides ();
+                else if (transport.isWritingArrangerAutomation ())
                     transport.toggleWriteArrangerAutomation ();
                 break;
             // Write

@@ -40,7 +40,10 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
         final double value = Math.min (data2 * 127 + (double) data1, this.model.getValueChanger ().getUpperBound () - 1);
         if (channel == 8)
         {
-            this.model.getMasterTrack ().setVolume (value);
+            if (this.surface.isShiftPressed ())
+                this.model.getTransport ().setMetronomeVolume (value);
+            else
+                this.model.getMasterTrack ().setVolume (value);
             return;
         }
 

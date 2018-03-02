@@ -31,7 +31,7 @@ import com.bitwig.extension.controller.api.SettableIntegerValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class CursorDeviceProxy implements ICursorDevice
+public class CursorDeviceImpl implements ICursorDevice
 {
     private IHost                    host;
     private PinnableCursorDevice     cursorDevice;
@@ -67,7 +67,7 @@ public class CursorDeviceProxy implements ICursorDevice
      * @param numDeviceLayers The number of layers
      * @param numDrumPadLayers The number of drum pad layers
      */
-    public CursorDeviceProxy (final IHost host, final PinnableCursorDevice cursorDevice, final ValueChanger valueChanger, final int numSends, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public CursorDeviceImpl (final IHost host, final PinnableCursorDevice cursorDevice, final ValueChanger valueChanger, final int numSends, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
         this.host = host;
         this.cursorDevice = cursorDevice;

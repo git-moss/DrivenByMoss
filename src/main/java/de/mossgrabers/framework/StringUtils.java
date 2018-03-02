@@ -11,12 +11,36 @@ package de.mossgrabers.framework;
  */
 public class StringUtils
 {
+    private static final char [] REMOVABLE_CHARS =
+    {
+        ' ',
+        'e',
+        'a',
+        'u',
+        'i',
+        'o'
+    };
+
+
     /**
      * Construcotr, private due to help class.
      */
     private StringUtils ()
     {
         // Intentionally empty
+    }
+
+
+    /**
+     * First replaces umlauts with alternative writing, then shortens a text to the given length.
+     *
+     * @param text The text to shorten
+     * @param length The length to shorten to
+     * @return The shortened text
+     */
+    public static String shortenAndFixASCII (final String text, final int length)
+    {
+        return optimizeName (fixASCII (text), length);
     }
 
 
@@ -74,6 +98,35 @@ public class StringUtils
                 str.append (c);
         }
         return str.toString ();
+    }
+
+
+    /**
+     * Shortens a text to the given length.
+     *
+     * @param text The text to shorten
+     * @param length The length to shorten to
+     * @return The shortened text
+     */
+    public static String optimizeName (final String text, final int length)
+    {
+        if (text == null)
+            return "";
+
+        String shortened = text;
+        for (final char element: REMOVABLE_CHARS)
+        {
+            if (shortened.length () <= length)
+                return shortened;
+            int pos;
+            while ((pos = shortened.indexOf (element)) != -1)
+            {
+                shortened = shortened.substring (0, pos) + shortened.substring (pos + 1, shortened.length ());
+                if (shortened.length () <= length)
+                    return shortened;
+            }
+        }
+        return shortened.length () <= length ? shortened : shortened.substring (0, length);
     }
 
 

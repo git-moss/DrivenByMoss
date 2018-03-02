@@ -5,6 +5,7 @@
 package de.mossgrabers.push.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.BitwigColors;
@@ -165,7 +166,7 @@ public class SessionMode extends BaseMode
 
                 final IScene scene = sceneBank.getScene (sceneIndex);
                 if (scene.doesExist ())
-                    d.setCell (row, col, this.optimizeName (scene.getName (8), 8));
+                    d.setCell (row, col, StringUtils.shortenAndFixASCII (scene.getName (8), 8));
             }
         }
         d.allDone ();
@@ -204,7 +205,7 @@ public class SessionMode extends BaseMode
                 final ISlot slot = tb.getTrack (x).getSlot (y);
                 if (slot.doesExist ())
                 {
-                    String optimizedName = this.optimizeName (slot.getName (8), 8);
+                    String optimizedName = StringUtils.shortenAndFixASCII (slot.getName (8), 8);
                     // TODO Bugfix required: Workaround to displaying unnamed clips, since
                     // doesExist does not work reliably
                     if (optimizedName.length () == 0)

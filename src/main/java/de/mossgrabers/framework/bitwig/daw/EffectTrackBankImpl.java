@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.CursorTrack;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class EffectTrackBankProxy extends AbstractTrackBankProxy
+public class EffectTrackBankImpl extends AbstractTrackBankImpl
 {
     private IChannelBank audioInstrumentTrackBank;
 
@@ -31,7 +31,7 @@ public class EffectTrackBankProxy extends AbstractTrackBankProxy
      * @param numScenes The number of scenes of a bank page
      * @param audioInstrumentTrackBank The trackbank which monitors the audio and instrument tracks
      */
-    public EffectTrackBankProxy (final ControllerHost host, final ValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final IChannelBank audioInstrumentTrackBank)
+    public EffectTrackBankImpl (final ControllerHost host, final ValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final IChannelBank audioInstrumentTrackBank)
     {
         super (valueChanger, numTracks, numScenes, 0);
 

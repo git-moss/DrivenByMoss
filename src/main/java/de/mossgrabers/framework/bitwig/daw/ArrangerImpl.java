@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.api.Arranger;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ArrangerProxy implements IArranger
+public class ArrangerImpl implements IArranger
 {
     private Arranger arranger;
 
@@ -24,7 +24,7 @@ public class ArrangerProxy implements IArranger
      *
      * @param arranger The arranger
      */
-    public ArrangerProxy (final Arranger arranger)
+    public ArrangerImpl (final Arranger arranger)
     {
         this.arranger = arranger;
 
