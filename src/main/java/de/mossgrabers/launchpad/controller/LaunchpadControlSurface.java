@@ -39,14 +39,14 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public static final int     LAUNCHPAD_BUTTON_SENDS        = 7;
     public static final int     LAUNCHPAD_BUTTON_STOP_CLIP    = 8;
 
-    public static final int     LAUNCHPAD_BUTTON_SCENE1       = 89;                  // 1/4
+    public static final int     LAUNCHPAD_BUTTON_SCENE1       = 89;                      // 1/4
     public static final int     LAUNCHPAD_BUTTON_SCENE2       = 79;
     public static final int     LAUNCHPAD_BUTTON_SCENE3       = 69;
     public static final int     LAUNCHPAD_BUTTON_SCENE4       = 59;
-    public static final int     LAUNCHPAD_BUTTON_SCENE5       = 49;                  // ...
+    public static final int     LAUNCHPAD_BUTTON_SCENE5       = 49;                      // ...
     public static final int     LAUNCHPAD_BUTTON_SCENE6       = 39;
     public static final int     LAUNCHPAD_BUTTON_SCENE7       = 29;
-    public static final int     LAUNCHPAD_BUTTON_SCENE8       = 19;                  // 1/32T
+    public static final int     LAUNCHPAD_BUTTON_SCENE8       = 19;                      // 1/32T
 
     public static final int     LAUNCHPAD_FADER_1             = 21;
     public static final int     LAUNCHPAD_FADER_2             = 22;
@@ -74,9 +74,9 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public static final int     LAUNCHPAD_MKII_BUTTON_LEFT    = 106;
     public static final int     LAUNCHPAD_MKII_BUTTON_RIGHT   = 107;
     public static final int     LAUNCHPAD_MKII_BUTTON_SESSION = 108;
-    public static final int     LAUNCHPAD_MKII_BUTTON_NOTE    = 109;                 // User 1
-    public static final int     LAUNCHPAD_MKII_BUTTON_DEVICE  = 110;                 // User 2
-    public static final int     LAUNCHPAD_MKII_BUTTON_USER    = 111;                 // Mixer
+    public static final int     LAUNCHPAD_MKII_BUTTON_NOTE    = 109;                     // User 1
+    public static final int     LAUNCHPAD_MKII_BUTTON_DEVICE  = 110;                     // User 2
+    public static final int     LAUNCHPAD_MKII_BUTTON_USER    = 111;                     // Mixer
 
     public static final int     LAUNCHPAD_BUTTON_STATE_OFF    = 0;
     public static final int     LAUNCHPAD_BUTTON_STATE_ON     = 1;
@@ -164,9 +164,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public static final String  LAUNCHPAD_PRO_SYSEX_HEADER    = "F0 00 20 29 02 10 ";
     public static final String  LAUNCHPAD_PRO_PRG_MODE        = "2C 03";
     public static final String  LAUNCHPAD_PRO_FADER_MODE      = "2C 02";
-    public static final String  LAUNCHPAD_PRO_PAN_MODE        = "2C 02";             // TODO
-                                                                                     // Identisch zu
-                                                                                     // vorherigem?
+    public static final String  LAUNCHPAD_PRO_PAN_MODE        = LAUNCHPAD_PRO_FADER_MODE;
 
     public static final String  LAUNCHPAD_MKII_SYSEX_HEADER   = "F0 00 20 29 02 18 ";
     public static final String  LAUNCHPAD_MKII_PRG_MODE       = "22 00";

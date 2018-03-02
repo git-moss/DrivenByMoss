@@ -86,6 +86,8 @@ public class OSCWriter
         this.sendOSC ("/punchIn", trans.isPunchInEnabled (), dump);
         this.sendOSC ("/punchOut", trans.isPunchOutEnabled (), dump);
         this.sendOSC ("/click", trans.isMetronomeOn (), dump);
+        this.sendOSC ("/click/volume", trans.getMetronomeVolume (), dump);
+        this.sendOSC ("/click/volumeStr", trans.getMetronomeVolumeStr (), dump);
         this.sendOSC ("/preroll", trans.getPreroll (), dump);
         this.sendOSC ("/tempo/raw", trans.getTempo (), dump);
         this.sendOSC ("/crossfade", trans.getCrossfade (), dump);
@@ -276,6 +278,13 @@ public class OSCWriter
         {
             final int oneplus = i + 1;
             this.flushParameterData (deviceAddress + "param/" + oneplus + "/", device.getFXParam (i), dump);
+        }
+        this.sendOSC (deviceAddress + "page/selected", device.getSelectedParameterPage (), dump);
+        final String [] parameterPageNames = device.getParameterPageNames ();
+        for (int i = 0; i < 8; i++)
+        {
+            final int oneplus = i + 1;
+            this.sendOSC (deviceAddress + "page/" + oneplus + "/", i < parameterPageNames.length ? parameterPageNames[i] : "", dump);
         }
     }
 
