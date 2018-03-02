@@ -5,6 +5,7 @@
 package de.mossgrabers.push.mode.device;
 
 import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
@@ -191,7 +192,7 @@ public class DeviceBrowserMode extends BaseMode
                 for (int i = 0; i < 7; i++)
                 {
                     final IBrowserColumn column = this.getFilterColumn (i);
-                    String name = column == null ? "" : this.optimizeName (column.getName (), 8);
+                    String name = column == null ? "" : StringUtils.shortenAndFixASCII (column.getName (), 8);
                     if (i == this.filterColumn)
                         name = PushDisplay.RIGHT_ARROW + name;
                     d.setCell (0, i, name).setCell (1, i, getColumnName (column));
@@ -284,7 +285,7 @@ public class DeviceBrowserMode extends BaseMode
                     for (int itemIndex = 0; itemIndex < 6; itemIndex++)
                     {
                         final int pos = i * 6 + itemIndex;
-                        String text = this.optimizeName (item[pos].getName (), 10);
+                        String text = StringUtils.optimizeName (item[pos].getName (), 10);
                         if (!text.isEmpty ())
                             text = text + " (" + item[pos].getHitCount () + ")";
                         items[itemIndex] = text;

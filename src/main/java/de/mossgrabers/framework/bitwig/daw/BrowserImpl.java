@@ -24,7 +24,7 @@ import com.bitwig.extension.controller.api.PopupBrowser;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowserProxy implements IBrowser
+public class BrowserImpl implements IBrowser
 {
     private CursorTrack             cursorTrack;
     private ICursorDevice           cursorDevice;
@@ -50,7 +50,7 @@ public class BrowserProxy implements IBrowser
      * @param numFilterColumnEntries The number of entries in a filter column page
      * @param numResults The number of entries in a results column page
      */
-    public BrowserProxy (final PopupBrowser browser, final CursorTrack cursorTrack, final ICursorDevice cursorDevice, final int numFilterColumnEntries, final int numResults)
+    public BrowserImpl (final PopupBrowser browser, final CursorTrack cursorTrack, final ICursorDevice cursorDevice, final int numFilterColumnEntries, final int numResults)
     {
         this.cursorTrack = cursorTrack;
         this.cursorDevice = cursorDevice;

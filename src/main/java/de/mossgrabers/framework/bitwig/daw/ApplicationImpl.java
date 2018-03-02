@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.Application;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ApplicationProxy implements IApplication
+public class ApplicationImpl implements IApplication
 {
     private Application application;
 
@@ -26,7 +26,7 @@ public class ApplicationProxy implements IApplication
      *
      * @param application The application object
      */
-    public ApplicationProxy (final Application application)
+    public ApplicationImpl (final Application application)
     {
         this.application = application;
 

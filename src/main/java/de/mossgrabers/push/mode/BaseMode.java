@@ -5,7 +5,6 @@
 package de.mossgrabers.push.mode;
 
 import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
@@ -175,14 +174,6 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
             transport.toggleWriteArrangerAutomation ();
         if (transport.isWritingClipLauncherAutomation ())
             transport.toggleWriteClipLauncherAutomation ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected String optimizeName (final String text, final int length)
-    {
-        return super.optimizeName (this.isPush2 ? text : StringUtils.fixASCII (text), length);
     }
 
 

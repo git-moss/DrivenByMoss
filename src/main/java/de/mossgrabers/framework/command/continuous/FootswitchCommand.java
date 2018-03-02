@@ -150,6 +150,11 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
                 if (event == ButtonEvent.DOWN)
                     this.model.getApplication ().addEffectTrack ();
                 break;
+
+            case AbstractConfiguration.FOOTSWITCH_2_QUANTIZE:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getCursorClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+                break;
         }
     }
 

@@ -6,7 +6,7 @@ package de.mossgrabers.push.bitwig;
 
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
-import de.mossgrabers.framework.bitwig.daw.HostProxy;
+import de.mossgrabers.framework.bitwig.daw.HostImpl;
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.push.PushControllerSetup;
 
@@ -68,6 +68,6 @@ public class Push2ControllerExtensionDefinition extends PushControllerExtensionD
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new PushControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), true);
+        return new PushControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), true);
     }
 }

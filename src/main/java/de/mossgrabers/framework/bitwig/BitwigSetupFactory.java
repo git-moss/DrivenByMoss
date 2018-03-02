@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.bitwig;
 
-import de.mossgrabers.framework.bitwig.daw.Model;
+import de.mossgrabers.framework.bitwig.daw.ModelImpl;
 import de.mossgrabers.framework.bitwig.midi.MidiDeviceImpl;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.ValueChanger;
@@ -41,7 +41,7 @@ public class BitwigSetupFactory implements ISetupFactory
     @Override
     public IModel createModel (final ColorManager colorManager, final ValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
-        return new Model (this.host, colorManager, valueChanger, scales, numTracks, numScenes, numSends, numFilterColumnEntries, numResults, hasFlatTrackList, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        return new ModelImpl (this.host, colorManager, valueChanger, scales, numTracks, numScenes, numSends, numFilterColumnEntries, numResults, hasFlatTrackList, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
     }
 
 

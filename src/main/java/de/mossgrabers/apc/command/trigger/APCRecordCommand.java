@@ -43,7 +43,6 @@ public class APCRecordCommand extends NewCommand<APCControlSurface, APCConfigura
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            super.executeNormal (event);
+        super.executeNormal (event);
     }
 }

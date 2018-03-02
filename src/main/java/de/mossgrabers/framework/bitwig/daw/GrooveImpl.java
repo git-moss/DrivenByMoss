@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.Groove;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class GrooveProxy implements IGroove
+public class GrooveImpl implements IGroove
 {
     private Groove        groove;
     private IParameter [] parameters = new IParameter [6];
@@ -30,7 +30,7 @@ public class GrooveProxy implements IGroove
      * @param host The host
      * @param valueChanger The value changer
      */
-    public GrooveProxy (final ControllerHost host, final ValueChanger valueChanger)
+    public GrooveImpl (final ControllerHost host, final ValueChanger valueChanger)
     {
         this.groove = host.createGroove ();
 

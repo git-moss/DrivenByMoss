@@ -37,6 +37,7 @@ public class TemporaryNewCommand<S extends ControlSurface<C>, C extends Configur
     }
 
 
+    /** {@inheritDoc} */
     @Override
     protected int getClipLength ()
     {

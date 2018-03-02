@@ -4,7 +4,7 @@
 
 package de.mossgrabers.osc.protocol;
 
-import de.mossgrabers.framework.bitwig.daw.HostProxy;
+import de.mossgrabers.framework.bitwig.daw.HostImpl;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.IApplication;
@@ -70,7 +70,7 @@ public class OSCParser implements OscMethodCallback
         this.configuration = configuration;
         this.model = model;
 
-        this.display = new DummyDisplay (new HostProxy (host));
+        this.display = new DummyDisplay (new HostImpl (host));
 
         this.transport = this.model.getTransport ();
         this.masterTrack = this.model.getMasterTrack ();

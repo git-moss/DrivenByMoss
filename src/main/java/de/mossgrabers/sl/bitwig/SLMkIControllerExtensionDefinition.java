@@ -6,7 +6,7 @@ package de.mossgrabers.sl.bitwig;
 
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
-import de.mossgrabers.framework.bitwig.daw.HostProxy;
+import de.mossgrabers.framework.bitwig.daw.HostImpl;
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.sl.SLControllerSetup;
 
@@ -62,6 +62,6 @@ public class SLMkIControllerExtensionDefinition extends SLControllerExtensionDef
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new SLControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), false);
+        return new SLControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), false);
     }
 }

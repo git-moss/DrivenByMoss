@@ -7,6 +7,7 @@ package de.mossgrabers.mcu.command.trigger;
 import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
@@ -52,16 +53,33 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             return;
         }
 
+        final Display display = this.surface.getDisplay ();
+
+        // Select Send channels when Send button is additionally pressed
         if (this.surface.isPressed (MCUControlSurface.MCU_MODE_SENDS))
         {
             if (this.model.getEffectTrackBank ().getTrack (this.channel).doesExist ())
             {
                 this.surface.getModeManager ().setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + this.index));
-                this.surface.getDisplay ().notify ("Send channel " + (this.channel + 1) + " selected.");
+                display.notify ("Send channel " + (this.channel + 1) + " selected.");
             }
             else
-                this.surface.getDisplay ().notify ("Send channel " + (this.channel + 1) + " does not exist.");
+                display.notify ("Send channel " + (this.channel + 1) + " does not exist.");
             this.surface.setButtonConsumed (MCUControlSurface.MCU_MODE_SENDS);
+            return;
+        }
+
+        if (this.surface.isShiftPressed ())
+        {
+            final MCUConfiguration configuration = this.surface.getConfiguration ();
+            configuration.setNewClipLength (this.index);
+            display.notify ("New clip length: " + AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[configuration.getNewClipLength ()]);
+            return;
+        }
+
+        if (this.surface.isSelectPressed ())
+        {
+            this.model.getCurrentTrackBank ().getTrack (this.channel).stop ();
             return;
         }
 

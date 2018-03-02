@@ -19,7 +19,7 @@ import java.util.Arrays;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class CursorClipProxy implements ICursorClip
+public class CursorClipImpl implements ICursorClip
 {
     private int             numSteps;
     private int             numRows;
@@ -39,7 +39,7 @@ public class CursorClipProxy implements ICursorClip
      * @param numSteps The number of steps of the clip to monitor
      * @param numRows The number of note rows of the clip to monitor
      */
-    public CursorClipProxy (final ControllerHost host, final ValueChanger valueChanger, final int numSteps, final int numRows)
+    public CursorClipImpl (final ControllerHost host, final ValueChanger valueChanger, final int numSteps, final int numRows)
     {
         this.valueChanger = valueChanger;
 

@@ -25,7 +25,6 @@ import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.PunchInCommand;
 import de.mossgrabers.framework.command.trigger.transport.PunchOutCommand;
-import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
 import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
@@ -61,6 +60,7 @@ import de.mossgrabers.mcu.command.trigger.FaderTouchCommand;
 import de.mossgrabers.mcu.command.trigger.GrooveCommand;
 import de.mossgrabers.mcu.command.trigger.KeyCommand;
 import de.mossgrabers.mcu.command.trigger.KeyCommand.Key;
+import de.mossgrabers.mcu.command.trigger.MCURecordCommand;
 import de.mossgrabers.mcu.command.trigger.OverdubCommand;
 import de.mossgrabers.mcu.command.trigger.ScrubCommand;
 import de.mossgrabers.mcu.command.trigger.SelectCommand;
@@ -219,7 +219,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         {
             final IMidiOutput output = midiAccess.createOutput (i);
             final IMidiInput input = midiAccess.createInput (i, null);
-            final MCUControlSurface surface = new MCUControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1), i == 0);
+            final MCUControlSurface surface = new MCUControlSurface (this.surfaces, this.model.getHost (), this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1), i == 0);
             this.surfaces.add (surface);
             surface.setDisplay (new MCUDisplay (this.model.getHost (), output, true, false));
             surface.setSecondDisplay (new MCUDisplay (this.model.getHost (), output, false, i == 0));
@@ -318,7 +318,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.addTriggerCommand (Commands.COMMAND_LOOP, MCUControlSurface.MCU_REPEAT, new ToggleLoopCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_STOP, MCUControlSurface.MCU_STOP, new StopCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_PLAY, MCUControlSurface.MCU_PLAY, new PlayCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_RECORD, MCUControlSurface.MCU_RECORD, new RecordCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_RECORD, MCUControlSurface.MCU_RECORD, new MCURecordCommand (this.model, surface));
 
         this.addTriggerCommand (COMMAND_SCRUB, MCUControlSurface.MCU_SCRUB, new ScrubCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, MCUControlSurface.MCU_ARROW_LEFT, new CursorCommand (Direction.LEFT, this.model, surface));
@@ -620,7 +620,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
 
-        output = this.getSurface ().getOutput ();
+        final MCUControlSurface surface = this.getSurface ();
+        output = surface.getOutput ();
 
         // Stereo VU of master channel
         if (enableVUMeters)
@@ -645,7 +646,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         // Update motor fader of master channel
         if (hasMotorFaders)
         {
-            final int volume = masterTrack.getVolume ();
+            final int volume = surface.isShiftPressed () ? this.model.getTransport ().getMetronomeVolume () : masterTrack.getVolume ();
             if (volume != this.masterFaderValue)
             {
                 this.masterFaderValue = volume;

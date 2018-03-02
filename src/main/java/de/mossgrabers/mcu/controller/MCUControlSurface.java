@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.mcu.MCUConfiguration;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -299,28 +300,30 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         Arrays.fill (MCU_BUTTON_UPDATE, false);
     }
 
-    public static final int   VUMODE_LED               = 1;
-    public static final int   VUMODE_OFF               = 2;
-    public static final int   VUMODE_LED_AND_LCD       = 3;
-    public static final int   VUMODE_LCD               = 4;
+    public static final int         VUMODE_LED               = 1;
+    public static final int         VUMODE_OFF               = 2;
+    public static final int         VUMODE_LED_AND_LCD       = 3;
+    public static final int         VUMODE_LCD               = 4;
 
-    public static final int   KNOB_LED_MODE_SINGLE_DOT = 0;
-    public static final int   KNOB_LED_MODE_BOOST_CUT  = 1;
-    public static final int   KNOB_LED_MODE_WRAP       = 2;
-    public static final int   KNOB_LED_MODE_SPREAD     = 3;
+    public static final int         KNOB_LED_MODE_SINGLE_DOT = 0;
+    public static final int         KNOB_LED_MODE_BOOST_CUT  = 1;
+    public static final int         KNOB_LED_MODE_WRAP       = 2;
+    public static final int         KNOB_LED_MODE_SPREAD     = 3;
 
-    private MCUDisplay        secondDisplay;
-    private MCUSegmentDisplay segmentDisplay;
-    private int               activeVuMode             = VUMODE_LED;
-    private int []            knobValues               = new int [8];
+    private MCUDisplay              secondDisplay;
+    private MCUSegmentDisplay       segmentDisplay;
+    private int                     activeVuMode             = VUMODE_LED;
+    private int []                  knobValues               = new int [8];
 
-    private final int         extenderOffset;
-    private boolean           isMainDevice;
+    private final int               extenderOffset;
+    private boolean                 isMainDevice;
+    private List<MCUControlSurface> surfaces;
 
 
     /**
      * Constructor.
-     *
+     * 
+     * @param surfaces All surfaces to be able to check for status keys like Shift.
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
@@ -329,10 +332,11 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      * @param extenderOffset The channel/bank offset if multiple extenders are used
      * @param isMainDevice True if it is the main MCU controller (and not an extender)
      */
-    public MCUControlSurface (final IHost host, final ColorManager colorManager, final MCUConfiguration configuration, final IMidiOutput output, final IMidiInput input, final int extenderOffset, final boolean isMainDevice)
+    public MCUControlSurface (final List<MCUControlSurface> surfaces, final IHost host, final ColorManager colorManager, final MCUConfiguration configuration, final IMidiOutput output, final IMidiInput input, final int extenderOffset, final boolean isMainDevice)
     {
         super (host, configuration, colorManager, output, input, MCU_BUTTONS_ALL);
 
+        this.surfaces = surfaces;
         this.extenderOffset = extenderOffset;
         this.isMainDevice = isMainDevice;
 
@@ -550,6 +554,25 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     public boolean isGridNote (final int note)
     {
         return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isPressed (int button)
+    {
+        // Check on all MSU surfaces for state button presses
+
+        for (final MCUControlSurface surface: this.surfaces)
+            if (surface.isSinglePressed (button))
+                return true;
+        return false;
+    }
+
+
+    private boolean isSinglePressed (int button)
+    {
+        return super.isPressed (button);
     }
 
 

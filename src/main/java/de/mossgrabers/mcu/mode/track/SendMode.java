@@ -101,7 +101,7 @@ public class SendMode extends AbstractTrackMode
         {
             final ITrack t = tb.getTrack (extenderOffset + i);
             if (t.doesExist ())
-                d.setCell (0, i, this.optimizeName (StringUtils.fixASCII (t.getSend (sendIndex).getName (6)), 6));
+                d.setCell (0, i, StringUtils.shortenAndFixASCII (t.getSend (sendIndex).getName (6), 6));
             else
                 d.clearCell (0, i);
         }

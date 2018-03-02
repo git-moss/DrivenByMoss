@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.CursorTrack;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TrackBankProxy extends AbstractTrackBankProxy implements ITrackBank
+public class TrackBankImpl extends AbstractTrackBankImpl implements ITrackBank
 {
     private CursorTrack cursorTrack;
 
@@ -33,7 +33,7 @@ public class TrackBankProxy extends AbstractTrackBankProxy implements ITrackBank
      * @param hasFlatTrackList True if group navigation should not be supported, instead all tracks
      *            are flat
      */
-    public TrackBankProxy (final ControllerHost host, final ValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final int numSends, final boolean hasFlatTrackList)
+    public TrackBankImpl (final ControllerHost host, final ValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final int numSends, final boolean hasFlatTrackList)
     {
         super (valueChanger, numTracks, numScenes, numSends);
 

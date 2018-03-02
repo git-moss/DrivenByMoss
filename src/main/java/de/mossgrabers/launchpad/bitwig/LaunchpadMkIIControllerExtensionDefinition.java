@@ -6,7 +6,7 @@ package de.mossgrabers.launchpad.bitwig;
 
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
-import de.mossgrabers.framework.bitwig.daw.HostProxy;
+import de.mossgrabers.framework.bitwig.daw.HostImpl;
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.launchpad.LaunchpadControllerSetup;
 
@@ -55,6 +55,6 @@ public class LaunchpadMkIIControllerExtensionDefinition extends LaunchpadControl
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new LaunchpadControllerSetup (new HostProxy (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), false);
+        return new LaunchpadControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), false);
     }
 }
