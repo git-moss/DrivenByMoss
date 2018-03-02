@@ -1035,6 +1035,9 @@ public class OSCParser implements OscMethodCallback
                     cursorDevice.indicateParameter (fxparamIndex, numValue > 0);
                 break;
 
+            case "reset":
+                cursorDevice.resetParameter(fxparamIndex);
+
             default:
                 this.host.println ("Unhandled FX Parameter value:" + parts.get (0));
                 break;
