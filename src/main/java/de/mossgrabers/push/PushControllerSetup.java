@@ -502,9 +502,14 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     protected void startup ()
     {
         this.host.scheduleTask ( () -> {
+
             final PushControlSurface surface = this.getSurface ();
             surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
-        }, 200);
+
+            surface.sendPressureMode (true);
+            surface.getOutput ().sendIdentityRequest ();
+
+        }, 1000);
     }
 
 

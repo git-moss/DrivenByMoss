@@ -86,7 +86,7 @@ public class OSCConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Debug
 
-        final IEnumSetting debugCommandsSetting = settingsUI.getEnumSetting ("Debug commands", "Debug", ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        final IEnumSetting debugCommandsSetting = settingsUI.getEnumSetting ("Debug commands", "Debug", ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         debugCommandsSetting.addValueObserver (value -> {
             this.debugCommands = "On".equals (value);
             this.notifyObservers (DEBUG_COMMANDS);

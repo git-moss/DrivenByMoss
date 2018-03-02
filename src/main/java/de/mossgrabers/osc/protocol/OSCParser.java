@@ -169,10 +169,15 @@ public class OSCParser implements OscMethodCallback
                 break;
 
             case "click":
-                if (value == null)
-                    this.transport.toggleMetronome ();
-                else
-                    this.transport.setMetronome (numValue > 0);
+                if (oscParts.isEmpty ())
+                {
+                    if (value == null)
+                        this.transport.toggleMetronome ();
+                    else
+                        this.transport.setMetronome (numValue > 0);
+                }
+                else if ("volume".equals (oscParts.get (0)))
+                    this.transport.setMetronomeVolume (numValue);
                 break;
 
             case "quantize":
@@ -210,20 +215,31 @@ public class OSCParser implements OscMethodCallback
                 break;
 
             case "position":
-                switch (oscParts.get (0))
+                if (oscParts.isEmpty ())
                 {
-                    case "+":
-                        this.transport.changePosition (true, true);
-                        break;
-                    case "-":
-                        this.transport.changePosition (false, true);
-                        break;
-                    case "++":
-                        this.transport.changePosition (true, false);
-                        break;
-                    case "--":
-                        this.transport.changePosition (false, false);
-                        break;
+                    if (value != null)
+                    {
+                        final int v = ((Number) value).intValue ();
+                        this.transport.changePosition (v > 0, Math.abs (v) <= 1);
+                    }
+                }
+                else
+                {
+                    switch (oscParts.get (0))
+                    {
+                        case "+":
+                            this.transport.changePosition (true, true);
+                            break;
+                        case "-":
+                            this.transport.changePosition (false, true);
+                            break;
+                        case "++":
+                            this.transport.changePosition (true, false);
+                            break;
+                        case "--":
+                            this.transport.changePosition (false, false);
+                            break;
+                    }
                 }
                 break;
 
@@ -395,6 +411,9 @@ public class OSCParser implements OscMethodCallback
                     case "-":
                         if (value == null || numValue > 0)
                             this.model.getCurrentTrackBank ().scrollScenesUp ();
+                        break;
+                    case "create":
+                        this.model.getProject ().createSceneFromPlayingLauncherClips ();
                         break;
                     default:
                         final int scene = Integer.parseInt (p);
@@ -633,6 +652,12 @@ public class OSCParser implements OscMethodCallback
                 break;
             }
 
+            case "selected":
+                final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+                if (selectedTrack != null)
+                    this.parseTrackValue (selectedTrack, parts, value);
+                break;
+
             default:
                 this.host.println ("Unhandled Track Command: " + p);
                 break;
@@ -666,6 +691,8 @@ public class OSCParser implements OscMethodCallback
                     track.setVolume (numValue);
                 else if ("indicate".equals (parts.get (0)))
                     track.setVolumeIndication (numValue > 0);
+                else if ("reset".equals (parts.get (0)))
+                    track.resetVolume ();
                 break;
 
             case "pan":
@@ -673,6 +700,8 @@ public class OSCParser implements OscMethodCallback
                     track.setPan (numValue);
                 else if ("indicate".equals (parts.get (0)))
                     track.setPanIndication (numValue > 0);
+                else if ("reset".equals (parts.get (0)))
+                    track.resetPan ();
                 break;
 
             case "mute":
@@ -948,10 +977,13 @@ public class OSCParser implements OscMethodCallback
                 column = column - 1;
                 if (!browser.isActive ())
                     return;
-                if ("+".equals (parts.removeFirst ()))
+                final String cmd = parts.removeFirst ();
+                if ("+".equals (cmd))
                     browser.selectNextFilterItem (column);
-                else
+                else if ("-".equals (cmd))
                     browser.selectPreviousFilterItem (column);
+                else if ("reset".equals (cmd))
+                    browser.getFilterColumn (column).resetFilter ();
                 break;
 
             case "result":
@@ -1033,6 +1065,10 @@ public class OSCParser implements OscMethodCallback
             case "indicate":
                 if (parts.size () == 1 && value != null)
                     cursorDevice.indicateParameter (fxparamIndex, numValue > 0);
+                break;
+
+            case "reset":
+                cursorDevice.resetParameter (fxparamIndex);
                 break;
 
             default:

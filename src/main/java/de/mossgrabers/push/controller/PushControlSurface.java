@@ -585,7 +585,6 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         this.pads = new PadGridImpl (colorManager, output);
 
         this.input.setSysexCallback (this::handleSysEx);
-        this.output.sendIdentityRequest ();
     }
 
 
@@ -705,6 +704,20 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     public void sendPadSensitivity ()
     {
         this.output.sendSysex ("F0 47 7F 15 5D 00 20 " + PUSH_PAD_THRESHOLDS_DATA[this.configuration.getPadThreshold ()] + " " + PUSH_PAD_CURVES_DATA[this.configuration.getVelocityCurve ()] + " F7");
+    }
+
+
+    /**
+     * Sets the Push 1/2 pads aftertouch either to poly or channel pressure.
+     *
+     * @param isPolyPressure Set poly pressure if true otherwise channel pressure
+     */
+    public void sendPressureMode (final boolean isPolyPressure)
+    {
+        if (this.configuration.isPush2 ())
+            this.output.sendSysex ("F0 00 21 1D 01 01 1E 0" + (isPolyPressure ? "1" : "0") + " F7");
+        else
+            this.output.sendSysex ("F0 47 7F 15 5C 00 01 0" + (isPolyPressure ? "0" : "1") + " F7");
     }
 
 
