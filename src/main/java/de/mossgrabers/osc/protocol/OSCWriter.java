@@ -7,7 +7,6 @@ package de.mossgrabers.osc.protocol;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.ISceneBank;
@@ -19,6 +18,7 @@ import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
@@ -137,7 +137,6 @@ public class OSCWriter
         this.flushTrack ("/master/", this.model.getMasterTrack (), dump);
         final ITrack selectedTrack = trackBank.getSelectedTrack ();
         this.flushTrack ("/track/selected/", selectedTrack == null ? EMPTY_TRACK : selectedTrack, dump);
-        this.flushSendNames ("/send/", dump);
 
         //
         // Scenes
@@ -176,7 +175,9 @@ public class OSCWriter
             this.udpServer.startBundle ();
             for (final OscMessageData message: this.messages)
             {
-                this.udpServer.sendMessage (message.getAddress (), message.getValues ());
+                final String address = message.getAddress ();
+                final Object [] values = message.getValues ();
+                this.udpServer.sendMessage (address, values);
                 pos++;
                 if (pos > 1000)
                 {
@@ -246,19 +247,6 @@ public class OSCWriter
 
         if (this.configuration.isEnableVUMeters ())
             this.sendOSC (trackAddress + "vu", track.getVu (), dump);
-    }
-
-
-    private void flushSendNames (final String sendAddress, final boolean dump)
-    {
-        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
-        final boolean isFX = this.model.isEffectTrackBankActive ();
-        for (int i = 0; i < fxTrackBank.getNumSends (); i++)
-        {
-            final ITrack fxTrack = fxTrackBank.getTrack (i);
-            final boolean isEmpty = isFX || !fxTrack.doesExist ();
-            this.sendOSC (sendAddress + (i + 1) + "/name", isEmpty ? "" : fxTrack.getName (), dump);
-        }
     }
 
 
@@ -351,9 +339,11 @@ public class OSCWriter
 
     private void flushParameterData (final String fxAddress, final IParameter fxParam, final boolean dump)
     {
+        final boolean isSend = fxParam instanceof ISend;
+
         this.sendOSC (fxAddress + "name", fxParam.getName (), dump);
-        this.sendOSC (fxAddress + "valueStr", fxParam.getDisplayedValue (), dump);
-        this.sendOSC (fxAddress + "value", fxParam.getValue (), dump);
+        this.sendOSC (fxAddress + (isSend ? "volumeStr" : "valueStr"), fxParam.getDisplayedValue (), dump);
+        this.sendOSC (fxAddress + (isSend ? "volume" : "value"), fxParam.getValue (), dump);
         this.sendOSC (fxAddress + "modulatedValue", fxParam.getModulatedValue (), dump);
     }
 

@@ -726,18 +726,17 @@ public class OSCParser implements OscMethodCallback
                 break;
 
             case "monitor":
-                final boolean isAuto = !parts.isEmpty () && "auto".equals (parts.get (0));
                 if (numValue < 0)
-                {
-                    if (isAuto)
-                        track.toggleAutoMonitor ();
-                    else
-                        track.toggleMonitor ();
-                }
-                else if (isAuto)
-                    track.setAutoMonitor (numValue > 0);
+                    track.toggleMonitor ();
                 else
                     track.setMonitor (numValue > 0);
+                break;
+
+            case "autoMonitor":
+                if (numValue < 0)
+                    track.toggleAutoMonitor ();
+                else
+                    track.setAutoMonitor (numValue > 0);
                 break;
 
             case "send":
