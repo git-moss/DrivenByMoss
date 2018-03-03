@@ -220,7 +220,7 @@ public class OSCParser implements OscMethodCallback
                     if (value != null)
                     {
                         final int v = ((Number) value).intValue ();
-                        this.transport.changePosition (v > 0, Math.abs (v) <= 1);
+                        this.transport.changePosition (v >= 0, Math.abs (v) <= 1);
                     }
                 }
                 else
