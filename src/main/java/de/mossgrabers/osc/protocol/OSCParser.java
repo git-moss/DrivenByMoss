@@ -809,7 +809,7 @@ public class OSCParser implements OscMethodCallback
                     return;
                 final int count = matcher.groupCount ();
                 if (count == 7)
-                    track.setColor (Double.parseDouble (matcher.group (2)), Double.parseDouble (matcher.group (4)), Double.parseDouble (matcher.group (6)));
+                    track.setColor (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0);
                 break;
 
             default:
