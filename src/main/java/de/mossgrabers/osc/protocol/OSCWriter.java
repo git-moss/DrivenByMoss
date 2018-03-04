@@ -262,6 +262,7 @@ public class OSCWriter
     {
         this.sendOSC (deviceAddress + "name", device.getName (), dump);
         this.sendOSC (deviceAddress + "bypass", !device.isEnabled (), dump);
+        this.sendOSC (deviceAddress + "expand", device.isExpanded (), dump);
         this.sendOSC (deviceAddress + "window", device.isWindowOpen (), dump);
         for (int i = 0; i < device.getNumParameters (); i++)
         {
