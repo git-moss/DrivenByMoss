@@ -846,6 +846,10 @@ public class OSCParser implements OscMethodCallback
         final String p = parts.removeFirst ();
         switch (p)
         {
+            case "expand":
+                cursorDevice.toggleExpanded ();
+                break;
+
             case "bypass":
                 cursorDevice.toggleEnabledState ();
                 break;
