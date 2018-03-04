@@ -405,7 +405,10 @@ public class OSCWriter
 
     private void sendOSCColor (final String address, final double red, final double green, final double blue, final boolean dump)
     {
-        this.sendOSC (address, "RGB(" + red + "," + green + "," + blue + ")", dump);
+        final int r = (int) Math.round (red * 255.0);
+        final int g = (int) Math.round (green * 255.0);
+        final int b = (int) Math.round (blue * 255.0);
+        this.sendOSC (address, "rgb(" + r + "," + g + "," + b + ")", dump);
     }
 
 
