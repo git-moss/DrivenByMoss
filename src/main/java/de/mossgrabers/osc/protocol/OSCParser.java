@@ -768,9 +768,9 @@ public class OSCParser implements OscMethodCallback
                             final int count = matcher.groupCount ();
                             if (count != 7)
                                 return;
-                            final double red = Double.parseDouble (matcher.group (2));
-                            final double green = Double.parseDouble (matcher.group (4));
-                            final double blue = Double.parseDouble (matcher.group (6));
+                            final double red = Double.parseDouble (matcher.group (2)) / 255.0;
+                            final double green = Double.parseDouble (matcher.group (4)) / 255.0;
+                            final double blue = Double.parseDouble (matcher.group (6)) / 255.0;
                             track.getSlot (clipNo - 1).setColor (red, green, blue);
                             break;
                         default:
