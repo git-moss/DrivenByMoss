@@ -315,6 +315,14 @@ public interface ITransport extends ObserverManagement
 
 
     /**
+     * Set punch-in dis/enabled in the transport.
+     * 
+     * @param enable True to enable
+     */
+    void setPunchIn (boolean enable);
+
+
+    /**
      * Toggle punch-in enabled in the transport.
      */
     void togglePunchIn ();
@@ -326,6 +334,14 @@ public interface ITransport extends ObserverManagement
      * @return True if punch-in is enabled in the transport
      */
     boolean isPunchInEnabled ();
+
+
+    /**
+     * Set punch-out dis/enabled in the transport.
+     * 
+     * @param enable True to enable
+     */
+    void setPunchOut (boolean enable);
 
 
     /**

@@ -26,6 +26,7 @@ import de.mossgrabers.osc.OSCColors;
 import de.mossgrabers.osc.OSCConfiguration;
 
 import com.bitwig.extension.api.opensoundcontrol.OscConnection;
+import com.bitwig.extension.api.opensoundcontrol.OscModule;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,13 +57,16 @@ public class OSCWriter
      *
      * @param model The model
      * @param configuration The configuration
-     * @param udpServer The UDP server to send to
+     * @param oscModule The UDP server to send to
      */
-    public OSCWriter (final OSCModel model, final OSCConfiguration configuration, final OscConnection udpServer)
+    public OSCWriter (final OSCModel model, final OSCConfiguration configuration, final OscModule oscModule)
     {
         this.model = model;
         this.configuration = configuration;
-        this.udpServer = udpServer;
+
+        // TODO Fix required: Can only be called in init but needs to listen to host and port
+        // changes
+        this.udpServer = oscModule.connectToUdpServer (this.configuration.getSendHost (), this.configuration.getSendPort (), oscModule.createAddressSpace ());
     }
 
 
@@ -73,6 +77,9 @@ public class OSCWriter
      */
     public void flush (final boolean dump)
     {
+        if (this.udpServer == null)
+            return;
+
         //
         // Transport
         //
@@ -152,7 +159,12 @@ public class OSCWriter
         //
         final ICursorDevice cd = this.model.getCursorDevice ();
         this.flushDevice ("/device/", cd, dump);
-        for (int i = 0; i < cd.getNumDeviceLayers (); i++)
+        if (cd.hasDrumPads ())
+        {
+            for (int i = 0; i < cd.getNumDrumPads (); i++)
+                this.flushDeviceLayers ("/device/drumpad/" + (i + 1) + "/", cd.getLayerOrDrumPad (i), dump);
+        }
+        for (int i = 0; i < cd.getNumLayers (); i++)
             this.flushDeviceLayers ("/device/layer/" + (i + 1) + "/", cd.getLayerOrDrumPad (i), dump);
         this.flushDevice ("/primary/", this.model.getPrimaryDevice (), dump);
 

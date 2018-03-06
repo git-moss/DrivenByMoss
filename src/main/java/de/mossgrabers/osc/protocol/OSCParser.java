@@ -393,11 +393,15 @@ public class OSCParser implements OscMethodCallback
             case "punchIn":
                 if (value == null)
                     this.transport.togglePunchIn ();
+                else
+                    this.transport.setPunchIn (numValue > 0);
                 return true;
 
             case "punchOut":
                 if (value == null)
                     this.transport.togglePunchOut ();
+                else
+                    this.transport.setPunchOut (numValue > 0);
                 return true;
 
             case "click":
@@ -922,46 +926,57 @@ public class OSCParser implements OscMethodCallback
                     cursorDevice.selectPrevious ();
                 break;
 
+            case "drumpad":
+                if (cursorDevice.hasDrumPads ())
+                    this.parseLayerOrDrumpad (cursorDevice, parts, value);
+                break;
+
             case "layer":
-                try
-                {
-                    final int layerNo = Integer.parseInt (parts.get (0));
-                    parts.removeFirst ();
-                    this.parseDeviceLayerValue (cursorDevice, layerNo - 1, parts, value);
-                }
-                catch (final NumberFormatException ex)
-                {
-                    switch (parts.removeFirst ())
-                    {
-                        case "parent":
-                            if (cursorDevice.isNested ())
-                            {
-                                cursorDevice.selectParent ();
-                                cursorDevice.selectChannel ();
-                            }
-                            break;
-
-                        case "+":
-                            cursorDevice.nextLayerOrDrumPad ();
-                            break;
-
-                        case "-":
-                            cursorDevice.previousLayerOrDrumPad ();
-                            break;
-
-                        case "page":
-                            if ("+".equals (parts.get (0)))
-                                cursorDevice.nextLayerOrDrumPadBank ();
-                            else
-                                cursorDevice.previousLayerOrDrumPadBank ();
-                            break;
-                    }
-                }
+                this.parseLayerOrDrumpad (cursorDevice, parts, value);
                 break;
 
             default:
                 this.host.println ("Unhandled Device Parameter: " + p);
                 break;
+        }
+    }
+
+
+    private void parseLayerOrDrumpad (final ICursorDevice cursorDevice, final LinkedList<String> parts, final Object value)
+    {
+        try
+        {
+            final int layerNo = Integer.parseInt (parts.get (0));
+            parts.removeFirst ();
+            this.parseDeviceLayerValue (cursorDevice, layerNo - 1, parts, value);
+        }
+        catch (final NumberFormatException ex)
+        {
+            switch (parts.removeFirst ())
+            {
+                case "parent":
+                    if (cursorDevice.isNested ())
+                    {
+                        cursorDevice.selectParent ();
+                        cursorDevice.selectChannel ();
+                    }
+                    break;
+
+                case "+":
+                    cursorDevice.nextLayerOrDrumPad ();
+                    break;
+
+                case "-":
+                    cursorDevice.previousLayerOrDrumPad ();
+                    break;
+
+                case "page":
+                    if ("+".equals (parts.get (0)))
+                        cursorDevice.nextLayerOrDrumPadBank ();
+                    else
+                        cursorDevice.previousLayerOrDrumPadBank ();
+                    break;
+            }
         }
     }
 
