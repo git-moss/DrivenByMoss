@@ -100,7 +100,12 @@ public class OSCParser implements OscMethodCallback
         Object value = values.isEmpty () ? null : values.get (0);
         final int numValue = value == null || !(value instanceof Number) ? -1 : ((Number) value).intValue ();
 
-        switch (oscParts.removeFirst ())
+        final String command = oscParts.removeFirst ();
+
+        if (this.parseTransportCommands (command, oscParts, value, numValue))
+            return;
+
+        switch (command)
         {
             //
             // Global
@@ -116,165 +121,6 @@ public class OSCParser implements OscMethodCallback
 
             case "redo":
                 this.model.getApplication ().redo ();
-                break;
-
-            //
-            // Transport
-            //
-
-            case "play":
-                if (value == null || numValue > 0 && !this.transport.isPlaying ())
-                    this.transport.play ();
-                break;
-
-            case "stop":
-                if (value == null || numValue > 0 && this.transport.isPlaying ())
-                    this.transport.play ();
-                break;
-
-            case "restart":
-                if (value == null || numValue > 0)
-                    this.transport.restart ();
-                break;
-
-            case "record":
-                if (value == null || numValue > 0)
-                    this.transport.record ();
-                break;
-
-            case "overdub":
-                if (value != null && numValue == 0)
-                    return;
-                if (!oscParts.isEmpty () && "launcher".equals (oscParts.get (0)))
-                    this.transport.toggleLauncherOverdub ();
-                else
-                    this.transport.toggleOverdub ();
-                break;
-
-            case "repeat":
-                if (value == null)
-                    this.transport.toggleLoop ();
-                else
-                    this.transport.setLoop (numValue > 0);
-                break;
-
-            case "punchIn":
-                if (value == null)
-                    this.transport.togglePunchIn ();
-                break;
-
-            case "punchOut":
-                if (value == null)
-                    this.transport.togglePunchOut ();
-                break;
-
-            case "click":
-                if (oscParts.isEmpty ())
-                {
-                    if (value == null)
-                        this.transport.toggleMetronome ();
-                    else
-                        this.transport.setMetronome (numValue > 0);
-                }
-                else if ("volume".equals (oscParts.get (0)))
-                    this.transport.setMetronomeVolume (numValue);
-                break;
-
-            case "quantize":
-                this.model.getClip ().quantize (1);
-                break;
-
-            case "tempo":
-                switch (oscParts.get (0))
-                {
-                    case "raw":
-                        if (value instanceof Number)
-                            this.transport.setTempo (((Number) value).doubleValue ());
-                        break;
-                    case "tap":
-                        this.transport.tapTempo ();
-                        break;
-                    case "+":
-                        if (value == null)
-                            value = Integer.valueOf (1);
-                        if (value instanceof Number)
-                            this.transport.setTempo (this.transport.getTempo () + ((Number) value).doubleValue ());
-                        break;
-                    case "-":
-                        if (value == null)
-                            value = Integer.valueOf (1);
-                        if (value instanceof Number)
-                            this.transport.setTempo (this.transport.getTempo () - ((Number) value).doubleValue ());
-                        break;
-                }
-                break;
-
-            case "time":
-                if (value instanceof Number)
-                    this.transport.setPosition (((Number) value).doubleValue ());
-                break;
-
-            case "position":
-                if (oscParts.isEmpty ())
-                {
-                    if (value != null)
-                    {
-                        final int v = ((Number) value).intValue ();
-                        this.transport.changePosition (v >= 0, Math.abs (v) <= 1);
-                    }
-                }
-                else
-                {
-                    switch (oscParts.get (0))
-                    {
-                        case "+":
-                            this.transport.changePosition (true, true);
-                            break;
-                        case "-":
-                            this.transport.changePosition (false, true);
-                            break;
-                        case "++":
-                            this.transport.changePosition (true, false);
-                            break;
-                        case "--":
-                            this.transport.changePosition (false, false);
-                            break;
-                    }
-                }
-                break;
-
-            case "crossfade":
-                this.transport.setCrossfade (numValue);
-                break;
-
-            case "autowrite":
-                if (!oscParts.isEmpty () && "launcher".equals (oscParts.get (0)))
-                    this.transport.toggleWriteClipLauncherAutomation ();
-                else
-                    this.transport.toggleWriteArrangerAutomation ();
-                break;
-
-            case "automationWriteMode":
-                if (!oscParts.isEmpty ())
-                    this.transport.setAutomationWriteMode (oscParts.get (0));
-                break;
-
-            case "preroll":
-                switch (numValue)
-                {
-                    case 0:
-                        this.transport.setPreroll (ITransport.PREROLL_NONE);
-                        break;
-                    case 1:
-                        this.transport.setPreroll (ITransport.PREROLL_1_BAR);
-                        break;
-                    case 2:
-                        this.transport.setPreroll (ITransport.PREROLL_2_BARS);
-                        break;
-                    case 4:
-                        this.transport.setPreroll (ITransport.PREROLL_4_BARS);
-                        break;
-                }
                 break;
 
             //
@@ -504,6 +350,179 @@ public class OSCParser implements OscMethodCallback
     }
 
 
+    private boolean parseTransportCommands (final String command, LinkedList<String> oscParts, Object value, int numValue)
+    {
+        switch (command)
+        {
+            case "play":
+                if (value == null || numValue > 0 && !this.transport.isPlaying ())
+                    this.transport.play ();
+                return true;
+
+            case "stop":
+                if (value == null || numValue > 0 && this.transport.isPlaying ())
+                    this.transport.play ();
+                return true;
+
+            case "restart":
+                if (value == null || numValue > 0)
+                    this.transport.restart ();
+                return true;
+
+            case "record":
+                if (value == null || numValue > 0)
+                    this.transport.record ();
+                return true;
+
+            case "overdub":
+                if (value != null && numValue == 0)
+                    return true;
+                if (!oscParts.isEmpty () && "launcher".equals (oscParts.get (0)))
+                    this.transport.toggleLauncherOverdub ();
+                else
+                    this.transport.toggleOverdub ();
+                return true;
+
+            case "repeat":
+                if (value == null)
+                    this.transport.toggleLoop ();
+                else
+                    this.transport.setLoop (numValue > 0);
+                return true;
+
+            case "punchIn":
+                if (value == null)
+                    this.transport.togglePunchIn ();
+                return true;
+
+            case "punchOut":
+                if (value == null)
+                    this.transport.togglePunchOut ();
+                return true;
+
+            case "click":
+                if (oscParts.isEmpty ())
+                {
+                    if (value == null)
+                        this.transport.toggleMetronome ();
+                    else
+                        this.transport.setMetronome (numValue > 0);
+                }
+                else if ("volume".equals (oscParts.get (0)))
+                    this.transport.setMetronomeVolume (numValue);
+                return true;
+
+            case "quantize":
+                this.model.getClip ().quantize (1);
+                return true;
+
+            case "tempo":
+                switch (oscParts.get (0))
+                {
+                    case "raw":
+                        if (value instanceof Number)
+                            this.transport.setTempo (((Number) value).doubleValue ());
+                        return true;
+                    case "tap":
+                        if (value == null || numValue > 0)
+                            this.transport.tapTempo ();
+                        return true;
+                    case "+":
+                        if (value == null || numValue > 0)
+                        {
+                            final double v = value == null ? 1.0 : ((Number) value).doubleValue ();
+                            if (value instanceof Number)
+                                this.transport.setTempo (this.transport.getTempo () + v);
+                        }
+                        return true;
+                    case "-":
+                        if (value == null || numValue > 0)
+                        {
+                            final double v2 = value == null ? 1.0 : ((Number) value).doubleValue ();
+                            if (value instanceof Number)
+                                this.transport.setTempo (this.transport.getTempo () - v2);
+                        }
+                        return true;
+                }
+                return true;
+
+            case "time":
+                if (value instanceof Number)
+                    this.transport.setPosition (((Number) value).doubleValue ());
+                return true;
+
+            case "position":
+                if (oscParts.isEmpty ())
+                {
+                    if (value != null)
+                    {
+                        final int v = ((Number) value).intValue ();
+                        this.transport.changePosition (v >= 0, Math.abs (v) <= 1);
+                    }
+                }
+                else
+                {
+                    switch (oscParts.get (0))
+                    {
+                        case "+":
+                            this.transport.changePosition (true, true);
+                            return true;
+                        case "-":
+                            this.transport.changePosition (false, true);
+                            return true;
+                        case "++":
+                            this.transport.changePosition (true, false);
+                            return true;
+                        case "--":
+                            this.transport.changePosition (false, false);
+                            return true;
+                        case "start":
+                            this.transport.setPosition (0);
+                            return true;
+                    }
+                }
+                return true;
+
+            case "crossfade":
+                this.transport.setCrossfade (numValue);
+                return true;
+
+            case "autowrite":
+                if (!oscParts.isEmpty () && "launcher".equals (oscParts.get (0)))
+                    this.transport.toggleWriteClipLauncherAutomation ();
+                else
+                    this.transport.toggleWriteArrangerAutomation ();
+                return true;
+
+            case "automationWriteMode":
+                if (!oscParts.isEmpty ())
+                    this.transport.setAutomationWriteMode (oscParts.get (0));
+                return true;
+
+            case "preroll":
+                switch (numValue)
+                {
+                    case 0:
+                        this.transport.setPreroll (ITransport.PREROLL_NONE);
+                        return true;
+                    case 1:
+                        this.transport.setPreroll (ITransport.PREROLL_1_BAR);
+                        return true;
+                    case 2:
+                        this.transport.setPreroll (ITransport.PREROLL_2_BARS);
+                        return true;
+                    case 4:
+                        this.transport.setPreroll (ITransport.PREROLL_4_BARS);
+                        return true;
+                }
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+
     private void parseTrackCommands (final LinkedList<String> parts, final Object value)
     {
         final String p = parts.removeFirst ();
@@ -681,7 +700,7 @@ public class OSCParser implements OscMethodCallback
                     track.setCrossfadeMode (parts.removeFirst ());
                 break;
 
-            case "select":
+            case "selected":
                 if (intValue > 0)
                     track.selectAndMakeVisible ();
                 break;
@@ -797,10 +816,11 @@ public class OSCParser implements OscMethodCallback
 
             case "enter":
                 final IChannelBank tb = this.model.getCurrentTrackBank ();
-                // TODO API extension required - selectChildren() should be available for Track as
-                // well
                 if (tb instanceof ITrackBank)
+                {
+                    track.select ();
                     ((ITrackBank) tb).selectChildren ();
+                }
                 break;
 
             case "color":

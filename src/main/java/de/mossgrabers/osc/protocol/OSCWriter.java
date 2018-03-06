@@ -94,7 +94,8 @@ public class OSCWriter
         this.sendOSC ("/autowrite", trans.isWritingArrangerAutomation (), dump);
         this.sendOSC ("/autowrite/launcher", trans.isWritingClipLauncherAutomation (), dump);
         this.sendOSC ("/automationWriteMode", trans.getAutomationWriteMode (), dump);
-        this.sendOSC ("/position", trans.getPositionText (), dump);
+        this.sendOSC ("/time/str", trans.getPositionText (), dump);
+        this.sendOSC ("/time/signature", trans.getNumerator () + " / " + trans.getDenominator (), dump);
 
         //
         // Frames
