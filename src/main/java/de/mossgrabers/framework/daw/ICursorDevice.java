@@ -1197,11 +1197,19 @@ public interface ICursorDevice extends ObserverManagement
 
 
     /**
-     * Get the number of a page in the device layers bank.
+     * Get the number of layers of a bank page.
      *
      * @return The number
      */
-    int getNumDeviceLayers ();
+    int getNumLayers ();
+
+
+    /**
+     * Get the number of drum pads of a bank page.
+     *
+     * @return The number
+     */
+    int getNumDrumPads ();
 
 
     /**

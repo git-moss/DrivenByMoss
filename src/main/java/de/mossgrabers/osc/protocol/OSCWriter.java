@@ -26,6 +26,7 @@ import de.mossgrabers.osc.OSCColors;
 import de.mossgrabers.osc.OSCConfiguration;
 
 import com.bitwig.extension.api.opensoundcontrol.OscConnection;
+import com.bitwig.extension.api.opensoundcontrol.OscModule;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,13 +57,16 @@ public class OSCWriter
      *
      * @param model The model
      * @param configuration The configuration
-     * @param udpServer The UDP server to send to
+     * @param oscModule The UDP server to send to
      */
-    public OSCWriter (final OSCModel model, final OSCConfiguration configuration, final OscConnection udpServer)
+    public OSCWriter (final OSCModel model, final OSCConfiguration configuration, final OscModule oscModule)
     {
         this.model = model;
         this.configuration = configuration;
-        this.udpServer = udpServer;
+
+        // TODO Fix required: Can only be called in init but needs to listen to host and port
+        // changes
+        this.udpServer = oscModule.connectToUdpServer (this.configuration.getSendHost (), this.configuration.getSendPort (), oscModule.createAddressSpace ());
     }
 
 
@@ -73,6 +77,9 @@ public class OSCWriter
      */
     public void flush (final boolean dump)
     {
+        if (this.udpServer == null)
+            return;
+
         //
         // Transport
         //
@@ -94,7 +101,8 @@ public class OSCWriter
         this.sendOSC ("/autowrite", trans.isWritingArrangerAutomation (), dump);
         this.sendOSC ("/autowrite/launcher", trans.isWritingClipLauncherAutomation (), dump);
         this.sendOSC ("/automationWriteMode", trans.getAutomationWriteMode (), dump);
-        this.sendOSC ("/position", trans.getPositionText (), dump);
+        this.sendOSC ("/time/str", trans.getPositionText (), dump);
+        this.sendOSC ("/time/signature", trans.getNumerator () + " / " + trans.getDenominator (), dump);
 
         //
         // Frames
@@ -151,7 +159,12 @@ public class OSCWriter
         //
         final ICursorDevice cd = this.model.getCursorDevice ();
         this.flushDevice ("/device/", cd, dump);
-        for (int i = 0; i < cd.getNumDeviceLayers (); i++)
+        if (cd.hasDrumPads ())
+        {
+            for (int i = 0; i < cd.getNumDrumPads (); i++)
+                this.flushDeviceLayers ("/device/drumpad/" + (i + 1) + "/", cd.getLayerOrDrumPad (i), dump);
+        }
+        for (int i = 0; i < cd.getNumLayers (); i++)
             this.flushDeviceLayers ("/device/layer/" + (i + 1) + "/", cd.getLayerOrDrumPad (i), dump);
         this.flushDevice ("/primary/", this.model.getPrimaryDevice (), dump);
 
@@ -262,6 +275,8 @@ public class OSCWriter
     {
         this.sendOSC (deviceAddress + "name", device.getName (), dump);
         this.sendOSC (deviceAddress + "bypass", !device.isEnabled (), dump);
+        this.sendOSC (deviceAddress + "expand", device.isExpanded (), dump);
+        this.sendOSC (deviceAddress + "window", device.isWindowOpen (), dump);
         for (int i = 0; i < device.getNumParameters (); i++)
         {
             final int oneplus = i + 1;
@@ -405,7 +420,10 @@ public class OSCWriter
 
     private void sendOSCColor (final String address, final double red, final double green, final double blue, final boolean dump)
     {
-        this.sendOSC (address, "RGB(" + red + "," + green + "," + blue + ")", dump);
+        final int r = (int) Math.round (red * 255.0);
+        final int g = (int) Math.round (green * 255.0);
+        final int b = (int) Math.round (blue * 255.0);
+        this.sendOSC (address, "rgb(" + r + "," + g + "," + b + ")", dump);
     }
 
 

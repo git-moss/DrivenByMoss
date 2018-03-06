@@ -1593,9 +1593,17 @@ public class CursorDeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
-    public int getNumDeviceLayers ()
+    public int getNumLayers ()
     {
         return this.numDeviceLayers;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumDrumPads ()
+    {
+        return this.numDrumPadLayers;
     }
 
 

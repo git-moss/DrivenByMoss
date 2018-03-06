@@ -420,6 +420,14 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
+    public void setPunchIn (boolean enable)
+    {
+        this.transport.isPunchInEnabled ().set (enable);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void togglePunchIn ()
     {
         this.transport.isPunchInEnabled ().toggle ();
@@ -431,6 +439,14 @@ public class TransportImpl implements ITransport
     public boolean isPunchInEnabled ()
     {
         return this.transport.isPunchInEnabled ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPunchOut (boolean enable)
+    {
+        this.transport.isPunchOutEnabled ().set (enable);
     }
 
 

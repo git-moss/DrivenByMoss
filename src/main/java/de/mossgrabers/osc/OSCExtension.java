@@ -13,7 +13,6 @@ import de.mossgrabers.osc.protocol.OSCParser;
 import de.mossgrabers.osc.protocol.OSCWriter;
 
 import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
-import com.bitwig.extension.api.opensoundcontrol.OscConnection;
 import com.bitwig.extension.api.opensoundcontrol.OscModule;
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -60,8 +59,7 @@ public class OSCExtension extends ControllerExtension
         final OscModule oscModule = host.getOscModule ();
 
         // Send OSC messages
-        final OscConnection udpServer = oscModule.connectToUdpServer (this.configuration.getSendHost (), this.configuration.getSendPort (), oscModule.createAddressSpace ());
-        this.writer = new OSCWriter (model, this.configuration, udpServer);
+        this.writer = new OSCWriter (model, this.configuration, oscModule);
 
         // Receive OSC messages
         final OscAddressSpace addressSpace = oscModule.createAddressSpace ();
