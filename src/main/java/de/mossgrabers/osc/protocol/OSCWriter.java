@@ -287,7 +287,11 @@ public class OSCWriter
         for (int i = 0; i < 8; i++)
         {
             final int oneplus = i + 1;
-            this.sendOSC (deviceAddress + "page/" + oneplus + "/", i < parameterPageNames.length ? parameterPageNames[i] : "", dump);
+            String parameterPageName = i < parameterPageNames.length ? parameterPageNames[i] : "";
+            this.sendOSC (deviceAddress + "page/" + oneplus + "/", parameterPageName, dump);
+            if (i == device.getSelectedParameterPage()) {
+                this.sendOSC (deviceAddress + "page/selected/name", parameterPageName, dump);
+            }
         }
     }
 
