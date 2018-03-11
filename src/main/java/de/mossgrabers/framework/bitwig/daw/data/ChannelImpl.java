@@ -390,7 +390,7 @@ public class ChannelImpl implements IChannel
     @Override
     public ISend getSend (final int sendIndex)
     {
-        return this.sends[sendIndex];
+        return sendIndex < this.sends.length ? this.sends[sendIndex] : null;
     }
 
 

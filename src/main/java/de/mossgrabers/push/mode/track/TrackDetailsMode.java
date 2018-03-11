@@ -169,7 +169,7 @@ public class TrackDetailsMode extends BaseMode
             d.setCell (3, 5, deviceChain.isAutoMonitor () ? "On" : "Off");
             final boolean hasPinning = this.model.getHost ().hasPinning ();
             d.setCell (2, 6, hasPinning ? "Pin Trck" : "");
-            d.setCell (3, 6, hasPinning ? (this.model.isCursorTrackPinned () ? "On" : "Off") : "");
+            d.setCell (3, 6, hasPinning ? this.model.isCursorTrackPinned () ? "On" : "Off" : "");
             d.setCell (2, 7, "Select").setCell (3, 7, "Color").done (0).done (1).done (2).done (3);
         }
     }

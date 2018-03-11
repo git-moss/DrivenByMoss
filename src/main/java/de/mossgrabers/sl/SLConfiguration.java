@@ -66,7 +66,7 @@ public class SLConfiguration extends AbstractConfiguration
         // Play and Sequence
 
         final IEnumSetting touchpadModeSetting = settingsUI.getEnumSetting ("Mode", "Touchpad", TOUCHPAD_OPTIONS, TOUCHPAD_OPTIONS[1]);
-        touchpadModeSetting.addValueObserver ( (value) -> {
+        touchpadModeSetting.addValueObserver (value -> {
             this.touchpadMode = value;
             this.notifyObservers (TOUCHPAD_MODE);
         });
