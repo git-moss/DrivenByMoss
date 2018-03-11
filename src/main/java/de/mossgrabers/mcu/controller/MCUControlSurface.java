@@ -322,7 +322,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     /**
      * Constructor.
-     * 
+     *
      * @param surfaces All surfaces to be able to check for status keys like Shift.
      * @param host The host
      * @param colorManager The color manager
@@ -559,7 +559,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public boolean isPressed (int button)
+    public boolean isPressed (final int button)
     {
         // Check on all MSU surfaces for state button presses
 
@@ -570,7 +570,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     }
 
 
-    private boolean isSinglePressed (int button)
+    private boolean isSinglePressed (final int button)
     {
         return super.isPressed (button);
     }

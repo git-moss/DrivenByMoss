@@ -1593,6 +1593,14 @@ public class CursorDeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
+    public int getNumDevices ()
+    {
+        return this.numDevicesInBank;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getNumLayers ()
     {
         return this.numDeviceLayers;

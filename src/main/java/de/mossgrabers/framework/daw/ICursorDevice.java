@@ -1197,6 +1197,14 @@ public interface ICursorDevice extends ObserverManagement
 
 
     /**
+     * Get the number of devices of a bank page.
+     *
+     * @return The number
+     */
+    int getNumDevices ();
+
+
+    /**
      * Get the number of layers of a bank page.
      *
      * @return The number

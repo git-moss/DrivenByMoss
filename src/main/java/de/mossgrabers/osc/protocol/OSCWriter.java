@@ -4,13 +4,14 @@
 
 package de.mossgrabers.osc.protocol;
 
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.ISceneBank;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.EmptyTrackData;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
@@ -93,6 +94,7 @@ public class OSCWriter
         this.sendOSC ("/punchIn", trans.isPunchInEnabled (), dump);
         this.sendOSC ("/punchOut", trans.isPunchOutEnabled (), dump);
         this.sendOSC ("/click", trans.isMetronomeOn (), dump);
+        this.sendOSC ("/click/ticks", trans.isMetronomeTicksOn (), dump);
         this.sendOSC ("/click/volume", trans.getMetronomeVolume (), dump);
         this.sendOSC ("/click/volumeStr", trans.getMetronomeVolumeStr (), dump);
         this.sendOSC ("/preroll", trans.getPreroll (), dump);
@@ -103,6 +105,7 @@ public class OSCWriter
         this.sendOSC ("/automationWriteMode", trans.getAutomationWriteMode (), dump);
         this.sendOSC ("/time/str", trans.getPositionText (), dump);
         this.sendOSC ("/time/signature", trans.getNumerator () + " / " + trans.getDenominator (), dump);
+        this.sendOSC ("/beat/str", trans.getBeatText (), dump);
 
         //
         // Frames
@@ -139,12 +142,13 @@ public class OSCWriter
         // Master-/Track(-commands)
         //
 
-        final ITrackBank trackBank = this.model.getTrackBank ();
+        final IChannelBank trackBank = this.model.getCurrentTrackBank ();
         for (int i = 0; i < trackBank.getNumTracks (); i++)
             this.flushTrack ("/track/" + (i + 1) + "/", trackBank.getTrack (i), dump);
         this.flushTrack ("/master/", this.model.getMasterTrack (), dump);
         final ITrack selectedTrack = trackBank.getSelectedTrack ();
         this.flushTrack ("/track/selected/", selectedTrack == null ? EMPTY_TRACK : selectedTrack, dump);
+        this.sendOSC ("/track/toggleBank", this.model.isEffectTrackBankActive () ? 1 : 0, dump);
 
         //
         // Scenes
@@ -277,17 +281,33 @@ public class OSCWriter
         this.sendOSC (deviceAddress + "bypass", !device.isEnabled (), dump);
         this.sendOSC (deviceAddress + "expand", device.isExpanded (), dump);
         this.sendOSC (deviceAddress + "window", device.isWindowOpen (), dump);
+        final int positionInBank = device.getPositionInBank ();
+        for (int i = 0; i < device.getNumDevices (); i++)
+        {
+            final int oneplus = i + 1;
+            this.sendOSC (deviceAddress + "sibling/" + oneplus + "/name", device.getSiblingDeviceName (i), dump);
+            this.sendOSC (deviceAddress + "sibling/" + oneplus + "/selected", i == positionInBank, dump);
+
+        }
         for (int i = 0; i < device.getNumParameters (); i++)
         {
             final int oneplus = i + 1;
             this.flushParameterData (deviceAddress + "param/" + oneplus + "/", device.getFXParam (i), dump);
         }
-        this.sendOSC (deviceAddress + "page/selected", device.getSelectedParameterPage (), dump);
         final String [] parameterPageNames = device.getParameterPageNames ();
+        final int selectedParameterPage = device.getSelectedParameterPage ();
+
+        final int page = Math.min (Math.max (0, selectedParameterPage), parameterPageNames.length - 1);
+        final int start = page / 8 * 8;
+
         for (int i = 0; i < 8; i++)
         {
+            final int index = start + i;
+            final String pageName = index < parameterPageNames.length ? parameterPageNames[index] : "";
+
             final int oneplus = i + 1;
-            this.sendOSC (deviceAddress + "page/" + oneplus + "/", i < parameterPageNames.length ? parameterPageNames[i] : "", dump);
+            this.sendOSC (deviceAddress + "page/" + oneplus + "/", pageName, dump);
+            this.sendOSC (deviceAddress + "page/" + oneplus + "/selected", page == index, dump);
         }
     }
 
@@ -295,6 +315,7 @@ public class OSCWriter
     private void flushBrowser (final String browserAddress, final IBrowser browser, final boolean dump)
     {
         this.sendOSC (browserAddress + "isActive", browser.isActive (), dump);
+        this.sendOSC (browserAddress + "tab", browser.getSelectedContentType (), dump);
 
         IBrowserColumn column;
         // Filter Columns
@@ -401,6 +422,12 @@ public class OSCWriter
     {
         // Using float here since Double seems to be always received as 0 in Max.
         this.sendOSC (address, Float.valueOf ((float) value), dump);
+    }
+
+
+    private void sendOSC (final String address, final String value, final boolean dump)
+    {
+        this.sendOSC (address, (Object) StringUtils.fixASCII (value), dump);
     }
 
 

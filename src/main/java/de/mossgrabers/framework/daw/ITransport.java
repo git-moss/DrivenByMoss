@@ -282,11 +282,19 @@ public interface ITransport extends ObserverManagement
 
 
     /**
-     * Get the default formatted play position.
+     * Get the default formatted play position (Minutes, Seconds, ...).
      *
      * @return The formatted text
      */
     String getPositionText ();
+
+
+    /**
+     * Get the play position formatted as measures and beats.
+     *
+     * @return The formatted text
+     */
+    String getBeatText ();
 
 
     /**
@@ -316,7 +324,7 @@ public interface ITransport extends ObserverManagement
 
     /**
      * Set punch-in dis/enabled in the transport.
-     * 
+     *
      * @param enable True to enable
      */
     void setPunchIn (boolean enable);
@@ -338,7 +346,7 @@ public interface ITransport extends ObserverManagement
 
     /**
      * Set punch-out dis/enabled in the transport.
-     * 
+     *
      * @param enable True to enable
      */
     void setPunchOut (boolean enable);

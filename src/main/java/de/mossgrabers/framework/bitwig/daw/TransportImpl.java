@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.daw;
 
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.daw.ITransport;
 
@@ -395,6 +396,17 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
+    public String getBeatText ()
+    {
+        return this.transport.getPosition ().getFormatted ( (beatTime, isAbsolute, timeSignatureNumerator, timeSignatureDenominator, timeSignatureTicks) -> {
+            final int quartersPerMeasure = 4 * timeSignatureNumerator / timeSignatureDenominator;
+            return StringUtils.formatMeasures (quartersPerMeasure, beatTime, 0);
+        });
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void setPosition (final double beats)
     {
         this.transport.setPosition (beats);
@@ -420,7 +432,7 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public void setPunchIn (boolean enable)
+    public void setPunchIn (final boolean enable)
     {
         this.transport.isPunchInEnabled ().set (enable);
     }
@@ -444,7 +456,7 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public void setPunchOut (boolean enable)
+    public void setPunchOut (final boolean enable)
     {
         this.transport.isPunchOutEnabled ().set (enable);
     }
