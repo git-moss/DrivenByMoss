@@ -400,7 +400,7 @@ public class TransportImpl implements ITransport
     {
         return this.transport.getPosition ().getFormatted ( (beatTime, isAbsolute, timeSignatureNumerator, timeSignatureDenominator, timeSignatureTicks) -> {
             final int quartersPerMeasure = 4 * timeSignatureNumerator / timeSignatureDenominator;
-            return StringUtils.formatMeasures (quartersPerMeasure, beatTime, 0);
+            return StringUtils.formatMeasures (quartersPerMeasure, beatTime, 1);
         });
     }
 
@@ -569,9 +569,54 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
+    public int getPrerollAsBars ()
+    {
+        switch (this.getPreroll ())
+        {
+            case ITransport.PREROLL_NONE:
+                return 0;
+            case ITransport.PREROLL_1_BAR:
+                return 1;
+            case ITransport.PREROLL_2_BARS:
+                return 2;
+            case ITransport.PREROLL_4_BARS:
+                return 4;
+            default:
+                return 0;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void setPreroll (final String preroll)
     {
         this.transport.preRoll ().set (preroll);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPrerollAsBars (final int preroll)
+    {
+        switch (preroll)
+        {
+            case 0:
+                this.setPreroll (ITransport.PREROLL_NONE);
+                break;
+            case 1:
+                this.setPreroll (ITransport.PREROLL_1_BAR);
+                break;
+            case 2:
+                this.setPreroll (ITransport.PREROLL_2_BARS);
+                break;
+            case 4:
+                this.setPreroll (ITransport.PREROLL_4_BARS);
+                break;
+            default:
+                this.host.errorln ("Unknown Preroll length: " + preroll);
+                break;
+        }
     }
 
 

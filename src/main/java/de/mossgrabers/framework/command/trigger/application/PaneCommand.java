@@ -69,7 +69,7 @@ public class PaneCommand<S extends ControlSurface<C>, C extends Configuration> e
                 application.toggleAutomationEditor ();
                 break;
             case DEVICE:
-                application.toggleDevices ();
+                this.model.getCursorDevice ().toggleWindowOpen ();
                 break;
             case MIXER:
                 application.toggleMixer ();
@@ -87,9 +87,8 @@ public class PaneCommand<S extends ControlSurface<C>, C extends Configuration> e
 
         switch (this.panel)
         {
-            // Toggle device
             case DEVICE:
-                this.model.getCursorDevice ().toggleWindowOpen ();
+                this.model.getApplication ().toggleDevices ();
                 break;
             default:
                 // Not used

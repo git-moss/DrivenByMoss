@@ -456,11 +456,27 @@ public interface ITransport extends ObserverManagement
 
 
     /**
+     * Get the value that reports the current pre-roll setting in bars: 0, 1, 2, 4.
+     *
+     * @return The number of preroll bars.
+     */
+    int getPrerollAsBars ();
+
+
+    /**
      * Set the value that reports the current pre-roll setting.
      *
      * @param preroll Possible values are `"none"`, `"one_bar"`, `"two_bars"`, or `"four_bars"`.
      */
     void setPreroll (final String preroll);
+
+
+    /**
+     * Set the value that reports the current pre-roll setting in bars.
+     *
+     * @param preroll Possible values are 0, 1, 2, 4.
+     */
+    void setPrerollAsBars (final int preroll);
 
 
     /**
