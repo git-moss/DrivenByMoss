@@ -97,7 +97,7 @@ public class OSCWriter
         this.sendOSC ("/click/ticks", trans.isMetronomeTicksOn (), dump);
         this.sendOSC ("/click/volume", trans.getMetronomeVolume (), dump);
         this.sendOSC ("/click/volumeStr", trans.getMetronomeVolumeStr (), dump);
-        this.sendOSC ("/preroll", trans.getPreroll (), dump);
+        this.sendOSC ("/preroll", trans.getPrerollAsBars (), dump);
         this.sendOSC ("/tempo/raw", trans.getTempo (), dump);
         this.sendOSC ("/crossfade", trans.getCrossfade (), dump);
         this.sendOSC ("/autowrite", trans.isWritingArrangerAutomation (), dump);
@@ -309,6 +309,8 @@ public class OSCWriter
             this.sendOSC (deviceAddress + "page/" + oneplus + "/", pageName, dump);
             this.sendOSC (deviceAddress + "page/" + oneplus + "/selected", page == index, dump);
         }
+        final int sel = page % 8;
+        this.sendOSC (deviceAddress + "page/selected/name", sel >= 0 && sel < 8 ? parameterPageNames[sel] : "", dump);
     }
 
 

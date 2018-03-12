@@ -458,23 +458,7 @@ public class OSCParser implements OscMethodCallback
                 return true;
 
             case "preroll":
-                switch (numValue)
-                {
-                    case 0:
-                        this.transport.setPreroll (ITransport.PREROLL_NONE);
-                        return true;
-                    case 1:
-                        this.transport.setPreroll (ITransport.PREROLL_1_BAR);
-                        return true;
-                    case 2:
-                        this.transport.setPreroll (ITransport.PREROLL_2_BARS);
-                        return true;
-                    case 4:
-                        this.transport.setPreroll (ITransport.PREROLL_4_BARS);
-                        return true;
-                    default:
-                        this.host.errorln ("Unknown Preroll length: " + numValue);
-                }
+                this.transport.setPrerollAsBars (numValue);
                 return true;
 
             default:
@@ -719,6 +703,7 @@ public class OSCParser implements OscMethodCallback
                         return;
                     tb.scrollTracksPageDown ();
                     this.host.scheduleTask ( () -> tb.getTrack (0).selectAndMakeVisible (), 75);
+                    return;
                 }
                 tb.getTrack (index).selectAndMakeVisible ();
                 break;
