@@ -120,7 +120,8 @@ public abstract class AbstractTrackMode extends BaseMode
         if (event != ButtonEvent.DOWN)
             return;
 
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getTrack (index);
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
         {
             track.stop ();
@@ -179,19 +180,11 @@ public abstract class AbstractTrackMode extends BaseMode
                 break;
 
             default:
-                if (!this.model.isEffectTrackBankActive ())
+                final int sendIndex = index - (config.isSendsAreToggled () ? 0 : 4);
+                if (tb.canEditSend (sendIndex))
                 {
-                    final int sendOffset = config.isSendsAreToggled () ? 0 : 4;
-                    final int sendIndex = index - sendOffset;
-                    final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
-                    if (fxTrackBank != null && fxTrackBank.getTrack (sendIndex).doesExist ())
-                    {
-                        final Integer si = Integer.valueOf (Modes.MODE_SEND1.intValue () + sendIndex);
-                        if (modeManager.isActiveMode (si))
-                            modeManager.setActiveMode (Modes.MODE_TRACK);
-                        else
-                            modeManager.setActiveMode (si);
-                    }
+                    final Integer si = Integer.valueOf (Modes.MODE_SEND1.intValue () + sendIndex);
+                    modeManager.setActiveMode (modeManager.isActiveMode (si) ? Modes.MODE_TRACK : si);
                 }
                 break;
         }
@@ -366,7 +359,7 @@ public abstract class AbstractTrackMode extends BaseMode
             }
 
             final int crossfadeMode = displayCrossfader ? t.getCrossfadeModeAsNumber () : -1;
-            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName () : "", t.getType (), t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecArm (), crossfadeMode);
+            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName (12) : "", t.getType (), t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecArm (), crossfadeMode);
         }
 
         display.send (message);
@@ -375,7 +368,6 @@ public abstract class AbstractTrackMode extends BaseMode
 
     protected void updateTrackMenu ()
     {
-        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
         final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
         if (this.model.isEffectTrackBankActive ())
@@ -388,9 +380,10 @@ public abstract class AbstractTrackMode extends BaseMode
 
         this.menu[2] = config.isDisplayCrossfader () ? "Crossfader" : " ";
 
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 3; i++)
         {
-            this.menu[4 + i] = fxTrackBank == null ? " " : fxTrackBank.getTrack (sendOffset + i).getName ();
+            this.menu[4 + i] = tb.getEditSendName (sendOffset + i);
             if (this.menu[4 + i].isEmpty ())
                 this.menu[4 + i] = " ";
         }

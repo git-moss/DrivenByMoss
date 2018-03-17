@@ -109,11 +109,11 @@ public class ClipMode extends AbstractTrackMode
     @Override
     public void updateDisplay2 ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final ICursorClip clip = this.model.getCursorClip ();
         final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
         final DisplayMessage message = display.createMessage ();
 
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final ITrack t0 = tb.getTrack (0);
         final ITrack t1 = tb.getTrack (1);
         final ITrack t2 = tb.getTrack (2);

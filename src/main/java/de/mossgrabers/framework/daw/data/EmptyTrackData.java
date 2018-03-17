@@ -3,6 +3,9 @@
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.daw.resource.ChannelType;
+
+
 /**
  * Default data for an empty track.
  *
@@ -20,9 +23,9 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public String getType ()
+    public ChannelType getType ()
     {
-        return "";
+        return ChannelType.UNKNOWN;
     }
 
 
@@ -109,6 +112,14 @@ public class EmptyTrackData implements ITrack
     /** {@inheritDoc} */
     @Override
     public String getName ()
+    {
+        return "";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getName (int limit)
     {
         return "";
     }

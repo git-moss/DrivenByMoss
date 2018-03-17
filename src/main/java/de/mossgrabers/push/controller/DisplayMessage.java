@@ -4,6 +4,8 @@
 
 package de.mossgrabers.push.controller;
 
+import de.mossgrabers.framework.daw.resource.ChannelType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,11 +112,11 @@ public class DisplayMessage
      * @param topMenu The text of the top menu
      * @param isTopMenuOn True if the top menu is selected
      * @param bottomMenu The text of the bottom menu
-     * @param bottomMenuIcon An icon identifier for the menu
+     * @param type The type of the channel
      * @param bottomMenuColor A background color for the menu
      * @param isBottomMenuOn True if the bottom menu is selected
      */
-    public void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn)
+    public void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn)
     {
         this.addByte (DisplayMessage.GRID_ELEMENT_CHANNEL_SELECTION);
 
@@ -124,7 +126,7 @@ public class DisplayMessage
 
         // Bottom Menu
         this.addString (bottomMenu);
-        this.addString (bottomMenuIcon);
+        this.addString (type == null ? null : type.name ().toLowerCase ());
         this.addColor (bottomMenuColor);
         this.addBoolean (isBottomMenuOn);
     }
@@ -136,7 +138,7 @@ public class DisplayMessage
      * @param topMenu The text of the top menu
      * @param isTopMenuOn True if the top menu is selected
      * @param bottomMenu The text of the bottom menu
-     * @param bottomMenuIcon An icon identifier for the menu
+     * @param type The type of the channel
      * @param bottomMenuColor A background color for the menu
      * @param isBottomMenuOn True if the bottom menu is selected
      * @param volume The volume value
@@ -151,9 +153,9 @@ public class DisplayMessage
      * @param recarm The recording armed state
      * @param crossfadeMode Crossfade mode (0-2)
      */
-    public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
+    public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
     {
-        this.addChannelElement (DisplayMessage.GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vu, mute, solo, recarm, crossfadeMode);
+        this.addChannelElement (DisplayMessage.GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vu, mute, solo, recarm, crossfadeMode);
     }
 
 
@@ -164,7 +166,7 @@ public class DisplayMessage
      * @param topMenu The text of the top menu
      * @param isTopMenuOn True if the top menu is selected
      * @param bottomMenu The text of the bottom menu
-     * @param bottomMenuIcon An icon identifier for the menu
+     * @param type The type of the channel
      * @param bottomMenuColor A background color for the menu
      * @param isBottomMenuOn True if the bottom menu is selected
      * @param volume The volume value
@@ -179,7 +181,7 @@ public class DisplayMessage
      * @param recarm The recording armed state
      * @param crossfadeMode Crossfade mode (0-2)
      */
-    public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
+    public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
     {
         this.addByte (channelType);
 
@@ -189,7 +191,7 @@ public class DisplayMessage
 
         // Bottom Menu
         this.addString (bottomMenu);
-        this.addString (bottomMenuIcon);
+        this.addString (type == null ? null : type.name ().toLowerCase ());
         this.addColor (bottomMenuColor);
         this.addBoolean (isBottomMenuOn);
 
@@ -214,7 +216,7 @@ public class DisplayMessage
      * @param topMenu The text of the top menu
      * @param isTopMenuOn True if the top menu is selected
      * @param bottomMenu The text of the bottom menu
-     * @param bottomMenuIcon An icon identifier for the menu
+     * @param type The type of the channel
      * @param bottomMenuColor A background color for the menu
      * @param isBottomMenuOn True if the bottom menu is selected
      * @param sendName The names of the sends
@@ -224,7 +226,7 @@ public class DisplayMessage
      * @param selected The selected state of sends
      * @param isTrackMode True if track mode otherwise send mode
      */
-    public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String [] sendName, final String [] valueStr, final int [] value, final int [] modulatedValue, final boolean [] selected, final boolean isTrackMode)
+    public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String [] sendName, final String [] valueStr, final int [] value, final int [] modulatedValue, final boolean [] selected, final boolean isTrackMode)
     {
         this.addByte (DisplayMessage.GRID_ELEMENT_CHANNEL_SENDS);
 
@@ -234,7 +236,7 @@ public class DisplayMessage
 
         // Bottom Menu
         this.addString (bottomMenu);
-        this.addString (bottomMenuIcon);
+        this.addString (type == null ? null : type.name ().toLowerCase ());
         this.addColor (bottomMenuColor);
         this.addBoolean (isBottomMenuOn);
 
@@ -272,7 +274,7 @@ public class DisplayMessage
      * @param topMenu The text of the top menu
      * @param isTopMenuOn True if the top menu is selected
      * @param bottomMenu The text of the bottom menu
-     * @param bottomMenuIcon An icon identifier for the menu
+     * @param type The type of the channel
      * @param bottomMenuColor A background color for the menu
      * @param isBottomMenuOn True if the bottom menu is selected
      * @param parameterName The name to display for the parameter
@@ -281,7 +283,7 @@ public class DisplayMessage
      * @param parameterIsActive The parameter is currently edited
      * @param parameterModulatedValue The modulated numeric value
      */
-    public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String bottomMenuIcon, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
         this.addByte (DisplayMessage.GRID_ELEMENT_PARAMETERS);
 
@@ -291,7 +293,7 @@ public class DisplayMessage
 
         // Bottom Menu
         this.addString (bottomMenu);
-        this.addString (bottomMenuIcon);
+        this.addString (type == null ? null : type.name ().toLowerCase ());
         this.addColor (bottomMenuColor);
         this.addBoolean (isBottomMenuOn);
 
@@ -301,6 +303,28 @@ public class DisplayMessage
         this.addString (parameterValueStr);
         this.addBoolean (parameterIsActive);
         this.addInteger (parameterModulatedValue);
+    }
+
+
+    /**
+     * Adds a parameter element.
+     *
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param deviceName The name of the device
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     * @param parameterName The name to display for the parameter
+     * @param parameterValue The numeric value of the parameter
+     * @param parameterValueStr The textual form of the parameter
+     * @param parameterIsActive The parameter is currently edited
+     * @param parameterModulatedValue The modulated numeric value
+     */
+    public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String deviceName, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    {
+        // TODO deviceName currently not supported
+        this.addParameterElement (topMenu, isTopMenuOn, bottomMenu, ChannelType.EFFECT, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
     }
 
 

@@ -7,6 +7,7 @@ package de.mossgrabers.framework.bitwig.daw.data;
 import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 
 import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
 import com.bitwig.extension.controller.api.Track;
@@ -86,9 +87,10 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public String getType ()
+    public ChannelType getType ()
     {
-        return this.track.trackType ().get ();
+        final String typeID = this.track.trackType ().get ();
+        return typeID.isEmpty () ? null : ChannelType.valueOf (typeID.toUpperCase ());
     }
 
 

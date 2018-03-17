@@ -52,6 +52,8 @@ public class StringUtils
      */
     public static String fixASCII (final String name)
     {
+        if (name == null)
+            return null;
         final StringBuilder str = new StringBuilder ();
         for (int i = 0; i < name.length (); i++)
         {

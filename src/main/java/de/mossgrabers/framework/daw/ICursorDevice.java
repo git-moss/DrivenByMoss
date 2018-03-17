@@ -346,6 +346,16 @@ public interface ICursorDevice extends ObserverManagement
 
 
     /**
+     * Get the name of the sibling at the given index.
+     *
+     * @param index The index of a sibling
+     * @param limit Limit the text to this length
+     * @return The name
+     */
+    String getSiblingDeviceName (int index, final int limit);
+
+
+    /**
      * Select the sibling at the given index.
      *
      * @param index The index of the sibling

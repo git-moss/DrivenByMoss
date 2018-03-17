@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -46,6 +47,7 @@ public class OSCParser implements OscMethodCallback
     private static final String    PART_INDICATE     = "indicate";
     private static final String    PART_VOLUME       = "volume";
     private static final String    PART_RESET        = "reset";
+    private static final String    PART_TOUCH        = "touched";
 
     private static final Pattern   RGB_COLOR_PATTERN = Pattern.compile ("(rgb|RGB)\\((\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?)\\)");
 
@@ -835,6 +837,8 @@ public class OSCParser implements OscMethodCallback
                     track.setVolumeIndication (numValue > 0);
                 else if (PART_RESET.equals (parts.get (0)))
                     track.resetVolume ();
+                else if (PART_TOUCH.equals (parts.get (0)))
+                    track.touchVolume (numValue > 0);
                 break;
 
             case "pan":
@@ -844,6 +848,8 @@ public class OSCParser implements OscMethodCallback
                     track.setPanIndication (numValue > 0);
                 else if (PART_RESET.equals (parts.get (0)))
                     track.resetPan ();
+                else if (PART_TOUCH.equals (parts.get (0)))
+                    track.touchPan (numValue > 0);
                 break;
 
             case "mute":
@@ -991,6 +997,8 @@ public class OSCParser implements OscMethodCallback
                         send.setValue (numValue);
                     else if (PART_INDICATE.equals (parts.get (0)))
                         send.setIndication (numValue > 0);
+                    else if (PART_TOUCH.equals (parts.get (0)))
+                        send.touchValue (numValue > 0);
                 }
                 break;
 
@@ -1218,19 +1226,27 @@ public class OSCParser implements OscMethodCallback
             this.host.println ("Missing Layer/Drumpad command.");
             return;
         }
+        final String command = parts.removeFirst ();
         try
         {
-            final int layerNo = Integer.parseInt (parts.get (0));
-            parts.removeFirst ();
-            this.parseDeviceLayerValue (cursorDevice, layerNo - 1, parts, value);
+            final int layerNo;
+            if ("selected".equals (command))
+            {
+                final IChannel selectedLayerOrDrumPad = cursorDevice.getSelectedLayerOrDrumPad ();
+                layerNo = selectedLayerOrDrumPad == null ? -1 : selectedLayerOrDrumPad.getIndex ();
+            }
+            else
+            {
+                layerNo = Integer.parseInt (command) - 1;
+            }
+            this.parseDeviceLayerValue (cursorDevice, layerNo, parts, value);
         }
         catch (final NumberFormatException ex)
         {
-            final String command = parts.removeFirst ();
             switch (command)
             {
                 case "parent":
-                    if (cursorDevice.isNested ())
+                    if (cursorDevice.doesExist ())
                     {
                         cursorDevice.selectParent ();
                         cursorDevice.selectChannel ();
@@ -1372,11 +1388,17 @@ public class OSCParser implements OscMethodCallback
                 break;
 
             case PART_VOLUME:
-                cursorDevice.setLayerOrDrumPadVolume (layer, numValue);
+                if (parts.isEmpty ())
+                    cursorDevice.setLayerOrDrumPadVolume (layer, numValue);
+                else if (PART_TOUCH.equals (parts.get (0)))
+                    cursorDevice.touchLayerOrDrumPadVolume (layer, numValue > 0);
                 break;
 
             case "pan":
-                cursorDevice.setLayerOrDrumPadPan (layer, numValue);
+                if (parts.isEmpty ())
+                    cursorDevice.setLayerOrDrumPadPan (layer, numValue);
+                else if (PART_TOUCH.equals (parts.get (0)))
+                    cursorDevice.touchLayerOrDrumPadPan (layer, numValue > 0);
                 break;
 
             case "mute":
@@ -1394,8 +1416,11 @@ public class OSCParser implements OscMethodCallback
                 break;
 
             case "send":
-                final int sendNo = Integer.parseInt (parts.removeFirst ());
-                cursorDevice.setLayerOrDrumPadSend (layer, sendNo - 1, numValue);
+                final int sendNo = Integer.parseInt (parts.removeFirst ()) - 1;
+                if (parts.isEmpty ())
+                    cursorDevice.setLayerOrDrumPadSend (layer, sendNo, numValue);
+                else if (PART_TOUCH.equals (parts.get (0)))
+                    cursorDevice.touchLayerOrDrumPadSend (layer, sendNo, numValue > 0);
                 break;
 
             case "enter":
@@ -1433,6 +1458,10 @@ public class OSCParser implements OscMethodCallback
 
             case PART_RESET:
                 cursorDevice.resetParameter (fxparamIndex);
+                break;
+
+            case PART_TOUCH:
+                cursorDevice.touchParameter (fxparamIndex, numValue > 0);
                 break;
 
             default:
