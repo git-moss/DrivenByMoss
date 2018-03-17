@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw.data;
 
 import de.mossgrabers.framework.daw.ObserverManagement;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 
 
 /**
@@ -60,6 +61,23 @@ public interface IChannel extends ObserverManagement
      * @return The name of the channel
      */
     String getName ();
+
+
+    /**
+     * Get the name of the channel.
+     *
+     * @param limit Limit the text to this length
+     * @return The name
+     */
+    String getName (int limit);
+
+
+    /**
+     * Get the type of the track.
+     *
+     * @return The type
+     */
+    ChannelType getType ();
 
 
     /**

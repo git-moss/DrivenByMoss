@@ -571,6 +571,14 @@ public class CursorDeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
+    public String getSiblingDeviceName (final int index, final int limit)
+    {
+        return this.siblings.getDevice (index).name ().getLimited (limit);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void selectSibling (final int index)
     {
         this.siblings.getDevice (index).selectInEditor ();

@@ -22,6 +22,7 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.osc.OSCColors;
 import de.mossgrabers.osc.OSCConfiguration;
@@ -217,7 +218,8 @@ public class OSCWriter
     private void flushTrack (final String trackAddress, final ITrack track, final boolean dump)
     {
         this.sendOSC (trackAddress + "exists", track.doesExist (), dump);
-        this.sendOSC (trackAddress + "type", track.getType (), dump);
+        final ChannelType type = track.getType ();
+        this.sendOSC (trackAddress + "type", type == null ? null : type.name ().toLowerCase (), dump);
         this.sendOSC (trackAddress + "activated", track.isActivated (), dump);
         this.sendOSC (trackAddress + "selected", track.isSelected (), dump);
         this.sendOSC (trackAddress + "isGroup", track.isGroup (), dump);
@@ -262,8 +264,7 @@ public class OSCWriter
         this.sendOSC (trackAddress + "crossfadeMode/B", "B".equals (crossfadeMode), dump);
         this.sendOSC (trackAddress + "crossfadeMode/AB", "AB".equals (crossfadeMode), dump);
 
-        if (this.configuration.isEnableVUMeters ())
-            this.sendOSC (trackAddress + "vu", track.getVu (), dump);
+        this.sendOSC (trackAddress + "vu", this.configuration.isEnableVUMeters () ? track.getVu () : 0, dump);
     }
 
 

@@ -52,4 +52,21 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
         if (chann >= 0 && chann < this.getTrackCount ())
             this.trackBank.scrollPosition ().set (chann / this.numTracks * this.numTracks);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canEditSend (int sendIndex)
+    {
+        // Sends don't have sends.
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getEditSendName (int sendIndex)
+    {
+        return "";
+    }
 }

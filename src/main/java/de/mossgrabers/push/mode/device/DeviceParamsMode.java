@@ -418,13 +418,15 @@ public class DeviceParamsMode extends BaseMode
             boolean isBottomMenuOn;
             if (this.showDevices)
             {
-                bottomMenu = cd.doesSiblingExist (i) ? cd.getSiblingDeviceName (i) : "";
+                bottomMenu = cd.doesSiblingExist (i) ? cd.getSiblingDeviceName (i, 12) : "";
                 isBottomMenuOn = i == cd.getPositionInBank ();
             }
             else
             {
                 final int index = start + i;
                 bottomMenu = index < pages.length ? pages[index] : "";
+                if (bottomMenu.length () > 12)
+                    bottomMenu = bottomMenu.substring (0, 12);
                 isBottomMenuOn = index == page;
             }
 

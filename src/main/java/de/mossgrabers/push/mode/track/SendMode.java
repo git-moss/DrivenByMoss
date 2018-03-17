@@ -11,7 +11,6 @@ import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -139,7 +138,7 @@ public class SendMode extends AbstractTrackMode
             else
             {
                 topMenu = this.menu[i];
-                topMenuSelected = i > 3 && i - 4 + sendOffset == sendIndex;
+                topMenuSelected = i == 7 || i > 3 && i - 4 + sendOffset == sendIndex;
             }
 
             final ValueChanger valueChanger = this.model.getValueChanger ();
@@ -159,9 +158,7 @@ public class SendMode extends AbstractTrackMode
                 selected[j] = sendIndex == sendPos;
             }
 
-            final String typeID = t.getType ();
-            final ChannelType type = typeID.isEmpty () ? null : ChannelType.valueOf (typeID.toUpperCase ());
-            message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", type, t.getColor (), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
+            message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", t.getType (), t.getColor (), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
         }
 
         display.send (message);

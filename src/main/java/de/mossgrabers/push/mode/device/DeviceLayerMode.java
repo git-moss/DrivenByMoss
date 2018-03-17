@@ -436,7 +436,7 @@ public class DeviceLayerMode extends BaseMode
             }
 
             // Channel info
-            final String bottomMenu = layer.doesExist () ? layer.getName () : "";
+            final String bottomMenu = layer.doesExist () ? layer.getName (12) : "";
             final double [] bottomMenuColor = layer.getColor ();
             final boolean isBottomMenuOn = layer.isSelected ();
 

@@ -65,4 +65,20 @@ public class TrackBankImpl extends AbstractTrackBankImpl implements ITrackBank
     {
         this.cursorTrack.selectParent ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canEditSend (int sendIndex)
+    {
+        return this.getTrack (0).getSend (sendIndex).doesExist ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getEditSendName (int sendIndex)
+    {
+        return this.getTrack (0).getSend (sendIndex).getName ();
+    }
 }

@@ -53,7 +53,7 @@ public class OSCExtensionDefinition extends AbstractControllerExtensionDefinitio
     @Override
     public String getVersion ()
     {
-        return "5.40";
+        return "5.50";
     }
 
 

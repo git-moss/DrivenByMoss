@@ -11,7 +11,6 @@ import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushColors;
@@ -115,34 +114,36 @@ public class ClipMode extends AbstractTrackMode
     @Override
     public void updateDisplay2 ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final ICursorClip clip = this.model.getCursorClip ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+        final DisplayMessage message = display.createMessage ();
 
         if (this.displayMidiNotes)
+		{
             message.setMidiClipElement (clip, this.model.getTransport ().getQuartersPerMeasure ());
-        else
-        {
-            final ITrack t0 = tb.getTrack (0);
-            final ITrack t1 = tb.getTrack (1);
-            final ITrack t2 = tb.getTrack (2);
-            final ITrack t3 = tb.getTrack (3);
-            final ITrack t4 = tb.getTrack (4);
-            final ITrack t5 = tb.getTrack (5);
-            final ITrack t6 = tb.getTrack (6);
-            final ITrack t7 = tb.getTrack (7);
+	        display.send (message);
+			return;
+		}
 
-            message.addParameterElement ("Session", this.displayMidiNotes, t0.getName (), getChannelType (t0), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
-            message.addParameterElement ("Piano Roll", false, t1.getName (), getChannelType (t1), t1.getColor (), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);
-            message.addParameterElement ("", false, t2.getName (), getChannelType (t2), t2.getColor (), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart (), 1), this.isKnobTouched[2], -1);
-            message.addParameterElement ("", false, t3.getName (), getChannelType (t3), t3.getColor (), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength (), 0), this.isKnobTouched[3], -1);
-            message.addParameterElement ("", false, t4.getName (), getChannelType (t4), t4.getColor (), t4.isSelected (), "Loop", -1, clip.isLoopEnabled () ? "On" : "Off", this.isKnobTouched[4], -1);
-            message.addParameterElement ("", false, t5.getName (), getChannelType (t5), t5.getColor (), t5.isSelected (), "", -1, "", false, -1);
-            message.addParameterElement ("", false, t6.getName (), getChannelType (t6), t6.getColor (), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
-            message.addParameterElement ("Select color", false, t7.getName (), getChannelType (t7), t7.getColor (), t7.isSelected (), "Accent", -1, clip.getFormattedAccent (), this.isKnobTouched[7], -1);
-        }
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t0 = tb.getTrack (0);
+        final ITrack t1 = tb.getTrack (1);
+        final ITrack t2 = tb.getTrack (2);
+        final ITrack t3 = tb.getTrack (3);
+        final ITrack t4 = tb.getTrack (4);
+        final ITrack t5 = tb.getTrack (5);
+        final ITrack t6 = tb.getTrack (6);
+        final ITrack t7 = tb.getTrack (7);
 
-        message.send ();
+        message.addParameterElement ("Session", this.displayMidiNotes, t0.getName (), t0.getType (), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
+        message.addParameterElement ("Piano Roll", false, t1.getName (), t1.getType (), t1.getColor (), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);
+        message.addParameterElement ("", false, t2.getName (), t2.getType (), t2.getColor (), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart (), 1), this.isKnobTouched[2], -1);
+        message.addParameterElement ("", false, t3.getName (), t3.getType (), t3.getColor (), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength (), 0), this.isKnobTouched[3], -1);
+        message.addParameterElement ("", false, t4.getName (), t4.getType (), t4.getColor (), t4.isSelected (), "Loop", -1, clip.isLoopEnabled () ? "On" : "Off", this.isKnobTouched[4], -1);
+        message.addParameterElement ("", false, t5.getName (), t5.getType (), t5.getColor (), t5.isSelected (), "", -1, "", false, -1);
+        message.addParameterElement ("", false, t6.getName (), t6.getType (), t6.getColor (), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
+        message.addParameterElement ("Select color", false, t7.getName (), t7.getType (), t7.getColor (), t7.isSelected (), "Accent", -1, clip.getFormattedAccent (), this.isKnobTouched[7], -1);
+        display.send (message);
     }
 
 
@@ -192,13 +193,6 @@ public class ClipMode extends AbstractTrackMode
         this.surface.updateButton (107, PushColors.PUSH2_COLOR_BLACK);
         this.surface.updateButton (108, PushColors.PUSH2_COLOR_BLACK);
         this.surface.updateButton (109, this.displayMidiNotes ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH2_COLOR2_WHITE);
-    }
-
-
-    private static ChannelType getChannelType (final ITrack t)
-    {
-        final String type = t.getType ();
-        return type.length () == 0 ? null : ChannelType.valueOf (type.toUpperCase ());
     }
 
 

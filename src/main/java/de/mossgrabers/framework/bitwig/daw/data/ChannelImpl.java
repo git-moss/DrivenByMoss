@@ -8,6 +8,7 @@ import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 
 import com.bitwig.extension.controller.api.Channel;
 import com.bitwig.extension.controller.api.SendBank;
@@ -88,7 +89,6 @@ public class ChannelImpl implements IChannel
 
         for (final ISend send: this.sends)
             send.enableObservers (enable);
-
     }
 
 
@@ -126,6 +126,14 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
+    public ChannelType getType ()
+    {
+        return ChannelType.UNKNOWN;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isActivated ()
     {
         return this.channel.isActivated ().get ();
@@ -153,6 +161,14 @@ public class ChannelImpl implements IChannel
     public String getName ()
     {
         return this.channel.name ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getName (int limit)
+    {
+        return this.channel.name ().getLimited (limit);
     }
 
 
