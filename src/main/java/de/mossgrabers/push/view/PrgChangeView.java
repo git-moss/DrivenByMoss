@@ -159,6 +159,8 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
     @Override
     public void onGridNote (final int note, final int velocity)
     {
+        if (velocity == 0)
+            return;
         this.programNumber = note - 36 + (this.isToggled ? 64 : 0);
         this.surface.sendMidiEvent (0xC0, this.programNumber, 0);
     }

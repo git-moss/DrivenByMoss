@@ -235,10 +235,11 @@ public abstract class AbstractTrackMode extends BaseMode
             this.surface.updateButton (103, modeManager.isActiveMode (Modes.MODE_PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             this.surface.updateButton (104, modeManager.isActiveMode (Modes.MODE_CROSSFADER) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             this.surface.updateButton (105, PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (106, modeManager.isActiveMode (config.isSendsAreToggled () ? Modes.MODE_SEND5 : Modes.MODE_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (107, modeManager.isActiveMode (config.isSendsAreToggled () ? Modes.MODE_SEND6 : Modes.MODE_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (108, modeManager.isActiveMode (config.isSendsAreToggled () ? Modes.MODE_SEND7 : Modes.MODE_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (109, PushColors.PUSH2_COLOR2_WHITE);
+            final boolean sendsAreToggled = config.isSendsAreToggled ();
+            this.surface.updateButton (106, modeManager.isActiveMode (sendsAreToggled ? Modes.MODE_SEND5 : Modes.MODE_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateButton (107, modeManager.isActiveMode (sendsAreToggled ? Modes.MODE_SEND6 : Modes.MODE_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateButton (108, modeManager.isActiveMode (sendsAreToggled ? Modes.MODE_SEND7 : Modes.MODE_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateButton (109, tb instanceof ITrackBank && ((ITrackBank) tb).hasParent () ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             return;
         }
 
@@ -355,7 +356,7 @@ public abstract class AbstractTrackMode extends BaseMode
             else
             {
                 topMenu = this.menu[i];
-                isTopMenuOn = i == selectedMenu - 1 || i == 7;
+                isTopMenuOn = i == selectedMenu - 1 || (i == 7 && tb instanceof ITrackBank && ((ITrackBank) tb).hasParent ());
             }
 
             final int crossfadeMode = displayCrossfader ? t.getCrossfadeModeAsNumber () : -1;
@@ -388,5 +389,6 @@ public abstract class AbstractTrackMode extends BaseMode
                 this.menu[4 + i] = " ";
         }
         this.menu[3] = config.isSendsAreToggled () ? "Sends 5-8" : "Sends 1-4";
+        this.menu[7] = tb instanceof ITrackBank && ((ITrackBank) tb).hasParent () ? "Up" : " ";
     }
 }
