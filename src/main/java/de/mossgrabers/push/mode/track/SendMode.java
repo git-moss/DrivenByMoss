@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.push.PushConfiguration;
@@ -138,7 +139,7 @@ public class SendMode extends AbstractTrackMode
             else
             {
                 topMenu = this.menu[i];
-                topMenuSelected = i == 7 || i > 3 && i - 4 + sendOffset == sendIndex;
+                topMenuSelected = i > 3 && i - 4 + sendOffset == sendIndex || (i == 7 && tb instanceof ITrackBank && ((ITrackBank) tb).hasParent ());
             }
 
             final ValueChanger valueChanger = this.model.getValueChanger ();

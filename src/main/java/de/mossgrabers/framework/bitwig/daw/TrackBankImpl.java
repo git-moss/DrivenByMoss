@@ -69,6 +69,15 @@ public class TrackBankImpl extends AbstractTrackBankImpl implements ITrackBank
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasParent ()
+    {
+        // TODO API extension required
+        return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean canEditSend (int sendIndex)
     {
         return this.getTrack (0).getSend (sendIndex).doesExist ();

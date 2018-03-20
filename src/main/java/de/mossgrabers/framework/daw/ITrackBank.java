@@ -21,4 +21,12 @@ public interface ITrackBank extends IChannelBank
      * Selects the parent track if any (track must be inside a group).
      */
     void selectParent ();
+
+
+    /**
+     * Returns true if there is a parent track.
+     *
+     * @return True if there is a parent track
+     */
+    boolean hasParent ();
 }

@@ -305,7 +305,7 @@ public class DeviceParamsMode extends BaseMode
         this.surface.updateButton (104, cd.isExpanded () ? orange : white);
         this.surface.updateButton (105, off);
         this.surface.updateButton (106, this.showDevices ? white : orange);
-        this.surface.updateButton (107, cd.isPinned () ? turquoise : grey);
+        this.surface.updateButton (107, this.model.getHost ().hasPinning () ? (cd.isPinned () ? turquoise : grey) : off);
         this.surface.updateButton (108, cd.isWindowOpen () ? turquoise : grey);
         this.surface.updateButton (109, white);
     }
@@ -381,6 +381,7 @@ public class DeviceParamsMode extends BaseMode
         final int page = Math.min (Math.max (0, cd.getSelectedParameterPage ()), pages.length - 1);
         final int start = page / 8 * 8;
 
+        final boolean hasPinning = this.model.getHost ().hasPinning ();
         for (int i = 0; i < 8; i++)
         {
             boolean isTopMenuOn;
@@ -399,7 +400,7 @@ public class DeviceParamsMode extends BaseMode
                     isTopMenuOn = !this.showDevices;
                     break;
                 case 5:
-                    isTopMenuOn = cd.isPinned ();
+                    isTopMenuOn = hasPinning && cd.isPinned ();
                     break;
                 case 6:
                     isTopMenuOn = cd.isWindowOpen ();
@@ -439,7 +440,7 @@ public class DeviceParamsMode extends BaseMode
             final boolean parameterIsActive = this.isKnobTouched[i];
             final int parameterModulatedValue = valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1);
 
-            message.addParameterElement (MENU[i], isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+            message.addParameterElement (i != 5 || hasPinning ? MENU[i] : "", isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
 
         display.send (message);
