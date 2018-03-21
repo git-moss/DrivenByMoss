@@ -344,6 +344,14 @@ public class CursorClipImpl implements ICursorClip
 
     /** {@inheritDoc} */
     @Override
+    public void clearStep (final int step, final int row)
+    {
+        this.clip.clearStep (step, row);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void clearRow (final int row)
     {
         this.clip.clearSteps (row);
