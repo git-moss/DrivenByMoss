@@ -6,13 +6,12 @@ package de.mossgrabers.framework.bitwig.daw;
 
 import de.mossgrabers.framework.bitwig.daw.data.BrowserColumnImpl;
 import de.mossgrabers.framework.bitwig.daw.data.BrowserColumnItemImpl;
-import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.AbstractBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 
 import com.bitwig.extension.controller.api.BrowserFilterColumn;
-import com.bitwig.extension.controller.api.BrowserResultsColumn;
 import com.bitwig.extension.controller.api.BrowserResultsItemBank;
 import com.bitwig.extension.controller.api.CursorBrowserResultItem;
 import com.bitwig.extension.controller.api.CursorTrack;
@@ -24,21 +23,14 @@ import com.bitwig.extension.controller.api.PopupBrowser;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowserImpl implements IBrowser
+public class BrowserImpl extends AbstractBrowser
 {
     private CursorTrack             cursorTrack;
-    private ICursorDevice           cursorDevice;
     private PopupBrowser            browser;
-
     final BrowserFilterColumn []    filterColumns;
-    final IBrowserColumn []         columnData;
 
-    private int                     numResults;
-    private BrowserResultsColumn    resultsColumn;
     private CursorBrowserResultItem cursorResult;
     private BrowserResultsItemBank  resultsItemBank;
-    private IBrowserColumnItem []   resultData;
-    private int                     numFilterColumnEntries;
 
 
     /**
@@ -52,10 +44,9 @@ public class BrowserImpl implements IBrowser
      */
     public BrowserImpl (final PopupBrowser browser, final CursorTrack cursorTrack, final ICursorDevice cursorDevice, final int numFilterColumnEntries, final int numResults)
     {
+        super (cursorDevice, numFilterColumnEntries, numResults);
+
         this.cursorTrack = cursorTrack;
-        this.cursorDevice = cursorDevice;
-        this.numFilterColumnEntries = numFilterColumnEntries;
-        this.numResults = numResults;
 
         this.browser = browser;
         this.browser.exists ().markInterested ();
@@ -77,8 +68,7 @@ public class BrowserImpl implements IBrowser
 
         this.columnData = this.createFilterColumns (this.filterColumns.length, numFilterColumnEntries);
 
-        this.resultsColumn = this.browser.resultsColumn ();
-        this.cursorResult = (CursorBrowserResultItem) this.resultsColumn.createCursorItem ();
+        this.cursorResult = (CursorBrowserResultItem) this.browser.resultsColumn ().createCursorItem ();
         this.cursorResult.name ().markInterested ();
 
         this.resultsItemBank = (BrowserResultsItemBank) this.cursorResult.createSiblingsBank (this.numResults);
@@ -208,102 +198,6 @@ public class BrowserImpl implements IBrowser
 
     /** {@inheritDoc} */
     @Override
-    public void resetFilterColumn (final int column)
-    {
-        this.columnData[column].resetFilter ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IBrowserColumn getFilterColumn (final int column)
-    {
-        return this.columnData[column];
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getFilterColumnCount ()
-    {
-        return this.columnData.length;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String [] getFilterColumnNames ()
-    {
-        final String [] names = new String [this.columnData.length];
-        for (int i = 0; i < this.columnData.length; i++)
-            names[i] = this.columnData[i].getName ();
-        return names;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IBrowserColumnItem [] getResultColumnItems ()
-    {
-        return this.resultData;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectPreviousFilterItem (final int columnIndex)
-    {
-        this.columnData[columnIndex].selectPreviousItem ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectNextFilterItem (final int columnIndex)
-    {
-        this.columnData[columnIndex].selectNextItem ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void previousFilterItemPage (final int columnIndex)
-    {
-        this.columnData[columnIndex].scrollItemPageUp ();
-
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void nextFilterItemPage (final int columnIndex)
-    {
-        this.columnData[columnIndex].scrollItemPageDown ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getSelectedFilterItemIndex (final int columnIndex)
-    {
-        return this.columnData[columnIndex].getCursorIndex ();
-    }
-
-
-    /**
-     * Set the index of the selected filter item of a column.
-     *
-     * @param columnIndex The index of the column
-     * @param index The index of the item
-     */
-    public void setSelectedFilterItemIndex (final int columnIndex, final int index)
-    {
-        this.columnData[columnIndex].setCursorIndex (index);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void selectPreviousResult ()
     {
         this.cursorResult.selectPrevious ();
@@ -323,22 +217,6 @@ public class BrowserImpl implements IBrowser
     public String getSelectedResult ()
     {
         return this.cursorResult.name ().get ();
-    }
-
-
-    /**
-     * Get the index of the selected result item.
-     *
-     * @return The index of the result
-     */
-    public int getSelectedResultIndex ()
-    {
-        for (int i = 0; i < this.numResults; i++)
-        {
-            if (this.resultData[i].isSelected ())
-                return i;
-        }
-        return -1;
     }
 
 
@@ -375,21 +253,5 @@ public class BrowserImpl implements IBrowser
         for (int i = 0; i < count; i++)
             items[i] = new BrowserColumnItemImpl (this.resultsItemBank.getItemAt (i), i);
         return items;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getNumResults ()
-    {
-        return this.numResults;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getNumFilterColumnEntries ()
-    {
-        return this.numFilterColumnEntries;
     }
 }

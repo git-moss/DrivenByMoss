@@ -50,6 +50,10 @@ public abstract class AbstractModel implements IModel
     protected int                      numSends;
     protected int                      numFilterColumnEntries;
     protected int                      numResults;
+    protected int                      numParams;
+    protected int                      numDevicesInBank;
+    protected int                      numDeviceLayers;
+    protected int                      numDrumPadLayers;
     protected boolean                  hasFlatTrackList;
 
 
@@ -81,6 +85,10 @@ public abstract class AbstractModel implements IModel
         this.numSends = numSends < 0 ? 6 : numSends;
         this.numFilterColumnEntries = numFilterColumnEntries < 0 ? 16 : numFilterColumnEntries;
         this.numResults = numResults < 0 ? 16 : numResults;
+        this.numParams = numParams;
+        this.numDevicesInBank = numDevicesInBank;
+        this.numDeviceLayers = numDeviceLayers;
+        this.numDrumPadLayers = numDrumPadLayers;
         this.hasFlatTrackList = hasFlatTrackList ? true : false;
     }
 

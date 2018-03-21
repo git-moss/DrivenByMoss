@@ -74,9 +74,9 @@ public class ModelImpl extends AbstractModel
         this.trackBank = new TrackBankImpl (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
         this.effectTrackBank = new EffectTrackBankImpl (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
 
-        this.primaryDevice = new CursorDeviceImpl (this.host, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.primaryDevice = new CursorDeviceImpl (this.host, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
         PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", this.numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
-        this.cursorDevice = new CursorDeviceImpl (this.host, cd, valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.cursorDevice = new CursorDeviceImpl (this.host, cd, valueChanger, this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
         cd = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
         this.drumDevice64 = new CursorDeviceImpl (this.host, cd, valueChanger, 0, 0, 0, 64, 64);
         this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
