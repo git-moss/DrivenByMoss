@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 
@@ -31,7 +31,7 @@ public abstract class AbstractChannelBank implements IChannelBank
     protected ITrack []                         tracks;
     protected ISceneBank                        sceneBank;
 
-    protected final ValueChanger                valueChanger;
+    protected final IValueChanger                valueChanger;
     protected final Set<NoteObserver>           noteObservers = new HashSet<> ();
     protected final Set<TrackSelectionObserver> observers     = new HashSet<> ();
     protected final int [] []                   noteCache;
@@ -45,7 +45,7 @@ public abstract class AbstractChannelBank implements IChannelBank
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractChannelBank (final ValueChanger valueChanger, final int numTracks, final int numScenes, final int numSends)
+    public AbstractChannelBank (final IValueChanger valueChanger, final int numTracks, final int numScenes, final int numSends)
     {
         this.valueChanger = valueChanger;
 
@@ -67,6 +67,19 @@ public abstract class AbstractChannelBank implements IChannelBank
     public void addTrackSelectionObserver (final TrackSelectionObserver observer)
     {
         this.observers.add (observer);
+    }
+
+
+    /**
+     * Notify all registered track selection observers.
+     * 
+     * @param trackIndex The index of the track which selection state has changed
+     * @param isSelected True if selected otherwise false
+     */
+    protected void notifyTrackSelectionObservers (final int trackIndex, final boolean isSelected)
+    {
+        for (final TrackSelectionObserver observer: this.observers)
+            observer.call (trackIndex, isSelected);
     }
 
 

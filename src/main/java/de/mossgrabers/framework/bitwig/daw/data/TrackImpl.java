@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.daw.data;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -36,7 +36,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
      * @param numSends The number of sends of a bank
      * @param numScenes The number of scenes of a bank
      */
-    public TrackImpl (final Track track, final ValueChanger valueChanger, final int index, final int numSends, final int numScenes)
+    public TrackImpl (final Track track, final IValueChanger valueChanger, final int index, final int numSends, final int numScenes)
     {
         super (track, valueChanger, index, numSends);
 

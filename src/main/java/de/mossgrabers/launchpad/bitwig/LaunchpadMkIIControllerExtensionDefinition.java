@@ -7,39 +7,29 @@ package de.mossgrabers.launchpad.bitwig;
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
 import de.mossgrabers.framework.bitwig.daw.HostImpl;
+import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.launchpad.LaunchpadControllerDefinition;
 import de.mossgrabers.launchpad.LaunchpadControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.api.ControllerHost;
 
-import java.util.UUID;
-
 
 /**
- * Definition class for the Launchpad 1 controller extension.
+ * Definition class for the Launchpad MkII controller extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchpadMkIIControllerExtensionDefinition extends LaunchpadControllerExtensionDefinition
+public class LaunchpadMkIIControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("4E01A0B0-67B1-11E5-A837-0800200C9A66");
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareModel ()
+    /**
+     * Constructor.
+     */
+    public LaunchpadMkIIControllerExtensionDefinition ()
     {
-        return "Launchpad MkII";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public UUID getId ()
-    {
-        return EXTENSION_ID;
+        super (new LaunchpadControllerDefinition (true));
     }
 
 

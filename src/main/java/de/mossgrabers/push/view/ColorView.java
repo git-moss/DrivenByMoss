@@ -4,7 +4,6 @@
 
 package de.mossgrabers.push.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IChannelBank;
@@ -15,6 +14,7 @@ import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.push.PushConfiguration;

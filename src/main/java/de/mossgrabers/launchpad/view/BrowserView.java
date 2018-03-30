@@ -4,10 +4,10 @@
 
 package de.mossgrabers.launchpad.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.ViewManager;

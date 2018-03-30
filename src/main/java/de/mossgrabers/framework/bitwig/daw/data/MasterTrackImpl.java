@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.daw.data;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.TrackSelectionObserver;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 
@@ -32,7 +32,7 @@ public class MasterTrackImpl extends TrackImpl implements IMasterTrack
      * @param master The master track
      * @param valueChanger The valueChanger
      */
-    public MasterTrackImpl (final MasterTrack master, final ValueChanger valueChanger)
+    public MasterTrackImpl (final MasterTrack master, final IValueChanger valueChanger)
     {
         super (master, valueChanger, -1, 0, 0);
 

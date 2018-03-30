@@ -1,9 +1,9 @@
 package de.mossgrabers.mcu.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 

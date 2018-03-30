@@ -4,9 +4,9 @@
 
 package de.mossgrabers.launchpad.controller;
 
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;

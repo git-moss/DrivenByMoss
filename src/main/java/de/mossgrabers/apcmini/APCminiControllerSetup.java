@@ -239,13 +239,11 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
 
     /** {@inheritDoc} */
     @Override
-    protected void startup ()
+    public void startup ()
     {
-        this.host.scheduleTask ( () -> {
-            final APCminiControlSurface surface = this.getSurface ();
-            surface.getModeManager ().setActiveMode (Modes.MODE_VOLUME);
-            surface.getViewManager ().setActiveView (Views.VIEW_PLAY);
-        }, 100);
+        final APCminiControlSurface surface = this.getSurface ();
+        surface.getModeManager ().setActiveMode (Modes.MODE_VOLUME);
+        surface.getViewManager ().setActiveView (Views.VIEW_PLAY);
     }
 
 

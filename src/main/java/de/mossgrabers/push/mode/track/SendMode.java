@@ -4,7 +4,7 @@
 
 package de.mossgrabers.push.mode.track;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IChannelBank;
@@ -60,6 +60,7 @@ public class SendMode extends AbstractTrackMode
         {
             if (this.surface.isDeletePressed ())
             {
+                this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
                 send.resetValue ();
                 return;
             }
@@ -139,10 +140,10 @@ public class SendMode extends AbstractTrackMode
             else
             {
                 topMenu = this.menu[i];
-                topMenuSelected = i > 3 && i - 4 + sendOffset == sendIndex || (i == 7 && tb instanceof ITrackBank && ((ITrackBank) tb).hasParent ());
+                topMenuSelected = i > 3 && i - 4 + sendOffset == sendIndex || i == 7 && tb instanceof ITrackBank && ((ITrackBank) tb).hasParent ();
             }
 
-            final ValueChanger valueChanger = this.model.getValueChanger ();
+            final IValueChanger valueChanger = this.model.getValueChanger ();
             final String [] sendName = new String [4];
             final String [] valueStr = new String [4];
             final int [] value = new int [4];

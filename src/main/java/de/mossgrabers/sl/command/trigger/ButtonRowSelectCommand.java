@@ -4,12 +4,12 @@
 
 package de.mossgrabers.sl.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.sl.mode.Modes;
 import de.mossgrabers.sl.view.SLView;
@@ -23,7 +23,7 @@ import de.mossgrabers.sl.view.SLView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ButtonRowSelectCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     private int row;
 

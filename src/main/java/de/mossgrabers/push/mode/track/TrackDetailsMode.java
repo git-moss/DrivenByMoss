@@ -4,12 +4,12 @@
 
 package de.mossgrabers.push.mode.track;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushColors;

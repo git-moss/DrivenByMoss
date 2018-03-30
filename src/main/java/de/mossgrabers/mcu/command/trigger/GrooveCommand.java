@@ -4,10 +4,10 @@
 
 package de.mossgrabers.mcu.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.mcu.MCUConfiguration;
 import de.mossgrabers.mcu.controller.MCUControlSurface;
 
@@ -35,7 +35,7 @@ public class GrooveCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (!this.model.getHost ().hasGroove () || event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.DOWN)
             return;
 
         final IParameter parameter = this.model.getGroove ().getParameters ()[0];

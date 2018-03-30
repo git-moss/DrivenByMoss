@@ -4,15 +4,15 @@
 
 package de.mossgrabers.push.mode.track;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.Commands;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushColors;
 import de.mossgrabers.push.controller.PushControlSurface;
@@ -114,7 +114,7 @@ public class MasterMode extends BaseMode
         d.clearCell (1, 2).clearCell (1, 3).setBlock (1, 2, "Audio Engine").setBlock (1, 3, this.model.getProject ().getName ()).done (1);
         d.setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : master.getVolume (), Format.FORMAT_VALUE);
         d.setCell (2, 1, master.getPan (), Format.FORMAT_PAN).clearCell (2, 2).clearCell (2, 3).clearCell (2, 4).clearCell (2, 5).clearCell (2, 6).clearCell (2, 7).done (2);
-        d.setCell (3, 0, master.getName ()).clearCell (3, 1).clearCell (3, 2).clearCell (3, 3).setCell (3, 4, this.model.getApplication ().isEngineActive () ? "Turn off" : "Turn on");
+        d.setCell (3, 0, master.getName ()).clearCell (3, 1).clearCell (3, 2).clearCell (3, 3).setCell (3, 4, this.model.getApplication ().isEngineActive () ? "Active" : "Off");
         d.clearCell (3, 5).setCell (3, 6, "Previous").setCell (3, 7, "Next").done (3);
     }
 
@@ -124,7 +124,7 @@ public class MasterMode extends BaseMode
     public void updateDisplay2 ()
     {
         final IMasterTrack master = this.model.getMasterTrack ();
-        final ValueChanger valueChanger = this.model.getValueChanger ();
+        final IValueChanger valueChanger = this.model.getValueChanger ();
         final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
         final DisplayMessage message = display.createMessage ();
 
@@ -140,7 +140,7 @@ public class MasterMode extends BaseMode
             }, false);
         }
 
-        message.addOptionElement ("", "", false, "Audio Engine", this.model.getApplication ().isEngineActive () ? "Turn off" : "Turn on", false, false);
+        message.addOptionElement ("", "", false, "Audio Engine", this.model.getApplication ().isEngineActive () ? "Active" : "Off", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("Project:", "", false, this.model.getProject ().getName (), "Previous", false, false);
         message.addOptionElement ("", "", false, "", "Next", false, false);

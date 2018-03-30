@@ -6,11 +6,11 @@ package de.mossgrabers.apc.view;
 
 import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.SceneView;
 

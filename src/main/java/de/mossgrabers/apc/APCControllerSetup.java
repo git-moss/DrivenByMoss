@@ -331,13 +331,11 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
     /** {@inheritDoc} */
     @Override
-    protected void startup ()
+    public void startup ()
     {
-        this.host.scheduleTask ( () -> {
-            final APCControlSurface surface = this.getSurface ();
-            surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
-            surface.getViewManager ().setActiveView (Views.VIEW_PLAY);
-        }, 100);
+        final APCControlSurface surface = this.getSurface ();
+        surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
+        surface.getViewManager ().setActiveView (Views.VIEW_PLAY);
     }
 
 

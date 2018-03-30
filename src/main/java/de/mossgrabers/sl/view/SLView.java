@@ -4,7 +4,7 @@
 
 package de.mossgrabers.sl.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**

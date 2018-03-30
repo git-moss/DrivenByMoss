@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.extension;
 
+import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
@@ -11,6 +12,8 @@ import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.ControllerExtensionDefinition;
 import com.bitwig.extension.controller.api.ControllerHost;
+
+import java.util.UUID;
 
 
 /**
@@ -20,11 +23,65 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public abstract class AbstractControllerExtensionDefinition extends ControllerExtensionDefinition
 {
+    private final DefaultControllerDefinition definition;
+
+
+    /**
+     * Constructor.
+     *
+     * @param definition The definition
+     */
+    public AbstractControllerExtensionDefinition (final DefaultControllerDefinition definition)
+    {
+        this.definition = definition;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public String getAuthor ()
     {
-        return "Jürgen Moßgraber";
+        return this.definition.getAuthor ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getName ()
+    {
+        return this.definition.getName ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getVersion ()
+    {
+        return this.definition.getVersion ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public UUID getId ()
+    {
+        return this.definition.getId ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getHardwareVendor ()
+    {
+        return this.definition.getHardwareVendor ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getHardwareModel ()
+    {
+        return this.definition.getHardwareModel ();
     }
 
 
@@ -40,7 +97,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public int getNumMidiInPorts ()
     {
-        return 1;
+        return this.definition.getNumMidiInPorts ();
     }
 
 
@@ -48,7 +105,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public int getNumMidiOutPorts ()
     {
-        return 1;
+        return this.definition.getNumMidiOutPorts ();
     }
 
 

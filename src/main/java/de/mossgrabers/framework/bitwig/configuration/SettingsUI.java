@@ -4,7 +4,6 @@
 
 package de.mossgrabers.framework.bitwig.configuration;
 
-import de.mossgrabers.framework.ColorEx;
 import de.mossgrabers.framework.configuration.IColorSetting;
 import de.mossgrabers.framework.configuration.IDoubleSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
@@ -12,6 +11,7 @@ import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.ISignalSetting;
 import de.mossgrabers.framework.configuration.IStringSetting;
+import de.mossgrabers.framework.controller.color.ColorEx;
 
 import com.bitwig.extension.controller.api.Preferences;
 

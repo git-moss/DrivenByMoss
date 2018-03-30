@@ -5,7 +5,7 @@
 package de.mossgrabers.osc.protocol;
 
 import de.mossgrabers.framework.bitwig.daw.ModelImpl;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -38,7 +38,7 @@ public class OSCModel extends ModelImpl
      * @param valueChanger The value changer
      * @param scales The scales
      */
-    public OSCModel (final ControllerHost host, final ColorManager colorManager, final ValueChanger valueChanger, final Scales scales)
+    public OSCModel (final ControllerHost host, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales)
     {
         super (host, colorManager, valueChanger, scales, 8, 8, 8, 16, 16, false, 8, 8, 8, 16);
 

@@ -4,8 +4,8 @@
 
 package de.mossgrabers.launchpad.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.launchpad.view.Views;
 

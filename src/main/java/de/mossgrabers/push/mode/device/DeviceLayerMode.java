@@ -4,10 +4,8 @@
 
 package de.mossgrabers.push.mode.device;
 
-import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.command.Commands;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IChannelBank;
@@ -18,6 +16,8 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushColors;
@@ -442,7 +442,7 @@ public class DeviceLayerMode extends BaseMode
 
             if (layer.isSelected ())
             {
-                final ValueChanger valueChanger = this.model.getValueChanger ();
+                final IValueChanger valueChanger = this.model.getValueChanger ();
                 message.addChannelElement (topMenu, topMenuSelected, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), this.isKnobTouched[0] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), this.isKnobTouched[1] ? layer.getPanStr (8) : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
             }
             else if (sendsIndex == i && l != null)
@@ -483,7 +483,7 @@ public class DeviceLayerMode extends BaseMode
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
 
-        final ValueChanger valueChanger = this.model.getValueChanger ();
+        final IValueChanger valueChanger = this.model.getValueChanger ();
         for (int i = 0; i < 8; i++)
         {
             final IChannel layer = cd.getLayerOrDrumPad (offset + i);

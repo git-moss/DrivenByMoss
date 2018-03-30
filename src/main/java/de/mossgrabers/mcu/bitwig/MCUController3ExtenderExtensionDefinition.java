@@ -4,9 +4,6 @@
 
 package de.mossgrabers.mcu.bitwig;
 
-import java.util.UUID;
-
-
 /**
  * Definition class for the Mackie MCU protocol with 3 extender devices.
  *
@@ -14,30 +11,11 @@ import java.util.UUID;
  */
 public class MCUController3ExtenderExtensionDefinition extends MCUControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("4923C47A-B1DC-48C8-AE89-A332AA26BA87");
-
-
     /**
      * Constructor.
      */
     public MCUController3ExtenderExtensionDefinition ()
     {
         super (3);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareModel ()
-    {
-        return "Control Universal + 3 Extenders";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public UUID getId ()
-    {
-        return EXTENSION_ID;
     }
 }

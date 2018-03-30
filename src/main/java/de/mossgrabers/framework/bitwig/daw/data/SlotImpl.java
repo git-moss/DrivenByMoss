@@ -47,8 +47,8 @@ public class SlotImpl implements ISlot
         slot.isPlaybackQueued ().markInterested ();
         slot.isRecording ().markInterested ();
         slot.isRecordingQueued ().markInterested ();
-        slot.isSelected ().markInterested ();
         slot.isStopQueued ().markInterested ();
+        slot.isSelected ().markInterested ();
     }
 
 
@@ -64,8 +64,8 @@ public class SlotImpl implements ISlot
         this.slot.isPlaybackQueued ().setIsSubscribed (enable);
         this.slot.isRecording ().setIsSubscribed (enable);
         this.slot.isRecordingQueued ().setIsSubscribed (enable);
-        this.slot.isSelected ().setIsSubscribed (enable);
         this.slot.isStopQueued ().setIsSubscribed (enable);
+        this.slot.isSelected ().setIsSubscribed (enable);
     }
 
 
@@ -146,6 +146,14 @@ public class SlotImpl implements ISlot
     public boolean isRecordingQueued ()
     {
         return this.slot.isRecordingQueued ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isStopQueued ()
+    {
+        return this.slot.isStopQueued ().get ();
     }
 
 

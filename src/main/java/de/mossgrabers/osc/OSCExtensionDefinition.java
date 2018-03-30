@@ -12,8 +12,6 @@ import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.api.ControllerHost;
 
-import java.util.UUID;
-
 
 /**
  * Definition class for the OSC extension.
@@ -22,54 +20,12 @@ import java.util.UUID;
  */
 public class OSCExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("94DD41B0-EFEE-11E3-AC10-0800200C9A66");
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName ()
+    /**
+     * Constructor.
+     */
+    public OSCExtensionDefinition ()
     {
-        return "OSC4Bitwig";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareVendor ()
-    {
-        return "Open Sound Control";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareModel ()
-    {
-        return "OSC";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getVersion ()
-    {
-        return "5.50";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public UUID getId ()
-    {
-        return EXTENSION_ID;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getNumMidiOutPorts ()
-    {
-        return 0;
+        super (new OSCControllerDefinition ());
     }
 
 

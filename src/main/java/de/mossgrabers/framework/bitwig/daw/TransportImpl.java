@@ -4,9 +4,9 @@
 
 package de.mossgrabers.framework.bitwig.daw;
 
-import de.mossgrabers.framework.StringUtils;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.SettableRangedValue;
@@ -31,7 +31,7 @@ public class TransportImpl implements ITransport
     private static final int    TEMPO_MAX              = 666;
 
     private ControllerHost      host;
-    private ValueChanger        valueChanger;
+    private IValueChanger        valueChanger;
     private Transport           transport;
 
     private int                 crossfade              = 0;
@@ -45,7 +45,7 @@ public class TransportImpl implements ITransport
      * @param host The host
      * @param valueChanger The value changer
      */
-    public TransportImpl (final ControllerHost host, final ValueChanger valueChanger)
+    public TransportImpl (final ControllerHost host, final IValueChanger valueChanger)
     {
         this.host = host;
         this.valueChanger = valueChanger;

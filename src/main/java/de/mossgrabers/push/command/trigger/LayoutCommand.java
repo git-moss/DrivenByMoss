@@ -4,9 +4,9 @@
 
 package de.mossgrabers.push.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushControlSurface;

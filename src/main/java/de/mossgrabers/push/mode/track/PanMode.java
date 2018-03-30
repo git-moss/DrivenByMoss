@@ -51,6 +51,7 @@ public class PanMode extends AbstractTrackMode
         {
             if (this.surface.isDeletePressed ())
             {
+                this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
                 t.resetPan ();
                 return;
             }

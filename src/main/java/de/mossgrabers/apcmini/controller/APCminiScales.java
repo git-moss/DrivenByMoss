@@ -4,7 +4,7 @@
 
 package de.mossgrabers.apcmini.controller;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -24,7 +24,7 @@ public class APCminiScales extends Scales
      * @param numColumns The number of columns of the pad grid
      * @param numRows The number of rows of the pad grid
      */
-    public APCminiScales (final ValueChanger valueChanger, final int startNote, final int endNote, final int numColumns, final int numRows)
+    public APCminiScales (final IValueChanger valueChanger, final int startNote, final int endNote, final int numColumns, final int numRows)
     {
         super (valueChanger, startNote, endNote, numColumns, numRows);
     }

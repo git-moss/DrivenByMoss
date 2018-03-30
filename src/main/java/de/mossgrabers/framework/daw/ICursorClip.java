@@ -256,6 +256,15 @@ public interface ICursorClip extends ObserverManagement
 
 
     /**
+     * Clear a note at a step.
+     *
+     * @param step The step
+     * @param row The note row
+     */
+    void clearStep (final int step, final int row);
+
+
+    /**
      * Clear a row (note).
      *
      * @param row The row to clear

@@ -6,7 +6,7 @@ package de.mossgrabers.framework.bitwig.daw;
 
 import de.mossgrabers.framework.bitwig.daw.data.ChannelImpl;
 import de.mossgrabers.framework.bitwig.daw.data.ParameterImpl;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
@@ -38,7 +38,7 @@ public class CursorDeviceImpl implements ICursorDevice
     private DeviceBank               siblings;
     private CursorRemoteControlsPage remoteControls;
     private CursorDeviceLayer        cursorDeviceLayer;
-    private ValueChanger             valueChanger;
+    private IValueChanger             valueChanger;
 
     private int                      numParams;
     private int                      numDevicesInBank;
@@ -67,7 +67,7 @@ public class CursorDeviceImpl implements ICursorDevice
      * @param numDeviceLayers The number of layers
      * @param numDrumPadLayers The number of drum pad layers
      */
-    public CursorDeviceImpl (final IHost host, final PinnableCursorDevice cursorDevice, final ValueChanger valueChanger, final int numSends, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public CursorDeviceImpl (final IHost host, final PinnableCursorDevice cursorDevice, final IValueChanger valueChanger, final int numSends, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
         this.host = host;
         this.cursorDevice = cursorDevice;

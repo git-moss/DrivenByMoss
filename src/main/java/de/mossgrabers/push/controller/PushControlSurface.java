@@ -4,13 +4,13 @@
 
 package de.mossgrabers.push.controller;
 
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.push.PushConfiguration;
 
 import java.util.Arrays;

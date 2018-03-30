@@ -4,7 +4,6 @@
 
 package de.mossgrabers.sl.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -12,6 +11,7 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.sl.SLConfiguration;
 import de.mossgrabers.sl.command.trigger.ButtonRowSelectCommand;

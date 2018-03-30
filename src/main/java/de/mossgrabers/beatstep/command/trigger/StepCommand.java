@@ -7,9 +7,9 @@ package de.mossgrabers.beatstep.command.trigger;
 import de.mossgrabers.beatstep.BeatstepConfiguration;
 import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.beatstep.view.Views;
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**

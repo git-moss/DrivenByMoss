@@ -4,12 +4,16 @@
 
 package de.mossgrabers.push.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushColors;
 import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.mode.Modes;
+import de.mossgrabers.push.mode.NoteMode;
 
 
 /**
@@ -105,11 +109,13 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
 
         // TODO Bugfix required - setStep makes Bitwig hang
         // https://github.com/teotigraphix/Framework4Bitwig/issues/124
-        // x = index % 8;
-        // state = this.clip.getStep (x, this.noteMap[y]);
-        // noteMode = this.surface.getMode (MODE_NOTE);
-        // noteMode.setValues (this.clip, x, note, state == 2 ? 1.0 : 0, 127);
-        // this.surface.setPendingMode (MODE_NOTE);
+        final int x = index % 8;
+        final ICursorClip cursorClip = this.model.getCursorClip (8, 128);
+        final int state = cursorClip.getStep (x, this.noteMap[y]);
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.MODE_NOTE);
+        noteMode.setValues (cursorClip, x, note, state == 2 ? 1.0 : 0, 127);
+        modeManager.setActiveMode (Modes.MODE_NOTE);
     }
 
 

@@ -6,9 +6,9 @@ package de.mossgrabers.apcmini.mode;
 
 import de.mossgrabers.apcmini.APCminiConfiguration;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**

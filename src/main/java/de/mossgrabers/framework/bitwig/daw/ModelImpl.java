@@ -5,11 +5,14 @@
 package de.mossgrabers.framework.bitwig.daw;
 
 import de.mossgrabers.framework.bitwig.daw.data.MasterTrackImpl;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.AbstractModel;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 import com.bitwig.extension.controller.api.Application;
@@ -51,7 +54,7 @@ public class ModelImpl extends AbstractModel
      * @param numDeviceLayers The number of device layers to monitor
      * @param numDrumPadLayers The number of drum pad layers to monitor
      */
-    public ModelImpl (final ControllerHost controllerHost, final ColorManager colorManager, final ValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public ModelImpl (final ControllerHost controllerHost, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
         super (colorManager, valueChanger, scales, numTracks, numScenes, numSends, numFilterColumnEntries, numResults, hasFlatTrackList, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
 
@@ -129,5 +132,25 @@ public class ModelImpl extends AbstractModel
     public boolean isCursorDeviceOnMasterTrack ()
     {
         return this.masterTrackEqualsValue.get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canConvertClip ()
+    {
+        final IChannelBank tb = this.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
+        if (selectedTrack == null)
+            return false;
+        final ISlot [] slots = selectedTrack.getSelectedSlots ();
+        if (slots.length == 0)
+            return false;
+        for (final ISlot slot: slots)
+        {
+            if (slot.hasContent ())
+                return true;
+        }
+        return false;
     }
 }

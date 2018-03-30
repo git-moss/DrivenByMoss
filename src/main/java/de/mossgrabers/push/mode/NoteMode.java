@@ -4,7 +4,7 @@
 
 package de.mossgrabers.push.mode;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
@@ -62,19 +62,28 @@ public class NoteMode extends BaseMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final ValueChanger valueChanger = this.model.getValueChanger ();
+        final IValueChanger valueChanger = this.model.getValueChanger ();
         switch (index)
         {
             case 0:
-                this.noteLength = valueChanger.changeValue (value, (int) Math.floor (this.noteLength), 1, 1024);
+                if (!this.increaseKnobMovement ())
+                    return;
+                final double speed = valueChanger.calcKnobSpeed (value, 1);
+                this.noteLength += speed;
+                this.clip.clearStep (this.step, this.note);
                 this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);
                 break;
             case 1:
-                this.noteLength = valueChanger.changeValue (value, (int) this.noteLength, 1, 1024);
+                if (!this.increaseKnobMovement ())
+                    return;
+                final double speed2 = valueChanger.calcKnobSpeed (value, 0.1);
+                this.noteLength += speed2;
+                this.clip.clearStep (this.step, this.note);
                 this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);
                 break;
             case 2:
                 this.noteVelocity = valueChanger.changeValue (value, this.noteVelocity, 1, 128);
+                this.clip.clearStep (this.step, this.note);
                 this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);
                 break;
         }
@@ -90,7 +99,7 @@ public class NoteMode extends BaseMode
         final Display d = this.surface.getDisplay ();
         d.clear ().setCell (0, 0, "Quarters").setCell (1, 0, Integer.toString (quarters));
         d.setCell (0, 1, "Fine").setCell (1, 1, Integer.toString (fine));
-        d.setCell (0, 2, "Velocity").setCell (1, 2, Integer.toString (this.noteVelocity)).allDone ();
+        d.setCell (0, 2, "Velocity").setCell (1, 2, Integer.toString (this.noteVelocity * 100 / 127) + "%").allDone ();
     }
 
 
@@ -105,7 +114,8 @@ public class NoteMode extends BaseMode
         final DisplayMessage message = display.createMessage ();
         message.addParameterElement ("Quarters", quarters, Integer.toString (quarters), this.isKnobTouched[0], -1);
         message.addParameterElement ("Fine", fine, Integer.toString (fine), this.isKnobTouched[1], -1);
-        message.addParameterElement ("Velocity", this.noteVelocity * 1023 / 127, Integer.toString (this.noteVelocity), this.isKnobTouched[2], -1);
+        final int parameterValue = this.noteVelocity * 1023 / 127;
+        message.addParameterElement ("Velocity", parameterValue, Integer.toString (this.noteVelocity * 100 / 127) + "%", this.isKnobTouched[2], parameterValue);
         for (int i = 3; i < 8; i++)
             message.addOptionElement ("", "", false, "", "", false, false);
         display.send (message);

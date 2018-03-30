@@ -2,7 +2,7 @@
 // (c) 2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework;
+package de.mossgrabers.framework.controller.color;
 
 /**
  * Some helper constans for Color.

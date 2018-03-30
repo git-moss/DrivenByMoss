@@ -4,6 +4,7 @@
 
 package de.mossgrabers.apcmini.bitwig;
 
+import de.mossgrabers.apcmini.APCminiControllerDefinition;
 import de.mossgrabers.apcmini.APCminiControllerSetup;
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
@@ -15,8 +16,6 @@ import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.api.ControllerHost;
 
-import java.util.UUID;
-
 
 /**
  * Definition class for the Akai APCmini controller.
@@ -25,46 +24,12 @@ import java.util.UUID;
  */
 public class APCminiControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("E7E02A80-3657-11E4-8C21-0800200C9A66");
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName ()
+    /**
+     * Constructor.
+     */
+    public APCminiControllerExtensionDefinition ()
     {
-        return "APCmini4Bitwig";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareVendor ()
-    {
-        return "Akai";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getVersion ()
-    {
-        return "5.02";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareModel ()
-    {
-        return "APCmini";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public UUID getId ()
-    {
-        return EXTENSION_ID;
+        super (new APCminiControllerDefinition ());
     }
 
 

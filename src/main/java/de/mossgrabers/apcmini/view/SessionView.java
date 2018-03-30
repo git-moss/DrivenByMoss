@@ -7,11 +7,11 @@ package de.mossgrabers.apcmini.view;
 import de.mossgrabers.apcmini.APCminiConfiguration;
 import de.mossgrabers.apcmini.controller.APCminiColors;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
 

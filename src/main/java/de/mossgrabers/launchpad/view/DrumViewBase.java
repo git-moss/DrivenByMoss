@@ -4,10 +4,10 @@
 
 package de.mossgrabers.launchpad.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;

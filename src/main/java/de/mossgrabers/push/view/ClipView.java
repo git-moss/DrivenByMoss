@@ -4,11 +4,11 @@
 
 package de.mossgrabers.push.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushColors;
@@ -93,7 +93,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
 
             // Set a new loop between the 2 selected pads
             final double newStart = start * quartersPerPad;
-            final ICursorClip clip = this.getClip ();
+            final ICursorClip clip = this.model.getCursorClip ();
             clip.setLoopStart (newStart);
             clip.setLoopLength ((int) ((end - start) * quartersPerPad));
             clip.setPlayRange (newStart, end * quartersPerPad);
@@ -107,15 +107,16 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     @Override
     public void drawGrid ()
     {
+        final ICursorClip clip = this.model.getCursorClip ();
         // Clip length/loop area
-        final int step = this.getClip ().getCurrentStep ();
+        final int step = clip.getCurrentStep ();
         final double quartersPerPad = this.getQuartersPerPad ();
         final int stepsPerMeasure = (int) Math.round (quartersPerPad / RESOLUTIONS[this.selectedIndex]);
         final int currentMeasure = step / stepsPerMeasure;
         final double maxQuarters = quartersPerPad * 64;
-        final double start = this.getClip ().getLoopStart ();
+        final double start = clip.getLoopStart ();
         final int loopStartPad = (int) Math.floor (Math.max (0, start) / quartersPerPad);
-        final int loopEndPad = (int) Math.ceil (Math.min (maxQuarters, start + this.getClip ().getLoopLength ()) / quartersPerPad);
+        final int loopEndPad = (int) Math.ceil (Math.min (maxQuarters, start + clip.getLoopLength ()) / quartersPerPad);
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int white = isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE;
         final int green = isPush2 ? PushColors.PUSH2_COLOR2_GREEN : PushColors.PUSH1_COLOR2_GREEN;

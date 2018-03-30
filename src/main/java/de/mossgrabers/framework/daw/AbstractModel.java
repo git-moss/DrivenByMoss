@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -43,7 +43,7 @@ public abstract class AbstractModel implements IModel
 
     protected Scales                   scales;
     protected ColorManager             colorManager;
-    protected ValueChanger             valueChanger;
+    protected IValueChanger             valueChanger;
 
     protected int                      numTracks;
     protected int                      numScenes;
@@ -74,7 +74,7 @@ public abstract class AbstractModel implements IModel
      * @param numDeviceLayers The number of device layers to monitor
      * @param numDrumPadLayers The number of drum pad layers to monitor
      */
-    public AbstractModel (final ColorManager colorManager, final ValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public AbstractModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
         this.colorManager = colorManager;
         this.valueChanger = valueChanger;
@@ -103,7 +103,7 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public ValueChanger getValueChanger ()
+    public IValueChanger getValueChanger ()
     {
         return this.valueChanger;
     }

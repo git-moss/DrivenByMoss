@@ -7,9 +7,9 @@ package de.mossgrabers.apc.view;
 import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.apc.controller.APCColors;
 import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
 

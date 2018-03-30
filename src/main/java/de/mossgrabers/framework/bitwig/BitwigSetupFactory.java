@@ -7,7 +7,7 @@ package de.mossgrabers.framework.bitwig;
 import de.mossgrabers.framework.bitwig.daw.ModelImpl;
 import de.mossgrabers.framework.bitwig.midi.MidiDeviceImpl;
 import de.mossgrabers.framework.controller.ISetupFactory;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
@@ -39,7 +39,7 @@ public class BitwigSetupFactory implements ISetupFactory
 
     /** {@inheritDoc} */
     @Override
-    public IModel createModel (final ColorManager colorManager, final ValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public IModel createModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
         return new ModelImpl (this.host, colorManager, valueChanger, scales, numTracks, numScenes, numSends, numFilterColumnEntries, numResults, hasFlatTrackList, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
     }

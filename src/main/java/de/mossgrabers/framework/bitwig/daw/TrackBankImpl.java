@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.daw;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.ITrackBank;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -33,7 +33,7 @@ public class TrackBankImpl extends AbstractTrackBankImpl implements ITrackBank
      * @param hasFlatTrackList True if group navigation should not be supported, instead all tracks
      *            are flat
      */
-    public TrackBankImpl (final ControllerHost host, final ValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final int numSends, final boolean hasFlatTrackList)
+    public TrackBankImpl (final ControllerHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final int numSends, final boolean hasFlatTrackList)
     {
         super (valueChanger, numTracks, numScenes, numSends);
 
@@ -78,7 +78,7 @@ public class TrackBankImpl extends AbstractTrackBankImpl implements ITrackBank
 
     /** {@inheritDoc} */
     @Override
-    public boolean canEditSend (int sendIndex)
+    public boolean canEditSend (final int sendIndex)
     {
         return this.getTrack (0).getSend (sendIndex).doesExist ();
     }
@@ -86,7 +86,7 @@ public class TrackBankImpl extends AbstractTrackBankImpl implements ITrackBank
 
     /** {@inheritDoc} */
     @Override
-    public String getEditSendName (int sendIndex)
+    public String getEditSendName (final int sendIndex)
     {
         return this.getTrack (0).getSend (sendIndex).getName ();
     }

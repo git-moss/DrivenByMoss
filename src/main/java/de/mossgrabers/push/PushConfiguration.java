@@ -8,7 +8,8 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.push.controller.PushControlSurface;
 import de.mossgrabers.push.mode.Modes;
 import de.mossgrabers.push.view.Views;
@@ -132,7 +133,8 @@ public class PushConfiguration extends AbstractConfiguration
     private int                    padGain                         = 5;
     private int                    padDynamics                     = 5;
 
-    private boolean                isPush2;
+    private final IHost            host;
+    private final boolean          isPush2;
 
     private IIntegerSetting        displayBrightnessSetting;
     private IIntegerSetting        ledBrightnessSetting;
@@ -150,14 +152,18 @@ public class PushConfiguration extends AbstractConfiguration
 
     /**
      * Constructor.
-     *
+     * 
+     * @param host The DAW host
      * @param valueChanger The value changer
      * @param isPush2 Use Push 1 or Push 2 controller?
      */
-    public PushConfiguration (final ValueChanger valueChanger, final boolean isPush2)
+    public PushConfiguration (final IHost host, final IValueChanger valueChanger, final boolean isPush2)
     {
         super (valueChanger);
+        this.host = host;
         this.isPush2 = isPush2;
+
+        Views.init (host);
     }
 
 
@@ -175,18 +181,21 @@ public class PushConfiguration extends AbstractConfiguration
 
         ///////////////////////////
         // Session
-
-        this.activateFlipSessionSetting (settingsUI);
-        this.activateLockFlipSessionSetting (settingsUI);
-        this.activateSelectClipOnLaunchSetting (settingsUI);
-        this.activateDrawRecordStripeSetting (settingsUI);
-        this.activateActionForRecArmedPad (settingsUI);
+        if (this.host.hasClips ())
+        {
+            this.activateFlipSessionSetting (settingsUI);
+            this.activateLockFlipSessionSetting (settingsUI);
+            this.activateSelectClipOnLaunchSetting (settingsUI);
+            this.activateDrawRecordStripeSetting (settingsUI);
+            this.activateActionForRecArmedPad (settingsUI);
+        }
 
         ///////////////////////////
         // Transport
 
         this.activateBehaviourOnStopSetting (settingsUI);
-        this.activateFlipRecordSetting (settingsUI);
+        if (this.host.hasClips ())
+            this.activateFlipRecordSetting (settingsUI);
 
         ///////////////////////////
         // Play and Sequence
@@ -198,15 +207,21 @@ public class PushConfiguration extends AbstractConfiguration
 
         ///////////////////////////
         // Drum Sequencer
-
-        this.activateAutoSelectDrumSetting (settingsUI);
-        this.activateTurnOffEmptyDrumPadsSetting (settingsUI);
+        if (this.host.hasDrumDevice ())
+        {
+            this.activateAutoSelectDrumSetting (settingsUI);
+            this.activateTurnOffEmptyDrumPadsSetting (settingsUI);
+        }
 
         ///////////////////////////
         // Workflow
 
         this.activateEnableVUMetersSetting (settingsUI);
-        this.activateDisplayCrossfaderSetting (settingsUI);
+        if (this.host.hasCrossfader ())
+            this.activateDisplayCrossfaderSetting (settingsUI);
+        else
+            this.displayCrossfader = false;
+
         this.activateFootswitchSetting (settingsUI);
         this.activateStopAutomationOnKnobReleaseSetting (settingsUI);
         this.activateNewClipLengthSetting (settingsUI);

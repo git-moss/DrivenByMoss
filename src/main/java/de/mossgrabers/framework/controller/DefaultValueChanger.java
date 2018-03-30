@@ -9,7 +9,7 @@ package de.mossgrabers.framework.controller;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DefaultValueChanger implements ValueChanger
+public class DefaultValueChanger implements IValueChanger
 {
     private final int    upperBound;
     private final int    fractionValue;

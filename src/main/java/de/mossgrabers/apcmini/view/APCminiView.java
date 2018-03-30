@@ -4,7 +4,7 @@
 
 package de.mossgrabers.apcmini.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**

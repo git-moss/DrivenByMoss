@@ -6,11 +6,11 @@ package de.mossgrabers.apc.command.trigger;
 
 import de.mossgrabers.apc.APCConfiguration;
 import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**

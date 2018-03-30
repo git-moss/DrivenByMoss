@@ -7,9 +7,9 @@ package de.mossgrabers.apcmini.command.trigger;
 import de.mossgrabers.apcmini.APCminiConfiguration;
 import de.mossgrabers.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.apcmini.view.Views;
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 
 

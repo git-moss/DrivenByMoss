@@ -4,15 +4,15 @@
 
 package de.mossgrabers.framework.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -23,7 +23,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
+public abstract class AbstractSessionView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
 {
     // Needs to be overwritten with device specific colors
     protected SessionColor clipColorIsRecording       = new SessionColor (0, -1, false);

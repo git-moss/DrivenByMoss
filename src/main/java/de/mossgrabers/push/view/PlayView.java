@@ -4,13 +4,13 @@
 
 package de.mossgrabers.push.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.push.PushConfiguration;

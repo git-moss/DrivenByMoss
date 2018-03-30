@@ -4,12 +4,12 @@
 
 package de.mossgrabers.framework.command.trigger.track;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -20,7 +20,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ToggleTrackBanksCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class ToggleTrackBanksCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.

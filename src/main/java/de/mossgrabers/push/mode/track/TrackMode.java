@@ -4,7 +4,7 @@
 
 package de.mossgrabers.push.mode.track;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IChannelBank;
@@ -358,7 +358,7 @@ public class TrackMode extends AbstractTrackMode
             final double [] bottomMenuColor = t.getColor ();
             final boolean isBottomMenuOn = t.isSelected ();
 
-            final ValueChanger valueChanger = this.model.getValueChanger ();
+            final IValueChanger valueChanger = this.model.getValueChanger ();
             if (t.isSelected ())
             {
                 final int crossfadeMode = displayCrossfader ? t.getCrossfadeModeAsNumber () : -1;

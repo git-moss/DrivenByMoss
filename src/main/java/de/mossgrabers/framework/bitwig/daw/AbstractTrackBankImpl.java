@@ -5,9 +5,8 @@
 package de.mossgrabers.framework.bitwig.daw;
 
 import de.mossgrabers.framework.bitwig.daw.data.TrackImpl;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.AbstractChannelBank;
-import de.mossgrabers.framework.daw.TrackSelectionObserver;
 import de.mossgrabers.framework.daw.data.ITrack;
 
 import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
@@ -34,7 +33,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBank
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractTrackBankImpl (final ValueChanger valueChanger, final int numTracks, final int numScenes, final int numSends)
+    public AbstractTrackBankImpl (final IValueChanger valueChanger, final int numTracks, final int numScenes, final int numSends)
     {
         super (valueChanger, numTracks, numScenes, numSends);
     }
@@ -269,8 +268,6 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBank
     private void handleBankTrackSelection (final int index, final boolean isSelected)
     {
         this.getTrack (index).setSelected (isSelected);
-
-        for (final TrackSelectionObserver observer: this.observers)
-            observer.call (index, isSelected);
+        this.notifyTrackSelectionObservers (index, isSelected);
     }
 }

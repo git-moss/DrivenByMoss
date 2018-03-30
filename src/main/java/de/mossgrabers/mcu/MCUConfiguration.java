@@ -7,7 +7,7 @@ package de.mossgrabers.mcu;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 
 import java.util.Arrays;
 
@@ -130,7 +130,7 @@ public class MCUConfiguration extends AbstractConfiguration
      *
      * @param valueChanger The value changer
      */
-    public MCUConfiguration (final ValueChanger valueChanger)
+    public MCUConfiguration (final IValueChanger valueChanger)
     {
         super (valueChanger);
         Arrays.fill (this.assignableFunctions, 0);
