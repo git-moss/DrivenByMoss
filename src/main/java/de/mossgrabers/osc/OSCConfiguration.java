@@ -9,7 +9,7 @@ import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 
 
 /**
@@ -41,7 +41,7 @@ public class OSCConfiguration extends AbstractConfiguration
      *
      * @param valueChanger The value changer
      */
-    public OSCConfiguration (final ValueChanger valueChanger)
+    public OSCConfiguration (final IValueChanger valueChanger)
     {
         super (valueChanger);
     }

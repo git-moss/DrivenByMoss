@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -31,7 +31,7 @@ public interface IModel
      *
      * @return The value changer.
      */
-    ValueChanger getValueChanger ();
+    IValueChanger getValueChanger ();
 
 
     /**
@@ -266,4 +266,12 @@ public interface IModel
      * @return True if the cursor device is pointing to a device on the master track
      */
     boolean isCursorDeviceOnMasterTrack ();
+
+
+    /**
+     * Returns true if there is a selected audio clip which can be split.
+     *
+     * @return True if can be split
+     */
+    boolean canConvertClip ();
 }

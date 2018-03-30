@@ -4,12 +4,12 @@
 
 package de.mossgrabers.sl.controller;
 
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**

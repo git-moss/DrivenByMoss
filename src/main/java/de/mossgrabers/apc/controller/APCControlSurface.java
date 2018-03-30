@@ -5,12 +5,12 @@
 package de.mossgrabers.apc.controller;
 
 import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.View;
 
 import java.util.Arrays;

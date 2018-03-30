@@ -4,7 +4,6 @@
 
 package de.mossgrabers.osc.protocol;
 
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IBrowser;
@@ -24,6 +23,7 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.osc.OSCColors;
 import de.mossgrabers.osc.OSCConfiguration;
 
@@ -98,6 +98,7 @@ public class OSCWriter
         this.sendOSC ("/click/ticks", trans.isMetronomeTicksOn (), dump);
         this.sendOSC ("/click/volume", trans.getMetronomeVolume (), dump);
         this.sendOSC ("/click/volumeStr", trans.getMetronomeVolumeStr (), dump);
+        this.sendOSC ("/click/preroll", trans.isPrerollMetronomeEnabled (), dump);
         this.sendOSC ("/preroll", trans.getPrerollAsBars (), dump);
         this.sendOSC ("/tempo/raw", trans.getTempo (), dump);
         this.sendOSC ("/crossfade", trans.getCrossfade (), dump);
@@ -251,6 +252,7 @@ public class OSCWriter
             this.sendOSC (clipAddress + "isRecording", slot.isRecording (), dump);
             this.sendOSC (clipAddress + "isPlayingQueued", slot.isPlayingQueued (), dump);
             this.sendOSC (clipAddress + "isRecordingQueued", slot.isRecordingQueued (), dump);
+            this.sendOSC (clipAddress + "isStopQueued", slot.isStopQueued (), dump);
 
             final double [] color = slot.getColor ();
             this.sendOSCColor (clipAddress + "color", color[0], color[1], color[2], dump);
@@ -278,6 +280,7 @@ public class OSCWriter
 
     private void flushDevice (final String deviceAddress, final ICursorDevice device, final boolean dump)
     {
+        this.sendOSC (deviceAddress + "exists", device.doesExist (), dump);
         this.sendOSC (deviceAddress + "name", device.getName (), dump);
         this.sendOSC (deviceAddress + "bypass", !device.isEnabled (), dump);
         this.sendOSC (deviceAddress + "expand", device.isExpanded (), dump);

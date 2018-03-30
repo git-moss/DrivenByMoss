@@ -7,7 +7,7 @@ package de.mossgrabers.sl;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 
 
 /**
@@ -40,7 +40,7 @@ public class SLConfiguration extends AbstractConfiguration
      * @param valueChanger The value changer
      * @param isMkII Is MkI or MkII?
      */
-    public SLConfiguration (final ValueChanger valueChanger, final boolean isMkII)
+    public SLConfiguration (final IValueChanger valueChanger, final boolean isMkII)
     {
         super (valueChanger);
         this.isMkII = isMkII;

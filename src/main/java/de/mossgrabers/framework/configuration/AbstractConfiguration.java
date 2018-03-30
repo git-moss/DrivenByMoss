@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.configuration;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
@@ -229,7 +229,7 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                             newClipLengthSetting;
 
     private final Map<Integer, Set<SettingObserver>> observers                   = new HashMap<> ();
-    protected ValueChanger                           valueChanger;
+    protected IValueChanger                           valueChanger;
 
     private String                                   scale                       = "Major";
     private String                                   scaleBase                   = "C";
@@ -237,7 +237,7 @@ public abstract class AbstractConfiguration implements Configuration
     private String                                   scaleLayout                 = "4th ^";
     private boolean                                  enableVUMeters              = false;
     private BehaviourOnStop                          behaviourOnStop             = BehaviourOnStop.MOVE_PLAY_CURSOR;
-    private boolean                                  displayCrossfader           = true;
+    protected boolean                                displayCrossfader           = true;
     private boolean                                  flipSession                 = false;
     private boolean                                  lockFlipSession             = false;
     private boolean                                  selectClipOnLaunch          = true;
@@ -272,7 +272,7 @@ public abstract class AbstractConfiguration implements Configuration
      *
      * @param valueChanger The value changer
      */
-    public AbstractConfiguration (final ValueChanger valueChanger)
+    public AbstractConfiguration (final IValueChanger valueChanger)
     {
         this.valueChanger = valueChanger;
     }
@@ -427,14 +427,27 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /**
-     * Change the quantize amount.
-     *
-     * @param control The change value
-     */
+    /** {@inheritDoc} */
+    @Override
     public void changeQuantizeAmount (final int control)
     {
         this.quantizeAmountSetting.set (this.valueChanger.changeValue (control, this.quantizeAmount, 1, 101));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setQuantizeAmount (final int value)
+    {
+        this.quantizeAmountSetting.set (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void resetQuantizeAmount ()
+    {
+        this.quantizeAmountSetting.set (100);
     }
 
 

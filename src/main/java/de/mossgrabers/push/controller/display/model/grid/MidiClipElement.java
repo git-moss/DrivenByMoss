@@ -4,10 +4,10 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
-import de.mossgrabers.framework.ColorEx;
-import de.mossgrabers.framework.StringUtils;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.push.PushConfiguration;
 
 import com.bitwig.extension.api.Color;

@@ -4,17 +4,17 @@
 
 package de.mossgrabers.apc.bitwig;
 
+import de.mossgrabers.apc.APCControllerDefinition;
 import de.mossgrabers.apc.APCControllerSetup;
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
 import de.mossgrabers.framework.bitwig.daw.HostImpl;
+import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.api.ControllerHost;
-
-import java.util.UUID;
 
 
 /**
@@ -22,24 +22,14 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class APCmkIIControllerExtensionDefinition extends APCControllerExtensionDefinition
+public class APCmkIIControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("14787D10-35DE-11E4-8C21-0800200C9A66");
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareModel ()
+    /**
+     * Constructor.
+     */
+    public APCmkIIControllerExtensionDefinition ()
     {
-        return "APC mkII";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public UUID getId ()
-    {
-        return EXTENSION_ID;
+        super (new APCControllerDefinition (true));
     }
 
 

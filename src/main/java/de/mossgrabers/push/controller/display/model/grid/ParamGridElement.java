@@ -4,7 +4,7 @@
 
 package de.mossgrabers.push.controller.display.model.grid;
 
-import de.mossgrabers.framework.ColorEx;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.daw.resource.DeviceTypes;
 import de.mossgrabers.push.PushConfiguration;

@@ -4,17 +4,17 @@
 
 package de.mossgrabers.beatstep.bitwig;
 
+import de.mossgrabers.beatstep.BeatstepControllerDefinition;
 import de.mossgrabers.beatstep.BeatstepControllerSetup;
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
 import de.mossgrabers.framework.bitwig.daw.HostImpl;
+import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.api.ControllerHost;
-
-import java.util.UUID;
 
 
 /**
@@ -22,24 +22,14 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BeatstepControllerExtensionDefinition extends BaseBeatstepControllerExtensionDefinition
+public class BeatstepControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("F7FF1750-7EC3-11E4-B4A9-0800200C9A66");
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareModel ()
+    /**
+     * Constructor.
+     */
+    public BeatstepControllerExtensionDefinition ()
     {
-        return "Beatstep";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public UUID getId ()
-    {
-        return EXTENSION_ID;
+        super (new BeatstepControllerDefinition (false));
     }
 
 

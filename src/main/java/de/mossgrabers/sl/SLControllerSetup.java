@@ -287,16 +287,13 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
 
     /** {@inheritDoc} */
     @Override
-    protected void startup ()
+    public void startup ()
     {
         // Initialise 2nd display
         final SLControlSurface surface = this.getSurface ();
         surface.getModeManager ().getMode (Modes.MODE_VOLUME).updateDisplay ();
-
-        this.host.scheduleTask ( () -> {
-            surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-            surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
-        }, 200);
+        surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
+        surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
     }
 
 

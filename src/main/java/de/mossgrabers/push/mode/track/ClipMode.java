@@ -4,13 +4,13 @@
 
 package de.mossgrabers.push.mode.track;
 
-import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushColors;
@@ -51,7 +51,10 @@ public class ClipMode extends AbstractTrackMode
         this.isKnobTouched[index] = isTouched;
 
         if (index == 7 && isTouched && this.surface.isDeletePressed ())
+        {
+            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
             this.model.getCursorClip ().resetAccent ();
+        }
     }
 
 
@@ -119,11 +122,11 @@ public class ClipMode extends AbstractTrackMode
         final DisplayMessage message = display.createMessage ();
 
         if (this.displayMidiNotes)
-		{
+        {
             message.setMidiClipElement (clip, this.model.getTransport ().getQuartersPerMeasure ());
-	        display.send (message);
-			return;
-		}
+            display.send (message);
+            return;
+        }
 
         final IChannelBank tb = this.model.getCurrentTrackBank ();
         final ITrack t0 = tb.getTrack (0);

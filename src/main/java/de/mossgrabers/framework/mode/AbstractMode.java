@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.mode;
 
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 
 
@@ -17,7 +17,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractMode<S extends ControlSurface<C>, C extends Configuration> implements Mode
+public abstract class AbstractMode<S extends IControlSurface<C>, C extends Configuration> implements Mode
 {
     /** Color identifier for a mode button which is off. */
     public static final String BUTTON_COLOR_OFF = "BUTTON_COLOR_OFF";

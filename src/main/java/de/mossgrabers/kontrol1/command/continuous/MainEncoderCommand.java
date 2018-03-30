@@ -4,11 +4,11 @@
 
 package de.mossgrabers.kontrol1.command.continuous;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;

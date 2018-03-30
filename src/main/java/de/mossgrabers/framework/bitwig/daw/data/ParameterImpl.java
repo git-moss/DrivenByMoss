@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.daw.data;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.data.IParameter;
 
 import com.bitwig.extension.controller.api.Parameter;
@@ -17,7 +17,7 @@ import com.bitwig.extension.controller.api.Parameter;
  */
 public class ParameterImpl implements IParameter
 {
-    private ValueChanger    valueChanger;
+    private IValueChanger    valueChanger;
     private final Parameter parameter;
     private final int       maxParameterValue;
 
@@ -32,7 +32,7 @@ public class ParameterImpl implements IParameter
      * @param parameter The parameter
      * @param maxParameterValue The maximum number for values (range is 0 till maxParameterValue-1)
      */
-    public ParameterImpl (final ValueChanger valueChanger, final Parameter parameter, final int maxParameterValue)
+    public ParameterImpl (final IValueChanger valueChanger, final Parameter parameter, final int maxParameterValue)
     {
         this.valueChanger = valueChanger;
         this.parameter = parameter;

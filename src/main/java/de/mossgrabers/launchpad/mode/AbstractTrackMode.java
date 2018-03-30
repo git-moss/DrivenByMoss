@@ -1,8 +1,8 @@
 package de.mossgrabers.launchpad.mode;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 

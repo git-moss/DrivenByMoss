@@ -5,11 +5,14 @@
 package de.mossgrabers.framework.bitwig.daw;
 
 import de.mossgrabers.framework.bitwig.daw.data.MasterTrackImpl;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.AbstractModel;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 import com.bitwig.extension.controller.api.Application;
@@ -51,7 +54,7 @@ public class ModelImpl extends AbstractModel
      * @param numDeviceLayers The number of device layers to monitor
      * @param numDrumPadLayers The number of drum pad layers to monitor
      */
-    public ModelImpl (final ControllerHost controllerHost, final ColorManager colorManager, final ValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public ModelImpl (final ControllerHost controllerHost, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
         super (colorManager, valueChanger, scales, numTracks, numScenes, numSends, numFilterColumnEntries, numResults, hasFlatTrackList, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
 
@@ -74,9 +77,9 @@ public class ModelImpl extends AbstractModel
         this.trackBank = new TrackBankImpl (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
         this.effectTrackBank = new EffectTrackBankImpl (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
 
-        this.primaryDevice = new CursorDeviceImpl (this.host, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.primaryDevice = new CursorDeviceImpl (this.host, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
         PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", this.numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
-        this.cursorDevice = new CursorDeviceImpl (this.host, cd, valueChanger, this.numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.cursorDevice = new CursorDeviceImpl (this.host, cd, valueChanger, this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
         cd = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
         this.drumDevice64 = new CursorDeviceImpl (this.host, cd, valueChanger, 0, 0, 0, 64, 64);
         this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
@@ -129,5 +132,25 @@ public class ModelImpl extends AbstractModel
     public boolean isCursorDeviceOnMasterTrack ()
     {
         return this.masterTrackEqualsValue.get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canConvertClip ()
+    {
+        final IChannelBank tb = this.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
+        if (selectedTrack == null)
+            return false;
+        final ISlot [] slots = selectedTrack.getSelectedSlots ();
+        if (slots.length == 0)
+            return false;
+        for (final ISlot slot: slots)
+        {
+            if (slot.hasContent ())
+                return true;
+        }
+        return false;
     }
 }

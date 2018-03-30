@@ -359,12 +359,22 @@ public class OSCParser implements OscMethodCallback
                     return true;
                 }
                 final String cmd = oscParts.get (0);
-                if (PART_VOLUME.equals (cmd))
-                    this.transport.setMetronomeVolume (numValue);
-                else if ("ticks".equals (cmd))
+                switch (cmd)
                 {
-                    if (value == null || numValue > 0)
-                        this.transport.toggleMetronomeTicks ();
+                    case PART_VOLUME:
+                        this.transport.setMetronomeVolume (numValue);
+                        break;
+                    case "ticks":
+                        if (value == null || numValue > 0)
+                            this.transport.toggleMetronomeTicks ();
+                        break;
+                    case "preroll":
+                        if (value == null || numValue > 0)
+                            this.transport.togglePrerollMetronome ();
+                        break;
+                    default:
+                        this.host.errorln ("Unknown Click subcommand: " + cmd);
+                        break;
                 }
                 return true;
 

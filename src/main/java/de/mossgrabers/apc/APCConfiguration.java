@@ -6,7 +6,7 @@ package de.mossgrabers.apc;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 
 
 /**
@@ -21,7 +21,7 @@ public class APCConfiguration extends AbstractConfiguration
      *
      * @param valueChanger The value changer
      */
-    public APCConfiguration (final ValueChanger valueChanger)
+    public APCConfiguration (final IValueChanger valueChanger)
     {
         super (valueChanger);
     }

@@ -6,7 +6,7 @@ package de.mossgrabers.beatstep;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 
 
 /**
@@ -25,7 +25,7 @@ public class BeatstepConfiguration extends AbstractConfiguration
      * @param valueChanger The value changer
      * @param isPro Is Pro or MkII?
      */
-    public BeatstepConfiguration (final ValueChanger valueChanger, final boolean isPro)
+    public BeatstepConfiguration (final IValueChanger valueChanger, final boolean isPro)
     {
         super (valueChanger);
         this.isPro = isPro;

@@ -7,7 +7,7 @@ package de.mossgrabers.kontrol1;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 
 
 /**
@@ -28,7 +28,7 @@ public class Kontrol1Configuration extends AbstractConfiguration
      *
      * @param valueChanger The value changer
      */
-    public Kontrol1Configuration (final ValueChanger valueChanger)
+    public Kontrol1Configuration (final IValueChanger valueChanger)
     {
         super (valueChanger);
     }

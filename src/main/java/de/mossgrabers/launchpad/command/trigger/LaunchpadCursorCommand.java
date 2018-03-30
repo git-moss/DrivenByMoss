@@ -4,7 +4,6 @@
 
 package de.mossgrabers.launchpad.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IChannelBank;
@@ -13,6 +12,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;

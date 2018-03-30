@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.daw;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IChannelBank;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -31,7 +31,7 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
      * @param numScenes The number of scenes of a bank page
      * @param audioInstrumentTrackBank The trackbank which monitors the audio and instrument tracks
      */
-    public EffectTrackBankImpl (final ControllerHost host, final ValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final IChannelBank audioInstrumentTrackBank)
+    public EffectTrackBankImpl (final ControllerHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final IChannelBank audioInstrumentTrackBank)
     {
         super (valueChanger, numTracks, numScenes, 0);
 
@@ -56,7 +56,7 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
 
     /** {@inheritDoc} */
     @Override
-    public boolean canEditSend (int sendIndex)
+    public boolean canEditSend (final int sendIndex)
     {
         // Sends don't have sends.
         return false;
@@ -65,7 +65,7 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
 
     /** {@inheritDoc} */
     @Override
-    public String getEditSendName (int sendIndex)
+    public String getEditSendName (final int sendIndex)
     {
         return "";
     }

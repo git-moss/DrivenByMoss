@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.mode;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**

@@ -39,7 +39,6 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -156,7 +155,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.colorManager = new ColorManager ();
         PushColors.addColors (this.colorManager, isPush2);
         this.valueChanger = new DefaultValueChanger (1024, 10, 1);
-        this.configuration = new PushConfiguration (this.valueChanger, isPush2);
+        this.configuration = new PushConfiguration (host, this.valueChanger, isPush2);
     }
 
 
@@ -499,17 +498,13 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
     /** {@inheritDoc} */
     @Override
-    protected void startup ()
+    public void startup ()
     {
-        this.host.scheduleTask ( () -> {
+        final PushControlSurface surface = this.getSurface ();
+        surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
 
-            final PushControlSurface surface = this.getSurface ();
-            surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
-
-            surface.sendPressureMode (true);
-            surface.getOutput ().sendIdentityRequest ();
-
-        }, 1000);
+        surface.sendPressureMode (true);
+        surface.getOutput ().sendIdentityRequest ();
     }
 
 
@@ -550,7 +545,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, selTrack != null && selTrack.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
             }
 
-            surface.updateButton (PushControlSurface.PUSH_BUTTON_CONVERT, this.canConvertClip () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateButton (PushControlSurface.PUSH_BUTTON_CONVERT, this.model.canConvertClip () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         }
         else
         {
@@ -693,24 +688,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.scales.setDrumOctave (0);
         if (viewManager.isActiveView (Views.VIEW_DRUM))
             viewManager.getView (Views.VIEW_DRUM).updateNoteMapping ();
-    }
-
-
-    private boolean canConvertClip ()
-    {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
-        if (selectedTrack == null)
-            return false;
-        final ISlot [] slots = selectedTrack.getSelectedSlots ();
-        if (slots.length == 0)
-            return false;
-        for (final ISlot slot: slots)
-        {
-            if (slot.hasContent ())
-                return true;
-        }
-        return false;
     }
 
 

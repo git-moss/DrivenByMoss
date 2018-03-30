@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.bitwig.daw;
 
 import de.mossgrabers.framework.bitwig.daw.data.ParameterImpl;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.data.IParameter;
 
@@ -30,7 +30,7 @@ public class GrooveImpl implements IGroove
      * @param host The host
      * @param valueChanger The value changer
      */
-    public GrooveImpl (final ControllerHost host, final ValueChanger valueChanger)
+    public GrooveImpl (final ControllerHost host, final IValueChanger valueChanger)
     {
         this.groove = host.createGroove ();
 

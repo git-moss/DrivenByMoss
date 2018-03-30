@@ -62,7 +62,15 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public boolean hasGroove ()
+    public boolean hasCrossfader ()
+    {
+        return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasDrumDevice ()
     {
         return true;
     }

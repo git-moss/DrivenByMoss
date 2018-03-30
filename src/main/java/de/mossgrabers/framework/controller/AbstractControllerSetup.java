@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C extends Configuration> implements IControllerSetup
+public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C extends Configuration> implements IControllerSetup
 {
     protected final List<S>       surfaces = new ArrayList<> ();
     protected final IHost         host;
@@ -38,7 +38,7 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
     protected IModel              model;
     protected C                   configuration;
     protected ColorManager        colorManager;
-    protected ValueChanger        valueChanger;
+    protected IValueChanger        valueChanger;
 
 
     /**
@@ -89,6 +89,14 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
 
     /** {@inheritDoc} */
     @Override
+    public C getConfiguration ()
+    {
+        return this.configuration;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void init ()
     {
         this.configuration.init (this.settings);
@@ -101,7 +109,6 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
         this.createViews ();
         this.registerTriggerCommands ();
         this.registerContinuousCommands ();
-        this.startup ();
 
         this.host.println ("Initialized.");
     }
@@ -186,12 +193,6 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
     {
         // Intentionally empty
     }
-
-
-    /**
-     * Startup the controller.
-     */
-    protected abstract void startup ();
 
 
     /**

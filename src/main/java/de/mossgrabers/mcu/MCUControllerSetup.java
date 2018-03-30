@@ -466,17 +466,15 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
     /** {@inheritDoc} */
     @Override
-    protected void startup ()
+    public void startup ()
     {
         for (int index = 0; index < this.numMCUDevices; index++)
         {
             final MCUControlSurface surface = this.getSurface (index);
             surface.switchVuMode (MCUControlSurface.VUMODE_LED);
 
-            this.host.scheduleTask ( () -> {
-                surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-                surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
-            }, 200);
+            surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
+            surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
         }
     }
 

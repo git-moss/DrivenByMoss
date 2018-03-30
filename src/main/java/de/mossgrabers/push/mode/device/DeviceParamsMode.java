@@ -4,10 +4,8 @@
 
 package de.mossgrabers.push.mode.device;
 
-import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.command.Commands;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IChannelBank;
@@ -16,6 +14,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushColors;
@@ -305,7 +305,7 @@ public class DeviceParamsMode extends BaseMode
         this.surface.updateButton (104, cd.isExpanded () ? orange : white);
         this.surface.updateButton (105, off);
         this.surface.updateButton (106, this.showDevices ? white : orange);
-        this.surface.updateButton (107, this.model.getHost ().hasPinning () ? (cd.isPinned () ? turquoise : grey) : off);
+        this.surface.updateButton (107, this.model.getHost ().hasPinning () ? cd.isPinned () ? turquoise : grey : off);
         this.surface.updateButton (108, cd.isWindowOpen () ? turquoise : grey);
         this.surface.updateButton (109, white);
     }
@@ -375,7 +375,7 @@ public class DeviceParamsMode extends BaseMode
         final IChannelBank tb = this.model.getCurrentTrackBank ();
         final String color = tb.getSelectedTrackColorEntry ();
 
-        final ValueChanger valueChanger = this.model.getValueChanger ();
+        final IValueChanger valueChanger = this.model.getValueChanger ();
 
         final String [] pages = cd.getParameterPageNames ();
         final int page = Math.min (Math.max (0, cd.getSelectedParameterPage ()), pages.length - 1);

@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.configuration;
 
-import de.mossgrabers.framework.ColorEx;
+import de.mossgrabers.framework.controller.color.ColorEx;
 
 
 /**

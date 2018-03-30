@@ -4,8 +4,8 @@
 
 package de.mossgrabers.push.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractRaindropsView;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.PushColors;

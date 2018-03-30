@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.daw.data;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -22,7 +22,7 @@ import com.bitwig.extension.controller.api.SettableColorValue;
  */
 public class ChannelImpl implements IChannel
 {
-    protected ValueChanger valueChanger;
+    protected IValueChanger valueChanger;
     protected Channel      channel;
 
     private ISend []       sends;
@@ -41,7 +41,7 @@ public class ChannelImpl implements IChannel
      * @param index The index of the channel in the page
      * @param numSends The number of sends of a bank
      */
-    public ChannelImpl (final Channel channel, final ValueChanger valueChanger, final int index, final int numSends)
+    public ChannelImpl (final Channel channel, final IValueChanger valueChanger, final int index, final int numSends)
     {
         this.channel = channel;
         this.valueChanger = valueChanger;
@@ -166,7 +166,7 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
-    public String getName (int limit)
+    public String getName (final int limit)
     {
         return this.channel.name ().getLimited (limit);
     }

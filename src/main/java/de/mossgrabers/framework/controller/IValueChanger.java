@@ -9,7 +9,7 @@ package de.mossgrabers.framework.controller;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface ValueChanger
+public interface IValueChanger
 {
     /**
      * Get the limit for the maximum value for parameters. The value is in the range of 0 to

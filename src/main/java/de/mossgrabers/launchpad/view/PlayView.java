@@ -4,12 +4,12 @@
 
 package de.mossgrabers.launchpad.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;

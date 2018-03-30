@@ -43,11 +43,19 @@ public interface IHost
 
 
     /**
-     * Returns true if the DAW supports Groove options.
+     * Returns true if the DAW supports a crossfader.
      *
-     * @return True if the DAW supports Groove options
+     * @return True if the DAW supports a crossfader
      */
-    boolean hasGroove ();
+    boolean hasCrossfader ();
+
+
+    /**
+     * Returns true if the DAW supports Drum Device options.
+     *
+     * @return True if the DAW supports Drum Device options
+     */
+    boolean hasDrumDevice ();
 
 
     /**

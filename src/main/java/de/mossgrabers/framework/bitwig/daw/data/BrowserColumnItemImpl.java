@@ -78,6 +78,14 @@ public class BrowserColumnItemImpl implements IBrowserColumnItem
 
     /** {@inheritDoc} */
     @Override
+    public String getName (final int limit)
+    {
+        return this.item.name ().getLimited (limit);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isSelected ()
     {
         return this.item.isSelected ().get ();

@@ -119,7 +119,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public String getName (int limit)
+    public String getName (final int limit)
     {
         return "";
     }

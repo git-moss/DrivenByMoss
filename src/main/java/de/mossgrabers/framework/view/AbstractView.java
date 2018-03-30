@@ -4,18 +4,18 @@
 
 package de.mossgrabers.framework.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AftertouchCommand;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractView<S extends ControlSurface<C>, C extends Configuration> implements View
+public abstract class AbstractView<S extends IControlSurface<C>, C extends Configuration> implements View
 {
     private static final int []                   EMPTY_TABLE        = Scales.getEmptyMatrix ();
 

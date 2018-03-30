@@ -4,7 +4,7 @@
 
 package de.mossgrabers.push.mode;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
@@ -62,13 +62,13 @@ public class NoteMode extends BaseMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final ValueChanger valueChanger = this.model.getValueChanger ();
+        final IValueChanger valueChanger = this.model.getValueChanger ();
         switch (index)
         {
             case 0:
                 if (!this.increaseKnobMovement ())
                     return;
-                double speed = valueChanger.calcKnobSpeed (value, 1);
+                final double speed = valueChanger.calcKnobSpeed (value, 1);
                 this.noteLength += speed;
                 this.clip.clearStep (this.step, this.note);
                 this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);
@@ -76,7 +76,7 @@ public class NoteMode extends BaseMode
             case 1:
                 if (!this.increaseKnobMovement ())
                     return;
-                double speed2 = valueChanger.calcKnobSpeed (value, 0.1);
+                final double speed2 = valueChanger.calcKnobSpeed (value, 0.1);
                 this.noteLength += speed2;
                 this.clip.clearStep (this.step, this.note);
                 this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);

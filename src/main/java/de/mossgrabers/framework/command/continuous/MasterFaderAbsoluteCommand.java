@@ -6,7 +6,7 @@ package de.mossgrabers.framework.command.continuous;
 
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 
 
@@ -18,7 +18,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MasterFaderAbsoluteCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
+public class MasterFaderAbsoluteCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
 {
     /**
      * Constructor.

@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.scale;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.scale.ScaleGrid.Orientation;
 
 import java.util.Arrays;
@@ -142,7 +142,7 @@ public class Scales
     private int                         drumNoteEnd              = DRUM_NOTE_END;
 
     private final Map<Scale, ScaleGrid> scaleGrids               = new EnumMap<> (Scale.class);
-    private ValueChanger                valueChanger;
+    private IValueChanger                valueChanger;
 
 
     /**
@@ -154,7 +154,7 @@ public class Scales
      * @param numColumns The number of columns of the pad grid
      * @param numRows The number of rows of the pad grid
      */
-    public Scales (final ValueChanger valueChanger, final int startNote, final int endNote, final int numColumns, final int numRows)
+    public Scales (final IValueChanger valueChanger, final int startNote, final int endNote, final int numColumns, final int numRows)
     {
         this.valueChanger = valueChanger;
         this.startNote = startNote;

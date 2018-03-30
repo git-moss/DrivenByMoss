@@ -4,7 +4,6 @@
 
 package de.mossgrabers.launchpad;
 
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
@@ -32,6 +31,7 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
@@ -278,9 +278,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
     /** {@inheritDoc} */
     @Override
-    protected void startup ()
+    public void startup ()
     {
-        this.host.scheduleTask ( () -> this.getSurface ().getViewManager ().setActiveView (Views.VIEW_PLAY), 100);
+        this.getSurface ().getViewManager ().setActiveView (Views.VIEW_PLAY);
     }
 
 

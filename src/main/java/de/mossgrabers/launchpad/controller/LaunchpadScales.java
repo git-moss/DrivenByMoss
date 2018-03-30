@@ -4,7 +4,7 @@
 
 package de.mossgrabers.launchpad.controller;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -24,7 +24,7 @@ public class LaunchpadScales extends Scales
      * @param numColumns The number of columns of the pad grid
      * @param numRows The number of rows of the pad grid
      */
-    public LaunchpadScales (final ValueChanger valueChanger, final int startNote, final int endNote, final int numColumns, final int numRows)
+    public LaunchpadScales (final IValueChanger valueChanger, final int startNote, final int endNote, final int numColumns, final int numRows)
     {
         super (valueChanger, startNote, endNote, numColumns, numRows);
     }

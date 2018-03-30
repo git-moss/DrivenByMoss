@@ -4,6 +4,8 @@
 
 package de.mossgrabers.push.view;
 
+import de.mossgrabers.framework.daw.IHost;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -66,35 +68,7 @@ public class Views
     private static final Set<Integer>  SEQUENCER_VIEWS     = new HashSet<> ();
     private static final Set<Integer>  SESSION_VIEWS       = new HashSet<> ();
 
-    static
-    {
-        NOTE_VIEWS.add (VIEW_PLAY);
-        NOTE_VIEWS.add (VIEW_PIANO);
-        NOTE_VIEWS.add (VIEW_DRUM);
-        NOTE_VIEWS.add (VIEW_DRUM4);
-        NOTE_VIEWS.add (VIEW_DRUM8);
-        NOTE_VIEWS.add (VIEW_DRUM64);
-        NOTE_VIEWS.add (VIEW_SEQUENCER);
-        NOTE_VIEWS.add (VIEW_RAINDROPS);
-
-        NOTE_VIEW_NAMES.add (VIEW_NAME_PLAY);
-        NOTE_VIEW_NAMES.add (VIEW_NAME_PIANO);
-        NOTE_VIEW_NAMES.add (VIEW_NAME_DRUM);
-        NOTE_VIEW_NAMES.add (VIEW_NAME_DRUM4);
-        NOTE_VIEW_NAMES.add (VIEW_NAME_DRUM8);
-        NOTE_VIEW_NAMES.add (VIEW_NAME_DRUM64);
-        NOTE_VIEW_NAMES.add (VIEW_NAME_SEQUENCER);
-        NOTE_VIEW_NAMES.add (VIEW_NAME_RAINDROPS);
-
-        SEQUENCER_VIEWS.add (VIEW_SEQUENCER);
-        SEQUENCER_VIEWS.add (VIEW_RAINDROPS);
-        SEQUENCER_VIEWS.add (VIEW_DRUM);
-        SEQUENCER_VIEWS.add (VIEW_DRUM4);
-        SEQUENCER_VIEWS.add (VIEW_DRUM8);
-
-        SESSION_VIEWS.add (VIEW_SESSION);
-        SESSION_VIEWS.add (VIEW_SCENE_PLAY);
-    }
+    private static boolean             isInitialised       = false;
 
 
     /**
@@ -103,6 +77,54 @@ public class Views
     private Views ()
     {
         // Intentionally empty
+    }
+
+
+    /**
+     * Initialise.
+     *
+     * @param host The DAW host
+     */
+    public static void init (final IHost host)
+    {
+        if (isInitialised)
+            return;
+        isInitialised = true;
+
+        NOTE_VIEWS.add (VIEW_PLAY);
+        NOTE_VIEWS.add (VIEW_PIANO);
+        NOTE_VIEW_NAMES.add (VIEW_NAME_PLAY);
+        NOTE_VIEW_NAMES.add (VIEW_NAME_PIANO);
+
+        if (host.hasDrumDevice ())
+        {
+            NOTE_VIEWS.add (VIEW_DRUM);
+            NOTE_VIEWS.add (VIEW_DRUM4);
+            NOTE_VIEWS.add (VIEW_DRUM8);
+            NOTE_VIEWS.add (VIEW_DRUM64);
+            NOTE_VIEW_NAMES.add (VIEW_NAME_DRUM);
+            NOTE_VIEW_NAMES.add (VIEW_NAME_DRUM4);
+            NOTE_VIEW_NAMES.add (VIEW_NAME_DRUM8);
+            NOTE_VIEW_NAMES.add (VIEW_NAME_DRUM64);
+
+            SEQUENCER_VIEWS.add (VIEW_DRUM);
+            SEQUENCER_VIEWS.add (VIEW_DRUM4);
+            SEQUENCER_VIEWS.add (VIEW_DRUM8);
+        }
+
+        if (host.hasClips ())
+        {
+            NOTE_VIEWS.add (VIEW_SEQUENCER);
+            NOTE_VIEWS.add (VIEW_RAINDROPS);
+            NOTE_VIEW_NAMES.add (VIEW_NAME_SEQUENCER);
+            NOTE_VIEW_NAMES.add (VIEW_NAME_RAINDROPS);
+
+            SEQUENCER_VIEWS.add (VIEW_SEQUENCER);
+            SEQUENCER_VIEWS.add (VIEW_RAINDROPS);
+
+            SESSION_VIEWS.add (VIEW_SESSION);
+            SESSION_VIEWS.add (VIEW_SCENE_PLAY);
+        }
     }
 
 

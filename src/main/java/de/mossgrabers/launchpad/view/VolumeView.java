@@ -4,7 +4,6 @@
 
 package de.mossgrabers.launchpad.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IChannelBank;
@@ -12,6 +11,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 

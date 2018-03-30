@@ -4,14 +4,14 @@
 
 package de.mossgrabers.kontrol1.mode.device;
 
-import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
 

@@ -4,16 +4,16 @@
 
 package de.mossgrabers.push.mode.track;
 
-import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.command.Commands;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.DisplayMessage;
 import de.mossgrabers.push.controller.PushColors;
@@ -328,7 +328,7 @@ public abstract class AbstractTrackMode extends BaseMode
         final PushConfiguration config = this.surface.getConfiguration ();
         final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
         final DisplayMessage message = display.createMessage ();
-        final ValueChanger valueChanger = this.model.getValueChanger ();
+        final IValueChanger valueChanger = this.model.getValueChanger ();
         final IChannelBank tb = this.model.getCurrentTrackBank ();
         final boolean displayCrossfader = config.isDisplayCrossfader ();
         for (int i = 0; i < 8; i++)
@@ -356,7 +356,7 @@ public abstract class AbstractTrackMode extends BaseMode
             else
             {
                 topMenu = this.menu[i];
-                isTopMenuOn = i == selectedMenu - 1 || (i == 7 && tb instanceof ITrackBank && ((ITrackBank) tb).hasParent ());
+                isTopMenuOn = i == selectedMenu - 1 || i == 7 && tb instanceof ITrackBank && ((ITrackBank) tb).hasParent ();
             }
 
             final int crossfadeMode = displayCrossfader ? t.getCrossfadeModeAsNumber () : -1;

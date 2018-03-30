@@ -36,6 +36,7 @@ public class GenericControllerExtension extends ControllerExtension
     public void init ()
     {
         this.setup.init ();
+        this.getHost ().scheduleTask (this.setup::startup, 1000);
     }
 
 

@@ -4,12 +4,12 @@
 
 package de.mossgrabers.kontrol1.mode.track;
 
-import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
 import de.mossgrabers.kontrol1.controller.Kontrol1Display;

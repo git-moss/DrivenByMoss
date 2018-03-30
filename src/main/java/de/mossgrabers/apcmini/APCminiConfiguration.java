@@ -7,7 +7,7 @@ package de.mossgrabers.apcmini;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 
 
 /**
@@ -59,7 +59,7 @@ public class APCminiConfiguration extends AbstractConfiguration
      *
      * @param valueChanger The value changer
      */
-    public APCminiConfiguration (final ValueChanger valueChanger)
+    public APCminiConfiguration (final IValueChanger valueChanger)
     {
         super (valueChanger);
     }

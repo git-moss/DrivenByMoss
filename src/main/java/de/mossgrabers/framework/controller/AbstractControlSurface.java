@@ -4,7 +4,6 @@
 
 package de.mossgrabers.framework.controller;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
@@ -14,6 +13,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
@@ -31,7 +31,7 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractControlSurface<C extends Configuration> implements ControlSurface<C>
+public abstract class AbstractControlSurface<C extends Configuration> implements IControlSurface<C>
 {
     protected static final int                    BUTTON_STATE_INTERVAL = 400;
 

@@ -7,7 +7,9 @@ package de.mossgrabers.push.bitwig;
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
 import de.mossgrabers.framework.bitwig.daw.HostImpl;
+import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.push.PushControllerDefinition;
 import de.mossgrabers.push.PushControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
@@ -16,7 +18,6 @@ import com.bitwig.extension.controller.UsbDeviceInfo;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -24,29 +25,20 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Push2ControllerExtensionDefinition extends PushControllerExtensionDefinition
+public class Push2ControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final UUID  EXTENSION_ID = UUID.fromString ("15176AA0-C476-11E6-9598-0800200C9A66");
-
     /** Push 2 USB Vendor ID. */
-    private static final short VENDOR_ID    = 0x2982;
+    private static final short VENDOR_ID  = 0x2982;
     /** Push 2 USB Product ID. */
-    private static final short PRODUCT_ID   = 0x1967;
+    private static final short PRODUCT_ID = 0x1967;
 
 
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareModel ()
+    /**
+     * Constructor.
+     */
+    public Push2ControllerExtensionDefinition ()
     {
-        return "Push 2";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public UUID getId ()
-    {
-        return EXTENSION_ID;
+        super (new PushControllerDefinition (true));
     }
 
 

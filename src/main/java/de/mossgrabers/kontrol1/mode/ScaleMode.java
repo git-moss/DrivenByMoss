@@ -4,10 +4,10 @@
 
 package de.mossgrabers.kontrol1.mode;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
 import de.mossgrabers.kontrol1.controller.Kontrol1Display;

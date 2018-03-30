@@ -1,0 +1,29 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2018
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.apcmini;
+
+import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+
+import java.util.UUID;
+
+
+/**
+ * Definition class for the Novation SL controller extension.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class APCminiControllerDefinition extends DefaultControllerDefinition
+{
+    private static final UUID EXTENSION_ID = UUID.fromString ("E7E02A80-3657-11E4-8C21-0800200C9A66");
+
+
+    /**
+     * Constructor.
+     */
+    public APCminiControllerDefinition ()
+    {
+        super ("APCmini4Bitwig", "Jürgen Moßgraber", "5.02", EXTENSION_ID, "APCmini", "Akai", 2, 1);
+    }
+}

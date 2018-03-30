@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * Panorama knob mode.
+ * Browser mode.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

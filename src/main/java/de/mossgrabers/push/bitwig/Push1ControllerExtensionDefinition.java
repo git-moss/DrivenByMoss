@@ -7,14 +7,14 @@ package de.mossgrabers.push.bitwig;
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
 import de.mossgrabers.framework.bitwig.daw.HostImpl;
+import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.push.PushControllerDefinition;
 import de.mossgrabers.push.PushControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.api.ControllerHost;
-
-import java.util.UUID;
 
 
 /**
@@ -22,24 +22,14 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Push1ControllerExtensionDefinition extends PushControllerExtensionDefinition
+public class Push1ControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("DBED9610-C474-11E6-9598-0800200C9A66");
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareModel ()
+    /**
+     * Constructor.
+     */
+    public Push1ControllerExtensionDefinition ()
     {
-        return "Push 1";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public UUID getId ()
-    {
-        return EXTENSION_ID;
+        super (new PushControllerDefinition (false));
     }
 
 

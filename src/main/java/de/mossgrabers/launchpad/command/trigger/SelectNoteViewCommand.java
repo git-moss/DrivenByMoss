@@ -4,12 +4,12 @@
 
 package de.mossgrabers.launchpad.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.ViewMultiSelectCommand;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
@@ -58,9 +58,10 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
             return;
         }
 
-        if (Views.isNoteView (viewManager.getActiveViewId ()))
+        final boolean isShifted = this.surface.isShiftPressed ();
+        if (Views.isNoteView (isShifted ? viewManager.getPreviousViewId () : viewManager.getActiveViewId ()))
         {
-            if (this.surface.isShiftPressed ())
+            if (isShifted)
                 this.seqSelect.executeNormal (event);
             else
                 this.playSelect.executeNormal (event);

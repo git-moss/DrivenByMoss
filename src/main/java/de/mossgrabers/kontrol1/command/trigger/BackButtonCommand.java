@@ -4,13 +4,13 @@
 
 package de.mossgrabers.kontrol1.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
 import de.mossgrabers.kontrol1.mode.Modes;

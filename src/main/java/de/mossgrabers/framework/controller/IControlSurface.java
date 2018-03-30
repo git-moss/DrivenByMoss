@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.ViewManager;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface ControlSurface<C extends Configuration>
+public interface IControlSurface<C extends Configuration>
 {
     /**
      * Get the view manager.

@@ -11,22 +11,11 @@ package de.mossgrabers.kontrol1.bitwig;
  */
 public class Kontrol1S88ExtensionDefinition extends AbstractKontrol1ExtensionDefinition
 {
-    private static final short PRODUCT_ID_S88 = 0x1410;
-
-
     /**
      * Constructor.
      */
     public Kontrol1S88ExtensionDefinition ()
     {
-        super (PRODUCT_ID_S88);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareModel ()
-    {
-        return "Komplete Kontrol S88";
+        super (3);
     }
 }

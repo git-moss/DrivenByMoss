@@ -9,6 +9,7 @@ import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
 import de.mossgrabers.framework.bitwig.daw.HostImpl;
 import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.kontrol1.Kontrol1ControllerDefinition;
 import de.mossgrabers.kontrol1.Kontrol1ControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
@@ -17,7 +18,6 @@ import com.bitwig.extension.controller.UsbDeviceInfo;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -27,70 +27,29 @@ import java.util.UUID;
  */
 public abstract class AbstractKontrol1ExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final UUID  EXTENSION_ID = UUID.fromString ("457ef1d3-d197-4a94-a1d0-b4322ecbdd7d");
-
     /** Kontrol 1 USB Vendor ID. */
-    private static final short VENDOR_ID    = 0x17cc;
+    private static final short    VENDOR_ID  = 0x17cc;
 
-    private short              productID;
+    private static final short [] PRODUCT_ID =
+    {
+        0x1340,
+        0x1350,
+        0x1360,
+        0x1410
+    };
+
+    private short                 productID;
 
 
     /**
      * Constructor.
      *
-     * @param productID The product ID of the USB device.
+     * @param modelIndex The index of the specific model
      */
-    public AbstractKontrol1ExtensionDefinition (final short productID)
+    public AbstractKontrol1ExtensionDefinition (final int modelIndex)
     {
-        this.productID = productID;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName ()
-    {
-        return "Kontrol14Bitwig";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareVendor ()
-    {
-        return "Native Instruments";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getVersion ()
-    {
-        return "1.00";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public UUID getId ()
-    {
-        return EXTENSION_ID;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getNumMidiInPorts ()
-    {
-        return 1;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getNumMidiOutPorts ()
-    {
-        return 0;
+        super (new Kontrol1ControllerDefinition (modelIndex));
+        this.productID = PRODUCT_ID[modelIndex];
     }
 
 

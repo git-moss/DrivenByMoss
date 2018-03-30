@@ -4,10 +4,10 @@
 
 package de.mossgrabers.push.controller;
 
-import de.mossgrabers.framework.ColorEx;
-import de.mossgrabers.framework.Pair;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.push.controller.display.model.DisplayModel;
 import de.mossgrabers.push.controller.display.model.grid.BoxListGridElement;
 import de.mossgrabers.push.controller.display.model.grid.ChannelGridElement;

@@ -192,14 +192,11 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
     /** {@inheritDoc} */
     @Override
-    protected void startup ()
+    public void startup ()
     {
         final Kontrol1ControlSurface surface = this.getSurface ();
-        this.host.scheduleTask ( () -> {
-            surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-            surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
-        }, 200);
-
+        surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
+        surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
         this.usbDevice.pollUI ();
     }
 

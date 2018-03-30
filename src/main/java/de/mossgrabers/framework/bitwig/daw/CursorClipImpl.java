@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.bitwig.daw;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.ICursorClip;
 
 import com.bitwig.extension.controller.api.Clip;
@@ -26,7 +26,7 @@ public class CursorClipImpl implements ICursorClip
 
     private final int [] [] data;
     private Clip            clip;
-    private ValueChanger    valueChanger;
+    private IValueChanger    valueChanger;
     private int             editPage = 0;
     private double          stepLength;
 
@@ -39,7 +39,7 @@ public class CursorClipImpl implements ICursorClip
      * @param numSteps The number of steps of the clip to monitor
      * @param numRows The number of note rows of the clip to monitor
      */
-    public CursorClipImpl (final ControllerHost host, final ValueChanger valueChanger, final int numSteps, final int numRows)
+    public CursorClipImpl (final ControllerHost host, final IValueChanger valueChanger, final int numSteps, final int numRows)
     {
         this.valueChanger = valueChanger;
 

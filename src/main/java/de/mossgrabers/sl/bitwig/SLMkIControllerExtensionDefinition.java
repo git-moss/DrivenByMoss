@@ -7,14 +7,14 @@ package de.mossgrabers.sl.bitwig;
 import de.mossgrabers.framework.bitwig.BitwigSetupFactory;
 import de.mossgrabers.framework.bitwig.configuration.SettingsUI;
 import de.mossgrabers.framework.bitwig.daw.HostImpl;
+import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.sl.SLControllerDefinition;
 import de.mossgrabers.sl.SLControllerSetup;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.api.ControllerHost;
-
-import java.util.UUID;
 
 
 /**
@@ -22,24 +22,14 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SLMkIControllerExtensionDefinition extends SLControllerExtensionDefinition
+public class SLMkIControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("A9041F50-0407-11E5-B939-0800200C9A66");
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHardwareModel ()
+    /**
+     * Constructor.
+     */
+    public SLMkIControllerExtensionDefinition ()
     {
-        return "SL MkI";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public UUID getId ()
-    {
-        return EXTENSION_ID;
+        super (new SLControllerDefinition (true));
     }
 
 

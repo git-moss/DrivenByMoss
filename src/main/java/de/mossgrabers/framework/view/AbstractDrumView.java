@@ -4,9 +4,8 @@
 
 package de.mossgrabers.framework.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.ICursorClip;
@@ -15,6 +14,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Arrays;
 
@@ -29,7 +29,7 @@ import java.util.Arrays;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractDrumView<S extends ControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
+public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
 {
     /** The color ID for the recording state. */
     public static final String COLOR_PAD_RECORD      = "COLOR_PAD_RECORD";
