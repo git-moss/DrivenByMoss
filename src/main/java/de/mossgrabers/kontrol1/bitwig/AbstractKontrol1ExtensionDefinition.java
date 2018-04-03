@@ -12,12 +12,7 @@ import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.kontrol1.Kontrol1ControllerDefinition;
 import de.mossgrabers.kontrol1.Kontrol1ControllerSetup;
 
-import com.bitwig.extension.api.PlatformType;
-import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
-import com.bitwig.extension.controller.UsbDeviceInfo;
 import com.bitwig.extension.controller.api.ControllerHost;
-
-import java.util.List;
 
 
 /**
@@ -27,20 +22,6 @@ import java.util.List;
  */
 public abstract class AbstractKontrol1ExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    /** Kontrol 1 USB Vendor ID. */
-    private static final short    VENDOR_ID  = 0x17cc;
-
-    private static final short [] PRODUCT_ID =
-    {
-        0x1340,
-        0x1350,
-        0x1360,
-        0x1410
-    };
-
-    private short                 productID;
-
-
     /**
      * Constructor.
      *
@@ -49,26 +30,6 @@ public abstract class AbstractKontrol1ExtensionDefinition extends AbstractContro
     public AbstractKontrol1ExtensionDefinition (final int modelIndex)
     {
         super (new Kontrol1ControllerDefinition (modelIndex));
-        this.productID = PRODUCT_ID[modelIndex];
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void listUsbEndpoints (final List<UsbDeviceInfo> endpoints)
-    {
-        endpoints.add (new UsbDeviceInfo (VENDOR_ID, this.productID));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
-    {
-        list.add (new String []
-        {
-            "Komplete Kontrol - 1"
-        }, new String [0]);
     }
 
 

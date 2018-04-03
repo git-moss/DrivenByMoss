@@ -5,6 +5,7 @@
 package de.mossgrabers.mcu.command.trigger;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -56,8 +57,9 @@ public class SendSelectCommand extends AbstractTriggerCommand<MCUControlSurface,
         if (index < 0 || index >= this.modeIds.size ())
             index = 0;
 
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (0);
-        if (track.getSend (index).doesExist ())
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getTrack (0);
+        if (tb.canEditSend (index))
             this.surface.getModeManager ().setActiveMode (this.modeIds.get (index));
         else if (track.getSend (0).doesExist ())
             this.surface.getModeManager ().setActiveMode (this.modeIds.get (0));

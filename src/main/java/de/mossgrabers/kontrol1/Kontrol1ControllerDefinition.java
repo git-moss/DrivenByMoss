@@ -5,7 +5,11 @@
 package de.mossgrabers.kontrol1;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -32,14 +36,42 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
         "Komplete Kontrol S88"
     };
 
+    private static final short     VENDOR_ID      = 0x17cc;
+    private static final short []  PRODUCT_ID     =
+    {
+        0x1340,
+        0x1350,
+        0x1360,
+        0x1410
+    };
+
+    private short                  productID;
+
 
     /**
      * Constructor.
-     * 
+     *
      * @param modelIndex The index of the specific model (S25,
      */
     public Kontrol1ControllerDefinition (final int modelIndex)
     {
         super ("Kontrol14Bitwig", "Jürgen Moßgraber", "1.00", EXTENSION_ID[modelIndex], HARDWARE_MODEL[modelIndex], "Native Instruments", 1, 0);
+        this.productID = PRODUCT_ID[modelIndex];
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
+    {
+        return Collections.singletonList (this.addDeviceDiscoveryPair ("Komplete Kontrol - 1", null));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Pair<Short, Short> claimUSBDevice ()
+    {
+        return new Pair<> (Short.valueOf (VENDOR_ID), Short.valueOf (this.productID));
     }
 }

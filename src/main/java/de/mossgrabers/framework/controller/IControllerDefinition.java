@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.controller;
 
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
+
+import java.util.List;
 import java.util.UUID;
 
 
@@ -15,8 +19,16 @@ import java.util.UUID;
 public interface IControllerDefinition
 {
     /**
+     * Get the ID of the definition.
+     *
+     * @return The ID
+     */
+    UUID getUUID ();
+
+
+    /**
      * The name of this controller implementation.
-     * 
+     *
      * @return The name
      */
     String getName ();
@@ -24,7 +36,7 @@ public interface IControllerDefinition
 
     /**
      * The author of this controller implementation.
-     * 
+     *
      * @return The author
      */
     String getAuthor ();
@@ -32,7 +44,7 @@ public interface IControllerDefinition
 
     /**
      * The version of this controller implementation.
-     * 
+     *
      * @return The version
      */
     String getVersion ();
@@ -40,7 +52,7 @@ public interface IControllerDefinition
 
     /**
      * Get a unique identifier for this controller implementation.
-     * 
+     *
      * @return The UUID
      */
     UUID getId ();
@@ -48,7 +60,7 @@ public interface IControllerDefinition
 
     /**
      * The vendor of the controller that this controller implementation supports.
-     * 
+     *
      * @return The name
      */
     String getHardwareVendor ();
@@ -56,7 +68,7 @@ public interface IControllerDefinition
 
     /**
      * The model name of the controller that this controller implementation supports.
-     * 
+     *
      * @return The name
      */
     String getHardwareModel ();
@@ -64,7 +76,7 @@ public interface IControllerDefinition
 
     /**
      * The number of MIDI in ports that this controller extension requires.
-     * 
+     *
      * @return The positive number, might be 0
      */
     int getNumMidiInPorts ();
@@ -72,8 +84,25 @@ public interface IControllerDefinition
 
     /**
      * The number of MIDI out ports that this controller extension requires.
-     * 
+     *
      * @return The positive number, might be 0
      */
     int getNumMidiOutPorts ();
+
+
+    /**
+     * Get all midi input/output port discovery names.
+     *
+     * @param os The operating system. Use for different names on different platforms.
+     * @return The names
+     */
+    List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os);
+
+
+    /**
+     * Return a pair of Vendor-ID and Product-ID to claim an USB device.
+     *
+     * @return The pair
+     */
+    Pair<Short, Short> claimUSBDevice ();
 }

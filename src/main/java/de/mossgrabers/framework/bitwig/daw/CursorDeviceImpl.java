@@ -38,7 +38,7 @@ public class CursorDeviceImpl implements ICursorDevice
     private DeviceBank               siblings;
     private CursorRemoteControlsPage remoteControls;
     private CursorDeviceLayer        cursorDeviceLayer;
-    private IValueChanger             valueChanger;
+    private IValueChanger            valueChanger;
 
     private int                      numParams;
     private int                      numDevicesInBank;

@@ -1,14 +1,14 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.push.PushConfiguration;
-
-import com.bitwig.extension.api.graphics.GraphicsOutput;
 
 
 /**
@@ -90,7 +90,7 @@ public class SendsGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
+    public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
         super.draw (gc, left, width, height, configuration);
 
@@ -110,13 +110,10 @@ public class SendsGridElement extends ChannelSelectionGridElement
 
         // Background of slider area
         final ColorEx backgroundColor = configuration.getColorBackground ();
-        setColor (gc, this.isSelected () || this.isExMode ? configuration.getColorBackgroundLighter () : backgroundColor);
-        gc.rectangle (this.isExMode ? left - SEPARATOR_SIZE : left, t, this.isExMode ? width + SEPARATOR_SIZE : width, this.isExMode ? h - 2 : h);
-        gc.fill ();
+        gc.fillRectangle (this.isExMode ? left - SEPARATOR_SIZE : left, t, this.isExMode ? width + SEPARATOR_SIZE : width, this.isExMode ? h - 2 : h, this.isSelected () || this.isExMode ? configuration.getColorBackgroundLighter () : backgroundColor);
 
         double topy = MENU_HEIGHT + (this.isExMode ? 0 : SEPARATOR_SIZE);
 
-        gc.setFontSize (sendRowHeight);
         final ColorEx textColor = configuration.getColorText ();
         final ColorEx borderColor = configuration.getColorBorder ();
         final ColorEx faderColor = configuration.getColorFader ();
@@ -127,26 +124,21 @@ public class SendsGridElement extends ChannelSelectionGridElement
             if (this.sendNames[i].length () == 0)
                 break;
 
-            drawTextInBounds (gc, this.sendNames[i], faderLeft, topy + SEPARATOR_SIZE, sliderWidth, sendRowHeight, Align.LEFT, textColor);
+            gc.drawTextInBounds (this.sendNames[i], faderLeft, topy + SEPARATOR_SIZE, sliderWidth, sendRowHeight, Align.LEFT, textColor, sendRowHeight);
             topy += sendRowHeight;
-            setColor (gc, borderColor);
-            gc.rectangle (faderLeft, topy + SEPARATOR_SIZE, sliderWidth, sliderHeight);
-            gc.fill ();
+            gc.fillRectangle (faderLeft, topy + SEPARATOR_SIZE, sliderWidth, sliderHeight, borderColor);
+
             final double valueWidth = this.sendValues[i] * sliderWidth / getMaxValue ();
-            final boolean isSendModulated = this.modulatedSendValues[i] != 16383; // == -1
+            final boolean isSendModulated = this.modulatedSendValues[i] != -1;
             final double modulatedValueWidth = isSendModulated ? (double) (this.modulatedSendValues[i] * sliderWidth / getMaxValue ()) : valueWidth;
-            setColor (gc, faderColor);
             final double faderTop = topy + SEPARATOR_SIZE + 1;
-            gc.rectangle (faderLeft + 1, faderTop, modulatedValueWidth - 1, sliderHeight - 2);
-            gc.fill ();
+            gc.fillRectangle (faderLeft + 1, faderTop, modulatedValueWidth - 1, sliderHeight - 2, faderColor);
 
             if (this.sendEdited[i])
             {
-                setColor (gc, editColor);
                 final boolean isTouched = this.sendTexts[i] != null && this.sendTexts[i].length () > 0;
                 final double w = isTouched ? 3 : 1;
-                gc.rectangle (Math.min (faderLeft + sliderWidth - w - 1, faderLeft + valueWidth + 1), faderTop, w, sliderHeight - 2);
-                gc.fill ();
+                gc.fillRectangle (Math.min (faderLeft + sliderWidth - w - 1, faderLeft + valueWidth + 1), faderTop, w, sliderHeight - 2, editColor);
             }
 
             topy += sendRowHeight;
@@ -157,7 +149,6 @@ public class SendsGridElement extends ChannelSelectionGridElement
         final double boxLeft = faderLeft + sliderWidth - boxWidth;
         topy = MENU_HEIGHT;
         final ColorEx backgroundDarker = configuration.getColorBackgroundDarker ();
-        gc.setFontSize (UNIT);
         for (int i = 0; i < 4; i++)
         {
             topy += sendRowHeight;
@@ -165,13 +156,9 @@ public class SendsGridElement extends ChannelSelectionGridElement
             if (this.sendTexts[i].length () > 0)
             {
                 final double volumeTextTop = topy + sliderHeight + 1 + (this.isExMode ? 0 : SEPARATOR_SIZE);
-                setColor (gc, backgroundDarker);
-                gc.rectangle (boxLeft, volumeTextTop, boxWidth, UNIT);
-                gc.fill ();
-                setColor (gc, borderColor);
-                gc.rectangle (boxLeft, volumeTextTop, boxWidth - 1, UNIT);
-                gc.stroke ();
-                drawTextInBounds (gc, this.sendTexts[i], boxLeft, volumeTextTop, boxWidth, UNIT, Align.CENTER, textColor);
+                gc.fillRectangle (boxLeft, volumeTextTop, boxWidth, UNIT, backgroundDarker);
+                gc.strokeRectangle (boxLeft, volumeTextTop, boxWidth - 1, UNIT, borderColor);
+                gc.drawTextInBounds (this.sendTexts[i], boxLeft, volumeTextTop, boxWidth, UNIT, Align.CENTER, textColor, UNIT);
             }
 
             topy += sendRowHeight;

@@ -1,18 +1,16 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.push.PushConfiguration;
-
-import com.bitwig.extension.api.Color;
-import com.bitwig.extension.api.graphics.GraphicsOutput;
-import com.bitwig.extension.api.graphics.GraphicsOutput.AntialiasMode;
 
 
 /**
@@ -44,17 +42,13 @@ public class MidiClipElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
+    public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
         final int top = 14;
         final double noteAreaHeight = height - top;
 
-        gc.setAntialias (AntialiasMode.OFF);
-
         // Draw the background
-        gc.setColor (Color.fromRGB255 (168, 168, 168));
-        gc.rectangle (left, top, width, noteAreaHeight);
-        gc.fill ();
+        gc.fillRectangle (left, top, width, noteAreaHeight, ColorEx.fromRGB (168, 168, 168));
 
         // Draw the loop, if any and ...
         final int numSteps = this.clip.getNumSteps ();
@@ -76,30 +70,21 @@ public class MidiClipElement extends AbstractGridElement
                 final double x = width * start / pageLength;
                 final double w = width * end / pageLength - x;
                 // The header loop
-                gc.setColor (Color.fromRGB255 (84, 84, 84));
-                gc.rectangle (x + 1, 0, w, len);
-                gc.fill ();
+                gc.fillRectangle (x + 1, 0, w, len, ColorEx.fromRGB (84, 84, 84));
 
                 // Background in note area
-                gc.setColor (Color.fromRGB255 (181, 181, 181));
-                gc.rectangle (x + 1, top, w, noteAreaHeight);
-                gc.fill ();
+                gc.fillRectangle (x + 1, top, w, noteAreaHeight, ColorEx.fromRGB (181, 181, 181));
             }
         }
         // Draw play start in header
-        gc.setAntialias (AntialiasMode.BEST);
         final double [] clipColor = this.clip.getColor ();
         final double playStart = this.clip.getPlayStart ();
+        final ColorEx lineColor = new ColorEx (clipColor[0], clipColor[1], clipColor[2]);
         if (playStart >= startPos && playStart <= endPos)
         {
             final double start = playStart - startPos;
             final double x = width * start / pageLength;
-            gc.setColor (Color.fromRGB (clipColor[0], clipColor[1], clipColor[2]));
-            gc.moveTo (x + 1, 0);
-            gc.lineTo (x + 1 + len, len / 2);
-            gc.lineTo (x + 1, len);
-            gc.lineTo (x + 1, 0);
-            gc.fill ();
+            gc.fillTriangle (x + 1, 0, x + 1 + len, len / 2, x + 1, len, lineColor);
         }
         // Draw play end in header
         final double playEnd = this.clip.getPlayEnd ();
@@ -107,33 +92,22 @@ public class MidiClipElement extends AbstractGridElement
         {
             final double end = playEnd - startPos;
             final double x = width * end / pageLength;
-            gc.setColor (Color.fromRGB (clipColor[0], clipColor[1], clipColor[2]));
-            gc.moveTo (x + 1, 0);
-            gc.lineTo (x + 1, len);
-            gc.lineTo (x + 1 - top, len / 2);
-            gc.moveTo (x + 1, 0);
-            gc.fill ();
+            gc.fillTriangle (x + 1, 0, x + 1, len, x + 1 - top, len / 2, lineColor);
         }
-        gc.setAntialias (AntialiasMode.OFF);
 
         // Draw dividers
         final double stepWidth = width / numSteps;
-        gc.setColor (Color.fromRGB255 (130, 130, 130));
         for (int step = 0; step <= numSteps; step++)
         {
             final double x = left + step * stepWidth;
-            gc.rectangle (x, top, 1, noteAreaHeight);
-            gc.fill ();
+            gc.fillRectangle (x, top, 1, noteAreaHeight, ColorEx.fromRGB (130, 130, 130));
 
             // Draw measure texts
             if (step % 4 == 0)
             {
-                gc.setAntialias (AntialiasMode.BEST);
-                gc.setFontSize (top);
                 final double time = startPos + step * stepLength;
                 final String measureText = StringUtils.formatMeasures (this.quartersPerMeasure, time, 1);
-                drawTextInHeight (gc, measureText, x, 0, top - 1, ColorEx.WHITE);
-                gc.setAntialias (AntialiasMode.OFF);
+                gc.drawTextInHeight (measureText, x, 0, top - 1, ColorEx.WHITE, top);
             }
         }
 
@@ -145,15 +119,11 @@ public class MidiClipElement extends AbstractGridElement
         final int range = 1 + upperRowWithData - lowerRowWithData;
         final double stepHeight = noteAreaHeight / range;
 
-        final double fontSize = calculateFontSize (gc, stepHeight, stepWidth);
-        if (fontSize > 0)
-            gc.setFontSize (fontSize);
+        final double fontSize = gc.calculateFontSize (stepHeight, stepWidth);
 
         for (int row = 0; row < range; row++)
         {
-            gc.setColor (Color.fromRGB255 (130, 130, 130));
-            gc.rectangle (left, top + (range - row - 1) * stepHeight, width, 1);
-            gc.fill ();
+            gc.fillRectangle (left, top + (range - row - 1) * stepHeight, width, 1, ColorEx.fromRGB (130, 130, 130));
 
             for (int step = 0; step < numSteps; step++)
             {
@@ -173,62 +143,20 @@ public class MidiClipElement extends AbstractGridElement
                     w -= 2;
                 }
 
-                gc.setColor (Color.fromRGB255 (0, 0, 0));
-                gc.setLineWidth (1.0);
-                gc.rectangle (x, top + (range - row - 1) * stepHeight + 2, w, stepHeight - 2);
-                gc.stroke ();
-
-                gc.setColor (Color.fromRGB (clipColor[0], clipColor[1], clipColor[2]));
-                gc.rectangle (x + (isStart ? 0 : -2), top + (range - row - 1) * stepHeight + 2, w - 1 + (isStart ? 0 : 2), stepHeight - 3);
-                gc.fill ();
+                gc.strokeRectangle (x, top + (range - row - 1) * stepHeight + 2, w, stepHeight - 2, ColorEx.BLACK);
+                gc.fillRectangle (x + (isStart ? 0 : -2), top + (range - row - 1) * stepHeight + 2, w - 1 + (isStart ? 0 : 2), stepHeight - 3, new ColorEx (clipColor[0], clipColor[1], clipColor[2]));
 
                 if (isStart && fontSize > 0)
                 {
-                    gc.setAntialias (AntialiasMode.BEST);
                     final String text = Scales.formatDrumNote (note);
-                    drawTextInBounds (gc, text, x, top + (range - row - 1) * stepHeight + 2, w - 1, stepHeight - 3, Align.CENTER, ColorEx.BLACK);
-                    gc.setAntialias (AntialiasMode.OFF);
+                    gc.drawTextInBounds (text, x, top + (range - row - 1) * stepHeight + 2, w - 1, stepHeight - 3, Align.CENTER, ColorEx.BLACK, fontSize);
                 }
             }
         }
 
-        gc.setAntialias (AntialiasMode.BEST);
-
         // Draw the play cursor
         final int playStep = this.clip.getCurrentStep ();
         if (playStep >= 0)
-        {
-            gc.setColor (Color.blackColor ());
-            gc.rectangle (left + playStep * stepWidth, 0, 1, height);
-            gc.fill ();
-        }
-    }
-
-
-    /**
-     * Calculates the maximum height of a text which needs to fit into a width.
-     *
-     * @param gc The graphics context
-     * @param maxHeight The maximum height of the text
-     * @param maxWidth The maximum width
-     * @return The text height or -1 if the minimum height of 10 does not fit into the width
-     */
-    private static double calculateFontSize (final GraphicsOutput gc, final double maxHeight, final double maxWidth)
-    {
-        final String maxString = "G#5";
-        final double minSize = 12.0;
-
-        double size = minSize;
-        double fittingSize = -1;
-        while (size < maxHeight)
-        {
-            gc.setFontSize (size);
-            final double width = gc.getTextExtents (maxString).getWidth ();
-            if (width > maxWidth)
-                break;
-            fittingSize = size;
-            size += 1.0;
-        }
-        return fittingSize;
+            gc.fillRectangle (left + playStep * stepWidth, 0, 1, height, ColorEx.BLACK);
     }
 }

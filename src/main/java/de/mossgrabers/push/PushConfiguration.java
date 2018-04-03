@@ -135,7 +135,6 @@ public class PushConfiguration extends AbstractConfiguration
     private boolean                stopAutomationOnKnobRelease      = false;
     private TrackState             trackState                       = TrackState.MUTE;
     private Integer                debugMode                        = Modes.MODE_TRACK;
-    private boolean                isDisplayWindowVisible           = false;
 
     // Only Push 1
     private int                    velocityCurve                    = 1;
@@ -188,7 +187,7 @@ public class PushConfiguration extends AbstractConfiguration
 
     /**
      * Constructor.
-     * 
+     *
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param isPush2 Use Push 1 or Push 2 controller?
@@ -883,17 +882,6 @@ public class PushConfiguration extends AbstractConfiguration
 
 
     /**
-     * Is the Push 2 display window visible?
-     *
-     * @return True if the window is visible
-     */
-    public boolean isDisplayWindowVisible ()
-    {
-        return this.isDisplayWindowVisible;
-    }
-
-
-    /**
      * Activate the Push 2 hardware settings.
      *
      * @param settingsUI The settings
@@ -1106,7 +1094,7 @@ public class PushConfiguration extends AbstractConfiguration
 
         this.colorEditSetting = settingsUI.getColorSetting ("Edit", CATEGORY_COLORS, DEFAULT_COLOR_EDIT);
         this.colorEditSetting.addValueObserver (color -> {
-            this.colorVU = new ColorEx (color[0], color[1], color[2]);
+            this.colorEdit = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_EDIT);
         });
 
@@ -1155,9 +1143,6 @@ public class PushConfiguration extends AbstractConfiguration
         if (!this.isPush2)
             return;
 
-        settingsUI.getEnumSetting ("Display window", CATEGORY_DEBUG, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]).addValueObserver (value -> {
-            this.isDisplayWindowVisible = "On".equals (value);
-            this.notifyObservers (DEBUG_WINDOW);
-        });
+        settingsUI.getSignalSetting (" ", CATEGORY_DEBUG, "Display window").addValueObserver (value -> this.notifyObservers (DEBUG_WINDOW));
     }
 }

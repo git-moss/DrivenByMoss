@@ -4,15 +4,20 @@
 
 package de.mossgrabers.framework.bitwig.daw;
 
+import de.mossgrabers.framework.bitwig.graphics.BitmapImpl;
+import de.mossgrabers.framework.bitwig.graphics.ImageImpl;
+import de.mossgrabers.framework.bitwig.usb.USBDeviceImpl;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.graphics.IBitmap;
+import de.mossgrabers.framework.graphics.IImage;
+import de.mossgrabers.framework.usb.IUSBDevice;
 
-import com.bitwig.extension.api.graphics.Bitmap;
 import com.bitwig.extension.api.graphics.BitmapFormat;
-import com.bitwig.extension.api.graphics.Image;
 import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.UsbDevice;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -22,7 +27,8 @@ import java.nio.ByteBuffer;
  */
 public class HostImpl implements IHost
 {
-    private ControllerHost host;
+    private ControllerHost   host;
+    private List<IUSBDevice> usbDevices = new ArrayList<> ();
 
 
     /**
@@ -119,25 +125,17 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public void sendDatagramPacket (final String string, final int port, final byte [] data)
+    public IImage loadSVG (final String path, final int scale)
     {
-        this.host.sendDatagramPacket (string, port, data);
+        return new ImageImpl (this.host.loadSVG (path, scale));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public Image loadSVG (final String path, final int scale)
+    public IBitmap createBitmap (final int width, final int height)
     {
-        return this.host.loadSVG (path, scale);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public Bitmap createBitmap (final int width, final int height)
-    {
-        return this.host.createBitmap (width, height, BitmapFormat.ARGB32);
+        return new BitmapImpl (this.host.createBitmap (width, height, BitmapFormat.ARGB32));
     }
 
 
@@ -151,8 +149,19 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public UsbDevice getUsbDevice (final int index)
+    public IUSBDevice getUsbDevice (final int index)
     {
-        return this.host.getUsbDevice (index);
+        final USBDeviceImpl usbDevice = new USBDeviceImpl (this, this.host.getUsbDevice (index));
+        this.usbDevices.add (usbDevice);
+        return usbDevice;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void releaseUsbDevices ()
+    {
+        for (final IUSBDevice usbDevice: this.usbDevices)
+            usbDevice.release ();
     }
 }

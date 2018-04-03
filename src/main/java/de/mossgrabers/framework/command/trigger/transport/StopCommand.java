@@ -42,7 +42,7 @@ public class StopCommand<S extends IControlSurface<C>, C extends Configuration> 
             return;
         final ITransport transport = this.model.getTransport ();
         if (transport.isPlaying ())
-            handleStopOptions ();
+            this.handleStopOptions ();
         else
             transport.stopAndRewind ();
     }

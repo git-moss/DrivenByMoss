@@ -9,7 +9,7 @@ import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.display.USBDisplay;
+import de.mossgrabers.push.controller.display.PushUSBDisplay;
 import de.mossgrabers.push.controller.display.model.DisplayModel;
 import de.mossgrabers.push.controller.display.model.VirtualDisplay;
 import de.mossgrabers.push.controller.display.model.grid.GridChangeListener;
@@ -80,7 +80,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     private DisplayModel           model;
 
     private final VirtualDisplay   virtualDisplay;
-    private final USBDisplay       usbDisplay;
+    private final PushUSBDisplay   usbDisplay;
 
 
     /**
@@ -102,7 +102,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
         this.model.addGridElementChangeListener (this);
 
         this.virtualDisplay = this.isPush2 ? new VirtualDisplay (host, this.model, configuration) : null;
-        this.usbDisplay = this.isPush2 ? new USBDisplay (host) : null;
+        this.usbDisplay = this.isPush2 ? new PushUSBDisplay (host) : null;
     }
 
 
@@ -289,13 +289,11 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
 
 
     /**
-     * Show or hide the display debug window.
-     *
-     * @param show True to show otherwise hide
+     * Show the display debug window.
      */
-    public void showDebugWindow (final boolean show)
+    public void showDebugWindow ()
     {
-        if (this.virtualDisplay != null && show)
+        if (this.virtualDisplay != null)
             this.virtualDisplay.getImage ().showDisplayWindow ();
     }
 

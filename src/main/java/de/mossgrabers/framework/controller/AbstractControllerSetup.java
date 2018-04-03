@@ -38,7 +38,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     protected IModel              model;
     protected C                   configuration;
     protected ColorManager        colorManager;
-    protected IValueChanger        valueChanger;
+    protected IValueChanger       valueChanger;
 
 
     /**

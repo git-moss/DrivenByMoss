@@ -474,7 +474,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final boolean isPan = mode == Modes.MODE_PAN;
 
         tb.setIndication (!isEffect && isSession);
-        tbe.setIndication (isEffect && isSession);
+        if (tbe != null)
+            tbe.setIndication (isEffect && isSession);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         for (int i = 0; i < 8; i++)
@@ -485,9 +486,12 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             for (int j = 0; j < 8; j++)
                 track.getSend (j).setIndication (!isEffect && (mode == Modes.MODE_SEND1 && j == 0 || mode == Modes.MODE_SEND2 && j == 1 || mode == Modes.MODE_SEND3 && j == 2 || mode == Modes.MODE_SEND4 && j == 3 || mode == Modes.MODE_SEND5 && j == 4 || mode == Modes.MODE_SEND6 && j == 5 || mode == Modes.MODE_SEND7 && j == 6 || mode == Modes.MODE_SEND8 && j == 7));
 
-            final ITrack fxTrack = tbe.getTrack (i);
-            fxTrack.setVolumeIndication (isEffect);
-            fxTrack.setPanIndication (isEffect && isPan);
+            if (tbe != null)
+            {
+                final ITrack fxTrack = tbe.getTrack (i);
+                fxTrack.setVolumeIndication (isEffect);
+                fxTrack.setPanIndication (isEffect && isPan);
+            }
 
             cursorDevice.indicateParameter (i, true);
         }

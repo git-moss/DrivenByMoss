@@ -232,6 +232,9 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[1]);
                     this.setVUMetersEnabled (false);
                     break;
+
+                default:
+                    return;
             }
 
             profileSetting.set (DEVICE_SELECT);

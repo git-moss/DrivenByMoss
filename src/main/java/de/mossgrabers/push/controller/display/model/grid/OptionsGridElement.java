@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.push.PushConfiguration;
-
-import com.bitwig.extension.api.graphics.GraphicsOutput;
 
 
 /**
@@ -51,7 +51,7 @@ public class OptionsGridElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
+    public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
         final double menuHeight = MENU_HEIGHT * 2;
 
@@ -68,11 +68,10 @@ public class OptionsGridElement extends AbstractGridElement
 
         final double headerHeight = (DISPLAY_HEIGHT - 2 * menuHeight) / 2;
         final ColorEx textColor = configuration.getColorText ();
-        gc.setFontSize (headerHeight / 2.0);
         if (hasTopHeader)
-            drawTextInHeight (gc, this.headerTop, left, menuHeight, headerHeight, textColor);
+            gc.drawTextInHeight (this.headerTop, left, menuHeight, headerHeight, textColor, headerHeight / 2.0);
         if (hasBottomHeader)
-            drawTextInHeight (gc, this.headerBottom, left, menuHeight + headerHeight, headerHeight, textColor);
+            gc.drawTextInHeight (this.headerBottom, left, menuHeight + headerHeight, headerHeight, textColor, headerHeight / 2.0);
     }
 
 
@@ -88,18 +87,12 @@ public class OptionsGridElement extends AbstractGridElement
      * @param isSelected True if the menu is selected
      * @param configuration The layout settings to use
      */
-    protected static void drawLargeMenu (final GraphicsOutput gc, final double left, final double top, final double width, final double height, final String menu, final boolean isSelected, final PushConfiguration configuration)
+    protected static void drawLargeMenu (final IGraphicsContext gc, final double left, final double top, final double width, final double height, final String menu, final boolean isSelected, final PushConfiguration configuration)
     {
         if (menu == null || menu.length () == 0)
             return;
-
         final ColorEx textColor = configuration.getColorText ();
-
-        setColor (gc, isSelected ? textColor : configuration.getColorBackground ());
-        gc.rectangle (left, top, width, height);
-        gc.fill ();
-
-        gc.setFontSize (height / 2);
-        drawTextInBounds (gc, menu, left, top, width, height, Align.CENTER, isSelected ? configuration.getColorBorder () : textColor);
+        gc.fillRectangle (left, top, width, height, isSelected ? textColor : configuration.getColorBackground ());
+        gc.drawTextInBounds (menu, left, top, width, height, Align.CENTER, isSelected ? configuration.getColorBorder () : textColor, height / 2);
     }
 }

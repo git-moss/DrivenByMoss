@@ -51,7 +51,10 @@ public class VolumeCommand extends AbstractTriggerCommand<PushControlSurface, Pu
         }
 
         if (Modes.MODE_VOLUME.equals (currentMode))
-            modeManager.setActiveMode (Modes.MODE_CROSSFADER);
+        {
+            if (this.model.getHost ().hasCrossfader ())
+                modeManager.setActiveMode (Modes.MODE_CROSSFADER);
+        }
         else
             modeManager.setActiveMode (Modes.MODE_VOLUME);
     }

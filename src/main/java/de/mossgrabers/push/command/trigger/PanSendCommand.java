@@ -5,8 +5,8 @@
 package de.mossgrabers.push.command.trigger;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.push.PushConfiguration;
@@ -40,7 +40,6 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
         if (event != ButtonEvent.DOWN)
             return;
 
-        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
         final ModeManager modeManager = this.surface.getModeManager ();
         final Integer currentMode = modeManager.getActiveModeId ();
 
@@ -61,7 +60,8 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
                 if (mode.intValue () < Modes.MODE_DEVICE_LAYER_PAN.intValue () || mode.intValue () > Modes.MODE_DEVICE_LAYER_SEND6.intValue ())
                     mode = Modes.MODE_DEVICE_LAYER_PAN;
                 // Check if Send channel exists
-                if (mode.intValue () >= Modes.MODE_DEVICE_LAYER_SEND1.intValue () && mode.intValue () <= Modes.MODE_DEVICE_LAYER_SEND6.intValue () && fxTrackBank != null && !fxTrackBank.getTrack (mode.intValue () - Modes.MODE_DEVICE_LAYER_SEND1.intValue ()).doesExist ())
+                final ITrackBank tb = this.model.getTrackBank ();
+                if (mode.intValue () >= Modes.MODE_DEVICE_LAYER_SEND1.intValue () && mode.intValue () <= Modes.MODE_DEVICE_LAYER_SEND6.intValue () && tb.canEditSend (mode.intValue () - Modes.MODE_DEVICE_LAYER_SEND1.intValue ()))
                     mode = Modes.MODE_DEVICE_LAYER_PAN;
             }
             modeManager.setActiveMode (mode);
@@ -80,7 +80,8 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
             if (mode.intValue () < Modes.MODE_PAN.intValue () || mode.intValue () > Modes.MODE_SEND6.intValue ())
                 mode = Modes.MODE_PAN;
             // Check if Send channel exists
-            if (mode.intValue () >= Modes.MODE_SEND1.intValue () && mode.intValue () <= Modes.MODE_SEND6.intValue () && fxTrackBank != null && !fxTrackBank.getTrack (mode.intValue () - Modes.MODE_SEND1.intValue ()).doesExist ())
+            final ITrackBank tb = this.model.getTrackBank ();
+            if (mode.intValue () >= Modes.MODE_SEND1.intValue () && mode.intValue () <= Modes.MODE_SEND6.intValue () && tb.canEditSend (mode.intValue () - Modes.MODE_SEND1.intValue ()))
                 mode = Modes.MODE_PAN;
         }
         modeManager.setActiveMode (mode);

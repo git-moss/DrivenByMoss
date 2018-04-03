@@ -138,7 +138,7 @@ public class ClipMode extends AbstractTrackMode
         final ITrack t6 = tb.getTrack (6);
         final ITrack t7 = tb.getTrack (7);
 
-        message.addParameterElement ("Session", this.displayMidiNotes, t0.getName (), t0.getType (), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
+        message.addParameterElement (this.model.getHost ().hasClips () ? "Session" : "", this.displayMidiNotes, t0.getName (), t0.getType (), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
         message.addParameterElement ("Piano Roll", false, t1.getName (), t1.getType (), t1.getColor (), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);
         message.addParameterElement ("", false, t2.getName (), t2.getType (), t2.getColor (), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart (), 1), this.isKnobTouched[2], -1);
         message.addParameterElement ("", false, t3.getName (), t3.getType (), t3.getColor (), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength (), 0), this.isKnobTouched[3], -1);
@@ -166,7 +166,8 @@ public class ClipMode extends AbstractTrackMode
         switch (index)
         {
             case 0:
-                this.surface.getModeManager ().setActiveMode (Modes.MODE_SESSION);
+                if (this.model.getHost ().hasClips ())
+                    this.surface.getModeManager ().setActiveMode (Modes.MODE_SESSION);
                 break;
             case 1:
                 if (this.isPush2)

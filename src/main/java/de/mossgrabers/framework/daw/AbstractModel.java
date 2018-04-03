@@ -43,7 +43,7 @@ public abstract class AbstractModel implements IModel
 
     protected Scales                   scales;
     protected ColorManager             colorManager;
-    protected IValueChanger             valueChanger;
+    protected IValueChanger            valueChanger;
 
     protected int                      numTracks;
     protected int                      numScenes;

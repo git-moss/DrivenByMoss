@@ -12,8 +12,6 @@ import de.mossgrabers.framework.bitwig.daw.HostImpl;
 import de.mossgrabers.framework.bitwig.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
-import com.bitwig.extension.api.PlatformType;
-import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 
@@ -30,14 +28,6 @@ public class BeatstepControllerExtensionDefinition extends AbstractControllerExt
     public BeatstepControllerExtensionDefinition ()
     {
         super (new BeatstepControllerDefinition (false));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
-    {
-        this.createDeviceDiscoveryPairs ("Arturia BeatStep", list);
     }
 
 

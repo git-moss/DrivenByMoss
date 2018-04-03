@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller.display.model;
@@ -7,12 +7,9 @@ package de.mossgrabers.push.controller.display.model;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.resource.ResourceHandler;
+import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.push.PushConfiguration;
 import de.mossgrabers.push.controller.display.model.grid.GridElement;
-
-import com.bitwig.extension.api.graphics.Bitmap;
-import com.bitwig.extension.api.graphics.GraphicsOutput;
-import com.bitwig.extension.api.graphics.GraphicsOutput.AntialiasMode;
 
 import java.util.List;
 
@@ -28,7 +25,7 @@ public class VirtualDisplay
     private static final int        DISPLAY_HEIGHT = 160;
 
     private final DisplayModel      model;
-    private final Bitmap            image;
+    private final IBitmap           image;
     private final PushConfiguration configuration;
 
 
@@ -67,7 +64,7 @@ public class VirtualDisplay
      *
      * @return The image
      */
-    public Bitmap getImage ()
+    public IBitmap getImage ()
     {
         return this.image;
     }
@@ -76,18 +73,14 @@ public class VirtualDisplay
     /**
      * Draws the N grid elements of the grid.
      *
-     * @param image The image to draw to
+     * @param bitmap The bitmap to draw to
      */
-    public void drawGrid (final Bitmap image)
+    private void drawGrid (final IBitmap bitmap)
     {
-        image.render (gc -> {
-            configureGraphics (gc);
-
+        bitmap.render (gc -> {
             // Clear display
             final ColorEx colorBorder = this.configuration.getColorBorder ();
-            gc.setColor (colorBorder.getRed (), colorBorder.getGreen (), colorBorder.getBlue ());
-            gc.rectangle (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-            gc.fill ();
+            gc.fillRectangle (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, colorBorder);
 
             final List<GridElement> elements = this.model.getGridElements ();
             final int size = elements.size ();
@@ -100,16 +93,5 @@ public class VirtualDisplay
             for (int i = 0; i < size; i++)
                 elements.get (i).draw (gc, i * gridWidth + offsetX, paintWidth, DISPLAY_HEIGHT, this.configuration);
         });
-    }
-
-
-    /**
-     * Makes several graphic settings on the graphics output.
-     *
-     * @param graphicsOutput The graphics output to configure
-     */
-    private static void configureGraphics (final GraphicsOutput graphicsOutput)
-    {
-        graphicsOutput.setAntialias (AntialiasMode.BEST);
     }
 }

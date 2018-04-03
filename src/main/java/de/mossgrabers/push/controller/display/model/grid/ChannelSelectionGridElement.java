@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller.display.model.grid;
@@ -7,10 +7,10 @@ package de.mossgrabers.push.controller.display.model.grid;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.daw.resource.ResourceHandler;
+import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsContext;
+import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.push.PushConfiguration;
-
-import com.bitwig.extension.api.graphics.GraphicsOutput;
-import com.bitwig.extension.api.graphics.Image;
 
 import java.util.EnumMap;
 
@@ -78,7 +78,7 @@ public class ChannelSelectionGridElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
+    public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
         this.drawMenu (gc, left, width, configuration);
 
@@ -103,37 +103,28 @@ public class ChannelSelectionGridElement extends AbstractGridElement
      * @param name The name of the track
      * @param configuration The layout settings
      */
-    protected void drawTrackInfo (final GraphicsOutput gc, final double left, final double width, final double height, final double trackRowTop, final String name, final PushConfiguration configuration)
+    protected void drawTrackInfo (final IGraphicsContext gc, final double left, final double width, final double height, final double trackRowTop, final String name, final PushConfiguration configuration)
     {
         // Draw the background
         final ColorEx backgroundColor = configuration.getColorBackground ();
-        setColor (gc, this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
-        gc.rectangle (left, trackRowTop + 1, width, height - UNIT - 1);
-        gc.fill ();
+        gc.fillRectangle (left, trackRowTop + 1, width, height - UNIT - 1, this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
 
         // The tracks icon and name
         final String iconName = this.getIcon ();
         if (iconName != null)
         {
-            final Image icon = ResourceHandler.getSVGImage (iconName);
+            final IImage icon = ResourceHandler.getSVGImage (iconName);
             final ColorEx maskColor = this.getMaskColor (configuration);
             if (maskColor == null)
                 gc.drawImage (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2.0);
             else
-            {
-                setColor (gc, maskColor);
-                gc.mask (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2.0);
-                gc.fill ();
-            }
+                gc.maskImage (icon, left + (DOUBLE_UNIT - icon.getWidth ()) / 2, height - TRACK_ROW_HEIGHT - UNIT + (TRACK_ROW_HEIGHT - icon.getHeight ()) / 2.0, maskColor);
         }
 
-        gc.setFontSize (1.2 * UNIT);
-        drawTextInBounds (gc, name, left + DOUBLE_UNIT, height - TRACK_ROW_HEIGHT - UNIT, width - DOUBLE_UNIT, TRACK_ROW_HEIGHT, Align.LEFT, configuration.getColorText ());
+        gc.drawTextInBounds (name, left + DOUBLE_UNIT, height - TRACK_ROW_HEIGHT - UNIT, width - DOUBLE_UNIT, TRACK_ROW_HEIGHT, Align.LEFT, configuration.getColorText (), 1.2 * UNIT);
 
         // The track color section
-        setColor (gc, this.getColor ());
-        gc.rectangle (left, height - UNIT, width, UNIT);
-        gc.fill ();
+        gc.fillRectangle (left, height - UNIT, width, UNIT, this.getColor ());
     }
 
 

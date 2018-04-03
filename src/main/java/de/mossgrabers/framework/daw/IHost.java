@@ -4,9 +4,9 @@
 
 package de.mossgrabers.framework.daw;
 
-import com.bitwig.extension.api.graphics.Bitmap;
-import com.bitwig.extension.api.graphics.Image;
-import com.bitwig.extension.controller.api.UsbDevice;
+import de.mossgrabers.framework.graphics.IBitmap;
+import de.mossgrabers.framework.graphics.IImage;
+import de.mossgrabers.framework.usb.IUSBDevice;
 
 import java.nio.ByteBuffer;
 
@@ -101,16 +101,6 @@ public interface IHost
 
 
     /**
-     * Send a datagram package to the given server. TODO: Remove when USB API is available
-     *
-     * @param hostAddress The IP address of the server
-     * @param port The port
-     * @param data The data to send
-     */
-    void sendDatagramPacket (String hostAddress, int port, byte [] data);
-
-
-    /**
      * Loads a SVG image. The memory used by this image is guaranteed to be freed once this
      * extension exits.
      *
@@ -118,7 +108,7 @@ public interface IHost
      * @param scale The scaling factor
      * @return The loaded SVG image
      */
-    Image loadSVG (String imageName, int scale);
+    IImage loadSVG (String imageName, int scale);
 
 
     /**
@@ -129,7 +119,7 @@ public interface IHost
      * @param height The height of the bitmap
      * @return The created bitmap
      */
-    Bitmap createBitmap (int width, int height);
+    IBitmap createBitmap (int width, int height);
 
 
     /**
@@ -148,5 +138,11 @@ public interface IHost
      * @param index The index
      * @return The USB device
      */
-    UsbDevice getUsbDevice (int index);
+    IUSBDevice getUsbDevice (int index);
+
+
+    /**
+     * Call on shutdown to release all USB devices.
+     */
+    void releaseUsbDevices ();
 }

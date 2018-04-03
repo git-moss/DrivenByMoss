@@ -12,12 +12,7 @@ import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.push.PushControllerDefinition;
 import de.mossgrabers.push.PushControllerSetup;
 
-import com.bitwig.extension.api.PlatformType;
-import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
-import com.bitwig.extension.controller.UsbDeviceInfo;
 import com.bitwig.extension.controller.api.ControllerHost;
-
-import java.util.List;
 
 
 /**
@@ -27,47 +22,12 @@ import java.util.List;
  */
 public class Push2ControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    /** Push 2 USB Vendor ID. */
-    private static final short VENDOR_ID  = 0x2982;
-    /** Push 2 USB Product ID. */
-    private static final short PRODUCT_ID = 0x1967;
-
-
     /**
      * Constructor.
      */
     public Push2ControllerExtensionDefinition ()
     {
         super (new PushControllerDefinition (true));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
-    {
-        switch (platformType)
-        {
-            case WINDOWS:
-                this.addDeviceDiscoveryPair ("Ableton Push 2", list);
-                break;
-
-            case LINUX:
-                this.addDeviceDiscoveryPair ("Ableton Push 2 MIDI 1", list);
-                break;
-
-            case MAC:
-                this.addDeviceDiscoveryPair ("Ableton Push 2 Live Port", list);
-                break;
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void listUsbEndpoints (final List<UsbDeviceInfo> endpoints)
-    {
-        endpoints.add (new UsbDeviceInfo (VENDOR_ID, PRODUCT_ID));
     }
 
 

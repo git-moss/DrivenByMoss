@@ -54,7 +54,7 @@ import de.mossgrabers.sl.view.Views;
 
 
 /**
- * Bitwig Studio extension to support the Novation SLMkII Pro and SLMkII MkII controllers.
+ * Support for the Novation SLMkII Pro and SLMkII MkII controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

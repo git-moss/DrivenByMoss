@@ -31,7 +31,7 @@ public abstract class AbstractChannelBank implements IChannelBank
     protected ITrack []                         tracks;
     protected ISceneBank                        sceneBank;
 
-    protected final IValueChanger                valueChanger;
+    protected final IValueChanger               valueChanger;
     protected final Set<NoteObserver>           noteObservers = new HashSet<> ();
     protected final Set<TrackSelectionObserver> observers     = new HashSet<> ();
     protected final int [] []                   noteCache;
@@ -72,7 +72,7 @@ public abstract class AbstractChannelBank implements IChannelBank
 
     /**
      * Notify all registered track selection observers.
-     * 
+     *
      * @param trackIndex The index of the track which selection state has changed
      * @param isSelected True if selected otherwise false
      */

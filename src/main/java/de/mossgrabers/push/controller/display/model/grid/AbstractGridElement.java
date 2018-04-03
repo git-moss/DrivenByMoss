@@ -1,13 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.push.PushConfiguration;
-
-import com.bitwig.extension.api.graphics.GraphicsOutput;
 
 
 /**
@@ -27,13 +27,6 @@ public abstract class AbstractGridElement implements GridElement
 
     protected final boolean isMenuSelected;
     protected final String  menuName;
-
-    protected enum Align
-    {
-        LEFT,
-        RIGHT,
-        CENTER
-    }
 
 
     /**
@@ -102,67 +95,6 @@ public abstract class AbstractGridElement implements GridElement
 
 
     /**
-     * Draws a text into a boundary. The text is clipped on the right border of the bounds.
-     * Calculates the text descent.
-     *
-     * @param g The graphics context in which to draw
-     * @param text The text to draw
-     * @param x The x position of the boundary
-     * @param y The y position of the boundary
-     * @param width The width position of the boundary
-     * @param height The height position of the boundary
-     * @param alignment The alignment of the text: Label.LEFT or Label.CENTER
-     * @param color The color of the text
-     */
-    public static void drawTextInBounds (final GraphicsOutput g, final String text, final double x, final double y, final double width, final double height, final Align alignment, final ColorEx color)
-    {
-        if (text == null || text.length () == 0)
-            return;
-
-        // We need to calculate the text height from a character which has no ascent, since showText
-        // always draws the text on the baseline of the font!
-        final double h = g.getTextExtents ("T").getHeight ();
-        final double pos = alignment == Align.CENTER ? x + (width - g.getTextExtents (text).getWidth ()) / 2.0 : x;
-
-        g.save ();
-        g.rectangle (x, y, width, height);
-        g.clip ();
-        setColor (g, color);
-        g.moveTo (pos, y + (height + h) / 2);
-        g.showText (text);
-        g.resetClip ();
-        g.restore ();
-    }
-
-
-    /**
-     * Draws a text centered into a height (horizontally). The text is not clipped.
-     *
-     * @param g The graphics context in which to draw
-     * @param text The text to draw
-     * @param x The x position of the boundary
-     * @param y The y position of the boundary
-     * @param height The height position of the boundary
-     * @param color The color of the text
-     */
-    public static void drawTextInHeight (final GraphicsOutput g, final String text, final double x, final double y, final double height, final ColorEx color)
-    {
-        if (text == null || text.length () == 0)
-            return;
-
-        // We need to calculate the text height from a character which has no ascent, since showText
-        // always draws the text on the baseline of the font!
-        final double h = g.getTextExtents ("T").getHeight ();
-
-        g.save ();
-        setColor (g, color);
-        g.moveTo (x, y + (height + h) / 2);
-        g.showText (text);
-        g.restore ();
-    }
-
-
-    /**
      * Draws a menu at the top of the element.
      *
      * @param gc The graphics context
@@ -170,30 +102,21 @@ public abstract class AbstractGridElement implements GridElement
      * @param width The width of the menu
      * @param configuration The layout settings to use
      */
-    protected void drawMenu (final GraphicsOutput gc, final double left, final double width, final PushConfiguration configuration)
+    protected void drawMenu (final IGraphicsContext gc, final double left, final double width, final PushConfiguration configuration)
     {
         final ColorEx borderColor = configuration.getColorBorder ();
         if (this.menuName == null || this.menuName.length () == 0)
         {
             // Remove the 2 pixels of the previous menus border line
-            setColor (gc, borderColor);
-            gc.rectangle (left - SEPARATOR_SIZE, MENU_HEIGHT - 2, SEPARATOR_SIZE, 1);
-            gc.fill ();
+            gc.fillRectangle (left - SEPARATOR_SIZE, MENU_HEIGHT - 2, SEPARATOR_SIZE, 1, borderColor);
             return;
         }
 
         final ColorEx textColor = configuration.getColorText ();
-        setColor (gc, this.isMenuSelected ? textColor : borderColor);
-        gc.rectangle (left, 0, width, MENU_HEIGHT - 1.0);
-        gc.fill ();
+        gc.fillRectangle (left, 0, width, MENU_HEIGHT - 1.0, this.isMenuSelected ? textColor : borderColor);
+        gc.fillRectangle (left, MENU_HEIGHT - 2.0, width + SEPARATOR_SIZE, 1, textColor);
 
-        setColor (gc, textColor);
-        gc.rectangle (left, MENU_HEIGHT - 2.0, width + SEPARATOR_SIZE, 1);
-        gc.fill ();
-
-        setColor (gc, this.isMenuSelected ? borderColor : textColor);
-        gc.setFontSize (UNIT);
-        drawTextInBounds (gc, this.menuName, left, 1, width, UNIT + SEPARATOR_SIZE, Align.CENTER, this.isMenuSelected ? borderColor : textColor);
+        gc.drawTextInBounds (this.menuName, left, 1, width, UNIT + SEPARATOR_SIZE, Align.CENTER, this.isMenuSelected ? borderColor : textColor, UNIT);
     }
 
 
@@ -216,11 +139,5 @@ public abstract class AbstractGridElement implements GridElement
     public static void setMaxValue (final double maxValue)
     {
         AbstractGridElement.maxValue = maxValue;
-    }
-
-
-    protected static void setColor (final GraphicsOutput gc, final ColorEx color)
-    {
-        gc.setColor (color.getRed (), color.getGreen (), color.getBlue ());
     }
 }

@@ -5,7 +5,10 @@
 package de.mossgrabers.push;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -16,8 +19,15 @@ import java.util.UUID;
  */
 public class PushControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID EXTENSION_ID_MK_I  = UUID.fromString ("DBED9610-C474-11E6-9598-0800200C9A66");
-    private static final UUID EXTENSION_ID_MK_II = UUID.fromString ("15176AA0-C476-11E6-9598-0800200C9A66");
+    private static final UUID  EXTENSION_ID_MK_I  = UUID.fromString ("DBED9610-C474-11E6-9598-0800200C9A66");
+    private static final UUID  EXTENSION_ID_MK_II = UUID.fromString ("15176AA0-C476-11E6-9598-0800200C9A66");
+
+    /** Push 2 USB Vendor ID. */
+    private static final short VENDOR_ID          = 0x2982;
+    /** Push 2 USB Product ID. */
+    private static final short PRODUCT_ID         = 0x1967;
+
+    private boolean            isMkII;
 
 
     /**
@@ -28,5 +38,44 @@ public class PushControllerDefinition extends DefaultControllerDefinition
     public PushControllerDefinition (final boolean isMkII)
     {
         super ("Push4Bitwig", "Jürgen Moßgraber", "9.51", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "Push 2" : "Push 1", "Ableton", 1, 1);
+        this.isMkII = isMkII;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
+    {
+        final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
+        switch (os)
+        {
+            case WINDOWS:
+                if (this.isMkII)
+                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Ableton Push 2"));
+                else
+                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("MIDIIN2 (Ableton Push)", "MIDIOUT2 (Ableton Push)"));
+                break;
+
+            case LINUX:
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (this.isMkII ? "Ableton Push 2 MIDI 1" : "Ableton Push MIDI 2"));
+                break;
+
+            case MAC:
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (this.isMkII ? "Ableton Push 2 Live Port" : "Ableton Push User Port"));
+                break;
+
+            default:
+                // Not supported
+                break;
+        }
+        return midiDiscoveryPairs;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Pair<Short, Short> claimUSBDevice ()
+    {
+        return this.isMkII ? new Pair<> (Short.valueOf (VENDOR_ID), Short.valueOf (PRODUCT_ID)) : null;
     }
 }

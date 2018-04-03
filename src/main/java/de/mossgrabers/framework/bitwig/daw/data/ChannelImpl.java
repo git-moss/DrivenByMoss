@@ -23,14 +23,14 @@ import com.bitwig.extension.controller.api.SettableColorValue;
 public class ChannelImpl implements IChannel
 {
     protected IValueChanger valueChanger;
-    protected Channel      channel;
+    protected Channel       channel;
 
-    private ISend []       sends;
-    private int            index;
-    private boolean        selected;
-    private int            vu;
-    private IParameter     volumeParameter;
-    private IParameter     panParameter;
+    private ISend []        sends;
+    private int             index;
+    private boolean         selected;
+    private int             vu;
+    private IParameter      volumeParameter;
+    private IParameter      panParameter;
 
 
     /**

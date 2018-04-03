@@ -1,14 +1,13 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller.display.model.grid;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.push.PushConfiguration;
-
-import com.bitwig.extension.api.graphics.GraphicsOutput;
-import com.bitwig.extension.api.graphics.GraphicsOutput.AntialiasMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +22,8 @@ import java.util.List;
  */
 public class BoxListGridElement extends AbstractGridElement
 {
-    private String []       items;
-    private List<double []> colors = new ArrayList<> ();
+    private String []     items;
+    private List<ColorEx> colors = new ArrayList<> ();
 
 
     /**
@@ -38,13 +37,14 @@ public class BoxListGridElement extends AbstractGridElement
         super (null, false, null, null, null, false);
 
         this.items = items;
-        this.colors.addAll (colors);
+        for (final double [] color: colors)
+            this.colors.add (new ColorEx (color[0], color[1], color[2]));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
+    public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
         final int size = this.items.length;
         final double itemHeight = DISPLAY_HEIGHT / (double) size;
@@ -58,23 +58,9 @@ public class BoxListGridElement extends AbstractGridElement
             final double itemTop = i * itemHeight;
             final double itemWidth = width - SEPARATOR_SIZE;
 
-            // Element background
-            final double [] ds = this.colors.get (i);
-            gc.setColor (ds[0], ds[1], ds[2]);
-            gc.rectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE);
-            gc.fill ();
-
-            // Element border
-            gc.setAntialias (AntialiasMode.OFF);
-            setColor (gc, borderColor);
-            gc.setLineWidth (1);
-            gc.rectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE);
-            gc.stroke ();
-            gc.setAntialias (AntialiasMode.BEST);
-
-            // Text
-            gc.setFontSize (itemHeight / 2);
-            drawTextInBounds (gc, this.items[i], itemLeft + INSET, itemTop - 1, itemWidth - 2 * INSET, itemHeight, Align.LEFT, textColor);
+            gc.fillRectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE, this.colors.get (i));
+            gc.strokeRectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE, borderColor);
+            gc.drawTextInBounds (this.items[i], itemLeft + INSET, itemTop - 1, itemWidth - 2 * INSET, itemHeight, Align.LEFT, textColor, itemHeight / 2);
         }
     }
 }

@@ -131,7 +131,7 @@ import de.mossgrabers.push.view.Views;
 
 
 /**
- * Bitwig Studio extension to support the Ableton Push 1 and Push 2 controllers.
+ * Support for the Ableton Push 1 and Push 2 controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -352,6 +352,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 modeManager.setActiveMode (debugMode);
             else
                 this.host.error ("Mode " + debugMode + " not registered.");
+        });
+        this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, () -> {
+            ((PushDisplay) this.getSurface ().getDisplay ()).showDebugWindow ();
         });
 
         this.createScaleObservers (this.configuration);

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller.display.model.grid;
@@ -7,9 +7,9 @@ package de.mossgrabers.push.controller.display.model.grid;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.daw.resource.DeviceTypes;
+import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.push.PushConfiguration;
-
-import com.bitwig.extension.api.graphics.GraphicsOutput;
 
 
 /**
@@ -102,12 +102,12 @@ public class ParamGridElement extends ChannelSelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final GraphicsOutput gc, final double left, final double width, final double height, final PushConfiguration configuration)
+    public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
         this.drawMenu (gc, left, width, configuration);
 
-        final boolean isValueMissing = this.paramValue == 16383; // == -1
-        final boolean isModulated = this.modulatedParamValue != 16383; // == -1
+        final boolean isValueMissing = this.paramValue == -1;
+        final boolean isModulated = this.modulatedParamValue != -1;
 
         final double trackRowTop = height - TRACK_ROW_HEIGHT - UNIT - SEPARATOR_SIZE;
         final String name = this.getName ();
@@ -123,15 +123,13 @@ public class ParamGridElement extends ChannelSelectionGridElement
 
         // Draw the background
         final ColorEx backgroundColor = configuration.getColorBackground ();
-        setColor (gc, this.isTouched ? configuration.getColorBackgroundLighter () : backgroundColor);
-        gc.rectangle (left, MENU_HEIGHT + 1, width, trackRowTop - (isValueMissing ? CONTROLS_TOP + elementHeight : MENU_HEIGHT + 1));
-        gc.fill ();
+        gc.fillRectangle (left, MENU_HEIGHT + 1, width, trackRowTop - (isValueMissing ? CONTROLS_TOP + elementHeight : MENU_HEIGHT + 1), this.isTouched ? configuration.getColorBackgroundLighter () : backgroundColor);
 
         // Draw the name and value texts
         final ColorEx textColor = configuration.getColorText ();
-        gc.setFontSize (elementHeight * 2 / 3);
-        drawTextInBounds (gc, this.paramName, left + INSET - 1, CONTROLS_TOP - INSET, elementWidth, elementHeight, Align.CENTER, textColor);
-        drawTextInBounds (gc, this.paramValueText, left + INSET - 1, CONTROLS_TOP - INSET + elementHeight, elementWidth, elementHeight, Align.CENTER, textColor);
+        final double fontSize = elementHeight * 2 / 3;
+        gc.drawTextInBounds (this.paramName, left + INSET - 1, CONTROLS_TOP - INSET, elementWidth, elementHeight, Align.CENTER, textColor, fontSize);
+        gc.drawTextInBounds (this.paramValueText, left + INSET - 1, CONTROLS_TOP - INSET + elementHeight, elementWidth, elementHeight, Align.CENTER, textColor, fontSize);
 
         // Value slider
         if (isValueMissing)
@@ -142,17 +140,12 @@ public class ParamGridElement extends ChannelSelectionGridElement
         final double valueSliderWidth = value >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * value / maxValue;
         final double innerTop = CONTROLS_TOP + 2 * elementHeight + 1;
         final ColorEx borderColor = configuration.getColorBorder ();
-        setColor (gc, borderColor);
-        gc.rectangle (left + INSET - 1, CONTROLS_TOP + 2 * elementHeight, elementWidth, elementHeight);
-        gc.fill ();
-        setColor (gc, configuration.getColorFader ());
-        gc.rectangle (left + INSET, innerTop, valueSliderWidth, elementHeight - 2);
-        gc.fill ();
-        setColor (gc, configuration.getColorEdit ());
+        gc.fillRectangle (left + INSET - 1, CONTROLS_TOP + 2 * elementHeight, elementWidth, elementHeight, borderColor);
+        gc.fillRectangle (left + INSET, innerTop, valueSliderWidth, elementHeight - 2, configuration.getColorFader ());
+
         final double w = this.isTouched ? 3 : 1;
         final double valueWidth = this.paramValue >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * this.paramValue / maxValue;
-        gc.rectangle (left + INSET + Math.max (0, valueWidth - w), innerTop, w, elementHeight - 2);
-        gc.fill ();
+        gc.fillRectangle (left + INSET + Math.max (0, valueWidth - w), innerTop, w, elementHeight - 2, configuration.getColorEdit ());
     }
 
 

@@ -26,7 +26,7 @@ public class CursorClipImpl implements ICursorClip
 
     private final int [] [] data;
     private Clip            clip;
-    private IValueChanger    valueChanger;
+    private IValueChanger   valueChanger;
     private int             editPage = 0;
     private double          stepLength;
 

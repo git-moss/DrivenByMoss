@@ -1,12 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.push.controller.display.model.grid;
 
+import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.push.PushConfiguration;
-
-import com.bitwig.extension.api.graphics.GraphicsOutput;
 
 
 /**
@@ -40,11 +39,11 @@ public interface GridElement
     /**
      * Draw the element.
      *
-     * @param graphicsOutput The graphic context
+     * @param gc The graphic context
      * @param left The left bound of the drawing area of the element
      * @param width The width of the drawing area of the element
      * @param height The height of the drawing area of the element
      * @param configuration The layout settings to use
      */
-    void draw (final GraphicsOutput graphicsOutput, final double left, final double width, final double height, final PushConfiguration configuration);
+    void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration);
 }

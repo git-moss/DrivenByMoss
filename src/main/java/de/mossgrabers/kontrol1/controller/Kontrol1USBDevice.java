@@ -1,15 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.kontrol1.controller;
 
 import de.mossgrabers.framework.daw.IHost;
-
-import com.bitwig.extension.controller.api.UsbDevice;
-import com.bitwig.extension.controller.api.UsbEndpoint;
-import com.bitwig.extension.controller.api.UsbTransferResult;
-import com.bitwig.extension.controller.api.UsbTransferStatus;
+import de.mossgrabers.framework.usb.IUSBDevice;
+import de.mossgrabers.framework.usb.IUSBEndpoint;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -405,9 +402,9 @@ public class Kontrol1USBDevice
     private final static Map<Integer, Integer> LED_MAPPING              = new HashMap<> (21);
 
     private IHost                              host;
-    private UsbDevice                          usbDevice;
-    private UsbEndpoint                        usbEndpointDisplay;
-    private UsbEndpoint                        usbEndpointUI;
+    private IUSBDevice                         usbDevice;
+    private IUSBEndpoint                       usbEndpointDisplay;
+    private IUSBEndpoint                       usbEndpointUI;
 
     private ByteBuffer                         initBuffer;
     private ByteBuffer                         displayBuffer;
@@ -515,11 +512,7 @@ public class Kontrol1USBDevice
      */
     public void init ()
     {
-        final UsbTransferResult result = this.usbEndpointDisplay.bulkTransfer (this.initBuffer, TIMEOUT);
-        final UsbTransferStatus status = result.status ();
-        if (status != UsbTransferStatus.Completed)
-            this.host.error ("USB transmission error: " + status);
-
+        this.usbEndpointDisplay.send (this.initBuffer, TIMEOUT);
     }
 
 
@@ -531,14 +524,11 @@ public class Kontrol1USBDevice
         if (this.usbEndpointUI == null)
             return;
 
-        this.usbEndpointUI.asyncBulkTransfer (this.uiBuffer, (result) -> {
-            final UsbTransferStatus status = result.status ();
-            if (status == UsbTransferStatus.Completed)
-                this.processMessage (result.actualLength ());
-            else
-                this.host.error ("USB receive error: " + status);
+        this.usbEndpointUI.sendAsync (this.uiBuffer, resultLength -> {
+            if (resultLength > 0)
+                this.processMessage (resultLength);
             this.uiBuffer.clear ();
-            this.host.scheduleTask ( () -> this.pollUI (), 10);
+            this.host.scheduleTask (this::pollUI, 10);
         }, TIMEOUT);
     }
 
@@ -705,11 +695,8 @@ public class Kontrol1USBDevice
 
             this.busySendingDisplay = true;
 
-            final UsbTransferResult result = this.usbEndpointDisplay.bulkTransfer (this.displayBuffer, TIMEOUT);
-            final UsbTransferStatus status = result.status ();
+            this.usbEndpointDisplay.send (this.displayBuffer, TIMEOUT);
             this.busySendingDisplay = false;
-            if (status != UsbTransferStatus.Completed)
-                this.host.println ("Transmission error: " + status);
         }
     }
 
@@ -761,11 +748,8 @@ public class Kontrol1USBDevice
 
         this.busySendingLEDs = true;
 
-        final UsbTransferResult result = this.usbEndpointDisplay.bulkTransfer (this.ledBuffer, TIMEOUT);
-        final UsbTransferStatus status = result.status ();
+        this.usbEndpointDisplay.send (this.ledBuffer, TIMEOUT);
         this.busySendingLEDs = false;
-        if (status != UsbTransferStatus.Completed)
-            this.host.error ("USB transmission error: " + status);
     }
 
 
@@ -807,11 +791,8 @@ public class Kontrol1USBDevice
 
         this.busySendingKeyLEDs = true;
 
-        final UsbTransferResult result = this.usbEndpointDisplay.bulkTransfer (this.keyLedBuffer, TIMEOUT);
-        final UsbTransferStatus status = result.status ();
+        this.usbEndpointDisplay.send (this.keyLedBuffer, TIMEOUT);
         this.busySendingKeyLEDs = false;
-        if (status != UsbTransferStatus.Completed)
-            this.host.error ("USB transmission error: " + status);
     }
 
 
