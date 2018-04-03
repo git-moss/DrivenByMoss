@@ -7,6 +7,7 @@ package de.mossgrabers.mcu.command.trigger;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.mcu.MCUConfiguration;
@@ -58,7 +59,8 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         // Select Send channels when Send button is additionally pressed
         if (this.surface.isPressed (MCUControlSurface.MCU_MODE_SENDS))
         {
-            if (this.model.getEffectTrackBank ().getTrack (this.channel).doesExist ())
+            final IChannelBank effectTrackBank = this.model.getEffectTrackBank ();
+            if (effectTrackBank != null && effectTrackBank.getTrack (this.channel).doesExist ())
             {
                 this.surface.getModeManager ().setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + this.index));
                 display.notify ("Send channel " + (this.channel + 1) + " selected.");

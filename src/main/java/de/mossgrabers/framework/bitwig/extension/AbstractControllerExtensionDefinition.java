@@ -6,6 +6,8 @@ package de.mossgrabers.framework.bitwig.extension;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -113,7 +115,9 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
     {
-        // Intentionally empty
+        final OperatingSystem os = OperatingSystem.valueOf (platformType.name ().toUpperCase ());
+        for (final Pair<String [], String []> midiDiscoveryPair: this.definition.getMidiDiscoveryPairs (os))
+            list.add (midiDiscoveryPair.getKey (), midiDiscoveryPair.getValue ());
     }
 
 
@@ -132,59 +136,4 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
      * @return The controller setup
      */
     protected abstract IControllerSetup getControllerSetup (final ControllerHost host);
-
-
-    /**
-     * Creates 60 variations from the given device name for auto lookup.
-     *
-     * @param deviceName The base name to use
-     * @param list The list where to add the generated names
-     */
-    protected void createDeviceDiscoveryPairs (final String deviceName, final AutoDetectionMidiPortNamesList list)
-    {
-        this.addDeviceDiscoveryPair (deviceName, list);
-        for (int i = 1; i < 20; i++)
-        {
-            this.addDeviceDiscoveryPair (i + "- " + deviceName, list);
-            this.addDeviceDiscoveryPair (deviceName + " MIDI " + i, list);
-            this.addDeviceDiscoveryPair (deviceName + " " + i + " MIDI 1", list);
-        }
-    }
-
-
-    /**
-     * Adds a discovery pair to the auto detection with the same name for input and output port.
-     *
-     * @param name The name to look for
-     * @param list The auto detection list to add the name
-     */
-    protected void addDeviceDiscoveryPair (final String name, final AutoDetectionMidiPortNamesList list)
-    {
-        list.add (new String []
-        {
-            name
-        }, new String []
-        {
-            name
-        });
-    }
-
-
-    /**
-     * Adds a discovery pair to the auto detection.
-     *
-     * @param nameIn The name to use for the input port
-     * @param nameOut The name to use for the output port
-     * @param list The auto detection list to add the name
-     */
-    protected void addDeviceDiscoveryPair (final String nameIn, final String nameOut, final AutoDetectionMidiPortNamesList list)
-    {
-        list.add (new String []
-        {
-            nameIn
-        }, new String []
-        {
-            nameOut
-        });
-    }
 }

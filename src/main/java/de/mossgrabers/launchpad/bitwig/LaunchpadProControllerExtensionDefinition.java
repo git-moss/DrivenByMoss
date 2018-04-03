@@ -12,8 +12,6 @@ import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.launchpad.LaunchpadControllerDefinition;
 import de.mossgrabers.launchpad.LaunchpadControllerSetup;
 
-import com.bitwig.extension.api.PlatformType;
-import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 
@@ -30,27 +28,6 @@ public class LaunchpadProControllerExtensionDefinition extends AbstractControlle
     public LaunchpadProControllerExtensionDefinition ()
     {
         super (new LaunchpadControllerDefinition (false));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
-    {
-        switch (platformType)
-        {
-            case WINDOWS:
-                this.addDeviceDiscoveryPair ("MIDIIN2 (Launchpad Pro)", "MIDIOUT2 (Launchpad Pro)", list);
-                break;
-
-            case LINUX:
-                this.addDeviceDiscoveryPair ("Launchpad Pro MIDI 2", "Launchpad Pro MIDI 2", list);
-                break;
-
-            case MAC:
-                this.addDeviceDiscoveryPair ("Launchpad Pro Standalone Port", "Launchpad Pro Standalone Port", list);
-                break;
-        }
     }
 
 

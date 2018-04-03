@@ -5,7 +5,10 @@
 package de.mossgrabers.sl;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -28,5 +31,22 @@ public class SLControllerDefinition extends DefaultControllerDefinition
     public SLControllerDefinition (final boolean isMkII)
     {
         super ("SLMkII4Bitwig", "Jürgen Moßgraber", "5.10", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "SL MkII" : "SL MkI", "Novation", 2, 1);
+    }
+
+
+    /** [{@inheritDoc} */
+    @Override
+    public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
+    {
+        final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
+        midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+        {
+            "ReMOTE SL Port 2",
+            "ReMOTE SL Port 1"
+        }, new String []
+        {
+            "ReMOTE SL Port 2"
+        }));
+        return midiDiscoveryPairs;
     }
 }

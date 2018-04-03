@@ -4,6 +4,11 @@
 
 package de.mossgrabers.framework.controller;
 
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -13,7 +18,7 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DefaultControllerDefinition implements IControllerDefinition
+public abstract class DefaultControllerDefinition implements IControllerDefinition
 {
     private final String name;
     private final String author;
@@ -47,6 +52,14 @@ public class DefaultControllerDefinition implements IControllerDefinition
         this.hardwareVendor = hardwareVendor;
         this.numMidiInPorts = numMidiInPorts;
         this.numMidiOutPorts = numMidiOutPorts;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public UUID getUUID ()
+    {
+        return this.uuid;
     }
 
 
@@ -111,5 +124,87 @@ public class DefaultControllerDefinition implements IControllerDefinition
     public int getNumMidiOutPorts ()
     {
         return this.numMidiOutPorts;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
+    {
+        return new ArrayList<> ();
+    }
+
+
+    /**
+     * Creates 60 variations from the given device name for auto lookup.
+     *
+     * @param deviceName The base name to use
+     * @return The created pairs
+     */
+    protected List<Pair<String [], String []>> createDeviceDiscoveryPairs (final String deviceName)
+    {
+        final List<Pair<String [], String []>> results = new ArrayList<> ();
+        results.add (this.addDeviceDiscoveryPair (deviceName));
+        for (int i = 1; i < 20; i++)
+        {
+            results.add (this.addDeviceDiscoveryPair (i + "- " + deviceName));
+            results.add (this.addDeviceDiscoveryPair (deviceName + " MIDI " + i));
+            results.add (this.addDeviceDiscoveryPair (deviceName + " " + i + " MIDI 1"));
+        }
+        return results;
+    }
+
+
+    /**
+     * Adds a midi discovery pair to the auto detection with the same name for input and output
+     * port.
+     *
+     * @param name The name to look for
+     * @return The created pair
+     */
+    protected Pair<String [], String []> addDeviceDiscoveryPair (final String name)
+    {
+        return this.addDeviceDiscoveryPair (name, name);
+    }
+
+
+    /**
+     * Adds a discovery pair to the auto detection for midi inputs and outputs.
+     *
+     * @param nameIn The name to use for the input port, may be null
+     * @param nameOut The name to use for the output port, may be null
+     * @return The created pair
+     */
+    protected Pair<String [], String []> addDeviceDiscoveryPair (final String nameIn, final String nameOut)
+    {
+        return this.addDeviceDiscoveryPair (nameIn == null ? new String [0] : new String []
+        {
+            nameIn
+        }, nameOut == null ? new String [0] : new String []
+        {
+            nameOut
+        });
+    }
+
+
+    /**
+     * Adds a midi discovery pair to the auto detection with the same name for input and output
+     * port.
+     *
+     * @param ins The input names to look for
+     * @param outs The output names to look for
+     * @return The created pair
+     */
+    protected Pair<String [], String []> addDeviceDiscoveryPair (final String [] ins, final String [] outs)
+    {
+        return new Pair<> (ins, outs);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString ()
+    {
+        return new StringBuilder (this.getHardwareVendor ()).append (' ').append (this.getHardwareModel ()).append (" - ").append (this.getVersion ()).toString ();
     }
 }

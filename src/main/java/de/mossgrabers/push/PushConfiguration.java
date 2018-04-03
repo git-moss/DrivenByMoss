@@ -152,7 +152,7 @@ public class PushConfiguration extends AbstractConfiguration
 
     /**
      * Constructor.
-     * 
+     *
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param isPush2 Use Push 1 or Push 2 controller?

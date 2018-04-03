@@ -91,7 +91,7 @@ import java.util.Map;
 
 
 /**
- * Bitwig Studio extension to support the Mackie MCU protocol.
+ * Support for the Mackie MCU protocol.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -749,7 +749,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         final boolean isDevice = Modes.MODE_DEVICE_PARAMS.equals (mode);
 
         tb.setIndication (!isEffect);
-        tbe.setIndication (isEffect);
+        if (tbe != null)
+            tbe.setIndication (isEffect);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final ITrack selectedTrack = tb.getSelectedTrack ();
@@ -763,9 +764,12 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             for (int j = 0; j < tb.getNumSends (); j++)
                 track.getSend (j).setIndication (!isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
 
-            final ITrack fxTrack = tbe.getTrack (i);
-            fxTrack.setVolumeIndication (isEffect);
-            fxTrack.setPanIndication (isEffect && isPan);
+            if (tbe != null)
+            {
+                final ITrack fxTrack = tbe.getTrack (i);
+                fxTrack.setVolumeIndication (isEffect);
+                fxTrack.setPanIndication (isEffect && isPan);
+            }
         }
 
         for (int i = 0; i < cursorDevice.getNumParameters (); i++)

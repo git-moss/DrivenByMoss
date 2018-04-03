@@ -229,7 +229,7 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                             newClipLengthSetting;
 
     private final Map<Integer, Set<SettingObserver>> observers                   = new HashMap<> ();
-    protected IValueChanger                           valueChanger;
+    protected IValueChanger                          valueChanger;
 
     private String                                   scale                       = "Major";
     private String                                   scaleBase                   = "C";

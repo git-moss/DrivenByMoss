@@ -284,6 +284,40 @@ public class ApplicationImpl implements IApplication
 
     /** {@inheritDoc} */
     @Override
+    public void zoomOut ()
+    {
+        this.invokeAction ("Zoom Out");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void zoomIn ()
+    {
+        this.invokeAction ("Zoom In");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void incTrackHeight ()
+    {
+        // No track height increase method available
+        this.invokeAction ("toggle_double_or_single_row_track_height");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void decTrackHeight ()
+    {
+        // No track height increase method available
+        this.invokeAction ("toggle_double_or_single_row_track_height");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void invokeAction (final String id)
     {
         this.getAction (id).invoke ();

@@ -5,7 +5,11 @@
 package de.mossgrabers.apc;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -19,6 +23,8 @@ public class APCControllerDefinition extends DefaultControllerDefinition
     private static final UUID EXTENSION_ID_MK_I  = UUID.fromString ("35E958A0-345F-11E4-8C21-0800200C9A66");
     private static final UUID EXTENSION_ID_MK_II = UUID.fromString ("14787D10-35DE-11E4-8C21-0800200C9A66");
 
+    private final boolean     isMkII;
+
 
     /**
      * Constructor.
@@ -28,5 +34,14 @@ public class APCControllerDefinition extends DefaultControllerDefinition
     public APCControllerDefinition (final boolean isMkII)
     {
         super ("APC4Bitwig", "Jürgen Moßgraber", "5.13", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "APC40 mkII" : "APC40", "Akai", 1, 1);
+        this.isMkII = isMkII;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
+    {
+        return Collections.singletonList (this.addDeviceDiscoveryPair (this.isMkII ? "APC40 mkII" : "Akai APC40"));
     }
 }

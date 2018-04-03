@@ -16,15 +16,30 @@ import java.util.UUID;
  */
 public class MCUControllerDefinition extends DefaultControllerDefinition
 {
+    private static final UUID []   EXTENSION_ID   =
+    {
+        UUID.fromString ("5F10A0CD-F866-41C0-B16A-AEA16282B657"),
+        UUID.fromString ("7FF808DD-45DB-4026-AA6E-844ED8C05B55"),
+        UUID.fromString ("8E0EDA26-ACB9-4F5E-94FB-B886C9468C7A"),
+        UUID.fromString ("4923C47A-B1DC-48C8-AE89-A332AA26BA87")
+    };
+
+    private static final String [] HARDWARE_MODEL =
+    {
+        "Control Universal",
+        "Control Universal + 1 Extender",
+        "Control Universal + 2 Extenders",
+        "Control Universal + 3 Extenders"
+    };
+
+
     /**
      * Constructor.
      *
-     * @param uuid The unique identifier
-     * @param hardwareModel The hardware model
-     * @param numMCUDevices The number of supported devices (Master + Extenders)
+     * @param numMCUExtenders The number of supported Extenders
      */
-    public MCUControllerDefinition (final UUID uuid, final String hardwareModel, final int numMCUDevices)
+    public MCUControllerDefinition (final int numMCUExtenders)
     {
-        super ("MCU4Bitwig", "Jürgen Moßgraber", "2.61", uuid, hardwareModel, "Mackie", numMCUDevices, numMCUDevices);
+        super ("MCU4Bitwig", "Jürgen Moßgraber", "2.61", EXTENSION_ID[numMCUExtenders], HARDWARE_MODEL[numMCUExtenders], "Mackie", numMCUExtenders + 1, numMCUExtenders + 1);
     }
 }

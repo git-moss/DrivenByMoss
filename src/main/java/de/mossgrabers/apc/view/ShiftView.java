@@ -147,6 +147,9 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         if (event != ButtonEvent.DOWN)
             return;
 
+        if (!this.model.getHost ().hasClips ())
+            return;
+
         final Integer viewID = Integer.valueOf (Views.VIEW_SESSION.intValue () + scene);
         final ViewManager viewManager = this.surface.getViewManager ();
         viewManager.setActiveView (viewID);
@@ -165,6 +168,16 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
     @Override
     public void updateSceneButtons ()
     {
+        if (!this.model.getHost ().hasClips ())
+        {
+            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, APCColors.APC_COLOR_BLACK);
+            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, APCColors.APC_COLOR_BLACK);
+            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, APCColors.APC_COLOR_BLACK);
+            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, APCColors.APC_COLOR_BLACK);
+            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, APCColors.APC_COLOR_BLACK);
+            return;
+        }
+
         final Integer previousViewId = this.surface.getViewManager ().getPreviousViewId ();
         this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, previousViewId == Views.VIEW_SESSION ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
         this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, previousViewId == Views.VIEW_PLAY ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);

@@ -82,7 +82,7 @@ import de.mossgrabers.launchpad.view.VolumeView;
 
 
 /**
- * Bitwig Studio extension to support the Novation Launchpad Pro and Launchpad MkII controllers.
+ * Support for the Novation Launchpad Pro and Launchpad MkII controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

@@ -130,7 +130,7 @@ import de.mossgrabers.push.view.Views;
 
 
 /**
- * Bitwig Studio extension to support the Ableton Push 1 and Push 2 controllers.
+ * Support for the Ableton Push 1 and Push 2 controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

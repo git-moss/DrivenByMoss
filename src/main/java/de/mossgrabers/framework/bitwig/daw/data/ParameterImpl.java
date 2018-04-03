@@ -17,7 +17,7 @@ import com.bitwig.extension.controller.api.Parameter;
  */
 public class ParameterImpl implements IParameter
 {
-    private IValueChanger    valueChanger;
+    private IValueChanger   valueChanger;
     private final Parameter parameter;
     private final int       maxParameterValue;
 

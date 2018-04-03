@@ -5,7 +5,10 @@
 package de.mossgrabers.apcmini;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -25,5 +28,13 @@ public class APCminiControllerDefinition extends DefaultControllerDefinition
     public APCminiControllerDefinition ()
     {
         super ("APCmini4Bitwig", "Jürgen Moßgraber", "5.02", EXTENSION_ID, "APCmini", "Akai", 2, 1);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
+    {
+        return this.createDeviceDiscoveryPairs ("APC MINI");
     }
 }

@@ -5,7 +5,10 @@
 package de.mossgrabers.beatstep;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -19,6 +22,8 @@ public class BeatstepControllerDefinition extends DefaultControllerDefinition
     private static final UUID EXTENSION_ID     = UUID.fromString ("F7FF1750-7EC3-11E4-B4A9-0800200C9A66");
     private static final UUID EXTENSION_ID_PRO = UUID.fromString ("7264A210-5EFE-11E5-A837-0800200C9A66");
 
+    private final boolean     isPro;
+
 
     /**
      * Constructor.
@@ -28,5 +33,14 @@ public class BeatstepControllerDefinition extends DefaultControllerDefinition
     public BeatstepControllerDefinition (final boolean isPro)
     {
         super ("Beatstep4Bitwig", "Jürgen Moßgraber", "4.01", isPro ? EXTENSION_ID_PRO : EXTENSION_ID, isPro ? "Beatstep Pro" : "Beatstep", "Arturia", 1, 1);
+        this.isPro = isPro;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
+    {
+        return this.createDeviceDiscoveryPairs (this.isPro ? "Arturia BeatStep Pro" : "Arturia BeatStep");
     }
 }

@@ -12,8 +12,6 @@ import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.push.PushControllerDefinition;
 import de.mossgrabers.push.PushControllerSetup;
 
-import com.bitwig.extension.api.PlatformType;
-import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 
@@ -30,27 +28,6 @@ public class Push1ControllerExtensionDefinition extends AbstractControllerExtens
     public Push1ControllerExtensionDefinition ()
     {
         super (new PushControllerDefinition (false));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
-    {
-        switch (platformType)
-        {
-            case WINDOWS:
-                this.addDeviceDiscoveryPair ("MIDIIN2 (Ableton Push)", "MIDIOUT2 (Ableton Push)", list);
-                break;
-
-            case LINUX:
-                this.addDeviceDiscoveryPair ("Ableton Push MIDI 2", list);
-                break;
-
-            case MAC:
-                this.addDeviceDiscoveryPair ("Ableton Push User Port", list);
-                break;
-        }
     }
 
 

@@ -31,7 +31,7 @@ public class TransportImpl implements ITransport
     private static final int    TEMPO_MAX              = 666;
 
     private ControllerHost      host;
-    private IValueChanger        valueChanger;
+    private IValueChanger       valueChanger;
     private Transport           transport;
 
     private int                 crossfade              = 0;

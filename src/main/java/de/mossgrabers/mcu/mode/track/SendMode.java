@@ -61,7 +61,7 @@ public class SendMode extends AbstractTrackMode
         final Display d = this.surface.getDisplay ();
         final int sendIndex = this.getCurrentSendIndex ();
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.getTrack (0).getSend (sendIndex).doesExist ())
+        if (!tb.canEditSend (sendIndex))
         {
             d.notify ("Send channel " + (sendIndex + 1) + " does not exist.", true, false);
             return;

@@ -223,4 +223,28 @@ public interface IApplication extends ObserverManagement
      * @param active Current project's engine active.
      */
     void setEngineActive (final boolean active);
+
+
+    /**
+     * Zoom out in the arranger.
+     */
+    void zoomOut ();
+
+
+    /**
+     * Zoom in in the arranger.
+     */
+    void zoomIn ();
+
+
+    /**
+     * Decrease the track height.
+     */
+    void decTrackHeight ();
+
+
+    /**
+     * Increase the track height.
+     */
+    void incTrackHeight ();
 }

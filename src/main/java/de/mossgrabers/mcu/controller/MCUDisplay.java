@@ -164,7 +164,7 @@ public class MCUDisplay extends AbstractDisplay
     @Override
     public void shutdown ()
     {
-        this.notify ("Please start Bitwig Studio...", true, false);
+        this.notify ("Please start " + this.host.getName () + "...", true, false);
     }
 
 
