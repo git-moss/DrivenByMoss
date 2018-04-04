@@ -56,9 +56,8 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
         if (modeManager.isActiveMode (Modes.MODE_BROWSER))
         {
             final IBrowser browser = this.model.getBrowser ();
-            final int index = browser.getSelectedContentTypeIndex ();
-            this.canScrollLeft = index > 0;
-            this.canScrollRight = index < browser.getContentTypeNames ().length - 1;
+            this.canScrollLeft = browser.hasPreviousContentType ();
+            this.canScrollRight = browser.hasNextContentType ();
             return;
         }
 

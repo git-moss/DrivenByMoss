@@ -37,8 +37,16 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
     {
         super (model, surface);
 
-        this.playSelect = new ViewMultiSelectCommand<> (model, surface, Views.VIEW_PLAY, Views.VIEW_DRUM, Views.VIEW_DRUM4, Views.VIEW_DRUM8, Views.VIEW_DRUM64);
-        this.seqSelect = new ViewMultiSelectCommand<> (model, surface, Views.VIEW_SEQUENCER, Views.VIEW_RAINDROPS);
+        if (this.model.getHost ().hasClips ())
+        {
+            this.playSelect = new ViewMultiSelectCommand<> (model, surface, Views.VIEW_PLAY, Views.VIEW_DRUM, Views.VIEW_DRUM4, Views.VIEW_DRUM8, Views.VIEW_DRUM64);
+            this.seqSelect = new ViewMultiSelectCommand<> (model, surface, Views.VIEW_SEQUENCER, Views.VIEW_RAINDROPS);
+        }
+        else
+        {
+            this.playSelect = new ViewMultiSelectCommand<> (model, surface, Views.VIEW_PLAY);
+            this.seqSelect = this.playSelect;
+        }
     }
 
 

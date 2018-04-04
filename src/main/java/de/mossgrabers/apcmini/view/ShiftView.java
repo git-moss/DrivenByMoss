@@ -142,7 +142,8 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
             return;
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        switch (this.surface.getPadGrid ().translateToController (note))
+        final int n = this.surface.getPadGrid ().translateToController (note);
+        switch (n)
         {
             // Flip views
             case 56:
@@ -249,9 +250,9 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
             // Scale Base note selection
             default:
-                if (note > 15)
+                if (n > 15)
                     return;
-                final int pos = TRANSLATE[note];
+                final int pos = TRANSLATE[n];
                 if (pos == -1)
                     return;
                 this.scales.setScaleOffset (pos);
