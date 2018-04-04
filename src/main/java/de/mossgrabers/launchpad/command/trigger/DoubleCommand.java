@@ -43,7 +43,7 @@ public class DoubleCommand extends AbstractTriggerCommand<LaunchpadControlSurfac
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        this.newCommand.executeNormal (event);
+        this.playCommand.executeNormal (event);
     }
 
 
@@ -51,6 +51,6 @@ public class DoubleCommand extends AbstractTriggerCommand<LaunchpadControlSurfac
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        this.playCommand.executeNormal (event);
+        this.newCommand.executeNormal (event);
     }
 }

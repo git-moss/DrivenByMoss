@@ -112,11 +112,10 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.VIEW_BROWSER))
         {
             final IBrowser browser = this.model.getBrowser ();
-            final int index = browser.getSelectedContentTypeIndex ();
             this.canScrollUp = false;
             this.canScrollDown = false;
-            this.canScrollLeft = index > 0;
-            this.canScrollRight = index < browser.getContentTypeNames ().length - 1;
+            this.canScrollLeft = browser.hasPreviousContentType ();
+            this.canScrollRight = browser.hasNextContentType ();
             return;
         }
 

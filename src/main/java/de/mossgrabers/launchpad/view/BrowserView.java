@@ -72,7 +72,8 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
 
     private void delayedUpdateArrowButtons ()
     {
-        this.surface.setButton (this.surface.getSessionButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        final boolean hasClips = this.model.getHost ().hasClips ();
+        this.surface.setButton (this.surface.getSessionButton (), hasClips ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
         this.surface.setButton (this.surface.getNoteButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
         this.surface.setButton (this.surface.getDeviceButton (), LaunchpadColors.LAUNCHPAD_COLOR_TURQUOISE);
         this.surface.setButton (this.surface.getUserButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);

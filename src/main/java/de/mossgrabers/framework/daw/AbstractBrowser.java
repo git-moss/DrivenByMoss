@@ -39,6 +39,22 @@ public abstract class AbstractBrowser implements IBrowser
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasPreviousContentType ()
+    {
+        return this.getSelectedContentTypeIndex () > 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextContentType ()
+    {
+        return this.getSelectedContentTypeIndex () > this.getContentTypeNames ().length - 1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void resetFilterColumn (final int column)
     {
         this.columnData[column].resetFilter ();
