@@ -4,6 +4,7 @@
 
 package de.mossgrabers.kontrol1.view;
 
+import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
@@ -11,7 +12,9 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.view.AbstractView;
+import de.mossgrabers.framework.view.View;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
+import de.mossgrabers.kontrol1.command.trigger.Kontrol1CursorCommand;
 import de.mossgrabers.kontrol1.controller.Kontrol1ControlSurface;
 import de.mossgrabers.kontrol1.mode.Modes;
 
@@ -61,10 +64,12 @@ public class ControlView extends AbstractView<Kontrol1ControlSurface, Kontrol1Co
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_PAGE_LEFT, Kontrol1ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_PAGE_RIGHT, Kontrol1ControlSurface.BUTTON_STATE_ON);
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, Kontrol1ControlSurface.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, Kontrol1ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, isBrowseMode ? Kontrol1ControlSurface.BUTTON_STATE_OFF : Kontrol1ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, isBrowseMode ? Kontrol1ControlSurface.BUTTON_STATE_OFF : Kontrol1ControlSurface.BUTTON_STATE_ON);
+
+        final View activeView = this.surface.getViewManager ().getActiveView ();
+        if (activeView != null)
+            ((Kontrol1CursorCommand) activeView.getTriggerCommand (Commands.COMMAND_ARROW_DOWN)).updateArrows ();
 
         if (modeManager.isActiveMode (Modes.MODE_TRACK) || modeManager.isActiveMode (Modes.MODE_VOLUME))
         {

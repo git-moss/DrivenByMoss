@@ -10,6 +10,7 @@ import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.KnobRowTouchModeCommand;
 import de.mossgrabers.framework.command.trigger.ModeMultiSelectCommand;
+import de.mossgrabers.framework.command.trigger.NopCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
@@ -19,6 +20,7 @@ import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
+import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -65,6 +67,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     {
         super (factory, host, settings);
         this.valueChanger = new DefaultValueChanger (1024, 10, 1);
+        this.colorManager = new ColorManager ();
         this.configuration = new Kontrol1Configuration (this.valueChanger);
     }
 
@@ -88,10 +91,11 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiInput input = midiAccess.createInput ("Komplete Kontrol 1",
-                "80????" /* Note off */, "90????" /* Note on */, "B0????" /* Sustainpedal */,
-                "D0????" /* Channel Aftertouch */, "E0????" /* Pitchbend */);
+                "80????" /* Note off */, "90????" /* Note on */, "B040??",
+                "B001??" /* Sustainpedal + Modulation */, "D0????" /* Channel Aftertouch */,
+                "E0????" /* Pitchbend */);
 
-        final Kontrol1ControlSurface surface = new Kontrol1ControlSurface (host, this.configuration, input, this.usbDevice);
+        final Kontrol1ControlSurface surface = new Kontrol1ControlSurface (host, this.colorManager, this.configuration, input, this.usbDevice);
         this.usbDevice.setCallback (surface);
         this.surfaces.add (surface);
         final Kontrol1Display display = new Kontrol1Display (host, this.valueChanger.getUpperBound (), this.configuration, this.usbDevice);
@@ -174,6 +178,12 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         this.addTriggerCommand (Commands.COMMAND_FADER_TOUCH_6, Kontrol1ControlSurface.TOUCH_ENCODER_6, new KnobRowTouchModeCommand<> (5, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_FADER_TOUCH_7, Kontrol1ControlSurface.TOUCH_ENCODER_7, new KnobRowTouchModeCommand<> (6, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_FADER_TOUCH_8, Kontrol1ControlSurface.TOUCH_ENCODER_8, new KnobRowTouchModeCommand<> (7, this.model, surface));
+
+        // Block unused knobs and touches
+        this.addTriggerCommand (Commands.COMMAND_ROW1_1, Kontrol1ControlSurface.TOUCH_ENCODER_MAIN, new NopCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ROW1_2, Kontrol1ControlSurface.BUTTON_INSTANCE, new NopCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ROW1_3, Kontrol1ControlSurface.BUTTON_PRESET_UP, new NopCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ROW1_4, Kontrol1ControlSurface.BUTTON_PRESET_DOWN, new NopCommand<> (this.model, surface));
     }
 
 

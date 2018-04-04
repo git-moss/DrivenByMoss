@@ -55,7 +55,7 @@ public class ParamsMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
         if (this.model.hasSelectedDevice ())
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            d.setCell (0, 0, cursorDevice.getName ().toUpperCase ()).setCell (1, 0, cursorDevice.getSelectedParameterPageName ().toUpperCase ());
+            d.setCell (0, 0, cursorDevice.getName (8).toUpperCase ()).setCell (1, 0, cursorDevice.getSelectedParameterPageName ().toUpperCase ());
 
             for (int i = 0; i < 8; i++)
             {

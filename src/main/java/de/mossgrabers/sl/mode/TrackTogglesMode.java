@@ -21,6 +21,10 @@ import de.mossgrabers.sl.controller.SLControlSurface;
  */
 public class TrackTogglesMode extends AbstractMode<SLControlSurface, SLConfiguration>
 {
+    private static final String OFF = "   Off";
+    private static final String ON  = "   On";
+
+
     /**
      * Constructor.
      *
@@ -49,16 +53,16 @@ public class TrackTogglesMode extends AbstractMode<SLControlSurface, SLConfigura
         {
             final ICursorDevice device = this.model.getCursorDevice ();
             d.setCell (0, 0, "  Mute");
-            d.setCell (2, 0, t.isMute () ? "   On" : "   Off");
+            d.setCell (2, 0, t.isMute () ? ON : OFF);
             d.setCell (0, 1, "  Solo");
-            d.setCell (2, 1, t.isSolo () ? "   On" : "   Off");
+            d.setCell (2, 1, t.isSolo () ? ON : OFF);
             d.setCell (0, 2, "Rec Arm");
-            d.setCell (2, 2, t.isRecArm () ? "   On" : "   Off");
+            d.setCell (2, 2, t.isRecArm () ? ON : OFF);
             d.setCell (0, 3, " Write");
-            d.setCell (2, 3, this.model.getTransport ().isWritingArrangerAutomation () ? "   On" : "   Off");
+            d.setCell (2, 3, this.model.getTransport ().isWritingArrangerAutomation () ? ON : OFF);
             d.setCell (0, 4, " Browse");
             d.setCell (2, 4, "");
-            d.setCell (0, 5, device.getName ().length () > 0 ? device.getName ().length () > 8 ? device.getName ().substring (0, 8) : device.getName () : "None");
+            d.setCell (0, 5, device.doesExist () ? device.getName (8) : "None");
             d.setCell (2, 5, device.isEnabled () ? "Enabled" : "Disabled");
             d.setCell (0, 6, "<<Device").setCell (2, 6, "");
             d.setCell (0, 7, "Device>>").setCell (2, 7, "").done (0).done (2);

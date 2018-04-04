@@ -5,6 +5,7 @@
 package de.mossgrabers.kontrol1.controller;
 
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.kontrol1.Kontrol1Configuration;
@@ -164,15 +165,20 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
      * Constructor.
      *
      * @param host The host
+     * @param colorManager The color manager
      * @param configuration The configuration
      * @param input
      * @param usbDevice
      */
-    public Kontrol1ControlSurface (final IHost host, final Kontrol1Configuration configuration, final IMidiInput input, final Kontrol1USBDevice usbDevice)
+    public Kontrol1ControlSurface (final IHost host, final ColorManager colorManager, final Kontrol1Configuration configuration, final IMidiInput input, final Kontrol1USBDevice usbDevice)
     {
-        super (host, configuration, null, null, input, KONTROL1_BUTTONS_ALL);
+        super (host, configuration, colorManager, null, input, KONTROL1_BUTTONS_ALL);
 
         this.usbDevice = usbDevice;
+
+        this.colorManager.registerColor (ColorManager.BUTTON_STATE_OFF, BUTTON_STATE_OFF);
+        this.colorManager.registerColor (ColorManager.BUTTON_STATE_ON, BUTTON_STATE_ON);
+        this.colorManager.registerColor (ColorManager.BUTTON_STATE_HI, BUTTON_STATE_HI);
 
         this.shiftButtonId = BUTTON_SHIFT;
         this.leftButtonId = BUTTON_NAVIGATE_LEFT;
@@ -186,16 +192,14 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
     @Override
     public void shutdown ()
     {
-        // Turn off all buttons
-        for (final int button: this.getButtons ())
-            this.setButton (button, 0);
-        this.updateButtonLEDs ();
+        this.usbDevice.turnOffButtonLEDs ();
 
         for (int i = 0; i < 88; i++)
             this.usbDevice.setKeyLED (i, 0, 0, 0);
         this.updateKeyLEDs ();
 
-        this.display.notify ("START " + this.host.getName () + " TO PLAY", true, false);
+        this.display.clear ();
+        this.display.notify ("START " + this.host.getName ().toUpperCase () + " TO PLAY", true, false);
         this.display.shutdown ();
     }
 
@@ -235,6 +239,14 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
     public void encoderChanged (final int encIndex, final boolean valueIncreased)
     {
         this.handleCC (0, ENCODER_1 + encIndex, valueIncreased ? 1 : 127);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleMidi (final int status, final int data1, final int data2)
+    {
+        // Midi is not used for controlling Bitwig (uses USB instead), therefore block anything.
     }
 
 

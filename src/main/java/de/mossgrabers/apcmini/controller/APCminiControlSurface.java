@@ -133,6 +133,14 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    protected void handleGridNote (final int note, final int velocity)
+    {
+        super.handleGridNote (this.pads.translateToGrid (note), velocity);
+    }
+
+
     public int getTrackState ()
     {
         return this.trackState;

@@ -89,7 +89,8 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
             return;
         }
 
-        switch (note)
+        int n = this.surface.getPadGrid ().translateToController (note);
+        switch (n)
         {
             // Cancel
             case 0:
@@ -124,9 +125,9 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
         if (velocity == 0)
             return;
 
-        if (note >= 16 && note < 48)
+        if (n >= 16 && n < 48)
         {
-            final int n = note - 16;
+            n -= 16;
             final int row = n / 8;
             final int col = n % 8;
 

@@ -924,4 +924,15 @@ public class Kontrol1USBDevice
                 };
         }
     }
+
+
+    /**
+     * Turn off all button LEDs.
+     */
+    public void turnOffButtonLEDs ()
+    {
+        for (final Integer buttonLED: LED_MAPPING.values ())
+            this.buttonStates[buttonLED.intValue ()] = 0;
+        this.updateButtonLEDs ();
+    }
 }

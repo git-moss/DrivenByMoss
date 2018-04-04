@@ -69,12 +69,4 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
         for (int i = 0; i < 6; i++)
             this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3 + i, APCminiControlSurface.APC_BUTTON_STATE_OFF);
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onGridNote (final int note, final int velocity)
-    {
-        super.onGridNote (note + 36, velocity);
-    }
 }

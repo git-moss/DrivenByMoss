@@ -40,28 +40,6 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
 
     /** {@inheritDoc} */
     @Override
-    public void onGridNote (final int note, final int velocity)
-    {
-        if (velocity == 0)
-            return;
-
-        final int channel = note % 8;
-        final int scene = 7 - note / 8;
-
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getTrack (channel);
-        final ISlot slot = track.getSlot (scene);
-
-        if (track.isRecArm () && !slot.isRecording ())
-            slot.record ();
-        slot.launch ();
-        if (this.doSelectClipOnLaunch ())
-            slot.select ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean doSelectClipOnLaunch ()
     {
         return this.surface.getConfiguration ().isSelectClipOnLaunch ();

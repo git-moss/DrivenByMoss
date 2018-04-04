@@ -105,12 +105,20 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         padGrid.light (36 + 27, APCminiColors.APC_COLOR_GREEN);
 
         // Draw the view selection: Session, Note, Drum, Sequencer
-        final Integer previousViewId = this.surface.getViewManager ().getPreviousViewId ();
-        padGrid.light (36 + 56, previousViewId == Views.VIEW_SESSION ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-        padGrid.light (36 + 57, previousViewId == Views.VIEW_PLAY ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-        padGrid.light (36 + 58, previousViewId == Views.VIEW_DRUM ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-        padGrid.light (36 + 59, previousViewId == Views.VIEW_SEQUENCER ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-        padGrid.light (36 + 60, previousViewId == Views.VIEW_RAINDROPS ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+        if (this.model.getHost ().hasClips ())
+        {
+            final Integer previousViewId = this.surface.getViewManager ().getPreviousViewId ();
+            padGrid.light (36 + 56, previousViewId == Views.VIEW_SESSION ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 57, previousViewId == Views.VIEW_PLAY ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 58, previousViewId == Views.VIEW_DRUM ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 59, previousViewId == Views.VIEW_SEQUENCER ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 60, previousViewId == Views.VIEW_RAINDROPS ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+        }
+        else
+        {
+            for (int i = 56; i <= 60; i++)
+                padGrid.light (36 + i, APCminiColors.APC_COLOR_BLACK);
+        }
 
         // Draw transport
         final ITransport transport = this.model.getTransport ();
@@ -134,28 +142,23 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
             return;
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        switch (note)
+        switch (this.surface.getPadGrid ().translateToController (note))
         {
             // Flip views
             case 56:
-                this.surface.getViewManager ().setPreviousView (Views.VIEW_SESSION);
-                this.surface.getDisplay ().notify ("Session");
+                this.switchToView (Views.VIEW_SESSION);
                 break;
             case 57:
-                this.surface.getViewManager ().setPreviousView (Views.VIEW_PLAY);
-                this.surface.getDisplay ().notify ("Play");
+                this.switchToView (Views.VIEW_PLAY);
                 break;
             case 58:
-                this.surface.getViewManager ().setPreviousView (Views.VIEW_DRUM);
-                this.surface.getDisplay ().notify ("Drum");
+                this.switchToView (Views.VIEW_DRUM);
                 break;
             case 59:
-                this.surface.getViewManager ().setPreviousView (Views.VIEW_SEQUENCER);
-                this.surface.getDisplay ().notify ("Sequencer");
+                this.switchToView (Views.VIEW_SEQUENCER);
                 break;
             case 60:
-                this.surface.getViewManager ().setPreviousView (Views.VIEW_RAINDROPS);
-                this.surface.getDisplay ().notify ("Raindrops");
+                this.switchToView (Views.VIEW_RAINDROPS);
                 break;
 
             // Last row transport
@@ -196,22 +199,34 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
             // Device Parameters up/down
             case 24:
-                cursorDevice.previousParameterPage ();
-                this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getSelectedParameterPageName ());
+                if (cursorDevice.hasPreviousParameterPage ())
+                {
+                    cursorDevice.previousParameterPage ();
+                    this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getSelectedParameterPageName ());
+                }
                 break;
             case 25:
-                cursorDevice.nextParameterPage ();
-                this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getSelectedParameterPageName ());
+                if (cursorDevice.hasNextParameterPage ())
+                {
+                    cursorDevice.nextParameterPage ();
+                    this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getSelectedParameterPageName ());
+                }
                 break;
 
             // Device up/down
             case 32:
-                cursorDevice.selectPrevious ();
-                this.surface.getDisplay ().notify ("Device: " + cursorDevice.getName ());
+                if (cursorDevice.canSelectPreviousFX ())
+                {
+                    cursorDevice.selectPrevious ();
+                    this.surface.getDisplay ().notify ("Device: " + cursorDevice.getName ());
+                }
                 break;
             case 33:
-                cursorDevice.selectNext ();
-                this.surface.getDisplay ().notify ("Device: " + cursorDevice.getName ());
+                if (cursorDevice.canSelectNextFX ())
+                {
+                    cursorDevice.selectNext ();
+                    this.surface.getDisplay ().notify ("Device: " + cursorDevice.getName ());
+                }
                 break;
 
             // Change the scale
@@ -255,29 +270,32 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         if (event != ButtonEvent.DOWN)
             return;
 
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ModeManager modeManager = this.surface.getModeManager ();
+
         switch (index)
         {
             case 0:
-                this.model.getCurrentTrackBank ().scrollScenesPageUp ();
+                tb.scrollScenesPageUp ();
                 break;
             case 1:
-                this.model.getCurrentTrackBank ().scrollScenesPageDown ();
+                tb.scrollScenesPageDown ();
                 break;
             case 2:
-                this.model.getCurrentTrackBank ().scrollTracksPageUp ();
+                tb.scrollTracksPageUp ();
                 break;
             case 3:
-                this.model.getCurrentTrackBank ().scrollTracksPageDown ();
+                tb.scrollTracksPageDown ();
                 break;
 
             case 4:
-                this.surface.getModeManager ().setActiveMode (Modes.MODE_VOLUME);
+                modeManager.setActiveMode (Modes.MODE_VOLUME);
                 this.surface.getConfiguration ().setFaderCtrl ("Volume");
                 this.surface.getDisplay ().notify ("Volume");
                 break;
 
             case 5:
-                this.surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
+                modeManager.setActiveMode (Modes.MODE_PAN);
                 this.surface.getConfiguration ().setFaderCtrl ("Pan");
                 this.surface.getDisplay ().notify ("Pan");
                 break;
@@ -285,14 +303,12 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
             case 6:
                 if (this.model.isEffectTrackBankActive ())
                     return;
-                final ModeManager modeManager = this.surface.getModeManager ();
                 Integer mode = Integer.valueOf (modeManager.getActiveModeId ().intValue () + 1);
                 // Wrap
                 if (!Modes.isSendMode (mode))
                     mode = Modes.MODE_SEND1;
                 // Check if Send channel exists
-                final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
-                if (Modes.isSendMode (mode) && fxTrackBank != null && !fxTrackBank.getTrack (mode.intValue () - Modes.MODE_SEND1.intValue ()).doesExist ())
+                if (Modes.isSendMode (mode) && tb.canEditSend (mode.intValue () - Modes.MODE_SEND1.intValue ()))
                     mode = Modes.MODE_SEND1;
                 modeManager.setActiveMode (mode);
                 final String name = "Send " + (mode.intValue () - Modes.MODE_SEND1.intValue () + 1);
@@ -301,7 +317,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 break;
 
             case 7:
-                if (this.surface.getModeManager ().isActiveMode (Modes.MODE_DEVICE))
+                if (modeManager.isActiveMode (Modes.MODE_DEVICE))
                 {
                     this.model.getBrowser ().browseForPresets ();
                     final ViewManager viewManager = this.surface.getViewManager ();
@@ -311,7 +327,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 }
                 else
                 {
-                    this.surface.getModeManager ().setActiveMode (Modes.MODE_DEVICE);
+                    modeManager.setActiveMode (Modes.MODE_DEVICE);
                     this.surface.getConfiguration ().setFaderCtrl ("Device");
                     this.surface.getDisplay ().notify ("Device");
                 }
@@ -409,5 +425,15 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
             }
         }
         this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.");
+    }
+
+
+    private void switchToView (final Integer viewID)
+    {
+        if (!this.model.getHost ().hasClips ())
+            return;
+        final ViewManager viewManager = this.surface.getViewManager ();
+        viewManager.setPreviousView (viewID);
+        this.surface.getDisplay ().notify (viewManager.getView (viewID).getName ());
     }
 }

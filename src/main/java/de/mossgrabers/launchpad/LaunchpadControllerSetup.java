@@ -355,7 +355,8 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final boolean isEffect = this.model.isEffectTrackBankActive ();
 
         tb.setIndication (!isEffect && isSession);
-        tbe.setIndication (isEffect && isSession);
+        if (tbe != null)
+            tbe.setIndication (isEffect && isSession);
 
         for (int i = 0; i < 8; i++)
         {
@@ -365,9 +366,12 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
             for (int j = 0; j < 8; j++)
                 track.getSend (j).setIndication (!isEffect && isSends && selSend == j);
 
-            final ITrack fxTrack = tbe.getTrack (i);
-            fxTrack.setVolumeIndication (isEffect && isVolume);
-            fxTrack.setPanIndication (isEffect && isPan);
+            if (tbe != null)
+            {
+                final ITrack fxTrack = tbe.getTrack (i);
+                fxTrack.setVolumeIndication (isEffect && isVolume);
+                fxTrack.setPanIndication (isEffect && isPan);
+            }
 
             cursorDevice.indicateParameter (i, isDevice);
         }

@@ -97,10 +97,12 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
 
     protected void delayedUpdateArrows ()
     {
-        this.surface.updateButton (this.surface.getLeftButtonId (), this.canScrollLeft ? this.getButtonOnColor () : this.getButtonOffColor ());
-        this.surface.updateButton (this.surface.getRightButtonId (), this.canScrollRight ? this.getButtonOnColor () : this.getButtonOffColor ());
-        this.surface.updateButton (this.surface.getUpButtonId (), this.canScrollUp ? this.getButtonOnColor () : this.getButtonOffColor ());
-        this.surface.updateButton (this.surface.getDownButtonId (), this.canScrollDown ? this.getButtonOnColor () : this.getButtonOffColor ());
+        final int buttonOnColor = this.getButtonOnColor ();
+        final int buttonOffColor = this.getButtonOffColor ();
+        this.surface.updateButton (this.surface.getLeftButtonId (), this.canScrollLeft ? buttonOnColor : buttonOffColor);
+        this.surface.updateButton (this.surface.getRightButtonId (), this.canScrollRight ? buttonOnColor : buttonOffColor);
+        this.surface.updateButton (this.surface.getUpButtonId (), this.canScrollUp ? buttonOnColor : buttonOffColor);
+        this.surface.updateButton (this.surface.getDownButtonId (), this.canScrollDown ? buttonOnColor : buttonOffColor);
     }
 
 
