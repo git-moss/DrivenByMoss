@@ -90,7 +90,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     public ChannelType getType ()
     {
         final String typeID = this.track.trackType ().get ();
-        return typeID.isEmpty () ? null : ChannelType.valueOf (typeID.toUpperCase ());
+        return typeID.isEmpty () ? ChannelType.UNKNOWN : ChannelType.valueOf (typeID.toUpperCase ());
     }
 
 

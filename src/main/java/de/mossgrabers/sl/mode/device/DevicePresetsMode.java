@@ -139,7 +139,8 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
                 for (int i = 0; i < 6; i++)
                 {
                     final IBrowserColumn column = browser.getFilterColumn (i);
-                    d.setCell (0, 2 + i, StringUtils.shortenAndFixASCII (column.getName () + ":", 8)).setCell (2, 2 + i, column.doesCursorExist () ? column.getCursorName () : "");
+                    final String columnName = column.doesExist () ? StringUtils.shortenAndFixASCII (column.getName () + ":", 8) : "";
+                    d.setCell (0, 2 + i, columnName).setCell (2, 2 + i, column.doesCursorExist () ? column.getCursorName () : "");
                 }
                 break;
 

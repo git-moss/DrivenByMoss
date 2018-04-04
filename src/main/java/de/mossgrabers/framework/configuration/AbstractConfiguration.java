@@ -431,7 +431,8 @@ public abstract class AbstractConfiguration implements Configuration
     @Override
     public void changeQuantizeAmount (final int control)
     {
-        this.quantizeAmountSetting.set (this.valueChanger.changeValue (control, this.quantizeAmount, 1, 101));
+        if (this.quantizeAmountSetting != null)
+            this.quantizeAmountSetting.set (this.valueChanger.changeValue (control, this.quantizeAmount, 1, 101));
     }
 
 
@@ -439,7 +440,8 @@ public abstract class AbstractConfiguration implements Configuration
     @Override
     public void setQuantizeAmount (final int value)
     {
-        this.quantizeAmountSetting.set (value);
+        if (this.quantizeAmountSetting != null)
+            this.quantizeAmountSetting.set (value);
     }
 
 
@@ -447,7 +449,8 @@ public abstract class AbstractConfiguration implements Configuration
     @Override
     public void resetQuantizeAmount ()
     {
-        this.quantizeAmountSetting.set (100);
+        if (this.quantizeAmountSetting != null)
+            this.quantizeAmountSetting.set (100);
     }
 
 

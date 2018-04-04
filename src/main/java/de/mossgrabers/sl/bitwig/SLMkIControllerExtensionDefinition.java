@@ -29,7 +29,7 @@ public class SLMkIControllerExtensionDefinition extends AbstractControllerExtens
      */
     public SLMkIControllerExtensionDefinition ()
     {
-        super (new SLControllerDefinition (true));
+        super (new SLControllerDefinition (false));
     }
 
 

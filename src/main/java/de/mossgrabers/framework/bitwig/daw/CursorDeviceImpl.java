@@ -261,6 +261,14 @@ public class CursorDeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
+    public String getName (final int limit)
+    {
+        return this.cursorDevice.name ().getLimited (limit);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isPlugin ()
     {
         return this.cursorDevice.isPlugin ().get ();

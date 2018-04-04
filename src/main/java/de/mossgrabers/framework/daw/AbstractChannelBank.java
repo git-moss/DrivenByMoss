@@ -150,7 +150,8 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void stop ()
     {
-        this.sceneBank.stop ();
+        if (this.sceneBank != null)
+            this.sceneBank.stop ();
     }
 
 
@@ -166,7 +167,8 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void launchScene (final int scene)
     {
-        this.sceneBank.launchScene (scene);
+        if (this.sceneBank != null)
+            this.sceneBank.launchScene (scene);
     }
 
 
@@ -190,7 +192,8 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void scrollScenesUp ()
     {
-        this.sceneBank.scrollScenesUp ();
+        if (this.sceneBank != null)
+            this.sceneBank.scrollScenesUp ();
     }
 
 
@@ -198,7 +201,8 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void scrollScenesDown ()
     {
-        this.sceneBank.scrollScenesDown ();
+        if (this.sceneBank != null)
+            this.sceneBank.scrollScenesDown ();
     }
 
 
@@ -206,7 +210,8 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void scrollScenesPageUp ()
     {
-        this.sceneBank.scrollScenesPageUp ();
+        if (this.sceneBank != null)
+            this.sceneBank.scrollScenesPageUp ();
     }
 
 
@@ -214,7 +219,8 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void scrollScenesPageDown ()
     {
-        this.sceneBank.scrollScenesPageDown ();
+        if (this.sceneBank != null)
+            this.sceneBank.scrollScenesPageDown ();
     }
 
 
@@ -222,7 +228,7 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public int getScenePosition ()
     {
-        return this.sceneBank.getScrollPosition ();
+        return this.sceneBank == null ? -1 : this.sceneBank.getScrollPosition ();
     }
 
 

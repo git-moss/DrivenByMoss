@@ -70,6 +70,15 @@ public interface ICursorDevice extends ObserverManagement
 
 
     /**
+     * Get the name of the cursor device.
+     *
+     * @param limit Limit the text to this length
+     * @return The name
+     */
+    String getName (final int limit);
+
+
+    /**
      * Returns true if the cursor device is a non-DAW plugin.
      *
      * @return True if the cursor device is a non-DAW plugin

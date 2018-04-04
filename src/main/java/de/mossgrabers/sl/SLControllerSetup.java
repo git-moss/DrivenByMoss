@@ -323,9 +323,12 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
             for (int j = 0; j < 6; j++)
                 track.getSend (j).setIndication (!isEffect && hasTrackSel);
 
-            final ITrack fxTrack = tbe.getTrack (i);
-            fxTrack.setVolumeIndication (isEffect);
-            fxTrack.setPanIndication (isEffect);
+            if (tbe != null)
+            {
+                final ITrack fxTrack = tbe.getTrack (i);
+                fxTrack.setVolumeIndication (isEffect);
+                fxTrack.setPanIndication (isEffect);
+            }
 
             cursorDevice.indicateParameter (i, true);
         }
