@@ -66,6 +66,17 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
+        if (viewManager.isActiveView (Views.VIEW_PIANO))
+        {
+            final Scales scales = this.model.getScales ();
+            final int octave = scales.getOctave ();
+            this.canScrollUp = octave < 3;
+            this.canScrollDown = octave > -3;
+            this.canScrollLeft = false;
+            this.canScrollRight = false;
+            return;
+        }
+
         if (viewManager.isActiveView (Views.VIEW_DRUM))
         {
             final int octave = this.model.getScales ().getDrumOctave ();
@@ -163,7 +174,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.VIEW_BROWSER))
             return LaunchpadColors.LAUNCHPAD_COLOR_TURQUOISE;
 
-        // VIEW_PLAY, VIEW_SHIFT
+        // VIEW_PLAY, VIEW_PIANO, VIEW_SHIFT
         return LaunchpadColors.LAUNCHPAD_COLOR_OCEAN_HI;
     }
 
@@ -268,7 +279,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.VIEW_PLAY) || viewManager.isActiveView (Views.VIEW_PIANO))
         {
             ((PlayView) viewManager.getView (Views.VIEW_PLAY)).onOctaveUp (ButtonEvent.DOWN);
             return;
@@ -321,7 +332,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.VIEW_PLAY) || viewManager.isActiveView (Views.VIEW_PIANO))
         {
             ((PlayView) viewManager.getView (Views.VIEW_PLAY)).onOctaveDown (ButtonEvent.DOWN);
             return;

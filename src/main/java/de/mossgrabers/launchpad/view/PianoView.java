@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.view;
+package de.mossgrabers.launchpad.view;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGrid;
@@ -11,7 +11,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
-import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
 /**
@@ -27,9 +28,9 @@ public class PianoView extends PlayView
      * @param surface The surface
      * @param model The model
      */
-    public PianoView (final PushControlSurface surface, final IModel model)
+    public PianoView (final LaunchpadControlSurface surface, final IModel model)
     {
-        super (Views.VIEW_NAME_PIANO, surface, model);
+        super ("Piano", surface, model);
     }
 
 
@@ -123,25 +124,37 @@ public class PianoView extends PlayView
     @Override
     public void updateNoteMapping ()
     {
-        // Workaround: https://github.com/git-moss/Push4Bitwig/issues/7
+        // Workaround: https://github.com/git-moss/Launchpad4Bitwig/issues/7
         this.surface.scheduleTask (this::delayedUpdateNoteMapping, 100);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateButtons ()
+    public void onScene (final int scene, final ButtonEvent event)
     {
-        super.updateButtons ();
-        final int octave = this.scales.getPianoOctave ();
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, octave < Scales.PIANO_OCTAVE_RANGE ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, octave > -Scales.PIANO_OCTAVE_RANGE ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateSceneButtons ()
+    {
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
     }
 
 
     private void delayedUpdateNoteMapping ()
     {
         this.noteMap = this.model.canSelectedTrackHoldNotes () ? this.scales.getPianoMatrix () : Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.noteMap);
+        this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (this.noteMap));
     }
 }
