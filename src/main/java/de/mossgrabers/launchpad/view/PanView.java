@@ -60,8 +60,10 @@ public class PanView extends AbstractFaderView
             final ITrack track = tb.getTrack (i);
             final int color = cm.getColor (BitwigColors.getColorIndex (track.getColor ()));
             if (this.trackColors[i] != color)
+            {
+                this.trackColors[i] = color;
                 this.setupFader (i);
-            this.trackColors[i] = color;
+            }
             output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, track.doesExist () ? track.getPan () : 64);
         }
     }

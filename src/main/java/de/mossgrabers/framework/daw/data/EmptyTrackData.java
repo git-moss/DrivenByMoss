@@ -213,6 +213,22 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
+    public int getVuLeft ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getVuRight ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getNumSends ()
     {
         return 0;

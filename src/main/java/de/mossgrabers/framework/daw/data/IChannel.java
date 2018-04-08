@@ -323,11 +323,27 @@ public interface IChannel extends ObserverManagement
 
 
     /**
-     * Get the VU value.
+     * Get the Mono VU value.
      *
      * @return The VU value
      */
     int getVu ();
+
+
+    /**
+     * Get the left VU value.
+     *
+     * @return The left VU value
+     */
+    int getVuLeft ();
+
+
+    /**
+     * Get the right VU value.
+     *
+     * @return The right VU value
+     */
+    int getVuRight ();
 
 
     /**

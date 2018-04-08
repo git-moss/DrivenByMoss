@@ -269,10 +269,22 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
      *            the default color
      * @return The color ID
      */
-    public String getColor (final int pad, final ITrack track)
+    protected String getColor (final int pad, final ITrack track)
     {
-        final String colorID = this.scales.getColor (this.noteMap, pad);
-        // Replace the octave color with the track color
+        return replaceOctaveColorWithTrackColor (track, this.scales.getColor (this.noteMap, pad));
+    }
+
+
+    /**
+     * If the given color ID is the octave color ID it will be replaced with the track color ID.
+     *
+     * @param track A track to use the track color for coloring the octave notes, set to null to use
+     *            the default color
+     * @param colorID
+     * @return The color ID
+     */
+    protected static String replaceOctaveColorWithTrackColor (final ITrack track, final String colorID)
+    {
         if (Scales.SCALE_COLOR_OCTAVE.equals (colorID))
         {
             if (track == null)

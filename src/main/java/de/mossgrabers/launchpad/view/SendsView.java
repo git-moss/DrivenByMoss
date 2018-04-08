@@ -68,9 +68,11 @@ public class SendsView extends AbstractFaderView
             final ITrack track = tb.getTrack (i);
             final ISend send = track.getSend (this.selectedSend);
             final int color = cm.getColor (BitwigColors.getColorIndex (track.getColor ()));
-            if (this.trackColors[i] != color || !track.doesExist () || send.getName ().isEmpty ())
+            if (this.trackColors[i] != color)
+            {
+                this.trackColors[i] = color;
                 this.setupFader (i);
-            this.trackColors[i] = color;
+            }
             output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, send.getValue ());
         }
     }

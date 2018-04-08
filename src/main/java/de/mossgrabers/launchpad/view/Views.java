@@ -43,12 +43,15 @@ public class Views
     public static final Integer       VIEW_DRUM8     = Integer.valueOf (12);
     /** View for drum playing with 64 pads. */
     public static final Integer       VIEW_DRUM64    = Integer.valueOf (13);
+    /** View for piano layout playing. */
+    public static final Integer       VIEW_PIANO     = Integer.valueOf (14);
 
     private static final Set<Integer> NOTE_MODES     = new HashSet<> ();
 
     static
     {
         NOTE_MODES.add (VIEW_PLAY);
+        NOTE_MODES.add (VIEW_PIANO);
         NOTE_MODES.add (VIEW_DRUM);
         NOTE_MODES.add (VIEW_DRUM4);
         NOTE_MODES.add (VIEW_DRUM8);

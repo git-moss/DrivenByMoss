@@ -207,9 +207,14 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         viewManager.registerView (Views.VIEW_TRACK, new TrackView (surface, this.model));
         viewManager.registerView (Views.VIEW_DEVICE, new DeviceView (surface, this.model));
         viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
+
+        if (this.host.hasClips ())
+        {
+            viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
+            viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
+            viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
+        }
+
         viewManager.registerView (Views.VIEW_BROWSER, new BrowserView (surface, this.model));
         viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (surface, this.model));
     }
@@ -270,12 +275,12 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrack selectedTrack = tb.getSelectedTrack ();
         final IChannelBank tbe = this.model.getEffectTrackBank ();
-        final ITrack selectedFXTrack = tbe.getSelectedTrack ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
 
         tb.setIndication (!isEffect && isSession);
-        tbe.setIndication (isEffect && isSession);
+        if (tbe != null)
+            tbe.setIndication (isEffect && isSession);
 
         for (int i = 0; i < 8; i++)
         {
@@ -286,10 +291,14 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
             for (int j = 0; j < 6; j++)
                 track.getSend (j).setIndication (!isEffect && hasTrackSel && isTrack);
 
-            final boolean hasFXTrackSel = selectedFXTrack != null && selectedFXTrack.getIndex () == i;
-            final ITrack fxTrack = tbe.getTrack (i);
-            fxTrack.setVolumeIndication (isEffect && hasFXTrackSel && isTrack);
-            fxTrack.setPanIndication (isEffect && hasFXTrackSel && isTrack);
+            if (tbe != null)
+            {
+                final ITrack selectedFXTrack = tbe.getSelectedTrack ();
+                final boolean hasFXTrackSel = selectedFXTrack != null && selectedFXTrack.getIndex () == i;
+                final ITrack fxTrack = tbe.getTrack (i);
+                fxTrack.setVolumeIndication (isEffect && hasFXTrackSel && isTrack);
+                fxTrack.setPanIndication (isEffect && hasFXTrackSel && isTrack);
+            }
 
             cursorDevice.indicateParameter (i, isDevice);
         }

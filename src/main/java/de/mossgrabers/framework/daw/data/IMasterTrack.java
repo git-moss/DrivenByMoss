@@ -20,20 +20,4 @@ public interface IMasterTrack extends ITrack
      * @param observer The observer to register
      */
     void addTrackSelectionObserver (TrackSelectionObserver observer);
-
-
-    /**
-     * Get the left VU value.
-     *
-     * @return The left VU value
-     */
-    int getVuLeft ();
-
-
-    /**
-     * Get the right VU value.
-     *
-     * @return The right VU value
-     */
-    int getVuRight ();
 }
