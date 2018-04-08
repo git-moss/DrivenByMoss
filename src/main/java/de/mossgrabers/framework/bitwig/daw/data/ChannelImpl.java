@@ -29,6 +29,8 @@ public class ChannelImpl implements IChannel
     private int             index;
     private boolean         selected;
     private int             vu;
+    private int             vuLeft;
+    private int             vuRight;
     private IParameter      volumeParameter;
     private IParameter      panParameter;
 
@@ -63,6 +65,8 @@ public class ChannelImpl implements IChannel
         this.panParameter = new ParameterImpl (valueChanger, channel.pan (), maxParameterValue);
 
         channel.addVuMeterObserver (maxParameterValue, -1, true, value -> this.handleVUMeters (maxParameterValue, value));
+        channel.addVuMeterObserver (maxParameterValue, 0, true, value -> this.handleVULeftMeter (maxParameterValue, value));
+        channel.addVuMeterObserver (maxParameterValue, 1, true, value -> this.handleVURightMeter (maxParameterValue, value));
 
         this.sends = new SendImpl [numSends];
         if (numSends == 0)
@@ -396,6 +400,22 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
+    public int getVuLeft ()
+    {
+        return this.vuLeft;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getVuRight ()
+    {
+        return this.vuRight;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getNumSends ()
     {
         return this.sends.length;
@@ -445,16 +465,26 @@ public class ChannelImpl implements IChannel
     }
 
 
-    /**
-     * Handle the value change of the VU meter.
-     *
-     * @param maxParameterValue For bug checking
-     * @param value The value of the VU meter
-     */
     private void handleVUMeters (final int maxParameterValue, final int value)
     {
         // Limit value to this.configuration.getMaxParameterValue () due to
         // https://github.com/teotigraphix/Framework4Bitwig/issues/98
         this.vu = value >= maxParameterValue ? maxParameterValue - 1 : value;
+    }
+
+
+    private void handleVULeftMeter (final int maxParameterValue, final int value)
+    {
+        // Limit value to this.configuration.getMaxParameterValue () due to
+        // https://github.com/teotigraphix/Framework4Bitwig/issues/98
+        this.vuLeft = value >= maxParameterValue ? maxParameterValue - 1 : value;
+    }
+
+
+    private void handleVURightMeter (final int maxParameterValue, final int value)
+    {
+        // Limit value to this.configuration.getMaxParameterValue () due to
+        // https://github.com/teotigraphix/Framework4Bitwig/issues/98
+        this.vuRight = value >= maxParameterValue ? maxParameterValue - 1 : value;
     }
 }

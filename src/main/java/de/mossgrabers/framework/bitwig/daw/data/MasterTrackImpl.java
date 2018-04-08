@@ -22,8 +22,6 @@ import java.util.List;
 public class MasterTrackImpl extends TrackImpl implements IMasterTrack
 {
     private final List<TrackSelectionObserver> observers = new ArrayList<> ();
-    private int                                vuLeft;
-    private int                                vuRight;
 
 
     /**
@@ -37,10 +35,6 @@ public class MasterTrackImpl extends TrackImpl implements IMasterTrack
         super (master, valueChanger, -1, 0, 0);
 
         this.track.addIsSelectedInEditorObserver (this::handleIsSelected);
-
-        final int maxParameterValue = this.valueChanger.getUpperBound ();
-        this.track.addVuMeterObserver (maxParameterValue, 0, true, value -> this.handleVULeftMeter (maxParameterValue, value));
-        this.track.addVuMeterObserver (maxParameterValue, 1, true, value -> this.handleVURightMeter (maxParameterValue, value));
     }
 
 
@@ -49,22 +43,6 @@ public class MasterTrackImpl extends TrackImpl implements IMasterTrack
     public void addTrackSelectionObserver (final TrackSelectionObserver observer)
     {
         this.observers.add (observer);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getVuLeft ()
-    {
-        return this.vuLeft;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getVuRight ()
-    {
-        return this.vuRight;
     }
 
 
@@ -78,21 +56,5 @@ public class MasterTrackImpl extends TrackImpl implements IMasterTrack
         this.setSelected (isSelected);
         for (final TrackSelectionObserver observer: this.observers)
             observer.call (-1, isSelected);
-    }
-
-
-    private void handleVULeftMeter (final int maxParameterValue, final int value)
-    {
-        // Limit value to this.configuration.getMaxParameterValue () due to
-        // https://github.com/teotigraphix/Framework4Bitwig/issues/98
-        this.vuLeft = value >= maxParameterValue ? maxParameterValue - 1 : value;
-    }
-
-
-    private void handleVURightMeter (final int maxParameterValue, final int value)
-    {
-        // Limit value to this.configuration.getMaxParameterValue () due to
-        // https://github.com/teotigraphix/Framework4Bitwig/issues/98
-        this.vuRight = value >= maxParameterValue ? maxParameterValue - 1 : value;
     }
 }

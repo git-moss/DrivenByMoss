@@ -14,3 +14,4 @@ de.mossgrabers.mcu.bitwig.MCUController0ExtenderExtensionDefinition
 de.mossgrabers.mcu.bitwig.MCUController1ExtenderExtensionDefinition
 de.mossgrabers.mcu.bitwig.MCUController2ExtenderExtensionDefinition
 de.mossgrabers.mcu.bitwig.MCUController3ExtenderExtensionDefinition
+de.mossgrabers.kontrolosc.KontrolOSCExtensionDefinition

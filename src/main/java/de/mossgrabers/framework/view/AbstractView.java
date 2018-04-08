@@ -277,7 +277,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     /**
      * If the given color ID is the octave color ID it will be replaced with the track color ID.
-     * 
+     *
      * @param track A track to use the track color for coloring the octave notes, set to null to use
      *            the default color
      * @param colorID
