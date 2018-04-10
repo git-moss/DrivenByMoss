@@ -4,16 +4,16 @@
 
 package de.mossgrabers.controller.push.view;
 
-import de.mossgrabers.framework.daw.ICursorClip;
-import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractNoteSequencerView;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.controller.push.mode.NoteMode;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractNoteSequencerView;
 
 
 /**

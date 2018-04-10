@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.mcu.command.trigger;
 
-import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mcu.mode.Modes;
+import de.mossgrabers.framework.mode.ModeManager;
 
 
 /**

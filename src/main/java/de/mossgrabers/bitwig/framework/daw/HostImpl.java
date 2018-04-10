@@ -132,6 +132,44 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
+    public IOpenSoundControlServer connectToOSCServer (final String serverAddress, final int serverPort)
+    {
+        // TODO Fix required: Can only be called in init but needs to listen to host and port
+        // changes
+        final OscModule oscModule = this.host.getOscModule ();
+        return new OpenSoundControlServerImpl (oscModule.connectToUdpServer (serverAddress, serverPort, oscModule.createAddressSpace ()));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void createOSCServer (final IOpenSoundControlCallback callback, final int port)
+    {
+        final OscModule oscModule = this.host.getOscModule ();
+        final OscAddressSpace addressSpace = oscModule.createAddressSpace ();
+        addressSpace.registerDefaultMethod ( (source, message) -> callback.handle (new OpenSoundControlMessageImpl (message)));
+        oscModule.createUdpServer (port, addressSpace);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IOpenSoundControlMessage createOSCMessage (final String address, final List<Object> values)
+    {
+        return new OpenSoundControlMessageImpl (address, values);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void releaseOSC ()
+    {
+        // This is automatically handled by the Bitwig framework
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public IImage loadSVG (final String path, final int scale)
     {
         return new ImageImpl (this.host.loadSVG (path, scale));
@@ -170,35 +208,5 @@ public class HostImpl implements IHost
     {
         for (final IUSBDevice usbDevice: this.usbDevices)
             usbDevice.release ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IOpenSoundControlServer connectToOSCServer (final String serverAddress, final int serverPort)
-    {
-        // TODO Fix required: Can only be called in init but needs to listen to host and port
-        // changes
-        final OscModule oscModule = this.host.getOscModule ();
-        return new OpenSoundControlServerImpl (oscModule.connectToUdpServer (serverAddress, serverPort, oscModule.createAddressSpace ()));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void createOSCServer (final IOpenSoundControlCallback callback, final int port)
-    {
-        final OscModule oscModule = this.host.getOscModule ();
-        final OscAddressSpace addressSpace = oscModule.createAddressSpace ();
-        addressSpace.registerDefaultMethod ( (source, message) -> callback.handle (new OpenSoundControlMessageImpl (message)));
-        oscModule.createUdpServer (port, addressSpace);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IOpenSoundControlMessage createOSCMessage (final String address, final List<Object> values)
-    {
-        return new OpenSoundControlMessageImpl (address, values);
     }
 }

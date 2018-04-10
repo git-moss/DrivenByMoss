@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.mcu.mode;
 
+import de.mossgrabers.controller.mcu.MCUConfiguration;
+import de.mossgrabers.controller.mcu.MCUControllerSetup;
+import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -13,9 +16,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
-import de.mossgrabers.controller.mcu.MCUConfiguration;
-import de.mossgrabers.controller.mcu.MCUControllerSetup;
-import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 
 
 /**

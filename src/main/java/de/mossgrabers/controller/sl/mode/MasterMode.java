@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.sl.mode;
 
+import de.mossgrabers.controller.sl.SLConfiguration;
+import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.controller.sl.SLConfiguration;
-import de.mossgrabers.controller.sl.controller.SLControlSurface;
 
 
 /**

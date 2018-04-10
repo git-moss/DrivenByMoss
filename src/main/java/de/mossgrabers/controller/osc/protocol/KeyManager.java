@@ -27,7 +27,7 @@ public class KeyManager implements NoteObserver
 
     /**
      * Constructor.
-     * 
+     *
      * @param model The model
      */
     public KeyManager (final IModel model)
@@ -107,7 +107,7 @@ public class KeyManager implements NoteObserver
 
     /** {@inheritDoc} */
     @Override
-    public void call (int note, int velocity)
+    public void call (final int note, final int velocity)
     {
         for (int i = 0; i < 128; i++)
         {

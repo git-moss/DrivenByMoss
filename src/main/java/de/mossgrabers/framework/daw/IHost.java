@@ -105,6 +105,41 @@ public interface IHost
 
 
     /**
+     * Connect to an OSC server.
+     *
+     * @param serverAddress The address of the server
+     * @param serverPort The port of the server
+     * @return Interface for interacting with the server
+     */
+    IOpenSoundControlServer connectToOSCServer (String serverAddress, int serverPort);
+
+
+    /**
+     * Create an OSC server.
+     *
+     * @param callback The callback method to handle received messages
+     * @param port The port to listen on
+     */
+    void createOSCServer (IOpenSoundControlCallback callback, int port);
+
+
+    /**
+     * Create an OSC message.
+     *
+     * @param address The OSC address
+     * @param values The values for the message
+     * @return The created message
+     */
+    IOpenSoundControlMessage createOSCMessage (String address, List<Object> values);
+
+
+    /**
+     * Call on shutdown to release all OSC resources.
+     */
+    void releaseOSC ();
+
+
+    /**
      * Loads a SVG image. The memory used by this image is guaranteed to be freed once this
      * extension exits.
      *
@@ -149,33 +184,4 @@ public interface IHost
      * Call on shutdown to release all USB devices.
      */
     void releaseUsbDevices ();
-
-
-    /**
-     * Connect to an OSC server.
-     *
-     * @param serverAddress The address of the server
-     * @param serverPort The port of the server
-     * @return Interface for interacting with the server
-     */
-    IOpenSoundControlServer connectToOSCServer (String serverAddress, int serverPort);
-
-
-    /**
-     * Create an OSC server.
-     *
-     * @param callback The callback method to handle received messages
-     * @param port The port to listen on
-     */
-    void createOSCServer (IOpenSoundControlCallback callback, int port);
-
-
-    /**
-     * Create an OSC message.
-     *
-     * @param address The OSC address
-     * @param values The values for the message
-     * @return The created message
-     */
-    IOpenSoundControlMessage createOSCMessage (String address, List<Object> values);
 }

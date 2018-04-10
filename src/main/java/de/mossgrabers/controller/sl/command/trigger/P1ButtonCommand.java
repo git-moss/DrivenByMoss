@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.sl.command.trigger;
 
-import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.view.SLView;
+import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**

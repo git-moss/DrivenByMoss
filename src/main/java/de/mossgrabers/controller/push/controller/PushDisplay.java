@@ -4,15 +4,15 @@
 
 package de.mossgrabers.controller.push.controller;
 
-import de.mossgrabers.framework.controller.display.AbstractDisplay;
-import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.display.PushUSBDisplay;
 import de.mossgrabers.controller.push.controller.display.model.DisplayModel;
 import de.mossgrabers.controller.push.controller.display.model.VirtualDisplay;
 import de.mossgrabers.controller.push.controller.display.model.grid.GridChangeListener;
+import de.mossgrabers.framework.controller.display.AbstractDisplay;
+import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**

@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.push.mode;
 
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
 
 import java.util.Arrays;
 

@@ -89,7 +89,7 @@ public class PushUSBDisplay
      */
     public void send (final IBitmap image)
     {
-        if (this.usbDevice == null || this.isSending)
+        if (this.usbDevice == null || this.usbEndpoint == null || this.isSending)
             return;
 
         this.isSending = true;

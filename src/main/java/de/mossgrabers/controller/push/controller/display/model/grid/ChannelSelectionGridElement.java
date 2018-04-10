@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.push.controller.display.model.grid;
 
+import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.framework.graphics.Align;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.graphics.IImage;
-import de.mossgrabers.controller.push.PushConfiguration;
 
 import java.util.EnumMap;
 

@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.push.view;
 
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
@@ -12,9 +15,6 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushColors;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
 
 
 /**

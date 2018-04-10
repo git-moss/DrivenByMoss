@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.push.command.trigger;
 
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.Modes;
+import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
@@ -11,10 +15,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.mode.Modes;
-import de.mossgrabers.controller.push.view.Views;
 
 
 /**

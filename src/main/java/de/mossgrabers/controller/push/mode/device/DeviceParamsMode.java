@@ -4,6 +4,12 @@
 
 package de.mossgrabers.controller.push.mode.device;
 
+import de.mossgrabers.controller.push.controller.DisplayMessage;
+import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.mode.BaseMode;
+import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
@@ -17,12 +23,6 @@ import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.View;
-import de.mossgrabers.controller.push.controller.DisplayMessage;
-import de.mossgrabers.controller.push.controller.PushColors;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
-import de.mossgrabers.controller.push.mode.BaseMode;
-import de.mossgrabers.controller.push.mode.Modes;
 
 
 /**

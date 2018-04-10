@@ -4,10 +4,6 @@
 
 package de.mossgrabers.controller.push.controller;
 
-import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.ICursorClip;
-import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.controller.push.controller.display.model.DisplayModel;
 import de.mossgrabers.controller.push.controller.display.model.grid.BoxListGridElement;
 import de.mossgrabers.controller.push.controller.display.model.grid.ChannelGridElement;
@@ -18,6 +14,10 @@ import de.mossgrabers.controller.push.controller.display.model.grid.MidiClipElem
 import de.mossgrabers.controller.push.controller.display.model.grid.OptionsGridElement;
 import de.mossgrabers.controller.push.controller.display.model.grid.ParamGridElement;
 import de.mossgrabers.controller.push.controller.display.model.grid.SendsGridElement;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;

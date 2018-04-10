@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.mcu.controller;
 
+import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.controller.mcu.MCUConfiguration;
 
 import java.util.Arrays;
 import java.util.List;

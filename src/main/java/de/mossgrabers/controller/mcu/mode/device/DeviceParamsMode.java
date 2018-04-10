@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.mcu.mode.device;
 
+import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
+import de.mossgrabers.controller.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.utils.StringUtils;
-import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
-import de.mossgrabers.controller.mcu.mode.BaseMode;
 
 
 /**

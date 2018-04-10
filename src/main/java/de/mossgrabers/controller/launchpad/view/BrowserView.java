@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.launchpad.view;
 
+import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
@@ -11,9 +14,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 
 
 /**

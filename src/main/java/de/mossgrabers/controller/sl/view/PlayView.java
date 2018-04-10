@@ -4,6 +4,12 @@
 
 package de.mossgrabers.controller.sl.view;
 
+import de.mossgrabers.controller.sl.SLConfiguration;
+import de.mossgrabers.controller.sl.command.trigger.ButtonRowSelectCommand;
+import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
+import de.mossgrabers.controller.sl.controller.SLControlSurface;
+import de.mossgrabers.controller.sl.mode.Modes;
+import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -14,12 +20,6 @@ import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
-import de.mossgrabers.controller.sl.SLConfiguration;
-import de.mossgrabers.controller.sl.command.trigger.ButtonRowSelectCommand;
-import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
-import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.controller.sl.mode.Modes;
-import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 
 import java.util.Arrays;
 

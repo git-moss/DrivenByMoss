@@ -4,11 +4,11 @@
 
 package de.mossgrabers.controller.push.controller.display.model.grid;
 
+import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.graphics.Align;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.utils.Pair;
-import de.mossgrabers.controller.push.PushConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.push.controller.display.model;
 
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.display.model.grid.GridElement;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.framework.graphics.IBitmap;
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.display.model.grid.GridElement;
 
 import java.util.List;
 
