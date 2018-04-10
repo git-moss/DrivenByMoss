@@ -112,10 +112,10 @@ public interface IParameter extends ObserverManagement
 
 
     /**
-     * Specifies if this value should be indicated as mapped in Bitwig Studio, which is visually
-     * shown as colored dots or tinting on the parameter controls.
+     * Specifies if this value should be indicated as mapped in the DAW, which is visually shown as
+     * colored dots or tinting on the parameter controls.
      *
-     * @param enable True in case visual indications should be shown in Bitwig Studio
+     * @param enable True in case visual indications should be shown
      */
     void setIndication (boolean enable);
 }

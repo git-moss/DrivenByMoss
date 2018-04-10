@@ -168,7 +168,6 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
                     surface.setTrackState (i);
             }
         });
-
     }
 
 

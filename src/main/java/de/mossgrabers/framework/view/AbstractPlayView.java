@@ -211,7 +211,6 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     @Override
     public void updateNoteMapping ()
     {
-        // Workaround: https://github.com/git-moss/Push4Bitwig/issues/7
         this.surface.scheduleTask (this::delayedUpdateNoteMapping, 100);
     }
 

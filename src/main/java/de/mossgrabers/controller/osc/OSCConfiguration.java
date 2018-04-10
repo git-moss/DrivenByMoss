@@ -13,7 +13,7 @@ import de.mossgrabers.framework.controller.IValueChanger;
 
 
 /**
- * The configuration settings for OSC4Bitwig.
+ * The configuration settings for the OSC implementation.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

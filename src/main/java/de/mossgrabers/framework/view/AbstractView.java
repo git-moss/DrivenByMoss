@@ -10,7 +10,7 @@ import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Mode;
@@ -290,7 +290,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
             if (track == null)
                 return Scales.SCALE_COLOR_OCTAVE;
             final double [] color = track.getColor ();
-            final String c = BitwigColors.getColorIndex (color[0], color[1], color[2]);
+            final String c = DAWColors.getColorIndex (color[0], color[1], color[2]);
             return c == null ? Scales.SCALE_COLOR_OCTAVE : c;
         }
         return colorID;

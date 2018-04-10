@@ -246,8 +246,8 @@ public interface IModel
 
 
     /**
-     * Returns true if the cursor track is pinned (aka does not follow the track selection in
-     * Bitwig).
+     * Returns true if the cursor track is pinned (aka does not follow the track selection in the
+     * DAW).
      *
      * @return True if the cursor track is pinned
      */

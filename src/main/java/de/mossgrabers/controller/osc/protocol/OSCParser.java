@@ -4,15 +4,18 @@
 
 package de.mossgrabers.controller.osc.protocol;
 
-import de.mossgrabers.bitwig.framework.daw.HostImpl;
+import de.mossgrabers.controller.osc.OSCConfiguration;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMixer;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -20,19 +23,13 @@ import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
+import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.controller.osc.OSCConfiguration;
-
-import com.bitwig.extension.api.opensoundcontrol.OscConnection;
-import com.bitwig.extension.api.opensoundcontrol.OscMessage;
-import com.bitwig.extension.api.opensoundcontrol.OscMethodCallback;
-import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.MidiIn;
-import com.bitwig.extension.controller.api.NoteInput;
 
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,7 +39,7 @@ import java.util.regex.Pattern;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class OSCParser implements OscMethodCallback
+public class OSCParser implements IOpenSoundControlCallback
 {
     private static final String    PART_INDICATE     = "indicate";
     private static final String    PART_VOLUME       = "volume";
@@ -51,16 +48,17 @@ public class OSCParser implements OscMethodCallback
 
     private static final Pattern   RGB_COLOR_PATTERN = Pattern.compile ("(rgb|RGB)\\((\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?)\\)");
 
-    private final OSCModel         model;
+    private final IModel           model;
     private final ITransport       transport;
     private final IMasterTrack     masterTrack;
     private final Scales           scales;
-    private final MidiIn           port;
-    private final NoteInput        noteInput;
-    private final ControllerHost   host;
+    private final IMidiInput       midiInput;
+    private final IHost            host;
     private final OSCConfiguration configuration;
     private final Display          display;
     private final OSCWriter        writer;
+    private final KeyManager       keyManager;
+    private final ICursorClip      clip;
 
 
     /**
@@ -70,38 +68,42 @@ public class OSCParser implements OscMethodCallback
      * @param writer The OSC writer
      * @param configuration The configuration
      * @param model The model
+     * @param keyManager The key manager
+     * @param midiInput The midi input
      */
-    public OSCParser (final ControllerHost host, final OSCWriter writer, final OSCConfiguration configuration, final OSCModel model)
+    public OSCParser (final IHost host, final OSCWriter writer, final OSCConfiguration configuration, final IModel model, final KeyManager keyManager, final IMidiInput midiInput)
     {
         this.host = host;
         this.writer = writer;
         this.configuration = configuration;
         this.model = model;
+        this.keyManager = keyManager;
 
-        this.display = new DummyDisplay (new HostImpl (host));
+        this.display = new DummyDisplay (host);
 
         this.transport = this.model.getTransport ();
         this.masterTrack = this.model.getMasterTrack ();
         this.scales = this.model.getScales ();
 
         this.model.getCurrentTrackBank ().setIndication (true);
-        this.model.updateNoteMapping ();
+        this.keyManager.updateNoteMapping ();
 
-        this.port = host.getMidiInPort (0);
-        this.noteInput = this.port.createNoteInput ("OSC Midi");
+        this.midiInput = midiInput;
+
+        this.clip = model.getCursorClip (8, 8);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final OscConnection source, final OscMessage message)
+    public void handle (final IOpenSoundControlMessage message)
     {
         final LinkedList<String> oscParts = parseAddress (message);
         if (oscParts.isEmpty ())
             return;
 
-        final List<Object> values = message.getArguments ();
-        final Object value = values.isEmpty () ? null : values.get (0);
+        final Object [] values = message.getValues ();
+        final Object value = values == null || values.length == 0 ? null : values[0];
         final int numValue = value == null || !(value instanceof Number) ? -1 : ((Number) value).intValue ();
 
         final String command = oscParts.removeFirst ();
@@ -124,7 +126,7 @@ public class OSCParser implements OscMethodCallback
             case "project":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Project subcommand.");
+                    this.host.error ("Missing Project subcommand.");
                     return;
                 }
                 final String subCommand = oscParts.get (0);
@@ -143,7 +145,7 @@ public class OSCParser implements OscMethodCallback
                             this.model.getApplication ().toggleEngineActive ();
                         break;
                     default:
-                        this.host.errorln ("Unknown Project subcommand: " + subCommand);
+                        this.host.error ("Unknown Project subcommand: " + subCommand);
                         break;
                 }
                 break;
@@ -159,7 +161,7 @@ public class OSCParser implements OscMethodCallback
                     case "bank":
                         if (oscParts.isEmpty ())
                         {
-                            this.host.errorln ("Missing Scene subcommand.");
+                            this.host.error ("Missing Scene subcommand.");
                             return;
                         }
                         final String subCommand2 = oscParts.get (0);
@@ -174,7 +176,7 @@ public class OSCParser implements OscMethodCallback
                                     this.model.getCurrentTrackBank ().scrollScenesPageUp ();
                                 break;
                             default:
-                                this.host.errorln ("Unknown Scene subcommand: " + subCommand2);
+                                this.host.error ("Unknown Scene subcommand: " + subCommand2);
                                 break;
                         }
                         break;
@@ -192,7 +194,7 @@ public class OSCParser implements OscMethodCallback
                     default:
                         if (oscParts.isEmpty ())
                         {
-                            this.host.errorln ("Missing Scene index.");
+                            this.host.error ("Missing Scene index.");
                             return;
                         }
                         final int scene = Integer.parseInt (p);
@@ -203,7 +205,7 @@ public class OSCParser implements OscMethodCallback
                                 this.model.getCurrentTrackBank ().launchScene (scene - 1);
                                 break;
                             default:
-                                this.host.errorln ("Unknown Scene subcommand: " + sceneCommand);
+                                this.host.error ("Unknown Scene subcommand: " + sceneCommand);
                                 break;
                         }
                         break;
@@ -217,7 +219,7 @@ public class OSCParser implements OscMethodCallback
             case "track":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Track index or command.");
+                    this.host.error ("Missing Track index or command.");
                     return;
                 }
                 try
@@ -274,7 +276,7 @@ public class OSCParser implements OscMethodCallback
             case "action":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Action command ID.");
+                    this.host.error ("Missing Action command ID.");
                     return;
                 }
                 final String cmd = oscParts.get (0).replace ('-', ' ');
@@ -284,12 +286,12 @@ public class OSCParser implements OscMethodCallback
                 }
                 catch (final RuntimeException ex)
                 {
-                    this.host.errorln ("Could not execute action: " + cmd);
+                    this.host.error ("Could not execute action: " + cmd);
                 }
                 break;
 
             default:
-                this.host.println ("Unknown OSC Command: " + message.getAddressPattern () + " " + value);
+                this.host.println ("Unknown OSC Command: " + message.getAddress () + " " + value);
                 break;
         }
     }
@@ -373,13 +375,13 @@ public class OSCParser implements OscMethodCallback
                             this.transport.togglePrerollMetronome ();
                         break;
                     default:
-                        this.host.errorln ("Unknown Click subcommand: " + cmd);
+                        this.host.error ("Unknown Click subcommand: " + cmd);
                         break;
                 }
                 return true;
 
             case "quantize":
-                this.model.getClip ().quantize (1);
+                this.clip.quantize (1);
                 return true;
 
             case "tempo":
@@ -411,7 +413,7 @@ public class OSCParser implements OscMethodCallback
                         }
                         return true;
                     default:
-                        this.host.errorln ("Unknown Tempo subcommand: " + tempoCommand);
+                        this.host.error ("Unknown Tempo subcommand: " + tempoCommand);
                 }
                 return true;
 
@@ -446,7 +448,7 @@ public class OSCParser implements OscMethodCallback
                         this.transport.setPosition (0);
                         return true;
                     default:
-                        this.host.errorln ("Unknown Position subcommand: " + positionCommand);
+                        this.host.error ("Unknown Position subcommand: " + positionCommand);
                 }
                 return true;
 
@@ -513,7 +515,7 @@ public class OSCParser implements OscMethodCallback
             case "panel":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Panel subcommand.");
+                    this.host.error ("Missing Panel subcommand.");
                     return true;
                 }
                 final IApplication app = this.model.getApplication ();
@@ -536,14 +538,14 @@ public class OSCParser implements OscMethodCallback
                         app.toggleFullScreen ();
                         break;
                     default:
-                        this.host.errorln ("Unknown Panel subcommand: " + subCommand);
+                        this.host.error ("Unknown Panel subcommand: " + subCommand);
                 }
                 return true;
 
             case "arranger":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Arranger subcommand.");
+                    this.host.error ("Missing Arranger subcommand.");
                     return true;
                 }
                 final IArranger arrange = this.model.getArranger ();
@@ -572,14 +574,14 @@ public class OSCParser implements OscMethodCallback
                         arrange.toggleEffectTracks ();
                         break;
                     default:
-                        this.host.errorln ("Unknown Arranger subcommand: " + subCommand2);
+                        this.host.error ("Unknown Arranger subcommand: " + subCommand2);
                 }
                 return true;
 
             case "mixer":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Mixer subcommand.");
+                    this.host.error ("Missing Mixer subcommand.");
                     return true;
                 }
                 final IMixer mix = this.model.getMixer ();
@@ -605,7 +607,7 @@ public class OSCParser implements OscMethodCallback
                         mix.toggleMeterSectionVisibility ();
                         break;
                     default:
-                        this.host.errorln ("Unknown Mixer subcommand: " + subCommand3);
+                        this.host.error ("Unknown Mixer subcommand: " + subCommand3);
                         break;
                 }
                 return true;
@@ -620,7 +622,7 @@ public class OSCParser implements OscMethodCallback
     {
         if (oscParts.isEmpty ())
         {
-            this.host.errorln ("Missing Track command.");
+            this.host.error ("Missing Track command.");
             return;
         }
 
@@ -633,7 +635,7 @@ public class OSCParser implements OscMethodCallback
             {
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Indicate subcommand.");
+                    this.host.error ("Missing Indicate subcommand.");
                     return;
                 }
                 final boolean isTrue = numValue > 0;
@@ -657,7 +659,7 @@ public class OSCParser implements OscMethodCallback
                         }
                         break;
                     default:
-                        this.host.errorln ("Unknown Indicate subcommand: " + subCommand);
+                        this.host.error ("Unknown Indicate subcommand: " + subCommand);
                         break;
                 }
                 break;
@@ -666,7 +668,7 @@ public class OSCParser implements OscMethodCallback
             case "bank":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Track Bank subcommand.");
+                    this.host.error ("Missing Track Bank subcommand.");
                     return;
                 }
                 final String subCommand = oscParts.removeFirst ();
@@ -675,7 +677,7 @@ public class OSCParser implements OscMethodCallback
                     case "page":
                         if (oscParts.isEmpty ())
                         {
-                            this.host.errorln ("Missing Track Bank Page subcommand.");
+                            this.host.error ("Missing Track Bank Page subcommand.");
                             return;
                         }
                         if ("+".equals (oscParts.removeFirst ()))
@@ -700,7 +702,7 @@ public class OSCParser implements OscMethodCallback
                         tb.scrollTracksUp ();
                         break;
                     default:
-                        this.host.errorln ("Unknown Track Bank subcommand: " + subCommand);
+                        this.host.error ("Unknown Track Bank subcommand: " + subCommand);
                         break;
                 }
                 break;
@@ -740,7 +742,7 @@ public class OSCParser implements OscMethodCallback
             case "add":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Add subcommand.");
+                    this.host.error ("Missing Add subcommand.");
                     return;
                 }
                 final String subCommand2 = oscParts.removeFirst ();
@@ -757,7 +759,7 @@ public class OSCParser implements OscMethodCallback
                         application.addInstrumentTrack ();
                         break;
                     default:
-                        this.host.errorln ("Unknown Add subcommand: " + subCommand2);
+                        this.host.error ("Unknown Add subcommand: " + subCommand2);
                         break;
                 }
                 break;
@@ -819,7 +821,7 @@ public class OSCParser implements OscMethodCallback
 
         if (parts.isEmpty ())
         {
-            this.host.errorln ("Missing Track command.");
+            this.host.error ("Missing Track command.");
             return;
         }
 
@@ -905,7 +907,7 @@ public class OSCParser implements OscMethodCallback
             case "clip":
                 if (parts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Clip subcommand.");
+                    this.host.error ("Missing Clip subcommand.");
                     return;
                 }
                 final String cmd = parts.removeFirst ();
@@ -914,7 +916,7 @@ public class OSCParser implements OscMethodCallback
                     final int clipNo = Integer.parseInt (cmd);
                     if (parts.isEmpty ())
                     {
-                        this.host.errorln ("Missing Clip subcommand.");
+                        this.host.error ("Missing Clip subcommand.");
                         return;
                     }
                     final String clipCommand = parts.removeFirst ();
@@ -990,7 +992,7 @@ public class OSCParser implements OscMethodCallback
     {
         if (parts.isEmpty ())
         {
-            this.host.errorln ("Missing Send subcommand.");
+            this.host.error ("Missing Send subcommand.");
             return;
         }
 
@@ -1023,7 +1025,7 @@ public class OSCParser implements OscMethodCallback
     {
         if (oscParts.isEmpty ())
         {
-            this.host.errorln ("Missing Device subcommand.");
+            this.host.error ("Missing Device subcommand.");
             return;
         }
 
@@ -1034,7 +1036,7 @@ public class OSCParser implements OscMethodCallback
             case "page":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Device Page subcommand.");
+                    this.host.error ("Missing Device Page subcommand.");
                     return;
                 }
                 final int bankNo = Integer.parseInt (oscParts.removeFirst ());
@@ -1063,7 +1065,7 @@ public class OSCParser implements OscMethodCallback
             case "sibling":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Device Sibling subcommand.");
+                    this.host.error ("Missing Device Sibling subcommand.");
                     return;
                 }
                 final int siblingNo = Integer.parseInt (oscParts.removeFirst ());
@@ -1084,7 +1086,7 @@ public class OSCParser implements OscMethodCallback
             case "bank":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Device Bank subcommand.");
+                    this.host.error ("Missing Device Bank subcommand.");
                     return;
                 }
                 final String subCommand3 = oscParts.removeFirst ();
@@ -1093,7 +1095,7 @@ public class OSCParser implements OscMethodCallback
                     case "page":
                         if (oscParts.isEmpty ())
                         {
-                            this.host.errorln ("Missing Device Bank Page subcommand.");
+                            this.host.error ("Missing Device Bank Page subcommand.");
                             return;
                         }
                         if ("+".equals (oscParts.removeFirst ()))
@@ -1108,7 +1110,7 @@ public class OSCParser implements OscMethodCallback
                         }
                         break;
                     default:
-                        this.host.errorln ("Unknown Device Bank subcommand: " + subCommand3);
+                        this.host.error ("Unknown Device Bank subcommand: " + subCommand3);
                         break;
                 }
                 break;
@@ -1128,7 +1130,7 @@ public class OSCParser implements OscMethodCallback
             case PART_INDICATE:
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Device Indicate subcommand.");
+                    this.host.error ("Missing Device Indicate subcommand.");
                     return;
                 }
                 switch (oscParts.removeFirst ())
@@ -1147,7 +1149,7 @@ public class OSCParser implements OscMethodCallback
             case "param":
                 if (oscParts.isEmpty ())
                 {
-                    this.host.errorln ("Missing Device Param subcommand.");
+                    this.host.error ("Missing Device Param subcommand.");
                     return;
                 }
                 final String part = oscParts.removeFirst ();
@@ -1172,7 +1174,7 @@ public class OSCParser implements OscMethodCallback
                             case "bank":
                                 if (oscParts.isEmpty ())
                                 {
-                                    this.host.errorln ("Missing Device Param Bank subcommand.");
+                                    this.host.error ("Missing Device Param Bank subcommand.");
                                     return;
                                 }
                                 final String subCommand4 = oscParts.removeFirst ();
@@ -1181,7 +1183,7 @@ public class OSCParser implements OscMethodCallback
                                     case "page":
                                         if (oscParts.isEmpty ())
                                         {
-                                            this.host.errorln ("Missing Device Param Bank Page subcommand.");
+                                            this.host.error ("Missing Device Param Bank Page subcommand.");
                                             return;
                                         }
                                         if ("+".equals (oscParts.removeFirst ()))
@@ -1190,7 +1192,7 @@ public class OSCParser implements OscMethodCallback
                                             cursorDevice.previousParameterPageBank ();
                                         break;
                                     default:
-                                        this.host.errorln ("Unknown Device Param Bank subcommand: " + subCommand4);
+                                        this.host.error ("Unknown Device Param Bank subcommand: " + subCommand4);
                                         break;
                                 }
                                 break;
@@ -1533,7 +1535,7 @@ public class OSCParser implements OscMethodCallback
                         if (value == null || numValue > 0)
                         {
                             this.scales.incOctave ();
-                            this.model.updateNoteMapping ();
+                            this.keyManager.updateNoteMapping ();
                             this.display.notify (this.scales.getRangeText ());
                         }
                         break;
@@ -1542,7 +1544,7 @@ public class OSCParser implements OscMethodCallback
                         if (value == null || numValue > 0)
                         {
                             this.scales.decOctave ();
-                            this.model.updateNoteMapping ();
+                            this.keyManager.updateNoteMapping ();
                             this.display.notify (this.scales.getRangeText ());
                         }
                         break;
@@ -1551,16 +1553,16 @@ public class OSCParser implements OscMethodCallback
                         final int note = Integer.parseInt (n);
                         if (numValue > 0)
                             numValue = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : numValue;
-                        final int data0 = this.model.getKeyTranslationMatrix ()[note];
+                        final int data0 = this.keyManager.getKeyTranslationMatrix ()[note];
                         if (data0 >= 0)
-                            this.noteInput.sendRawMidiEvent (0x90 + midiChannel, data0, numValue);
+                            this.midiInput.sendRawMidiEvent (0x90 + midiChannel, data0, numValue);
 
                         // Mark selected notes
-                        final int [] keyTranslationMatrix = this.model.getKeyTranslationMatrix ();
+                        final int [] keyTranslationMatrix = this.keyManager.getKeyTranslationMatrix ();
                         for (int i = 0; i < 128; i++)
                         {
                             if (keyTranslationMatrix[note] == keyTranslationMatrix[i])
-                                this.model.setKeyPressed (i, numValue);
+                                this.keyManager.setKeyPressed (i, numValue);
                         }
                 }
                 break;
@@ -1578,7 +1580,7 @@ public class OSCParser implements OscMethodCallback
                         if (numValue != 0)
                         {
                             this.scales.incDrumOctave ();
-                            this.model.updateNoteMapping ();
+                            this.keyManager.updateNoteMapping ();
                             this.display.notify (this.scales.getDrumRangeText ());
                         }
                         break;
@@ -1587,7 +1589,7 @@ public class OSCParser implements OscMethodCallback
                         if (numValue != 0)
                         {
                             this.scales.decDrumOctave ();
-                            this.model.updateNoteMapping ();
+                            this.keyManager.updateNoteMapping ();
                             this.display.notify (this.scales.getDrumRangeText ());
                         }
                         break;
@@ -1596,9 +1598,9 @@ public class OSCParser implements OscMethodCallback
                         final int note = Integer.parseInt (n);
                         if (numValue > 0)
                             numValue = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : numValue;
-                        final int data0 = this.model.getDrumTranslationMatrix ()[note];
+                        final int data0 = this.keyManager.getDrumTranslationMatrix ()[note];
                         if (data0 >= 0)
-                            this.noteInput.sendRawMidiEvent (0x90 + midiChannel, data0, numValue);
+                            this.midiInput.sendRawMidiEvent (0x90 + midiChannel, data0, numValue);
                         break;
                 }
                 break;
@@ -1610,7 +1612,7 @@ public class OSCParser implements OscMethodCallback
                     return;
                 }
                 final int cc = Integer.parseInt (parts.removeFirst ());
-                this.noteInput.sendRawMidiEvent (0xB0 + midiChannel, cc, numValue);
+                this.midiInput.sendRawMidiEvent (0xB0 + midiChannel, cc, numValue);
                 break;
 
             case "aftertouch":
@@ -1618,15 +1620,15 @@ public class OSCParser implements OscMethodCallback
                     numValue = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : numValue;
                 if (parts.isEmpty ())
                 {
-                    this.noteInput.sendRawMidiEvent (0xD0 + midiChannel, 0, numValue);
+                    this.midiInput.sendRawMidiEvent (0xD0 + midiChannel, 0, numValue);
                     return;
                 }
                 final int note = Integer.parseInt (parts.removeFirst ());
-                this.noteInput.sendRawMidiEvent (0xA0 + midiChannel, this.model.getKeyTranslationMatrix ()[note], numValue);
+                this.midiInput.sendRawMidiEvent (0xA0 + midiChannel, this.keyManager.getKeyTranslationMatrix ()[note], numValue);
                 break;
 
             case "pitchbend":
-                this.noteInput.sendRawMidiEvent (0xE0 + midiChannel, 0, numValue);
+                this.midiInput.sendRawMidiEvent (0xE0 + midiChannel, 0, numValue);
                 break;
 
             default:
@@ -1636,10 +1638,10 @@ public class OSCParser implements OscMethodCallback
     }
 
 
-    private static LinkedList<String> parseAddress (final OscMessage message)
+    private static LinkedList<String> parseAddress (final IOpenSoundControlMessage message)
     {
         final LinkedList<String> oscParts = new LinkedList<> ();
-        Collections.addAll (oscParts, message.getAddressPattern ().split ("/"));
+        Collections.addAll (oscParts, message.getAddress ().split ("/"));
 
         // Remove first empty element
         oscParts.removeFirst ();

@@ -10,7 +10,7 @@ import java.util.Map;
 
 
 /**
- * Stores information about the Bitwig devices.
+ * Stores information about the device types.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.launchpad.view;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -58,7 +58,7 @@ public class PanView extends AbstractFaderView
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getTrack (i);
-            final int color = cm.getColor (BitwigColors.getColorIndex (track.getColor ()));
+            final int color = cm.getColor (DAWColors.getColorIndex (track.getColor ()));
             if (this.trackColors[i] != color)
             {
                 this.trackColors[i] = color;
@@ -74,6 +74,6 @@ public class PanView extends AbstractFaderView
     public void setupFader (final int index)
     {
         final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
-        this.surface.setupPanFader (index, this.model.getColorManager ().getColor (BitwigColors.getColorIndex (track.getColor ())));
+        this.surface.setupPanFader (index, this.model.getColorManager ().getColor (DAWColors.getColorIndex (track.getColor ())));
     }
 }

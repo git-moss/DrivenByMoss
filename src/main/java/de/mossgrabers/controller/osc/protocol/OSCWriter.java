@@ -4,12 +4,16 @@
 
 package de.mossgrabers.controller.osc.protocol;
 
+import de.mossgrabers.controller.osc.OSCColors;
+import de.mossgrabers.controller.osc.OSCConfiguration;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMixer;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.EmptyTrackData;
@@ -22,13 +26,10 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
+import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
-import de.mossgrabers.controller.osc.OSCColors;
-import de.mossgrabers.controller.osc.OSCConfiguration;
-
-import com.bitwig.extension.api.opensoundcontrol.OscConnection;
-import com.bitwig.extension.api.opensoundcontrol.OscModule;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,30 +46,32 @@ import java.util.Map;
  */
 public class OSCWriter
 {
-    private static final ITrack  EMPTY_TRACK = new EmptyTrackData ();
+    private static final ITrack            EMPTY_TRACK = new EmptyTrackData ();
 
-    private OSCModel             model;
-    private Map<String, Object>  oldValues   = new HashMap<> ();
-    private List<OscMessageData> messages    = new ArrayList<> ();
-    private OSCConfiguration     configuration;
-    private OscConnection        udpServer;
+    private IHost                          host;
+    private IModel                         model;
+    private KeyManager                     keyManager;
+    private Map<String, Object>            oldValues   = new HashMap<> ();
+    private List<IOpenSoundControlMessage> messages    = new ArrayList<> ();
+    private OSCConfiguration               configuration;
+    private IOpenSoundControlServer        oscServer;
 
 
     /**
      * Constructor.
-     *
+     * 
+     * @param host The host
      * @param model The model
+     * @param keyManager The model
      * @param configuration The configuration
-     * @param oscModule The UDP server to send to
      */
-    public OSCWriter (final OSCModel model, final OSCConfiguration configuration, final OscModule oscModule)
+    public OSCWriter (final IHost host, final IModel model, final KeyManager keyManager, final OSCConfiguration configuration)
     {
+        this.host = host;
         this.model = model;
+        this.keyManager = keyManager;
         this.configuration = configuration;
-
-        // TODO Fix required: Can only be called in init but needs to listen to host and port
-        // changes
-        this.udpServer = oscModule.connectToUdpServer (this.configuration.getSendHost (), this.configuration.getSendPort (), oscModule.createAddressSpace ());
+        this.oscServer = host.connectToOSCServer (this.configuration.getSendHost (), this.configuration.getSendPort ());
     }
 
 
@@ -79,7 +82,7 @@ public class OSCWriter
      */
     public void flush (final boolean dump)
     {
-        if (this.udpServer == null)
+        if (this.oscServer == null)
             return;
 
         //
@@ -190,22 +193,7 @@ public class OSCWriter
 
         try
         {
-            int pos = 0;
-            this.udpServer.startBundle ();
-            for (final OscMessageData message: this.messages)
-            {
-                final String address = message.getAddress ();
-                final Object [] values = message.getValues ();
-                this.udpServer.sendMessage (address, values);
-                pos++;
-                if (pos > 1000)
-                {
-                    pos = 0;
-                    this.udpServer.endBundle ();
-                    this.udpServer.startBundle ();
-                }
-            }
-            this.udpServer.endBundle ();
+            this.oscServer.sendBundle (this.messages);
         }
         catch (final IOException ex)
         {
@@ -406,10 +394,10 @@ public class OSCWriter
         if (!isKeyboardEnabled)
             return OSCColors.getColor (Scales.SCALE_COLOR_OFF);
 
-        if (!this.model.isKeyPressed (note))
+        if (!this.keyManager.isKeyPressed (note))
         {
             final Scales scales = this.model.getScales ();
-            final String color = scales.getColor (this.model.getKeyTranslationMatrix (), note);
+            final String color = scales.getColor (this.keyManager.getKeyTranslationMatrix (), note);
             return OSCColors.getColor (color);
         }
 
@@ -447,7 +435,7 @@ public class OSCWriter
         }
 
         this.oldValues.put (address, value);
-        this.messages.add (new OscMessageData (address, Collections.singletonList (convertBooleanToInt (value))));
+        this.messages.add (this.host.createOSCMessage (address, Collections.singletonList (convertBooleanToInt (value))));
     }
 
 

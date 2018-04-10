@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.launchpad.view;
 
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 
 
 /**
@@ -59,7 +59,7 @@ public class DeviceView extends AbstractFaderView
     @Override
     public void setupFader (final int index)
     {
-        this.surface.setupFader (index, LaunchpadColors.BITWIG_INDICATOR_COLORS[index]);
+        this.surface.setupFader (index, LaunchpadColors.DAW_INDICATOR_COLORS[index]);
     }
 
 

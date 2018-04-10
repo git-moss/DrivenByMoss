@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.launchpad.view;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -67,7 +67,7 @@ public class SendsView extends AbstractFaderView
         {
             final ITrack track = tb.getTrack (i);
             final ISend send = track.getSend (this.selectedSend);
-            final int color = cm.getColor (BitwigColors.getColorIndex (track.getColor ()));
+            final int color = cm.getColor (DAWColors.getColorIndex (track.getColor ()));
             if (this.trackColors[i] != color)
             {
                 this.trackColors[i] = color;

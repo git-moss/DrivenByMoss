@@ -7,7 +7,7 @@ package de.mossgrabers.bitwig.framework.daw;
 import de.mossgrabers.bitwig.framework.daw.data.ChannelImpl;
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -787,7 +787,7 @@ public class CursorDeviceImpl implements ICursorDevice
     @Override
     public String getLayerOrDrumPadColorEntry (final int index)
     {
-        return BitwigColors.getColorIndex (this.getLayerOrDrumPad (index).getColor ());
+        return DAWColors.getColorIndex (this.getLayerOrDrumPad (index).getColor ());
     }
 
 

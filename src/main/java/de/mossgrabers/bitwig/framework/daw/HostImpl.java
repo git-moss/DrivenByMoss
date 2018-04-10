@@ -4,9 +4,18 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.bitwig.framework.osc.OpenSoundControlMessageImpl;
+import de.mossgrabers.bitwig.framework.osc.OpenSoundControlServerImpl;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
+import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
+import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 
+import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
+import com.bitwig.extension.api.opensoundcontrol.OscModule;
 import com.bitwig.extension.controller.api.ControllerHost;
+
+import java.util.List;
 
 
 /**
@@ -108,6 +117,36 @@ public class HostImpl implements IHost
     public void showNotification (final String message)
     {
         this.host.showPopupNotification (message);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IOpenSoundControlServer connectToOSCServer (final String serverAddress, final int serverPort)
+    {
+        // TODO Fix required: Can only be called in init but needs to listen to host and port
+        // changes
+        final OscModule oscModule = this.host.getOscModule ();
+        return new OpenSoundControlServerImpl (oscModule.connectToUdpServer (serverAddress, serverPort, oscModule.createAddressSpace ()));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void createOSCServer (final IOpenSoundControlCallback callback, final int port)
+    {
+        final OscModule oscModule = this.host.getOscModule ();
+        final OscAddressSpace addressSpace = oscModule.createAddressSpace ();
+        addressSpace.registerDefaultMethod ( (source, message) -> callback.handle (new OpenSoundControlMessageImpl (message)));
+        oscModule.createUdpServer (port, addressSpace);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IOpenSoundControlMessage createOSCMessage (final String address, final List<Object> values)
+    {
+        return new OpenSoundControlMessageImpl (address, values);
     }
 
 

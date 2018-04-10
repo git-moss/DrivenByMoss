@@ -2,7 +2,11 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.osc.protocol;
+package de.mossgrabers.bitwig.framework.osc;
+
+import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
+
+import com.bitwig.extension.api.opensoundcontrol.OscMessage;
 
 import java.util.List;
 
@@ -12,7 +16,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class OscMessageData
+public class OpenSoundControlMessageImpl implements IOpenSoundControlMessage
 {
     private final String       address;
     private final List<Object> values;
@@ -21,32 +25,37 @@ public class OscMessageData
     /**
      * Constructor.
      *
+     * @param message Bitwig implementation of a message
+     */
+    public OpenSoundControlMessageImpl (final OscMessage message)
+    {
+        this (message.getAddressPattern (), message.getArguments ());
+    }
+
+
+    /**
+     * Constructor.
+     *
      * @param address The OSC address
      * @param values The values
      */
-    public OscMessageData (final String address, final List<Object> values)
+    public OpenSoundControlMessageImpl (final String address, final List<Object> values)
     {
         this.address = address;
         this.values = values;
     }
 
 
-    /**
-     * Get the OSC address.
-     *
-     * @return The OSC address
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getAddress ()
     {
         return this.address;
     }
 
 
-    /**
-     * Get the values array.
-     *
-     * @return The values array
-     */
+    /** {@inheritDoc} */
+    @Override
     public Object [] getValues ()
     {
         return this.values == null ? new Object [0] : this.values.toArray ();
