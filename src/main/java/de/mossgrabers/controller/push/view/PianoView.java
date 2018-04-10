@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.push.view;
 
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
@@ -11,7 +12,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
 
 
 /**
@@ -123,7 +123,6 @@ public class PianoView extends PlayView
     @Override
     public void updateNoteMapping ()
     {
-        // Workaround: https://github.com/git-moss/Push4Bitwig/issues/7
         this.surface.scheduleTask (this::delayedUpdateNoteMapping, 100);
     }
 

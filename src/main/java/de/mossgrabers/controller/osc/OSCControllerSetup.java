@@ -1,0 +1,102 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2018
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.controller.osc;
+
+import de.mossgrabers.controller.osc.protocol.KeyManager;
+import de.mossgrabers.controller.osc.protocol.OSCParser;
+import de.mossgrabers.controller.osc.protocol.OSCWriter;
+import de.mossgrabers.framework.configuration.ISettingsUI;
+import de.mossgrabers.framework.controller.AbstractControllerSetup;
+import de.mossgrabers.framework.controller.DefaultValueChanger;
+import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.ISetupFactory;
+import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.midi.IMidiAccess;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.scale.Scales;
+
+
+/**
+ * Support for the Open Sound Control (OSC) protocol.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<OSCConfiguration>, OSCConfiguration>
+{
+    private OSCWriter  writer;
+    private KeyManager keyManager;
+
+
+    /**
+     * Constructor.
+     *
+     * @param host The DAW host
+     * @param factory The factory
+     * @param settings The settings
+     */
+    public OSCControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    {
+        super (factory, host, settings);
+
+        this.colorManager = new ColorManager ();
+        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
+        this.configuration = new OSCConfiguration (this.valueChanger);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void flush ()
+    {
+        this.writer.flush (false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createScales ()
+    {
+        this.scales = new Scales (this.valueChanger, 0, 128, 128, 1);
+        this.scales.setChromatic (true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createModel ()
+    {
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, false, 8, 8, 8, 16);
+        this.keyManager = new KeyManager (this.model);
+        final ITrackBank tb = this.model.getTrackBank ();
+        tb.addNoteObserver (this.keyManager);
+        tb.addTrackSelectionObserver ( (int index, boolean isSelected) -> this.keyManager.clearPressedKeys ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createSurface ()
+    {
+        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
+        final IMidiInput midiInput = midiAccess.createInput ("OSC");
+
+        // Send OSC messages
+        this.writer = new OSCWriter (this.host, this.model, this.keyManager, this.configuration);
+
+        // Receive OSC messages
+        this.host.createOSCServer (new OSCParser (this.host, this.writer, this.configuration, this.model, this.keyManager, midiInput), this.configuration.getReceivePort ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void startup ()
+    {
+        // Initial flush of the whole DAW state
+        this.host.scheduleTask ( () -> this.writer.flush (true), 1000);
+    }
+}

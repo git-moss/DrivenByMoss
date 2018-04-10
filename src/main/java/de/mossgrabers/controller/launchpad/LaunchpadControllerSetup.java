@@ -20,7 +20,7 @@ import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
@@ -341,7 +341,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         // Update the front LED with the color of the current track
         final ITrack track = index == -1 ? null : this.model.getCurrentTrackBank ().getTrack (index);
-        final int color = track != null && track.doesExist () ? this.colorManager.getColor (BitwigColors.getColorIndex (track.getColor ())) : 0;
+        final int color = track != null && track.doesExist () ? this.colorManager.getColor (DAWColors.getColorIndex (track.getColor ())) : 0;
         if (color != this.frontColor)
         {
             surface.sendLaunchpadSysEx ("0A 63 " + StringUtils.toHexStr (color));

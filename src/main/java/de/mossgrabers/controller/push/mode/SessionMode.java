@@ -6,7 +6,7 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
@@ -244,7 +244,7 @@ public class SessionMode extends BaseMode
 
                 final IScene scene = sceneBank.getScene (sceneIndex);
                 items[row] = scene.doesExist () ? scene.getName () : "";
-                slotColors.add (scene.doesExist () ? BitwigColors.getColorEntry (this.trackBank.getColorOfFirstClipInScene (sceneIndex)) : BLACK);
+                slotColors.add (scene.doesExist () ? DAWColors.getColorEntry (this.trackBank.getColorOfFirstClipInScene (sceneIndex)) : BLACK);
             }
             message.addBoxListElement (items, slotColors);
         }

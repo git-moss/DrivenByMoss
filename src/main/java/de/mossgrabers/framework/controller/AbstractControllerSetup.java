@@ -168,13 +168,19 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     /**
      * Create the views.
      */
-    protected abstract void createViews ();
+    protected void createViews ()
+    {
+        // Intentionally empty
+    }
 
 
     /**
      * Create the listeners.
      */
-    protected abstract void createObservers ();
+    protected void createObservers ()
+    {
+        // Intentionally empty
+    }
 
 
     /**

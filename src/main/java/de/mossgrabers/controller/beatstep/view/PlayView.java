@@ -113,7 +113,6 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
     public void updateNoteMapping ()
     {
         this.noteMap = this.model.canSelectedTrackHoldNotes () ? this.scales.getNoteMatrix () : Scales.getEmptyMatrix ();
-        // Workaround: https://github.com/git-moss/Push4Bitwig/issues/7
         this.surface.scheduleTask ( () -> this.surface.setKeyTranslationTable (this.noteMap), 100);
     }
 

@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.launchpad.view;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
@@ -53,7 +53,7 @@ public class VolumeView extends AbstractFaderView
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getTrack (i);
-            final int color = cm.getColor (BitwigColors.getColorIndex (track.getColor ()));
+            final int color = cm.getColor (DAWColors.getColorIndex (track.getColor ()));
             if (this.trackColors[i] != color)
             {
                 this.trackColors[i] = color;
@@ -73,7 +73,7 @@ public class VolumeView extends AbstractFaderView
         final int sceneMax = 9 * track.getVolume () / this.model.getValueChanger ().getUpperBound ();
         for (int i = 0; i < 8; i++)
         {
-            final int color = cm.getColor (BitwigColors.getColorIndex (track.getColor ()));
+            final int color = cm.getColor (DAWColors.getColorIndex (track.getColor ()));
             this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8 + 10 * i, i < sceneMax ? color : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
         }
     }

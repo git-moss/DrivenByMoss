@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.launchpad.view;
 
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
@@ -11,8 +13,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 
 
 /**
@@ -124,7 +124,6 @@ public class PianoView extends PlayView
     @Override
     public void updateNoteMapping ()
     {
-        // Workaround: https://github.com/git-moss/Launchpad4Bitwig/issues/7
         this.surface.scheduleTask (this::delayedUpdateNoteMapping, 100);
     }
 

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.view;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -254,7 +254,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     protected SessionColor getPadColor (final ISlot slot, final boolean isArmed)
     {
         final double [] slotColor = slot.getColor ();
-        final String colorIndex = BitwigColors.getColorIndex (slotColor[0], slotColor[1], slotColor[2]);
+        final String colorIndex = DAWColors.getColorIndex (slotColor[0], slotColor[1], slotColor[2]);
         final ColorManager cm = this.model.getColorManager ();
 
         if (slot.isRecordingQueued ())

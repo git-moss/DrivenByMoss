@@ -126,9 +126,9 @@ public abstract class AbstractChannelBank implements IChannelBank
     {
         final ITrack selectedTrack = this.getSelectedTrack ();
         if (selectedTrack == null)
-            return BitwigColors.COLOR_OFF;
+            return DAWColors.COLOR_OFF;
         final double [] color = selectedTrack.getColor ();
-        return BitwigColors.getColorIndex (color[0], color[1], color[2]);
+        return DAWColors.getColorIndex (color[0], color[1], color[2]);
     }
 
 
@@ -140,9 +140,9 @@ public abstract class AbstractChannelBank implements IChannelBank
         {
             final ISlot slot = this.getTrack (t).getSlot (scene);
             if (slot.doesExist () && slot.hasContent ())
-                return BitwigColors.getColorIndex (slot.getColor ());
+                return DAWColors.getColorIndex (slot.getColor ());
         }
-        return BitwigColors.BITWIG_COLOR_GREEN;
+        return DAWColors.DAW_COLOR_GREEN;
     }
 
 

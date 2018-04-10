@@ -4,7 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.extension;
 
-import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.controller.IControllerDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
@@ -27,7 +27,7 @@ import java.util.UUID;
  */
 public abstract class AbstractControllerExtensionDefinition extends ControllerExtensionDefinition
 {
-    private final DefaultControllerDefinition definition;
+    private final IControllerDefinition definition;
 
 
     /**
@@ -35,7 +35,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
      *
      * @param definition The definition
      */
-    public AbstractControllerExtensionDefinition (final DefaultControllerDefinition definition)
+    public AbstractControllerExtensionDefinition (final IControllerDefinition definition)
     {
         this.definition = definition;
     }

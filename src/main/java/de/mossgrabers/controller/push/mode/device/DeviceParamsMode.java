@@ -7,7 +7,7 @@ package de.mossgrabers.controller.push.mode.device;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -431,7 +431,7 @@ public class DeviceParamsMode extends BaseMode
                 isBottomMenuOn = index == page;
             }
 
-            final double [] bottomMenuColor = BitwigColors.getColorEntry (color);
+            final double [] bottomMenuColor = DAWColors.getColorEntry (color);
             final IParameter param = cd.getFXParam (i);
             final boolean exists = param.doesExist ();
             final String parameterName = exists ? param.getName (9) : "";
