@@ -774,6 +774,9 @@ public class OSCParser implements IOpenSoundControlCallback
 
             case "toggleBank":
             {
+                if (this.model.getEffectTrackBank () == null)
+                    return;
+
                 this.model.toggleCurrentTrackBank ();
                 final IChannelBank tbNew = this.model.getCurrentTrackBank ();
                 // Make sure a track is selected

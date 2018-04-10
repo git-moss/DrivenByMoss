@@ -130,6 +130,12 @@ public interface IHost
 
 
     /**
+     * Call on shutdown to release all OSC resources.
+     */
+    void releaseOSC ();
+
+
+    /**
      * Send a datagram package to the given server. TODO: Remove when USB API is available
      *
      * @param hostAddress The IP address of the server

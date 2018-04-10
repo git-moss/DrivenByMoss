@@ -4,6 +4,12 @@
 
 package de.mossgrabers.controller.push.mode.track;
 
+import de.mossgrabers.controller.push.controller.DisplayMessage;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.view.ColorView;
+import de.mossgrabers.controller.push.view.ColorView.SelectMode;
+import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
@@ -12,12 +18,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.controller.push.controller.DisplayMessage;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
-import de.mossgrabers.controller.push.view.ColorView;
-import de.mossgrabers.controller.push.view.ColorView.SelectMode;
-import de.mossgrabers.controller.push.view.Views;
 
 
 /**

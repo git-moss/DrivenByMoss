@@ -4,10 +4,10 @@
 
 package de.mossgrabers.controller.push.command.pitchbend;
 
-import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
-import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
+import de.mossgrabers.framework.daw.IModel;
 
 
 /**

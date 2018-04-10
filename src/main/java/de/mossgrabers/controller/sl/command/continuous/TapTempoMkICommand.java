@@ -4,10 +4,10 @@
 
 package de.mossgrabers.controller.sl.command.continuous;
 
-import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
-import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
+import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
+import de.mossgrabers.framework.daw.IModel;
 
 
 /**

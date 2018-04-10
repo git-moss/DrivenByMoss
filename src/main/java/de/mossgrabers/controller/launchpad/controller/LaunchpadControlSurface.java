@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.launchpad.controller;
 
+import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
-import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 
 
 /**

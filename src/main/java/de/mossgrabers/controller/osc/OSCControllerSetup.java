@@ -73,7 +73,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         this.keyManager = new KeyManager (this.model);
         final ITrackBank tb = this.model.getTrackBank ();
         tb.addNoteObserver (this.keyManager);
-        tb.addTrackSelectionObserver ( (int index, boolean isSelected) -> this.keyManager.clearPressedKeys ());
+        tb.addTrackSelectionObserver ( (final int index, final boolean isSelected) -> this.keyManager.clearPressedKeys ());
     }
 
 

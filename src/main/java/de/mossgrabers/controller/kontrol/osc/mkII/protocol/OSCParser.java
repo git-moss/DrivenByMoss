@@ -44,7 +44,7 @@ public class OSCParser implements OscMethodCallback
 
     /**
      * Constructor.
-     * 
+     *
      * @param is16 If true use 1.6 protocol otherwise 1.5
      * @param logEnabled Enable message logging
      * @param host The host

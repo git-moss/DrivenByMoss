@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.launchpad.command.continuous;
 
-import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
-import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.view.View;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.launchpad.view.AbstractFaderView;
+import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.view.View;
 
 
 /**

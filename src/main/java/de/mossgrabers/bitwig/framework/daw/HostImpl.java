@@ -152,6 +152,14 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
+    public void releaseOSC ()
+    {
+        // This is automatically handled by the Bitwig framework
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void sendDatagramPacket (final String string, final int port, final byte [] data)
     {
         this.host.sendDatagramPacket (string, port, data);

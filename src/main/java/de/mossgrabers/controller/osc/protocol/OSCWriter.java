@@ -59,7 +59,7 @@ public class OSCWriter
 
     /**
      * Constructor.
-     * 
+     *
      * @param host The host
      * @param model The model
      * @param keyManager The model
@@ -160,8 +160,11 @@ public class OSCWriter
         //
 
         final ISceneBank sceneBank = this.model.getSceneBank ();
-        for (int i = 0; i < sceneBank.getNumScenes (); i++)
-            this.flushScene ("/scene/" + (i + 1) + "/", sceneBank.getScene (i), dump);
+        if (sceneBank != null)
+        {
+            for (int i = 0; i < sceneBank.getNumScenes (); i++)
+                this.flushScene ("/scene/" + (i + 1) + "/", sceneBank.getScene (i), dump);
+        }
 
         //
         // Device / Primary Device
@@ -343,26 +346,29 @@ public class OSCWriter
     }
 
 
-    private void flushDeviceLayers (final String deviceAddress, final IChannel device, final boolean dump)
+    private void flushDeviceLayers (final String deviceAddress, final IChannel channel, final boolean dump)
     {
-        this.sendOSC (deviceAddress + "exists", device.doesExist (), dump);
-        this.sendOSC (deviceAddress + "activated", device.isActivated (), dump);
-        this.sendOSC (deviceAddress + "selected", device.isSelected (), dump);
-        this.sendOSC (deviceAddress + "name", device.getName (), dump);
-        this.sendOSC (deviceAddress + "volumeStr", device.getVolumeStr (), dump);
-        this.sendOSC (deviceAddress + "volume", device.getVolume (), dump);
-        this.sendOSC (deviceAddress + "panStr", device.getPanStr (), dump);
-        this.sendOSC (deviceAddress + "pan", device.getPan (), dump);
-        this.sendOSC (deviceAddress + "mute", device.isMute (), dump);
-        this.sendOSC (deviceAddress + "solo", device.isSolo (), dump);
+        if (channel == null)
+            return;
 
-        for (int i = 0; i < device.getNumSends (); i++)
-            this.flushParameterData (deviceAddress + "send/" + (i + 1) + "/", device.getSend (i), dump);
+        this.sendOSC (deviceAddress + "exists", channel.doesExist (), dump);
+        this.sendOSC (deviceAddress + "activated", channel.isActivated (), dump);
+        this.sendOSC (deviceAddress + "selected", channel.isSelected (), dump);
+        this.sendOSC (deviceAddress + "name", channel.getName (), dump);
+        this.sendOSC (deviceAddress + "volumeStr", channel.getVolumeStr (), dump);
+        this.sendOSC (deviceAddress + "volume", channel.getVolume (), dump);
+        this.sendOSC (deviceAddress + "panStr", channel.getPanStr (), dump);
+        this.sendOSC (deviceAddress + "pan", channel.getPan (), dump);
+        this.sendOSC (deviceAddress + "mute", channel.isMute (), dump);
+        this.sendOSC (deviceAddress + "solo", channel.isSolo (), dump);
+
+        for (int i = 0; i < channel.getNumSends (); i++)
+            this.flushParameterData (deviceAddress + "send/" + (i + 1) + "/", channel.getSend (i), dump);
 
         if (this.configuration.isEnableVUMeters ())
-            this.sendOSC (deviceAddress + "vu", device.getVu (), dump);
+            this.sendOSC (deviceAddress + "vu", channel.getVu (), dump);
 
-        final double [] color = device.getColor ();
+        final double [] color = channel.getColor ();
         this.sendOSCColor (deviceAddress + "color", color[0], color[1], color[2], dump);
     }
 

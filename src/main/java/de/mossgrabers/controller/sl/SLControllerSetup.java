@@ -4,24 +4,6 @@
 
 package de.mossgrabers.controller.sl;
 
-import de.mossgrabers.framework.command.Commands;
-import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.AbstractControllerSetup;
-import de.mossgrabers.framework.controller.DefaultValueChanger;
-import de.mossgrabers.framework.controller.ISetupFactory;
-import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.IChannelBank;
-import de.mossgrabers.framework.daw.ICursorDevice;
-import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.data.IMasterTrack;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.midi.IMidiAccess;
-import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.controller.sl.command.continuous.DeviceKnobRowCommand;
 import de.mossgrabers.controller.sl.command.continuous.FaderCommand;
 import de.mossgrabers.controller.sl.command.continuous.TapTempoInitMkICommand;
@@ -51,6 +33,24 @@ import de.mossgrabers.controller.sl.mode.device.DevicePresetsMode;
 import de.mossgrabers.controller.sl.view.ControlView;
 import de.mossgrabers.controller.sl.view.PlayView;
 import de.mossgrabers.controller.sl.view.Views;
+import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.configuration.ISettingsUI;
+import de.mossgrabers.framework.controller.AbstractControllerSetup;
+import de.mossgrabers.framework.controller.DefaultValueChanger;
+import de.mossgrabers.framework.controller.ISetupFactory;
+import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiAccess;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.view.ViewManager;
 
 
 /**
