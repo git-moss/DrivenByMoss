@@ -2,31 +2,28 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.osc.mkII.protocol;
+package de.mossgrabers.controller.kontrol.osc.mkii.protocol;
 
-import de.mossgrabers.controller.kontrol.osc.mkII.KontrolOSCConfiguration;
-import de.mossgrabers.controller.kontrol.osc.mkII.TrackType;
+import de.mossgrabers.controller.kontrol.osc.mkii.KontrolOSCConfiguration;
+import de.mossgrabers.controller.kontrol.osc.mkii.TrackType;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.EmptyTrackData;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.utils.StringUtils;
-
-import com.bitwig.extension.api.opensoundcontrol.OscConnection;
-import com.bitwig.extension.api.opensoundcontrol.OscInvalidArgumentTypeException;
-import com.bitwig.extension.api.opensoundcontrol.OscModule;
+import de.mossgrabers.framework.osc.AbstractOpenSoundControlWriter;
+import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -34,7 +31,7 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class OSCWriter
+public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
 {
     private static final List<Object> DOUBLE_TRUE = new ArrayList<> ();
     static
@@ -42,49 +39,33 @@ public class OSCWriter
         Collections.addAll (DOUBLE_TRUE, Integer.valueOf (1), Integer.valueOf (1));
     }
 
-    private static final ITrack     EMPTY_TRACK = new EmptyTrackData ();
-
-    private OSCModel                model;
-    private Map<String, Object>     oldValues   = new HashMap<> ();
-    private List<OscMessageData>    messages    = new ArrayList<> ();
-    private KontrolOSCConfiguration configuration;
-    private OscConnection           udpServer;
-    private boolean                 logEnabled;
-
-    private final String            daw;
-    private final boolean           is16;
+    private final boolean is16;
+    private final String  daw;
 
 
     /**
      * Constructor.
      *
-     * @param is16 If true use 1.6 protocol otherwise 1.5
-     * @param logEnabled Enable message logging
+     * @param host The host
      * @param model The model
+     * @param oscServer The OSC server to write to
+     * @param is16 If true use 1.6 protocol otherwise 1.5
      * @param configuration The configuration
-     * @param oscModule The UDP server to send to
      */
-    public OSCWriter (final boolean is16, final boolean logEnabled, final OSCModel model, final KontrolOSCConfiguration configuration, final OscModule oscModule)
+    public KontrolOSCWriter (final IHost host, final IModel model, final IOpenSoundControlServer oscServer, final boolean is16, final KontrolOSCConfiguration configuration)
     {
+        super (host, model, oscServer, configuration);
+
         this.is16 = is16;
-
-        this.logEnabled = logEnabled;
-        this.model = model;
-        this.configuration = configuration;
         this.daw = is16 ? "/dawctrl/" : "/live/";
-
-        this.udpServer = oscModule.connectToUdpServer (this.configuration.getSendHost (), this.configuration.getSendPort (), oscModule.createAddressSpace ());
     }
 
 
-    /**
-     * Flush out all values.
-     *
-     * @param dump Forces a flush if true otherwise only changed values are flushed
-     */
-    public void sendFrequentProperties (final boolean dump)
+    /** {@inheritDoc} */
+    @Override
+    public void flush (final boolean dump)
     {
-        if (this.udpServer == null)
+        if (!this.isConnected ())
             return;
 
         final ITransport trans = this.model.getTransport ();
@@ -261,79 +242,15 @@ public class OSCWriter
 
 
     /**
-     * Flush out all collected messages.
-     */
-    public void flush ()
-    {
-        synchronized (this.messages)
-        {
-            try
-            {
-                int pos = 0;
-                this.udpServer.startBundle ();
-                for (final OscMessageData message: this.messages)
-                {
-                    this.logMessage (message, this.logEnabled, false);
-
-                    final String address = message.getAddress ();
-                    final Object [] values = message.getValues ();
-                    this.udpServer.sendMessage (address, values);
-                    pos++;
-                    if (pos > 1000)
-                    {
-                        pos = 0;
-                        this.udpServer.endBundle ();
-                        this.udpServer.startBundle ();
-                    }
-                }
-                this.udpServer.endBundle ();
-            }
-            catch (final IOException ex)
-            {
-                this.model.getHost ().error ("Could not send UDP message.", ex);
-            }
-
-            this.messages.clear ();
-        }
-    }
-
-
-    /**
-     * Sends the message and calls flush.
-     *
-     * @param address The OSC address
-     * @param numbers Integer parameters
-     */
-    public void fastSendOSC (final String address, final int [] numbers)
-    {
-        final List<Object> params = new ArrayList<> ();
-        for (final int number: numbers)
-            params.add (Integer.valueOf (number));
-        this.fastSendOSC (address, params);
-    }
-
-
-    /**
-     * Sends the message and calls flush.
-     *
-     * @param address The OSC address
-     */
-    public void fastSendOSC (final String address)
-    {
-        this.fastSendOSC (address, Collections.emptyList ());
-    }
-
-
-    /**
      * Send the shutdown message to the host.
      */
     public void shutdown ()
     {
         try
         {
-            this.udpServer.sendMessage (this.daw + "shutdown");
+            this.oscServer.sendMessage (this.host.createOSCMessage (this.daw + "shutdown", Collections.emptyList ()));
         }
-        catch (final OscInvalidArgumentTypeException | IOException ex)
+        catch (final IOException ex)
         {
             this.model.getHost ().error ("Could not send shutdown message.", ex);
         }
@@ -397,7 +314,7 @@ public class OSCWriter
                 }
                 break;
         }
-        return EMPTY_TRACK;
+        return EmptyTrackData.INSTANCE;
     }
 
 
@@ -405,15 +322,7 @@ public class OSCWriter
     {
         final List<Object> testValues = new ArrayList<> (values);
         final String cacheAddress = new StringBuilder (address).append ("/").append (testValues.remove (0)).append ("/").append (testValues.remove (0)).append ("/").append (testValues.remove (0)).toString ();
-
-        if (!dump && compareValues (this.oldValues.get (cacheAddress), testValues))
-            return;
-        this.oldValues.put (cacheAddress, testValues);
-
-        synchronized (this.messages)
-        {
-            this.messages.add (new OscMessageData (address, values));
-        }
+        this.sendOSC (cacheAddress, address, testValues, values, dump);
     }
 
 
@@ -421,15 +330,7 @@ public class OSCWriter
     {
         final List<Object> testValues = new ArrayList<> (values);
         final String cacheAddress = new StringBuilder (address).append ("/").append (testValues.remove (0)).append ("/").append (testValues.remove (0)).toString ();
-
-        if (!dump && compareValues (this.oldValues.get (cacheAddress), testValues))
-            return;
-        this.oldValues.put (cacheAddress, testValues);
-
-        synchronized (this.messages)
-        {
-            this.messages.add (new OscMessageData (address, values));
-        }
+        this.sendOSC (cacheAddress, address, testValues, values, dump);
     }
 
 
@@ -472,6 +373,14 @@ public class OSCWriter
     }
 
 
+    /**
+     * Creates a parameter list with track type and index.
+     *
+     * @param trackType The track type
+     * @param trackIndex The track index
+     * @param values Other values
+     * @return The full parameter list
+     */
     private static List<Object> createTrackValueParameter (final int trackType, final int trackIndex, final Object... values)
     {
         final List<Object> parameters = new ArrayList<> ();
@@ -482,121 +391,10 @@ public class OSCWriter
     }
 
 
-    private void fastSendOSC (final String address, final List<Object> parameters)
+    /** {@inheritDoc} */
+    @Override
+    protected boolean isHeartbeatMessage (final String address)
     {
-        this.sendOSC (address, parameters, true);
-        this.flush ();
-    }
-
-
-    private void sendOSC (final String address, final boolean value, final boolean dump)
-    {
-        this.sendOSC (address, Boolean.valueOf (value), dump);
-    }
-
-
-    private void sendOSC (final String address, final double value, final boolean dump)
-    {
-        // Using float here since Double seems to be always received as 0 in Max.
-        this.sendOSC (address, Float.valueOf ((float) value), dump);
-    }
-
-
-    private void sendOSC (final String address, final int value, final boolean dump)
-    {
-        this.sendOSC (address, Integer.valueOf (value), dump);
-    }
-
-
-    private void sendOSC (final String address, final String value, final boolean dump)
-    {
-        this.sendOSC (address, (Object) StringUtils.fixASCII (value), dump);
-    }
-
-
-    private void sendOSC (final String address, final Object value, final boolean dump)
-    {
-        if (!dump && compareValues (this.oldValues.get (address), value))
-            return;
-
-        this.oldValues.put (address, value);
-
-        synchronized (this.messages)
-        {
-            this.messages.add (new OscMessageData (address, convertToList (value)));
-        }
-    }
-
-
-    /**
-     * Convert the value to a list in case it is not already one. Also converts Boolean to Integer.
-     *
-     * @param value The value to convert
-     * @return The converted value
-     */
-    @SuppressWarnings("unchecked")
-    private static List<Object> convertToList (final Object value)
-    {
-        if (value instanceof List)
-            return List.class.cast (value);
-        if (value instanceof Boolean)
-            return Collections.singletonList (Integer.valueOf (((Boolean) value).booleanValue () ? 1 : 0));
-        return Collections.singletonList (value);
-    }
-
-
-    /**
-     * Compares two values. Additionally checks for list values.
-     *
-     * @param value1 The first value
-     * @param value2 The second value
-     * @return True if equal
-     */
-    private static boolean compareValues (final Object value1, final Object value2)
-    {
-        if (value1 == null)
-            return value2 == null;
-
-        if (value1 instanceof List && value2 instanceof List)
-        {
-            final List<?> l1 = List.class.cast (value1);
-            final List<?> l2 = List.class.cast (value2);
-            final int size1 = l1.size ();
-            final int size2 = l2.size ();
-            if (size1 != size2)
-                return false;
-            for (int i = 0; i < size1; i++)
-            {
-                if (!l1.get (i).equals (l2.get (i)))
-                    return false;
-            }
-            return true;
-        }
-
-        return value1.equals (value2);
-    }
-
-
-    private void logMessage (final OscMessageData message, final boolean log, final boolean logPong)
-    {
-        if (!log)
-            return;
-        final String address = message.getAddress ();
-        if (logPong || !address.contains ("pong"))
-            this.model.getHost ().println ("Sending: " + address + " [ " + formatValues (message) + " ]");
-    }
-
-
-    private static String formatValues (final OscMessageData message)
-    {
-        final Object [] values = message.getValues ();
-        final StringBuilder sb = new StringBuilder ();
-        for (int i = 0; i < values.length; i++)
-        {
-            if (i > 0)
-                sb.append (", ");
-            sb.append (values[i]);
-        }
-        return sb.toString ();
+        return address.contains ("pong");
     }
 }

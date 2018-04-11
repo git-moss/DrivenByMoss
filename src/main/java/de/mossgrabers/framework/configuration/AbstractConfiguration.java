@@ -89,6 +89,7 @@ public abstract class AbstractConfiguration implements Configuration
     protected static final String CATEGORY_PADS                     = "Pads";
     protected static final String CATEGORY_PLAY_AND_SEQUENCE        = "Play and Sequence";
     protected static final String CATEGORY_HARDWARE_SETUP           = "Hardware Setup";
+    protected static final String CATEGORY_DEBUG                    = "Debug";
 
     private static final String   SCALE_IN_KEY                      = "In Key";
     private static final String   SCALE_CHROMATIC                   = "Chromatic";

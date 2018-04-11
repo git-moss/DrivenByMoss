@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.bitwig.controller.kontrol.usb.mkI;
+package de.mossgrabers.bitwig.controller.kontrol.usb.mki;
 
 /**
  * Definition class for Native Instruments Komplete Kontrol 1 S49 controller.

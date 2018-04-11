@@ -11,24 +11,21 @@ import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IChannelBank;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
+import de.mossgrabers.framework.osc.AbstractOpenSoundControlParser;
+import de.mossgrabers.framework.osc.IOpenSoundControlConfiguration;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
-import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -40,58 +37,38 @@ import java.util.regex.Pattern;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class OSCParser implements IOpenSoundControlCallback
+public class OSCParser extends AbstractOpenSoundControlParser
 {
-    private static final String    PART_INDICATE     = "indicate";
-    private static final String    PART_VOLUME       = "volume";
-    private static final String    PART_RESET        = "reset";
-    private static final String    PART_TOUCH        = "touched";
+    private static final String  PART_INDICATE     = "indicate";
+    private static final String  PART_VOLUME       = "volume";
+    private static final String  PART_RESET        = "reset";
+    private static final String  PART_TOUCH        = "touched";
 
-    private static final Pattern   RGB_COLOR_PATTERN = Pattern.compile ("(rgb|RGB)\\((\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?)\\)");
+    private static final Pattern RGB_COLOR_PATTERN = Pattern.compile ("(rgb|RGB)\\((\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?)\\)");
 
-    private final IModel           model;
-    private final ITransport       transport;
-    private final IMasterTrack     masterTrack;
-    private final Scales           scales;
-    private final IMidiInput       midiInput;
-    private final IHost            host;
-    private final OSCConfiguration configuration;
-    private final Display          display;
-    private final OSCWriter        writer;
-    private final KeyManager       keyManager;
-    private final ICursorClip      clip;
+    private final Display        display;
+    private final KeyManager     keyManager;
 
 
     /**
      * Constructor.
      *
      * @param host The host
-     * @param writer The OSC writer
-     * @param configuration The configuration
      * @param model The model
-     * @param keyManager The key manager
+     * @param configuration The configuration
+     * @param writer The OSC writer
      * @param midiInput The midi input
+     * @param keyManager The key manager
      */
-    public OSCParser (final IHost host, final OSCWriter writer, final OSCConfiguration configuration, final IModel model, final KeyManager keyManager, final IMidiInput midiInput)
+    public OSCParser (final IHost host, final IModel model, final IOpenSoundControlConfiguration configuration, final IOpenSoundControlWriter writer, final IMidiInput midiInput, final KeyManager keyManager)
     {
-        this.host = host;
-        this.writer = writer;
-        this.configuration = configuration;
-        this.model = model;
+        super (host, model, midiInput, configuration, writer);
+
         this.keyManager = keyManager;
-
         this.display = new DummyDisplay (host);
-
-        this.transport = this.model.getTransport ();
-        this.masterTrack = this.model.getMasterTrack ();
-        this.scales = this.model.getScales ();
 
         this.model.getCurrentTrackBank ().setIndication (true);
         this.keyManager.updateNoteMapping ();
-
-        this.midiInput = midiInput;
-
-        this.clip = model.getCursorClip (8, 8);
     }
 
 
@@ -772,7 +749,7 @@ public class OSCParser implements IOpenSoundControlCallback
                 break;
 
             case "vu":
-                this.configuration.setVUMetersEnabled (numValue > 0);
+                ((OSCConfiguration) this.configuration).setVUMetersEnabled (numValue > 0);
                 break;
 
             case "toggleBank":
@@ -1499,6 +1476,7 @@ public class OSCParser implements IOpenSoundControlCallback
         int numValue = value instanceof Number ? ((Number) value).intValue () : -1;
         final String command = parts.removeFirst ();
         int midiChannel;
+        final OSCConfiguration conf = (OSCConfiguration) this.configuration;
         try
         {
             midiChannel = Integer.parseInt (command);
@@ -1508,9 +1486,9 @@ public class OSCParser implements IOpenSoundControlCallback
             switch (command)
             {
                 case "velocity":
-                    this.configuration.setAccentEnabled (numValue > 0);
+                    conf.setAccentEnabled (numValue > 0);
                     if (numValue > 0)
-                        this.configuration.setAccentValue (numValue);
+                        conf.setAccentValue (numValue);
                     break;
 
                 default:
@@ -1558,7 +1536,7 @@ public class OSCParser implements IOpenSoundControlCallback
                     default:
                         final int note = Integer.parseInt (n);
                         if (numValue > 0)
-                            numValue = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : numValue;
+                            numValue = conf.isAccentActive () ? conf.getFixedAccentValue () : numValue;
                         final int data0 = this.keyManager.getKeyTranslationMatrix ()[note];
                         if (data0 >= 0)
                             this.midiInput.sendRawMidiEvent (0x90 + midiChannel, data0, numValue);
@@ -1603,7 +1581,7 @@ public class OSCParser implements IOpenSoundControlCallback
                     default:
                         final int note = Integer.parseInt (n);
                         if (numValue > 0)
-                            numValue = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : numValue;
+                            numValue = conf.isAccentActive () ? conf.getFixedAccentValue () : numValue;
                         final int data0 = this.keyManager.getDrumTranslationMatrix ()[note];
                         if (data0 >= 0)
                             this.midiInput.sendRawMidiEvent (0x90 + midiChannel, data0, numValue);
@@ -1623,7 +1601,7 @@ public class OSCParser implements IOpenSoundControlCallback
 
             case "aftertouch":
                 if (numValue > 0)
-                    numValue = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : numValue;
+                    numValue = conf.isAccentActive () ? conf.getFixedAccentValue () : numValue;
                 if (parts.isEmpty ())
                 {
                     this.midiInput.sendRawMidiEvent (0xD0 + midiChannel, 0, numValue);
@@ -1652,16 +1630,5 @@ public class OSCParser implements IOpenSoundControlCallback
         // Remove first empty element
         oscParts.removeFirst ();
         return oscParts;
-    }
-
-
-    private void logMessage (final IOpenSoundControlMessage message)
-    {
-        if (!this.configuration.shouldLogInputCommands ())
-            return;
-        final String address = message.getAddress ();
-        final StringBuilder sb = new StringBuilder ("Received: ").append (address).append (" [ ");
-        Arrays.asList (message.getValues ()).forEach (sb::append);
-        this.model.getHost ().println (sb.append (" ]").toString ());
     }
 }

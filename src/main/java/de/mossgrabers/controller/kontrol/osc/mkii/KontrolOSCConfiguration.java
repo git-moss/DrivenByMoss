@@ -2,27 +2,26 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.osc.mkII;
+package de.mossgrabers.controller.kontrol.osc.mkii;
 
-import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.osc.AbstractOpenSoundControlConfiguration;
 
 
 /**
- * The configuration settings for OSC4Bitwig.
+ * The configuration settings for OSC.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class KontrolOSCConfiguration extends AbstractConfiguration
+public class KontrolOSCConfiguration extends AbstractOpenSoundControlConfiguration
 {
-    private static final String DEFAULT_SERVER       = "127.0.0.1";
-    private static final int    DEFAULT_SEND_PORT    = KontrolOSCExtension.IS_16 ? 7577 : 7575;
-    private static final int    DEFAULT_RECEIVE_PORT = KontrolOSCExtension.IS_16 ? 7578 : 7576;
+    private static final int DEFAULT_SEND_PORT    = KontrolOSCControllerSetup.IS_16 ? 7577 : 7575;
+    private static final int DEFAULT_RECEIVE_PORT = KontrolOSCControllerSetup.IS_16 ? 7578 : 7576;
 
-    private int                 receivePort          = DEFAULT_RECEIVE_PORT;
-    private String              sendHost             = DEFAULT_SERVER;
-    private int                 sendPort             = DEFAULT_SEND_PORT;
+    private int              receivePort          = DEFAULT_RECEIVE_PORT;
+    private String           sendHost             = DEFAULT_SERVER;
+    private int              sendPort             = DEFAULT_SEND_PORT;
 
 
     /**
@@ -40,7 +39,10 @@ public class KontrolOSCConfiguration extends AbstractConfiguration
     @Override
     public void init (final ISettingsUI settingsUI)
     {
-        // Intentionally empty
+        ///////////////////////////
+        // Debug
+
+        this.activateOSCLogging (settingsUI);
     }
 
 

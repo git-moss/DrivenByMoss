@@ -1,0 +1,82 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2018
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.framework.osc;
+
+import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.scale.Scales;
+
+
+/**
+ * Abstract base class for handling OSC messages.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public abstract class AbstractOpenSoundControlParser implements IOpenSoundControlCallback
+{
+    protected final IHost                          host;
+    protected final IModel                         model;
+    protected final ITransport                     transport;
+    protected final IMasterTrack                   masterTrack;
+    protected final ICursorClip                    clip;
+
+    protected final Scales                         scales;
+    protected final IMidiInput                     midiInput;
+    protected final IOpenSoundControlConfiguration configuration;
+    protected final IOpenSoundControlWriter        writer;
+
+
+    protected AbstractOpenSoundControlParser (final IHost host, final IModel model, final IMidiInput midiInput, final IOpenSoundControlConfiguration configuration, final IOpenSoundControlWriter writer)
+    {
+        this.host = host;
+        this.model = model;
+        this.transport = model.getTransport ();
+        this.masterTrack = model.getMasterTrack ();
+        this.scales = model.getScales ();
+        this.clip = model.getCursorClip (8, 8);
+
+        this.midiInput = midiInput;
+        this.configuration = configuration;
+        this.writer = writer;
+    }
+
+
+    protected void logMessage (final IOpenSoundControlMessage message)
+    {
+        if (!this.configuration.shouldLogInputCommands ())
+            return;
+
+        final String address = message.getAddress ();
+        if (this.configuration.filterHeartbeatMessages () && this.isHeartbeatMessage (address))
+            return;
+
+        final StringBuilder sb = new StringBuilder ("Receiving: ").append (address).append (" [ ");
+        final Object [] values = message.getValues ();
+        for (int i = 0; i < values.length; i++)
+        {
+            if (i > 0)
+                sb.append (", ");
+            sb.append (values[i]);
+        }
+        sb.append (" ]");
+        this.model.getHost ().println (sb.toString ());
+    }
+
+
+    /**
+     * Hook to ignore specific messages from logging.
+     *
+     * @param address The OSC address
+     * @return Return true to ignore the message
+     */
+    protected boolean isHeartbeatMessage (final String address)
+    {
+        return false;
+    }
+}

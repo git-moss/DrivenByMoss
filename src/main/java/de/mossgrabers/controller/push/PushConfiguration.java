@@ -116,7 +116,6 @@ public class PushConfiguration extends AbstractConfiguration
 
     private static final String    CATEGORY_RIBBON                  = "Ribbon";
     private static final String    CATEGORY_COLORS                  = "Display Colors";
-    private static final String    CATEGORY_DEBUG                   = "Debug - keep your hands off";
 
     private static final String [] RIBBON_MODE_VALUES               =
     {

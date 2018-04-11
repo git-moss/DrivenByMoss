@@ -8,7 +8,7 @@ package de.mossgrabers.framework.configuration;
  * An interface to a setting.
  *
  * @param <T> The type of the settings value
- * 
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public interface ISetting<T>

@@ -45,7 +45,7 @@ public class ColorSettingImpl extends AbstractSetting<double []> implements ICol
 
     /** {@inheritDoc} */
     @Override
-    public void set (double [] value)
+    public void set (final double [] value)
     {
         this.set (value[0], value[1], value[2]);
     }

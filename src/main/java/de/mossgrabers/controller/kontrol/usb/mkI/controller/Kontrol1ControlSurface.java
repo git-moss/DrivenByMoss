@@ -246,7 +246,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
     @Override
     protected void handleMidi (final int status, final int data1, final int data2)
     {
-        // Midi is not used for controlling Bitwig (uses USB instead), therefore block anything.
+        // Midi is not used for (uses USB instead), therefore block anything.
     }
 
 

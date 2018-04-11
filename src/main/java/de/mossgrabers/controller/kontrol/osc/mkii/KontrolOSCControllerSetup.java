@@ -2,11 +2,10 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.osc;
+package de.mossgrabers.controller.kontrol.osc.mkii;
 
-import de.mossgrabers.controller.osc.protocol.KeyManager;
-import de.mossgrabers.controller.osc.protocol.OSCParser;
-import de.mossgrabers.controller.osc.protocol.OSCWriter;
+import de.mossgrabers.controller.kontrol.osc.mkii.protocol.KontrolOSCParser;
+import de.mossgrabers.controller.kontrol.osc.mkii.protocol.KontrolOSCWriter;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
@@ -14,9 +13,6 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.midi.IMidiAccess;
-import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -26,10 +22,12 @@ import de.mossgrabers.framework.scale.Scales;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<OSCConfiguration>, OSCConfiguration>
+public class KontrolOSCControllerSetup extends AbstractControllerSetup<IControlSurface<KontrolOSCConfiguration>, KontrolOSCConfiguration>
 {
-    private OSCWriter  writer;
-    private KeyManager keyManager;
+    /** Global protocol version switch. */
+    public static final boolean IS_16 = false;
+
+    private KontrolOSCWriter    writer;
 
 
     /**
@@ -39,13 +37,13 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
      * @param factory The factory
      * @param settings The settings
      */
-    public OSCControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    public KontrolOSCControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
     {
         super (factory, host, settings);
 
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new OSCConfiguration (this.valueChanger);
+        this.configuration = new KontrolOSCConfiguration (this.valueChanger);
     }
 
 
@@ -70,11 +68,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, false, 8, 8, 8, 16);
-        this.keyManager = new KeyManager (this.model);
-        final ITrackBank tb = this.model.getTrackBank ();
-        tb.addNoteObserver (this.keyManager);
-        tb.addTrackSelectionObserver ( (final int index, final boolean isSelected) -> this.keyManager.clearPressedKeys ());
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 128, 128, 0, 0, 0, true, 0, 0, 0, 0);
     }
 
 
@@ -82,15 +76,14 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     @Override
     protected void createSurface ()
     {
-        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
-        final IMidiInput midiInput = midiAccess.createInput ("OSC");
+        this.factory.createMidiAccess ().createInput ("Kontrol OSC Midi");
 
         // Send OSC messages
         final IOpenSoundControlServer oscServer = this.host.connectToOSCServer (this.configuration.getSendHost (), this.configuration.getSendPort ());
-        this.writer = new OSCWriter (this.host, this.model, oscServer, this.keyManager, this.configuration);
+        this.writer = new KontrolOSCWriter (this.host, this.model, oscServer, IS_16, this.configuration);
 
         // Receive OSC messages
-        this.host.createOSCServer (new OSCParser (this.host, this.model, this.configuration, this.writer, midiInput, this.keyManager), this.configuration.getReceivePort ());
+        this.host.createOSCServer (new KontrolOSCParser (this.host, this.model, this.configuration, this.writer, IS_16), this.configuration.getReceivePort ());
     }
 
 
@@ -100,5 +93,15 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     {
         // Initial flush of the whole DAW state
         this.host.scheduleTask ( () -> this.writer.flush (true), 1000);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void exit ()
+    {
+        this.writer.shutdown ();
+
+        super.exit ();
     }
 }
