@@ -7,6 +7,7 @@ package de.mossgrabers.bitwig.framework.configuration;
 import de.mossgrabers.framework.configuration.ISignalSetting;
 import de.mossgrabers.framework.configuration.IValueObserver;
 
+import com.bitwig.extension.controller.api.Setting;
 import com.bitwig.extension.controller.api.Signal;
 
 
@@ -15,7 +16,7 @@ import com.bitwig.extension.controller.api.Signal;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SignalSettingImpl implements ISignalSetting
+public class SignalSettingImpl extends AbstractSetting<Void> implements ISignalSetting
 {
     private Signal signalValue;
 
@@ -27,6 +28,8 @@ public class SignalSettingImpl implements ISignalSetting
      */
     public SignalSettingImpl (final Signal signalValue)
     {
+        super ((Setting) signalValue);
+
         this.signalValue = signalValue;
     }
 

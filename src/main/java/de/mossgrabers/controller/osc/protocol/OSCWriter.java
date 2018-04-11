@@ -196,6 +196,7 @@ public class OSCWriter
 
         try
         {
+            this.logMessages (this.messages);
             this.oscServer.sendBundle (this.messages);
         }
         catch (final IOException ex)
@@ -457,5 +458,31 @@ public class OSCWriter
     private static Object convertBooleanToInt (final Object value)
     {
         return value instanceof Boolean ? Integer.valueOf (((Boolean) value).booleanValue () ? 1 : 0) : value;
+    }
+
+
+    private void logMessages (final List<IOpenSoundControlMessage> messages)
+    {
+        if (!this.configuration.shouldLogOutputCommands ())
+            return;
+
+        final StringBuilder sb = new StringBuilder ();
+        for (final IOpenSoundControlMessage message: messages)
+        {
+            if (sb.length () > 0)
+                sb.append ('\n');
+
+            final String address = message.getAddress ();
+            sb.append ("Sending: ").append (address).append (" [ ");
+            final Object [] values = message.getValues ();
+            for (int i = 0; i < values.length; i++)
+            {
+                if (i > 0)
+                    sb.append (", ");
+                sb.append (values[i]);
+            }
+            sb.append (" ]");
+        }
+        this.model.getHost ().println (sb.toString ());
     }
 }

@@ -28,6 +28,7 @@ import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.scale.Scales;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -98,6 +99,8 @@ public class OSCParser implements IOpenSoundControlCallback
     @Override
     public void handle (final IOpenSoundControlMessage message)
     {
+        this.logMessage (message);
+
         final LinkedList<String> oscParts = parseAddress (message);
         if (oscParts.isEmpty ())
             return;
@@ -1651,4 +1654,14 @@ public class OSCParser implements IOpenSoundControlCallback
         return oscParts;
     }
 
+
+    private void logMessage (final IOpenSoundControlMessage message)
+    {
+        if (!this.configuration.shouldLogInputCommands ())
+            return;
+        final String address = message.getAddress ();
+        final StringBuilder sb = new StringBuilder ("Received: ").append (address).append (" [ ");
+        Arrays.asList (message.getValues ()).forEach (sb::append);
+        this.model.getHost ().println (sb.append (" ]").toString ());
+    }
 }

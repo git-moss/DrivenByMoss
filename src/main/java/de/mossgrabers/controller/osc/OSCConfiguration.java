@@ -20,20 +20,23 @@ import de.mossgrabers.framework.controller.IValueChanger;
 public class OSCConfiguration extends AbstractConfiguration
 {
     /** ID for receive port setting. */
-    public static final Integer RECEIVE_PORT   = Integer.valueOf (31);
+    public static final Integer RECEIVE_PORT          = Integer.valueOf (31);
     /** ID for send host setting. */
-    public static final Integer SEND_HOST      = Integer.valueOf (32);
+    public static final Integer SEND_HOST             = Integer.valueOf (32);
     /** ID for send port setting. */
-    public static final Integer SEND_PORT      = Integer.valueOf (33);
-    /** ID for debug option. */
-    public static final Integer DEBUG_COMMANDS = Integer.valueOf (34);
+    public static final Integer SEND_PORT             = Integer.valueOf (33);
+    /** ID for debug input commands option. */
+    public static final Integer DEBUG_INPUT_COMMANDS  = Integer.valueOf (34);
+    /** ID for debug output commands option. */
+    public static final Integer DEBUG_OUTPUT_COMMANDS = Integer.valueOf (35);
 
-    private static final String DEFAULT_SERVER = "127.0.0.1";
+    private static final String DEFAULT_SERVER        = "127.0.0.1";
 
-    private int                 receivePort    = 8000;
-    private String              sendHost       = DEFAULT_SERVER;
-    private int                 sendPort       = 9000;
-    private boolean             debugCommands  = false;
+    private int                 receivePort           = 8000;
+    private String              sendHost              = DEFAULT_SERVER;
+    private int                 sendPort              = 9000;
+    private boolean             logInputCommands      = false;
+    private boolean             logOutputCommands     = false;
 
 
     /**
@@ -59,18 +62,21 @@ public class OSCConfiguration extends AbstractConfiguration
             this.receivePort = value.intValue ();
             this.notifyObservers (OSCConfiguration.RECEIVE_PORT);
         });
+        receivePortSetting.setEnabled (false);
 
         final IStringSetting sendHostSetting = settingsUI.getStringSetting ("Host", "Send to", 15, DEFAULT_SERVER);
         sendHostSetting.addValueObserver (value -> {
             this.sendHost = value;
             this.notifyObservers (OSCConfiguration.SEND_HOST);
         });
+        sendHostSetting.setEnabled (false);
 
         final IIntegerSetting sendPortSetting = settingsUI.getRangeSetting ("Port", "Send to", 0, 65535, 1, "", 9000);
         sendPortSetting.addValueObserver (value -> {
             this.sendPort = value.intValue ();
             this.notifyObservers (SEND_PORT);
         });
+        sendPortSetting.setEnabled (false);
 
         ///////////////////////////
         // Accent
@@ -86,10 +92,15 @@ public class OSCConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Debug
 
-        final IEnumSetting debugCommandsSetting = settingsUI.getEnumSetting ("Debug commands", "Debug", ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        debugCommandsSetting.addValueObserver (value -> {
-            this.debugCommands = "On".equals (value);
-            this.notifyObservers (DEBUG_COMMANDS);
+        final IEnumSetting debugInputCommandsSetting = settingsUI.getEnumSetting ("Log input commands", "Debug", ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        debugInputCommandsSetting.addValueObserver (value -> {
+            this.logInputCommands = "On".equals (value);
+            this.notifyObservers (DEBUG_INPUT_COMMANDS);
+        });
+        final IEnumSetting debugOutputCommandsSetting = settingsUI.getEnumSetting ("Log output commands", "Debug", ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        debugOutputCommandsSetting.addValueObserver (value -> {
+            this.logOutputCommands = "On".equals (value);
+            this.notifyObservers (DEBUG_OUTPUT_COMMANDS);
         });
     }
 
@@ -128,12 +139,23 @@ public class OSCConfiguration extends AbstractConfiguration
 
 
     /**
-     * Get if debugging should be enabled.
+     * Get if logging of input commands should be enabled.
      *
-     * @return True if debugging should be enabled
+     * @return True if logging should be enabled
      */
-    public boolean getDebugCommands ()
+    public boolean shouldLogInputCommands ()
     {
-        return this.debugCommands;
+        return this.logInputCommands;
+    }
+
+
+    /**
+     * Get if logging of output commands should be enabled.
+     *
+     * @return True if logging should be enabled
+     */
+    public boolean shouldLogOutputCommands ()
+    {
+        return this.logOutputCommands;
     }
 }

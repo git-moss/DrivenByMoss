@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.configuration.IValueObserver;
 
 import com.bitwig.extension.controller.api.SettableStringValue;
+import com.bitwig.extension.controller.api.Setting;
 
 
 /**
@@ -15,7 +16,7 @@ import com.bitwig.extension.controller.api.SettableStringValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class StringSettingImpl implements IStringSetting
+public class StringSettingImpl extends AbstractSetting<String> implements IStringSetting
 {
     private SettableStringValue stringValue;
 
@@ -27,6 +28,8 @@ public class StringSettingImpl implements IStringSetting
      */
     public StringSettingImpl (final SettableStringValue stringValue)
     {
+        super ((Setting) stringValue);
+
         this.stringValue = stringValue;
     }
 
