@@ -14,4 +14,4 @@ de.mossgrabers.bitwig.controller.push.Push2ControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.sl.SLMkIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.sl.SLMkIIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.osc.OSCControllerExtensionDefinition
-de.mossgrabers.controller.kontrol.osc.mkII.KontrolOSCExtensionDefinition
+de.mossgrabers.bitwig.controller.kontrol.osc.mkii.KontrolOSCExtensionDefinition

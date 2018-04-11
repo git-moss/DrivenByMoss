@@ -2,14 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.osc.mkII;
+package de.mossgrabers.bitwig.controller.kontrol.osc.mkii;
 
+import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
+import de.mossgrabers.bitwig.framework.configuration.SettingsUI;
+import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
+import de.mossgrabers.controller.kontrol.osc.mkii.KontrolOSCControllerDefinition;
+import de.mossgrabers.controller.kontrol.osc.mkii.KontrolOSCControllerSetup;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
-import com.bitwig.extension.api.PlatformType;
-import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
-import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 
@@ -31,25 +33,8 @@ public class KontrolOSCExtensionDefinition extends AbstractControllerExtensionDe
 
     /** {@inheritDoc} */
     @Override
-    public ControllerExtension createInstance (final ControllerHost host)
-    {
-        return new KontrolOSCExtension (this, host);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        // Not used
-        return null;
+        return new KontrolOSCControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()));
     }
 }

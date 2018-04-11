@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.osc.mkII;
+package de.mossgrabers.controller.kontrol.osc.mkii;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 
@@ -24,6 +24,6 @@ public class KontrolOSCControllerDefinition extends DefaultControllerDefinition
      */
     public KontrolOSCControllerDefinition ()
     {
-        super ("KontrolOSC4Bitwig", "Jürgen Moßgraber", "0.01", EXTENSION_ID, "Komplete Kontrol Mk II", "Native Instruments", 1, 0);
+        super ("", "Jürgen Moßgraber", "0.01", EXTENSION_ID, "Komplete Kontrol Mk II", "Native Instruments", 1, 0);
     }
 }

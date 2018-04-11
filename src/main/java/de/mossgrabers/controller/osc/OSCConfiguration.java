@@ -4,12 +4,11 @@
 
 package de.mossgrabers.controller.osc;
 
-import de.mossgrabers.framework.configuration.AbstractConfiguration;
-import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.osc.AbstractOpenSoundControlConfiguration;
 
 
 /**
@@ -17,26 +16,18 @@ import de.mossgrabers.framework.controller.IValueChanger;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class OSCConfiguration extends AbstractConfiguration
+public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
 {
     /** ID for receive port setting. */
-    public static final Integer RECEIVE_PORT          = Integer.valueOf (31);
+    public static final Integer RECEIVE_PORT = Integer.valueOf (50);
     /** ID for send host setting. */
-    public static final Integer SEND_HOST             = Integer.valueOf (32);
+    public static final Integer SEND_HOST    = Integer.valueOf (51);
     /** ID for send port setting. */
-    public static final Integer SEND_PORT             = Integer.valueOf (33);
-    /** ID for debug input commands option. */
-    public static final Integer DEBUG_INPUT_COMMANDS  = Integer.valueOf (34);
-    /** ID for debug output commands option. */
-    public static final Integer DEBUG_OUTPUT_COMMANDS = Integer.valueOf (35);
+    public static final Integer SEND_PORT    = Integer.valueOf (52);
 
-    private static final String DEFAULT_SERVER        = "127.0.0.1";
-
-    private int                 receivePort           = 8000;
-    private String              sendHost              = DEFAULT_SERVER;
-    private int                 sendPort              = 9000;
-    private boolean             logInputCommands      = false;
-    private boolean             logOutputCommands     = false;
+    private int                 receivePort  = 8000;
+    private String              sendHost     = DEFAULT_SERVER;
+    private int                 sendPort     = 9000;
 
 
     /**
@@ -92,16 +83,7 @@ public class OSCConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Debug
 
-        final IEnumSetting debugInputCommandsSetting = settingsUI.getEnumSetting ("Log input commands", "Debug", ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        debugInputCommandsSetting.addValueObserver (value -> {
-            this.logInputCommands = "On".equals (value);
-            this.notifyObservers (DEBUG_INPUT_COMMANDS);
-        });
-        final IEnumSetting debugOutputCommandsSetting = settingsUI.getEnumSetting ("Log output commands", "Debug", ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        debugOutputCommandsSetting.addValueObserver (value -> {
-            this.logOutputCommands = "On".equals (value);
-            this.notifyObservers (DEBUG_OUTPUT_COMMANDS);
-        });
+        this.activateOSCLogging (settingsUI);
     }
 
 
@@ -135,27 +117,5 @@ public class OSCConfiguration extends AbstractConfiguration
     public int getSendPort ()
     {
         return this.sendPort;
-    }
-
-
-    /**
-     * Get if logging of input commands should be enabled.
-     *
-     * @return True if logging should be enabled
-     */
-    public boolean shouldLogInputCommands ()
-    {
-        return this.logInputCommands;
-    }
-
-
-    /**
-     * Get if logging of output commands should be enabled.
-     *
-     * @return True if logging should be enabled
-     */
-    public boolean shouldLogOutputCommands ()
-    {
-        return this.logOutputCommands;
     }
 }

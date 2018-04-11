@@ -14,6 +14,19 @@ import de.mossgrabers.framework.daw.resource.ChannelType;
  */
 public class EmptyTrackData implements ITrack
 {
+    /** The singleton. */
+    public static final ITrack INSTANCE = new EmptyTrackData ();
+
+
+    /**
+     * Constructor.
+     */
+    private EmptyTrackData ()
+    {
+        // Intentionally empty
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public boolean doesExist ()

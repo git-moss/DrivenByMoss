@@ -26,17 +26,9 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
+import de.mossgrabers.framework.osc.AbstractOpenSoundControlWriter;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.utils.StringUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -44,17 +36,9 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class OSCWriter
+public class OSCWriter extends AbstractOpenSoundControlWriter
 {
-    private static final ITrack            EMPTY_TRACK = new EmptyTrackData ();
-
-    private IHost                          host;
-    private IModel                         model;
-    private KeyManager                     keyManager;
-    private Map<String, Object>            oldValues   = new HashMap<> ();
-    private List<IOpenSoundControlMessage> messages    = new ArrayList<> ();
-    private OSCConfiguration               configuration;
-    private IOpenSoundControlServer        oscServer;
+    private KeyManager keyManager;
 
 
     /**
@@ -62,27 +46,22 @@ public class OSCWriter
      *
      * @param host The host
      * @param model The model
+     * @param oscServer The OSC server to write to
      * @param keyManager The model
      * @param configuration The configuration
      */
-    public OSCWriter (final IHost host, final IModel model, final KeyManager keyManager, final OSCConfiguration configuration)
+    public OSCWriter (final IHost host, final IModel model, final IOpenSoundControlServer oscServer, final KeyManager keyManager, final OSCConfiguration configuration)
     {
-        this.host = host;
-        this.model = model;
+        super (host, model, oscServer, configuration);
         this.keyManager = keyManager;
-        this.configuration = configuration;
-        this.oscServer = host.connectToOSCServer (this.configuration.getSendHost (), this.configuration.getSendPort ());
     }
 
 
-    /**
-     * Flush out all values.
-     *
-     * @param dump Forces a flush if true otherwise only changed values are flushed
-     */
+    /** {@inheritDoc} */
+    @Override
     public void flush (final boolean dump)
     {
-        if (this.oscServer == null)
+        if (!this.isConnected ())
             return;
 
         //
@@ -152,7 +131,7 @@ public class OSCWriter
             this.flushTrack ("/track/" + (i + 1) + "/", trackBank.getTrack (i), dump);
         this.flushTrack ("/master/", this.model.getMasterTrack (), dump);
         final ITrack selectedTrack = trackBank.getSelectedTrack ();
-        this.flushTrack ("/track/selected/", selectedTrack == null ? EMPTY_TRACK : selectedTrack, dump);
+        this.flushTrack ("/track/selected/", selectedTrack == null ? EmptyTrackData.INSTANCE : selectedTrack, dump);
         this.sendOSC ("/track/toggleBank", this.model.isEffectTrackBankActive () ? 1 : 0, dump);
 
         //
@@ -192,22 +171,17 @@ public class OSCWriter
 
         this.flushNotes ("/vkb_midi/note/", dump);
 
-        // Send all collected messages
-
-        try
-        {
-            this.logMessages (this.messages);
-            this.oscServer.sendBundle (this.messages);
-        }
-        catch (final IOException ex)
-        {
-            this.model.getHost ().error ("Could not send UDP message.", ex);
-        }
-
-        this.messages.clear ();
+        this.flush ();
     }
 
 
+    /**
+     * Flush all data of a track.
+     *
+     * @param trackAddress The start address for the track
+     * @param track The track
+     * @param dump Forces a flush if true otherwise only changed values are flushed
+     */
     private void flushTrack (final String trackAddress, final ITrack track, final boolean dump)
     {
         this.sendOSC (trackAddress + "exists", track.doesExist (), dump);
@@ -258,10 +232,17 @@ public class OSCWriter
         this.sendOSC (trackAddress + "crossfadeMode/B", "B".equals (crossfadeMode), dump);
         this.sendOSC (trackAddress + "crossfadeMode/AB", "AB".equals (crossfadeMode), dump);
 
-        this.sendOSC (trackAddress + "vu", this.configuration.isEnableVUMeters () ? track.getVu () : 0, dump);
+        this.sendOSC (trackAddress + "vu", ((OSCConfiguration) this.configuration).isEnableVUMeters () ? track.getVu () : 0, dump);
     }
 
 
+    /**
+     * Flush all data of a scene.
+     *
+     * @param sceneAddress The start address for the scene
+     * @param scene The scene
+     * @param dump Forces a flush if true otherwise only changed values are flushed
+     */
     private void flushScene (final String sceneAddress, final IScene scene, final boolean dump)
     {
         this.sendOSC (sceneAddress + "exists", scene.doesExist (), dump);
@@ -270,6 +251,13 @@ public class OSCWriter
     }
 
 
+    /**
+     * Flush all data of a device.
+     *
+     * @param deviceAddress The start address for the device
+     * @param device The device
+     * @param dump Forces a flush if true otherwise only changed values are flushed
+     */
     private void flushDevice (final String deviceAddress, final ICursorDevice device, final boolean dump)
     {
         this.sendOSC (deviceAddress + "exists", device.doesExist (), dump);
@@ -310,6 +298,13 @@ public class OSCWriter
     }
 
 
+    /**
+     * Flush all data of the browser.
+     *
+     * @param browserAddress The start address for the browser
+     * @param browser The browser
+     * @param dump Forces a flush if true otherwise only changed values are flushed
+     */
     private void flushBrowser (final String browserAddress, final IBrowser browser, final boolean dump)
     {
         this.sendOSC (browserAddress + "isActive", browser.isActive (), dump);
@@ -347,6 +342,13 @@ public class OSCWriter
     }
 
 
+    /**
+     * Flush all data of a device layer.
+     *
+     * @param deviceAddress The start address for the device
+     * @param channel The channel of the layer
+     * @param dump Forces a flush if true otherwise only changed values are flushed
+     */
     private void flushDeviceLayers (final String deviceAddress, final IChannel channel, final boolean dump)
     {
         if (channel == null)
@@ -366,7 +368,7 @@ public class OSCWriter
         for (int i = 0; i < channel.getNumSends (); i++)
             this.flushParameterData (deviceAddress + "send/" + (i + 1) + "/", channel.getSend (i), dump);
 
-        if (this.configuration.isEnableVUMeters ())
+        if (((OSCConfiguration) this.configuration).isEnableVUMeters ())
             this.sendOSC (deviceAddress + "vu", channel.getVu (), dump);
 
         final double [] color = channel.getColor ();
@@ -374,6 +376,13 @@ public class OSCWriter
     }
 
 
+    /**
+     * Flush all data of a parameter.
+     *
+     * @param fxAddress The start address for the effect
+     * @param fxParam The parameter
+     * @param dump Forces a flush if true otherwise only changed values are flushed
+     */
     private void flushParameterData (final String fxAddress, final IParameter fxParam, final boolean dump)
     {
         final boolean isSend = fxParam instanceof ISend;
@@ -385,6 +394,12 @@ public class OSCWriter
     }
 
 
+    /**
+     * Flush all notes.
+     *
+     * @param noteAddress The start address for the note
+     * @param dump Forces a flush if true otherwise only changed values are flushed
+     */
     private void flushNotes (final String noteAddress, final boolean dump)
     {
         for (int i = 0; i < 127; i++)
@@ -395,6 +410,12 @@ public class OSCWriter
     }
 
 
+    /**
+     * Get the color for a note.
+     *
+     * @param note The note
+     * @return The color
+     */
     private double [] getNoteColor (final int note)
     {
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
@@ -410,79 +431,5 @@ public class OSCWriter
 
         final boolean isRecording = this.model.hasRecordingState ();
         return isRecording ? OSCColors.COLOR_RED : OSCColors.COLOR_GREEN;
-    }
-
-
-    private void sendOSC (final String address, final boolean value, final boolean dump)
-    {
-        this.sendOSC (address, Boolean.valueOf (value), dump);
-    }
-
-
-    private void sendOSC (final String address, final double value, final boolean dump)
-    {
-        // Using float here since Double seems to be always received as 0 in Max.
-        this.sendOSC (address, Float.valueOf ((float) value), dump);
-    }
-
-
-    private void sendOSC (final String address, final String value, final boolean dump)
-    {
-        this.sendOSC (address, (Object) StringUtils.fixASCII (value), dump);
-    }
-
-
-    private void sendOSC (final String address, final Object value, final boolean dump)
-    {
-        if (!dump)
-        {
-            final Object object = this.oldValues.get (address);
-            if (object != null && object.equals (value) || object == null && value == null)
-                return;
-        }
-
-        this.oldValues.put (address, value);
-        this.messages.add (this.host.createOSCMessage (address, Collections.singletonList (convertBooleanToInt (value))));
-    }
-
-
-    private void sendOSCColor (final String address, final double red, final double green, final double blue, final boolean dump)
-    {
-        final int r = (int) Math.round (red * 255.0);
-        final int g = (int) Math.round (green * 255.0);
-        final int b = (int) Math.round (blue * 255.0);
-        this.sendOSC (address, "rgb(" + r + "," + g + "," + b + ")", dump);
-    }
-
-
-    private static Object convertBooleanToInt (final Object value)
-    {
-        return value instanceof Boolean ? Integer.valueOf (((Boolean) value).booleanValue () ? 1 : 0) : value;
-    }
-
-
-    private void logMessages (final List<IOpenSoundControlMessage> messages)
-    {
-        if (!this.configuration.shouldLogOutputCommands ())
-            return;
-
-        final StringBuilder sb = new StringBuilder ();
-        for (final IOpenSoundControlMessage message: messages)
-        {
-            if (sb.length () > 0)
-                sb.append ('\n');
-
-            final String address = message.getAddress ();
-            sb.append ("Sending: ").append (address).append (" [ ");
-            final Object [] values = message.getValues ();
-            for (int i = 0; i < values.length; i++)
-            {
-                if (i > 0)
-                    sb.append (", ");
-                sb.append (values[i]);
-            }
-            sb.append (" ]");
-        }
-        this.model.getHost ().println (sb.toString ());
     }
 }
