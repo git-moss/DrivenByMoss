@@ -9,20 +9,7 @@ package de.mossgrabers.framework.configuration;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IStringSetting
+public interface IStringSetting extends ISetting<String>
 {
-    /**
-     * Set the string value.
-     *
-     * @param value The new value
-     */
-    void set (String value);
-
-
-    /**
-     * Add an observer for a change of the value.
-     *
-     * @param observer The observer
-     */
-    void addValueObserver (IValueObserver<String> observer);
+    // Intentionally empty
 }

@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.IValueObserver;
 
 import com.bitwig.extension.controller.api.SettableRangedValue;
+import com.bitwig.extension.controller.api.Setting;
 
 
 /**
@@ -15,7 +16,7 @@ import com.bitwig.extension.controller.api.SettableRangedValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class IntegerSettingImpl implements IIntegerSetting
+public class IntegerSettingImpl extends AbstractSetting<Integer> implements IIntegerSetting
 {
     private SettableRangedValue rangedValue;
     private int                 range;
@@ -29,6 +30,8 @@ public class IntegerSettingImpl implements IIntegerSetting
      */
     public IntegerSettingImpl (final SettableRangedValue rangedValue, final int range)
     {
+        super ((Setting) rangedValue);
+
         this.rangedValue = rangedValue;
         this.range = range;
     }
@@ -39,6 +42,14 @@ public class IntegerSettingImpl implements IIntegerSetting
     public void set (final int value)
     {
         this.rangedValue.setRaw (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void set (final Integer value)
+    {
+        this.set (value.intValue ());
     }
 
 

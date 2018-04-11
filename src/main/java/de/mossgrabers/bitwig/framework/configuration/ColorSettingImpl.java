@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.IValueObserver;
 import de.mossgrabers.framework.controller.color.ColorEx;
 
 import com.bitwig.extension.controller.api.SettableColorValue;
+import com.bitwig.extension.controller.api.Setting;
 
 
 /**
@@ -16,7 +17,7 @@ import com.bitwig.extension.controller.api.SettableColorValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ColorSettingImpl implements IColorSetting
+public class ColorSettingImpl extends AbstractSetting<double []> implements IColorSetting
 {
     private SettableColorValue colorValue;
 
@@ -28,6 +29,8 @@ public class ColorSettingImpl implements IColorSetting
      */
     public ColorSettingImpl (final SettableColorValue colorValue)
     {
+        super ((Setting) colorValue);
+
         this.colorValue = colorValue;
     }
 
@@ -37,6 +40,14 @@ public class ColorSettingImpl implements IColorSetting
     public void set (final double red, final double green, final double blue)
     {
         this.colorValue.set ((float) red, (float) green, (float) blue);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void set (double [] value)
+    {
+        this.set (value[0], value[1], value[2]);
     }
 
 

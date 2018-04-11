@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.IDoubleSetting;
 import de.mossgrabers.framework.configuration.IValueObserver;
 
 import com.bitwig.extension.controller.api.SettableRangedValue;
+import com.bitwig.extension.controller.api.Setting;
 
 
 /**
@@ -15,7 +16,7 @@ import com.bitwig.extension.controller.api.SettableRangedValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DoubleSettingImpl implements IDoubleSetting
+public class DoubleSettingImpl extends AbstractSetting<Double> implements IDoubleSetting
 {
     private SettableRangedValue rangedValue;
 
@@ -27,6 +28,8 @@ public class DoubleSettingImpl implements IDoubleSetting
      */
     public DoubleSettingImpl (final SettableRangedValue rangedValue)
     {
+        super ((Setting) rangedValue);
+
         this.rangedValue = rangedValue;
     }
 
@@ -36,6 +39,14 @@ public class DoubleSettingImpl implements IDoubleSetting
     public void set (final double value)
     {
         this.rangedValue.setRaw (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void set (final Double value)
+    {
+        this.set (value.doubleValue ());
     }
 
 

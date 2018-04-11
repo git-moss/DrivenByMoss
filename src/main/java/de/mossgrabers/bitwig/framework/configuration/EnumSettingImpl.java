@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.IValueObserver;
 
 import com.bitwig.extension.controller.api.SettableEnumValue;
+import com.bitwig.extension.controller.api.Setting;
 
 
 /**
@@ -15,7 +16,7 @@ import com.bitwig.extension.controller.api.SettableEnumValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class EnumSettingImpl implements IEnumSetting
+public class EnumSettingImpl extends AbstractSetting<String> implements IEnumSetting
 {
     private SettableEnumValue enumValue;
 
@@ -27,6 +28,8 @@ public class EnumSettingImpl implements IEnumSetting
      */
     public EnumSettingImpl (final SettableEnumValue enumValue)
     {
+        super ((Setting) enumValue);
+
         this.enumValue = enumValue;
     }
 
