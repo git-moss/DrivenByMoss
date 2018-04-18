@@ -24,7 +24,11 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -34,17 +38,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class DeviceLayerMode extends BaseMode
 {
-    protected String [] menu =
-    {
-        "Volume",
-        "Pan",
-        "",
-        "Sends 1-4",
-        "Send 1",
-        "Send 2",
-        "Send 3",
-        "Up"
-    };
+    protected final List<Pair<String, Boolean>> menu = new ArrayList<> ();
 
 
     /**
@@ -57,6 +51,9 @@ public class DeviceLayerMode extends BaseMode
     {
         super (surface, model);
         this.isTemporary = false;
+
+        for (int i = 0; i < 8; i++)
+            this.menu.add (new Pair<> (" ", Boolean.FALSE));
     }
 
 
@@ -260,43 +257,50 @@ public class DeviceLayerMode extends BaseMode
                 break;
 
             case 3:
-                if (!this.model.isEffectTrackBankActive ())
+                if (this.model.isEffectTrackBankActive ())
+                    return;
+                // Check if there are more than 4 FX channels
+                if (!config.isSendsAreToggled ())
                 {
-                    // Check if there are more than 4 FX channels
-                    if (!config.isSendsAreToggled ())
-                    {
-                        fxTrackBank = this.model.getEffectTrackBank ();
-                        if (!fxTrackBank.getTrack (4).doesExist ())
-                            return;
-                    }
-                    config.setSendsAreToggled (!config.isSendsAreToggled ());
-
-                    if (!modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER))
-                        modeManager.setActiveMode (Integer.valueOf (Modes.MODE_DEVICE_LAYER_SEND1.intValue () + (config.isSendsAreToggled () ? 4 : 0)));
+                    fxTrackBank = this.model.getEffectTrackBank ();
+                    if (!fxTrackBank.getTrack (4).doesExist ())
+                        return;
                 }
+                config.setSendsAreToggled (!config.isSendsAreToggled ());
+
+                if (!modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER))
+                    modeManager.setActiveMode (Integer.valueOf (Modes.MODE_DEVICE_LAYER_SEND1.intValue () + (config.isSendsAreToggled () ? 4 : 0)));
                 break;
 
             case 7:
-                this.moveUp ();
+                if (this.surface.isShiftPressed ())
+                    this.handleSendEffect (config.isSendsAreToggled () ? 7 : 3);
+                else
+                    this.moveUp ();
                 break;
 
             default:
-                if (!this.model.isEffectTrackBankActive ())
-                {
-                    final int sendOffset = config.isSendsAreToggled () ? 0 : 4;
-                    final int sendIndex = index - sendOffset;
-                    fxTrackBank = this.model.getEffectTrackBank ();
-                    if (fxTrackBank.getTrack (sendIndex).doesExist ())
-                    {
-                        final Integer si = Integer.valueOf (Modes.MODE_DEVICE_LAYER_SEND1.intValue () + sendIndex);
-                        if (modeManager.isActiveMode (si))
-                            modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
-                        else
-                            modeManager.setActiveMode (si);
-                    }
-                }
+                this.handleSendEffect (index - (config.isSendsAreToggled () ? 0 : 4));
                 break;
         }
+    }
+
+
+    /**
+     * Handle the selection of a send effect.
+     *
+     * @param sendIndex The index of the send
+     */
+    protected void handleSendEffect (final int sendIndex)
+    {
+        if (this.model.isEffectTrackBankActive ())
+            return;
+        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
+        if (!fxTrackBank.getTrack (sendIndex).doesExist ())
+            return;
+        final Integer si = Integer.valueOf (Modes.MODE_DEVICE_LAYER_SEND1.intValue () + sendIndex);
+        final ModeManager modeManager = this.surface.getModeManager ();
+        modeManager.setActiveMode (modeManager.isActiveMode (si) ? Modes.MODE_DEVICE_LAYER : si);
     }
 
 
@@ -387,7 +391,6 @@ public class DeviceLayerMode extends BaseMode
             return;
         }
 
-        this.updateMenu ();
         this.updateDisplayElements (message, cd, cd.getSelectedLayerOrDrumPad ());
         display.send (message);
     }
@@ -410,30 +413,17 @@ public class DeviceLayerMode extends BaseMode
         if (sendsIndex == 8)
             sendsIndex = 6;
 
+        this.updateMenuItems (5 + sendsIndex % 4);
+
         final PushConfiguration config = this.surface.getConfiguration ();
 
         for (int i = 0; i < 8; i++)
         {
             final IChannel layer = cd.getLayerOrDrumPad (offset + i);
 
-            // The menu
-            String topMenu;
-            boolean topMenuSelected;
-            if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
-            {
-                topMenu = layer.doesExist () ? "Mute" : "";
-                topMenuSelected = layer.isMute ();
-            }
-            else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
-            {
-                topMenu = layer.doesExist () ? "Solo" : "";
-                topMenuSelected = layer.isSolo ();
-            }
-            else
-            {
-                topMenu = this.menu[i];
-                topMenuSelected = i == 7;
-            }
+            final Pair<String, Boolean> pair = this.menu.get (i);
+            final String topMenu = pair.getKey ();
+            final boolean isTopMenuOn = pair.getValue ().booleanValue ();
 
             // Channel info
             final String bottomMenu = layer.doesExist () ? layer.getName (12) : "";
@@ -443,7 +433,7 @@ public class DeviceLayerMode extends BaseMode
             if (layer.isSelected ())
             {
                 final IValueChanger valueChanger = this.model.getValueChanger ();
-                message.addChannelElement (topMenu, topMenuSelected, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), this.isKnobTouched[0] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), this.isKnobTouched[1] ? layer.getPanStr (8) : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
+                message.addChannelElement (topMenu, isTopMenuOn, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), this.isKnobTouched[0] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), this.isKnobTouched[1] ? layer.getPanStr (8) : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
             }
             else if (sendsIndex == i && l != null)
             {
@@ -465,10 +455,10 @@ public class DeviceLayerMode extends BaseMode
                     modulatedValue[j] = doesExist ? send.getModulatedValue () : 0;
                     selected[j] = true;
                 }
-                message.addSendsElement (topMenu, topMenuSelected, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, true);
+                message.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, true);
             }
             else
-                message.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn);
+                message.addChannelSelectorElement (topMenu, isTopMenuOn, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn);
         }
     }
 
@@ -476,7 +466,7 @@ public class DeviceLayerMode extends BaseMode
     // Called from sub-classes
     protected void updateChannelDisplay (final DisplayMessage message, final ICursorDevice cd, final int selectedMenu, final boolean isVolume, final boolean isPan)
     {
-        this.updateMenu ();
+        this.updateMenuItems (selectedMenu);
 
         final PushConfiguration config = this.surface.getConfiguration ();
 
@@ -487,38 +477,79 @@ public class DeviceLayerMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final IChannel layer = cd.getLayerOrDrumPad (offset + i);
-
-            // The menu item
-            String topMenu;
-            boolean isTopMenuOn;
-            if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
-            {
-                topMenu = layer.doesExist () ? "Mute" : "";
-                isTopMenuOn = layer.isMute ();
-            }
-            else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
-            {
-                topMenu = layer.doesExist () ? "Solo" : "";
-                isTopMenuOn = layer.isSolo ();
-            }
-            else
-            {
-                topMenu = this.menu[i];
-                isTopMenuOn = i == 7 || i == selectedMenu - 1;
-            }
+            final Pair<String, Boolean> pair = this.menu.get (i);
+            final String topMenu = pair.getKey ();
+            final boolean isTopMenuOn = pair.getValue ().booleanValue ();
             message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), isPan && this.isKnobTouched[i] ? layer.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? layer.getVu () : 0), layer.isMute (), layer.isSolo (), false, 0);
         }
     }
 
 
-    protected void updateMenu ()
+    protected void updateMenuItems (final int selectedMenu)
     {
-        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
-        final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
-        for (int i = 0; i < 3; i++)
-            this.menu[4 + i] = fxTrackBank.getTrack (sendOffset + i).getName ();
-        this.menu[3] = config.isSendsAreToggled () ? "Sends 5-8" : "Sends 1-4";
+        if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
+            this.updateMuteMenu ();
+        else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
+            this.updateSoloMenu ();
+        else
+            this.updateLayerMenu (selectedMenu);
+    }
+
+
+    protected void updateSoloMenu ()
+    {
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        for (int i = 0; i < 8; i++)
+        {
+            final IChannel layer = cd.getLayerOrDrumPad (i);
+            this.menu.get (i).set (layer.doesExist () ? "Solo" : "", Boolean.valueOf (layer.isSolo ()));
+        }
+    }
+
+
+    protected void updateMuteMenu ()
+    {
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        for (int i = 0; i < 8; i++)
+        {
+            final IChannel layer = cd.getLayerOrDrumPad (i);
+            this.menu.get (i).set (layer.doesExist () ? "Mute" : "", Boolean.valueOf (layer.isMute ()));
+        }
+    }
+
+
+    protected void updateLayerMenu (final int selectedMenu)
+    {
+        final PushConfiguration config = this.surface.getConfiguration ();
+
+        this.menu.get (0).set ("Volume", Boolean.valueOf (selectedMenu - 1 == 0));
+        this.menu.get (1).set ("Pan", Boolean.valueOf (selectedMenu - 1 == 1));
+        this.menu.get (2).set (" ", Boolean.FALSE);
+
+        if (this.model.isEffectTrackBankActive ())
+        {
+            // No sends for FX tracks
+            for (int i = 3; i < 7; i++)
+                this.menu.get (i).set (" ", Boolean.FALSE);
+            return;
+        }
+
+        final boolean sendsAreToggled = config.isSendsAreToggled ();
+
+        this.menu.get (3).set (sendsAreToggled ? "Sends 5-8" : "Sends 1-4", Boolean.valueOf (sendsAreToggled));
+
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final int sendOffset = sendsAreToggled ? 4 : 0;
+        final boolean isShiftPressed = this.surface.isShiftPressed ();
+        for (int i = 0; i < (isShiftPressed ? 4 : 3); i++)
+        {
+            final String sendName = tb.getEditSendName (sendOffset + i);
+            this.menu.get (4 + i).set (sendName.isEmpty () ? " " : sendName, Boolean.valueOf (4 + i == selectedMenu - 1));
+        }
+
+        if (!isShiftPressed)
+            this.menu.get (7).set ("Up", Boolean.TRUE);
     }
 
 

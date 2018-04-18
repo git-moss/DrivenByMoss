@@ -181,7 +181,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, this.isPush2 ? 8 : 6, this.isPush2 ? 48 : 16, this.isPush2 ? 48 : 16, false, -1, -1, -1, -1);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, this.isPush2 ? 48 : 16, this.isPush2 ? 48 : 16, false, -1, -1, -1, -1);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
@@ -241,6 +241,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.MODE_SEND4, modeSend);
         modeManager.registerMode (Modes.MODE_SEND5, modeSend);
         modeManager.registerMode (Modes.MODE_SEND6, modeSend);
+        modeManager.registerMode (Modes.MODE_SEND7, modeSend);
+        modeManager.registerMode (Modes.MODE_SEND8, modeSend);
 
         modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (surface, this.model, false));
         modeManager.registerMode (Modes.MODE_MASTER_TEMP, new MasterMode (surface, this.model, true));
@@ -276,13 +278,11 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND4, modeLayerSend);
         modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND5, modeLayerSend);
         modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND6, modeLayerSend);
+        modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND7, modeLayerSend);
+        modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND8, modeLayerSend);
 
         if (this.isPush2)
         {
-            modeManager.registerMode (Modes.MODE_SEND7, modeSend);
-            modeManager.registerMode (Modes.MODE_SEND8, modeSend);
-            modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND7, modeLayerSend);
-            modeManager.registerMode (Modes.MODE_DEVICE_LAYER_SEND8, modeLayerSend);
             modeManager.registerMode (Modes.MODE_SETUP, new SetupMode (surface, this.model));
             modeManager.registerMode (Modes.MODE_INFO, new InfoMode (surface, this.model));
         }
@@ -290,9 +290,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             modeManager.registerMode (Modes.MODE_CONFIGURATION, new ConfigurationMode (surface, this.model));
 
         if (this.host.hasClips ())
-        {
             modeManager.registerMode (Modes.MODE_SESSION_VIEW_SELECT, new SessionViewSelectMode (surface, this.model));
-        }
     }
 
 

@@ -114,7 +114,7 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         // 1.x
         final int trackCount = tb.getTrackCount ();
         final List<Object> params = new ArrayList<> ();
-        Collections.addAll (params, Integer.valueOf (trackCount), Integer.valueOf (sceneBank.getSceneCount ()), Integer.valueOf (tbe == null ? 0 : tbe.getTrackCount ()));
+        Collections.addAll (params, Integer.valueOf (trackCount), Integer.valueOf (sceneBank == null ? 0 : sceneBank.getSceneCount ()), Integer.valueOf (tbe == null ? 0 : tbe.getTrackCount ()));
         this.sendOSC (this.daw + "size", params, dump);
 
         // 1.x

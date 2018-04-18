@@ -716,11 +716,7 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final IEnumSetting behaviourOnStopSetting = settingsUI.getEnumSetting ("Behaviour on Stop", CATEGORY_TRANSPORT, BEHAVIOUR_ON_STOP_VALUES, BEHAVIOUR_ON_STOP_VALUES[0]);
         behaviourOnStopSetting.addValueObserver (value -> {
-            for (int i = 0; i < BEHAVIOUR_ON_STOP_VALUES.length; i++)
-            {
-                if (BEHAVIOUR_ON_STOP_VALUES[i].equals (value))
-                    this.behaviourOnStop = BehaviourOnStop.values ()[i];
-            }
+            this.behaviourOnStop = BehaviourOnStop.values ()[lookupIndex (BEHAVIOUR_ON_STOP_VALUES, value)];
             this.notifyObservers (BEHAVIOUR_ON_STOP);
         });
     }
@@ -810,11 +806,7 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final IEnumSetting actionForRecArmedPadSetting = settingsUI.getEnumSetting ("Action for pressing rec armed empty clip", CATEGORY_SESSION, ACTIONS_REC_ARMED_PADS, ACTIONS_REC_ARMED_PADS[0]);
         actionForRecArmedPadSetting.addValueObserver (value -> {
-            for (int i = 0; i < ACTIONS_REC_ARMED_PADS.length; i++)
-            {
-                if (ACTIONS_REC_ARMED_PADS[i].equals (value))
-                    this.actionForRecArmedPad = i;
-            }
+            this.actionForRecArmedPad = lookupIndex (ACTIONS_REC_ARMED_PADS, value);
             this.notifyObservers (AbstractConfiguration.ACTION_FOR_REC_ARMED_PAD);
         });
     }
@@ -829,14 +821,7 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final IEnumSetting convertAftertouchSetting = settingsUI.getEnumSetting ("Convert Poly Aftertouch to", CATEGORY_PADS, AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES, AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES[1]);
         convertAftertouchSetting.addValueObserver (value -> {
-            for (int i = 0; i < AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES.length; i++)
-            {
-                if (AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES[i].equals (value))
-                {
-                    this.convertAftertouch = i - 3;
-                    break;
-                }
-            }
+            this.convertAftertouch = lookupIndex (AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES, value) - 3;
             this.notifyObservers (AbstractConfiguration.CONVERT_AFTERTOUCH);
         });
     }
@@ -896,11 +881,7 @@ public abstract class AbstractConfiguration implements Configuration
     {
         this.newClipLengthSetting = settingsUI.getEnumSetting ("New Clip Length", CATEGORY_WORKFLOW, NEW_CLIP_LENGTH_VALUES, NEW_CLIP_LENGTH_VALUES[2]);
         this.newClipLengthSetting.addValueObserver (value -> {
-            for (int i = 0; i < NEW_CLIP_LENGTH_VALUES.length; i++)
-            {
-                if (NEW_CLIP_LENGTH_VALUES[i].equals (value))
-                    this.newClipLength = i;
-            }
+            this.newClipLength = lookupIndex (NEW_CLIP_LENGTH_VALUES, value);
             this.notifyObservers (NEW_CLIP_LENGTH);
         });
     }
@@ -964,11 +945,7 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final IEnumSetting footswitch2Setting = settingsUI.getEnumSetting ("Footswitch 2", CATEGORY_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
         footswitch2Setting.addValueObserver (value -> {
-            for (int i = 0; i < FOOTSWITCH_VALUES.length; i++)
-            {
-                if (FOOTSWITCH_VALUES[i].equals (value))
-                    this.footswitch2 = i;
-            }
+            this.footswitch2 = lookupIndex (FOOTSWITCH_VALUES, value);
             this.notifyObservers (FOOTSWITCH_2);
         });
     }
@@ -1003,5 +980,23 @@ public abstract class AbstractConfiguration implements Configuration
         final Set<SettingObserver> set = this.observers.get (settingID);
         if (set != null)
             set.forEach (SettingObserver::call);
+    }
+
+
+    /**
+     * Lookup the index of the value in the given options array.
+     *
+     * @param options The options in which to search for the value
+     * @param value The value to search for
+     * @return The index or 0 if not found
+     */
+    protected static int lookupIndex (final String [] options, final String value)
+    {
+        for (int i = 0; i < options.length; i++)
+        {
+            if (options[i].equals (value))
+                return i;
+        }
+        return 0;
     }
 }

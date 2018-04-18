@@ -146,6 +146,7 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
      * @param value The value(s) of the OSC message
      * @param dump True to dump (ignore cache)
      */
+    @SuppressWarnings("unchecked")
     protected void sendOSC (final String cacheAddress, final String address, final Object testValue, final Object value, final boolean dump)
     {
         if (!dump && compareValues (this.oldValues.get (cacheAddress), testValue))
@@ -153,7 +154,8 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
         this.oldValues.put (cacheAddress, testValue);
         synchronized (this.messages)
         {
-            this.messages.add (this.host.createOSCMessage (address, Collections.singletonList (convertBooleanToInt (value))));
+            final Object converted = convertBooleanToInt (value);
+            this.messages.add (this.host.createOSCMessage (address, converted instanceof List ? (List<Object>) converted : Collections.singletonList (converted)));
         }
     }
 
@@ -244,7 +246,8 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
             }
             sb.append (" ]");
         }
-        this.model.getHost ().println (sb.toString ());
+        if (sb.length () > 0)
+            this.model.getHost ().println (sb.toString ());
     }
 
 

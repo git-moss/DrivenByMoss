@@ -28,7 +28,6 @@ import de.mossgrabers.controller.mcu.command.trigger.ZoomCommand;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mcu.controller.MCUDisplay;
 import de.mossgrabers.controller.mcu.controller.MCUSegmentDisplay;
-import de.mossgrabers.controller.mcu.controller.MCUValueChanger;
 import de.mossgrabers.controller.mcu.mode.Modes;
 import de.mossgrabers.controller.mcu.mode.device.DeviceBrowserMode;
 import de.mossgrabers.controller.mcu.mode.device.DeviceParamsMode;
@@ -68,6 +67,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ISetupFactory;
+import de.mossgrabers.framework.controller.Relative2ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IChannelBank;
@@ -173,7 +173,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         Arrays.fill (this.masterVuValues, -1);
 
         this.colorManager = new ColorManager ();
-        this.valueChanger = new MCUValueChanger (16241 + 1, 100, 10);
+        this.valueChanger = new Relative2ValueChanger (16241 + 1, 100, 10);
         this.configuration = new MCUConfiguration (this.valueChanger);
     }
 

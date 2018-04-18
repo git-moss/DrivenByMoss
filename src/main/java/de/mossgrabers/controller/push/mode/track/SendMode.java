@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
@@ -14,9 +13,9 @@ import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -102,48 +101,22 @@ public class SendMode extends AbstractTrackMode
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings("null")
     @Override
     public void updateDisplay2 ()
     {
-        this.updateTrackMenu ();
-
         final int sendIndex = this.getCurrentSendIndex ();
+        this.updateTrackMenu (5 + sendIndex % 4);
+
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
-        final PushConfiguration config = this.surface.getConfiguration ();
         final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
         final DisplayMessage message = display.createMessage ();
+        final IValueChanger valueChanger = this.model.getValueChanger ();
 
-        final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
+        final int sendOffset = this.surface.getConfiguration ().isSendsAreToggled () ? 4 : 0;
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getTrack (i);
-
-            // The menu item
-            String topMenu;
-            boolean topMenuSelected;
-            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
-            {
-                topMenu = t.doesExist () ? "Stop Clip" : "";
-                topMenuSelected = t.isPlaying ();
-            }
-            else if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
-            {
-                topMenu = t.doesExist () ? "Mute" : "";
-                topMenuSelected = t.isMute ();
-            }
-            else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
-            {
-                topMenu = t.doesExist () ? "Solo" : "";
-                topMenuSelected = t.isSolo ();
-            }
-            else
-            {
-                topMenu = this.menu[i];
-                topMenuSelected = i > 3 && i - 4 + sendOffset == sendIndex || i == 7 && tb instanceof ITrackBank && ((ITrackBank) tb).hasParent ();
-            }
-
-            final IValueChanger valueChanger = this.model.getValueChanger ();
             final String [] sendName = new String [4];
             final String [] valueStr = new String [4];
             final int [] value = new int [4];
@@ -153,14 +126,15 @@ public class SendMode extends AbstractTrackMode
             {
                 final int sendPos = sendOffset + j;
                 final ISend send = t.getSend (sendPos);
-                sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
-                valueStr[j] = send != null && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue (8) : "";
-                value[j] = valueChanger.toDisplayValue (send != null ? send.getValue () : -1);
-                modulatedValue[j] = valueChanger.toDisplayValue (send != null ? send.getModulatedValue () : -1);
+                final boolean exists = send != null && send.doesExist ();
+                sendName[j] = exists ? send.getName () : " ";
+                valueStr[j] = exists && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue (8) : "";
+                value[j] = valueChanger.toDisplayValue (exists ? send.getValue () : -1);
+                modulatedValue[j] = valueChanger.toDisplayValue (exists ? send.getModulatedValue () : -1);
                 selected[j] = sendIndex == sendPos;
             }
-
-            message.addSendsElement (topMenu, topMenuSelected, t.doesExist () ? t.getName () : "", t.getType (), t.getColor (), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
+            final Pair<String, Boolean> pair = this.menu.get (i);
+            message.addSendsElement (pair.getKey (), pair.getValue ().booleanValue (), t.doesExist () ? t.getName () : "", t.getType (), t.getColor (), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
         }
 
         display.send (message);

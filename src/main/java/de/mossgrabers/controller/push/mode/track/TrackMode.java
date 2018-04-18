@@ -13,9 +13,9 @@ import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -319,7 +319,7 @@ public class TrackMode extends AbstractTrackMode
         if (sendsIndex == 8)
             sendsIndex = 6;
 
-        this.updateTrackMenu ();
+        this.updateMenuItems (0);
 
         final PushConfiguration config = this.surface.getConfiguration ();
         final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
@@ -330,28 +330,9 @@ public class TrackMode extends AbstractTrackMode
             final ITrack t = tb.getTrack (i);
 
             // The menu item
-            String topMenu;
-            boolean topMenuSelected;
-            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP) && this.model.getHost ().hasClips ())
-            {
-                topMenu = t.doesExist () ? "Stop Clip" : "";
-                topMenuSelected = t.isPlaying ();
-            }
-            else if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
-            {
-                topMenu = t.doesExist () ? "Mute" : "";
-                topMenuSelected = t.isMute ();
-            }
-            else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
-            {
-                topMenu = t.doesExist () ? "Solo" : "";
-                topMenuSelected = t.isSolo ();
-            }
-            else
-            {
-                topMenu = this.menu[i];
-                topMenuSelected = i == 7 && tb instanceof ITrackBank && ((ITrackBank) tb).hasParent ();
-            }
+            final Pair<String, Boolean> pair = this.menu.get (i);
+            final String topMenu = pair.getKey ();
+            final boolean topMenuSelected = pair.getValue ().booleanValue ();
 
             // Channel info
             final String bottomMenu = t.doesExist () ? t.getName () : "";

@@ -57,11 +57,11 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
             {
                 mode = Integer.valueOf (currentMode.intValue () + 1);
                 // Wrap
-                if (mode.intValue () < Modes.MODE_DEVICE_LAYER_PAN.intValue () || mode.intValue () > Modes.MODE_DEVICE_LAYER_SEND6.intValue ())
+                if (mode.intValue () < Modes.MODE_DEVICE_LAYER_PAN.intValue () || mode.intValue () > Modes.MODE_DEVICE_LAYER_SEND8.intValue ())
                     mode = Modes.MODE_DEVICE_LAYER_PAN;
                 // Check if Send channel exists
                 final ITrackBank tb = this.model.getTrackBank ();
-                if (mode.intValue () >= Modes.MODE_DEVICE_LAYER_SEND1.intValue () && mode.intValue () <= Modes.MODE_DEVICE_LAYER_SEND6.intValue () && tb.canEditSend (mode.intValue () - Modes.MODE_DEVICE_LAYER_SEND1.intValue ()))
+                if (mode.intValue () < Modes.MODE_DEVICE_LAYER_SEND1.intValue () || mode.intValue () > Modes.MODE_DEVICE_LAYER_SEND8.intValue () || tb.canEditSend (mode.intValue () - Modes.MODE_DEVICE_LAYER_SEND1.intValue ()))
                     mode = Modes.MODE_DEVICE_LAYER_PAN;
             }
             modeManager.setActiveMode (mode);
@@ -77,11 +77,11 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
         {
             mode = Integer.valueOf (currentMode.intValue () + 1);
             // Wrap
-            if (mode.intValue () < Modes.MODE_PAN.intValue () || mode.intValue () > Modes.MODE_SEND6.intValue ())
+            if (mode.intValue () < Modes.MODE_PAN.intValue () || mode.intValue () > Modes.MODE_SEND8.intValue ())
                 mode = Modes.MODE_PAN;
             // Check if Send channel exists
             final ITrackBank tb = this.model.getTrackBank ();
-            if (mode.intValue () >= Modes.MODE_SEND1.intValue () && mode.intValue () <= Modes.MODE_SEND6.intValue () && tb.canEditSend (mode.intValue () - Modes.MODE_SEND1.intValue ()))
+            if (mode.intValue () < Modes.MODE_SEND1.intValue () || mode.intValue () > Modes.MODE_SEND8.intValue () || !tb.canEditSend (mode.intValue () - Modes.MODE_SEND1.intValue ()))
                 mode = Modes.MODE_PAN;
         }
         modeManager.setActiveMode (mode);

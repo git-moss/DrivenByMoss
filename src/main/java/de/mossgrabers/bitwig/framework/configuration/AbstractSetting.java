@@ -41,4 +41,15 @@ public abstract class AbstractSetting<T> implements ISetting<T>
         else
             this.setting.disable ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setVisible (final boolean visible)
+    {
+        if (visible)
+            this.setting.show ();
+        else
+            this.setting.hide ();
+    }
 }

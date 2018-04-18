@@ -20,7 +20,11 @@ import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -30,17 +34,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public abstract class AbstractTrackMode extends BaseMode
 {
-    protected final String [] menu =
-    {
-        "Volume",
-        "Pan",
-        "Crossfader",
-        "Sends 1-4",
-        "Send 1",
-        "Send 2",
-        "Send 3",
-        "Up"
-    };
+    protected final List<Pair<String, Boolean>> menu = new ArrayList<> ();
 
 
     /**
@@ -53,6 +47,9 @@ public abstract class AbstractTrackMode extends BaseMode
     {
         super (surface, model);
         this.isTemporary = false;
+
+        for (int i = 0; i < 8; i++)
+            this.menu.add (new Pair<> (" ", Boolean.FALSE));
     }
 
 
@@ -176,20 +173,36 @@ public abstract class AbstractTrackMode extends BaseMode
 
             case 7:
                 if (!this.model.isEffectTrackBankActive ())
-                    this.model.getTrackBank ().selectParent ();
+                {
+                    if (this.surface.isShiftPressed ())
+                        this.handleSendEffect (config.isSendsAreToggled () ? 7 : 3);
+                    else
+                        this.model.getTrackBank ().selectParent ();
+                }
                 break;
 
             default:
-                final int sendIndex = index - (config.isSendsAreToggled () ? 0 : 4);
-                if (tb.canEditSend (sendIndex))
-                {
-                    final Integer si = Integer.valueOf (Modes.MODE_SEND1.intValue () + sendIndex);
-                    modeManager.setActiveMode (modeManager.isActiveMode (si) ? Modes.MODE_TRACK : si);
-                }
+                this.handleSendEffect (index - (config.isSendsAreToggled () ? 0 : 4));
                 break;
         }
 
         config.setDebugMode (modeManager.getActiveModeId ());
+    }
+
+
+    /**
+     * Handle the selection of a send effect.
+     *
+     * @param sendIndex The index of the send
+     */
+    protected void handleSendEffect (final int sendIndex)
+    {
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        if (tb == null || !tb.canEditSend (sendIndex))
+            return;
+        final Integer si = Integer.valueOf (Modes.MODE_SEND1.intValue () + sendIndex);
+        final ModeManager modeManager = this.surface.getModeManager ();
+        modeManager.setActiveMode (modeManager.isActiveMode (si) ? Modes.MODE_TRACK : si);
     }
 
 
@@ -323,42 +336,20 @@ public abstract class AbstractTrackMode extends BaseMode
     // Called from sub-classes
     protected void updateChannelDisplay (final int selectedMenu, final boolean isVolume, final boolean isPan)
     {
-        this.updateTrackMenu ();
+        this.updateMenuItems (selectedMenu);
 
-        final PushConfiguration config = this.surface.getConfiguration ();
         final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
         final DisplayMessage message = display.createMessage ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final PushConfiguration config = this.surface.getConfiguration ();
         final boolean displayCrossfader = config.isDisplayCrossfader ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getTrack (i);
-
-            // The menu item
-            String topMenu;
-            boolean isTopMenuOn;
-            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP) && this.model.getHost ().hasClips ())
-            {
-                topMenu = t.doesExist () ? "Stop Clip" : "";
-                isTopMenuOn = t.isPlaying ();
-            }
-            else if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
-            {
-                topMenu = t.doesExist () ? "Mute" : "";
-                isTopMenuOn = t.isMute ();
-            }
-            else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
-            {
-                topMenu = t.doesExist () ? "Solo" : "";
-                isTopMenuOn = t.isSolo ();
-            }
-            else
-            {
-                topMenu = this.menu[i];
-                isTopMenuOn = i == selectedMenu - 1 || i == 7 && tb instanceof ITrackBank && ((ITrackBank) tb).hasParent ();
-            }
-
+            final Pair<String, Boolean> pair = this.menu.get (i);
+            final String topMenu = pair.getKey ();
+            final boolean isTopMenuOn = pair.getValue ().booleanValue ();
             final int crossfadeMode = displayCrossfader ? t.getCrossfadeModeAsNumber () : -1;
             message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName (12) : "", t.getType (), t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecArm (), crossfadeMode);
         }
@@ -367,28 +358,89 @@ public abstract class AbstractTrackMode extends BaseMode
     }
 
 
-    protected void updateTrackMenu ()
+    protected void updateMenuItems (final int selectedMenu)
+    {
+        if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP) && this.model.getHost ().hasClips ())
+        {
+            this.updateStopMenu ();
+            return;
+        }
+        final PushConfiguration config = this.surface.getConfiguration ();
+        if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
+            this.updateMuteMenu ();
+        else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
+            this.updateSoloMenu ();
+        else
+            this.updateTrackMenu (selectedMenu);
+    }
+
+
+    protected void updateStopMenu ()
+    {
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        for (int i = 0; i < 8; i++)
+        {
+            final ITrack t = tb.getTrack (i);
+            this.menu.get (i).set (t.doesExist () ? "Stop Clip" : "", Boolean.valueOf (t.isPlaying ()));
+        }
+    }
+
+
+    protected void updateMuteMenu ()
+    {
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        for (int i = 0; i < 8; i++)
+        {
+            final ITrack t = tb.getTrack (i);
+            this.menu.get (i).set (t.doesExist () ? "Mute" : "", Boolean.valueOf (t.isMute ()));
+        }
+    }
+
+
+    protected void updateSoloMenu ()
+    {
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        for (int i = 0; i < 8; i++)
+        {
+            final ITrack t = tb.getTrack (i);
+            this.menu.get (i).set (t.doesExist () ? "Solo" : "", Boolean.valueOf (t.isSolo ()));
+        }
+    }
+
+
+    protected void updateTrackMenu (final int selectedMenu)
     {
         final PushConfiguration config = this.surface.getConfiguration ();
-        final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
+
+        this.menu.get (0).set ("Volume", Boolean.valueOf (selectedMenu - 1 == 0));
+        this.menu.get (1).set ("Pan", Boolean.valueOf (selectedMenu - 1 == 1));
+        this.menu.get (2).set (config.isDisplayCrossfader () ? "Crossfader" : " ", Boolean.valueOf (selectedMenu - 1 == 2));
+
         if (this.model.isEffectTrackBankActive ())
         {
             // No sends for FX tracks
             for (int i = 3; i < 7; i++)
-                this.menu[i] = " ";
+                this.menu.get (i).set (" ", Boolean.FALSE);
             return;
         }
 
-        this.menu[2] = config.isDisplayCrossfader () ? "Crossfader" : " ";
+        final boolean sendsAreToggled = config.isSendsAreToggled ();
+
+        this.menu.get (3).set (sendsAreToggled ? "Sends 5-8" : "Sends 1-4", Boolean.valueOf (sendsAreToggled));
 
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        for (int i = 0; i < 3; i++)
+        final int sendOffset = sendsAreToggled ? 4 : 0;
+        final boolean isShiftPressed = this.surface.isShiftPressed ();
+        for (int i = 0; i < (isShiftPressed ? 4 : 3); i++)
         {
-            this.menu[4 + i] = tb.getEditSendName (sendOffset + i);
-            if (this.menu[4 + i].isEmpty ())
-                this.menu[4 + i] = " ";
+            final String sendName = tb.getEditSendName (sendOffset + i);
+            this.menu.get (4 + i).set (sendName.isEmpty () ? " " : sendName, Boolean.valueOf (4 + i == selectedMenu - 1));
         }
-        this.menu[3] = config.isSendsAreToggled () ? "Sends 5-8" : "Sends 1-4";
-        this.menu[7] = tb instanceof ITrackBank && ((ITrackBank) tb).hasParent () ? "Up" : " ";
+
+        if (isShiftPressed)
+            return;
+
+        final boolean isUpAvailable = tb instanceof ITrackBank && ((ITrackBank) tb).hasParent ();
+        this.menu.get (7).set (isUpAvailable ? "Up" : " ", Boolean.valueOf (isUpAvailable));
     }
 }

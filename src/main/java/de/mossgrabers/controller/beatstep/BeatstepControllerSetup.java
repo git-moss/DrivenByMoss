@@ -9,7 +9,6 @@ import de.mossgrabers.controller.beatstep.command.continuous.KnobRowViewCommand;
 import de.mossgrabers.controller.beatstep.command.trigger.StepCommand;
 import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.controller.beatstep.controller.BeatstepValueChanger;
 import de.mossgrabers.controller.beatstep.view.BrowserView;
 import de.mossgrabers.controller.beatstep.view.DeviceView;
 import de.mossgrabers.controller.beatstep.view.DrumView;
@@ -24,6 +23,7 @@ import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCom
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ISetupFactory;
+import de.mossgrabers.framework.controller.Relative3ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.IChannelBank;
@@ -131,7 +131,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         this.isPro = isPro;
         this.colorManager = new ColorManager ();
         BeatstepColors.addColors (this.colorManager);
-        this.valueChanger = new BeatstepValueChanger (128, 1, 0.5);
+        this.valueChanger = new Relative3ValueChanger (128, 1, 0.5);
         this.configuration = new BeatstepConfiguration (this.valueChanger, isPro);
     }
 

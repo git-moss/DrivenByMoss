@@ -296,13 +296,7 @@ public class MCUConfiguration extends AbstractConfiguration
         {
             final int pos = i;
             final IEnumSetting setting = settingsUI.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], "Assignable buttons", ASSIGNABLE_VALUES, ASSIGNABLE_VALUES[6]);
-            setting.addValueObserver (value -> {
-                for (int f = 0; f < ASSIGNABLE_VALUES.length; f++)
-                {
-                    if (ASSIGNABLE_VALUES[f].equals (value))
-                        this.assignableFunctions[pos] = f;
-                }
-            });
+            setting.addValueObserver (value -> this.assignableFunctions[pos] = lookupIndex (ASSIGNABLE_VALUES, value));
         }
     }
 
