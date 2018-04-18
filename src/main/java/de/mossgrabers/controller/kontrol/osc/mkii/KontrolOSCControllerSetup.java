@@ -9,6 +9,7 @@ import de.mossgrabers.controller.kontrol.osc.mkii.protocol.KontrolOSCWriter;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
+import de.mossgrabers.framework.controller.DummyControlSurface;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -78,12 +79,15 @@ public class KontrolOSCControllerSetup extends AbstractControllerSetup<IControlS
     {
         this.factory.createMidiAccess ().createInput ("Kontrol OSC Midi");
 
+        final DummyControlSurface<KontrolOSCConfiguration> surface = new DummyControlSurface<> (this.model.getHost (), this.colorManager, this.configuration);
+        this.surfaces.add (surface);
+
         // Send OSC messages
         final IOpenSoundControlServer oscServer = this.host.connectToOSCServer (this.configuration.getSendHost (), this.configuration.getSendPort ());
         this.writer = new KontrolOSCWriter (this.host, this.model, oscServer, IS_16, this.configuration);
 
         // Receive OSC messages
-        this.host.createOSCServer (new KontrolOSCParser (this.host, this.model, this.configuration, this.writer, IS_16), this.configuration.getReceivePort ());
+        this.host.createOSCServer (new KontrolOSCParser (this.host, surface, this.model, this.configuration, this.writer, IS_16), this.configuration.getReceivePort ());
     }
 
 

@@ -32,6 +32,15 @@ public class Pair<T1, T2>
 
 
     /**
+     * Constructor.
+     */
+    public Pair ()
+    {
+        // Intentionally empty
+    }
+
+
+    /**
      * Get the first value.
      *
      * @return The first value.
@@ -50,5 +59,40 @@ public class Pair<T1, T2>
     public T2 getValue ()
     {
         return this.value;
+    }
+
+
+    /**
+     * Set both the key and value.
+     *
+     * @param key The key
+     * @param value The value
+     */
+    public void set (final T1 key, final T2 value)
+    {
+        this.key = key;
+        this.value = value;
+    }
+
+
+    /**
+     * Set the key value.
+     *
+     * @param key The key
+     */
+    public void setKey (final T1 key)
+    {
+        this.key = key;
+    }
+
+
+    /**
+     * Set the value.
+     *
+     * @param value The value
+     */
+    public void setValue (final T2 value)
+    {
+        this.value = value;
     }
 }

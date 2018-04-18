@@ -4,15 +4,20 @@
 
 package de.mossgrabers.controller.kontrol.osc.mkii.protocol;
 
+import de.mossgrabers.controller.kontrol.osc.mkii.KontrolOSCConfiguration;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.controller.DummyControlSurface;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.osc.AbstractOpenSoundControlParser;
 import de.mossgrabers.framework.osc.IOpenSoundControlConfiguration;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -25,14 +30,16 @@ import java.util.LinkedList;
  */
 public class KontrolOSCParser extends AbstractOpenSoundControlParser
 {
-    private static final int [] DOUBLE_TRUE = new int []
+    private static final int []                          DOUBLE_TRUE = new int []
     {
         1,
         1
     };
 
-    private final String        daw;
-    private boolean             is16;
+    private final String                                 daw;
+    private boolean                                      is16;
+
+    private DummyControlSurface<KontrolOSCConfiguration> surface;
 
 
     /**
@@ -40,14 +47,16 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
      *
      * @param is16 If true use 1.6 protocol otherwise 1.5
      * @param host The host
+     * @param surface
      * @param writer The OSC writer
      * @param configuration The configuration
      * @param model The model
      */
-    public KontrolOSCParser (final IHost host, final IModel model, final IOpenSoundControlConfiguration configuration, final IOpenSoundControlWriter writer, final boolean is16)
+    public KontrolOSCParser (final IHost host, final DummyControlSurface<KontrolOSCConfiguration> surface, final IModel model, final IOpenSoundControlConfiguration configuration, final IOpenSoundControlWriter writer, final boolean is16)
     {
         super (host, model, null, configuration, writer);
 
+        this.surface = surface;
         this.is16 = is16;
         this.daw = is16 ? "dawctrl" : "live";
 
@@ -247,11 +256,12 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
 
             case "record": // 1.x
                 if (numValue > 0)
-                    this.transport.record ();
+                    this.handleShiftedRecordButton ();
                 return true;
 
             case "session_record": // 1.x
-                this.transport.setLauncherOverdub (numValue > 0);
+                if (numValue > 0)
+                    this.handleRecordButton ();
                 return true;
 
             case "automation": // 1.6
@@ -347,6 +357,50 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
     }
 
 
+    private void handleShiftedRecordButton ()
+    {
+        this.handleRecord (((KontrolOSCConfiguration) this.configuration).getShiftedRecordButtonFunction ());
+    }
+
+
+    private void handleRecordButton ()
+    {
+        this.handleRecord (((KontrolOSCConfiguration) this.configuration).getRecordButtonFunction ());
+    }
+
+
+    private void handleRecord (final int recordMode)
+    {
+        switch (recordMode)
+        {
+            case KontrolOSCConfiguration.RECORD_ARRANGER:
+                this.transport.record ();
+                break;
+            case KontrolOSCConfiguration.RECORD_CLIP:
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack track = tb.getSelectedTrack ();
+                if (track == null)
+                    return;
+                final ISlot selectedSlot = track.getSelectedSlot ();
+                if (selectedSlot != null)
+                    selectedSlot.record ();
+                break;
+            case KontrolOSCConfiguration.NEW_CLIP:
+                new NewCommand<> (this.model, this.surface).executeNormal (ButtonEvent.DOWN);
+                break;
+            case KontrolOSCConfiguration.TOGGLE_ARRANGER_OVERDUB:
+                this.transport.toggleOverdub ();
+                break;
+            case KontrolOSCConfiguration.TOGGLE_CLIP_OVERDUB:
+                this.transport.toggleLauncherOverdub ();
+                break;
+            default:
+                // Intentionally empty
+                break;
+        }
+    }
+
+
     private void parseTrackCommands (final String command, final Object [] values)
     {
         switch (command)
@@ -424,11 +478,15 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
                 if (tb != null)
                 {
                     final int sceneIndex = toIntValue (values);
-                    tb.getSelectedTrack ().getSlot (sceneIndex).select ();
-                    this.sendOSC ("scene", new int []
+                    final ITrack selectedTrack = tb.getSelectedTrack ();
+                    if (selectedTrack != null)
                     {
-                        sceneIndex
-                    });
+                        selectedTrack.getSlot (sceneIndex).select ();
+                        this.sendOSC ("scene", new int []
+                        {
+                            sceneIndex
+                        });
+                    }
                 }
                 break;
 
@@ -476,7 +534,7 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
 
     private static Number toNumValue (final int index, final Object [] objects)
     {
-        return index < objects.length ? toNumber (objects[index]) : Integer.valueOf (-1);
+        return objects != null && index < objects.length ? toNumber (objects[index]) : Integer.valueOf (-1);
     }
 
 

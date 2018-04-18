@@ -35,4 +35,12 @@ public interface ISetting<T>
      * @param enable True to enable
      */
     void setEnabled (final boolean enable);
+
+
+    /**
+     * Make the widget of the setting visible or hide it.
+     *
+     * @param visible True to show
+     */
+    void setVisible (boolean visible);
 }

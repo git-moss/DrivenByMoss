@@ -2,17 +2,17 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu.controller;
+package de.mossgrabers.framework.controller;
 
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 
 
 /**
- * The MCU value changer.
+ * Default implementation for changing values.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MCUValueChanger extends DefaultValueChanger
+public class Relative3ValueChanger extends DefaultValueChanger
 {
     /**
      * Constructor.
@@ -21,7 +21,7 @@ public class MCUValueChanger extends DefaultValueChanger
      * @param fractionValue Amount by which values are incremented / decremented
      * @param slowFractionValue Amount by which values are slowly incremented / decremented
      */
-    public MCUValueChanger (final int upperBound, final int fractionValue, final double slowFractionValue)
+    public Relative3ValueChanger (final int upperBound, final int fractionValue, final double slowFractionValue)
     {
         super (upperBound, fractionValue, slowFractionValue);
     }
@@ -31,6 +31,6 @@ public class MCUValueChanger extends DefaultValueChanger
     @Override
     public double calcKnobSpeed (final int control, final double fractionValue)
     {
-        return (control < 0x41 ? control : 0x40 - control) * fractionValue;
+        return (control - 64) * fractionValue;
     }
 }

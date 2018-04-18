@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -121,7 +122,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
         final int sendIndex = this.getCurrentSendIndex ();
         final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
 
-        this.updateMenu ();
+        this.updateMenuItems (5 + sendIndex % 4);
 
         final PushConfiguration config = this.surface.getConfiguration ();
 
@@ -132,24 +133,9 @@ public class DeviceLayerModeSend extends DeviceLayerMode
         {
             final IChannel layer = cd.getLayerOrDrumPad (offset + i);
 
-            // The menu item
-            String topMenu;
-            boolean topMenuSelected;
-            if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
-            {
-                topMenu = layer.doesExist () ? "Mute" : "";
-                topMenuSelected = layer.isMute ();
-            }
-            else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
-            {
-                topMenu = layer.doesExist () ? "Solo" : "";
-                topMenuSelected = layer.isSolo ();
-            }
-            else
-            {
-                topMenu = this.menu[i];
-                topMenuSelected = i > 3 && i - 4 + sendOffset == sendIndex;
-            }
+            final Pair<String, Boolean> pair = this.menu.get (i);
+            final String topMenu = pair.getKey ();
+            final boolean isTopMenuOn = pair.getValue ().booleanValue ();
 
             // Channel info
             final String [] sendName = new String [4];
@@ -168,7 +154,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
                 selected[j] = sendIndex == sendPos;
             }
 
-            message.addSendsElement (topMenu, topMenuSelected, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
+            message.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
         }
     }
 

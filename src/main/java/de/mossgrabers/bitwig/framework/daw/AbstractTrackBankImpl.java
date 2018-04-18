@@ -159,7 +159,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBank
     @Override
     public void scrollToScene (final int position)
     {
-        this.trackBank.sceneBank ().scrollPosition ().set (position);
+        this.sceneBank.scrollTo (position);
     }
 
 

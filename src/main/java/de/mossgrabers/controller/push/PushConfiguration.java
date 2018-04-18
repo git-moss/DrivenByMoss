@@ -913,11 +913,7 @@ public class PushConfiguration extends AbstractConfiguration
     {
         this.ribbonModeSetting = settingsUI.getEnumSetting ("Mode", CATEGORY_RIBBON, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES[0]);
         this.ribbonModeSetting.addValueObserver (value -> {
-            for (int i = 0; i < RIBBON_MODE_VALUES.length; i++)
-            {
-                if (RIBBON_MODE_VALUES[i].equals (value))
-                    this.ribbonMode = i;
-            }
+            this.ribbonMode = lookupIndex (RIBBON_MODE_VALUES, value);
             this.notifyObservers (RIBBON_MODE);
         });
 
@@ -952,27 +948,13 @@ public class PushConfiguration extends AbstractConfiguration
     {
         this.velocityCurveSetting = settingsUI.getEnumSetting ("Velocity Curve", CATEGORY_PADS, PushControlSurface.PUSH_PAD_CURVES_NAME, PushControlSurface.PUSH_PAD_CURVES_NAME[1]);
         this.velocityCurveSetting.addValueObserver (value -> {
-            for (int i = 0; i < PushControlSurface.PUSH_PAD_CURVES_NAME.length; i++)
-            {
-                if (PushControlSurface.PUSH_PAD_CURVES_NAME[i].equals (value))
-                {
-                    this.velocityCurve = i;
-                    break;
-                }
-            }
+            this.velocityCurve = lookupIndex (PushControlSurface.PUSH_PAD_CURVES_NAME, value);
             this.notifyObservers (VELOCITY_CURVE);
         });
 
         this.padThresholdSetting = settingsUI.getEnumSetting ("Pad Threshold", CATEGORY_PADS, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[20]);
         this.padThresholdSetting.addValueObserver (value -> {
-            for (int i = 0; i < PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length; i++)
-            {
-                if (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[i].equals (value))
-                {
-                    this.padThreshold = i;
-                    break;
-                }
-            }
+            this.padThreshold = lookupIndex (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, value);
             this.notifyObservers (PAD_THRESHOLD);
         });
     }
