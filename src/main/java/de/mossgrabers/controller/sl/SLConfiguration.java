@@ -18,19 +18,22 @@ import de.mossgrabers.framework.controller.IValueChanger;
 public class SLConfiguration extends AbstractConfiguration
 {
     /** Touchpad mode. */
-    public static final Integer    TOUCHPAD_MODE            = Integer.valueOf (30);
+    public static final Integer    TOUCHPAD_MODE              = Integer.valueOf (30);
+    /** Use drum pads for mode selection. */
+    public static final Integer    DRUMPADS_AS_MODE_SELECTION = Integer.valueOf (31);
 
     /** Touchpad mode: Use as the crossfader. */
-    public static final String     TOUCHPAD_MODE_CROSSFADER = "Crossfader";
+    public static final String     TOUCHPAD_MODE_CROSSFADER   = "Crossfader";
     /** Touchpad mode: Use to modify the first two remote parameters. */
-    public static final String     TOUCHPAD_MODE_PARAMETER  = "Remote Parameter 1&2";
-    private static final String [] TOUCHPAD_OPTIONS         = new String []
+    public static final String     TOUCHPAD_MODE_PARAMETER    = "Remote Parameter 1&2";
+    private static final String [] TOUCHPAD_OPTIONS           = new String []
     {
         TOUCHPAD_MODE_CROSSFADER,
         TOUCHPAD_MODE_PARAMETER
     };
 
     private String                 touchpadMode;
+    private boolean                drumpadsAsModeSelection    = false;
     private final boolean          isMkII;
 
 
@@ -74,8 +77,15 @@ public class SLConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.activateBehaviourOnStopSetting (settingsUI);
         this.activateDisplayCrossfaderSetting (settingsUI);
         this.activateNewClipLengthSetting (settingsUI);
+
+        final IEnumSetting drumpadsAsModeSelectionSetting = settingsUI.getEnumSetting ("Use drum pads for mode selection", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        drumpadsAsModeSelectionSetting.addValueObserver (value -> {
+            this.drumpadsAsModeSelection = ON_OFF_OPTIONS[1].equals (value);
+            this.notifyObservers (DRUMPADS_AS_MODE_SELECTION);
+        });
     }
 
 
@@ -87,5 +97,16 @@ public class SLConfiguration extends AbstractConfiguration
     public String getTouchpadMode ()
     {
         return this.touchpadMode;
+    }
+
+
+    /**
+     * Returns true if the drum pads should be used for mode selection.
+     *
+     * @return True if the drum pads should be used for mode selection
+     */
+    public boolean isDrumpadsAsModeSelection ()
+    {
+        return this.drumpadsAsModeSelection;
     }
 }

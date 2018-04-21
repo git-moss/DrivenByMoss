@@ -8,8 +8,8 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.mode.Modes;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -26,6 +26,7 @@ public class TransportControl
     private boolean                                              isRewinding;
     private boolean                                              isForwarding;
     private final PlayCommand<SLControlSurface, SLConfiguration> playCommand;
+    private final StopCommand<SLControlSurface, SLConfiguration> stopCommand;
 
 
     /**
@@ -39,6 +40,7 @@ public class TransportControl
         this.surface = surface;
         this.model = model;
         this.playCommand = new PlayCommand<> (model, surface);
+        this.stopCommand = new StopCommand<> (model, surface);
     }
 
 
@@ -129,13 +131,7 @@ public class TransportControl
 
     private void onStop (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        final ITransport transport = this.model.getTransport ();
-        if (transport.isPlaying ())
-            transport.play ();
-        else
-            transport.stopAndRewind ();
+        this.stopCommand.executeNormal (event);
         this.turnOffTransport ();
     }
 

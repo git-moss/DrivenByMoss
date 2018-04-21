@@ -61,6 +61,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
 
             case 1:
                 this.surface.getModeManager ().setActiveMode (Modes.MODE_PARAMS);
+                this.surface.getDisplay ().notify ("Device Parameters");
                 break;
 
             case 2:
