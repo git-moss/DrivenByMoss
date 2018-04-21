@@ -66,312 +66,316 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     {
         this.configuration.setAddValues (channel, cc);
 
-        final int ccCommand = this.configuration.getCcCommand (cc);
-        if (ccCommand == 0 || this.configuration.getMidiChannel (cc) != channel)
+        final FlexiCommand ccCommand = this.configuration.getCcCommand (cc);
+        if (ccCommand.ordinal () == 0 || this.configuration.getMidiChannel (cc) != channel)
             return;
 
         this.handleCommand (ccCommand, cc, value);
     }
 
 
-    private void handleCommand (final int ccCommand, final int cc, final int value)
+    private void handleCommand (final FlexiCommand ccCommand, final int cc, final int value)
     {
         switch (ccCommand)
         {
+            case OFF:
+                // No function
+                break;
+
             // Global: Undo
-            case 1:
+            case GLOBAL_UNDO:
                 if (value > 0)
                     this.model.getApplication ().undo ();
                 break;
             // Global: Redo
-            case 2:
+            case GLOBAL_REDO:
                 if (value > 0)
                     this.model.getApplication ().redo ();
                 break;
             // Global: Previous Project
-            case 3:
+            case GLOBAL_PREVIOUS_PROJECT:
                 if (value > 0)
                     this.model.getProject ().previous ();
                 break;
             // Global: Next Project
-            case 4:
+            case GLOBAL_NEXT_PROJECT:
                 if (value > 0)
                     this.model.getProject ().next ();
                 break;
             // Global: Toggle Audio Engine
-            case 5:
+            case GLOBAL_TOGGLE_AUDIO_ENGINE:
                 if (value > 0)
                     this.model.getApplication ().toggleEngineActive ();
                 break;
 
             // Transport: Play
-            case 6:
+            case TRANSPORT_PLAY:
                 if (value > 0)
                     this.model.getTransport ().play ();
                 break;
             // Transport: Stop
-            case 7:
+            case TRANSPORT_STOP:
                 if (value > 0)
                     this.model.getTransport ().stop ();
                 break;
             // Transport: Restart
-            case 8:
+            case TRANSPORT_RESTART:
                 if (value > 0)
                     this.model.getTransport ().restart ();
                 break;
             // Transport: Toggle Repeat
-            case 9:
+            case TRANSPORT_TOGGLE_REPEAT:
                 if (value > 0)
                     this.model.getTransport ().toggleLoop ();
                 break;
             // Transport: Toggle Metronome
-            case 10:
+            case TRANSPORT_TOGGLE_METRONOME:
                 if (value > 0)
                     this.model.getTransport ().toggleMetronome ();
                 break;
             // Transport: Set Metronome Volume
-            case 11:
+            case TRANSPORT_SET_METRONOME_VOLUME:
                 this.handleMetronomeVolume (this.configuration.getKnobMode (cc), value);
                 break;
             // Transport: Toggle Metronome in Pre-roll
-            case 12:
+            case TRANSPORT_TOGGLE_METRONOME_IN_PREROLL:
                 if (value > 0)
                     this.model.getTransport ().togglePrerollMetronome ();
                 break;
             // Transport: Toggle Punch In
-            case 13:
+            case TRANSPORT_TOGGLE_PUNCH_IN:
                 if (value > 0)
                     this.model.getTransport ().togglePunchIn ();
                 break;
             // Transport: Toggle Punch Out
-            case 14:
+            case TRANSPORT_TOGGLE_PUNCH_OUT:
                 if (value > 0)
                     this.model.getTransport ().togglePunchOut ();
                 break;
             // Transport: Toggle Record
-            case 15:
+            case TRANSPORT_TOGGLE_RECORD:
                 if (value > 0)
                     this.model.getTransport ().record ();
                 break;
             // Transport: Toggle Arranger Overdub
-            case 16:
+            case TRANSPORT_TOGGLE_ARRANGER_OVERDUB:
                 if (value > 0)
                     this.model.getTransport ().toggleOverdub ();
                 break;
             // Transport: Toggle Clip Overdub
-            case 17:
+            case TRANSPORT_TOGGLE_CLIP_OVERDUB:
                 if (value > 0)
                     this.model.getTransport ().toggleLauncherOverdub ();
                 break;
             // Transport: Set Crossfader
-            case 18:
+            case TRANSPORT_SET_CROSSFADER:
                 this.handleCrossfade (this.configuration.getKnobMode (cc), value);
                 break;
             // Transport: Toggle Arranger Automation Write
-            case 19:
+            case TRANSPORT_TOGGLE_ARRANGER_AUTOMATION_WRITE:
                 if (value > 0)
                     this.model.getTransport ().toggleWriteArrangerAutomation ();
                 break;
             // Transport: Toggle Clip Automation Write
-            case 20:
+            case TRANSPORT_TOGGLE_CLIP_AUTOMATION_WRITE:
                 if (value > 0)
                     this.model.getTransport ().toggleWriteClipLauncherAutomation ();
                 break;
             // Transport: Set Write Mode: Latch
-            case 21:
+            case TRANSPORT_SET_WRITE_MODE_LATCH:
                 if (value > 0)
                     this.model.getTransport ().setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[0]);
                 break;
             // Transport: Set Write Mode: Touch
-            case 22:
+            case TRANSPORT_SET_WRITE_MODE_TOUCH:
                 if (value > 0)
                     this.model.getTransport ().setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[1]);
                 break;
             // Transport: Set Write Mode: Write
-            case 23:
+            case TRANSPORT_SET_WRITE_MODE_WRITE:
                 if (value > 0)
                     this.model.getTransport ().setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[2]);
                 break;
             // Transport: Set Tempo
-            case 24:
+            case TRANSPORT_SET_TEMPO:
                 this.handleTempo (this.configuration.getKnobMode (cc), value);
                 break;
             // Transport: Tap Tempo
-            case 25:
+            case TRANSPORT_TAP_TEMPO:
                 if (value > 0)
                     this.model.getTransport ().tapTempo ();
                 break;
             // Transport: Move Play Cursor
-            case 26:
+            case TRANSPORT_MOVE_PLAY_CURSOR:
                 this.handlePlayCursor (this.configuration.getKnobMode (cc), value);
                 break;
 
             // Layout: Set Arrange Layout
-            case 27:
+            case LAYOUT_SET_ARRANGE_LAYOUT:
                 if (value > 0)
                     this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_ARRANGE);
                 break;
             // Layout: Set Mix Layout
-            case 28:
+            case LAYOUT_SET_MIX_LAYOUT:
                 if (value > 0)
                     this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_MIX);
                 break;
             // Layout: Set Edit Layout
-            case 29:
+            case LAYOUT_SET_EDIT_LAYOUT:
                 if (value > 0)
                     this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_EDIT);
                 break;
             // Layout: Toggle Note Editor
-            case 30:
+            case LAYOUT_TOGGLE_NOTE_EDITOR:
                 if (value > 0)
                     this.model.getApplication ().toggleNoteEditor ();
                 break;
             // Layout: Toggle Automation Editor
-            case 31:
+            case LAYOUT_TOGGLE_AUTOMATION_EDITOR:
                 if (value > 0)
                     this.model.getApplication ().toggleAutomationEditor ();
                 break;
             // Layout: Toggle Devices Panel
-            case 32:
+            case LAYOUT_TOGGLE_DEVICES_PANEL:
                 if (value > 0)
                     this.model.getApplication ().toggleDevices ();
                 break;
             // Layout: Toggle Mixer Panel
-            case 33:
+            case LAYOUT_TOGGLE_MIXER_PANEL:
                 if (value > 0)
                     this.model.getApplication ().toggleMixer ();
                 break;
             // Layout: Toggle Fullscreen
-            case 34:
+            case LAYOUT_TOGGLE_FULLSCREEN:
                 if (value > 0)
                     this.model.getApplication ().toggleFullScreen ();
                 break;
             // Layout: Toggle Arranger Cue Markers
-            case 35:
+            case LAYOUT_TOGGLE_ARRANGER_CUE_MARKERS:
                 if (value > 0)
                     this.model.getArranger ().toggleCueMarkerVisibility ();
                 break;
             // Layout: Toggle Arranger Playback Follow
-            case 36:
+            case LAYOUT_TOGGLE_ARRANGER_PLAYBACK_FOLLOW:
                 if (value > 0)
                     this.model.getArranger ().togglePlaybackFollow ();
                 break;
             // Layout: Toggle Arranger Track Row Height
-            case 37:
+            case LAYOUT_TOGGLE_ARRANGER_TRACK_ROW_HEIGHT:
                 if (value > 0)
                     this.model.getArranger ().toggleTrackRowHeight ();
                 break;
             // Layout: Toggle Arranger Clip Launcher Section
-            case 38:
+            case LAYOUT_TOGGLE_ARRANGER_CLIP_LAUNCHER_SECTION:
                 if (value > 0)
                     this.model.getArranger ().toggleClipLauncher ();
                 break;
             // Layout: Toggle Arranger Time Line
-            case 39:
+            case LAYOUT_TOGGLE_ARRANGER_TIME_LINE:
                 if (value > 0)
                     this.model.getArranger ().toggleTimeLine ();
                 break;
             // Layout: Toggle Arranger IO Section
-            case 40:
+            case LAYOUT_TOGGLE_ARRANGER_IO_SECTION:
                 if (value > 0)
                     this.model.getArranger ().toggleIoSection ();
                 break;
             // Layout: Toggle Arranger Effect Tracks
-            case 41:
+            case LAYOUT_TOGGLE_ARRANGER_EFFECT_TRACKS:
                 if (value > 0)
                     this.model.getArranger ().toggleEffectTracks ();
                 break;
             // Layout: Toggle Mixer Clip Launcher Section
-            case 42:
+            case LAYOUT_TOGGLE_MIXER_CLIP_LAUNCHER_SECTION:
                 if (value > 0)
                     this.model.getMixer ().toggleClipLauncherSectionVisibility ();
                 break;
             // Layout: Toggle Mixer Cross Fade Section
-            case 43:
+            case LAYOUT_TOGGLE_MIXER_CROSS_FADE_SECTION:
                 if (value > 0)
                     this.model.getMixer ().toggleCrossFadeSectionVisibility ();
                 break;
             // Layout: Toggle Mixer Device Section
-            case 44:
+            case LAYOUT_TOGGLE_MIXER_DEVICE_SECTION:
                 if (value > 0)
                     this.model.getMixer ().toggleDeviceSectionVisibility ();
                 break;
             // Layout: Toggle Mixer sendsSection
-            case 45:
+            case LAYOUT_TOGGLE_MIXER_SENDSSECTION:
                 if (value > 0)
                     this.model.getMixer ().toggleSendsSectionVisibility ();
                 break;
             // Layout: Toggle Mixer IO Section
-            case 46:
+            case LAYOUT_TOGGLE_MIXER_IO_SECTION:
                 if (value > 0)
                     this.model.getMixer ().toggleIoSectionVisibility ();
                 break;
             // Layout: Toggle Mixer Meter Section
-            case 47:
+            case LAYOUT_TOGGLE_MIXER_METER_SECTION:
                 if (value > 0)
                     this.model.getMixer ().toggleMeterSectionVisibility ();
                 break;
 
             // Track: Add Audio Track
-            case 48:
+            case TRACK_ADD_AUDIO_TRACK:
                 if (value > 0)
                     this.model.getApplication ().addAudioTrack ();
                 break;
             // Track: Add Effect Track
-            case 49:
+            case TRACK_ADD_EFFECT_TRACK:
                 if (value > 0)
                     this.model.getApplication ().addEffectTrack ();
                 break;
             // Track: Add Instrument Track
-            case 50:
+            case TRACK_ADD_INSTRUMENT_TRACK:
                 if (value > 0)
                     this.model.getApplication ().addInstrumentTrack ();
                 break;
             // Track: Select Previous Bank Page
-            case 51:
+            case TRACK_SELECT_PREVIOUS_BANK_PAGE:
                 if (value > 0)
                     this.scrollTrackLeft (true);
                 break;
             // Track: Select Next Bank Page
-            case 52:
+            case TRACK_SELECT_NEXT_BANK_PAGE:
                 if (value > 0)
                     this.scrollTrackRight (true);
                 break;
             // Track: Select Previous Track
-            case 53:
+            case TRACK_SELECT_PREVIOUS_TRACK:
                 if (value > 0)
                     this.scrollTrackLeft (false);
                 break;
             // Track: Select Next Track
-            case 54:
+            case TRACK_SELECT_NEXT_TRACK:
                 if (value > 0)
                     this.scrollTrackRight (true);
                 break;
             // Track 1-8: Select
-            case 55:
-            case 56:
-            case 57:
-            case 58:
-            case 59:
-            case 60:
-            case 61:
-            case 62:
+            case TRACK_1_SELECT:
+            case TRACK_2_SELECT:
+            case TRACK_3_SELECT:
+            case TRACK_4_SELECT:
+            case TRACK_5_SELECT:
+            case TRACK_6_SELECT:
+            case TRACK_7_SELECT:
+            case TRACK_8_SELECT:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (ccCommand - 55).selectAndMakeVisible ();
+                    this.model.getTrackBank ().getTrack (ccCommand.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).selectAndMakeVisible ();
                 break;
             // Track 1-8: Toggle Active
-            case 63:
-            case 64:
-            case 65:
-            case 66:
-            case 67:
-            case 68:
-            case 69:
-            case 70:
+            case TRACK_1_TOGGLE_ACTIVE:
+            case TRACK_2_TOGGLE_ACTIVE:
+            case TRACK_3_TOGGLE_ACTIVE:
+            case TRACK_4_TOGGLE_ACTIVE:
+            case TRACK_5_TOGGLE_ACTIVE:
+            case TRACK_6_TOGGLE_ACTIVE:
+            case TRACK_7_TOGGLE_ACTIVE:
+            case TRACK_8_TOGGLE_ACTIVE:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (ccCommand - 63).toggleIsActivated ();
+                    this.model.getTrackBank ().getTrack (ccCommand.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).toggleIsActivated ();
                 break;
-            case 71:
+            case TRACK_SELECTED_TOGGLE_ACTIVE:
                 if (value > 0)
                 {
                     final ITrack selectedTrack = this.model.getTrackBank ().getSelectedTrack ();
@@ -380,49 +384,49 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 }
                 break;
             // Track 1-8: Set Volume
-            case 72:
-            case 73:
-            case 74:
-            case 75:
-            case 76:
-            case 77:
-            case 78:
-            case 79:
-                this.changeTrackVolume (this.configuration.getKnobMode (cc), ccCommand - 72, value);
+            case TRACK_1_SET_VOLUME:
+            case TRACK_2_SET_VOLUME:
+            case TRACK_3_SET_VOLUME:
+            case TRACK_4_SET_VOLUME:
+            case TRACK_5_SET_VOLUME:
+            case TRACK_6_SET_VOLUME:
+            case TRACK_7_SET_VOLUME:
+            case TRACK_8_SET_VOLUME:
+                this.changeTrackVolume (this.configuration.getKnobMode (cc), ccCommand.ordinal () - FlexiCommand.TRACK_1_SET_VOLUME.ordinal (), value);
                 break;
             // Track Selected: Set Volume Track
-            case 80:
+            case TRACK_SELECTED_SET_VOLUME_TRACK:
                 this.changeTrackVolume (this.configuration.getKnobMode (cc), -1, value);
                 break;
             // Track 1-8: Set Panorama
-            case 81:
-            case 82:
-            case 83:
-            case 84:
-            case 85:
-            case 86:
-            case 87:
-            case 88:
-                this.changeTrackPanorama (this.configuration.getKnobMode (cc), ccCommand - 81, value);
+            case TRACK_1_SET_PANORAMA:
+            case TRACK_2_SET_PANORAMA:
+            case TRACK_3_SET_PANORAMA:
+            case TRACK_4_SET_PANORAMA:
+            case TRACK_5_SET_PANORAMA:
+            case TRACK_6_SET_PANORAMA:
+            case TRACK_7_SET_PANORAMA:
+            case TRACK_8_SET_PANORAMA:
+                this.changeTrackPanorama (this.configuration.getKnobMode (cc), ccCommand.ordinal () - FlexiCommand.TRACK_1_SET_PANORAMA.ordinal (), value);
                 break;
             // Track Selected: Set Panorama
-            case 89:
+            case TRACK_SELECTED_SET_PANORAMA:
                 this.changeTrackPanorama (this.configuration.getKnobMode (cc), -1, value);
                 break;
             // Track 1-8: Toggle Mute
-            case 90:
-            case 91:
-            case 92:
-            case 93:
-            case 94:
-            case 95:
-            case 96:
-            case 97:
+            case TRACK_1_TOGGLE_MUTE:
+            case TRACK_2_TOGGLE_MUTE:
+            case TRACK_3_TOGGLE_MUTE:
+            case TRACK_4_TOGGLE_MUTE:
+            case TRACK_5_TOGGLE_MUTE:
+            case TRACK_6_TOGGLE_MUTE:
+            case TRACK_7_TOGGLE_MUTE:
+            case TRACK_8_TOGGLE_MUTE:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (ccCommand - 90).toggleMute ();
+                    this.model.getTrackBank ().getTrack (ccCommand.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).toggleMute ();
                 break;
             // Track Selected: Toggle Mute
-            case 98:
+            case TRACK_SELECTED_TOGGLE_MUTE:
                 if (value > 0)
                 {
                     final ITrack selectedTrack = this.model.getTrackBank ().getSelectedTrack ();
@@ -431,19 +435,19 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 }
                 break;
             // Track 1-8: Toggle Solo
-            case 99:
-            case 100:
-            case 101:
-            case 102:
-            case 103:
-            case 104:
-            case 105:
-            case 106:
+            case TRACK_1_TOGGLE_SOLO:
+            case TRACK_2_TOGGLE_SOLO:
+            case TRACK_3_TOGGLE_SOLO:
+            case TRACK_4_TOGGLE_SOLO:
+            case TRACK_5_TOGGLE_SOLO:
+            case TRACK_6_TOGGLE_SOLO:
+            case TRACK_7_TOGGLE_SOLO:
+            case TRACK_8_TOGGLE_SOLO:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (ccCommand - 99).toggleSolo ();
+                    this.model.getTrackBank ().getTrack (ccCommand.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).toggleSolo ();
                 break;
             // Track Selected: Toggle Solo
-            case 107:
+            case TRACK_SELECTED_TOGGLE_SOLO:
                 if (value > 0)
                 {
                     final ITrack selectedTrack = this.model.getTrackBank ().getSelectedTrack ();
@@ -452,19 +456,19 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 }
                 break;
             // Track 1-8: Toggle Arm
-            case 108:
-            case 109:
-            case 110:
-            case 111:
-            case 112:
-            case 113:
-            case 114:
-            case 115:
+            case TRACK_1_TOGGLE_ARM:
+            case TRACK_2_TOGGLE_ARM:
+            case TRACK_3_TOGGLE_ARM:
+            case TRACK_4_TOGGLE_ARM:
+            case TRACK_5_TOGGLE_ARM:
+            case TRACK_6_TOGGLE_ARM:
+            case TRACK_7_TOGGLE_ARM:
+            case TRACK_8_TOGGLE_ARM:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (ccCommand - 108).toggleRecArm ();
+                    this.model.getTrackBank ().getTrack (ccCommand.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).toggleRecArm ();
                 break;
             // Track Selected: Toggle Arm
-            case 116:
+            case TRACK_SELECTED_TOGGLE_ARM:
                 if (value > 0)
                 {
                     final ITrack selectedTrack = this.model.getTrackBank ().getSelectedTrack ();
@@ -473,19 +477,19 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 }
                 break;
             // Track 1-8: Toggle Monitor
-            case 117:
-            case 118:
-            case 119:
-            case 120:
-            case 121:
-            case 122:
-            case 123:
-            case 124:
+            case TRACK_1_TOGGLE_MONITOR:
+            case TRACK_2_TOGGLE_MONITOR:
+            case TRACK_3_TOGGLE_MONITOR:
+            case TRACK_4_TOGGLE_MONITOR:
+            case TRACK_5_TOGGLE_MONITOR:
+            case TRACK_6_TOGGLE_MONITOR:
+            case TRACK_7_TOGGLE_MONITOR:
+            case TRACK_8_TOGGLE_MONITOR:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (ccCommand - 117).toggleMonitor ();
+                    this.model.getTrackBank ().getTrack (ccCommand.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).toggleMonitor ();
                 break;
             // Track Selected: Toggle Monitor
-            case 125:
+            case TRACK_SELECTED_TOGGLE_MONITOR:
                 if (value > 0)
                 {
                     final ITrack selectedTrack = this.model.getTrackBank ().getSelectedTrack ();
@@ -494,19 +498,19 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 }
                 break;
             // Track 1: Toggle Auto Monitor
-            case 126:
-            case 127:
-            case 128:
-            case 129:
-            case 130:
-            case 131:
-            case 132:
-            case 133:
+            case TRACK_1_TOGGLE_AUTO_MONITOR:
+            case TRACK_2_TOGGLE_AUTO_MONITOR:
+            case TRACK_3_TOGGLE_AUTO_MONITOR:
+            case TRACK_4_TOGGLE_AUTO_MONITOR:
+            case TRACK_5_TOGGLE_AUTO_MONITOR:
+            case TRACK_6_TOGGLE_AUTO_MONITOR:
+            case TRACK_7_TOGGLE_AUTO_MONITOR:
+            case TRACK_8_TOGGLE_AUTO_MONITOR:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (ccCommand - 126).toggleAutoMonitor ();
+                    this.model.getTrackBank ().getTrack (ccCommand.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).toggleAutoMonitor ();
                 break;
             // Track Selected: Toggle Auto Monitor
-            case 134:
+            case TRACK_SELECTED_TOGGLE_AUTO_MONITOR:
                 if (value > 0)
                 {
                     final ITrack selectedTrack = this.model.getTrackBank ().getSelectedTrack ();
@@ -516,289 +520,289 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 break;
 
             // Track 1-8: Set Send 1
-            case 135:
-            case 136:
-            case 137:
-            case 138:
-            case 139:
-            case 140:
-            case 141:
-            case 142:
-                this.changeSendVolume (0, this.configuration.getKnobMode (cc), ccCommand - 135, value);
+            case TRACK_1_SET_SEND_1:
+            case TRACK_2_SET_SEND_1:
+            case TRACK_3_SET_SEND_1:
+            case TRACK_4_SET_SEND_1:
+            case TRACK_5_SET_SEND_1:
+            case TRACK_6_SET_SEND_1:
+            case TRACK_7_SET_SEND_1:
+            case TRACK_8_SET_SEND_1:
+                this.changeSendVolume (0, this.configuration.getKnobMode (cc), ccCommand.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal (), value);
                 break;
 
             // Track 1-8: Set Send 2
-            case 143:
-            case 144:
-            case 145:
-            case 146:
-            case 147:
-            case 148:
-            case 149:
-            case 150:
-                this.changeSendVolume (1, this.configuration.getKnobMode (cc), ccCommand - 143, value);
+            case TRACK_1_SET_SEND_2:
+            case TRACK_2_SET_SEND_2:
+            case TRACK_3_SET_SEND_2:
+            case TRACK_4_SET_SEND_2:
+            case TRACK_5_SET_SEND_2:
+            case TRACK_6_SET_SEND_2:
+            case TRACK_7_SET_SEND_2:
+            case TRACK_8_SET_SEND_2:
+                this.changeSendVolume (1, this.configuration.getKnobMode (cc), ccCommand.ordinal () - FlexiCommand.TRACK_1_SET_SEND_2.ordinal (), value);
                 break;
 
             // Track 1-8: Set Send 3
-            case 151:
-            case 152:
-            case 153:
-            case 154:
-            case 155:
-            case 156:
-            case 157:
-            case 158:
-                this.changeSendVolume (2, this.configuration.getKnobMode (cc), ccCommand - 151, value);
+            case TRACK_1_SET_SEND_3:
+            case TRACK_2_SET_SEND_3:
+            case TRACK_3_SET_SEND_3:
+            case TRACK_4_SET_SEND_3:
+            case TRACK_5_SET_SEND_3:
+            case TRACK_6_SET_SEND_3:
+            case TRACK_7_SET_SEND_3:
+            case TRACK_8_SET_SEND_3:
+                this.changeSendVolume (2, this.configuration.getKnobMode (cc), ccCommand.ordinal () - FlexiCommand.TRACK_1_SET_SEND_3.ordinal (), value);
                 break;
 
             // Track 1-8: Set Send 4
-            case 159:
-            case 160:
-            case 161:
-            case 162:
-            case 163:
-            case 164:
-            case 165:
-            case 166:
-                this.changeSendVolume (3, this.configuration.getKnobMode (cc), ccCommand - 159, value);
+            case TRACK_1_SET_SEND_4:
+            case TRACK_2_SET_SEND_4:
+            case TRACK_3_SET_SEND_4:
+            case TRACK_4_SET_SEND_4:
+            case TRACK_5_SET_SEND_4:
+            case TRACK_6_SET_SEND_4:
+            case TRACK_7_SET_SEND_4:
+            case TRACK_8_SET_SEND_4:
+                this.changeSendVolume (3, this.configuration.getKnobMode (cc), ccCommand.ordinal () - FlexiCommand.TRACK_1_SET_SEND_4.ordinal (), value);
                 break;
 
             // Track 1: Set Send 5
-            case 167:
-            case 168:
-            case 169:
-            case 170:
-            case 171:
-            case 172:
-            case 173:
-            case 174:
-                this.changeSendVolume (4, this.configuration.getKnobMode (cc), ccCommand - 167, value);
+            case TRACK_1_SET_SEND_5:
+            case TRACK_2_SET_SEND_5:
+            case TRACK_3_SET_SEND_5:
+            case TRACK_4_SET_SEND_5:
+            case TRACK_5_SET_SEND_5:
+            case TRACK_6_SET_SEND_5:
+            case TRACK_7_SET_SEND_5:
+            case TRACK_8_SET_SEND_5:
+                this.changeSendVolume (4, this.configuration.getKnobMode (cc), ccCommand.ordinal () - FlexiCommand.TRACK_1_SET_SEND_5.ordinal (), value);
                 break;
 
             // Track 1: Set Send 6
-            case 175:
-            case 176:
-            case 177:
-            case 178:
-            case 179:
-            case 180:
-            case 181:
-            case 182:
-                this.changeSendVolume (5, this.configuration.getKnobMode (cc), ccCommand - 175, value);
+            case TRACK_1_SET_SEND_6:
+            case TRACK_2_SET_SEND_6:
+            case TRACK_3_SET_SEND_6:
+            case TRACK_4_SET_SEND_6:
+            case TRACK_5_SET_SEND_6:
+            case TRACK_6_SET_SEND_6:
+            case TRACK_7_SET_SEND_6:
+            case TRACK_8_SET_SEND_6:
+                this.changeSendVolume (5, this.configuration.getKnobMode (cc), ccCommand.ordinal () - FlexiCommand.TRACK_1_SET_SEND_6.ordinal (), value);
                 break;
 
             // Track 1-8: Set Send 7
-            case 183:
-            case 184:
-            case 185:
-            case 186:
-            case 187:
-            case 188:
-            case 189:
-            case 190:
-                this.changeSendVolume (6, this.configuration.getKnobMode (cc), ccCommand - 183, value);
+            case TRACK_1_SET_SEND_7:
+            case TRACK_2_SET_SEND_7:
+            case TRACK_3_SET_SEND_7:
+            case TRACK_4_SET_SEND_7:
+            case TRACK_5_SET_SEND_7:
+            case TRACK_6_SET_SEND_7:
+            case TRACK_7_SET_SEND_7:
+            case TRACK_8_SET_SEND_7:
+                this.changeSendVolume (6, this.configuration.getKnobMode (cc), ccCommand.ordinal () - FlexiCommand.TRACK_1_SET_SEND_7.ordinal (), value);
                 break;
 
             // Track 1-8: Set Send 8
-            case 191:
-            case 192:
-            case 193:
-            case 194:
-            case 195:
-            case 196:
-            case 197:
-            case 198:
-                this.changeSendVolume (7, this.configuration.getKnobMode (cc), ccCommand - 191, value);
+            case TRACK_1_SET_SEND_8:
+            case TRACK_2_SET_SEND_8:
+            case TRACK_3_SET_SEND_8:
+            case TRACK_4_SET_SEND_8:
+            case TRACK_5_SET_SEND_8:
+            case TRACK_6_SET_SEND_8:
+            case TRACK_7_SET_SEND_8:
+            case TRACK_8_SET_SEND_8:
+                this.changeSendVolume (7, this.configuration.getKnobMode (cc), ccCommand.ordinal () - FlexiCommand.TRACK_1_SET_SEND_8.ordinal (), value);
                 break;
 
             // Track Selected: Set Send 1-8
-            case 199:
-            case 200:
-            case 201:
-            case 202:
-            case 203:
-            case 204:
-            case 205:
-            case 206:
-                this.changeSendVolume (ccCommand - 199, this.configuration.getKnobMode (cc), -1, value);
+            case TRACK_SELECTED_SET_SEND_1:
+            case TRACK_SELECTED_SET_SEND_2:
+            case TRACK_SELECTED_SET_SEND_3:
+            case TRACK_SELECTED_SET_SEND_4:
+            case TRACK_SELECTED_SET_SEND_5:
+            case TRACK_SELECTED_SET_SEND_6:
+            case TRACK_SELECTED_SET_SEND_7:
+            case TRACK_SELECTED_SET_SEND_8:
+                this.changeSendVolume (ccCommand.ordinal () - FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal (), this.configuration.getKnobMode (cc), -1, value);
                 break;
 
             // Master: Set Volume
-            case 207:
+            case MASTER_SET_VOLUME:
                 this.changeMasterVolume (this.configuration.getKnobMode (cc), value);
                 break;
             // Master: Set Panorama
-            case 208:
+            case MASTER_SET_PANORAMA:
                 this.changeMasterPanorama (this.configuration.getKnobMode (cc), value);
                 break;
             // Master: Toggle Mute
-            case 209:
+            case MASTER_TOGGLE_MUTE:
                 if (value > 0)
                     this.model.getMasterTrack ().toggleMute ();
                 break;
             // Master: Toggle Solo
-            case 210:
+            case MASTER_TOGGLE_SOLO:
                 if (value > 0)
                     this.model.getMasterTrack ().toggleSolo ();
                 break;
             // Master: Toggle Arm
-            case 211:
+            case MASTER_TOGGLE_ARM:
                 if (value > 0)
                     this.model.getMasterTrack ().toggleRecArm ();
                 break;
 
             // Device: Toggle Window
-            case 212:
+            case DEVICE_TOGGLE_WINDOW:
                 if (value > 0)
                     this.model.getCursorDevice ().toggleWindowOpen ();
                 break;
             // Device: Bypass
-            case 213:
+            case DEVICE_BYPASS:
                 if (value > 0)
                     this.model.getCursorDevice ().toggleEnabledState ();
                 break;
             // Device: Expand
-            case 214:
+            case DEVICE_EXPAND:
                 if (value > 0)
                     this.model.getCursorDevice ().toggleExpanded ();
                 break;
             // Device: Select Previous
-            case 215:
+            case DEVICE_SELECT_PREVIOUS:
                 if (value > 0)
                     this.model.getCursorDevice ().selectPrevious ();
                 break;
             // Device: Select Next
-            case 216:
+            case DEVICE_SELECT_NEXT:
                 if (value > 0)
                     this.model.getCursorDevice ().selectNext ();
                 break;
             // Device: Select Previous Parameter Bank
-            case 217:
+            case DEVICE_SELECT_PREVIOUS_PARAMETER_BANK:
                 if (value > 0)
                     this.model.getCursorDevice ().previousParameterPage ();
                 break;
             // Device: Select Next Parameter Bank
-            case 218:
+            case DEVICE_SELECT_NEXT_PARAMETER_BANK:
                 if (value > 0)
                     this.model.getCursorDevice ().nextParameterPage ();
                 break;
 
             // Device: Set Parameter 1-8
-            case 219:
-            case 220:
-            case 221:
-            case 222:
-            case 223:
-            case 224:
-            case 225:
-            case 226:
-                this.handleParameter (this.configuration.getKnobMode (cc), ccCommand - 219, value);
+            case DEVICE_SET_PARAMETER_1:
+            case DEVICE_SET_PARAMETER_2:
+            case DEVICE_SET_PARAMETER_3:
+            case DEVICE_SET_PARAMETER_4:
+            case DEVICE_SET_PARAMETER_5:
+            case DEVICE_SET_PARAMETER_6:
+            case DEVICE_SET_PARAMETER_7:
+            case DEVICE_SET_PARAMETER_8:
+                this.handleParameter (this.configuration.getKnobMode (cc), ccCommand.ordinal () - FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal (), value);
                 break;
 
             // Scene 1-8: Launch Scene
-            case 227:
-            case 228:
-            case 229:
-            case 230:
-            case 231:
-            case 232:
-            case 233:
-            case 234:
+            case SCENE_1_LAUNCH_SCENE:
+            case SCENE_2_LAUNCH_SCENE:
+            case SCENE_3_LAUNCH_SCENE:
+            case SCENE_4_LAUNCH_SCENE:
+            case SCENE_5_LAUNCH_SCENE:
+            case SCENE_6_LAUNCH_SCENE:
+            case SCENE_7_LAUNCH_SCENE:
+            case SCENE_8_LAUNCH_SCENE:
                 if (value > 0)
-                    this.model.getSceneBank ().launchScene (ccCommand - 227);
+                    this.model.getSceneBank ().launchScene (ccCommand.ordinal () - FlexiCommand.SCENE_1_LAUNCH_SCENE.ordinal ());
                 break;
 
             // Scene: Select Previous Bank
-            case 235:
+            case SCENE_SELECT_PREVIOUS_BANK:
                 if (value > 0)
                     this.model.getSceneBank ().scrollScenesPageUp ();
                 break;
             // Scene: Select Next Bank
-            case 236:
+            case SCENE_SELECT_NEXT_BANK:
                 if (value > 0)
                     this.model.getSceneBank ().scrollScenesPageDown ();
                 break;
             // Scene: Create Scene from playing Clips
-            case 237:
+            case SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS:
                 if (value > 0)
                     this.model.getProject ().createSceneFromPlayingLauncherClips ();
                 break;
             // Browser: Browse Presets
-            case 238:
+            case BROWSER_BROWSE_PRESETS:
                 if (value > 0)
                     this.model.getBrowser ().browseForPresets ();
                 break;
             // Browser: Insert Device before current
-            case 239:
+            case BROWSER_INSERT_DEVICE_BEFORE_CURRENT:
                 if (value > 0)
                     this.model.getCursorDevice ().browseToInsertBeforeDevice ();
                 break;
             // Browser: Insert Device after current
-            case 240:
+            case BROWSER_INSERT_DEVICE_AFTER_CURRENT:
                 if (value > 0)
                     this.model.getCursorDevice ().browseToInsertAfterDevice ();
                 break;
             // Browser: Commit Selection
-            case 241:
+            case BROWSER_COMMIT_SELECTION:
                 if (value > 0)
                     this.model.getBrowser ().stopBrowsing (true);
                 break;
             // Browser: Cancel Selection
-            case 242:
+            case BROWSER_CANCEL_SELECTION:
                 if (value > 0)
                     this.model.getBrowser ().stopBrowsing (false);
                 break;
 
             // Browser: Select Previous Filter in Column 1-6
-            case 243:
-            case 244:
-            case 245:
-            case 246:
-            case 247:
-            case 248:
+            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_1:
+            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_2:
+            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_3:
+            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_4:
+            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_5:
+            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_6:
                 if (value > 0)
-                    this.model.getBrowser ().selectPreviousFilterItem (ccCommand - 243);
+                    this.model.getBrowser ().selectPreviousFilterItem (ccCommand.ordinal () - FlexiCommand.BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_1.ordinal ());
                 break;
 
             // Browser: Select Next Filter in Column 1-6
-            case 249:
-            case 250:
-            case 251:
-            case 252:
-            case 253:
-            case 254:
+            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1:
+            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_2:
+            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_3:
+            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_4:
+            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_5:
+            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_6:
                 if (value > 0)
-                    this.model.getBrowser ().selectNextFilterItem (ccCommand - 249);
+                    this.model.getBrowser ().selectNextFilterItem (ccCommand.ordinal () - FlexiCommand.BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1.ordinal ());
                 break;
 
             // Browser: Reset Filter Column 1-6
-            case 255:
-            case 256:
-            case 257:
-            case 258:
-            case 259:
-            case 260:
+            case BROWSER_RESET_FILTER_COLUMN_1:
+            case BROWSER_RESET_FILTER_COLUMN_2:
+            case BROWSER_RESET_FILTER_COLUMN_3:
+            case BROWSER_RESET_FILTER_COLUMN_4:
+            case BROWSER_RESET_FILTER_COLUMN_5:
+            case BROWSER_RESET_FILTER_COLUMN_6:
                 if (value > 0)
-                    this.model.getBrowser ().resetFilterColumn (ccCommand - 255);
+                    this.model.getBrowser ().resetFilterColumn (ccCommand.ordinal () - FlexiCommand.BROWSER_RESET_FILTER_COLUMN_1.ordinal ());
                 break;
 
             // Browser: Select the previous preset
-            case 261:
+            case BROWSER_SELECT_THE_PREVIOUS_PRESET:
                 if (value > 0)
                     this.model.getBrowser ().selectPreviousResult ();
                 break;
             // Browser: Select the next preset
-            case 262:
+            case BROWSER_SELECT_THE_NEXT_PRESET:
                 if (value > 0)
                     this.model.getBrowser ().selectNextResult ();
                 break;
             // Browser: Select the previous tab
-            case 263:
+            case BROWSER_SELECT_THE_PREVIOUS_TAB:
                 if (value > 0)
                     this.model.getBrowser ().previousContentType ();
                 break;
             // Browser: Select the next tab"
-            case 264:
+            case BROWSER_SELECT_THE_NEXT_TAB:
                 if (value > 0)
                     this.model.getBrowser ().nextContentType ();
                 break;

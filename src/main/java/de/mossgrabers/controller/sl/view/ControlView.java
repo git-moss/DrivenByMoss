@@ -300,7 +300,9 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     public void onButtonRow1Select ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (modeManager.getActiveModeId () == Modes.MODE_FUNCTIONS ? Modes.MODE_FIXED : Modes.MODE_FUNCTIONS);
+        final boolean selectFixed = modeManager.getActiveModeId () == Modes.MODE_FUNCTIONS;
+        modeManager.setActiveMode (selectFixed ? Modes.MODE_FIXED : Modes.MODE_FUNCTIONS);
+        this.surface.getDisplay ().notify (selectFixed ? "Fixed Length" : "Functions");
     }
 
 
@@ -309,7 +311,9 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     public void onButtonRow2Select ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (modeManager.getActiveModeId () == Modes.MODE_TRACK_TOGGLES ? Modes.MODE_FRAME : Modes.MODE_TRACK_TOGGLES);
+        final boolean selectFrame = modeManager.getActiveModeId () == Modes.MODE_TRACK_TOGGLES;
+        modeManager.setActiveMode (selectFrame ? Modes.MODE_FRAME : Modes.MODE_TRACK_TOGGLES);
+        this.surface.getDisplay ().notify (selectFrame ? "Layouts & Panels" : "Track & Device");
     }
 
 
@@ -439,6 +443,17 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        // Intentionally empty
+        // Use drum pads for mode selection to support Remote Zero MkII
+        if (this.surface.getConfiguration ().isDrumpadsAsModeSelection ())
+        {
+            if (velocity > 0)
+            {
+                int index = note - 36;
+                new ButtonRowSelectCommand<> (index > 3 ? 5 : index, this.model, this.surface).execute (ButtonEvent.DOWN);
+            }
+            return;
+        }
+
+        this.surface.sendMidiEvent (0x90, note, velocity);
     }
 }
