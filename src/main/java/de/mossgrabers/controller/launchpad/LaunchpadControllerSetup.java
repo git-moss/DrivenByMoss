@@ -314,7 +314,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         surface.setButton (LaunchpadControlSurface.LAUNCHPAD_PRO_BUTTON_USER, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
 
         final boolean isShift = surface.isShiftPressed ();
-        final ITrack selTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack selTrack = this.model.getSelectedTrack ();
         final int index = selTrack == null ? -1 : selTrack.getIndex ();
 
         final ModeManager modeManager = surface.getModeManager ();
@@ -406,7 +406,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final ViewManager viewManager = this.getSurface ().getViewManager ();
         if (!viewManager.isActiveView (Views.VIEW_SESSION))
         {
-            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+            final ITrack selectedTrack = this.model.getSelectedTrack ();
             if (selectedTrack != null)
             {
                 final Integer preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());

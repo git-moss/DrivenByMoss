@@ -7,7 +7,6 @@ package de.mossgrabers.framework.command.trigger.clip;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -56,8 +55,7 @@ public class NewCommand<S extends IControlSurface<C>, C extends Configuration> e
 
     private void handleExecute (final boolean enableOverdub)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedTrack ();
+        final ITrack track = this.model.getSelectedTrack ();
         if (track == null)
         {
             this.surface.getDisplay ().notify ("Please select an Instrument track first.", true, true);

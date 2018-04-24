@@ -158,7 +158,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         if (Views.VIEW_SESSION.equals (viewID))
             return;
 
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack != null)
             viewManager.setPreferredView (selectedTrack.getPosition (), viewID);
     }

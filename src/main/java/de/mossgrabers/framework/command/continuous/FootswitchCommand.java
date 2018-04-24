@@ -11,7 +11,6 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -85,8 +84,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
-                final IChannelBank tb = this.model.getCurrentTrackBank ();
-                final ITrack track = tb.getSelectedTrack ();
+                final ITrack track = this.model.getSelectedTrack ();
                 if (track == null)
                 {
                     this.surface.getDisplay ().notify ("Please select an Instrument track first.", true, true);

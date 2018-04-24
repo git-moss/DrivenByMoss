@@ -405,24 +405,26 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
     private void onNew ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getSelectedTrack ();
+        final ITrack t = this.model.getSelectedTrack ();
         if (t != null)
         {
             final ISlot [] slotIndexes = t.getSelectedSlots ();
-            final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
-            for (int i = 0; i < 8; i++)
+            if (slotIndexes.length > 0)
             {
-                final int sIndex = (slotIndex + i) % 8;
-                final ISlot s = t.getSlot (sIndex);
-                if (s.hasContent ())
-                    continue;
-                this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());
-                if (slotIndex != sIndex)
-                    s.select ();
-                s.launch ();
-                this.model.getTransport ().setLauncherOverdub (true);
-                return;
+                final int slotIndex = slotIndexes[0].getIndex ();
+                for (int i = 0; i < 8; i++)
+                {
+                    final int sIndex = (slotIndex + i) % 8;
+                    final ISlot s = t.getSlot (sIndex);
+                    if (s.hasContent ())
+                        continue;
+                    this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());
+                    if (slotIndex != sIndex)
+                        s.select ();
+                    s.launch ();
+                    this.model.getTransport ().setLauncherOverdub (true);
+                    return;
+                }
             }
         }
         this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.");

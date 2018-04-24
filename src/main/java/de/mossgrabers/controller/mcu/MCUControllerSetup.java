@@ -667,20 +667,18 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 value = track.getPan ();
             else if (modeManager.isActiveMode (Modes.MODE_TRACK))
             {
-                final IChannelBank tb = this.model.getCurrentTrackBank ();
-                final ITrack selectedTrack = tb.getSelectedTrack ();
+                final ITrack selectedTrack = this.model.getSelectedTrack ();
                 if (selectedTrack == null)
                     value = 0;
                 else
                 {
-                    final ITrack selTrack = tb.getTrack (selectedTrack.getIndex ());
                     switch (index)
                     {
                         case 0:
-                            value = selTrack.getVolume ();
+                            value = selectedTrack.getVolume ();
                             break;
                         case 1:
-                            value = selTrack.getPan ();
+                            value = selectedTrack.getPan ();
                             break;
                         default:
                             final boolean effectTrackBankActive = this.model.isEffectTrackBankActive ();
@@ -692,10 +690,10 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                                     value = crossfadeMode == 2 ? this.valueChanger.getUpperBound () : crossfadeMode == 1 ? this.valueChanger.getUpperBound () / 2 : 0;
                                 }
                                 else if (!effectTrackBankActive)
-                                    value = selTrack.getSend (0).getValue ();
+                                    value = selectedTrack.getSend (0).getValue ();
                             }
                             else if (!effectTrackBankActive)
-                                value = selTrack.getSend (index - (this.configuration.isDisplayCrossfader () ? 3 : 2)).getValue ();
+                                value = selectedTrack.getSend (index - (this.configuration.isDisplayCrossfader () ? 3 : 2)).getValue ();
                             break;
                     }
                 }

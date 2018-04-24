@@ -8,6 +8,7 @@ import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -274,4 +275,20 @@ public interface IModel
      * @return True if can be split
      */
     boolean canConvertClip ();
+
+
+    /**
+     * Get the selected track from the current track bank, if any.
+     *
+     * @return The selected track or null
+     */
+    ITrack getSelectedTrack ();
+
+
+    /**
+     * Get the selected slot on the selected track, if any.
+     *
+     * @return The slot or null
+     */
+    ISlot getSelectedSlot ();
 }

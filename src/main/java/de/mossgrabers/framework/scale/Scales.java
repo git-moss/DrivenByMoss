@@ -619,7 +619,7 @@ public class Scales
 
 
     /**
-     * Get an empty matrix. All notes are off.
+     * Get a new empty matrix. All notes are off.
      *
      * @return The empty matrix
      */
@@ -628,6 +628,20 @@ public class Scales
         final int [] emptyMatrix = new int [128];
         Arrays.fill (emptyMatrix, -1);
         return emptyMatrix;
+    }
+
+
+    /**
+     * Get a new identity matrix. All notes are mapped to themselves.
+     *
+     * @return The identity matrix
+     */
+    public static int [] getIdentityMatrix ()
+    {
+        final int [] identityMatrix = new int [128];
+        for (int i = 0; i < 128; i++)
+            identityMatrix[i] = i;
+        return identityMatrix;
     }
 
 

@@ -7,7 +7,6 @@ package de.mossgrabers.framework.command.trigger;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -44,8 +43,7 @@ public class DuplicateCommand<S extends IControlSurface<C>, C extends Configurat
             return;
 
         // Is there a selected track?
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedTrack ();
+        final ITrack track = this.model.getSelectedTrack ();
         if (track == null || !track.doesExist ())
             return;
 

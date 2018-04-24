@@ -4,9 +4,6 @@
 
 package de.mossgrabers.framework.controller;
 
-import de.mossgrabers.framework.controller.DefaultValueChanger;
-
-
 /**
  * Default implementation for changing values.
  *

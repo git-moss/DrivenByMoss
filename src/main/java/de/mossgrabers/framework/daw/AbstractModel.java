@@ -300,4 +300,41 @@ public abstract class AbstractModel implements IModel
         final ITrack t = this.getCurrentTrackBank ().getSelectedTrack ();
         return t != null && t.canHoldNotes ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ITrack getSelectedTrack ()
+    {
+        final IChannelBank tb = this.getCurrentTrackBank ();
+        return tb == null ? null : tb.getSelectedTrack ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISlot getSelectedSlot ()
+    {
+        final ITrack track = getSelectedTrack ();
+        return track == null ? null : track.getSelectedSlot ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canConvertClip ()
+    {
+        final ITrack selectedTrack = this.getSelectedTrack ();
+        if (selectedTrack == null)
+            return false;
+        final ISlot [] slots = selectedTrack.getSelectedSlots ();
+        if (slots.length == 0)
+            return false;
+        for (final ISlot slot: slots)
+        {
+            if (slot.hasContent ())
+                return true;
+        }
+        return false;
+    }
 }

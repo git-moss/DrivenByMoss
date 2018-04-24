@@ -203,8 +203,7 @@ public class TrackDetailsMode extends BaseMode
 
     private ITrack getSelectedTrack ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getSelectedTrack ();
+        final ITrack t = this.model.getSelectedTrack ();
         if (t != null)
             return t;
         final IMasterTrack master = this.model.getMasterTrack ();

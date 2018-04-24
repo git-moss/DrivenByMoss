@@ -74,7 +74,7 @@ public class AutomationCommand extends AbstractTriggerCommand<PushControlSurface
             this.model.getTransport ().toggleWriteClipLauncherAutomation ();
         else
         {
-            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+            final ITrack selectedTrack = this.model.getSelectedTrack ();
             if (selectedTrack != null)
                 this.model.getTransport ().toggleWriteArrangerAutomation ();
         }

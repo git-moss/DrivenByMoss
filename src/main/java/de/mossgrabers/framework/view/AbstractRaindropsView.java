@@ -6,7 +6,6 @@ package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -113,8 +112,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         if (this.ongoingResolutionChange)
             return;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = this.useTrackColor ? tb.getSelectedTrack () : null;
+        final ITrack selectedTrack = this.useTrackColor ? this.model.getSelectedTrack () : null;
 
         final int length = (int) Math.floor (this.getClip ().getLoopLength () / RESOLUTIONS[this.selectedIndex]);
         final int step = this.getClip ().getCurrentStep ();
