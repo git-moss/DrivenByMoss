@@ -84,6 +84,6 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     @Override
     public void startup ()
     {
-        // Intentionally empty
+        this.host.scheduleTask ( () -> this.getSurface ().updateKeyTranslation (), 2000);
     }
 }

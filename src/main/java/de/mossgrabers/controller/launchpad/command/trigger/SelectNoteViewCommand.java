@@ -9,7 +9,6 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.launchpad.view.Views;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.ViewMultiSelectCommand;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -58,8 +57,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrack sel = this.model.getSelectedTrack ();
         if (sel == null)
         {
             viewManager.setActiveView (Views.VIEW_SESSION);

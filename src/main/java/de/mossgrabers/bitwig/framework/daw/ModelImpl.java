@@ -8,11 +8,8 @@ import de.mossgrabers.bitwig.framework.daw.data.MasterTrackImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.AbstractModel;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.data.ISlot;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 import com.bitwig.extension.controller.api.Application;
@@ -133,25 +130,5 @@ public class ModelImpl extends AbstractModel
     public boolean isCursorDeviceOnMasterTrack ()
     {
         return this.masterTrackEqualsValue.get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canConvertClip ()
-    {
-        final IChannelBank tb = this.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
-        if (selectedTrack == null)
-            return false;
-        final ISlot [] slots = selectedTrack.getSelectedSlots ();
-        if (slots.length == 0)
-            return false;
-        for (final ISlot slot: slots)
-        {
-            if (slot.hasContent ())
-                return true;
-        }
-        return false;
     }
 }

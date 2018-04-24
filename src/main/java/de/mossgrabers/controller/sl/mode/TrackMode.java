@@ -39,8 +39,7 @@ public class TrackMode extends AbstractMode<SLControlSurface, SLConfiguration>
     @Override
     public void updateDisplay ()
     {
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack t = currentTrackBank.getSelectedTrack ();
+        final ITrack t = this.model.getSelectedTrack ();
         final Display d = this.surface.getDisplay ();
 
         if (t == null)

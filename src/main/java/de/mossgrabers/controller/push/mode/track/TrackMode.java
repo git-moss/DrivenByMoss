@@ -41,8 +41,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)
             return;
 
@@ -100,8 +99,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void onValueKnobTouch (final int index, final boolean isTouched)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)
             return;
 
@@ -267,8 +265,7 @@ public class TrackMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ().clear ();
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack t = currentTrackBank.getSelectedTrack ();
+        final ITrack t = this.model.getSelectedTrack ();
         if (t == null)
             d.setRow (1, "                     Please selecta track...                        ").done (0).done (2);
         else

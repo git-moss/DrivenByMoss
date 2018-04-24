@@ -122,7 +122,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
         if (activateMode)
             this.surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
         this.surface.getDisplay ().notify (isEffect ? "Effects" : "Tracks");
-        if (this.model.getCurrentTrackBank ().getSelectedTrack () == null)
+        if (this.model.getSelectedTrack () == null)
             this.selectTrack (0);
     }
 

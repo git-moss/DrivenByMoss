@@ -267,7 +267,13 @@ public enum FlexiCommand
     SCENE_8_LAUNCH_SCENE("Scene 8: Launch Scene", true),
     SCENE_SELECT_PREVIOUS_BANK("Scene: Select Previous Bank", true),
     SCENE_SELECT_NEXT_BANK("Scene: Select Next Bank", true),
-    SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS("Scene: Create Scene from playing Clips", true);
+    SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS("Scene: Create Scene from playing Clips", true),
+    CLIP_PREVIOUS("Clip: Select previous", true),
+    CLIP_NEXT("Clip: Select next", true),
+    CLIP_PLAY("Clip: Play", true),
+    CLIP_STOP("Clip: Stop", true),
+    CLIP_RECORD("Clip: Record", true),
+    CLIP_NEW("Clip: New", true);
 
     private final String  name;
     private final boolean isTrigger;

@@ -8,9 +8,7 @@ import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.controller.apc.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -59,9 +57,7 @@ public class MasterCommand extends AbstractTriggerCommand<APCControlSurface, APC
                 modeManager.setActiveMode (Modes.MODE_PAN);
         }
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedTrack ();
-        if (track == null)
-            tb.getTrack (0).select ();
+        if (this.model.getSelectedTrack () == null)
+            this.model.getCurrentTrackBank ().getTrack (0).select ();
     }
 }

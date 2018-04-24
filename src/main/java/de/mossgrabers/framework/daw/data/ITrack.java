@@ -220,6 +220,12 @@ public interface ITrack extends IChannel
 
 
     /**
+     * Scroll to the previous clip page.
+     */
+    void scrollClipPageBackwards ();
+
+
+    /**
      * Scroll to the next clip page.
      */
     void scrollClipPageForwards ();

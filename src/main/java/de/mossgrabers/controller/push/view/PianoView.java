@@ -46,7 +46,7 @@ public class PianoView extends PlayView
 
         final ColorManager colorManager = this.model.getColorManager ();
         final boolean isRecording = this.model.hasRecordingState ();
-        final ITrack track = this.model.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack track = this.model.getSelectedTrack ();
         final int playKeyColor = colorManager.getColor (isRecording ? AbstractPlayView.COLOR_RECORD : AbstractPlayView.COLOR_PLAY);
         final int whiteKeyColor = colorManager.getColor (Scales.SCALE_COLOR_NOTE);
         final int blackKeyColor = colorManager.getColor (replaceOctaveColorWithTrackColor (track, Scales.SCALE_COLOR_OCTAVE));

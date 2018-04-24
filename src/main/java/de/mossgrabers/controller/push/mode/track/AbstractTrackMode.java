@@ -319,8 +319,7 @@ public abstract class AbstractTrackMode extends BaseMode
         if (!track.doesExist () || !track.isActivated ())
             return this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selTrack = tb.getSelectedTrack ();
+        final ITrack selTrack = this.model.getSelectedTrack ();
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
         final boolean isSel = track.getIndex () == selIndex;
 

@@ -356,6 +356,14 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
+    public void scrollClipPageBackwards ()
+    {
+        this.track.clipLauncherSlotBank ().scrollPageBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void scrollClipPageForwards ()
     {
         this.track.clipLauncherSlotBank ().scrollPageForwards ();

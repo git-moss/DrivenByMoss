@@ -86,34 +86,31 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
 
     private void handleTrack (final int index, final double value)
     {
-        final boolean effectTrackBankActive = this.model.isEffectTrackBankActive ();
-
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
-
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
         switch (index)
         {
             case 0:
                 selectedTrack.setVolume (value);
-                return;
+                break;
+
             case 1:
                 selectedTrack.setPan (value);
-                return;
-        }
+                break;
 
-        final MCUConfiguration config = this.surface.getConfiguration ();
+            case 2:
+                if (this.surface.getConfiguration ().isDisplayCrossfader ())
+                {
+                    final double range = this.model.getValueChanger ().getUpperBound () / 3.0;
+                    selectedTrack.setCrossfadeModeAsNumber ((int) Math.round (value / range));
+                }
+                else if (!this.model.isEffectTrackBankActive ())
+                    selectedTrack.getSend (0).setValue (value);
+                break;
 
-        if (index == 2)
-        {
-            if (config.isDisplayCrossfader ())
-            {
-                final double range = this.model.getValueChanger ().getUpperBound () / 3.0;
-                selectedTrack.setCrossfadeModeAsNumber ((int) Math.round (value / range));
-            }
-            else if (!effectTrackBankActive)
-                selectedTrack.getSend (0).setValue (value);
+            default:
+                if (!this.model.isEffectTrackBankActive ())
+                    selectedTrack.getSend (index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).setValue (value);
+                break;
         }
-        else if (!effectTrackBankActive)
-            selectedTrack.getSend (index - (config.isDisplayCrossfader () ? 3 : 2)).setValue (value);
     }
 }

@@ -11,7 +11,6 @@ import de.mossgrabers.controller.launchpad.mode.Modes;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -195,8 +194,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
                 this.isTemporary = false;
 
                 final ViewManager viewManager = this.surface.getViewManager ();
-                final ITrackBank tb = this.model.getTrackBank ();
-                final ITrack selectedTrack = tb.getSelectedTrack ();
+                final ITrack selectedTrack = this.model.getSelectedTrack ();
                 if (selectedTrack == null)
                     return;
                 final Integer viewId = viewManager.getPreferredView (selectedTrack.getPosition ());

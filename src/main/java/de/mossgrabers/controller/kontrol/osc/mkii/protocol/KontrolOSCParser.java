@@ -377,11 +377,7 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
                 this.transport.record ();
                 break;
             case KontrolOSCConfiguration.RECORD_CLIP:
-                final IChannelBank tb = this.model.getCurrentTrackBank ();
-                final ITrack track = tb.getSelectedTrack ();
-                if (track == null)
-                    return;
-                final ISlot selectedSlot = track.getSelectedSlot ();
+                final ISlot selectedSlot = this.model.getSelectedSlot ();
                 if (selectedSlot != null)
                     selectedSlot.record ();
                 break;
@@ -474,20 +470,15 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
         switch (command)
         {
             case "view": // 1.6
-                final IChannelBank tb = this.model.getCurrentTrackBank ();
-                if (tb != null)
+                final ITrack selectedTrack = this.model.getSelectedTrack ();
+                if (selectedTrack == null)
+                    return;
+                final int sceneIndex = toIntValue (values);
+                selectedTrack.getSlot (sceneIndex).select ();
+                this.sendOSC ("scene", new int []
                 {
-                    final int sceneIndex = toIntValue (values);
-                    final ITrack selectedTrack = tb.getSelectedTrack ();
-                    if (selectedTrack != null)
-                    {
-                        selectedTrack.getSlot (sceneIndex).select ();
-                        this.sendOSC ("scene", new int []
-                        {
-                            sceneIndex
-                        });
-                    }
-                }
+                    sceneIndex
+                });
                 break;
 
             default:

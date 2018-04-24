@@ -622,6 +622,14 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
+    public void scrollClipPageBackwards ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void scrollClipPageForwards ()
     {
         // Intentionally empty

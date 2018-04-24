@@ -7,7 +7,6 @@ package de.mossgrabers.controller.mcu.mode.track;
 import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -37,8 +36,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)
             return;
 
@@ -81,8 +79,7 @@ public class TrackMode extends AbstractTrackMode
 
         final Display d = this.surface.getDisplay ().clear ();
 
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = currentTrackBank.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)
         {
             d.notify ("Please select a track...", true, false);
@@ -138,10 +135,9 @@ public class TrackMode extends AbstractTrackMode
     @Override
     protected void updateKnobLEDs ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
 
-        final ITrack t = tb.getSelectedTrack ();
+        final ITrack t = this.model.getSelectedTrack ();
         if (t == null)
         {
             for (int i = 0; i < 8; i++)
@@ -171,8 +167,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)
             return;
         switch (index)

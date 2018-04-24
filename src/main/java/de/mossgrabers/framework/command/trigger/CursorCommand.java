@@ -174,8 +174,7 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
 
     protected void scrollTracksLeft ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrack sel = this.model.getSelectedTrack ();
         final int index = sel == null ? 0 : sel.getIndex () - 1;
         if (index == -1 || this.surface.isShiftPressed ())
         {
@@ -199,8 +198,7 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
 
     protected void scrollTracksRight ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrack sel = this.model.getSelectedTrack ();
         final int index = sel == null ? 0 : sel.getIndex () + 1;
         if (index == 8 || this.surface.isShiftPressed ())
         {

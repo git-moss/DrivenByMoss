@@ -53,7 +53,8 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public String getName ()
     {
-        return this.definition.getName ();
+        // Return the identical name to prevent a very long text in the selection menu
+        return this.getHardwareModel ();
     }
 
 

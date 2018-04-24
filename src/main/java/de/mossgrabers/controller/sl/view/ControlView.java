@@ -108,25 +108,23 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
 
             // New
             case 4:
-                final IChannelBank tb = this.model.getCurrentTrackBank ();
-                final ITrack t = tb.getSelectedTrack ();
-                if (t != null)
+                final ITrack t = this.model.getSelectedTrack ();
+                if (t == null)
+                    return;
+                final ISlot [] slotIndexes = t.getSelectedSlots ();
+                final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
+                for (int i = 0; i < 8; i++)
                 {
-                    final ISlot [] slotIndexes = t.getSelectedSlots ();
-                    final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
-                    for (int i = 0; i < 8; i++)
+                    final int sIndex = (slotIndex + i) % 8;
+                    final ISlot s = t.getSlot (sIndex);
+                    if (!s.hasContent ())
                     {
-                        final int sIndex = (slotIndex + i) % 8;
-                        final ISlot s = t.getSlot (sIndex);
-                        if (!s.hasContent ())
-                        {
-                            this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());
-                            if (slotIndex != sIndex)
-                                s.select ();
-                            s.launch ();
-                            this.model.getTransport ().setLauncherOverdub (true);
-                            return;
-                        }
+                        this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());
+                        if (slotIndex != sIndex)
+                            s.select ();
+                        s.launch ();
+                        this.model.getTransport ().setLauncherOverdub (true);
+                        return;
                     }
                 }
                 this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.");
@@ -176,30 +174,26 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
             return;
         }
 
-        IChannelBank tb;
         ITrack track;
         switch (index)
         {
             // Mute
             case 0:
-                tb = this.model.getCurrentTrackBank ();
-                track = tb.getSelectedTrack ();
+                track = this.model.getSelectedTrack ();
                 if (track != null)
                     track.toggleMute ();
                 break;
 
             // Solo
             case 1:
-                tb = this.model.getCurrentTrackBank ();
-                track = tb.getSelectedTrack ();
+                track = this.model.getSelectedTrack ();
                 if (track != null)
                     track.toggleSolo ();
                 break;
 
             // Arm
             case 2:
-                tb = this.model.getCurrentTrackBank ();
-                track = tb.getSelectedTrack ();
+                track = this.model.getSelectedTrack ();
                 if (track != null)
                     track.toggleRecArm ();
                 break;

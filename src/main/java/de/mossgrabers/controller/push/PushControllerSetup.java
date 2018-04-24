@@ -540,8 +540,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             }
             else
             {
-                final IChannelBank tb = this.model.getCurrentTrackBank ();
-                final ITrack selTrack = modeManager.isActiveMode (Modes.MODE_MASTER) ? this.model.getMasterTrack () : tb.getSelectedTrack ();
+                final ITrack selTrack = modeManager.isActiveMode (Modes.MODE_MASTER) ? this.model.getMasterTrack () : this.model.getSelectedTrack ();
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, selTrack != null && selTrack.isMute () ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, selTrack != null && selTrack.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
             }
@@ -671,7 +670,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         // Recall last used view (if we are not in session mode)
         if (!viewManager.isActiveView (Views.VIEW_SESSION))
         {
-            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+            final ITrack selectedTrack = this.model.getSelectedTrack ();
             if (selectedTrack != null)
             {
                 final Integer preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());

@@ -7,7 +7,6 @@ package de.mossgrabers.framework.view;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -90,8 +89,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
         final boolean isRecording = this.model.hasRecordingState ();
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
         final PadGrid gridPad = this.surface.getPadGrid ();
         for (int i = this.scales.getStartNote (); i < this.scales.getEndNote (); i++)
             gridPad.light (i, this.getGridColor (isKeyboardEnabled, isRecording, selectedTrack, i));

@@ -210,7 +210,8 @@ public abstract class AbstractConfiguration implements Configuration
         "Show"
     };
 
-    protected static final String []                 ON_OFF_OPTIONS              =
+    /** The Off/On option. */
+    public static final String []                    ON_OFF_OPTIONS              =
     {
         "Off",
         "On"
@@ -990,7 +991,7 @@ public abstract class AbstractConfiguration implements Configuration
      * @param value The value to search for
      * @return The index or 0 if not found
      */
-    protected static int lookupIndex (final String [] options, final String value)
+    public static int lookupIndex (final String [] options, final String value)
     {
         for (int i = 0; i < options.length; i++)
         {

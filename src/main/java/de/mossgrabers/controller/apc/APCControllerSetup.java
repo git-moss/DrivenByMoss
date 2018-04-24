@@ -514,7 +514,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final ViewManager viewManager = surface.getViewManager ();
         if (!viewManager.isActiveView (Views.VIEW_SESSION))
         {
-            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+            final ITrack selectedTrack = this.model.getSelectedTrack ();
             if (selectedTrack != null)
             {
                 final Integer preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
