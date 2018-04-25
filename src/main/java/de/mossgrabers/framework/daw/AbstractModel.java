@@ -315,7 +315,7 @@ public abstract class AbstractModel implements IModel
     @Override
     public ISlot getSelectedSlot ()
     {
-        final ITrack track = getSelectedTrack ();
+        final ITrack track = this.getSelectedTrack ();
         return track == null ? null : track.getSelectedSlot ();
     }
 

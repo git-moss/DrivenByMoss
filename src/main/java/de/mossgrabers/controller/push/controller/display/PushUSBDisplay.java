@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.push.controller.display;
 
-import com.bitwig.extension.controller.api.UsbTransferException;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.usb.IUSBDevice;
@@ -94,15 +93,9 @@ public class PushUSBDisplay
             return;
 
         this.isSending = true;
-
         image.fillTransferBuffer (this.imageBuffer);
-        try {
-            this.usbEndpoint.send (this.headerBuffer, TIMEOUT);
-            this.usbEndpoint.send (this.imageBuffer, TIMEOUT);
-        } catch (UsbTransferException e) {
-            // TODO
-        }
-
+        this.usbEndpoint.send (this.headerBuffer, TIMEOUT);
+        this.usbEndpoint.send (this.imageBuffer, TIMEOUT);
         this.isSending = false;
     }
 

@@ -199,7 +199,7 @@ public class CursorDeviceImpl implements ICursorDevice
     @Override
     public void browseToReplaceDevice ()
     {
-        this.cursorDevice.browseToReplaceDevice ();
+        this.cursorDevice.replaceDeviceInsertionPoint ().browse ();
     }
 
 
@@ -207,7 +207,7 @@ public class CursorDeviceImpl implements ICursorDevice
     @Override
     public void browseToInsertBeforeDevice ()
     {
-        this.cursorDevice.browseToInsertBeforeDevice ();
+        this.cursorDevice.beforeDeviceInsertionPoint ().browse ();
     }
 
 
@@ -215,7 +215,7 @@ public class CursorDeviceImpl implements ICursorDevice
     @Override
     public void browseToInsertAfterDevice ()
     {
-        this.cursorDevice.browseToInsertAfterDevice ();
+        this.cursorDevice.afterDeviceInsertionPoint ().browse ();
     }
 
 

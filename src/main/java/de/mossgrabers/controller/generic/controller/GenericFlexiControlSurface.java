@@ -72,7 +72,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         this.model = model;
 
         this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_EXPORT, () -> {
-            String filename = this.configuration.getFilename ();
+            final String filename = this.configuration.getFilename ();
             if (filename == null || filename.trim ().isEmpty ())
             {
                 this.host.showNotification ("Please enter a filename first.");
@@ -84,14 +84,14 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 this.configuration.exportTo (file);
                 this.host.showNotification ("Exported to: " + file);
             }
-            catch (IOException ex)
+            catch (final IOException ex)
             {
                 this.host.showNotification ("Error writing file: " + ex.getMessage ());
             }
         });
 
         this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_IMPORT, () -> {
-            String filename = this.configuration.getFilename ();
+            final String filename = this.configuration.getFilename ();
             if (filename == null || filename.trim ().isEmpty ())
             {
                 this.host.showNotification ("Please enter a filename first.");
@@ -109,7 +109,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 this.configuration.importFrom (file);
                 this.host.showNotification ("Imported from: " + file);
             }
-            catch (IOException ex)
+            catch (final IOException ex)
             {
                 this.host.showNotification ("Error reading file: " + ex.getMessage ());
             }
@@ -132,7 +132,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             final FlexiCommand command = slots[i].getCommand ();
             if (command == FlexiCommand.OFF || !slots[i].isSendValue ())
                 continue;
-            int value = this.getCommandValue (command);
+            final int value = this.getCommandValue (command);
             if (this.valueCache[i] == value)
                 continue;
             this.valueCache[i] = value;
