@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.usb;
 
+import com.bitwig.extension.controller.api.UsbTransferException;
+
 import java.nio.ByteBuffer;
 
 
@@ -20,7 +22,7 @@ public interface IUSBEndpoint
      * @param buffer The buffer with the data to send
      * @param timeout Timeout for the sending task
      */
-    void send (ByteBuffer buffer, int timeout);
+    void send (ByteBuffer buffer, int timeout) throws UsbTransferException;
 
 
     /**

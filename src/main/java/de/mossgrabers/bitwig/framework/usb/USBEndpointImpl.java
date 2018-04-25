@@ -4,13 +4,10 @@
 
 package de.mossgrabers.bitwig.framework.usb;
 
+import com.bitwig.extension.controller.api.*;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.usb.IUSBAsyncCallback;
 import de.mossgrabers.framework.usb.IUSBEndpoint;
-
-import com.bitwig.extension.controller.api.UsbEndpoint;
-import com.bitwig.extension.controller.api.UsbTransferResult;
-import com.bitwig.extension.controller.api.UsbTransferStatus;
 
 import java.nio.ByteBuffer;
 
@@ -41,12 +38,13 @@ public class USBEndpointImpl implements IUSBEndpoint
 
     /** {@inheritDoc} */
     @Override
-    public void send (final ByteBuffer buffer, final int timeout)
-    {
-        final UsbTransferResult result = this.endpoint.bulkTransfer (buffer, timeout);
-        final UsbTransferStatus status = result.status ();
-        if (status != UsbTransferStatus.Completed)
-            this.host.error ("USB transmission error: " + status);
+    public void send (final ByteBuffer buffer, final int timeout) {
+
+        try {
+            this.endpoint.bulkTransfer (buffer, timeout);
+        } catch (UsbTransferException e) {
+            this.host.error ("USB transmission error: " + e);
+        }
     }
 
 
@@ -55,10 +53,10 @@ public class USBEndpointImpl implements IUSBEndpoint
     public void sendAsync (final ByteBuffer buffer, final IUSBAsyncCallback callback, final int timeout)
     {
         this.endpoint.asyncBulkTransfer (buffer, result -> {
-            final UsbTransferStatus status = result.status ();
-            if (status != UsbTransferStatus.Completed)
-                this.host.error ("USB receive error: " + status);
-            callback.process (status == UsbTransferStatus.Completed ? result.actualLength () : -1);
+            final UsbTransferError error = result.error();
+            if (error != null)
+                this.host.error ("USB receive error: " + error.getErrorMessage());
+            callback.process (error != null ? result.actualLength () : -1);
         }, timeout);
     }
 }
