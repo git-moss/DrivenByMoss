@@ -62,7 +62,7 @@ public class USBEndpointImpl implements IUSBEndpoint
             final UsbTransferError error = result.error ();
             if (error != null)
                 this.host.error ("USB receive error: " + error.getErrorMessage ());
-            callback.process (error != null ? result.actualLength () : -1);
+            callback.process (error == null ? result.actualLength () : -1);
         }, timeout);
     }
 }
