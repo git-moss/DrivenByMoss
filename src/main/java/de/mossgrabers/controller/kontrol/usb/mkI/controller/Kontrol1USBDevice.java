@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.kontrol.usb.mkI.controller;
 
+import com.bitwig.extension.controller.api.UsbTransferException;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.usb.IUSBDevice;
 import de.mossgrabers.framework.usb.IUSBEndpoint;
@@ -512,7 +513,11 @@ public class Kontrol1USBDevice
      */
     public void init ()
     {
-        this.usbEndpointDisplay.send (this.initBuffer, TIMEOUT);
+        try {
+            this.usbEndpointDisplay.send (this.initBuffer, TIMEOUT);
+        } catch (UsbTransferException e) {
+            host.error("Failed to initialize Push-2 Display", e);
+        }
     }
 
 
@@ -695,7 +700,11 @@ public class Kontrol1USBDevice
 
             this.busySendingDisplay = true;
 
-            this.usbEndpointDisplay.send (this.displayBuffer, TIMEOUT);
+            try {
+                this.usbEndpointDisplay.send (this.displayBuffer, TIMEOUT);
+            } catch (UsbTransferException e) {
+                host.error("Failed to transmit display data", e);
+            }
             this.busySendingDisplay = false;
         }
     }
@@ -748,7 +757,11 @@ public class Kontrol1USBDevice
 
         this.busySendingLEDs = true;
 
-        this.usbEndpointDisplay.send (this.ledBuffer, TIMEOUT);
+        try {
+            this.usbEndpointDisplay.send (this.ledBuffer, TIMEOUT);
+        } catch (UsbTransferException e) {
+            host.error("USB transmission error", e);
+        }
         this.busySendingLEDs = false;
     }
 
@@ -791,7 +804,11 @@ public class Kontrol1USBDevice
 
         this.busySendingKeyLEDs = true;
 
-        this.usbEndpointDisplay.send (this.keyLedBuffer, TIMEOUT);
+        try {
+            this.usbEndpointDisplay.send (this.keyLedBuffer, TIMEOUT);
+        } catch (UsbTransferException e) {
+            host.error("USB transmission error", e);
+        }
         this.busySendingKeyLEDs = false;
     }
 

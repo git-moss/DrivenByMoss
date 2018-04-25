@@ -123,16 +123,16 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
             list.add (midiDiscoveryPair.getKey (), midiDiscoveryPair.getValue ());
     }
 
-
     /** {@inheritDoc} */
     @Override
-    public void listUsbEndpoints (final List<UsbDeviceInfo> endpoints)
-    {
+    public void listUsbDevices(List<UsbDeviceInfo> devices) {
+        super.listUsbDevices(devices);
+
         final Pair<Short, Short> claimUSBDevice = this.definition.claimUSBDevice ();
         if (claimUSBDevice != null)
-            endpoints.add (new UsbDeviceInfo (claimUSBDevice.getKey ().shortValue (), claimUSBDevice.getValue ().shortValue ()));
+            devices.add (UsbDeviceInfo.createForVendorAndProductId(
+                    claimUSBDevice.getKey ().shortValue (), claimUSBDevice.getValue ().shortValue ()));
     }
-
 
     /** {@inheritDoc} */
     @Override
