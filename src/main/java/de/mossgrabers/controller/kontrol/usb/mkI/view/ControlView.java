@@ -2,12 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mkI.view;
+package de.mossgrabers.controller.kontrol.usb.mki.view;
 
-import de.mossgrabers.controller.kontrol.usb.mkI.Kontrol1Configuration;
-import de.mossgrabers.controller.kontrol.usb.mkI.command.trigger.Kontrol1CursorCommand;
-import de.mossgrabers.controller.kontrol.usb.mkI.controller.Kontrol1ControlSurface;
-import de.mossgrabers.controller.kontrol.usb.mkI.mode.Modes;
+import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
+import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.Kontrol1CursorCommand;
+import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;

@@ -2,12 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mki.command.trigger;
+package de.mossgrabers.controller.kontrol.usb.mkii.command.trigger;
 
-import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
-import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.device.ParamsMode;
+import de.mossgrabers.controller.kontrol.usb.mkii.Kontrol2Configuration;
+import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2ControlSurface;
+import de.mossgrabers.controller.kontrol.usb.mkii.mode.Modes;
+import de.mossgrabers.controller.kontrol.usb.mkii.mode.device.ParamsMode;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
@@ -21,7 +21,7 @@ import de.mossgrabers.framework.scale.Scales;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trigger.CursorCommand<Kontrol1ControlSurface, Kontrol1Configuration>
+public class Kontrol2CursorCommand extends de.mossgrabers.framework.command.trigger.CursorCommand<Kontrol2ControlSurface, Kontrol2Configuration>
 {
     /**
      * Constructor.
@@ -30,7 +30,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
      * @param model The model
      * @param surface The surface
      */
-    public Kontrol1CursorCommand (final Direction direction, final IModel model, final Kontrol1ControlSurface surface)
+    public Kontrol2CursorCommand (final Direction direction, final IModel model, final Kontrol2ControlSurface surface)
     {
         super (direction, model, surface);
     }
@@ -192,7 +192,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
 
     private void updateScalePreferences ()
     {
-        final Kontrol1Configuration config = this.surface.getConfiguration ();
+        final Kontrol2Configuration config = this.surface.getConfiguration ();
         final Scales scales = this.model.getScales ();
         config.setScale (scales.getScale ().getName ());
         config.setScaleBase (Scales.BASES[scales.getScaleOffset ()]);

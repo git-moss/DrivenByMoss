@@ -2,10 +2,10 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mki.mode.device;
+package de.mossgrabers.controller.kontrol.usb.mkii.mode.device;
 
-import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
-import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
+import de.mossgrabers.controller.kontrol.usb.mkii.Kontrol2Configuration;
+import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2ControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
@@ -21,7 +21,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Configuration>
+public class BrowseMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Configuration>
 {
     /** No selection. */
     public static final int  SELECTION_OFF    = 0;
@@ -39,7 +39,7 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
      * @param surface The surface
      * @param model The model
      */
-    public BrowseMode (final Kontrol1ControlSurface surface, final IModel model)
+    public BrowseMode (final Kontrol2ControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = false;

@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mki.mode;
+package de.mossgrabers.controller.kontrol.usb.mkii.mode;
 
 /**
  * Static mode IDs and some helper functions.

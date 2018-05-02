@@ -2,9 +2,9 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mki.controller;
+package de.mossgrabers.controller.kontrol.usb.mkii.controller;
 
-import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
+import de.mossgrabers.controller.kontrol.usb.mkii.Kontrol2Configuration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Configuration> implements UIChangeCallback
+public class Kontrol2ControlSurface extends AbstractControlSurface<Kontrol2Configuration> implements UIChangeCallback
 {
     /** Clicking the main encoder. */
     public static final int     BUTTON_MAIN_ENCODER   = 1;
@@ -158,7 +158,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
     /** Color intensity for an disabled button. */
     public static final int     BUTTON_STATE_OFF      = 0;
 
-    private Kontrol1USBDevice   usbDevice;
+    private Kontrol2USBDevice   usbDevice;
 
 
     /**
@@ -170,7 +170,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
      * @param input
      * @param usbDevice
      */
-    public Kontrol1ControlSurface (final IHost host, final ColorManager colorManager, final Kontrol1Configuration configuration, final IMidiInput input, final Kontrol1USBDevice usbDevice)
+    public Kontrol2ControlSurface (final IHost host, final ColorManager colorManager, final Kontrol2Configuration configuration, final IMidiInput input, final Kontrol2USBDevice usbDevice)
     {
         super (host, configuration, colorManager, null, input, KONTROL1_BUTTONS_ALL);
 
