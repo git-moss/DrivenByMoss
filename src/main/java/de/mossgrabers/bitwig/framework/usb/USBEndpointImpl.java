@@ -60,7 +60,7 @@ public class USBEndpointImpl implements IUSBEndpoint
     {
         this.endpoint.asyncBulkTransfer (buffer, result -> {
             final UsbTransferError error = result.error ();
-            if (error != null)
+            if (error != null && error != UsbTransferError.TimedOut)
                 this.host.error ("USB receive error: " + error.getErrorMessage ());
             callback.process (error == null ? result.actualLength () : -1);
         }, timeout);
