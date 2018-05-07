@@ -2,12 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mki.command.continuous;
+package de.mossgrabers.controller.kontrol.usb.mkii.command.continuous;
 
-import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
-import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.device.BrowseMode;
+import de.mossgrabers.controller.kontrol.usb.mkii.Kontrol2Configuration;
+import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2ControlSurface;
+import de.mossgrabers.controller.kontrol.usb.mkii.mode.Modes;
+import de.mossgrabers.controller.kontrol.usb.mkii.mode.device.BrowseMode;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
 import de.mossgrabers.framework.daw.IModel;
@@ -21,7 +21,7 @@ import de.mossgrabers.framework.view.View;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MainEncoderCommand extends MasterVolumeCommand<Kontrol1ControlSurface, Kontrol1Configuration>
+public class MainEncoderCommand extends MasterVolumeCommand<Kontrol2ControlSurface, Kontrol2Configuration>
 {
     /**
      * Constructor.
@@ -29,7 +29,7 @@ public class MainEncoderCommand extends MasterVolumeCommand<Kontrol1ControlSurfa
      * @param model The model
      * @param surface The surface
      */
-    public MainEncoderCommand (final IModel model, final Kontrol1ControlSurface surface)
+    public MainEncoderCommand (final IModel model, final Kontrol2ControlSurface surface)
     {
         super (model, surface);
     }

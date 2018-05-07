@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mkI.controller;
+package de.mossgrabers.controller.kontrol.usb.mki.controller;
 
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.usb.IUSBDevice;
@@ -479,7 +479,7 @@ public class Kontrol1USBDevice
             this.usbDevice = null;
             this.usbEndpointDisplay = null;
             this.usbEndpointUI = null;
-            host.error ("Could not open USB connection.");
+            host.error ("Could not open USB connection: " + ex.getMessage ());
         }
 
         this.displayBuffer = host.createByteBuffer (DATA_SZ);
@@ -512,7 +512,8 @@ public class Kontrol1USBDevice
      */
     public void init ()
     {
-        this.usbEndpointDisplay.send (this.initBuffer, TIMEOUT);
+        if (this.usbEndpointDisplay != null)
+            this.usbEndpointDisplay.send (this.initBuffer, TIMEOUT);
     }
 
 
@@ -733,6 +734,9 @@ public class Kontrol1USBDevice
      */
     public void updateButtonLEDs ()
     {
+        if (this.usbEndpointDisplay == null)
+            return;
+
         if (this.busySendingLEDs || Arrays.equals (this.oldButtonStates, this.buttonStates))
             return;
         System.arraycopy (this.buttonStates, 0, this.oldButtonStates, 0, this.oldButtonStates.length);
@@ -777,6 +781,9 @@ public class Kontrol1USBDevice
      */
     public void updateKeyLEDs ()
     {
+        if (this.usbEndpointDisplay == null)
+            return;
+
         if (this.busySendingKeyLEDs || Arrays.equals (this.oldKeyColors, this.keyColors))
             return;
         System.arraycopy (this.keyColors, 0, this.oldKeyColors, 0, this.oldKeyColors.length);

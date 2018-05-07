@@ -2,26 +2,26 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mkI;
+package de.mossgrabers.controller.kontrol.usb.mki;
 
-import de.mossgrabers.controller.kontrol.usb.mkI.command.continuous.MainEncoderCommand;
-import de.mossgrabers.controller.kontrol.usb.mkI.command.trigger.BackButtonCommand;
-import de.mossgrabers.controller.kontrol.usb.mkI.command.trigger.EnterButtonCommand;
-import de.mossgrabers.controller.kontrol.usb.mkI.command.trigger.Kontrol1CursorCommand;
-import de.mossgrabers.controller.kontrol.usb.mkI.command.trigger.Kontrol1PlayCommand;
-import de.mossgrabers.controller.kontrol.usb.mkI.command.trigger.MainEncoderButtonCommand;
-import de.mossgrabers.controller.kontrol.usb.mkI.command.trigger.ScaleButtonCommand;
-import de.mossgrabers.controller.kontrol.usb.mkI.controller.Kontrol1ControlSurface;
-import de.mossgrabers.controller.kontrol.usb.mkI.controller.Kontrol1Display;
-import de.mossgrabers.controller.kontrol.usb.mkI.controller.Kontrol1USBDevice;
-import de.mossgrabers.controller.kontrol.usb.mkI.mode.Modes;
-import de.mossgrabers.controller.kontrol.usb.mkI.mode.ScaleMode;
-import de.mossgrabers.controller.kontrol.usb.mkI.mode.device.BrowseMode;
-import de.mossgrabers.controller.kontrol.usb.mkI.mode.device.ParamsMode;
-import de.mossgrabers.controller.kontrol.usb.mkI.mode.track.TrackMode;
-import de.mossgrabers.controller.kontrol.usb.mkI.mode.track.VolumeMode;
-import de.mossgrabers.controller.kontrol.usb.mkI.view.ControlView;
-import de.mossgrabers.controller.kontrol.usb.mkI.view.Views;
+import de.mossgrabers.controller.kontrol.usb.mki.command.continuous.MainEncoderCommand;
+import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.BackButtonCommand;
+import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.EnterButtonCommand;
+import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.Kontrol1CursorCommand;
+import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.Kontrol1PlayCommand;
+import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.MainEncoderButtonCommand;
+import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.ScaleButtonCommand;
+import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
+import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Display;
+import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1USBDevice;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.ScaleMode;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.device.BrowseMode;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.device.ParamsMode;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.track.TrackMode;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.track.VolumeMode;
+import de.mossgrabers.controller.kontrol.usb.mki.view.ControlView;
+import de.mossgrabers.controller.kontrol.usb.mki.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;

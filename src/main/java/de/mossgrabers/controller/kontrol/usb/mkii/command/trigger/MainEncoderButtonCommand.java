@@ -2,12 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mki.command.trigger;
+package de.mossgrabers.controller.kontrol.usb.mkii.command.trigger;
 
-import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
-import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.device.BrowseMode;
+import de.mossgrabers.controller.kontrol.usb.mkii.Kontrol2Configuration;
+import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2ControlSurface;
+import de.mossgrabers.controller.kontrol.usb.mkii.mode.Modes;
+import de.mossgrabers.controller.kontrol.usb.mkii.mode.device.BrowseMode;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MainEncoderButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSurface, Kontrol1Configuration>
+public class MainEncoderButtonCommand extends AbstractTriggerCommand<Kontrol2ControlSurface, Kontrol2Configuration>
 {
     /**
      * Constructor.
@@ -27,7 +27,7 @@ public class MainEncoderButtonCommand extends AbstractTriggerCommand<Kontrol1Con
      * @param model The model
      * @param surface The surface
      */
-    public MainEncoderButtonCommand (final IModel model, final Kontrol1ControlSurface surface)
+    public MainEncoderButtonCommand (final IModel model, final Kontrol2ControlSurface surface)
     {
         super (model, surface);
     }

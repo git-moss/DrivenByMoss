@@ -2,11 +2,11 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mki.mode;
+package de.mossgrabers.controller.kontrol.usb.mkii.mode;
 
-import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
-import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
-import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Display;
+import de.mossgrabers.controller.kontrol.usb.mkii.Kontrol2Configuration;
+import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2ControlSurface;
+import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ScaleMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Configuration>
+public class ScaleMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Configuration>
 {
     final Scales scales;
 
@@ -29,7 +29,7 @@ public class ScaleMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
      * @param surface The surface
      * @param model The model
      */
-    public ScaleMode (final Kontrol1ControlSurface surface, final IModel model)
+    public ScaleMode (final Kontrol2ControlSurface surface, final IModel model)
     {
         super (surface, model);
         this.isTemporary = true;
@@ -41,7 +41,7 @@ public class ScaleMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
     @Override
     public void updateDisplay ()
     {
-        final Kontrol1Display d = (Kontrol1Display) this.surface.getDisplay ();
+        final Kontrol2Display d = (Kontrol2Display) this.surface.getDisplay ();
 
         d.clear ();
         d.setCell (0, 0, "SCALE");
@@ -101,7 +101,7 @@ public class ScaleMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
 
     private void updateScalePreferences ()
     {
-        final Kontrol1Configuration config = this.surface.getConfiguration ();
+        final Kontrol2Configuration config = this.surface.getConfiguration ();
         config.setScale (this.scales.getScale ().getName ());
         config.setScaleBase (Scales.BASES[this.scales.getScaleOffset ()]);
         config.setScaleInKey (!this.scales.isChromatic ());

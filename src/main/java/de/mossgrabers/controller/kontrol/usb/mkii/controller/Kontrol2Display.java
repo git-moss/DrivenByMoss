@@ -2,9 +2,9 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mki.controller;
+package de.mossgrabers.controller.kontrol.usb.mkii.controller;
 
-import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
+import de.mossgrabers.controller.kontrol.usb.mkii.Kontrol2Configuration;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.IHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Kontrol1Display extends AbstractDisplay
+public class Kontrol2Display extends AbstractDisplay
 {
     private static final String [] SPACES =
     {
@@ -36,22 +36,19 @@ public class Kontrol1Display extends AbstractDisplay
         "             "
     };
 
-    private int                    maxParameterValue;
-    private Kontrol1USBDevice      usbDevice;
+    private Kontrol2USBDevice      usbDevice;
 
 
     /**
      * Constructor. 2 rows (0-1) with 9 blocks (0-8). Each block consists of 8 characters.
      *
      * @param host The host
-     * @param maxParameterValue
      * @param configuration The configuration
      * @param usbDevice The USB device
      */
-    public Kontrol1Display (final IHost host, final int maxParameterValue, final Kontrol1Configuration configuration, final Kontrol1USBDevice usbDevice)
+    public Kontrol2Display (final IHost host, final Kontrol2Configuration configuration, final Kontrol2USBDevice usbDevice)
     {
         super (host, null, 2 /* No of rows */, 9 /* No of cells */, 72 /* No of characters */);
-        this.maxParameterValue = maxParameterValue;
         this.usbDevice = usbDevice;
     }
 
@@ -77,22 +74,15 @@ public class Kontrol1Display extends AbstractDisplay
     @Override
     public AbstractDisplay clear ()
     {
-        for (int i = 0; i < 9; i++)
-        {
-            this.usbDevice.setBar (i, false, 0, 1);
-            for (int j = 0; j < 7; j++)
-            {
-                this.usbDevice.setDot (0, j, false);
-                this.usbDevice.setDot (1, j, false);
-            }
-        }
+        // TODO
+
         return super.clear ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public Kontrol1Display clearRow (final int row)
+    public Kontrol2Display clearRow (final int row)
     {
         for (int i = 0; i < this.noOfCells; i++)
             this.clearCell (row, i);
@@ -102,7 +92,7 @@ public class Kontrol1Display extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Kontrol1Display clearCell (final int row, final int cell)
+    public Kontrol2Display clearCell (final int row, final int cell)
     {
         this.cells[row * this.noOfCells + cell] = "        ";
         return this;
@@ -111,7 +101,7 @@ public class Kontrol1Display extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Kontrol1Display setBlock (final int row, final int block, final String value)
+    public Kontrol2Display setBlock (final int row, final int block, final String value)
     {
         final int cell = 2 * block;
         if (value.length () > 9)
@@ -139,64 +129,10 @@ public class Kontrol1Display extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Kontrol1Display setCell (final int row, final int cell, final String value)
+    public Kontrol2Display setCell (final int row, final int cell, final String value)
     {
         this.cells[row * this.noOfCells + cell] = pad (value, 8);
         return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void writeLine (final int row, final String text)
-    {
-        String t = text;
-        for (int i = 0; i < t.length (); i++)
-        {
-            char c = t.charAt (i);
-            final boolean isDot = c == '.';
-
-            if (!isDot || i % 8 == 0)
-            {
-                this.usbDevice.setDot (row, i, isDot);
-                this.usbDevice.setCharacter (row, i, isDot ? ' ' : c);
-            }
-            else
-            {
-                this.usbDevice.setDot (row, i - 1, true);
-                this.usbDevice.setDot (row, i, false);
-                final int end = (i / 8 + 1) * 8;
-                t = t.substring (0, i) + t.substring (i + 1, end) + " " + t.substring (end);
-                c = t.charAt (i);
-                this.usbDevice.setCharacter (row, i, c == '.' ? ' ' : c);
-            }
-        }
-    }
-
-
-    /**
-     * Set a value bar.
-     *
-     * @param column The column (0, ..., 8)
-     * @param hasBorder True to draw a border around the value bar
-     * @param value The value to set the bar to
-     */
-    public void setBar (final int column, final boolean hasBorder, final int value)
-    {
-        this.usbDevice.setBar (column, hasBorder, value, this.maxParameterValue);
-    }
-
-
-    /**
-     * Set a value bar drawn as panorama.
-     *
-     * @param column The column (0, ..., 8)
-     * @param hasBorder True to draw a border around the value bar
-     * @param value The value to set the bar to
-     */
-    public void setPanBar (final int column, final boolean hasBorder, final int value)
-    {
-        this.usbDevice.setPanBar (column, hasBorder, value, this.maxParameterValue);
     }
 
 
@@ -214,7 +150,16 @@ public class Kontrol1Display extends AbstractDisplay
         if (diff < 0)
             return text.substring (0, length);
         if (diff > 0)
-            return text + Kontrol1Display.SPACES[diff];
+            return text + Kontrol2Display.SPACES[diff];
         return text;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void writeLine (int row, String text)
+    {
+        // TODO Auto-generated method stub
+
     }
 }

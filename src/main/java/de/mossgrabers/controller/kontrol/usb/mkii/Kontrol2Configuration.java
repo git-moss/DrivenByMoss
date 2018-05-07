@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.usb.mki;
+package de.mossgrabers.controller.kontrol.usb.mkii;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
@@ -11,11 +11,11 @@ import de.mossgrabers.framework.controller.IValueChanger;
 
 
 /**
- * The configuration settings for Kontrol 1.
+ * The configuration settings for Kontrol 2.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Kontrol1Configuration extends AbstractConfiguration
+public class Kontrol2Configuration extends AbstractConfiguration
 {
     private static final Integer SCALE_IS_ACTIVE = Integer.valueOf (40);
 
@@ -28,7 +28,7 @@ public class Kontrol1Configuration extends AbstractConfiguration
      *
      * @param valueChanger The value changer
      */
-    public Kontrol1Configuration (final IValueChanger valueChanger)
+    public Kontrol2Configuration (final IValueChanger valueChanger)
     {
         super (valueChanger);
     }
