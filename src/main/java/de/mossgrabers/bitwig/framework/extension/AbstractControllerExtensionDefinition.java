@@ -4,20 +4,21 @@
 
 package de.mossgrabers.bitwig.framework.extension;
 
-import de.mossgrabers.framework.controller.IControllerDefinition;
-import de.mossgrabers.framework.controller.IControllerSetup;
-import de.mossgrabers.framework.utils.OperatingSystem;
-import de.mossgrabers.framework.utils.Pair;
+import java.util.List;
+import java.util.UUID;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.ControllerExtensionDefinition;
 import com.bitwig.extension.controller.UsbDeviceMatcher;
+import com.bitwig.extension.controller.VendorAndProductIdUsbDeviceMatcher;
 import com.bitwig.extension.controller.api.ControllerHost;
 
-import java.util.List;
-import java.util.UUID;
+import de.mossgrabers.framework.controller.IControllerDefinition;
+import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -132,7 +133,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
 
         final Pair<Short, Short> claimUSBDevice = this.definition.claimUSBDevice ();
         if (claimUSBDevice != null)
-            matchers.add (UsbDeviceMatcher.createForVendorAndProductId (claimUSBDevice.getKey ().shortValue (), claimUSBDevice.getValue ().shortValue ()));
+            matchers.add (new VendorAndProductIdUsbDeviceMatcher(getHardwareVendor(), getHardwareModel(), claimUSBDevice.getKey ().shortValue (), claimUSBDevice.getValue ().shortValue ()));
     }
 
 
