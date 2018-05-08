@@ -4,7 +4,6 @@
 
 package de.mossgrabers.bitwig.framework.usb;
 
-import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.usb.IUSBDevice;
 import de.mossgrabers.framework.usb.IUSBEndpoint;
 
@@ -19,18 +18,15 @@ import com.bitwig.extension.controller.api.UsbDevice;
 public class USBDeviceImpl implements IUSBDevice
 {
     private UsbDevice usbDevice;
-    private IHost     host;
 
 
     /**
      * Constructor.
      *
-     * @param host The host
      * @param usbDevice The Bitwig USB device
      */
-    public USBDeviceImpl (final IHost host, final UsbDevice usbDevice)
+    public USBDeviceImpl (final UsbDevice usbDevice)
     {
-        this.host = host;
         this.usbDevice = usbDevice;
     }
 
@@ -39,7 +35,7 @@ public class USBDeviceImpl implements IUSBDevice
     @Override
     public IUSBEndpoint createEndpoint (final byte interfaceNumber, final byte endpointAddress)
     {
-        return new USBEndpointImpl (this.host, this.usbDevice.createEndpoint (interfaceNumber, endpointAddress));
+        return new USBEndpointImpl (this.usbDevice.createEndpoint (interfaceNumber, endpointAddress));
     }
 
 

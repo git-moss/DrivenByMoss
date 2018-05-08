@@ -196,7 +196,7 @@ public class HostImpl implements IHost
     @Override
     public IUSBDevice getUsbDevice (final int index)
     {
-        final USBDeviceImpl usbDevice = new USBDeviceImpl (this, this.host.getUsbDevice (index));
+        final USBDeviceImpl usbDevice = new USBDeviceImpl (this.host.getUsbDevice (index));
         this.usbDevices.add (usbDevice);
         return usbDevice;
     }

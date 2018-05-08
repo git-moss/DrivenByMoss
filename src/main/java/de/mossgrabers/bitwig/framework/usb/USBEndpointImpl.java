@@ -4,13 +4,13 @@
 
 package de.mossgrabers.bitwig.framework.usb;
 
-import java.nio.ByteBuffer;
+import de.mossgrabers.framework.usb.IUSBAsyncCallback;
+import de.mossgrabers.framework.usb.IUSBEndpoint;
 
 import com.bitwig.extension.controller.api.UsbEndpoint;
 
-import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.usb.IUSBAsyncCallback;
-import de.mossgrabers.framework.usb.IUSBEndpoint;
+import java.nio.ByteBuffer;
+
 
 /**
  * Implementation for an USB endpoint.
@@ -19,37 +19,32 @@ import de.mossgrabers.framework.usb.IUSBEndpoint;
  */
 public class USBEndpointImpl implements IUSBEndpoint
 {
-   private IHost host;
+    private UsbEndpoint endpoint;
 
-   private UsbEndpoint endpoint;
 
-   /**
-    * Constructor.
-    *
-    * @param host
-    *           The host
-    * @param endpoint
-    *           The Bitwig endpoint
-    */
-   public USBEndpointImpl(final IHost host, final UsbEndpoint endpoint)
-   {
-      this.host = host;
-      this.endpoint = endpoint;
-   }
+    /**
+     * Constructor.
+     *
+     * @param endpoint The Bitwig endpoint
+     */
+    public USBEndpointImpl (final UsbEndpoint endpoint)
+    {
+        this.endpoint = endpoint;
+    }
 
-   /** {@inheritDoc} */
-   @Override
-   public void send(final ByteBuffer buffer, final int timeout)
-   {
-      this.endpoint.bulkTransfer(buffer, timeout);
-   }
 
-   /** {@inheritDoc} */
-   @Override
-   public void sendAsync(final ByteBuffer buffer, final IUSBAsyncCallback callback, final int timeout)
-   {
-      this.endpoint.asyncBulkTransfer(buffer, amountTransferred -> {
-         callback.process(amountTransferred);
-      }, timeout);
-   }
+    /** {@inheritDoc} */
+    @Override
+    public void send (final ByteBuffer buffer, final int timeout)
+    {
+        this.endpoint.bulkTransfer (buffer, timeout);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void sendAsync (final ByteBuffer buffer, final IUSBAsyncCallback callback, final int timeout)
+    {
+        this.endpoint.asyncBulkTransfer (buffer, callback::process, timeout);
+    }
 }

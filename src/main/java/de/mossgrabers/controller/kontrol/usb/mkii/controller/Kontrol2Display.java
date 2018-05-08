@@ -157,7 +157,7 @@ public class Kontrol2Display extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (int row, String text)
+    public void writeLine (final int row, final String text)
     {
         // TODO Auto-generated method stub
 
