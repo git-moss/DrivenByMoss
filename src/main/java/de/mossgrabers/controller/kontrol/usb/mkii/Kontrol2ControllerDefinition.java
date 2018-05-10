@@ -76,7 +76,7 @@ public class Kontrol2ControllerDefinition extends DefaultControllerDefinition
     {
         final USBMatcher usbMatcher = new USBMatcher (VENDOR_ID, this.productID);
         usbMatcher.addEndpoint (INTERFACE_NUMBER_HID, ENDPOINT_ADDRESS_UI);
-        usbMatcher.addEndpoint (INTERFACE_NUMBER_DISPLAY, ENDPOINT_ADDRESS_DISPLAY);
+        // usbMatcher.addEndpoint (INTERFACE_NUMBER_DISPLAY, ENDPOINT_ADDRESS_DISPLAY);
         return usbMatcher;
     }
 }

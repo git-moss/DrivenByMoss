@@ -139,8 +139,11 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
         final List<UsbInterfaceMatcher> interfaceMatchers = new ArrayList<> ();
         for (final EndpointMatcher endpoint: matcher.getEndpoints ())
         {
-            for (final byte endpointAddress: endpoint.getEndpointAddresses ())
-                interfaceMatchers.add (new UsbInterfaceMatcher ("bInterfaceNumber == " + endpoint.getInterfaceNumber (), "bEndpointAddress == " + endpointAddress));
+        	final byte [] addresses = endpoint.getEndpointAddresses ();
+        	final String [] addressExpressions = new String [addresses.length];
+            for (int i = 0; i < addresses.length; i++)
+            	addressExpressions[i] = "bEndpointAddress == " + addresses[i];
+            interfaceMatchers.add (new UsbInterfaceMatcher ("bInterfaceNumber == " + endpoint.getInterfaceNumber (), addressExpressions));
         }
 
         final String expression = "idVendor == " + matcher.getVendor () + " && idProduct == " + matcher.getProductID ();
