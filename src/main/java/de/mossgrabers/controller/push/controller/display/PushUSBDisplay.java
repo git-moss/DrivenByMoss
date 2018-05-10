@@ -20,16 +20,11 @@ import java.nio.ByteBuffer;
 public class PushUSBDisplay
 {
     /** The size of the display content. */
-    private static final int     DATA_SZ          = 20 * 0x4000;
+    private static final int     DATA_SZ        = 20 * 0x4000;
 
-    private static final int     TIMEOUT          = 1000;
+    private static final int     TIMEOUT        = 1000;
 
-    /** Push 2 USB Interface for the display. */
-    private static final byte    INTERFACE_NUMBER = 0;
-    /** Push 2 USB display endpoint. */
-    private static final byte    ENDPOINT_ADDRESS = (byte) 0x01;
-
-    private static final byte [] DISPLAY_HEADER   =
+    private static final byte [] DISPLAY_HEADER =
     {
         (byte) 0xef,
         (byte) 0xcd,
@@ -54,7 +49,7 @@ public class PushUSBDisplay
     private final ByteBuffer     headerBuffer;
     private final ByteBuffer     imageBuffer;
 
-    private boolean              isSending        = false;
+    private boolean              isSending      = false;
 
 
     /**
@@ -67,7 +62,7 @@ public class PushUSBDisplay
         try
         {
             this.usbDevice = host.getUsbDevice (0);
-            this.usbEndpoint = this.usbDevice.createEndpoint (INTERFACE_NUMBER, ENDPOINT_ADDRESS);
+            this.usbEndpoint = this.usbDevice.getEndpoint (0, 0);
         }
         catch (final RuntimeException ex)
         {

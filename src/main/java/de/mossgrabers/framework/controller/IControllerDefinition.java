@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.controller;
 
+import de.mossgrabers.framework.usb.USBMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -100,9 +101,9 @@ public interface IControllerDefinition
 
 
     /**
-     * Return a pair of Vendor-ID and Product-ID to claim an USB device.
+     * Returns an USB matcher to claim one or more endpoints of an USB device.
      *
-     * @return The pair
+     * @return The matcher description
      */
-    Pair<Short, Short> claimUSBDevice ();
+    USBMatcher claimUSBDevice ();
 }

@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.kontrol.usb.mkii;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.usb.USBMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -20,24 +21,31 @@ import java.util.UUID;
  */
 public class Kontrol2ControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID []   EXTENSION_ID   =
+    private static final UUID []   EXTENSION_ID             =
     {
         UUID.fromString ("845377d1-89d5-4d54-9df7-b7a2d4c26db2"),
         UUID.fromString ("9adc174c-5957-4a5c-9698-83a91bd2b18b")
     };
 
-    private static final String [] HARDWARE_MODEL =
+    private static final String [] HARDWARE_MODEL           =
     {
         "Komplete Kontrol S49 mk II",
         "Komplete Kontrol S61 mk II"
     };
 
-    private static final short     VENDOR_ID      = 0x17cc;
-    private static final short []  PRODUCT_ID     =
+    private static final short     VENDOR_ID                = 0x17cc;
+    private static final short []  PRODUCT_ID               =
     {
         0x1610,
         0x1620
     };
+    /** Komplete Kontrol USB Interface for the display. */
+    private static final byte      INTERFACE_NUMBER_HID     = 0x02;
+    private static final byte      INTERFACE_NUMBER_DISPLAY = 0x03;
+    /** Komplete Kontrol USB button/knob/keys endpoint. */
+    private static final byte      ENDPOINT_ADDRESS_UI      = (byte) 0x82;
+    /** Komplete Kontrol USB display endpoint. */
+    private static final byte      ENDPOINT_ADDRESS_DISPLAY = (byte) 0x01;
 
     private short                  productID;
 
@@ -64,8 +72,11 @@ public class Kontrol2ControllerDefinition extends DefaultControllerDefinition
 
     /** {@inheritDoc} */
     @Override
-    public Pair<Short, Short> claimUSBDevice ()
+    public USBMatcher claimUSBDevice ()
     {
-        return new Pair<> (Short.valueOf (VENDOR_ID), Short.valueOf (this.productID));
+        final USBMatcher usbMatcher = new USBMatcher (VENDOR_ID, this.productID);
+        usbMatcher.addEndpoint (INTERFACE_NUMBER_HID, ENDPOINT_ADDRESS_UI);
+        usbMatcher.addEndpoint (INTERFACE_NUMBER_DISPLAY, ENDPOINT_ADDRESS_DISPLAY);
+        return usbMatcher;
     }
 }

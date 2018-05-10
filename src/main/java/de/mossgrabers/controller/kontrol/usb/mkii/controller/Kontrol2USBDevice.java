@@ -22,7 +22,7 @@ import java.util.Map;
 public class Kontrol2USBDevice
 {
 
-    private static final int []                BYTE_0                   =
+    private static final int []                BYTE_0             =
     {
         Kontrol2ControlSurface.BUTTON_MAIN_ENCODER,
         Kontrol2ControlSurface.BUTTON_PRESET_UP,
@@ -34,7 +34,7 @@ public class Kontrol2USBDevice
         Kontrol2ControlSurface.BUTTON_OCTAVE_UP
     };
 
-    private static final int []                BYTE_1                   =
+    private static final int []                BYTE_1             =
     {
         Kontrol2ControlSurface.BUTTON_STOP,
         Kontrol2ControlSurface.BUTTON_REC,
@@ -46,7 +46,7 @@ public class Kontrol2USBDevice
         Kontrol2ControlSurface.BUTTON_NAVIGATE_UP
     };
 
-    private static final int []                BYTE_2                   =
+    private static final int []                BYTE_2             =
     {
         Kontrol2ControlSurface.BUTTON_SHIFT,
         Kontrol2ControlSurface.BUTTON_SCALE,
@@ -58,7 +58,7 @@ public class Kontrol2USBDevice
         Kontrol2ControlSurface.BUTTON_FWD
     };
 
-    private static final int []                BYTE_3                   =
+    private static final int []                BYTE_3             =
     {
         Kontrol2ControlSurface.TOUCH_ENCODER_1,
         Kontrol2ControlSurface.TOUCH_ENCODER_2,
@@ -70,12 +70,12 @@ public class Kontrol2USBDevice
         Kontrol2ControlSurface.TOUCH_ENCODER_8
     };
 
-    private static final int []                BYTE_4                   =
+    private static final int []                BYTE_4             =
     {
         Kontrol2ControlSurface.TOUCH_ENCODER_MAIN
     };
 
-    private static final int []                TEST_BITS                =
+    private static final int []                TEST_BITS          =
     {
         0x01,
         0x02,
@@ -87,19 +87,11 @@ public class Kontrol2USBDevice
         0x80
     };
 
-    /** Komplete Kontrol USB Interface for the display. */
-    private static final byte                  INTERFACE_NUMBER_HID     = 0x02;
-    private static final byte                  INTERFACE_NUMBER_DISPLAY = 0x03;
-    /** Komplete Kontrol USB display endpoint. */
-    private static final byte                  ENDPOINT_ADDRESS_DISPLAY = (byte) 0x01;
-    /** Komplete Kontrol USB button/knob/keys endpoint. */
-    private static final byte                  ENDPOINT_ADDRESS_UI      = (byte) 0x82;
+    private final static int                   DATA_SZ            = 249;
+    private static final int                   TIMEOUT            = 1000;
+    private static final int                   MESSAGE_SIZE       = 49;
 
-    private final static int                   DATA_SZ                  = 249;
-    private static final int                   TIMEOUT                  = 1000;
-    private static final int                   MESSAGE_SIZE             = 49;
-
-    private final static Map<Integer, Integer> LED_MAPPING              = new HashMap<> (21);
+    private final static Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);
 
     private IHost                              host;
     private IUSBDevice                         usbDevice;
@@ -112,20 +104,20 @@ public class Kontrol2USBDevice
     private ByteBuffer                         ledBuffer;
     private ByteBuffer                         keyLedBuffer;
 
-    private boolean                            busySendingDisplay       = false;
-    private boolean                            busySendingLEDs          = false;
-    private boolean                            busySendingKeyLEDs       = false;
+    private boolean                            busySendingDisplay = false;
+    private boolean                            busySendingLEDs    = false;
+    private boolean                            busySendingKeyLEDs = false;
 
     private int                                mainEncoderValue;
-    private int []                             encoderValues            = new int [8];
+    private int []                             encoderValues      = new int [8];
 
-    private byte []                            buttonStates             = new byte [21];
-    private byte []                            oldButtonStates          = new byte [21];
+    private byte []                            buttonStates       = new byte [21];
+    private byte []                            oldButtonStates    = new byte [21];
 
-    private byte []                            keyColors                = new byte [88 * 3];
-    private byte []                            oldKeyColors             = new byte [88 * 3];
+    private byte []                            keyColors          = new byte [88 * 3];
+    private byte []                            oldKeyColors       = new byte [88 * 3];
 
-    private boolean                            isFirstStateMsg          = true;
+    private boolean                            isFirstStateMsg    = true;
 
     private UIChangeCallback                   callback;
 
@@ -167,9 +159,8 @@ public class Kontrol2USBDevice
         try
         {
             this.usbDevice = host.getUsbDevice (0);
-            this.usbEndpointUI = this.usbDevice.createEndpoint (INTERFACE_NUMBER_HID, ENDPOINT_ADDRESS_UI);
-            // this.usbEndpointDisplay = this.usbDevice.createEndpoint (INTERFACE_NUMBER_DISPLAY,
-            // ENDPOINT_ADDRESS_DISPLAY);
+            this.usbEndpointUI = this.usbDevice.getEndpoint (0, 0);
+            this.usbEndpointDisplay = this.usbDevice.getEndpoint (1, 0);
         }
         catch (final RuntimeException ex)
         {

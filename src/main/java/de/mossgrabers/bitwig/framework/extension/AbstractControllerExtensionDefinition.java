@@ -6,6 +6,8 @@ package de.mossgrabers.bitwig.framework.extension;
 
 import de.mossgrabers.framework.controller.IControllerDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.framework.usb.USBMatcher;
+import de.mossgrabers.framework.usb.USBMatcher.EndpointMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -17,6 +19,7 @@ import com.bitwig.extension.controller.UsbDeviceMatcher;
 import com.bitwig.extension.controller.UsbInterfaceMatcher;
 import com.bitwig.extension.controller.api.ControllerHost;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -129,16 +132,19 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public void listUsbDevices (final List<UsbDeviceMatcher> matchers)
     {
-        super.listUsbDevices (matchers);
-
-        final Pair<Short, Short> claimUSBDevice = this.definition.claimUSBDevice ();
-        if (claimUSBDevice == null)
+        final USBMatcher matcher = this.definition.claimUSBDevice ();
+        if (matcher == null)
             return;
 
-        // TODO
-        final UsbInterfaceMatcher usbInterfaceMatcher = new UsbInterfaceMatcher ("bInterfaceNumber == 0", "bEndpointAddress == 0x01");
-        final String vendorProductExpression = "idVendor == " + claimUSBDevice.getKey ().shortValue () + " && idProduct == " + claimUSBDevice.getValue ().shortValue ();
-        matchers.add (new UsbDeviceMatcher (this.getHardwareVendor () + " " + this.getHardwareModel (), vendorProductExpression, usbInterfaceMatcher));
+        final List<UsbInterfaceMatcher> interfaceMatchers = new ArrayList<> ();
+        for (final EndpointMatcher endpoint: matcher.getEndpoints ())
+        {
+            for (final byte endpointAddress: endpoint.getEndpointAddresses ())
+                interfaceMatchers.add (new UsbInterfaceMatcher ("bInterfaceNumber == " + endpoint.getInterfaceNumber (), "bEndpointAddress == " + endpointAddress));
+        }
+
+        final String expression = "idVendor == " + matcher.getVendor () + " && idProduct == " + matcher.getProductID ();
+        matchers.add (new UsbDeviceMatcher (this.getHardwareVendor () + " " + this.getHardwareModel (), expression, interfaceMatchers.toArray (new UsbInterfaceMatcher [interfaceMatchers.size ()])));
     }
 
 

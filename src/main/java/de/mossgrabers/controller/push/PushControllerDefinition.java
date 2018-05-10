@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.push;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.usb.USBMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -26,6 +27,10 @@ public class PushControllerDefinition extends DefaultControllerDefinition
     private static final short VENDOR_ID          = 0x2982;
     /** Push 2 USB Product ID. */
     private static final short PRODUCT_ID         = 0x1967;
+    /** Push 2 USB Interface for the display. */
+    private static final byte  INTERFACE_NUMBER   = 0;
+    /** Push 2 USB display endpoint. */
+    private static final byte  ENDPOINT_ADDRESS   = (byte) 0x01;
 
     private boolean            isMkII;
 
@@ -74,8 +79,8 @@ public class PushControllerDefinition extends DefaultControllerDefinition
 
     /** {@inheritDoc} */
     @Override
-    public Pair<Short, Short> claimUSBDevice ()
+    public USBMatcher claimUSBDevice ()
     {
-        return this.isMkII ? new Pair<> (Short.valueOf (VENDOR_ID), Short.valueOf (PRODUCT_ID)) : null;
+        return this.isMkII ? new USBMatcher (VENDOR_ID, PRODUCT_ID, INTERFACE_NUMBER, ENDPOINT_ADDRESS) : null;
     }
 }
