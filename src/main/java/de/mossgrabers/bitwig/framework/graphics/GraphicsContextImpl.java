@@ -52,7 +52,7 @@ public class GraphicsContextImpl implements IGraphicsContext
     public void fillRectangle (final double x, final double y, final double width, final double height, final ColorEx color)
     {
         this.setColor (color);
-        this.gc.rectangle (x, y, width, height);
+        this.gc.rectangle (x, y, Math.max (0, width), Math.max (0, height));
         this.gc.fill ();
     }
 

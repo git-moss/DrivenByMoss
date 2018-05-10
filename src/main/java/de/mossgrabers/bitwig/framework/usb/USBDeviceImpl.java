@@ -35,7 +35,8 @@ public class USBDeviceImpl implements IUSBDevice
     @Override
     public IUSBEndpoint createEndpoint (final byte interfaceNumber, final byte endpointAddress)
     {
-        return new USBEndpointImpl (this.usbDevice.createEndpoint (interfaceNumber, endpointAddress));
+        // TODO
+        return new USBEndpointImpl (this.usbDevice.iface (0).pipe (0));
     }
 
 

@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.ControllerExtensionDefinition;
 import com.bitwig.extension.controller.UsbDeviceMatcher;
-import com.bitwig.extension.controller.VendorAndProductIdUsbDeviceMatcher;
+import com.bitwig.extension.controller.UsbInterfaceMatcher;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import java.util.List;
@@ -132,8 +132,13 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
         super.listUsbDevices (matchers);
 
         final Pair<Short, Short> claimUSBDevice = this.definition.claimUSBDevice ();
-        if (claimUSBDevice != null)
-            matchers.add (new VendorAndProductIdUsbDeviceMatcher (this.getHardwareVendor (), this.getHardwareModel (), claimUSBDevice.getKey ().shortValue (), claimUSBDevice.getValue ().shortValue ()));
+        if (claimUSBDevice == null)
+            return;
+
+        // TODO
+        final UsbInterfaceMatcher usbInterfaceMatcher = new UsbInterfaceMatcher ("bInterfaceNumber == 0", "bEndpointAddress == 0x01");
+        final String vendorProductExpression = "idVendor == " + claimUSBDevice.getKey ().shortValue () + " && idProduct == " + claimUSBDevice.getValue ().shortValue ();
+        matchers.add (new UsbDeviceMatcher (this.getHardwareVendor () + " " + this.getHardwareModel (), vendorProductExpression, usbInterfaceMatcher));
     }
 
 

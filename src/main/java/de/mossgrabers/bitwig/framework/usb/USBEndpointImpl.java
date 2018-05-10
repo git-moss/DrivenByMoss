@@ -7,7 +7,7 @@ package de.mossgrabers.bitwig.framework.usb;
 import de.mossgrabers.framework.usb.IUSBAsyncCallback;
 import de.mossgrabers.framework.usb.IUSBEndpoint;
 
-import com.bitwig.extension.controller.api.UsbEndpoint;
+import com.bitwig.extension.controller.api.UsbPipe;
 
 import java.nio.ByteBuffer;
 
@@ -19,17 +19,17 @@ import java.nio.ByteBuffer;
  */
 public class USBEndpointImpl implements IUSBEndpoint
 {
-    private UsbEndpoint endpoint;
+    private UsbPipe endpoint;
 
 
     /**
      * Constructor.
      *
-     * @param endpoint The Bitwig endpoint
+     * @param pipe The Bitwig pipe (aka endpoint)
      */
-    public USBEndpointImpl (final UsbEndpoint endpoint)
+    public USBEndpointImpl (final UsbPipe pipe)
     {
-        this.endpoint = endpoint;
+        this.endpoint = pipe;
     }
 
 

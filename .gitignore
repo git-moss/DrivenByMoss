@@ -1,2 +1,3 @@
 /${bitwig.extension.directory}
 /target
+.DS_Store
