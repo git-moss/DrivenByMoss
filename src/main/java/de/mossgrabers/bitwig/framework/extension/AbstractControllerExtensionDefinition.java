@@ -16,6 +16,7 @@ import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.ControllerExtensionDefinition;
 import com.bitwig.extension.controller.UsbDeviceMatcher;
+import com.bitwig.extension.controller.UsbEndpointMatcher;
 import com.bitwig.extension.controller.UsbInterfaceMatcher;
 import com.bitwig.extension.controller.api.ControllerHost;
 
@@ -139,11 +140,11 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
         final List<UsbInterfaceMatcher> interfaceMatchers = new ArrayList<> ();
         for (final EndpointMatcher endpoint: matcher.getEndpoints ())
         {
-        	final byte [] addresses = endpoint.getEndpointAddresses ();
-        	final String [] addressExpressions = new String [addresses.length];
+            final byte [] addresses = endpoint.getEndpointAddresses ();
+            final UsbEndpointMatcher [] endpointMatchers = new UsbEndpointMatcher [addresses.length];
             for (int i = 0; i < addresses.length; i++)
-            	addressExpressions[i] = "bEndpointAddress == " + addresses[i];
-            interfaceMatchers.add (new UsbInterfaceMatcher ("bInterfaceNumber == " + endpoint.getInterfaceNumber (), addressExpressions));
+                endpointMatchers[i] = new UsbEndpointMatcher ("bEndpointAddress == " + addresses[i]);
+            interfaceMatchers.add (new UsbInterfaceMatcher ("bInterfaceNumber == " + endpoint.getInterfaceNumber (), endpointMatchers));
         }
 
         final String expression = "idVendor == " + matcher.getVendor () + " && idProduct == " + matcher.getProductID ();
