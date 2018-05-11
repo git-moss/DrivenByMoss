@@ -442,7 +442,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
         {
             if (velocity > 0)
             {
-                int index = note - 36;
+                final int index = note - 36;
                 new ButtonRowSelectCommand<> (index > 3 ? 5 : index, this.model, this.surface).execute (ButtonEvent.DOWN);
             }
             return;
