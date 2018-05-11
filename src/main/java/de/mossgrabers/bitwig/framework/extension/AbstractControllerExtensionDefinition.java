@@ -10,6 +10,7 @@ import de.mossgrabers.framework.usb.USBMatcher;
 import de.mossgrabers.framework.usb.USBMatcher.EndpointMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -143,11 +144,15 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
             final byte [] addresses = endpoint.getEndpointAddresses ();
             final UsbEndpointMatcher [] endpointMatchers = new UsbEndpointMatcher [addresses.length];
             for (int i = 0; i < addresses.length; i++)
-                endpointMatchers[i] = new UsbEndpointMatcher ("bEndpointAddress == " + addresses[i]);
-            interfaceMatchers.add (new UsbInterfaceMatcher ("bInterfaceNumber == " + endpoint.getInterfaceNumber (), endpointMatchers));
+            {
+                final String endpointAddressExpression = "bEndpointAddress == 0x" + StringUtils.toHexStr (Byte.toUnsignedInt (addresses[i]));
+                endpointMatchers[i] = new UsbEndpointMatcher (endpointAddressExpression);
+            }
+            final String interfaceExpression = "bInterfaceNumber == 0x" + StringUtils.toHexStr (Byte.toUnsignedInt (endpoint.getInterfaceNumber ()));
+            interfaceMatchers.add (new UsbInterfaceMatcher (interfaceExpression, endpointMatchers));
         }
 
-        final String expression = "idVendor == " + matcher.getVendor () + " && idProduct == " + matcher.getProductID ();
+        final String expression = "idVendor == 0x" + StringUtils.toHexStr (matcher.getVendor ()) + " && idProduct == 0x" + StringUtils.toHexStr (matcher.getProductID ());
         matchers.add (new UsbDeviceMatcher (this.getHardwareVendor () + " " + this.getHardwareModel (), expression, interfaceMatchers.toArray (new UsbInterfaceMatcher [interfaceMatchers.size ()])));
     }
 
