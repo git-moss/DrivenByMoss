@@ -38,20 +38,24 @@ import java.util.Arrays;
  */
 public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFlexiConfiguration>
 {
-    private static final int BUTTON_REPEAT_INTERVAL = 75;
+    private static final int   BUTTON_REPEAT_INTERVAL = 75;
 
-    private static final int KNOB_MODE_ABSOLUTE     = 0;
-    private static final int KNOB_MODE_RELATIVE1    = 1;
-    private static final int KNOB_MODE_RELATIVE2    = 2;
-    private static final int KNOB_MODE_RELATIVE3    = 3;
+    private static final int   KNOB_MODE_ABSOLUTE     = 0;
+    private static final int   KNOB_MODE_RELATIVE1    = 1;
+    private static final int   KNOB_MODE_RELATIVE2    = 2;
+    private static final int   KNOB_MODE_RELATIVE3    = 3;
 
-    private IModel           model;
-    private IValueChanger    relative2ValueChanger  = new Relative2ValueChanger (128, 1, 0.5);
-    private IValueChanger    relative3ValueChanger  = new Relative3ValueChanger (128, 1, 0.5);
+    protected static final int SCROLL_RATE            = 6;
 
-    private int []           valueCache             = new int [GenericFlexiConfiguration.NUM_SLOTS];
+    private int                movementCounter        = 0;
 
-    private boolean          isUpdatingValue        = false;
+    private IModel             model;
+    private IValueChanger      relative2ValueChanger  = new Relative2ValueChanger (128, 1, 0.5);
+    private IValueChanger      relative3ValueChanger  = new Relative3ValueChanger (128, 1, 0.5);
+
+    private int []             valueCache             = new int [GenericFlexiConfiguration.NUM_SLOTS];
+
+    private boolean            isUpdatingValue        = false;
 
 
     /**
@@ -72,7 +76,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         this.model = model;
 
         this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_EXPORT, () -> {
-            final String filename = this.configuration.getFilename ();
+            String filename = this.configuration.getFilename ();
             if (filename == null || filename.trim ().isEmpty ())
             {
                 this.host.showNotification ("Please enter a filename first.");
@@ -84,14 +88,14 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 this.configuration.exportTo (file);
                 this.host.showNotification ("Exported to: " + file);
             }
-            catch (final IOException ex)
+            catch (IOException ex)
             {
                 this.host.showNotification ("Error writing file: " + ex.getMessage ());
             }
         });
 
         this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_IMPORT, () -> {
-            final String filename = this.configuration.getFilename ();
+            String filename = this.configuration.getFilename ();
             if (filename == null || filename.trim ().isEmpty ())
             {
                 this.host.showNotification ("Please enter a filename first.");
@@ -109,7 +113,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 this.configuration.importFrom (file);
                 this.host.showNotification ("Imported from: " + file);
             }
-            catch (final IOException ex)
+            catch (IOException ex)
             {
                 this.host.showNotification ("Error reading file: " + ex.getMessage ());
             }
@@ -132,11 +136,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             final FlexiCommand command = slots[i].getCommand ();
             if (command == FlexiCommand.OFF || !slots[i].isSendValue ())
                 continue;
-            final int value = this.getCommandValue (command);
+            int value = this.getCommandValue (command);
             if (this.valueCache[i] == value)
                 continue;
             this.valueCache[i] = value;
-            this.getOutput ().sendCC (slots[i].getNumber (), value);
+            if (value >= 0 && value <= 127)
+                this.getOutput ().sendCC (slots[i].getNumber (), value);
         }
     }
 
@@ -890,6 +895,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (value > 0)
                     this.scrollTrackRight (false);
                 break;
+
+            case TRACK_SCROLL_TRACKS:
+                this.scrollTrack (commandSlot.getKnobMode (), value);
+                break;
+
             // Track 1-8: Select
             case TRACK_1_SELECT:
             case TRACK_2_SELECT:
@@ -1215,6 +1225,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (value > 0)
                     this.model.getCursorDevice ().selectNext ();
                 break;
+
+            case DEVICE_SCROLL_DEVICES:
+                this.scrollDevice (commandSlot.getKnobMode (), value);
+                break;
+
             // Device: Select Previous Parameter Bank
             case DEVICE_SELECT_PREVIOUS_PARAMETER_BANK:
                 if (value > 0)
@@ -1224,6 +1239,10 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case DEVICE_SELECT_NEXT_PARAMETER_BANK:
                 if (value > 0)
                     this.model.getCursorDevice ().nextParameterPage ();
+                break;
+
+            case DEVICE_SCROLL_PARAMETER_BANKS:
+                this.scrollParameterBank (commandSlot.getKnobMode (), value);
                 break;
 
             // Device: Set Parameter 1-8
@@ -1286,6 +1305,15 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                     this.model.getBrowser ().selectNextFilterItem (command.ordinal () - FlexiCommand.BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1.ordinal ());
                 break;
 
+            case BROWSER_SCROLL_FILTER_IN_COLUMN_1:
+            case BROWSER_SCROLL_FILTER_IN_COLUMN_2:
+            case BROWSER_SCROLL_FILTER_IN_COLUMN_3:
+            case BROWSER_SCROLL_FILTER_IN_COLUMN_4:
+            case BROWSER_SCROLL_FILTER_IN_COLUMN_5:
+            case BROWSER_SCROLL_FILTER_IN_COLUMN_6:
+                this.scrollFilterColumn (commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1.ordinal (), value);
+                break;
+
             // Browser: Reset Filter Column 1-6
             case BROWSER_RESET_FILTER_COLUMN_1:
             case BROWSER_RESET_FILTER_COLUMN_2:
@@ -1307,6 +1335,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (value > 0)
                     this.model.getBrowser ().selectNextResult ();
                 break;
+            case BROWSER_SCROLL_PRESETS:
+                this.scrollPresetColumn (commandSlot.getKnobMode (), value);
+                break;
             // Browser: Select the previous tab
             case BROWSER_SELECT_THE_PREVIOUS_TAB:
                 if (value > 0)
@@ -1316,6 +1347,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case BROWSER_SELECT_THE_NEXT_TAB:
                 if (value > 0)
                     this.model.getBrowser ().nextContentType ();
+                break;
+            case BROWSER_SCROLL_TABS:
+                this.scrollBrowserTabs (commandSlot.getKnobMode (), value);
                 break;
 
             // Scene 1-8: Launch Scene
@@ -1355,6 +1389,10 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case CLIP_NEXT:
                 if (value > 0)
                     this.scrollClipRight (false);
+                break;
+
+            case CLIP_SCROLL:
+                this.scrollClips (commandSlot.getKnobMode (), value);
                 break;
 
             case CLIP_PLAY:
@@ -1401,22 +1439,10 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void handleParameter (final int knobMode, final int index, final int value)
     {
         final IParameter fxParam = this.model.getCursorDevice ().getFXParam (index);
-        switch (knobMode)
-        {
-            case KNOB_MODE_ABSOLUTE:
-                fxParam.setValue (value);
-                break;
-            case KNOB_MODE_RELATIVE1:
-                fxParam.changeValue (value);
-                break;
-            case KNOB_MODE_RELATIVE2:
-                fxParam.setValue (fxParam.getValue () + this.relative2ValueChanger.calcKnobSpeed (value));
-                break;
-            case KNOB_MODE_RELATIVE3:
-                fxParam.setValue (fxParam.getValue () + this.relative3ValueChanger.calcKnobSpeed (value));
-                break;
-        }
-
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            fxParam.setValue (value);
+        else
+            fxParam.setValue (fxParam.getValue () + this.getRelativeSpeed (knobMode, value));
     }
 
 
@@ -1428,190 +1454,104 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final ISend send = track.getSend (sendIndex);
         if (send == null)
             return;
-
-        switch (knobMode)
-        {
-            case KNOB_MODE_ABSOLUTE:
-                send.setValue (value);
-                break;
-            case KNOB_MODE_RELATIVE1:
-                send.changeValue (value);
-                break;
-            case KNOB_MODE_RELATIVE2:
-                send.setValue (track.getVolume () + this.relative2ValueChanger.calcKnobSpeed (value));
-                break;
-            case KNOB_MODE_RELATIVE3:
-                send.setValue (track.getVolume () + this.relative3ValueChanger.calcKnobSpeed (value));
-                break;
-        }
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            send.setValue (value);
+        else
+            send.setValue (send.getValue () + this.getRelativeSpeed (knobMode, value));
     }
 
 
     private void handlePlayCursor (final int knobMode, final int value)
     {
         final ITransport transport = this.model.getTransport ();
-        switch (knobMode)
-        {
-            case KNOB_MODE_ABSOLUTE:
-                transport.setTempo (value);
-                break;
-            case KNOB_MODE_RELATIVE1:
-                transport.changePosition (value > 0);
-                break;
-            case KNOB_MODE_RELATIVE2:
-                transport.changePosition (this.relative2ValueChanger.calcKnobSpeed (value) > 0);
-                break;
-            case KNOB_MODE_RELATIVE3:
-                transport.changePosition (this.relative3ValueChanger.calcKnobSpeed (value) > 0);
-                break;
-        }
+        // Only relative modes are supported
+        if (knobMode != KNOB_MODE_ABSOLUTE)
+            transport.changePosition (this.getRelativeSpeed (knobMode, value) > 0);
     }
 
 
     private void handleTempo (final int knobMode, final int value)
     {
         final ITransport transport = this.model.getTransport ();
-        switch (knobMode)
-        {
-            case KNOB_MODE_ABSOLUTE:
-                transport.setTempo (value);
-                break;
-            case KNOB_MODE_RELATIVE1:
-                transport.changeTempo (value > 0);
-                break;
-            case KNOB_MODE_RELATIVE2:
-                transport.changeTempo (this.relative2ValueChanger.calcKnobSpeed (value) > 0);
-                break;
-            case KNOB_MODE_RELATIVE3:
-                transport.changeTempo (this.relative3ValueChanger.calcKnobSpeed (value) > 0);
-                break;
-        }
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            transport.setTempo (value);
+        else
+            transport.changeTempo (this.getRelativeSpeed (knobMode, value) > 0);
     }
 
 
     private void handleCrossfade (final int knobMode, final int value)
     {
         final ITransport transport = this.model.getTransport ();
-        switch (knobMode)
-        {
-            case KNOB_MODE_ABSOLUTE:
-                transport.setCrossfade (value);
-                break;
-            case KNOB_MODE_RELATIVE1:
-                transport.changeCrossfade (value);
-                break;
-            case KNOB_MODE_RELATIVE2:
-                transport.setCrossfade ((int) (transport.getCrossfade () + this.relative2ValueChanger.calcKnobSpeed (value)));
-                break;
-            case KNOB_MODE_RELATIVE3:
-                transport.setCrossfade ((int) (transport.getCrossfade () + this.relative3ValueChanger.calcKnobSpeed (value)));
-                break;
-        }
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            transport.setCrossfade (value);
+        else
+            transport.setCrossfade ((int) (transport.getCrossfade () + this.getRelativeSpeed (knobMode, value)));
     }
 
 
     private void handleMetronomeVolume (final int knobMode, final int value)
     {
         final ITransport transport = this.model.getTransport ();
-        switch (knobMode)
-        {
-            case KNOB_MODE_ABSOLUTE:
-                transport.setMetronomeVolume (value);
-                break;
-            case KNOB_MODE_RELATIVE1:
-                transport.changeMetronomeVolume (value);
-                break;
-            case KNOB_MODE_RELATIVE2:
-                transport.setMetronomeVolume (transport.getMetronomeVolume () + this.relative2ValueChanger.calcKnobSpeed (value));
-                break;
-            case KNOB_MODE_RELATIVE3:
-                transport.setMetronomeVolume (transport.getMetronomeVolume () + this.relative3ValueChanger.calcKnobSpeed (value));
-                break;
-        }
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            transport.setMetronomeVolume (value);
+        else
+            transport.setMetronomeVolume (transport.getMetronomeVolume () + this.getRelativeSpeed (knobMode, value));
     }
 
 
     private void changeTrackVolume (final int knobMode, final int trackIndex, final int value)
     {
         final ITrack track = this.getTrack (trackIndex);
-        switch (knobMode)
-        {
-            case KNOB_MODE_ABSOLUTE:
-                track.setVolume (value);
-                break;
-            case KNOB_MODE_RELATIVE1:
-                track.changeVolume (value);
-                break;
-            case KNOB_MODE_RELATIVE2:
-                track.setVolume (track.getVolume () + this.relative2ValueChanger.calcKnobSpeed (value));
-                break;
-            case KNOB_MODE_RELATIVE3:
-                track.setVolume (track.getVolume () + this.relative3ValueChanger.calcKnobSpeed (value));
-                break;
-        }
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            track.setVolume (value);
+        else
+            track.setVolume (track.getVolume () + this.getRelativeSpeed (knobMode, value));
+    }
+
+
+    private void scrollTrack (final int knobMode, final int value)
+    {
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            return;
+
+        if (!this.increaseKnobMovement ())
+            return;
+
+        if (this.getRelativeSpeed (knobMode, value) > 0)
+            this.scrollTrackRight (false);
+        else
+            this.scrollTrackLeft (false);
     }
 
 
     private void changeMasterVolume (final int knobMode, final int value)
     {
         final ITrack track = this.model.getMasterTrack ();
-        switch (knobMode)
-        {
-            case KNOB_MODE_ABSOLUTE:
-                track.setVolume (value);
-                break;
-            case KNOB_MODE_RELATIVE1:
-                track.changeVolume (value);
-                break;
-            case KNOB_MODE_RELATIVE2:
-                track.setVolume (track.getVolume () + this.relative2ValueChanger.calcKnobSpeed (value));
-                break;
-            case KNOB_MODE_RELATIVE3:
-                track.setVolume (track.getVolume () + this.relative3ValueChanger.calcKnobSpeed (value));
-                break;
-        }
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            track.setVolume (value);
+        else
+            track.setVolume (track.getVolume () + this.getRelativeSpeed (knobMode, value));
     }
 
 
     private void changeTrackPanorama (final int knobMode, final int trackIndex, final int value)
     {
         final ITrack track = this.getTrack (trackIndex);
-        switch (knobMode)
-        {
-            case KNOB_MODE_ABSOLUTE:
-                track.setPan (value);
-                break;
-            case KNOB_MODE_RELATIVE1:
-                track.changePan (value);
-                break;
-            case KNOB_MODE_RELATIVE2:
-                track.setPan (track.getPan () + this.relative2ValueChanger.calcKnobSpeed (value));
-                break;
-            case KNOB_MODE_RELATIVE3:
-                track.setPan (track.getPan () + this.relative3ValueChanger.calcKnobSpeed (value));
-                break;
-        }
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            track.setPan (value);
+        else
+            track.setPan (track.getPan () + this.getRelativeSpeed (knobMode, value));
     }
 
 
     private void changeMasterPanorama (final int knobMode, final int value)
     {
         final ITrack track = this.model.getMasterTrack ();
-        switch (knobMode)
-        {
-            case KNOB_MODE_ABSOLUTE:
-                track.setPan (value);
-                break;
-            case KNOB_MODE_RELATIVE1:
-                track.changePan (value);
-                break;
-            case KNOB_MODE_RELATIVE2:
-                track.setPan (track.getPan () + this.relative2ValueChanger.calcKnobSpeed (value));
-                break;
-            case KNOB_MODE_RELATIVE3:
-                track.setPan (track.getPan () + this.relative3ValueChanger.calcKnobSpeed (value));
-                break;
-        }
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            track.setPan (value);
+        else
+            track.setPan (track.getPan () + this.getRelativeSpeed (knobMode, value));
     }
 
 
@@ -1662,6 +1602,90 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         tb.scrollTracksPageDown ();
         final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
         this.scheduleTask ( () -> tb.getTrack (newSel).selectAndMakeVisible (), BUTTON_REPEAT_INTERVAL);
+    }
+
+
+    private void scrollDevice (final int knobMode, final int value)
+    {
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            return;
+
+        if (!this.increaseKnobMovement ())
+            return;
+
+        if (this.getRelativeSpeed (knobMode, value) > 0)
+            this.model.getCursorDevice ().selectNext ();
+        else
+            this.model.getCursorDevice ().selectPrevious ();
+    }
+
+
+    private void scrollParameterBank (final int knobMode, final int value)
+    {
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            return;
+
+        if (!this.increaseKnobMovement ())
+            return;
+
+        if (this.getRelativeSpeed (knobMode, value) > 0)
+            this.model.getCursorDevice ().nextParameterPage ();
+        else
+            this.model.getCursorDevice ().previousParameterPage ();
+    }
+
+
+    private void scrollFilterColumn (final int knobMode, final int filterColumn, final int value)
+    {
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            return;
+
+        if (this.getRelativeSpeed (knobMode, value) > 0)
+            this.model.getBrowser ().selectNextFilterItem (filterColumn);
+        else
+            this.model.getBrowser ().selectPreviousFilterItem (filterColumn);
+    }
+
+
+    private void scrollPresetColumn (final int knobMode, final int value)
+    {
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            return;
+
+        if (this.getRelativeSpeed (knobMode, value) > 0)
+            this.model.getBrowser ().selectNextResult ();
+        else
+            this.model.getBrowser ().selectPreviousResult ();
+    }
+
+
+    private void scrollBrowserTabs (final int knobMode, final int value)
+    {
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            return;
+
+        if (!this.increaseKnobMovement ())
+            return;
+
+        if (this.getRelativeSpeed (knobMode, value) > 0)
+            this.model.getBrowser ().nextContentType ();
+        else
+            this.model.getBrowser ().previousContentType ();
+    }
+
+
+    private void scrollClips (final int knobMode, final int value)
+    {
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            return;
+
+        if (!this.increaseKnobMovement ())
+            return;
+
+        if (this.getRelativeSpeed (knobMode, value) > 0)
+            this.scrollClipRight (false);
+        else
+            this.scrollClipLeft (false);
     }
 
 
@@ -1719,5 +1743,36 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     {
         final ITrackBank tb = this.model.getTrackBank ();
         return trackIndex < 0 ? tb.getSelectedTrack () : tb.getTrack (trackIndex);
+    }
+
+
+    private double getRelativeSpeed (final int knobMode, final int value)
+    {
+        switch (knobMode)
+        {
+            case KNOB_MODE_RELATIVE1:
+                return this.model.getValueChanger ().calcKnobSpeed (value);
+            case KNOB_MODE_RELATIVE2:
+                return this.relative2ValueChanger.calcKnobSpeed (value);
+            case KNOB_MODE_RELATIVE3:
+                return this.relative3ValueChanger.calcKnobSpeed (value);
+            default:
+                return 0;
+        }
+    }
+
+
+    /**
+     * Slows down knob movement. Increases the counter till the scroll rate.
+     *
+     * @return True if the knob movement should be executed otherwise false
+     */
+    protected boolean increaseKnobMovement ()
+    {
+        this.movementCounter++;
+        if (this.movementCounter < SCROLL_RATE)
+            return false;
+        this.movementCounter = 0;
+        return true;
     }
 }

@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -63,6 +64,9 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     {
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
         this.model.getTrackBank ().setIndication (true);
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        for (int i = 0; i < cursorDevice.getNumParameters (); i++)
+            cursorDevice.getFXParam (i).setIndication (true);
     }
 
 
