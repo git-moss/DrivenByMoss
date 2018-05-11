@@ -28,6 +28,11 @@ import de.mossgrabers.framework.view.SessionColor;
  */
 public class SessionView extends AbstractSessionView<PushControlSurface, PushConfiguration>
 {
+    private static final int NUMBER_OF_RETRIES = 20;
+
+    protected int            startRetries;
+
+
     /**
      * Constructor.
      *
@@ -124,11 +129,26 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
             track.getSlot (s).browse ();
             final ModeManager modeManager = this.surface.getModeManager ();
             if (!modeManager.isActiveMode (Modes.MODE_BROWSER))
-                modeManager.setActiveMode (Modes.MODE_BROWSER);
+                this.activateMode ();
             return;
         }
 
         super.onGridNote (note, velocity);
+    }
+
+
+    /**
+     * Tries to activate the mode 20 times.
+     */
+    protected void activateMode ()
+    {
+        if (this.model.getBrowser ().isActive ())
+            this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
+        else if (this.startRetries < NUMBER_OF_RETRIES)
+        {
+            this.startRetries++;
+            this.surface.scheduleTask (this::activateMode, 200);
+        }
     }
 
 
