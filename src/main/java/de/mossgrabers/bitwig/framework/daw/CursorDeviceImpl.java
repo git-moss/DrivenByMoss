@@ -5,12 +5,14 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.ChannelImpl;
+import de.mossgrabers.bitwig.framework.daw.data.DrumPadImpl;
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.IParameter;
 
 import com.bitwig.extension.controller.api.Channel;
@@ -20,6 +22,7 @@ import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.DeviceLayer;
 import com.bitwig.extension.controller.api.DeviceLayerBank;
+import com.bitwig.extension.controller.api.DrumPad;
 import com.bitwig.extension.controller.api.DrumPadBank;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
 import com.bitwig.extension.controller.api.RemoteControl;
@@ -49,7 +52,7 @@ public class CursorDeviceImpl implements ICursorDevice
     private IParameter []            fxparams;
     private DeviceLayerBank          layerBank;
     private IChannel []              deviceLayers;
-    private IChannel []              drumPadLayers;
+    private IDrumPad []              drumPadLayers;
     private DeviceBank []            deviceBanks;
     private DrumPadBank              drumPadBank;
     private DeviceBank []            drumPadBanks;
@@ -73,10 +76,10 @@ public class CursorDeviceImpl implements ICursorDevice
         this.cursorDevice = cursorDevice;
         this.valueChanger = valueChanger;
 
-        this.numParams = numParams > 0 ? numParams : 8;
-        this.numDevicesInBank = numDevicesInBank > 0 ? numDevicesInBank : 8;
-        this.numDeviceLayers = numDeviceLayers > 0 ? numDeviceLayers : 8;
-        this.numDrumPadLayers = numDrumPadLayers > 0 ? numDrumPadLayers : 16;
+        this.numParams = numParams >= 0 ? numParams : 8;
+        this.numDevicesInBank = numDevicesInBank >= 0 ? numDevicesInBank : 8;
+        this.numDeviceLayers = numDeviceLayers >= 0 ? numDeviceLayers : 8;
+        this.numDrumPadLayers = numDrumPadLayers >= 0 ? numDrumPadLayers : 16;
 
         this.cursorDevice.exists ().markInterested ();
         this.cursorDevice.isEnabled ().markInterested ();
@@ -94,26 +97,32 @@ public class CursorDeviceImpl implements ICursorDevice
         this.cursorDevice.hasSlots ().markInterested ();
         this.cursorDevice.isPinned ().markInterested ();
 
-        this.remoteControls = this.cursorDevice.createCursorRemoteControlsPage (this.numParams);
-        this.remoteControls.hasPrevious ().markInterested ();
-        this.remoteControls.hasNext ().markInterested ();
-        this.remoteControls.selectedPageIndex ().markInterested ();
-        this.remoteControls.pageNames ().addValueObserver (this::handlePageNames);
-
-        this.fxparams = new IParameter [this.numParams];
-        for (int i = 0; i < this.numParams; i++)
+        if (this.numParams > 0)
         {
-            final RemoteControl p = this.getParameter (i);
-            this.fxparams[i] = new ParameterImpl (valueChanger, p, valueChanger.getUpperBound ());
+            this.remoteControls = this.cursorDevice.createCursorRemoteControlsPage (this.numParams);
+            this.remoteControls.hasPrevious ().markInterested ();
+            this.remoteControls.hasNext ().markInterested ();
+            this.remoteControls.selectedPageIndex ().markInterested ();
+            this.remoteControls.pageNames ().addValueObserver (this::handlePageNames);
+
+            this.fxparams = new IParameter [this.numParams];
+            for (int i = 0; i < this.numParams; i++)
+            {
+                final RemoteControl p = this.getParameter (i);
+                this.fxparams[i] = new ParameterImpl (valueChanger, p, valueChanger.getUpperBound ());
+            }
         }
 
         // Monitor the sibling devices of the cursor device
-        this.siblings = this.cursorDevice.createSiblingsDeviceBank (this.numDevicesInBank);
-        for (int i = 0; i < this.numDevicesInBank; i++)
+        if (this.numDevicesInBank > 0)
         {
-            final Device device = this.siblings.getDevice (i);
-            device.exists ().markInterested ();
-            device.name ().markInterested ();
+            this.siblings = this.cursorDevice.createSiblingsDeviceBank (this.numDevicesInBank);
+            for (int i = 0; i < this.numDevicesInBank; i++)
+            {
+                final Device device = this.siblings.getDevice (i);
+                device.exists ().markInterested ();
+                device.name ().markInterested ();
+            }
         }
 
         this.cursorDeviceLayer = this.cursorDevice.createCursorLayer ();
@@ -121,31 +130,37 @@ public class CursorDeviceImpl implements ICursorDevice
         this.cursorDeviceLayer.hasNext ().markInterested ();
 
         // Monitor the layers of a container device (if any)
-        this.layerBank = this.cursorDevice.createLayerBank (this.numDeviceLayers);
-        this.deviceLayers = new IChannel [this.numDeviceLayers];
-        this.deviceBanks = new DeviceBank [this.numDeviceLayers];
-        for (int i = 0; i < this.numDeviceLayers; i++)
+        if (this.numDeviceLayers > 0)
         {
-            final Channel layer = this.layerBank.getItemAt (i);
-            this.deviceLayers[i] = new ChannelImpl (layer, valueChanger, i, numSends);
-            this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
+            this.layerBank = this.cursorDevice.createLayerBank (this.numDeviceLayers);
+            this.deviceLayers = new IChannel [this.numDeviceLayers];
+            this.deviceBanks = new DeviceBank [this.numDeviceLayers];
+            for (int i = 0; i < this.numDeviceLayers; i++)
+            {
+                final Channel layer = this.layerBank.getItemAt (i);
+                this.deviceLayers[i] = new ChannelImpl (layer, valueChanger, i, numSends);
+                this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
 
-            final int index = i;
-            layer.addIsSelectedInEditorObserver (this.deviceLayers[index]::setSelected);
+                final int index = i;
+                layer.addIsSelectedInEditorObserver (this.deviceLayers[index]::setSelected);
+            }
         }
 
         // Monitor the drum pad layers of a container device (if any)
-        this.drumPadBank = this.cursorDevice.createDrumPadBank (this.numDrumPadLayers);
-        this.drumPadLayers = new IChannel [this.numDrumPadLayers];
-        this.drumPadBanks = new DeviceBank [this.numDrumPadLayers];
-        for (int i = 0; i < this.numDrumPadLayers; i++)
+        if (this.numDrumPadLayers > 0)
         {
-            final Channel layer = this.drumPadBank.getItemAt (i);
-            this.drumPadLayers[i] = new ChannelImpl (layer, valueChanger, i, numSends);
-            this.drumPadBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
+            this.drumPadBank = this.cursorDevice.createDrumPadBank (this.numDrumPadLayers);
+            this.drumPadLayers = new IDrumPad [this.numDrumPadLayers];
+            this.drumPadBanks = new DeviceBank [this.numDrumPadLayers];
+            for (int i = 0; i < this.numDrumPadLayers; i++)
+            {
+                final DrumPad layer = this.drumPadBank.getItemAt (i);
+                this.drumPadLayers[i] = new DrumPadImpl (layer, valueChanger, i, numSends);
+                this.drumPadBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
 
-            final int index = i;
-            layer.addIsSelectedInEditorObserver (this.drumPadLayers[index]::setSelected);
+                final int index = i;
+                layer.addIsSelectedInEditorObserver (this.drumPadLayers[index]::setSelected);
+            }
         }
     }
 
@@ -170,10 +185,13 @@ public class CursorDeviceImpl implements ICursorDevice
         this.cursorDevice.hasSlots ().setIsSubscribed (enable);
         this.cursorDevice.isPinned ().setIsSubscribed (enable);
 
-        this.remoteControls.hasPrevious ().setIsSubscribed (enable);
-        this.remoteControls.hasNext ().setIsSubscribed (enable);
-        this.remoteControls.selectedPageIndex ().setIsSubscribed (enable);
-        this.remoteControls.pageNames ().setIsSubscribed (enable);
+        if (this.remoteControls != null)
+        {
+            this.remoteControls.hasPrevious ().setIsSubscribed (enable);
+            this.remoteControls.hasNext ().setIsSubscribed (enable);
+            this.remoteControls.selectedPageIndex ().setIsSubscribed (enable);
+            this.remoteControls.pageNames ().setIsSubscribed (enable);
+        }
 
         for (int i = 0; i < this.numParams; i++)
             this.fxparams[i].enableObservers (enable);
@@ -1285,13 +1303,14 @@ public class CursorDeviceImpl implements ICursorDevice
     @Override
     public void setDrumPadIndication (final boolean enable)
     {
-        this.drumPadBank.setIndication (enable);
+        if (this.drumPadBank != null)
+            this.drumPadBank.setIndication (enable);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public IChannel getDrumPad (final int index)
+    public IDrumPad getDrumPad (final int index)
     {
         return this.drumPadLayers[index];
     }

@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.IParameter;
 
 
@@ -954,7 +955,7 @@ public interface ICursorDevice extends ObserverManagement
      * @param index The index
      * @return The drum pad
      */
-    IChannel getDrumPad (int index);
+    IDrumPad getDrumPad (int index);
 
 
     /**

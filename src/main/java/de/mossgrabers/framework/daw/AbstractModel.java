@@ -85,10 +85,10 @@ public abstract class AbstractModel implements IModel
         this.numSends = numSends < 0 ? 6 : numSends;
         this.numFilterColumnEntries = numFilterColumnEntries < 0 ? 16 : numFilterColumnEntries;
         this.numResults = numResults < 0 ? 16 : numResults;
-        this.numParams = numParams;
-        this.numDevicesInBank = numDevicesInBank;
-        this.numDeviceLayers = numDeviceLayers;
-        this.numDrumPadLayers = numDrumPadLayers;
+        this.numParams = numParams >= 0 ? numParams : 8;
+        this.numDevicesInBank = numDevicesInBank >= 0 ? numDevicesInBank : 8;
+        this.numDeviceLayers = numDeviceLayers >= 0 ? numDeviceLayers : 8;
+        this.numDrumPadLayers = numDrumPadLayers >= 0 ? numDrumPadLayers : 16;
         this.hasFlatTrackList = hasFlatTrackList ? true : false;
     }
 
