@@ -634,4 +634,20 @@ public class EmptyTrackData implements ITrack
     {
         // Intentionally empty
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void browseToInsertAtStartOfChain ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void browseToInsertAtEndOfChain ()
+    {
+        // Intentionally empty
+    }
 }
