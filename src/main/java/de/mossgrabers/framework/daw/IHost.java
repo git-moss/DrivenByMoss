@@ -63,6 +63,14 @@ public interface IHost
 
 
     /**
+     * Returns true if the DAW supports note repeat.
+     *
+     * @return True if the DAW supports note repeat
+     */
+    boolean hasRepeat ();
+
+
+    /**
      * Schedules the given task for execution after the given delay.
      *
      * @param task The task to execute

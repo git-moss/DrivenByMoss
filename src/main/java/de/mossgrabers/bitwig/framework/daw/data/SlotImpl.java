@@ -175,8 +175,7 @@ public class SlotImpl implements ISlot
     @Override
     public void setColor (final double red, final double green, final double blue)
     {
-        // TODO API extension required - We need a setter
-        // this.slot.color ().set ((float) red, (float) green, (float) blue);
+        this.slot.color ().set ((float) red, (float) green, (float) blue);
     }
 
 

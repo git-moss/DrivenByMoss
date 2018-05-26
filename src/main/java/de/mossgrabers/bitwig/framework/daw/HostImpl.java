@@ -21,6 +21,8 @@ import com.bitwig.extension.api.graphics.BitmapFormat;
 import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
 import com.bitwig.extension.api.opensoundcontrol.OscModule;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.HardwareDevice;
+import com.bitwig.extension.controller.api.UsbDevice;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -86,6 +88,14 @@ public class HostImpl implements IHost
     public boolean hasDrumDevice ()
     {
         return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasRepeat ()
+    {
+        return false;
     }
 
 
@@ -196,7 +206,8 @@ public class HostImpl implements IHost
     @Override
     public IUSBDevice getUsbDevice (final int index)
     {
-        final USBDeviceImpl usbDevice = new USBDeviceImpl (this.host.getUsbDevice (index));
+        final HardwareDevice hardwareDevice = this.host.hardwareDevice (index);
+        final USBDeviceImpl usbDevice = new USBDeviceImpl ((UsbDevice) hardwareDevice);
         this.usbDevices.add (usbDevice);
         return usbDevice;
     }

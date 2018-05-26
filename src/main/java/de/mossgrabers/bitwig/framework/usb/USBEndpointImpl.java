@@ -37,7 +37,7 @@ public class USBEndpointImpl implements IUSBEndpoint
     @Override
     public void send (final ByteBuffer buffer, final int timeout)
     {
-        this.endpoint.bulkTransfer (buffer, timeout);
+        this.endpoint.transfer (buffer, timeout);
     }
 
 
@@ -45,6 +45,6 @@ public class USBEndpointImpl implements IUSBEndpoint
     @Override
     public void sendAsync (final ByteBuffer buffer, final IUSBAsyncCallback callback, final int timeout)
     {
-        this.endpoint.asyncBulkTransfer (buffer, callback::process, timeout);
+        this.endpoint.asyncTransfer (buffer, callback::process, timeout);
     }
 }

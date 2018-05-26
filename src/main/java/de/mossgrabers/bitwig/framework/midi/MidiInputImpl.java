@@ -123,4 +123,12 @@ class MidiInputImpl implements IMidiInput
         if (this.noteInput != null)
             this.noteInput.sendRawMidiEvent (status, data1, data2);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleRepeat ()
+    {
+        // TODO API extension required
+    }
 }

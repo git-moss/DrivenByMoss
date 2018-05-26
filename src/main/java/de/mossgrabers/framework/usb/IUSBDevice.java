@@ -13,7 +13,7 @@ public interface IUSBDevice
 {
     /**
      * Create an endpoint for the USB device.
-     * 
+     *
      * @param interfaceIndex The index of the registered interface
      * @param endpointIndex The index of the registered endpoint
      * @return The endpoint

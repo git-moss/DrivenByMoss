@@ -465,22 +465,6 @@ public class ChannelImpl implements IChannel
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void browseToInsertAtStartOfChain ()
-    {
-        this.channel.startOfDeviceChainInsertionPoint ().browse ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void browseToInsertAtEndOfChain ()
-    {
-        this.channel.endOfDeviceChainInsertionPoint ().browse ();
-    }
-
-
     private void handleVUMeters (final int maxParameterValue, final int value)
     {
         // Limit value to this.configuration.getMaxParameterValue () due to

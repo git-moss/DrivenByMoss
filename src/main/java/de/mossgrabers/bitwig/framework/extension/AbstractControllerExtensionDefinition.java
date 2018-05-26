@@ -16,10 +16,12 @@ import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.ControllerExtensionDefinition;
+import com.bitwig.extension.controller.HardwareDeviceMatcherList;
 import com.bitwig.extension.controller.UsbDeviceMatcher;
 import com.bitwig.extension.controller.UsbEndpointMatcher;
 import com.bitwig.extension.controller.UsbInterfaceMatcher;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.UsbTransferType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +102,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public int getRequiredAPIVersion ()
     {
-        return 6;
+        return 7;
     }
 
 
@@ -132,7 +134,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
 
     /** {@inheritDoc} */
     @Override
-    public void listUsbDevices (final List<UsbDeviceMatcher> matchers)
+    public void listHardwareDevices (final HardwareDeviceMatcherList matchers)
     {
         final USBMatcher matcher = this.definition.claimUSBDevice ();
         if (matcher == null)
@@ -144,10 +146,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
             final byte [] addresses = endpoint.getEndpointAddresses ();
             final UsbEndpointMatcher [] endpointMatchers = new UsbEndpointMatcher [addresses.length];
             for (int i = 0; i < addresses.length; i++)
-            {
-                final String endpointAddressExpression = "bEndpointAddress == 0x" + StringUtils.toHexStr (Byte.toUnsignedInt (addresses[i]));
-                endpointMatchers[i] = new UsbEndpointMatcher (endpointAddressExpression);
-            }
+                endpointMatchers[i] = new UsbEndpointMatcher (UsbTransferType.BULK, addresses[i]);
             final String interfaceExpression = "bInterfaceNumber == 0x" + StringUtils.toHexStr (Byte.toUnsignedInt (endpoint.getInterfaceNumber ()));
             interfaceMatchers.add (new UsbInterfaceMatcher (interfaceExpression, endpointMatchers));
         }
