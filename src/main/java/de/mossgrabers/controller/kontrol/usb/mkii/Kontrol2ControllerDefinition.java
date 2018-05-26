@@ -29,8 +29,8 @@ public class Kontrol2ControllerDefinition extends DefaultControllerDefinition
 
     private static final String [] HARDWARE_MODEL           =
     {
-        "Komplete Kontrol S49 mk II",
-        "Komplete Kontrol S61 mk II"
+        "Komplete Kontrol S49 mk II (USB)",
+        "Komplete Kontrol S61 mk II (USB)"
     };
 
     private static final short     VENDOR_ID                = 0x17cc;
