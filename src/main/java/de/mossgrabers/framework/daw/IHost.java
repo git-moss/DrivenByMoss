@@ -11,7 +11,6 @@ import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.usb.IUSBDevice;
 
-import java.nio.ByteBuffer;
 import java.util.List;
 
 
@@ -170,13 +169,12 @@ public interface IHost
 
 
     /**
-     * Creates a direct byte buffer of the supplied size that is guaranteed to be freed once this
-     * extension exits.
+     * Allocates some memory that will be automatically freed once the extension exits.
      *
-     * @param size The size of the buffer
-     * @return The created buffer
+     * @param size The size of the memory block in bytes
+     * @return The created memory block
      */
-    ByteBuffer createByteBuffer (int size);
+    IMemoryBlock createMemoryBlock (int size);
 
 
     /**

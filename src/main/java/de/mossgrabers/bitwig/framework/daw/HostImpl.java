@@ -10,6 +10,7 @@ import de.mossgrabers.bitwig.framework.osc.OpenSoundControlMessageImpl;
 import de.mossgrabers.bitwig.framework.osc.OpenSoundControlServerImpl;
 import de.mossgrabers.bitwig.framework.usb.USBDeviceImpl;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
@@ -24,7 +25,6 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.HardwareDevice;
 import com.bitwig.extension.controller.api.UsbDevice;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -196,9 +196,9 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public ByteBuffer createByteBuffer (final int size)
+    public IMemoryBlock createMemoryBlock (final int size)
     {
-        return this.host.createByteBuffer (size);
+        return new MemoryBlockImpl (this.host.allocateMemoryBlock (size));
     }
 
 

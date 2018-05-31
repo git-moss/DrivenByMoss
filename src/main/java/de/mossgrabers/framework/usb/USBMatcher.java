@@ -42,11 +42,14 @@ public class USBMatcher
      * @param interfaceNumber The interface
      * @param endpointAddress The endpoint
      */
-    public USBMatcher (final short vendor, final short productID, final byte interfaceNumber, final byte endpointAddress)
+    public USBMatcher (final short vendor, final short productID, final byte interfaceNumber, final byte endpointAddress, final boolean isBulk)
     {
         this (vendor, productID, interfaceNumber, new byte []
         {
             endpointAddress
+        }, new boolean []
+        {
+            isBulk
         });
     }
 
@@ -59,10 +62,10 @@ public class USBMatcher
      * @param interfaceNumber The interface
      * @param endpointAddresses The endpoints
      */
-    public USBMatcher (final short vendor, final short productID, final byte interfaceNumber, final byte [] endpointAddresses)
+    public USBMatcher (final short vendor, final short productID, final byte interfaceNumber, final byte [] endpointAddresses, final boolean [] isBulk)
     {
         this (vendor, productID);
-        this.addEndpoints (interfaceNumber, endpointAddresses);
+        this.addEndpoints (interfaceNumber, endpointAddresses, isBulk);
     }
 
 
@@ -94,9 +97,9 @@ public class USBMatcher
      * @param interfaceNumber The interface
      * @param endpointAddresses The endpoints on the interface
      */
-    public final void addEndpoints (final byte interfaceNumber, final byte [] endpointAddresses)
+    public final void addEndpoints (final byte interfaceNumber, final byte [] endpointAddresses, final boolean [] isBulk)
     {
-        this.endpoints.add (new EndpointMatcher (interfaceNumber, endpointAddresses));
+        this.endpoints.add (new EndpointMatcher (interfaceNumber, endpointAddresses, isBulk));
     }
 
 
@@ -106,11 +109,14 @@ public class USBMatcher
      * @param interfaceNumber The interface
      * @param endpointAddress The endpoint on the interface
      */
-    public final void addEndpoint (final byte interfaceNumber, final byte endpointAddress)
+    public final void addEndpoint (final byte interfaceNumber, final byte endpointAddress, final boolean isBulk)
     {
         this.endpoints.add (new EndpointMatcher (interfaceNumber, new byte []
         {
             endpointAddress
+        }, new boolean []
+        {
+            isBulk
         }));
     }
 
@@ -130,8 +136,9 @@ public class USBMatcher
      */
     public class EndpointMatcher
     {
-        private final byte    interfaceNumber;
-        private final byte [] endpointAddresses;
+        private final byte       interfaceNumber;
+        private final byte []    endpointAddresses;
+        private final boolean [] isBulk;
 
 
         /**
@@ -140,10 +147,11 @@ public class USBMatcher
          * @param interfaceNumber The interface number
          * @param endpointAddresses The addresses of the endpoints
          */
-        public EndpointMatcher (final byte interfaceNumber, final byte [] endpointAddresses)
+        public EndpointMatcher (final byte interfaceNumber, final byte [] endpointAddresses, final boolean [] isBulk)
         {
             this.interfaceNumber = interfaceNumber;
             this.endpointAddresses = endpointAddresses;
+            this.isBulk = isBulk;
         }
 
 
@@ -166,6 +174,12 @@ public class USBMatcher
         public byte [] getEndpointAddresses ()
         {
             return this.endpointAddresses;
+        }
+
+
+        public boolean [] getEndpointIsBulk ()
+        {
+            return this.isBulk;
         }
     }
 }

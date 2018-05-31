@@ -144,9 +144,11 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
         for (final EndpointMatcher endpoint: matcher.getEndpoints ())
         {
             final byte [] addresses = endpoint.getEndpointAddresses ();
+            final boolean [] isBulk = endpoint.getEndpointIsBulk ();
             final UsbEndpointMatcher [] endpointMatchers = new UsbEndpointMatcher [addresses.length];
             for (int i = 0; i < addresses.length; i++)
-                endpointMatchers[i] = new UsbEndpointMatcher (UsbTransferType.BULK, addresses[i]);
+                // TODO Needs to use BULK or INTERRUPT!
+                endpointMatchers[i] = new UsbEndpointMatcher (isBulk[i] ? UsbTransferType.BULK : UsbTransferType.INTERRUPT, addresses[i]);
             final String interfaceExpression = "bInterfaceNumber == 0x" + StringUtils.toHexStr (Byte.toUnsignedInt (endpoint.getInterfaceNumber ()));
             interfaceMatchers.add (new UsbInterfaceMatcher (interfaceExpression, endpointMatchers));
         }

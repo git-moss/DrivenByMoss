@@ -8,6 +8,8 @@ import de.mossgrabers.framework.usb.IUSBDevice;
 import de.mossgrabers.framework.usb.IUSBEndpoint;
 
 import com.bitwig.extension.controller.api.UsbDevice;
+import com.bitwig.extension.controller.api.UsbOutputPipe;
+import com.bitwig.extension.controller.api.UsbPipe;
 
 
 /**
@@ -35,7 +37,8 @@ public class USBDeviceImpl implements IUSBDevice
     @Override
     public IUSBEndpoint getEndpoint (final int interfaceIndex, final int endpointIndex)
     {
-        return new USBEndpointImpl (this.usbDevice.iface (interfaceIndex).pipe (endpointIndex));
+        final UsbPipe pipe = this.usbDevice.iface (interfaceIndex).pipe (endpointIndex);
+        return new USBEndpointImpl ((UsbOutputPipe) pipe);
     }
 
 

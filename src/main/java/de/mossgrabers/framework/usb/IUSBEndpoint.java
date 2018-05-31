@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.usb;
 
-import java.nio.ByteBuffer;
+import de.mossgrabers.framework.daw.IMemoryBlock;
 
 
 /**
@@ -17,18 +17,18 @@ public interface IUSBEndpoint
     /**
      * Send data to the endpoint.
      *
-     * @param buffer The buffer with the data to send
+     * @param memoryBlock The memory block with the data to send
      * @param timeout Timeout for the sending task
      */
-    void send (ByteBuffer buffer, int timeout);
+    void send (IMemoryBlock memoryBlock, int timeout);
 
 
     /**
      * Send data asynchroneously to the endpoint.
      *
-     * @param buffer The buffer with the data to send
+     * @param memoryBlock The memory block with the data to send
      * @param callback Callback when the sending has finished
      * @param timeout Timeout for the sending task
      */
-    void sendAsync (ByteBuffer buffer, IUSBAsyncCallback callback, int timeout);
+    void sendAsync (IMemoryBlock memoryBlock, IUSBAsyncCallback callback, int timeout);
 }

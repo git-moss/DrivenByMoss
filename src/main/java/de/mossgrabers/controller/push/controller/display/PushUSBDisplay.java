@@ -5,11 +5,10 @@
 package de.mossgrabers.controller.push.controller.display;
 
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.usb.IUSBDevice;
 import de.mossgrabers.framework.usb.IUSBEndpoint;
-
-import java.nio.ByteBuffer;
 
 
 /**
@@ -46,9 +45,8 @@ public class PushUSBDisplay
 
     private IUSBDevice           usbDevice;
     private IUSBEndpoint         usbEndpoint;
-    private final ByteBuffer     headerBuffer;
-    private final ByteBuffer     imageBuffer;
-
+    private final IMemoryBlock   headerBlock;
+    private final IMemoryBlock   imageBlock;
     private boolean              isSending      = false;
 
 
@@ -71,9 +69,9 @@ public class PushUSBDisplay
             host.error ("Could not open USB output.");
         }
 
-        this.headerBuffer = host.createByteBuffer (DISPLAY_HEADER.length);
-        this.headerBuffer.put (DISPLAY_HEADER);
-        this.imageBuffer = host.createByteBuffer (DATA_SZ);
+        this.headerBlock = host.createMemoryBlock (DISPLAY_HEADER.length);
+        this.headerBlock.createByteBuffer ().put (DISPLAY_HEADER);
+        this.imageBlock = host.createMemoryBlock (DATA_SZ);
     }
 
 
@@ -88,9 +86,9 @@ public class PushUSBDisplay
             return;
 
         this.isSending = true;
-        image.fillTransferBuffer (this.imageBuffer);
-        this.usbEndpoint.send (this.headerBuffer, TIMEOUT);
-        this.usbEndpoint.send (this.imageBuffer, TIMEOUT);
+        image.fillTransferBuffer (this.imageBlock.createByteBuffer ());
+        this.usbEndpoint.send (this.headerBlock, TIMEOUT);
+        this.usbEndpoint.send (this.imageBlock, TIMEOUT);
         this.isSending = false;
     }
 

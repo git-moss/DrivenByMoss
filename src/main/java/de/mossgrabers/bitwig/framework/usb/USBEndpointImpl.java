@@ -4,12 +4,12 @@
 
 package de.mossgrabers.bitwig.framework.usb;
 
+import de.mossgrabers.bitwig.framework.daw.MemoryBlockImpl;
+import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.usb.IUSBAsyncCallback;
 import de.mossgrabers.framework.usb.IUSBEndpoint;
 
-import com.bitwig.extension.controller.api.UsbPipe;
-
-import java.nio.ByteBuffer;
+import com.bitwig.extension.controller.api.UsbOutputPipe;
 
 
 /**
@@ -19,7 +19,7 @@ import java.nio.ByteBuffer;
  */
 public class USBEndpointImpl implements IUSBEndpoint
 {
-    private UsbPipe endpoint;
+    private UsbOutputPipe endpoint;
 
 
     /**
@@ -27,7 +27,7 @@ public class USBEndpointImpl implements IUSBEndpoint
      *
      * @param pipe The Bitwig pipe (aka endpoint)
      */
-    public USBEndpointImpl (final UsbPipe pipe)
+    public USBEndpointImpl (final UsbOutputPipe pipe)
     {
         this.endpoint = pipe;
     }
@@ -35,16 +35,16 @@ public class USBEndpointImpl implements IUSBEndpoint
 
     /** {@inheritDoc} */
     @Override
-    public void send (final ByteBuffer buffer, final int timeout)
+    public void send (final IMemoryBlock memoryBlock, final int timeout)
     {
-        this.endpoint.transfer (buffer, timeout);
+        this.endpoint.write (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), timeout);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void sendAsync (final ByteBuffer buffer, final IUSBAsyncCallback callback, final int timeout)
+    public void sendAsync (final IMemoryBlock memoryBlock, final IUSBAsyncCallback callback, final int timeout)
     {
-        this.endpoint.asyncTransfer (buffer, callback::process, timeout);
+        this.endpoint.writeAsync (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), callback::process, timeout);
     }
 }

@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.kontrol.usb.mki.controller;
 
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.usb.IUSBDevice;
 import de.mossgrabers.framework.usb.IUSBEndpoint;
 
@@ -399,11 +400,11 @@ public class Kontrol1USBDevice
     private IUSBEndpoint                       usbEndpointDisplay;
     private IUSBEndpoint                       usbEndpointUI;
 
-    private ByteBuffer                         initBuffer;
-    private ByteBuffer                         displayBuffer;
-    private ByteBuffer                         uiBuffer;
-    private ByteBuffer                         ledBuffer;
-    private ByteBuffer                         keyLedBuffer;
+    private IMemoryBlock                       initBlock;
+    private IMemoryBlock                       displayBlock;
+    private IMemoryBlock                       uiBlock;
+    private IMemoryBlock                       ledBlock;
+    private IMemoryBlock                       keyLedBlock;
 
     private boolean                            busySendingDisplay = false;
     private boolean                            busySendingLEDs    = false;
@@ -475,14 +476,15 @@ public class Kontrol1USBDevice
             host.error ("Could not open USB connection: " + ex.getMessage ());
         }
 
-        this.displayBuffer = host.createByteBuffer (DATA_SZ);
-        this.uiBuffer = host.createByteBuffer (1024);
-        this.ledBuffer = host.createByteBuffer (26);
-        this.keyLedBuffer = host.createByteBuffer (267);
-        this.initBuffer = host.createByteBuffer (3);
-        this.initBuffer.put ((byte) 0xA0);
-        this.initBuffer.put ((byte) 0x00);
-        this.initBuffer.put ((byte) 0x00);
+        this.displayBlock = host.createMemoryBlock (DATA_SZ);
+        this.uiBlock = host.createMemoryBlock (1024);
+        this.ledBlock = host.createMemoryBlock (26);
+        this.keyLedBlock = host.createMemoryBlock (267);
+        this.initBlock = host.createMemoryBlock (3);
+        final ByteBuffer initBuffer = this.initBlock.createByteBuffer ();
+        initBuffer.put ((byte) 0xA0);
+        initBuffer.put ((byte) 0x00);
+        initBuffer.put ((byte) 0x00);
 
         // To send black LEDs on startup
         this.oldKeyColors[0] = -1;
@@ -506,7 +508,7 @@ public class Kontrol1USBDevice
     public void init ()
     {
         if (this.usbEndpointDisplay != null)
-            this.usbEndpointDisplay.send (this.initBuffer, TIMEOUT);
+            this.usbEndpointDisplay.send (this.initBlock, TIMEOUT);
     }
 
 
@@ -518,10 +520,10 @@ public class Kontrol1USBDevice
         if (this.usbEndpointUI == null)
             return;
 
-        this.usbEndpointUI.sendAsync (this.uiBuffer, resultLength -> {
+        this.usbEndpointUI.sendAsync (this.uiBlock, resultLength -> {
             if (resultLength > 0)
                 this.processMessage (resultLength);
-            this.uiBuffer.clear ();
+            this.uiBlock.createByteBuffer ().clear ();
             this.host.scheduleTask (this::pollUI, 10);
         }, TIMEOUT);
     }
@@ -645,6 +647,8 @@ public class Kontrol1USBDevice
         if (this.busySendingDisplay || this.usbEndpointDisplay == null)
             return;
 
+        final ByteBuffer displayBuffer = this.displayBlock.createByteBuffer ();
+
         for (int row = 0; row < 3; row++)
         {
             this.fillHeader (row);
@@ -654,41 +658,41 @@ public class Kontrol1USBDevice
                 for (int j = 0; j < 72; j++)
                 {
                     final int col = j / 8;
-                    this.displayBuffer.put ((byte) this.bars[col][j - col * 8]);
+                    displayBuffer.put ((byte) this.bars[col][j - col * 8]);
 
                     if (j % 8 == 7)
                     {
-                        this.displayBuffer.put ((byte) this.bars[col][8]);
+                        displayBuffer.put ((byte) this.bars[col][8]);
                     }
                     else
                     {
                         if (this.dots[0][j] && this.dots[1][j])
-                            this.displayBuffer.put ((byte) 255);
+                            displayBuffer.put ((byte) 255);
                         else if (this.dots[0][j])
-                            this.displayBuffer.put ((byte) 253);
+                            displayBuffer.put ((byte) 253);
                         else if (this.dots[1][j])
-                            this.displayBuffer.put ((byte) 254);
+                            displayBuffer.put ((byte) 254);
                         else
-                            this.displayBuffer.put ((byte) 0);
+                            displayBuffer.put ((byte) 0);
                     }
                 }
 
                 // Padding
                 for (int j = 0; j < 96; j++)
-                    this.displayBuffer.put ((byte) 0);
+                    displayBuffer.put ((byte) 0);
             }
             else
             {
                 for (int j = 0; j < 72; j++)
-                    this.displayBuffer.put (this.getCharacter (row - 1, j));
+                    displayBuffer.put (this.getCharacter (row - 1, j));
 
                 // Padding
                 for (int j = 0; j < 96; j++)
-                    this.displayBuffer.put ((byte) 0);
+                    displayBuffer.put ((byte) 0);
             }
 
             this.busySendingDisplay = true;
-            this.usbEndpointDisplay.send (this.displayBuffer, TIMEOUT);
+            this.usbEndpointDisplay.send (this.displayBlock, TIMEOUT);
             this.busySendingDisplay = false;
         }
     }
@@ -734,16 +738,17 @@ public class Kontrol1USBDevice
             return;
         System.arraycopy (this.buttonStates, 0, this.oldButtonStates, 0, this.oldButtonStates.length);
 
-        this.ledBuffer.clear ();
-        this.ledBuffer.put ((byte) 0x80);
-        this.ledBuffer.put (this.buttonStates);
-        this.ledBuffer.put ((byte) 0);
-        this.ledBuffer.put ((byte) 0);
-        this.ledBuffer.put ((byte) 0);
-        this.ledBuffer.put ((byte) 0);
+        ByteBuffer ledBuffer = this.ledBlock.createByteBuffer ();
+        ledBuffer.clear ();
+        ledBuffer.put ((byte) 0x80);
+        ledBuffer.put (this.buttonStates);
+        ledBuffer.put ((byte) 0);
+        ledBuffer.put ((byte) 0);
+        ledBuffer.put ((byte) 0);
+        ledBuffer.put ((byte) 0);
 
         this.busySendingLEDs = true;
-        this.usbEndpointDisplay.send (this.ledBuffer, TIMEOUT);
+        this.usbEndpointDisplay.send (this.ledBlock, TIMEOUT);
         this.busySendingLEDs = false;
     }
 
@@ -781,14 +786,15 @@ public class Kontrol1USBDevice
             return;
         System.arraycopy (this.keyColors, 0, this.oldKeyColors, 0, this.oldKeyColors.length);
 
-        this.keyLedBuffer.clear ();
-        this.keyLedBuffer.put ((byte) 0x82);
-        this.keyLedBuffer.put (this.keyColors);
-        this.keyLedBuffer.put ((byte) 0x0);
-        this.keyLedBuffer.put ((byte) 0x0);
+        final ByteBuffer leyLedBuffer = this.keyLedBlock.createByteBuffer ();
+        leyLedBuffer.clear ();
+        leyLedBuffer.put ((byte) 0x82);
+        leyLedBuffer.put (this.keyColors);
+        leyLedBuffer.put ((byte) 0x0);
+        leyLedBuffer.put ((byte) 0x0);
 
         this.busySendingKeyLEDs = true;
-        this.usbEndpointDisplay.send (this.keyLedBuffer, TIMEOUT);
+        this.usbEndpointDisplay.send (this.keyLedBlock, TIMEOUT);
         this.busySendingKeyLEDs = false;
     }
 
@@ -800,29 +806,29 @@ public class Kontrol1USBDevice
      */
     private void fillHeader (final int row)
     {
-        this.displayBuffer.clear ();
-
-        this.displayBuffer.put ((byte) 0xe0);
-        this.displayBuffer.put ((byte) 0x00);
-        this.displayBuffer.put ((byte) 0x00);
-        this.displayBuffer.put ((byte) row);
-        this.displayBuffer.put ((byte) 0x00);
-        this.displayBuffer.put ((byte) 0x48);
-        this.displayBuffer.put ((byte) 0x00);
-        this.displayBuffer.put ((byte) 0x01);
-        this.displayBuffer.put ((byte) 0x00);
+        final ByteBuffer displayBuffer = this.displayBlock.createByteBuffer ();
+        displayBuffer.clear ();
+        displayBuffer.put ((byte) 0xe0);
+        displayBuffer.put ((byte) 0x00);
+        displayBuffer.put ((byte) 0x00);
+        displayBuffer.put ((byte) row);
+        displayBuffer.put ((byte) 0x00);
+        displayBuffer.put ((byte) 0x48);
+        displayBuffer.put ((byte) 0x00);
+        displayBuffer.put ((byte) 0x01);
+        displayBuffer.put ((byte) 0x00);
     }
 
 
     private void processMessage (final int received)
     {
-        this.uiBuffer.rewind ();
+        final ByteBuffer uiBuffer = this.uiBlock.createByteBuffer ();
 
         final byte [] dst = new byte [MESSAGE_SIZE];
 
         for (int i = 0; i < received / MESSAGE_SIZE; i++)
         {
-            this.uiBuffer.get (dst);
+            uiBuffer.get (dst);
 
             boolean encoderChange = false;
 

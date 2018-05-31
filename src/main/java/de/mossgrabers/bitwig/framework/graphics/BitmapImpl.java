@@ -70,7 +70,7 @@ public class BitmapImpl implements IBitmap
         final int width = this.bitmap.getWidth ();
         final int padding = (capacity - height * width * 2) / height;
 
-        final ByteBuffer byteBuffer = this.bitmap.getByteBuffer ();
+        final ByteBuffer byteBuffer = this.bitmap.getMemoryBlock ().createByteBuffer ();
 
         for (int y = 0; y < height; y++)
         {
