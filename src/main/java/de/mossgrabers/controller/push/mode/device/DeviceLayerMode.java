@@ -413,7 +413,7 @@ public class DeviceLayerMode extends BaseMode
         if (sendsIndex == 8)
             sendsIndex = 6;
 
-        this.updateMenuItems (5 + sendsIndex % 4);
+        this.updateMenuItems (-1);
 
         final PushConfiguration config = this.surface.getConfiguration ();
 
