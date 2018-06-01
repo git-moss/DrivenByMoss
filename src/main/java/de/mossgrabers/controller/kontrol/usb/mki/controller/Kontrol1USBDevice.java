@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class Kontrol1USBDevice
 {
-    private static byte [] []                  UPPER_CHARACTERS   = new byte [] []
+    private static final byte [] []            UPPER_CHARACTERS   = new byte [] []
     {
         {
             (byte) 207,
@@ -130,7 +130,7 @@ public class Kontrol1USBDevice
         }                                                                                // Z
     };
 
-    private static byte [] []                  LOWER_CHARACTERS   = new byte [] []
+    private static final byte [] []            LOWER_CHARACTERS   = new byte [] []
     {
         {
             (byte) 207,
@@ -238,7 +238,7 @@ public class Kontrol1USBDevice
         }                                                                                // Z
     };
 
-    private static byte [] []                  NUMBERS            = new byte [] []
+    private static final byte [] []            NUMBERS            = new byte [] []
     {
         {
             (byte) 255,
@@ -282,43 +282,43 @@ public class Kontrol1USBDevice
         }
     };
 
-    private static byte []                     MINUS              = new byte []
+    private static final byte []               MINUS              = new byte []
     {
         0,
         (byte) 24
     };
 
-    private static byte []                     PLUS               = new byte []
+    private static final byte []               PLUS               = new byte []
     {
         0,
         (byte) 90
     };
 
-    private static byte []                     PERCENT            = new byte []
+    private static final byte []               PERCENT            = new byte []
     {
         (byte) 153,
         (byte) 126
     };
 
-    private static byte []                     GREATER            = new byte []
+    private static final byte []               GREATER            = new byte []
     {
         0,
         (byte) 33
     };
 
-    private static byte []                     APOSTROPH          = new byte []
+    private static final byte []               APOSTROPH          = new byte []
     {
         (byte) 128,
         0
     };
 
-    private static byte []                     FWD_SLASH          = new byte []
+    private static final byte []               FWD_SLASH          = new byte []
     {
         0,
         (byte) 36
     };
 
-    private static byte []                     BWD_SLASH          = new byte []
+    private static final byte []               BWD_SLASH          = new byte []
     {
         0,
         (byte) 129
@@ -389,11 +389,11 @@ public class Kontrol1USBDevice
         0x80
     };
 
-    private final static int                   DATA_SZ            = 249;
-    private static final int                   TIMEOUT            = 1000;
+    private static final int                   DATA_SZ            = 249;
+    private static final int                   TIMEOUT            = 10000;
     private static final int                   MESSAGE_SIZE       = 49;
 
-    private final static Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);
+    private static final Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);
 
     private IHost                              host;
     private IUSBDevice                         usbDevice;
@@ -406,7 +406,7 @@ public class Kontrol1USBDevice
     private IMemoryBlock                       ledBlock;
     private IMemoryBlock                       keyLedBlock;
 
-    private boolean                            busySendingDisplay = false;
+    private final Object                       busySendingDisplay = new Object ();
     private boolean                            busySendingLEDs    = false;
     private boolean                            busySendingKeyLEDs = false;
 
@@ -523,7 +523,6 @@ public class Kontrol1USBDevice
         this.usbEndpointUI.sendAsync (this.uiBlock, resultLength -> {
             if (resultLength > 0)
                 this.processMessage (resultLength);
-            this.uiBlock.createByteBuffer ().clear ();
             this.host.scheduleTask (this::pollUI, 10);
         }, TIMEOUT);
     }
@@ -644,56 +643,59 @@ public class Kontrol1USBDevice
      */
     public void sendDisplayData ()
     {
-        if (this.busySendingDisplay || this.usbEndpointDisplay == null)
+        if (this.usbEndpointDisplay == null)
             return;
 
-        final ByteBuffer displayBuffer = this.displayBlock.createByteBuffer ();
-
-        for (int row = 0; row < 3; row++)
+        synchronized (this.busySendingDisplay)
         {
-            this.fillHeader (row);
 
-            if (row == 0)
+            final ByteBuffer displayBuffer = this.displayBlock.createByteBuffer ();
+            displayBuffer.rewind ();
+
+            for (int row = 0; row < 3; row++)
             {
-                for (int j = 0; j < 72; j++)
-                {
-                    final int col = j / 8;
-                    displayBuffer.put ((byte) this.bars[col][j - col * 8]);
+                fillHeader (displayBuffer, row);
 
-                    if (j % 8 == 7)
+                if (row == 0)
+                {
+                    for (int j = 0; j < 72; j++)
                     {
-                        displayBuffer.put ((byte) this.bars[col][8]);
-                    }
-                    else
-                    {
-                        if (this.dots[0][j] && this.dots[1][j])
-                            displayBuffer.put ((byte) 255);
-                        else if (this.dots[0][j])
-                            displayBuffer.put ((byte) 253);
-                        else if (this.dots[1][j])
-                            displayBuffer.put ((byte) 254);
+                        final int col = j / 8;
+                        displayBuffer.put ((byte) this.bars[col][j - col * 8]);
+
+                        if (j % 8 == 7)
+                        {
+                            displayBuffer.put ((byte) this.bars[col][8]);
+                        }
                         else
-                            displayBuffer.put ((byte) 0);
+                        {
+                            if (this.dots[0][j] && this.dots[1][j])
+                                displayBuffer.put ((byte) 255);
+                            else if (this.dots[0][j])
+                                displayBuffer.put ((byte) 253);
+                            else if (this.dots[1][j])
+                                displayBuffer.put ((byte) 254);
+                            else
+                                displayBuffer.put ((byte) 0);
+                        }
                     }
+
+                    // Padding
+                    for (int j = 0; j < 96; j++)
+                        displayBuffer.put ((byte) 0);
+                }
+                else
+                {
+                    for (int j = 0; j < 72; j++)
+                        displayBuffer.put (this.getCharacter (row - 1, j));
+
+                    // Padding
+                    for (int j = 0; j < 96; j++)
+                        displayBuffer.put ((byte) 0);
                 }
 
-                // Padding
-                for (int j = 0; j < 96; j++)
-                    displayBuffer.put ((byte) 0);
+                this.usbEndpointDisplay.send (this.displayBlock, TIMEOUT);
             }
-            else
-            {
-                for (int j = 0; j < 72; j++)
-                    displayBuffer.put (this.getCharacter (row - 1, j));
-
-                // Padding
-                for (int j = 0; j < 96; j++)
-                    displayBuffer.put ((byte) 0);
-            }
-
-            this.busySendingDisplay = true;
-            this.usbEndpointDisplay.send (this.displayBlock, TIMEOUT);
-            this.busySendingDisplay = false;
         }
     }
 
@@ -738,7 +740,7 @@ public class Kontrol1USBDevice
             return;
         System.arraycopy (this.buttonStates, 0, this.oldButtonStates, 0, this.oldButtonStates.length);
 
-        ByteBuffer ledBuffer = this.ledBlock.createByteBuffer ();
+        final ByteBuffer ledBuffer = this.ledBlock.createByteBuffer ();
         ledBuffer.clear ();
         ledBuffer.put ((byte) 0x80);
         ledBuffer.put (this.buttonStates);
@@ -802,11 +804,11 @@ public class Kontrol1USBDevice
     /**
      * Fill the display buffer with the header data
      *
+     * @param displayBuffer The display buffer to which to add the header
      * @param row The row number (0-3)
      */
-    private void fillHeader (final int row)
+    private static void fillHeader (final ByteBuffer displayBuffer, final int row)
     {
-        final ByteBuffer displayBuffer = this.displayBlock.createByteBuffer ();
         displayBuffer.clear ();
         displayBuffer.put ((byte) 0xe0);
         displayBuffer.put ((byte) 0x00);
@@ -875,6 +877,8 @@ public class Kontrol1USBDevice
                 this.testByteForButtons (dst[5], BYTE_4);
             }
         }
+
+        uiBuffer.clear ();
     }
 
 

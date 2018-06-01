@@ -5,11 +5,15 @@
 package de.mossgrabers.bitwig.framework.usb;
 
 import de.mossgrabers.bitwig.framework.daw.MemoryBlockImpl;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.usb.IUSBAsyncCallback;
 import de.mossgrabers.framework.usb.IUSBEndpoint;
 
+import com.bitwig.extension.controller.api.UsbInputPipe;
 import com.bitwig.extension.controller.api.UsbOutputPipe;
+import com.bitwig.extension.controller.api.UsbPipe;
+import com.bitwig.extension.controller.api.UsbTransferDirection;
 
 
 /**
@@ -19,16 +23,19 @@ import com.bitwig.extension.controller.api.UsbOutputPipe;
  */
 public class USBEndpointImpl implements IUSBEndpoint
 {
-    private UsbOutputPipe endpoint;
+    private IHost   host;
+    private UsbPipe endpoint;
 
 
     /**
      * Constructor.
      *
+     * @param host The host for logging
      * @param pipe The Bitwig pipe (aka endpoint)
      */
-    public USBEndpointImpl (final UsbOutputPipe pipe)
+    public USBEndpointImpl (final IHost host, final UsbPipe pipe)
     {
+        this.host = host;
         this.endpoint = pipe;
     }
 
@@ -37,7 +44,19 @@ public class USBEndpointImpl implements IUSBEndpoint
     @Override
     public void send (final IMemoryBlock memoryBlock, final int timeout)
     {
-        this.endpoint.write (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), timeout);
+        if (this.endpoint.direction () != UsbTransferDirection.OUT)
+            return;
+
+        try
+        {
+            ((UsbOutputPipe) this.endpoint).write (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), timeout);
+        }
+        catch (final Exception ex)
+        {
+            // Can only catch RuntimeException since it is a Bitwig internal Exception that is
+            // thrown
+            this.host.error ("Could not send USB memory block.", ex);
+        }
     }
 
 
@@ -45,6 +64,18 @@ public class USBEndpointImpl implements IUSBEndpoint
     @Override
     public void sendAsync (final IMemoryBlock memoryBlock, final IUSBAsyncCallback callback, final int timeout)
     {
-        this.endpoint.writeAsync (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), callback::process, timeout);
+        if (this.endpoint.direction () != UsbTransferDirection.IN)
+            return;
+
+        try
+        {
+            ((UsbInputPipe) this.endpoint).readAsync (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), callback::process, timeout);
+        }
+        catch (final Exception ex)
+        {
+            // Can only catch RuntimeException since it is a Bitwig internal Exception that is
+            // thrown
+            this.host.error ("Could not read USB memory block.", ex);
+        }
     }
 }

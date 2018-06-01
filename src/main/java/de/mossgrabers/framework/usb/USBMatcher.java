@@ -41,6 +41,7 @@ public class USBMatcher
      * @param productID The product ID
      * @param interfaceNumber The interface
      * @param endpointAddress The endpoint
+     * @param isBulk True to use bulk otherwise interrupted
      */
     public USBMatcher (final short vendor, final short productID, final byte interfaceNumber, final byte endpointAddress, final boolean isBulk)
     {
@@ -61,6 +62,7 @@ public class USBMatcher
      * @param productID The product ID
      * @param interfaceNumber The interface
      * @param endpointAddresses The endpoints
+     * @param isBulk True to use bulk otherwise interrupted
      */
     public USBMatcher (final short vendor, final short productID, final byte interfaceNumber, final byte [] endpointAddresses, final boolean [] isBulk)
     {
@@ -96,6 +98,7 @@ public class USBMatcher
      *
      * @param interfaceNumber The interface
      * @param endpointAddresses The endpoints on the interface
+     * @param isBulk True to use bulk otherwise interrupted
      */
     public final void addEndpoints (final byte interfaceNumber, final byte [] endpointAddresses, final boolean [] isBulk)
     {
@@ -108,6 +111,7 @@ public class USBMatcher
      *
      * @param interfaceNumber The interface
      * @param endpointAddress The endpoint on the interface
+     * @param isBulk True to use bulk otherwise interrupted
      */
     public final void addEndpoint (final byte interfaceNumber, final byte endpointAddress, final boolean isBulk)
     {
@@ -146,6 +150,7 @@ public class USBMatcher
          *
          * @param interfaceNumber The interface number
          * @param endpointAddresses The addresses of the endpoints
+         * @param isBulk True to use bulk transfer otherwise interrupted
          */
         public EndpointMatcher (final byte interfaceNumber, final byte [] endpointAddresses, final boolean [] isBulk)
         {
@@ -177,6 +182,11 @@ public class USBMatcher
         }
 
 
+        /**
+         * Get the transport mode.
+         *
+         * @return True if bulk otherwise interrupted
+         */
         public boolean [] getEndpointIsBulk ()
         {
             return this.isBulk;

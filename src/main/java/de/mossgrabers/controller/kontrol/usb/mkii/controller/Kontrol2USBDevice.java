@@ -88,11 +88,11 @@ public class Kontrol2USBDevice
         0x80
     };
 
-    private final static int                   DATA_SZ            = 249;
+    private static final int                   DATA_SZ            = 249;
     private static final int                   TIMEOUT            = 1000;
     private static final int                   MESSAGE_SIZE       = 49;
 
-    private final static Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);
+    private static final Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);
 
     private IHost                              host;
     private IUSBDevice                         usbDevice;
@@ -232,7 +232,7 @@ public class Kontrol2USBDevice
         if (this.busySendingDisplay || this.usbEndpointDisplay == null)
             return;
 
-        // TODO
+        // TODO Implement sending to display
         // Use this.displayBuffer
     }
 

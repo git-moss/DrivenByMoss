@@ -207,7 +207,7 @@ public class HostImpl implements IHost
     public IUSBDevice getUsbDevice (final int index)
     {
         final HardwareDevice hardwareDevice = this.host.hardwareDevice (index);
-        final USBDeviceImpl usbDevice = new USBDeviceImpl ((UsbDevice) hardwareDevice);
+        final USBDeviceImpl usbDevice = new USBDeviceImpl (this, (UsbDevice) hardwareDevice);
         this.usbDevices.add (usbDevice);
         return usbDevice;
     }

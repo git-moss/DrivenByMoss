@@ -43,9 +43,9 @@ public class Kontrol2ControllerDefinition extends DefaultControllerDefinition
     private static final byte      INTERFACE_NUMBER_HID     = 0x02;
     private static final byte      INTERFACE_NUMBER_DISPLAY = 0x03;
     /** Komplete Kontrol USB button/knob/keys endpoint. */
-    private static final byte      ENDPOINT_ADDRESS_UI      = (byte) 0x82;
+    private static final byte      ENDPOINT_ADDRESS_HID     = (byte) 0x82;
     /** Komplete Kontrol USB display endpoint. */
-    private static final byte      ENDPOINT_ADDRESS_DISPLAY = (byte) 0x01;
+    private static final byte      ENDPOINT_ADDRESS_DISPLAY = (byte) 0x03; // TODO might be 0x01
 
     private short                  productID;
 
@@ -75,17 +75,8 @@ public class Kontrol2ControllerDefinition extends DefaultControllerDefinition
     public USBMatcher claimUSBDevice ()
     {
         final USBMatcher usbMatcher = new USBMatcher (VENDOR_ID, this.productID);
-        // usbMatcher.addEndpoint (INTERFACE_NUMBER_HID, ENDPOINT_ADDRESS_UI, false);
-        // usbMatcher.addEndpoint (INTERFACE_NUMBER_DISPLAY, ENDPOINT_ADDRESS_DISPLAY, true);
-        usbMatcher.addEndpoints (INTERFACE_NUMBER_DISPLAY, new byte []
-        {
-            ENDPOINT_ADDRESS_UI,
-            ENDPOINT_ADDRESS_DISPLAY
-        }, new boolean []
-        {
-            true,
-            false
-        });
+        usbMatcher.addEndpoint (INTERFACE_NUMBER_HID, ENDPOINT_ADDRESS_HID, false);
+        usbMatcher.addEndpoint (INTERFACE_NUMBER_DISPLAY, ENDPOINT_ADDRESS_DISPLAY, true);
         return usbMatcher;
     }
 }

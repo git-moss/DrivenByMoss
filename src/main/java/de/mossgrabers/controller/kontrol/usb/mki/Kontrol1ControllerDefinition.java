@@ -84,7 +84,7 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
     {
         return new USBMatcher (VENDOR_ID, this.productID, INTERFACE_NUMBER, ENDPOINT_ADDRESSES, new boolean []
         {
-            true,
+            false,
             false
         });
     }

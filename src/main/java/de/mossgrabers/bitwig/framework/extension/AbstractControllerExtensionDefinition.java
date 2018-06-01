@@ -23,8 +23,6 @@ import com.bitwig.extension.controller.UsbInterfaceMatcher;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.UsbTransferType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -140,21 +138,17 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
         if (matcher == null)
             return;
 
-        final List<UsbInterfaceMatcher> interfaceMatchers = new ArrayList<> ();
         for (final EndpointMatcher endpoint: matcher.getEndpoints ())
         {
             final byte [] addresses = endpoint.getEndpointAddresses ();
             final boolean [] isBulk = endpoint.getEndpointIsBulk ();
             final UsbEndpointMatcher [] endpointMatchers = new UsbEndpointMatcher [addresses.length];
             for (int i = 0; i < addresses.length; i++)
-                // TODO Needs to use BULK or INTERRUPT!
-                endpointMatchers[i] = new UsbEndpointMatcher (isBulk[i] ? UsbTransferType.BULK : UsbTransferType.INTERRUPT, addresses[i]);
-            final String interfaceExpression = "bInterfaceNumber == 0x" + StringUtils.toHexStr (Byte.toUnsignedInt (endpoint.getInterfaceNumber ()));
-            interfaceMatchers.add (new UsbInterfaceMatcher (interfaceExpression, endpointMatchers));
-        }
+                endpointMatchers[i] = createEndpointMatcher (addresses[i], isBulk[i]);
 
-        final String expression = "idVendor == 0x" + StringUtils.toHexStr (matcher.getVendor ()) + " && idProduct == 0x" + StringUtils.toHexStr (matcher.getProductID ());
-        matchers.add (new UsbDeviceMatcher (this.getHardwareVendor () + " " + this.getHardwareModel (), expression, interfaceMatchers.toArray (new UsbInterfaceMatcher [interfaceMatchers.size ()])));
+            final String name = this.getHardwareVendor () + " " + this.getHardwareModel ();
+            matchers.add (createDeviceMatcher (name, matcher.getVendor (), matcher.getProductID (), endpoint.getInterfaceNumber (), endpointMatchers));
+        }
     }
 
 
@@ -173,4 +167,18 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
      * @return The controller setup
      */
     protected abstract IControllerSetup getControllerSetup (final ControllerHost host);
+
+
+    private static UsbEndpointMatcher createEndpointMatcher (final byte endpoint, final boolean isBulk)
+    {
+        return new UsbEndpointMatcher (isBulk ? UsbTransferType.BULK : UsbTransferType.INTERRUPT, endpoint);
+    }
+
+
+    private static UsbDeviceMatcher createDeviceMatcher (final String name, final short vendor, final short productID, final byte interfaceNumber, final UsbEndpointMatcher... endpointMatcher)
+    {
+        final String interfaceExpression = "bInterfaceNumber == 0x" + StringUtils.toHexStr (Byte.toUnsignedInt (interfaceNumber));
+        final String expression = "idVendor == 0x" + StringUtils.toHexStr (vendor) + " && idProduct == 0x" + StringUtils.toHexStr (productID);
+        return new UsbDeviceMatcher (name, expression, new UsbInterfaceMatcher (interfaceExpression, endpointMatcher));
+    }
 }

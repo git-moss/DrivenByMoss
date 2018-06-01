@@ -184,6 +184,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         this.addTriggerCommand (Commands.COMMAND_ROW1_2, Kontrol1ControlSurface.BUTTON_INSTANCE, new NopCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_ROW1_3, Kontrol1ControlSurface.BUTTON_PRESET_UP, new NopCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_ROW1_4, Kontrol1ControlSurface.BUTTON_PRESET_DOWN, new NopCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_SHIFT, Kontrol1ControlSurface.BUTTON_SHIFT, new NopCommand<> (this.model, surface));
     }
 
 

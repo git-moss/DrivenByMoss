@@ -48,7 +48,7 @@ public class SettingsUI implements ISettingsUI
 
     /** {@inheritDoc} */
     @Override
-    public IBooleanSetting getBooleanSetting (String label, String category, boolean initialValue)
+    public IBooleanSetting getBooleanSetting (final String label, final String category, final boolean initialValue)
     {
         return new BooleanSettingImpl (this.preferences.getBooleanSetting (label, category, initialValue));
     }

@@ -4,12 +4,11 @@
 
 package de.mossgrabers.bitwig.framework.usb;
 
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.usb.IUSBDevice;
 import de.mossgrabers.framework.usb.IUSBEndpoint;
 
 import com.bitwig.extension.controller.api.UsbDevice;
-import com.bitwig.extension.controller.api.UsbOutputPipe;
-import com.bitwig.extension.controller.api.UsbPipe;
 
 
 /**
@@ -20,15 +19,18 @@ import com.bitwig.extension.controller.api.UsbPipe;
 public class USBDeviceImpl implements IUSBDevice
 {
     private UsbDevice usbDevice;
+    private IHost     host;
 
 
     /**
      * Constructor.
      *
+     * @param host The host for logging
      * @param usbDevice The Bitwig USB device
      */
-    public USBDeviceImpl (final UsbDevice usbDevice)
+    public USBDeviceImpl (final IHost host, final UsbDevice usbDevice)
     {
+        this.host = host;
         this.usbDevice = usbDevice;
     }
 
@@ -37,8 +39,7 @@ public class USBDeviceImpl implements IUSBDevice
     @Override
     public IUSBEndpoint getEndpoint (final int interfaceIndex, final int endpointIndex)
     {
-        final UsbPipe pipe = this.usbDevice.iface (interfaceIndex).pipe (endpointIndex);
-        return new USBEndpointImpl ((UsbOutputPipe) pipe);
+        return new USBEndpointImpl (this.host, this.usbDevice.iface (interfaceIndex).pipe (endpointIndex));
     }
 
 
