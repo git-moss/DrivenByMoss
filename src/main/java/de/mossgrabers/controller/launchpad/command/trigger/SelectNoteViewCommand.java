@@ -43,7 +43,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         }
         else
         {
-            this.playSelect = new ViewMultiSelectCommand<> (model, surface, Views.VIEW_PLAY, Views.VIEW_PIANO);
+            this.playSelect = new ViewMultiSelectCommand<> (model, surface, Views.VIEW_PLAY, Views.VIEW_PIANO, Views.VIEW_DRUM64);
             this.seqSelect = this.playSelect;
         }
     }

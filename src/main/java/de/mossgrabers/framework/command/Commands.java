@@ -228,6 +228,9 @@ public interface Commands
     /** Button punch out command. */
     Integer COMMAND_PUNCH_OUT                = Integer.valueOf (101);
 
+    /** Button to toggle the repeat command. */
+    Integer COMMAND_REPEAT                   = Integer.valueOf (102);
+
     /** The automation read command. */
     Integer COMMAND_AUTOMATION_READ          = Integer.valueOf (110);
     /** The automation write command. */

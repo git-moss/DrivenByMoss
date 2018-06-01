@@ -361,16 +361,4 @@ public interface IChannel extends ObserverManagement
      * @return The send
      */
     ISend getSend (int sendIndex);
-
-
-    /**
-     * Start the browser to insert a new device at the beginning of the channels device chain.
-     */
-    void browseToInsertAtStartOfChain ();
-
-
-    /**
-     * Start the browser to insert a new device at the end of the channels device chain.
-     */
-    void browseToInsertAtEndOfChain ();
 }

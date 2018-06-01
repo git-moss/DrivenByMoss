@@ -90,12 +90,14 @@ import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
+import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.KnobRowTouchModeCommand;
 import de.mossgrabers.framework.command.trigger.NopCommand;
+import de.mossgrabers.framework.command.trigger.RepeatCommand;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.ConvertCommand;
@@ -376,10 +378,11 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
             viewManager.registerView (Views.VIEW_DRUM4, new DrumView4 (surface, this.model));
             viewManager.registerView (Views.VIEW_DRUM8, new DrumView8 (surface, this.model));
-            viewManager.registerView (Views.VIEW_DRUM64, new DrumView64 (surface, this.model));
             viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (surface, this.model));
             viewManager.registerView (Views.VIEW_SCENE_PLAY, new ScenePlayView (surface, this.model));
         }
+
+        viewManager.registerView (Views.VIEW_DRUM64, new DrumView64 (surface, this.model));
     }
 
 
@@ -451,6 +454,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         }
         else
             this.addTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, PushControlSurface.PUSH_BUTTON_SESSION, new NopCommand<> (this.model, surface));
+
+        final TriggerCommand repeatCommand = this.host.hasRepeat () ? new RepeatCommand<> (this.model, surface) : new NopCommand<> (this.model, surface);
+        this.addTriggerCommand (Commands.COMMAND_REPEAT, PushControlSurface.PUSH_BUTTON_REPEAT, repeatCommand);
     }
 
 

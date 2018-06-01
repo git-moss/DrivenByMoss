@@ -207,6 +207,14 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
+    public IMidiInput getInput ()
+    {
+        return this.input;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void assignTriggerCommand (final int midiCC, final Integer commandID)
     {
         this.assignTriggerCommand (midiCC, 0, commandID);
