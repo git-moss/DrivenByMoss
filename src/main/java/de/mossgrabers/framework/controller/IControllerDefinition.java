@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.controller;
 
-import de.mossgrabers.framework.usb.USBMatcher;
+import de.mossgrabers.framework.usb.UsbMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -105,5 +105,5 @@ public interface IControllerDefinition
      *
      * @return The matcher description
      */
-    USBMatcher claimUSBDevice ();
+    UsbMatcher claimUSBDevice ();
 }

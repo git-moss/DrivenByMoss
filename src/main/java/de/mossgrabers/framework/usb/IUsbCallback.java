@@ -9,10 +9,10 @@ package de.mossgrabers.framework.usb;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IUSBAsyncCallback
+public interface IUsbCallback
 {
     /**
-     * Called when ready to process the results
+     * Called when ready to process the results.
      *
      * @param receivedLength The length of the received data, -1 if an error occured
      */

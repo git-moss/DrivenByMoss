@@ -8,7 +8,7 @@ import de.mossgrabers.bitwig.framework.graphics.BitmapImpl;
 import de.mossgrabers.bitwig.framework.graphics.ImageImpl;
 import de.mossgrabers.bitwig.framework.osc.OpenSoundControlMessageImpl;
 import de.mossgrabers.bitwig.framework.osc.OpenSoundControlServerImpl;
-import de.mossgrabers.bitwig.framework.usb.USBDeviceImpl;
+import de.mossgrabers.bitwig.framework.usb.UsbDeviceImpl;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.graphics.IBitmap;
@@ -16,7 +16,7 @@ import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
-import de.mossgrabers.framework.usb.IUSBDevice;
+import de.mossgrabers.framework.usb.IUsbDevice;
 
 import com.bitwig.extension.api.graphics.BitmapFormat;
 import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
@@ -37,7 +37,7 @@ import java.util.List;
 public class HostImpl implements IHost
 {
     private ControllerHost   host;
-    private List<IUSBDevice> usbDevices = new ArrayList<> ();
+    private List<IUsbDevice> usbDevices = new ArrayList<> ();
 
 
     /**
@@ -204,10 +204,10 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public IUSBDevice getUsbDevice (final int index)
+    public IUsbDevice getUsbDevice (final int index)
     {
         final HardwareDevice hardwareDevice = this.host.hardwareDevice (index);
-        final USBDeviceImpl usbDevice = new USBDeviceImpl (this, (UsbDevice) hardwareDevice);
+        final UsbDeviceImpl usbDevice = new UsbDeviceImpl (this, (UsbDevice) hardwareDevice);
         this.usbDevices.add (usbDevice);
         return usbDevice;
     }
@@ -217,7 +217,7 @@ public class HostImpl implements IHost
     @Override
     public void releaseUsbDevices ()
     {
-        for (final IUSBDevice usbDevice: this.usbDevices)
+        for (final IUsbDevice usbDevice: this.usbDevices)
             usbDevice.release ();
     }
 }

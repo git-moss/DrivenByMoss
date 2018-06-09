@@ -27,5 +27,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Privat/Programming/HIDTest/jna-4.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Privat/Programming/HIDTest/purejavahidapi-0.0.11.jar" sourcepath="C:/Privat/Programming/purejavahidapi/target/purejavahidapi-0.0.11-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

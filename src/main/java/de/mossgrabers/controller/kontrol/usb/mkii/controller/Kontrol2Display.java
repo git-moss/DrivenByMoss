@@ -36,7 +36,7 @@ public class Kontrol2Display extends AbstractDisplay
         "             "
     };
 
-    private Kontrol2USBDevice      usbDevice;
+    private Kontrol2UsbDevice      usbDevice;
 
 
     /**
@@ -46,7 +46,7 @@ public class Kontrol2Display extends AbstractDisplay
      * @param configuration The configuration
      * @param usbDevice The USB device
      */
-    public Kontrol2Display (final IHost host, final Kontrol2Configuration configuration, final Kontrol2USBDevice usbDevice)
+    public Kontrol2Display (final IHost host, final Kontrol2Configuration configuration, final Kontrol2UsbDevice usbDevice)
     {
         super (host, null, 2 /* No of rows */, 9 /* No of cells */, 72 /* No of characters */);
         this.usbDevice = usbDevice;

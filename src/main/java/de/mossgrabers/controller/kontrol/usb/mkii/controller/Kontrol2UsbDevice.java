@@ -6,8 +6,8 @@ package de.mossgrabers.controller.kontrol.usb.mkii.controller;
 
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
-import de.mossgrabers.framework.usb.IUSBDevice;
-import de.mossgrabers.framework.usb.IUSBEndpoint;
+import de.mossgrabers.framework.usb.IUsbDevice;
+import de.mossgrabers.framework.usb.IUsbEndpoint;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Kontrol2USBDevice
+public class Kontrol2UsbDevice
 {
 
     private static final int []                BYTE_0             =
@@ -95,9 +95,9 @@ public class Kontrol2USBDevice
     private static final Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);
 
     private IHost                              host;
-    private IUSBDevice                         usbDevice;
-    private IUSBEndpoint                       usbEndpointDisplay;
-    private IUSBEndpoint                       usbEndpointUI;
+    private IUsbDevice                         usbDevice;
+    private IUsbEndpoint                       usbEndpointDisplay;
+    private IUsbEndpoint                       usbEndpointUI;
 
     private IMemoryBlock                       initBlock;
     private IMemoryBlock                       displayBlock;
@@ -153,7 +153,7 @@ public class Kontrol2USBDevice
      *
      * @param host The controller host
      */
-    public Kontrol2USBDevice (final IHost host)
+    public Kontrol2UsbDevice (final IHost host)
     {
         this.host = host;
 

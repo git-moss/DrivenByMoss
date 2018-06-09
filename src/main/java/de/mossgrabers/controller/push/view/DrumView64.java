@@ -45,6 +45,16 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
 
     /** {@inheritDoc} */
     @Override
+    public boolean usesButton (final int buttonID)
+    {
+        if (buttonID == PushControlSurface.PUSH_BUTTON_REPEAT)
+            return false;
+        return !this.surface.getConfiguration ().isPush2 () || buttonID != PushControlSurface.PUSH_BUTTON_USER_MODE;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected void handleDeleteButton (final int playedPad)
     {
         this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());

@@ -7,8 +7,8 @@ package de.mossgrabers.bitwig.framework.usb;
 import de.mossgrabers.bitwig.framework.daw.MemoryBlockImpl;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
-import de.mossgrabers.framework.usb.IUSBAsyncCallback;
-import de.mossgrabers.framework.usb.IUSBEndpoint;
+import de.mossgrabers.framework.usb.IUsbCallback;
+import de.mossgrabers.framework.usb.IUsbEndpoint;
 
 import com.bitwig.extension.controller.api.UsbInputPipe;
 import com.bitwig.extension.controller.api.UsbOutputPipe;
@@ -21,7 +21,7 @@ import com.bitwig.extension.controller.api.UsbTransferDirection;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class USBEndpointImpl implements IUSBEndpoint
+public class UsbEndpointImpl implements IUsbEndpoint
 {
     private IHost   host;
     private UsbPipe endpoint;
@@ -33,7 +33,7 @@ public class USBEndpointImpl implements IUSBEndpoint
      * @param host The host for logging
      * @param pipe The Bitwig pipe (aka endpoint)
      */
-    public USBEndpointImpl (final IHost host, final UsbPipe pipe)
+    public UsbEndpointImpl (final IHost host, final UsbPipe pipe)
     {
         this.host = host;
         this.endpoint = pipe;
@@ -62,7 +62,7 @@ public class USBEndpointImpl implements IUSBEndpoint
 
     /** {@inheritDoc} */
     @Override
-    public void sendAsync (final IMemoryBlock memoryBlock, final IUSBAsyncCallback callback, final int timeout)
+    public void sendAsync (final IMemoryBlock memoryBlock, final IUsbCallback callback, final int timeout)
     {
         if (this.endpoint.direction () != UsbTransferDirection.IN)
             return;

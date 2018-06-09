@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.controller;
 
-import de.mossgrabers.framework.usb.USBMatcher;
+import de.mossgrabers.framework.usb.UsbMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -138,7 +138,7 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
 
     /** {@inheritDoc} */
     @Override
-    public USBMatcher claimUSBDevice ()
+    public UsbMatcher claimUSBDevice ()
     {
         return null;
     }

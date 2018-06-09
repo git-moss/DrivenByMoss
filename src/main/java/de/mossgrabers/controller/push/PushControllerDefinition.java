@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.push;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
-import de.mossgrabers.framework.usb.USBMatcher;
+import de.mossgrabers.framework.usb.UsbMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -79,8 +79,8 @@ public class PushControllerDefinition extends DefaultControllerDefinition
 
     /** {@inheritDoc} */
     @Override
-    public USBMatcher claimUSBDevice ()
+    public UsbMatcher claimUSBDevice ()
     {
-        return this.isMkII ? new USBMatcher (VENDOR_ID, PRODUCT_ID, INTERFACE_NUMBER, ENDPOINT_ADDRESS, true) : null;
+        return this.isMkII ? new UsbMatcher (VENDOR_ID, PRODUCT_ID, INTERFACE_NUMBER, ENDPOINT_ADDRESS, true, false) : null;
     }
 }

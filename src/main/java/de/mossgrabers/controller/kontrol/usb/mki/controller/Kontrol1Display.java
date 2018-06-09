@@ -37,7 +37,7 @@ public class Kontrol1Display extends AbstractDisplay
     };
 
     private int                    maxParameterValue;
-    private Kontrol1USBDevice      usbDevice;
+    private Kontrol1UsbDevice      usbDevice;
 
 
     /**
@@ -48,7 +48,7 @@ public class Kontrol1Display extends AbstractDisplay
      * @param configuration The configuration
      * @param usbDevice The USB device
      */
-    public Kontrol1Display (final IHost host, final int maxParameterValue, final Kontrol1Configuration configuration, final Kontrol1USBDevice usbDevice)
+    public Kontrol1Display (final IHost host, final int maxParameterValue, final Kontrol1Configuration configuration, final Kontrol1UsbDevice usbDevice)
     {
         super (host, null, 2 /* No of rows */, 9 /* No of cells */, 72 /* No of characters */);
         this.maxParameterValue = maxParameterValue;

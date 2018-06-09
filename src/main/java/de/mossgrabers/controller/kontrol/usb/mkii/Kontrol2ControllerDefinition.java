@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.kontrol.usb.mkii;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
-import de.mossgrabers.framework.usb.USBMatcher;
+import de.mossgrabers.framework.usb.UsbMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -72,10 +72,10 @@ public class Kontrol2ControllerDefinition extends DefaultControllerDefinition
 
     /** {@inheritDoc} */
     @Override
-    public USBMatcher claimUSBDevice ()
+    public UsbMatcher claimUSBDevice ()
     {
-        final USBMatcher usbMatcher = new USBMatcher (VENDOR_ID, this.productID);
-        usbMatcher.addEndpoint (INTERFACE_NUMBER_HID, ENDPOINT_ADDRESS_HID, false);
+        final UsbMatcher usbMatcher = new UsbMatcher (VENDOR_ID, this.productID, true);
+        // usbMatcher.addEndpoint (INTERFACE_NUMBER_HID, ENDPOINT_ADDRESS_HID, false);
         // TODO Deactivate
         // usbMatcher.addEndpoint (INTERFACE_NUMBER_DISPLAY, ENDPOINT_ADDRESS_DISPLAY, true);
         return usbMatcher;

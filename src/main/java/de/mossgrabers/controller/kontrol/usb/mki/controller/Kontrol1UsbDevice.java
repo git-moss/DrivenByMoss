@@ -6,8 +6,9 @@ package de.mossgrabers.controller.kontrol.usb.mki.controller;
 
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
-import de.mossgrabers.framework.usb.IUSBDevice;
-import de.mossgrabers.framework.usb.IUSBEndpoint;
+import de.mossgrabers.framework.usb.IHidDevice;
+import de.mossgrabers.framework.usb.IUsbDevice;
+import de.mossgrabers.framework.usb.IUsbEndpoint;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -20,7 +21,7 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Kontrol1USBDevice
+public class Kontrol1UsbDevice
 {
     private static final byte [] []            UPPER_CHARACTERS   = new byte [] []
     {
@@ -391,18 +392,17 @@ public class Kontrol1USBDevice
 
     private static final int                   DATA_SZ            = 249;
     private static final int                   TIMEOUT            = 0;
-    private static final int                   MESSAGE_SIZE       = 49;
+    private static final int                   MESSAGE_SIZE       = 48;
 
     private static final Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);
 
     private IHost                              host;
-    private IUSBDevice                         usbDevice;
-    private IUSBEndpoint                       usbEndpointDisplay;
-    private IUSBEndpoint                       usbEndpointUI;
+    private IUsbDevice                         usbDevice;
+    private IUsbEndpoint                       usbEndpointDisplay;
+    private IHidDevice                         usbEndpointUI;
 
     private IMemoryBlock                       initBlock;
     private IMemoryBlock                       displayBlock;
-    private IMemoryBlock                       uiBlock;
     private IMemoryBlock                       ledBlock;
     private IMemoryBlock                       keyLedBlock;
 
@@ -458,7 +458,7 @@ public class Kontrol1USBDevice
      *
      * @param host The controller host
      */
-    public Kontrol1USBDevice (final IHost host)
+    public Kontrol1UsbDevice (final IHost host)
     {
         this.host = host;
 
@@ -466,7 +466,8 @@ public class Kontrol1USBDevice
         {
             this.usbDevice = host.getUsbDevice (0);
             this.usbEndpointDisplay = this.usbDevice.getEndpoint (0, 0);
-            this.usbEndpointUI = this.usbDevice.getEndpoint (0, 1);
+            this.usbEndpointUI = this.usbDevice.getHidDevice ();
+            this.usbEndpointUI.setCallback (this::processMessage);
         }
         catch (final RuntimeException ex)
         {
@@ -477,7 +478,6 @@ public class Kontrol1USBDevice
         }
 
         this.displayBlock = host.createMemoryBlock (DATA_SZ);
-        this.uiBlock = host.createMemoryBlock (1024);
         this.ledBlock = host.createMemoryBlock (26);
         this.keyLedBlock = host.createMemoryBlock (267);
         this.initBlock = host.createMemoryBlock (3);
@@ -509,22 +509,6 @@ public class Kontrol1USBDevice
     {
         if (this.usbEndpointDisplay != null)
             this.usbEndpointDisplay.send (this.initBlock, TIMEOUT);
-    }
-
-
-    /**
-     * Poll the user interface controls.
-     */
-    public void pollUI ()
-    {
-        if (this.usbEndpointUI == null)
-            return;
-
-        this.usbEndpointUI.sendAsync (this.uiBlock, resultLength -> {
-            if (resultLength > 0)
-                this.processMessage (resultLength);
-            this.host.scheduleTask (this::pollUI, 10);
-        }, TIMEOUT);
     }
 
 
@@ -822,20 +806,14 @@ public class Kontrol1USBDevice
     }
 
 
-    private void processMessage (final int received)
+    private void processMessage (final byte [] data, final int received)
     {
-        final ByteBuffer uiBuffer = this.uiBlock.createByteBuffer ();
-
-        final byte [] dst = new byte [MESSAGE_SIZE];
-
         for (int i = 0; i < received / MESSAGE_SIZE; i++)
         {
-            uiBuffer.get (dst);
-
             boolean encoderChange = false;
 
             // Decode main knob
-            final int currentEncoderValue = Byte.toUnsignedInt (dst[6]);
+            final int currentEncoderValue = Byte.toUnsignedInt (data[5]);
             if (currentEncoderValue != this.mainEncoderValue)
             {
                 final boolean valueIncreased = (this.mainEncoderValue < currentEncoderValue || this.mainEncoderValue == 0x0F && currentEncoderValue == 0) && !(this.mainEncoderValue == 0 && currentEncoderValue == 0x0F);
@@ -846,13 +824,13 @@ public class Kontrol1USBDevice
             }
 
             // Decode 8 value knobs
-            final int start = 7;
+            final int start = 6;
             for (int encIndex = 0; encIndex < 8; encIndex++)
             {
                 final int pos = start + 2 * encIndex;
 
-                final int value = Byte.toUnsignedInt (dst[pos]) | Byte.toUnsignedInt (dst[pos + 1]) << 8;
-                final int hValue = Byte.toUnsignedInt (dst[pos + 1]);
+                final int value = Byte.toUnsignedInt (data[pos]) | Byte.toUnsignedInt (data[pos + 1]) << 8;
+                final int hValue = Byte.toUnsignedInt (data[pos + 1]);
                 if (this.encoderValues[encIndex] != value)
                 {
                     final int prevHValue = (this.encoderValues[encIndex] & 0xF00) >> 8;
@@ -867,18 +845,16 @@ public class Kontrol1USBDevice
             this.isFirstStateMsg = false;
 
             // Test the pressed buttons
-            this.testByteForButtons (dst[1], BYTE_0);
-            this.testByteForButtons (dst[2], BYTE_1);
-            this.testByteForButtons (dst[3], BYTE_2);
+            this.testByteForButtons (data[0], BYTE_0);
+            this.testByteForButtons (data[1], BYTE_1);
+            this.testByteForButtons (data[2], BYTE_2);
             // Don't test touch events on encoder change to prevent flickering
             if (!encoderChange)
             {
-                this.testByteForButtons (dst[4], BYTE_3);
-                this.testByteForButtons (dst[5], BYTE_4);
+                this.testByteForButtons (data[3], BYTE_3);
+                this.testByteForButtons (data[4], BYTE_4);
             }
         }
-
-        uiBuffer.clear ();
     }
 
 

@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IUSBEndpoint
+public interface IUsbEndpoint
 {
     /**
      * Send data to the endpoint.
@@ -30,5 +30,5 @@ public interface IUSBEndpoint
      * @param callback Callback when the sending has finished
      * @param timeout Timeout for the sending task
      */
-    void sendAsync (IMemoryBlock memoryBlock, IUSBAsyncCallback callback, int timeout);
+    void sendAsync (IMemoryBlock memoryBlock, IUsbCallback callback, int timeout);
 }

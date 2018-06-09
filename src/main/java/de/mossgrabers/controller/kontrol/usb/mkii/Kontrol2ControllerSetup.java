@@ -13,7 +13,7 @@ import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.MainEncoderBut
 import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.ScaleButtonCommand;
 import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2Display;
-import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2USBDevice;
+import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2UsbDevice;
 import de.mossgrabers.controller.kontrol.usb.mkii.mode.Modes;
 import de.mossgrabers.controller.kontrol.usb.mkii.mode.ScaleMode;
 import de.mossgrabers.controller.kontrol.usb.mkii.mode.device.BrowseMode;
@@ -53,7 +53,7 @@ import de.mossgrabers.framework.view.ViewManager;
  */
 public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2ControlSurface, Kontrol2Configuration>
 {
-    private Kontrol2USBDevice usbDevice;
+    private Kontrol2UsbDevice usbDevice;
 
 
     /**
@@ -86,7 +86,7 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
     {
         final IHost host = this.model.getHost ();
 
-        this.usbDevice = new Kontrol2USBDevice (host);
+        this.usbDevice = new Kontrol2UsbDevice (host);
         this.usbDevice.init ();
 
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();

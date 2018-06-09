@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.push.controller;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.display.PushUSBDisplay;
+import de.mossgrabers.controller.push.controller.display.PushUsbDisplay;
 import de.mossgrabers.controller.push.controller.display.model.DisplayModel;
 import de.mossgrabers.controller.push.controller.display.model.VirtualDisplay;
 import de.mossgrabers.controller.push.controller.display.model.grid.GridChangeListener;
@@ -80,7 +80,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     private DisplayModel           model;
 
     private final VirtualDisplay   virtualDisplay;
-    private final PushUSBDisplay   usbDisplay;
+    private final PushUsbDisplay   usbDisplay;
 
 
     /**
@@ -102,7 +102,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
         this.model.addGridElementChangeListener (this);
 
         this.virtualDisplay = this.isPush2 ? new VirtualDisplay (host, this.model, configuration) : null;
-        this.usbDisplay = this.isPush2 ? new PushUSBDisplay (host) : null;
+        this.usbDisplay = this.isPush2 ? new PushUsbDisplay (host) : null;
     }
 
 

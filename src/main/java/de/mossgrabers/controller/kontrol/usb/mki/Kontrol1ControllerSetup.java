@@ -13,7 +13,7 @@ import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.MainEncoderButt
 import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.ScaleButtonCommand;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Display;
-import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1USBDevice;
+import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1UsbDevice;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.ScaleMode;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.device.BrowseMode;
@@ -53,7 +53,7 @@ import de.mossgrabers.framework.view.ViewManager;
  */
 public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1ControlSurface, Kontrol1Configuration>
 {
-    private Kontrol1USBDevice usbDevice;
+    private Kontrol1UsbDevice usbDevice;
 
 
     /**
@@ -86,7 +86,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     {
         final IHost host = this.model.getHost ();
 
-        this.usbDevice = new Kontrol1USBDevice (host);
+        this.usbDevice = new Kontrol1UsbDevice (host);
         this.usbDevice.init ();
 
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
@@ -208,7 +208,6 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final Kontrol1ControlSurface surface = this.getSurface ();
         surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
         surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
-        this.usbDevice.pollUI ();
     }
 
 

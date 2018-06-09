@@ -9,7 +9,7 @@ package de.mossgrabers.framework.usb;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IUSBDevice
+public interface IUsbDevice
 {
     /**
      * Create an endpoint for the USB device.
@@ -18,11 +18,19 @@ public interface IUSBDevice
      * @param endpointIndex The index of the registered endpoint
      * @return The endpoint
      */
-    IUSBEndpoint getEndpoint (final int interfaceIndex, final int endpointIndex);
+    IUsbEndpoint getEndpoint (final int interfaceIndex, final int endpointIndex);
 
 
     /**
      * Release the USB device.
      */
     void release ();
+
+
+    /**
+     * Gets the USB device as a HID Device.
+     *
+     * @return The HID device
+     */
+    IHidDevice getHidDevice ();
 }

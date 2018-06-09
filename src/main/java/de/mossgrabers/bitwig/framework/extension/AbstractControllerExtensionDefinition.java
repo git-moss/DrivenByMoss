@@ -6,8 +6,8 @@ package de.mossgrabers.bitwig.framework.extension;
 
 import de.mossgrabers.framework.controller.IControllerDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
-import de.mossgrabers.framework.usb.USBMatcher;
-import de.mossgrabers.framework.usb.USBMatcher.EndpointMatcher;
+import de.mossgrabers.framework.usb.UsbMatcher;
+import de.mossgrabers.framework.usb.UsbMatcher.EndpointMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -135,7 +135,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public void listHardwareDevices (final HardwareDeviceMatcherList matchers)
     {
-        final USBMatcher matcher = this.definition.claimUSBDevice ();
+        final UsbMatcher matcher = this.definition.claimUSBDevice ();
         if (matcher == null)
             return;
 

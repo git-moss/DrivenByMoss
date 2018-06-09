@@ -7,8 +7,8 @@ package de.mossgrabers.controller.push.controller.display;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.graphics.IBitmap;
-import de.mossgrabers.framework.usb.IUSBDevice;
-import de.mossgrabers.framework.usb.IUSBEndpoint;
+import de.mossgrabers.framework.usb.IUsbDevice;
+import de.mossgrabers.framework.usb.IUsbEndpoint;
 
 
 /**
@@ -16,7 +16,7 @@ import de.mossgrabers.framework.usb.IUSBEndpoint;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PushUSBDisplay
+public class PushUsbDisplay
 {
     /** The size of the display content. */
     private static final int     DATA_SZ        = 20 * 0x4000;
@@ -43,8 +43,8 @@ public class PushUSBDisplay
         0
     };
 
-    private IUSBDevice           usbDevice;
-    private IUSBEndpoint         usbEndpoint;
+    private IUsbDevice           usbDevice;
+    private IUsbEndpoint         usbEndpoint;
     private final IMemoryBlock   headerBlock;
     private final IMemoryBlock   imageBlock;
     private boolean              isSending      = false;
@@ -55,7 +55,7 @@ public class PushUSBDisplay
      *
      * @param host The controller host
      */
-    public PushUSBDisplay (final IHost host)
+    public PushUsbDisplay (final IHost host)
     {
         try
         {

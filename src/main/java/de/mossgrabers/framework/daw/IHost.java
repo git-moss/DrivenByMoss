@@ -9,7 +9,7 @@ import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
-import de.mossgrabers.framework.usb.IUSBDevice;
+import de.mossgrabers.framework.usb.IUsbDevice;
 
 import java.util.List;
 
@@ -183,7 +183,7 @@ public interface IHost
      * @param index The index
      * @return The USB device
      */
-    IUSBDevice getUsbDevice (int index);
+    IUsbDevice getUsbDevice (int index);
 
 
     /**

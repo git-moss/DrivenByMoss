@@ -159,7 +159,7 @@ public class Kontrol2ControlSurface extends AbstractControlSurface<Kontrol2Confi
     /** Color intensity for an disabled button. */
     public static final int     BUTTON_STATE_OFF      = 0;
 
-    private Kontrol2USBDevice   usbDevice;
+    private Kontrol2UsbDevice   usbDevice;
 
 
     /**
@@ -171,7 +171,7 @@ public class Kontrol2ControlSurface extends AbstractControlSurface<Kontrol2Confi
      * @param input
      * @param usbDevice
      */
-    public Kontrol2ControlSurface (final IHost host, final ColorManager colorManager, final Kontrol2Configuration configuration, final IMidiInput input, final Kontrol2USBDevice usbDevice)
+    public Kontrol2ControlSurface (final IHost host, final ColorManager colorManager, final Kontrol2Configuration configuration, final IMidiInput input, final Kontrol2UsbDevice usbDevice)
     {
         super (host, configuration, colorManager, null, input, KONTROL1_BUTTONS_ALL);
 
