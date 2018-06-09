@@ -9,7 +9,9 @@ import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurfa
 import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.device.BrowseMode;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -55,5 +57,9 @@ public class MainEncoderButtonCommand extends AbstractTriggerCommand<Kontrol1Con
         }
 
         this.model.toggleCurrentTrackBank ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getSelectedTrack ();
+        if (track == null)
+            tb.getTrack (0).select ();
     }
 }

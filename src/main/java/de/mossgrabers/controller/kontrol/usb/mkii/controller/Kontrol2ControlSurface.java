@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -246,7 +247,48 @@ public class Kontrol2ControlSurface extends AbstractControlSurface<Kontrol2Confi
     @Override
     protected void handleMidi (final int status, final int data1, final int data2)
     {
-        // Midi is not used for (uses USB instead), therefore block anything.
+        final int code = status & 0xF0;
+        final int channel = status & 0xF;
+
+        View view;
+        switch (code)
+        {
+            // Note on/off
+            case 0x80:
+            case 0x90:
+                // Not used
+                break;
+
+            // Polyphonic Aftertouch
+            case 0xA0:
+                view = this.viewManager.getActiveView ();
+                if (view != null)
+                    view.executeAftertouchCommand (data1, data2);
+                break;
+
+            // CC
+            case 0xB0:
+                // Not used
+                break;
+
+            // Channel Aftertouch
+            case 0xD0:
+                view = this.viewManager.getActiveView ();
+                if (view != null)
+                    view.executeAftertouchCommand (-1, data1);
+                break;
+
+            // Pitch Bend
+            case 0xE0:
+                view = this.viewManager.getActiveView ();
+                if (view != null)
+                    view.executePitchbendCommand (channel, data1, data2);
+                break;
+
+            default:
+                this.host.println ("Unhandled midi status: " + status);
+                break;
+        }
     }
 
 

@@ -116,6 +116,14 @@ public class ControlView extends AbstractView<Kontrol2ControlSurface, Kontrol2Co
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void updateNoteMapping ()
+    {
+        // Intentionally empty
+    }
+
+
     private void updateKeyLEDs (final double [] color)
     {
         int red = 0;

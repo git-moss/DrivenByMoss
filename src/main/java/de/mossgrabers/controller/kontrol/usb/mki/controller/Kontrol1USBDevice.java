@@ -390,7 +390,7 @@ public class Kontrol1USBDevice
     };
 
     private static final int                   DATA_SZ            = 249;
-    private static final int                   TIMEOUT            = 10000;
+    private static final int                   TIMEOUT            = 0;
     private static final int                   MESSAGE_SIZE       = 49;
 
     private static final Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);

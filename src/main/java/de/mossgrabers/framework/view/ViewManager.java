@@ -82,7 +82,6 @@ public class ViewManager
         // Notify all view change listeners
         for (final ViewChangeListener listener: this.viewChangeListeners)
             listener.call (this.previousViewId, this.activeViewId);
-
     }
 
 
