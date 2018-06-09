@@ -25,6 +25,11 @@
 			<name>Maven Central Repository</name>
 			<url>https://mvnrepository.com</url>
 		</repository>
+
+		<repository>
+			<id>maven-local-repository</id>
+			<url>file:///${project.basedir}/maven-local-repository</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -37,8 +42,7 @@
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
-			<version>4.5.1</version>
-<!-- 			<version>4.0.0</version> -->
+			<version>4.0.0</version>
 		</dependency>
 
 		<dependency>
@@ -51,12 +55,11 @@
 			<groupId>purejavahidapi</groupId>
 			<artifactId>purejavahidapi</artifactId>
 			<version>0.0.11</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/libs/purejavahidapi-0.0.11.jar</systemPath>
 		</dependency>
 	</dependencies>
 
 	<build>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -86,6 +89,9 @@
 							<artifactSet>
 								<excludes>
 									<exclude>com.bitwig:extension-api</exclude>
+									<exclude>org.*:*</exclude>
+									<exclude>commons-*:*</exclude>
+									<exclude>com.google.guava:guava</exclude>
 								</excludes>
 							</artifactSet>
 						</configuration>

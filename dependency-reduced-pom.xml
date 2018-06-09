@@ -32,6 +32,9 @@
               <artifactSet>
                 <excludes>
                   <exclude>com.bitwig:extension-api</exclude>
+                  <exclude>org.*:*</exclude>
+                  <exclude>commons-*:*</exclude>
+                  <exclude>com.google.guava:guava</exclude>
                 </excludes>
               </artifactSet>
             </configuration>
@@ -69,6 +72,10 @@
       <name>Maven Central Repository</name>
       <url>https://mvnrepository.com</url>
     </repository>
+    <repository>
+      <id>maven-local-repository</id>
+      <url>file:///${project.basedir}/maven-local-repository</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -78,11 +85,10 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>purejavahidapi</groupId>
-      <artifactId>purejavahidapi</artifactId>
-      <version>0.0.11</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/libs/purejavahidapi-0.0.11.jar</systemPath>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-shade-plugin</artifactId>
+      <version>3.1.1</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
   <properties>
