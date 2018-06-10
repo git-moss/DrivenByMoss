@@ -9,6 +9,7 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.usb.IHidDevice;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.IUsbEndpoint;
+import de.mossgrabers.framework.utils.OperatingSystem;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -100,7 +101,6 @@ public class Kontrol2UsbDevice
 
     private static final int                   DATA_SZ            = 249;
     private static final int                   TIMEOUT            = 0;
-    private static final int                   MESSAGE_SIZE       = 49;
 
     private static final Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);
 
@@ -327,67 +327,72 @@ public class Kontrol2UsbDevice
     }
 
 
+    /**
+     * Process the received HID message.
+     * 
+     * @param data The data
+     * @param received The number of valid bytes in the data array
+     */
     private void processMessage (final byte [] data, final int received)
     {
         // TODO Remove
-        // for (int i = 0; i < 34; i++)
-        // System.out.printf ("%d ", data[i]);
-        // System.out.println ("*");
+        for (int i = 0; i < received; i++)
+            System.out.printf ("%d ", data[i]);
+        System.out.println ("*");
 
-        for (int i = 0; i < received / MESSAGE_SIZE; i++)
+        final int dataOffset = OperatingSystem.get () == OperatingSystem.WINDOWS ? 0 : 1;
+
+        boolean encoderChange = false;
+
+        // Handle button presses
+        if (data[dataOffset + 30] == 36)
         {
-            boolean encoderChange = false;
-
-            // Handle button presses
-            if (data[30] == 36)
+            // Decode main knob
+            final int currentEncoderValue = Byte.toUnsignedInt (data[dataOffset + 29]);
+            if (currentEncoderValue != this.mainEncoderValue)
             {
-                // Decode main knob
-                final int currentEncoderValue = Byte.toUnsignedInt (data[29]);
-                if (currentEncoderValue != this.mainEncoderValue)
+                final boolean valueIncreased = (this.mainEncoderValue < currentEncoderValue || this.mainEncoderValue == 0x0F && currentEncoderValue == 0) && !(this.mainEncoderValue == 0 && currentEncoderValue == 0x0F);
+                this.mainEncoderValue = currentEncoderValue;
+                if (!this.isFirstStateMsg)
+                    this.callback.mainEncoderChanged (valueIncreased);
+                encoderChange = true;
+            }
+
+            // Test the pressed buttons
+            this.testByteForButtons (data[dataOffset + 1], BYTE_1);
+            this.testByteForButtons (data[dataOffset + 2], BYTE_2);
+            this.testByteForButtons (data[dataOffset + 3], BYTE_3);
+            this.testByteForButtons (data[dataOffset + 4], BYTE_4);
+            // Don't test touch events on encoder change to prevent flickering
+            if (!encoderChange)
+            {
+                this.testByteForButtons (data[dataOffset + 3], BYTE_5);
+                this.testByteForButtons (data[dataOffset + 4], BYTE_6);
+            }
+        }
+        else
+        {
+            // Decode 8 value knobs
+            final int start = dataOffset + 16;
+            for (int encIndex = 0; encIndex < 8; encIndex++)
+            {
+                final int pos = start + 2 * encIndex;
+
+                final int value = Byte.toUnsignedInt (data[pos]) | Byte.toUnsignedInt (data[pos + 1]) << 8;
+                final int hValue = Byte.toUnsignedInt (data[pos + 1]);
+                if (this.encoderValues[encIndex] != value)
                 {
-                    final boolean valueIncreased = (this.mainEncoderValue < currentEncoderValue || this.mainEncoderValue == 0x0F && currentEncoderValue == 0) && !(this.mainEncoderValue == 0 && currentEncoderValue == 0x0F);
-                    this.mainEncoderValue = currentEncoderValue;
+                    final int prevHValue = (this.encoderValues[encIndex] & 0xF00) >> 8;
+                    final boolean valueIncreased = (this.encoderValues[encIndex] < value || prevHValue == 3 && hValue == 0) && !(prevHValue == 0 && hValue == 3);
+                    this.encoderValues[encIndex] = value;
                     if (!this.isFirstStateMsg)
-                        this.callback.mainEncoderChanged (valueIncreased);
+                        this.callback.encoderChanged (encIndex, valueIncreased);
                     encoderChange = true;
                 }
-
-                // Test the pressed buttons
-                this.testByteForButtons (data[1], BYTE_1);
-                this.testByteForButtons (data[2], BYTE_2);
-                this.testByteForButtons (data[3], BYTE_3);
-                this.testByteForButtons (data[4], BYTE_4);
-                // Don't test touch events on encoder change to prevent flickering
-                if (!encoderChange)
-                {
-                    this.testByteForButtons (data[3], BYTE_5);
-                    this.testByteForButtons (data[4], BYTE_6);
-                }
             }
-            else
-            {
-                // Decode 8 value knobs
-                final int start = 16;
-                for (int encIndex = 0; encIndex < 8; encIndex++)
-                {
-                    final int pos = start + 2 * encIndex;
-
-                    final int value = Byte.toUnsignedInt (data[pos]) | Byte.toUnsignedInt (data[pos + 1]) << 8;
-                    final int hValue = Byte.toUnsignedInt (data[pos + 1]);
-                    if (this.encoderValues[encIndex] != value)
-                    {
-                        final int prevHValue = (this.encoderValues[encIndex] & 0xF00) >> 8;
-                        final boolean valueIncreased = (this.encoderValues[encIndex] < value || prevHValue == 3 && hValue == 0) && !(prevHValue == 0 && hValue == 3);
-                        this.encoderValues[encIndex] = value;
-                        if (!this.isFirstStateMsg)
-                            this.callback.encoderChanged (encIndex, valueIncreased);
-                        encoderChange = true;
-                    }
-                }
-            }
-
-            this.isFirstStateMsg = false;
         }
+
+        this.isFirstStateMsg = false;
     }
 
 
