@@ -55,8 +55,6 @@ public class ControlView extends AbstractView<Kontrol2ControlSurface, Kontrol2Co
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_ARP, this.surface.isShiftPressed () && transport.isMetronomeTicksOn () || !this.surface.isShiftPressed () && transport.isMetronomeOn () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
 
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_LOOP, transport.isLoop () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol2ControlSurface.BUTTON_RWD, this.surface.isPressed (Kontrol2ControlSurface.BUTTON_RWD) ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol2ControlSurface.BUTTON_FWD, this.surface.isPressed (Kontrol2ControlSurface.BUTTON_FWD) ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_PLAY, transport.isPlaying () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_REC, transport.isRecording () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_STOP, this.surface.isPressed (Kontrol2ControlSurface.BUTTON_STOP) ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
@@ -73,21 +71,27 @@ public class ControlView extends AbstractView<Kontrol2ControlSurface, Kontrol2Co
 
         if (modeManager.isActiveMode (Modes.MODE_TRACK) || modeManager.isActiveMode (Modes.MODE_VOLUME))
         {
-            this.surface.updateButton (Kontrol2ControlSurface.BUTTON_BACK, t != null && t.isMute () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
-            this.surface.updateButton (Kontrol2ControlSurface.BUTTON_ENTER, t != null && t.isSolo () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
+            this.surface.updateButton (Kontrol2ControlSurface.BUTTON_MUTE, t != null && t.isMute () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
+            this.surface.updateButton (Kontrol2ControlSurface.BUTTON_SOLO, t != null && t.isSolo () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
         }
-        else if (isBrowseMode)
-        {
-            this.surface.updateButton (Kontrol2ControlSurface.BUTTON_BACK, Kontrol2ControlSurface.BUTTON_STATE_ON);
-            this.surface.updateButton (Kontrol2ControlSurface.BUTTON_ENTER, Kontrol2ControlSurface.BUTTON_STATE_ON);
-        }
-        else
-        {
-            this.surface.updateButton (Kontrol2ControlSurface.BUTTON_BACK, Kontrol2ControlSurface.BUTTON_STATE_OFF);
-            this.surface.updateButton (Kontrol2ControlSurface.BUTTON_ENTER, Kontrol2ControlSurface.BUTTON_STATE_OFF);
-        }
-
-        this.surface.updateButton (Kontrol2ControlSurface.BUTTON_BROWSE, isBrowseMode ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
+        // TODO
+        // else if (isBrowseMode)
+        // {
+        // this.surface.updateButton (Kontrol2ControlSurface.BUTTON_BACK,
+        // Kontrol2ControlSurface.BUTTON_STATE_ON);
+        // this.surface.updateButton (Kontrol2ControlSurface.BUTTON_ENTER,
+        // Kontrol2ControlSurface.BUTTON_STATE_ON);
+        // }
+        // else
+        // {
+        // this.surface.updateButton (Kontrol2ControlSurface.BUTTON_BACK,
+        // Kontrol2ControlSurface.BUTTON_STATE_OFF);
+        // this.surface.updateButton (Kontrol2ControlSurface.BUTTON_ENTER,
+        // Kontrol2ControlSurface.BUTTON_STATE_OFF);
+        // }
+        //
+        // this.surface.updateButton (Kontrol2ControlSurface.BUTTON_BROWSE, isBrowseMode ?
+        // Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
 
         this.surface.updateButtonLEDs ();
 

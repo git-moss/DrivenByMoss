@@ -11,6 +11,9 @@ import de.mossgrabers.framework.usb.IUsbEndpoint;
 
 import com.bitwig.extension.controller.api.UsbDevice;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * Implementation for an USB device.
@@ -19,8 +22,10 @@ import com.bitwig.extension.controller.api.UsbDevice;
  */
 public class UsbDeviceImpl implements IUsbDevice
 {
-    private UsbDevice usbDevice;
-    private IHost     host;
+    private static final Pattern PATTERN = Pattern.compile ("idVendor == 0x(\\p{XDigit}+) && idProduct == 0x(\\p{XDigit}+)");
+
+    private UsbDevice            usbDevice;
+    private IHost                host;
 
 
     /**
@@ -57,9 +62,13 @@ public class UsbDeviceImpl implements IUsbDevice
     public IHidDevice getHidDevice ()
     {
         final String expression = this.usbDevice.deviceMatcher ().getExpression ();
-        // TODO parse from expression
-        final short vendorID = 0x17cc;
-        final short productID = 0x1340;
+        // Parse like "idVendor == 0x17CC && idProduct == 0x1610"
+        final Matcher matcher = PATTERN.matcher (expression);
+        if (!matcher.matches ())
+            return null;
+
+        final short vendorID = Short.parseShort (matcher.group (1), 16);
+        final short productID = Short.parseShort (matcher.group (2), 16);
         return new HidDeviceImpl (vendorID, productID);
     }
 }

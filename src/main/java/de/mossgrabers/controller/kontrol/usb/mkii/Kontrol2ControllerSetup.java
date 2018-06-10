@@ -5,8 +5,6 @@
 package de.mossgrabers.controller.kontrol.usb.mkii;
 
 import de.mossgrabers.controller.kontrol.usb.mkii.command.continuous.MainEncoderCommand;
-import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.BackButtonCommand;
-import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.EnterButtonCommand;
 import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.Kontrol2CursorCommand;
 import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.Kontrol2PlayCommand;
 import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.MainEncoderButtonCommand;
@@ -24,7 +22,6 @@ import de.mossgrabers.controller.kontrol.usb.mkii.view.ControlView;
 import de.mossgrabers.controller.kontrol.usb.mkii.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
-import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.KnobRowTouchModeCommand;
 import de.mossgrabers.framework.command.trigger.ModeMultiSelectCommand;
@@ -33,7 +30,6 @@ import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
-import de.mossgrabers.framework.command.trigger.transport.WindCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
@@ -151,8 +147,6 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
         this.addTriggerCommand (Commands.COMMAND_PLAY, Kontrol2ControlSurface.BUTTON_PLAY, new Kontrol2PlayCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_RECORD, Kontrol2ControlSurface.BUTTON_REC, new RecordCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_STOP, Kontrol2ControlSurface.BUTTON_STOP, new StopCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_REWIND, Kontrol2ControlSurface.BUTTON_RWD, new WindCommand<> (this.model, surface, false));
-        this.addTriggerCommand (Commands.COMMAND_FORWARD, Kontrol2ControlSurface.BUTTON_FWD, new WindCommand<> (this.model, surface, true));
         this.addTriggerCommand (Commands.COMMAND_LOOP, Kontrol2ControlSurface.BUTTON_LOOP, new ToggleLoopCommand<> (this.model, surface));
 
         this.addTriggerCommand (Commands.COMMAND_PAGE_LEFT, Kontrol2ControlSurface.BUTTON_PAGE_LEFT, new ModeMultiSelectCommand<> (this.model, surface, Modes.MODE_PARAMS, Modes.MODE_VOLUME, Modes.MODE_TRACK));
@@ -165,10 +159,13 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
         this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, Kontrol2ControlSurface.BUTTON_NAVIGATE_LEFT, new Kontrol2CursorCommand (Direction.LEFT, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, Kontrol2ControlSurface.BUTTON_NAVIGATE_RIGHT, new Kontrol2CursorCommand (Direction.RIGHT, this.model, surface));
 
-        this.addTriggerCommand (Commands.COMMAND_MUTE, Kontrol2ControlSurface.BUTTON_BACK, new BackButtonCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_SOLO, Kontrol2ControlSurface.BUTTON_ENTER, new EnterButtonCommand (this.model, surface));
-
-        this.addTriggerCommand (Commands.COMMAND_BROWSE, Kontrol2ControlSurface.BUTTON_BROWSE, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
+        // TODO
+        // this.addTriggerCommand (Commands.COMMAND_MUTE, Kontrol2ControlSurface.BUTTON_BACK, new
+        // BackButtonCommand (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_SOLO, Kontrol2ControlSurface.BUTTON_ENTER, new
+        // EnterButtonCommand (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_BROWSE, Kontrol2ControlSurface.BUTTON_BROWSE,
+        // new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
 
         this.addTriggerCommand (Commands.COMMAND_FADER_TOUCH_1, Kontrol2ControlSurface.TOUCH_ENCODER_1, new KnobRowTouchModeCommand<> (0, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_FADER_TOUCH_2, Kontrol2ControlSurface.TOUCH_ENCODER_2, new KnobRowTouchModeCommand<> (1, this.model, surface));
@@ -207,7 +204,6 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
         final Kontrol2ControlSurface surface = this.getSurface ();
         surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
         surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
-        this.usbDevice.pollUI ();
     }
 
 

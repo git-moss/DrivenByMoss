@@ -19,126 +19,160 @@ import de.mossgrabers.framework.view.View;
  */
 public class Kontrol2ControlSurface extends AbstractControlSurface<Kontrol2Configuration> implements UIChangeCallback
 {
-    /** Clicking the main encoder. */
-    public static final int     BUTTON_MAIN_ENCODER   = 1;
-    /** The preset up button. */
-    public static final int     BUTTON_PRESET_UP      = 2;
-    /** The enter button. */
-    public static final int     BUTTON_ENTER          = 3;
-    /** The preset down button. */
-    public static final int     BUTTON_PRESET_DOWN    = 4;
-    /** The browse button. */
-    public static final int     BUTTON_BROWSE         = 5;
-    /** The instance button. */
-    public static final int     BUTTON_INSTANCE       = 6;
-    /** The octave down button. */
-    public static final int     BUTTON_OCTAVE_DOWN    = 7;
-    /** The octave up button. */
-    public static final int     BUTTON_OCTAVE_UP      = 8;
+    /** The auto button. */
+    public static final int     BUTTON_AUTO           = 1;
+    /** The quantize button. */
+    public static final int     BUTTON_QUANTIZE       = 2;
+    /** The arp button. */
+    public static final int     BUTTON_ARP            = 3;
+    /** The scale button. */
+    public static final int     BUTTON_SCALE          = 4;
+    /** The play button. */
+    public static final int     BUTTON_PLAY           = 5;
+    /** The undo button. */
+    public static final int     BUTTON_UNDO           = 6;
+    /** The loop button. */
+    public static final int     BUTTON_LOOP           = 7;
+    /** The shift button. */
+    public static final int     BUTTON_SHIFT          = 8;
 
     /** The stop button. */
     public static final int     BUTTON_STOP           = 9;
     /** The record button. */
     public static final int     BUTTON_REC            = 10;
-    /** The play button. */
-    public static final int     BUTTON_PLAY           = 11;
-    /** The navigate right button. */
-    public static final int     BUTTON_NAVIGATE_RIGHT = 12;
-    /** The navigate down button. */
-    public static final int     BUTTON_NAVIGATE_DOWN  = 13;
-    /** The navigate left button. */
-    public static final int     BUTTON_NAVIGATE_LEFT  = 14;
-    /** The back button. */
-    public static final int     BUTTON_BACK           = 15;
-    /** The navigate up button. */
-    public static final int     BUTTON_NAVIGATE_UP    = 16;
-
-    /** The shift button. */
-    public static final int     BUTTON_SHIFT          = 17;
-    /** The scale button. */
-    public static final int     BUTTON_SCALE          = 18;
-    /** The arp button. */
-    public static final int     BUTTON_ARP            = 19;
-    /** The loop button. */
-    public static final int     BUTTON_LOOP           = 20;
+    /** The tempo button. */
+    public static final int     BUTTON_TEMPO          = 11;
+    /** The metro button. */
+    public static final int     BUTTON_METRO          = 12;
+    /** The preset up button. */
+    public static final int     BUTTON_PRESET_UP      = 13;
     /** The page right button. */
-    public static final int     BUTTON_PAGE_RIGHT     = 21;
+    public static final int     BUTTON_PAGE_RIGHT     = 14;
+    /** The preset down button. */
+    public static final int     BUTTON_PRESET_DOWN    = 15;
     /** The page left button. */
-    public static final int     BUTTON_PAGE_LEFT      = 22;
-    /** The rewind button. */
-    public static final int     BUTTON_RWD            = 23;
-    /** The forward button. */
-    public static final int     BUTTON_FWD            = 24;
+    public static final int     BUTTON_PAGE_LEFT      = 16;
+
+    /** The mute button. */
+    public static final int     BUTTON_MUTE           = 17;
+    /** The solo button. */
+    public static final int     BUTTON_SOLO           = 18;
+    /** The scene button. */
+    public static final int     BUTTON_SCENE          = 19;
+    /** The pattern button. */
+    public static final int     BUTTON_PATTERN        = 20;
+    /** The track button. */
+    public static final int     BUTTON_TRACK          = 21;
+    /** The clear button. */
+    public static final int     BUTTON_CLEAR          = 22;
+    /** The key mode button. */
+    public static final int     BUTTON_KEY_MODE       = 23;
+
+    /** The mixer button. */
+    public static final int     BUTTON_MIXER          = 24;
+    /** The plugin button. */
+    public static final int     BUTTON_PLUGIN         = 25;
+    /** The browser button. */
+    public static final int     BUTTON_BROWSER        = 26;
+    /** The setup button. */
+    public static final int     BUTTON_SETUP          = 27;
+    /** The instance button. */
+    public static final int     BUTTON_INSTANCE       = 28;
+    /** The midi button. */
+    public static final int     BUTTON_MIDI           = 29;
+
+    /** Clicking the main encoder. */
+    public static final int     BUTTON_MAIN_ENCODER   = 30;
+    /** The navigate right button. */
+    public static final int     BUTTON_NAVIGATE_RIGHT = 31;
+    /** The navigate down button. */
+    public static final int     BUTTON_NAVIGATE_DOWN  = 32;
+    /** The navigate left button. */
+    public static final int     BUTTON_NAVIGATE_LEFT  = 33;
+    /** The navigate up button. */
+    public static final int     BUTTON_NAVIGATE_UP    = 34;
 
     /** Touching encoder 1. */
-    public static final int     TOUCH_ENCODER_1       = 25;
+    public static final int     TOUCH_ENCODER_1       = 35;
     /** Touching encoder 2. */
-    public static final int     TOUCH_ENCODER_2       = 26;
+    public static final int     TOUCH_ENCODER_2       = 36;
     /** Touching encoder 3. */
-    public static final int     TOUCH_ENCODER_3       = 27;
+    public static final int     TOUCH_ENCODER_3       = 37;
     /** Touching encoder 4. */
-    public static final int     TOUCH_ENCODER_4       = 28;
+    public static final int     TOUCH_ENCODER_4       = 38;
     /** Touching encoder 5. */
-    public static final int     TOUCH_ENCODER_5       = 29;
+    public static final int     TOUCH_ENCODER_5       = 39;
     /** Touching encoder 6. */
-    public static final int     TOUCH_ENCODER_6       = 30;
+    public static final int     TOUCH_ENCODER_6       = 40;
     /** Touching encoder 7. */
-    public static final int     TOUCH_ENCODER_7       = 31;
+    public static final int     TOUCH_ENCODER_7       = 41;
     /** Touching encoder 8. */
-    public static final int     TOUCH_ENCODER_8       = 32;
+    public static final int     TOUCH_ENCODER_8       = 42;
 
     /** Touching the main encoder. */
-    public static final int     TOUCH_ENCODER_MAIN    = 33;
+    public static final int     TOUCH_ENCODER_MAIN    = 43;
 
     // Continuous
 
     /** Moving encoder 1. */
-    public static final int     ENCODER_1             = 40;
+    public static final int     ENCODER_1             = 50;
     /** Moving encoder 2. */
-    public static final int     ENCODER_2             = 41;
+    public static final int     ENCODER_2             = 51;
     /** Moving encoder 3. */
-    public static final int     ENCODER_3             = 42;
+    public static final int     ENCODER_3             = 52;
     /** Moving encoder 4. */
-    public static final int     ENCODER_4             = 43;
+    public static final int     ENCODER_4             = 53;
     /** Moving encoder 5. */
-    public static final int     ENCODER_5             = 44;
+    public static final int     ENCODER_5             = 54;
     /** Moving encoder 6. */
-    public static final int     ENCODER_6             = 45;
+    public static final int     ENCODER_6             = 55;
     /** Moving encoder 7. */
-    public static final int     ENCODER_7             = 46;
+    public static final int     ENCODER_7             = 56;
     /** Moving encoder 8. */
-    public static final int     ENCODER_8             = 47;
+    public static final int     ENCODER_8             = 57;
     /** Moving the main encoder. */
-    public static final int     MAIN_ENCODER          = 48;
+    public static final int     MAIN_ENCODER          = 58;
 
-    private static final int [] KONTROL1_BUTTONS_ALL  =
+    private static final int [] KONTROL2_BUTTONS_ALL  =
     {
-        BUTTON_MAIN_ENCODER,
-        BUTTON_PRESET_UP,
-        BUTTON_ENTER,
-        BUTTON_PRESET_DOWN,
-        BUTTON_BROWSE,
-        BUTTON_INSTANCE,
-        BUTTON_OCTAVE_DOWN,
-        BUTTON_OCTAVE_UP,
+        BUTTON_AUTO,
+        BUTTON_QUANTIZE,
+        BUTTON_ARP,
+        BUTTON_SCALE,
+        BUTTON_PLAY,
+        BUTTON_UNDO,
+        BUTTON_LOOP,
+        BUTTON_SHIFT,
 
         BUTTON_STOP,
         BUTTON_REC,
-        BUTTON_PLAY,
+        BUTTON_TEMPO,
+        BUTTON_METRO,
+        BUTTON_PRESET_UP,
+        BUTTON_PAGE_RIGHT,
+        BUTTON_PRESET_DOWN,
+        BUTTON_PAGE_LEFT,
+
+        BUTTON_MUTE,
+        BUTTON_SOLO,
+        BUTTON_SCENE,
+        BUTTON_PATTERN,
+        BUTTON_TRACK,
+        BUTTON_CLEAR,
+        BUTTON_KEY_MODE,
+
+        BUTTON_MIXER,
+        BUTTON_PLUGIN,
+        BUTTON_BROWSER,
+        BUTTON_SETUP,
+        BUTTON_INSTANCE,
+        BUTTON_MIDI,
+
+        BUTTON_MAIN_ENCODER,
         BUTTON_NAVIGATE_RIGHT,
         BUTTON_NAVIGATE_DOWN,
         BUTTON_NAVIGATE_LEFT,
-        BUTTON_BACK,
         BUTTON_NAVIGATE_UP,
-
-        BUTTON_SHIFT,
-        BUTTON_SCALE,
-        BUTTON_ARP,
-        BUTTON_LOOP,
-        BUTTON_PAGE_RIGHT,
-        BUTTON_PAGE_LEFT,
-        BUTTON_RWD,
-        BUTTON_FWD,
 
         TOUCH_ENCODER_1,
         TOUCH_ENCODER_2,
@@ -173,7 +207,7 @@ public class Kontrol2ControlSurface extends AbstractControlSurface<Kontrol2Confi
      */
     public Kontrol2ControlSurface (final IHost host, final ColorManager colorManager, final Kontrol2Configuration configuration, final IMidiInput input, final Kontrol2UsbDevice usbDevice)
     {
-        super (host, configuration, colorManager, null, input, KONTROL1_BUTTONS_ALL);
+        super (host, configuration, colorManager, null, input, KONTROL2_BUTTONS_ALL);
 
         this.usbDevice = usbDevice;
 

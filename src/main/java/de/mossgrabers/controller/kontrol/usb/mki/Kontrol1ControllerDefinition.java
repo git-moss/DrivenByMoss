@@ -49,21 +49,13 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
     private static final byte      DISPLAY_INTERFACE_NUMBER = 2;
     private static final byte      DISPLAY_ENDPOINT_ADDRESS = (byte) 2;
 
-    // TODO Remove
-    /** Komplete Kontrol USB display and button/knob/keys (HID) endpoint. */
-    // private static final byte [] ENDPOINT_ADDRESSES =
-    // {
-    // (byte) 2,
-    // (byte) 0x82
-    // };
-
     private short                  productID;
 
 
     /**
      * Constructor.
      *
-     * @param modelIndex The index of the specific model (S25,
+     * @param modelIndex The index of the specific model (S25, S49, S61, S88)
      */
     public Kontrol1ControllerDefinition (final int modelIndex)
     {

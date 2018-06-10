@@ -6,6 +6,7 @@ package de.mossgrabers.controller.kontrol.usb.mkii.controller;
 
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
+import de.mossgrabers.framework.usb.IHidDevice;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.IUsbEndpoint;
 
@@ -23,43 +24,57 @@ import java.util.Map;
 public class Kontrol2UsbDevice
 {
 
-    private static final int []                BYTE_0             =
-    {
-        Kontrol2ControlSurface.BUTTON_MAIN_ENCODER,
-        Kontrol2ControlSurface.BUTTON_PRESET_UP,
-        Kontrol2ControlSurface.BUTTON_ENTER,
-        Kontrol2ControlSurface.BUTTON_PRESET_DOWN,
-        Kontrol2ControlSurface.BUTTON_BROWSE,
-        Kontrol2ControlSurface.BUTTON_INSTANCE,
-        Kontrol2ControlSurface.BUTTON_OCTAVE_DOWN,
-        Kontrol2ControlSurface.BUTTON_OCTAVE_UP
-    };
-
     private static final int []                BYTE_1             =
     {
-        Kontrol2ControlSurface.BUTTON_STOP,
-        Kontrol2ControlSurface.BUTTON_REC,
+        Kontrol2ControlSurface.BUTTON_AUTO,
+        Kontrol2ControlSurface.BUTTON_QUANTIZE,
+        Kontrol2ControlSurface.BUTTON_ARP,
+        Kontrol2ControlSurface.BUTTON_SCALE,
         Kontrol2ControlSurface.BUTTON_PLAY,
-        Kontrol2ControlSurface.BUTTON_NAVIGATE_RIGHT,
-        Kontrol2ControlSurface.BUTTON_NAVIGATE_DOWN,
-        Kontrol2ControlSurface.BUTTON_NAVIGATE_LEFT,
-        Kontrol2ControlSurface.BUTTON_BACK,
-        Kontrol2ControlSurface.BUTTON_NAVIGATE_UP
+        Kontrol2ControlSurface.BUTTON_LOOP,
+        Kontrol2ControlSurface.BUTTON_UNDO,
+        Kontrol2ControlSurface.BUTTON_SHIFT,
     };
 
     private static final int []                BYTE_2             =
     {
-        Kontrol2ControlSurface.BUTTON_SHIFT,
-        Kontrol2ControlSurface.BUTTON_SCALE,
-        Kontrol2ControlSurface.BUTTON_ARP,
-        Kontrol2ControlSurface.BUTTON_LOOP,
+        Kontrol2ControlSurface.BUTTON_STOP,
+        Kontrol2ControlSurface.BUTTON_REC,
+        Kontrol2ControlSurface.BUTTON_TEMPO,
+        Kontrol2ControlSurface.BUTTON_METRO,
+        Kontrol2ControlSurface.BUTTON_PRESET_UP,
         Kontrol2ControlSurface.BUTTON_PAGE_RIGHT,
-        Kontrol2ControlSurface.BUTTON_PAGE_LEFT,
-        Kontrol2ControlSurface.BUTTON_RWD,
-        Kontrol2ControlSurface.BUTTON_FWD
+        Kontrol2ControlSurface.BUTTON_PRESET_DOWN,
+        Kontrol2ControlSurface.BUTTON_PAGE_LEFT
     };
 
     private static final int []                BYTE_3             =
+    {
+        Kontrol2ControlSurface.BUTTON_MUTE,
+        Kontrol2ControlSurface.BUTTON_SOLO,
+        Kontrol2ControlSurface.BUTTON_SCENE,
+        Kontrol2ControlSurface.BUTTON_PATTERN,
+        Kontrol2ControlSurface.BUTTON_TRACK,
+        Kontrol2ControlSurface.BUTTON_CLEAR,
+        Kontrol2ControlSurface.BUTTON_KEY_MODE,
+    };
+
+    private static final int []                BYTE_4             =
+    {
+        Kontrol2ControlSurface.BUTTON_MIXER,
+        Kontrol2ControlSurface.BUTTON_PLUGIN,
+        Kontrol2ControlSurface.BUTTON_BROWSER,
+        Kontrol2ControlSurface.BUTTON_SETUP,
+        Kontrol2ControlSurface.BUTTON_INSTANCE,
+        Kontrol2ControlSurface.BUTTON_MIDI
+    };
+
+    private static final int []                BYTE_5             =
+    {
+        Kontrol2ControlSurface.TOUCH_ENCODER_MAIN
+    };
+
+    private static final int []                BYTE_6             =
     {
         Kontrol2ControlSurface.TOUCH_ENCODER_1,
         Kontrol2ControlSurface.TOUCH_ENCODER_2,
@@ -69,11 +84,6 @@ public class Kontrol2UsbDevice
         Kontrol2ControlSurface.TOUCH_ENCODER_6,
         Kontrol2ControlSurface.TOUCH_ENCODER_7,
         Kontrol2ControlSurface.TOUCH_ENCODER_8
-    };
-
-    private static final int []                BYTE_4             =
-    {
-        Kontrol2ControlSurface.TOUCH_ENCODER_MAIN
     };
 
     private static final int []                TEST_BITS          =
@@ -97,11 +107,10 @@ public class Kontrol2UsbDevice
     private IHost                              host;
     private IUsbDevice                         usbDevice;
     private IUsbEndpoint                       usbEndpointDisplay;
-    private IUsbEndpoint                       usbEndpointUI;
+    private IHidDevice                         usbEndpointUI;
 
     private IMemoryBlock                       initBlock;
     private IMemoryBlock                       displayBlock;
-    private IMemoryBlock                       uiBlock;
     private IMemoryBlock                       ledBlock;
     private IMemoryBlock                       keyLedBlock;
 
@@ -124,24 +133,20 @@ public class Kontrol2UsbDevice
 
     static
     {
+        // TODO
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_SHIFT), Integer.valueOf (0));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_SCALE), Integer.valueOf (1));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_ARP), Integer.valueOf (2));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_LOOP), Integer.valueOf (3));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_RWD), Integer.valueOf (4));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_FWD), Integer.valueOf (5));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PLAY), Integer.valueOf (6));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_REC), Integer.valueOf (7));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_STOP), Integer.valueOf (8));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PAGE_LEFT), Integer.valueOf (9));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PAGE_RIGHT), Integer.valueOf (10));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_BROWSE), Integer.valueOf (11));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PRESET_UP), Integer.valueOf (12));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_INSTANCE), Integer.valueOf (13));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PRESET_DOWN), Integer.valueOf (14));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_BACK), Integer.valueOf (15));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_UP), Integer.valueOf (16));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_ENTER), Integer.valueOf (17));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_LEFT), Integer.valueOf (18));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_DOWN), Integer.valueOf (19));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_RIGHT), Integer.valueOf (20));
@@ -160,7 +165,8 @@ public class Kontrol2UsbDevice
         try
         {
             this.usbDevice = host.getUsbDevice (0);
-            this.usbEndpointUI = this.usbDevice.getEndpoint (0, 0);
+            this.usbEndpointUI = this.usbDevice.getHidDevice ();
+            this.usbEndpointUI.setCallback (this::processMessage);
             // TODO Deactivate
             // this.usbEndpointDisplay = this.usbDevice.getEndpoint (1, 0);
         }
@@ -173,7 +179,6 @@ public class Kontrol2UsbDevice
         }
 
         this.displayBlock = host.createMemoryBlock (DATA_SZ);
-        this.uiBlock = host.createMemoryBlock (1024);
         this.ledBlock = host.createMemoryBlock (26);
         this.keyLedBlock = host.createMemoryBlock (267);
         this.initBlock = host.createMemoryBlock (3);
@@ -205,23 +210,6 @@ public class Kontrol2UsbDevice
     {
         if (this.usbEndpointDisplay != null)
             this.usbEndpointDisplay.send (this.initBlock, TIMEOUT);
-    }
-
-
-    /**
-     * Poll the user interface controls.
-     */
-    public void pollUI ()
-    {
-        if (this.usbEndpointUI == null)
-            return;
-
-        this.usbEndpointUI.sendAsync (this.uiBlock, resultLength -> {
-            if (resultLength > 0)
-                this.processMessage (resultLength);
-            this.uiBlock.createByteBuffer ().clear ();
-            this.host.scheduleTask (this::pollUI, 10);
-        }, TIMEOUT);
     }
 
 
@@ -339,60 +327,66 @@ public class Kontrol2UsbDevice
     }
 
 
-    private void processMessage (final int received)
+    private void processMessage (final byte [] data, final int received)
     {
-        final ByteBuffer uiBuffer = this.uiBlock.createByteBuffer ();
-
-        final byte [] dst = new byte [MESSAGE_SIZE];
+        // TODO Remove
+        // for (int i = 0; i < 34; i++)
+        // System.out.printf ("%d ", data[i]);
+        // System.out.println ("*");
 
         for (int i = 0; i < received / MESSAGE_SIZE; i++)
         {
-            uiBuffer.get (dst);
-
             boolean encoderChange = false;
 
-            // Decode main knob
-            final int currentEncoderValue = Byte.toUnsignedInt (dst[6]);
-            if (currentEncoderValue != this.mainEncoderValue)
+            // Handle button presses
+            if (data[30] == 36)
             {
-                final boolean valueIncreased = (this.mainEncoderValue < currentEncoderValue || this.mainEncoderValue == 0x0F && currentEncoderValue == 0) && !(this.mainEncoderValue == 0 && currentEncoderValue == 0x0F);
-                this.mainEncoderValue = currentEncoderValue;
-                if (!this.isFirstStateMsg)
-                    this.callback.mainEncoderChanged (valueIncreased);
-                encoderChange = true;
-            }
-
-            // Decode 8 value knobs
-            final int start = 7;
-            for (int encIndex = 0; encIndex < 8; encIndex++)
-            {
-                final int pos = start + 2 * encIndex;
-
-                final int value = Byte.toUnsignedInt (dst[pos]) | Byte.toUnsignedInt (dst[pos + 1]) << 8;
-                final int hValue = Byte.toUnsignedInt (dst[pos + 1]);
-                if (this.encoderValues[encIndex] != value)
+                // Decode main knob
+                final int currentEncoderValue = Byte.toUnsignedInt (data[29]);
+                if (currentEncoderValue != this.mainEncoderValue)
                 {
-                    final int prevHValue = (this.encoderValues[encIndex] & 0xF00) >> 8;
-                    final boolean valueIncreased = (this.encoderValues[encIndex] < value || prevHValue == 3 && hValue == 0) && !(prevHValue == 0 && hValue == 3);
-                    this.encoderValues[encIndex] = value;
+                    final boolean valueIncreased = (this.mainEncoderValue < currentEncoderValue || this.mainEncoderValue == 0x0F && currentEncoderValue == 0) && !(this.mainEncoderValue == 0 && currentEncoderValue == 0x0F);
+                    this.mainEncoderValue = currentEncoderValue;
                     if (!this.isFirstStateMsg)
-                        this.callback.encoderChanged (encIndex, valueIncreased);
+                        this.callback.mainEncoderChanged (valueIncreased);
                     encoderChange = true;
+                }
+
+                // Test the pressed buttons
+                this.testByteForButtons (data[1], BYTE_1);
+                this.testByteForButtons (data[2], BYTE_2);
+                this.testByteForButtons (data[3], BYTE_3);
+                this.testByteForButtons (data[4], BYTE_4);
+                // Don't test touch events on encoder change to prevent flickering
+                if (!encoderChange)
+                {
+                    this.testByteForButtons (data[3], BYTE_5);
+                    this.testByteForButtons (data[4], BYTE_6);
+                }
+            }
+            else
+            {
+                // Decode 8 value knobs
+                final int start = 16;
+                for (int encIndex = 0; encIndex < 8; encIndex++)
+                {
+                    final int pos = start + 2 * encIndex;
+
+                    final int value = Byte.toUnsignedInt (data[pos]) | Byte.toUnsignedInt (data[pos + 1]) << 8;
+                    final int hValue = Byte.toUnsignedInt (data[pos + 1]);
+                    if (this.encoderValues[encIndex] != value)
+                    {
+                        final int prevHValue = (this.encoderValues[encIndex] & 0xF00) >> 8;
+                        final boolean valueIncreased = (this.encoderValues[encIndex] < value || prevHValue == 3 && hValue == 0) && !(prevHValue == 0 && hValue == 3);
+                        this.encoderValues[encIndex] = value;
+                        if (!this.isFirstStateMsg)
+                            this.callback.encoderChanged (encIndex, valueIncreased);
+                        encoderChange = true;
+                    }
                 }
             }
 
             this.isFirstStateMsg = false;
-
-            // Test the pressed buttons
-            this.testByteForButtons (dst[1], BYTE_0);
-            this.testByteForButtons (dst[2], BYTE_1);
-            this.testByteForButtons (dst[3], BYTE_2);
-            // Don't test touch events on encoder change to prevent flickering
-            if (!encoderChange)
-            {
-                this.testByteForButtons (dst[4], BYTE_3);
-                this.testByteForButtons (dst[5], BYTE_4);
-            }
         }
     }
 
