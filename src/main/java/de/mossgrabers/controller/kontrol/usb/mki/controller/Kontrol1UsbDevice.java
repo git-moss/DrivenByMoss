@@ -814,7 +814,7 @@ public class Kontrol1UsbDevice
      */
     private void processMessage (final byte [] data, final int received)
     {
-        final int dataOffset = OperatingSystem.get () == OperatingSystem.WINDOWS ? 0 : 1;
+        final int dataOffset = OperatingSystem.get () == OperatingSystem.MAC ? 1 : 0;
 
         boolean encoderChange = false;
 

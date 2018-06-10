@@ -340,7 +340,7 @@ public class Kontrol2UsbDevice
             System.out.printf ("%d ", data[i]);
         System.out.println ("*");
 
-        final int dataOffset = OperatingSystem.get () == OperatingSystem.WINDOWS ? 0 : 1;
+        final int dataOffset = OperatingSystem.get () == OperatingSystem.MAC ? 1 : 0;
 
         boolean encoderChange = false;
 
