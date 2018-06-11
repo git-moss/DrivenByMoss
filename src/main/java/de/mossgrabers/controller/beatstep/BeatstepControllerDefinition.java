@@ -32,7 +32,7 @@ public class BeatstepControllerDefinition extends DefaultControllerDefinition
      */
     public BeatstepControllerDefinition (final boolean isPro)
     {
-        super ("", "Jürgen Moßgraber", "4.01", isPro ? EXTENSION_ID_PRO : EXTENSION_ID, isPro ? "Beatstep Pro" : "Beatstep", "Arturia", 1, 1);
+        super ("", "Jürgen Moßgraber", "4.02", isPro ? EXTENSION_ID_PRO : EXTENSION_ID, isPro ? "Beatstep Pro" : "Beatstep", "Arturia", 1, 1);
         this.isPro = isPro;
     }
 

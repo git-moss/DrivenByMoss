@@ -132,7 +132,10 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
                 final ViewManager viewManager = this.surface.getViewManager ();
                 final Integer viewId = Integer.valueOf (viewIndex);
-                viewManager.setPreviousView (viewId);
+                if (this.surface.isPro ())
+                    viewManager.setActiveView (viewId);
+                else
+                    viewManager.setPreviousView (viewId);
                 view = viewManager.getView (viewId);
                 this.surface.getDisplay ().notify (view.getName ());
                 break;
