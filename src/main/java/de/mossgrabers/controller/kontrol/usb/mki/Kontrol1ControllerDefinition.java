@@ -46,8 +46,15 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
         0x1410
     };
     /** Komplete Kontrol USB Interface and endpoint for the display. */
-    private static final byte      DISPLAY_INTERFACE_NUMBER = 2;
+    private static final byte      INTERFACE_NUMBER         = 2;
     private static final byte      DISPLAY_ENDPOINT_ADDRESS = (byte) 2;
+
+    /** Komplete Kontrol USB display and button/knob/keys (HID) endpoint. */
+    private static final byte []   ENDPOINT_ADDRESSES       =
+    {
+        (byte) 2,
+        (byte) 0x82
+    };
 
     private short                  productID;
 
@@ -76,6 +83,13 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
     @Override
     public UsbMatcher claimUSBDevice ()
     {
-        return new UsbMatcher (VENDOR_ID, this.productID, DISPLAY_INTERFACE_NUMBER, DISPLAY_ENDPOINT_ADDRESS, false, true);
+        final boolean useHIDForInput = OperatingSystem.get () == OperatingSystem.WINDOWS;
+        if (useHIDForInput)
+            return new UsbMatcher (VENDOR_ID, this.productID, INTERFACE_NUMBER, DISPLAY_ENDPOINT_ADDRESS, false, true);
+        return new UsbMatcher (VENDOR_ID, this.productID, INTERFACE_NUMBER, ENDPOINT_ADDRESSES, new boolean []
+        {
+            false,
+            false
+        }, false);
     }
 }

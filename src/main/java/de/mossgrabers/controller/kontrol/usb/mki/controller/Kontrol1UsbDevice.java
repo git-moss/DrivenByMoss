@@ -396,15 +396,18 @@ public class Kontrol1UsbDevice
 
     private static final Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);
 
+    private boolean                            useHIDForInput;
     private IHost                              host;
     private IUsbDevice                         usbDevice;
     private IUsbEndpoint                       usbEndpointDisplay;
-    private IHidDevice                         usbEndpointUI;
+    private IUsbEndpoint                       usbEndpointUI;
+    private IHidDevice                         hidDevice;
 
     private IMemoryBlock                       initBlock;
     private IMemoryBlock                       displayBlock;
     private IMemoryBlock                       ledBlock;
     private IMemoryBlock                       keyLedBlock;
+    private IMemoryBlock                       uiBlock;
 
     private final Object                       busySendingDisplay = new Object ();
     private boolean                            busySendingLEDs    = false;
@@ -461,19 +464,31 @@ public class Kontrol1UsbDevice
     public Kontrol1UsbDevice (final IHost host)
     {
         this.host = host;
+        this.useHIDForInput = OperatingSystem.get () == OperatingSystem.WINDOWS;
 
         try
         {
             this.usbDevice = host.getUsbDevice (0);
             this.usbEndpointDisplay = this.usbDevice.getEndpoint (0, 0);
-            this.usbEndpointUI = this.usbDevice.getHidDevice ();
-            this.usbEndpointUI.setCallback (this::processMessage);
+
+            if (this.useHIDForInput)
+            {
+                this.hidDevice = this.usbDevice.getHidDevice ();
+                if (this.hidDevice != null)
+                    this.hidDevice.setCallback (this::processHIDMessage);
+            }
+            else
+            {
+                this.usbEndpointUI = this.usbDevice.getEndpoint (0, 1);
+                this.uiBlock = host.createMemoryBlock (1024);
+            }
         }
         catch (final RuntimeException ex)
         {
             this.usbDevice = null;
             this.usbEndpointDisplay = null;
             this.usbEndpointUI = null;
+            this.hidDevice = null;
             host.error ("Could not open USB connection: " + ex.getMessage ());
         }
 
@@ -488,6 +503,22 @@ public class Kontrol1UsbDevice
 
         // To send black LEDs on startup
         this.oldKeyColors[0] = -1;
+    }
+
+
+    /**
+     * Poll the user interface controls.
+     */
+    public void pollUI ()
+    {
+        if (this.usbEndpointUI == null || this.useHIDForInput)
+            return;
+
+        this.usbEndpointUI.sendAsync (this.uiBlock, resultLength -> {
+            if (resultLength > 0)
+                this.processMessage (resultLength);
+            this.host.scheduleTask (this::pollUI, 10);
+        }, TIMEOUT);
     }
 
 
@@ -807,14 +838,28 @@ public class Kontrol1UsbDevice
 
 
     /**
+     * Process the received USB message.
+     * 
+     * @param received The number of valid bytes in the data array
+     */
+    private void processMessage (final int received)
+    {
+        final ByteBuffer uiBuffer = this.uiBlock.createByteBuffer ();
+        final byte [] data = new byte [received];
+        uiBuffer.get (data);
+        this.processHIDMessage (data, received);
+    }
+
+
+    /**
      * Process the received HID message.
      * 
      * @param data The data
      * @param received The number of valid bytes in the data array
      */
-    private void processMessage (final byte [] data, final int received)
+    private void processHIDMessage (final byte [] data, final int received)
     {
-        final int dataOffset = OperatingSystem.get () == OperatingSystem.MAC ? 1 : 0;
+        final int dataOffset = OperatingSystem.get () == OperatingSystem.WINDOWS ? 0 : 1;
 
         boolean encoderChange = false;
 
