@@ -33,7 +33,7 @@
 	</repositories>
 
 	<dependencies>
-		<dependency>
+ 		<dependency>
 			<groupId>com.bitwig</groupId>
 			<artifactId>extension-api</artifactId>
 			<version>7</version>
@@ -43,12 +43,6 @@
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
 			<version>4.0.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-shade-plugin</artifactId>
-			<version>3.1.1</version>
 		</dependency>
 
 		<dependency>
@@ -89,9 +83,6 @@
 							<artifactSet>
 								<excludes>
 									<exclude>com.bitwig:extension-api</exclude>
-									<exclude>org.*:*</exclude>
-									<exclude>commons-*:*</exclude>
-									<exclude>com.google.guava:guava</exclude>
 								</excludes>
 							</artifactSet>
 						</configuration>

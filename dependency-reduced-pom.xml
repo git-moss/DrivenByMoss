@@ -32,9 +32,6 @@
               <artifactSet>
                 <excludes>
                   <exclude>com.bitwig:extension-api</exclude>
-                  <exclude>org.*:*</exclude>
-                  <exclude>commons-*:*</exclude>
-                  <exclude>com.google.guava:guava</exclude>
                 </excludes>
               </artifactSet>
             </configuration>
@@ -82,12 +79,6 @@
       <groupId>com.bitwig</groupId>
       <artifactId>extension-api</artifactId>
       <version>7</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-shade-plugin</artifactId>
-      <version>3.1.1</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
