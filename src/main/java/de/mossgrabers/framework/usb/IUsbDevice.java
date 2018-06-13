@@ -17,8 +17,9 @@ public interface IUsbDevice
      * @param interfaceIndex The index of the registered interface
      * @param endpointIndex The index of the registered endpoint
      * @return The endpoint
+     * @throws UsbException Could not lookup or open the endpoint
      */
-    IUsbEndpoint getEndpoint (final int interfaceIndex, final int endpointIndex);
+    IUsbEndpoint getEndpoint (final int interfaceIndex, final int endpointIndex) throws UsbException;
 
 
     /**
@@ -31,6 +32,7 @@ public interface IUsbDevice
      * Gets the USB device as a HID Device.
      *
      * @return The HID device
+     * @throws UsbException Could not lookup or open the device
      */
-    IHidDevice getHidDevice ();
+    IHidDevice getHidDevice () throws UsbException;
 }

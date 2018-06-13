@@ -9,6 +9,7 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.IUsbEndpoint;
+import de.mossgrabers.framework.usb.UsbException;
 
 
 /**
@@ -62,7 +63,7 @@ public class PushUsbDisplay
             this.usbDevice = host.getUsbDevice (0);
             this.usbEndpoint = this.usbDevice.getEndpoint (0, 0);
         }
-        catch (final RuntimeException ex)
+        catch (final UsbException ex)
         {
             this.usbDevice = null;
             this.usbEndpoint = null;

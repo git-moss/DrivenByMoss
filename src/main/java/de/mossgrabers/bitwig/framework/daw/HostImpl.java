@@ -17,6 +17,7 @@ import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.usb.IUsbDevice;
+import de.mossgrabers.framework.usb.UsbException;
 
 import com.bitwig.extension.api.graphics.BitmapFormat;
 import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
@@ -117,7 +118,7 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public void error (final String text, final Exception ex)
+    public void error (final String text, final Throwable ex)
     {
         this.host.errorln (text);
         this.host.errorln (ex.getClass () + ":" + ex.getMessage ());
@@ -204,12 +205,19 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public IUsbDevice getUsbDevice (final int index)
+    public IUsbDevice getUsbDevice (final int index) throws UsbException
     {
-        final HardwareDevice hardwareDevice = this.host.hardwareDevice (index);
-        final UsbDeviceImpl usbDevice = new UsbDeviceImpl (this, (UsbDevice) hardwareDevice);
-        this.usbDevices.add (usbDevice);
-        return usbDevice;
+        try
+        {
+            final HardwareDevice hardwareDevice = this.host.hardwareDevice (index);
+            final UsbDeviceImpl usbDevice = new UsbDeviceImpl (this, (UsbDevice) hardwareDevice);
+            this.usbDevices.add (usbDevice);
+            return usbDevice;
+        }
+        catch (final RuntimeException ex)
+        {
+            throw new UsbException ("Could not lookup or open the device.", ex);
+        }
     }
 
 

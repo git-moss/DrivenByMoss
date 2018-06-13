@@ -9,6 +9,7 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.usb.IHidDevice;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.IUsbEndpoint;
+import de.mossgrabers.framework.usb.UsbException;
 import de.mossgrabers.framework.utils.OperatingSystem;
 
 import java.nio.ByteBuffer;
@@ -185,7 +186,7 @@ public class Kontrol2UsbDevice
                 this.uiBlock = host.createMemoryBlock (1024);
             }
         }
-        catch (final RuntimeException ex)
+        catch (final UsbException ex)
         {
             this.usbDevice = null;
             this.usbEndpointDisplay = null;

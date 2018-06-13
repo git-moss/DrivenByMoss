@@ -8,6 +8,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.usb.IHidDevice;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.IUsbEndpoint;
+import de.mossgrabers.framework.usb.UsbException;
 
 import com.bitwig.extension.controller.api.UsbDevice;
 
@@ -43,9 +44,16 @@ public class UsbDeviceImpl implements IUsbDevice
 
     /** {@inheritDoc} */
     @Override
-    public IUsbEndpoint getEndpoint (final int interfaceIndex, final int endpointIndex)
+    public IUsbEndpoint getEndpoint (final int interfaceIndex, final int endpointIndex) throws UsbException
     {
-        return new UsbEndpointImpl (this.host, this.usbDevice.iface (interfaceIndex).pipe (endpointIndex));
+        try
+        {
+            return new UsbEndpointImpl (this.host, this.usbDevice.iface (interfaceIndex).pipe (endpointIndex));
+        }
+        catch (final RuntimeException ex)
+        {
+            throw new UsbException ("Could not lookup or open the endpoint.", ex);
+        }
     }
 
 
@@ -59,7 +67,7 @@ public class UsbDeviceImpl implements IUsbDevice
 
     /** {@inheritDoc} */
     @Override
-    public IHidDevice getHidDevice ()
+    public IHidDevice getHidDevice () throws UsbException
     {
         final String expression = this.usbDevice.deviceMatcher ().getExpression ();
         // Parse like "idVendor == 0x17CC && idProduct == 0x1610"

@@ -9,6 +9,7 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.usb.IHidDevice;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.IUsbEndpoint;
+import de.mossgrabers.framework.usb.UsbException;
 import de.mossgrabers.framework.utils.OperatingSystem;
 
 import java.nio.ByteBuffer;
@@ -483,7 +484,7 @@ public class Kontrol1UsbDevice
                 this.uiBlock = host.createMemoryBlock (1024);
             }
         }
-        catch (final RuntimeException ex)
+        catch (final UsbException ex)
         {
             this.usbDevice = null;
             this.usbEndpointDisplay = null;
@@ -538,8 +539,15 @@ public class Kontrol1UsbDevice
      */
     public void init ()
     {
-        if (this.usbEndpointDisplay != null)
-            this.usbEndpointDisplay.send (this.initBlock, TIMEOUT);
+        if (this.usbEndpointDisplay == null)
+            return;
+
+        // TODO TEST
+        final byte [] data = new byte [3];
+        this.initBlock.createByteBuffer ().get (data);
+        this.hidDevice.sendOutputReport ((byte) 0, data, data.length);
+
+        // this.usbEndpointDisplay.send (this.initBlock, TIMEOUT);
     }
 
 
@@ -663,7 +671,6 @@ public class Kontrol1UsbDevice
 
         synchronized (this.busySendingDisplay)
         {
-
             final ByteBuffer displayBuffer = this.displayBlock.createByteBuffer ();
             displayBuffer.rewind ();
 
@@ -709,7 +716,12 @@ public class Kontrol1UsbDevice
                         displayBuffer.put ((byte) 0);
                 }
 
-                this.usbEndpointDisplay.send (this.displayBlock, TIMEOUT);
+                // TODO TEST
+                final byte [] data = new byte [DATA_SZ];
+                displayBuffer.get (data);
+                this.hidDevice.sendOutputReport ((byte) 0, data, DATA_SZ);
+
+                // this.usbEndpointDisplay.send (this.displayBlock, TIMEOUT);
             }
         }
     }
@@ -765,7 +777,13 @@ public class Kontrol1UsbDevice
         ledBuffer.put ((byte) 0);
 
         this.busySendingLEDs = true;
-        this.usbEndpointDisplay.send (this.ledBlock, TIMEOUT);
+
+        // TODO TEST
+        final byte [] data = new byte [26];
+        ledBuffer.get (data);
+        this.hidDevice.sendOutputReport ((byte) 0, data, data.length);
+        // this.usbEndpointDisplay.send (this.ledBlock, TIMEOUT);
+
         this.busySendingLEDs = false;
     }
 
@@ -803,15 +821,20 @@ public class Kontrol1UsbDevice
             return;
         System.arraycopy (this.keyColors, 0, this.oldKeyColors, 0, this.oldKeyColors.length);
 
-        final ByteBuffer leyLedBuffer = this.keyLedBlock.createByteBuffer ();
-        leyLedBuffer.clear ();
-        leyLedBuffer.put ((byte) 0x82);
-        leyLedBuffer.put (this.keyColors);
-        leyLedBuffer.put ((byte) 0x0);
-        leyLedBuffer.put ((byte) 0x0);
+        final ByteBuffer keyLedBuffer = this.keyLedBlock.createByteBuffer ();
+        keyLedBuffer.clear ();
+        keyLedBuffer.put ((byte) 0x82);
+        keyLedBuffer.put (this.keyColors);
+        keyLedBuffer.put ((byte) 0x0);
+        keyLedBuffer.put ((byte) 0x0);
 
         this.busySendingKeyLEDs = true;
-        this.usbEndpointDisplay.send (this.keyLedBlock, TIMEOUT);
+        // TODO TEST
+        final byte [] data = new byte [267];
+        keyLedBuffer.get (data);
+        this.hidDevice.sendOutputReport ((byte) 0, data, data.length);
+
+        // this.usbEndpointDisplay.send (this.keyLedBlock, TIMEOUT);
         this.busySendingKeyLEDs = false;
     }
 

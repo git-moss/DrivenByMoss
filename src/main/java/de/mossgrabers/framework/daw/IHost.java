@@ -10,6 +10,7 @@ import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.usb.IUsbDevice;
+import de.mossgrabers.framework.usb.UsbException;
 
 import java.util.List;
 
@@ -92,7 +93,7 @@ public interface IHost
      * @param text The description text
      * @param ex The exception
      */
-    void error (String text, Exception ex);
+    void error (String text, Throwable ex);
 
 
     /**
@@ -182,8 +183,9 @@ public interface IHost
      *
      * @param index The index
      * @return The USB device
+     * @throws UsbException Could not lookup or open the device
      */
-    IUsbDevice getUsbDevice (int index);
+    IUsbDevice getUsbDevice (int index) throws UsbException;
 
 
     /**

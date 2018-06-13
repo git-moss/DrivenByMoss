@@ -51,7 +51,7 @@ public class UsbEndpointImpl implements IUsbEndpoint
         {
             ((UsbOutputPipe) this.endpoint).write (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), timeout);
         }
-        catch (final Exception ex)
+        catch (final RuntimeException ex)
         {
             // Can only catch RuntimeException since it is a Bitwig internal Exception that is
             // thrown
@@ -71,7 +71,7 @@ public class UsbEndpointImpl implements IUsbEndpoint
         {
             ((UsbInputPipe) this.endpoint).readAsync (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), callback::process, timeout);
         }
-        catch (final Exception ex)
+        catch (final RuntimeException ex)
         {
             // Can only catch RuntimeException since it is a Bitwig internal Exception that is
             // thrown
