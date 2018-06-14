@@ -21,7 +21,7 @@ import java.util.UUID;
  */
 public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID []   EXTENSION_ID             =
+    private static final UUID []   EXTENSION_ID   =
     {
         UUID.fromString ("457ef1d3-d197-4a94-a1d0-b4322ecbdd7d"),
         UUID.fromString ("90817073-0c11-41cf-8c56-f3334ec91fc4"),
@@ -29,7 +29,7 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
         UUID.fromString ("18d5c565-f496-406d-8c3f-5af1004f61ff")
     };
 
-    private static final String [] HARDWARE_MODEL           =
+    private static final String [] HARDWARE_MODEL =
     {
         "Komplete Kontrol S25 mk I",
         "Komplete Kontrol S49 mk I",
@@ -37,23 +37,13 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
         "Komplete Kontrol S88 mk I"
     };
 
-    private static final short     VENDOR_ID                = 0x17cc;
-    private static final short []  PRODUCT_ID               =
+    private static final short     VENDOR_ID      = 0x17cc;
+    private static final short []  PRODUCT_ID     =
     {
         0x1340,
         0x1350,
         0x1360,
         0x1410
-    };
-    /** Komplete Kontrol USB Interface and endpoint for the display. */
-    private static final byte      INTERFACE_NUMBER         = 2;
-    private static final byte      DISPLAY_ENDPOINT_ADDRESS = (byte) 2;
-
-    /** Komplete Kontrol USB display and button/knob/keys (HID) endpoint. */
-    private static final byte []   ENDPOINT_ADDRESSES       =
-    {
-        (byte) 2,
-        (byte) 0x82
     };
 
     private short                  productID;
@@ -83,13 +73,6 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
     @Override
     public UsbMatcher claimUSBDevice ()
     {
-        final boolean useHIDForInput = OperatingSystem.get () == OperatingSystem.WINDOWS;
-        if (useHIDForInput)
-            return new UsbMatcher (VENDOR_ID, this.productID, INTERFACE_NUMBER, DISPLAY_ENDPOINT_ADDRESS, false, true);
-        return new UsbMatcher (VENDOR_ID, this.productID, INTERFACE_NUMBER, ENDPOINT_ADDRESSES, new boolean []
-        {
-            false,
-            false
-        }, false);
+        return new UsbMatcher (VENDOR_ID, this.productID, true);
     }
 }

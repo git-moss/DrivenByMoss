@@ -40,9 +40,11 @@ import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
 
@@ -77,6 +79,12 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     protected void createModel ()
     {
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
+        final ITrackBank trackBank = this.model.getTrackBank ();
+        trackBank.addTrackSelectionObserver ( (index, isSelected) -> {
+            final View activeView = this.getSurface ().getViewManager ().getActiveView ();
+            if (activeView instanceof ControlView)
+                ((ControlView) activeView).updateButtons ();
+        });
     }
 
 
@@ -102,8 +110,6 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         surface.setDisplay (display);
 
         surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
-        
-        this.usbDevice.pollUI ();
     }
 
 

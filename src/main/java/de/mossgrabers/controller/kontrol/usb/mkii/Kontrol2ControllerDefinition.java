@@ -74,11 +74,6 @@ public class Kontrol2ControllerDefinition extends DefaultControllerDefinition
     @Override
     public UsbMatcher claimUSBDevice ()
     {
-        final boolean useHIDForInput = OperatingSystem.get () == OperatingSystem.WINDOWS;
-        if (useHIDForInput)
-            return new UsbMatcher (VENDOR_ID, this.productID, true);
-        return new UsbMatcher (VENDOR_ID, this.productID, INTERFACE_NUMBER_HID, ENDPOINT_ADDRESS_HID, false, false);
-
-        // TODO add display support
+        return new UsbMatcher (VENDOR_ID, this.productID, true);
     }
 }

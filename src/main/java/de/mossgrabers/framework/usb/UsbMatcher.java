@@ -33,6 +33,7 @@ public class UsbMatcher
     {
         this.vendor = vendor;
         this.productID = productID;
+        // TODO Remove if HID works on Linux
         this.enableHID = enableHID;
     }
 

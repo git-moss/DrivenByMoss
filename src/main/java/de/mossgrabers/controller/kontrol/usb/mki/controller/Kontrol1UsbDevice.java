@@ -8,7 +8,6 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.usb.IHidDevice;
 import de.mossgrabers.framework.usb.IUsbDevice;
-import de.mossgrabers.framework.usb.IUsbEndpoint;
 import de.mossgrabers.framework.usb.UsbException;
 import de.mossgrabers.framework.utils.OperatingSystem;
 
@@ -392,23 +391,14 @@ public class Kontrol1UsbDevice
         0x80
     };
 
-    private static final int                   DATA_SZ            = 249;
-    private static final int                   TIMEOUT            = 0;
+    private static final int                   DATA_SZ            = 248;
 
     private static final Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);
 
-    private boolean                            useHIDForInput;
-    private IHost                              host;
+    private final IHost                        host;
     private IUsbDevice                         usbDevice;
-    private IUsbEndpoint                       usbEndpointDisplay;
-    private IUsbEndpoint                       usbEndpointUI;
     private IHidDevice                         hidDevice;
-
-    private IMemoryBlock                       initBlock;
-    private IMemoryBlock                       displayBlock;
-    private IMemoryBlock                       ledBlock;
-    private IMemoryBlock                       keyLedBlock;
-    private IMemoryBlock                       uiBlock;
+    private final IMemoryBlock                 displayBlock;
 
     private final Object                       busySendingDisplay = new Object ();
     private boolean                            busySendingLEDs    = false;
@@ -430,6 +420,10 @@ public class Kontrol1UsbDevice
     private boolean                            isFirstStateMsg    = true;
 
     private UIChangeCallback                   callback;
+
+    private IMemoryBlock                       ledBlock;
+
+    private IMemoryBlock                       keyLedBlock;
 
     static
     {
@@ -465,61 +459,27 @@ public class Kontrol1UsbDevice
     public Kontrol1UsbDevice (final IHost host)
     {
         this.host = host;
-        this.useHIDForInput = OperatingSystem.get () == OperatingSystem.WINDOWS;
 
         try
         {
             this.usbDevice = host.getUsbDevice (0);
-            this.usbEndpointDisplay = this.usbDevice.getEndpoint (0, 0);
-
-            if (this.useHIDForInput)
-            {
-                this.hidDevice = this.usbDevice.getHidDevice ();
-                if (this.hidDevice != null)
-                    this.hidDevice.setCallback (this::processHIDMessage);
-            }
-            else
-            {
-                this.usbEndpointUI = this.usbDevice.getEndpoint (0, 1);
-                this.uiBlock = host.createMemoryBlock (1024);
-            }
+            this.hidDevice = this.usbDevice.getHidDevice ();
+            if (this.hidDevice != null)
+                this.hidDevice.setCallback (this::processHIDMessage);
         }
         catch (final UsbException ex)
         {
             this.usbDevice = null;
-            this.usbEndpointDisplay = null;
-            this.usbEndpointUI = null;
             this.hidDevice = null;
             host.error ("Could not open USB connection: " + ex.getMessage ());
         }
 
         this.displayBlock = host.createMemoryBlock (DATA_SZ);
-        this.ledBlock = host.createMemoryBlock (26);
-        this.keyLedBlock = host.createMemoryBlock (267);
-        this.initBlock = host.createMemoryBlock (3);
-        final ByteBuffer initBuffer = this.initBlock.createByteBuffer ();
-        initBuffer.put ((byte) 0xA0);
-        initBuffer.put ((byte) 0x00);
-        initBuffer.put ((byte) 0x00);
+        this.ledBlock = host.createMemoryBlock (25);
+        this.keyLedBlock = host.createMemoryBlock (266);
 
         // To send black LEDs on startup
         this.oldKeyColors[0] = -1;
-    }
-
-
-    /**
-     * Poll the user interface controls.
-     */
-    public void pollUI ()
-    {
-        if (this.usbEndpointUI == null || this.useHIDForInput)
-            return;
-
-        this.usbEndpointUI.sendAsync (this.uiBlock, resultLength -> {
-            if (resultLength > 0)
-                this.processMessage (resultLength);
-            this.host.scheduleTask (this::pollUI, 10);
-        }, TIMEOUT);
     }
 
 
@@ -539,15 +499,14 @@ public class Kontrol1UsbDevice
      */
     public void init ()
     {
-        if (this.usbEndpointDisplay == null)
+        if (this.hidDevice == null)
             return;
 
-        // TODO TEST
-        final byte [] data = new byte [3];
-        this.initBlock.createByteBuffer ().get (data);
-        this.hidDevice.sendOutputReport ((byte) 0, data, data.length);
-
-        // this.usbEndpointDisplay.send (this.initBlock, TIMEOUT);
+        this.hidDevice.sendOutputReport ((byte) 0xA0, new byte []
+        {
+            0,
+            0
+        }, 2);
     }
 
 
@@ -666,13 +625,12 @@ public class Kontrol1UsbDevice
      */
     public void sendDisplayData ()
     {
-        if (this.usbEndpointDisplay == null)
+        if (this.hidDevice == null)
             return;
 
         synchronized (this.busySendingDisplay)
         {
             final ByteBuffer displayBuffer = this.displayBlock.createByteBuffer ();
-            displayBuffer.rewind ();
 
             for (int row = 0; row < 3; row++)
             {
@@ -716,12 +674,11 @@ public class Kontrol1UsbDevice
                         displayBuffer.put ((byte) 0);
                 }
 
-                // TODO TEST
+                // TODO Use Memory object for interface; also rewind on createByteBuffer with Reaper
+                displayBuffer.rewind ();
                 final byte [] data = new byte [DATA_SZ];
                 displayBuffer.get (data);
-                this.hidDevice.sendOutputReport ((byte) 0, data, DATA_SZ);
-
-                // this.usbEndpointDisplay.send (this.displayBlock, TIMEOUT);
+                this.hidDevice.sendOutputReport ((byte) 0xE0, data, DATA_SZ);
             }
         }
     }
@@ -732,7 +689,7 @@ public class Kontrol1UsbDevice
      */
     public void shutdown ()
     {
-        this.usbEndpointDisplay = null;
+        this.hidDevice = null;
     }
 
 
@@ -760,7 +717,7 @@ public class Kontrol1UsbDevice
      */
     public void updateButtonLEDs ()
     {
-        if (this.usbEndpointDisplay == null)
+        if (this.hidDevice == null)
             return;
 
         if (this.busySendingLEDs || Arrays.equals (this.oldButtonStates, this.buttonStates))
@@ -769,7 +726,6 @@ public class Kontrol1UsbDevice
 
         final ByteBuffer ledBuffer = this.ledBlock.createByteBuffer ();
         ledBuffer.clear ();
-        ledBuffer.put ((byte) 0x80);
         ledBuffer.put (this.buttonStates);
         ledBuffer.put ((byte) 0);
         ledBuffer.put ((byte) 0);
@@ -779,9 +735,10 @@ public class Kontrol1UsbDevice
         this.busySendingLEDs = true;
 
         // TODO TEST
-        final byte [] data = new byte [26];
+        final byte [] data = new byte [25];
+        ledBuffer.rewind ();
         ledBuffer.get (data);
-        this.hidDevice.sendOutputReport ((byte) 0, data, data.length);
+        this.hidDevice.sendOutputReport ((byte) 0x80, data, data.length);
         // this.usbEndpointDisplay.send (this.ledBlock, TIMEOUT);
 
         this.busySendingLEDs = false;
@@ -814,7 +771,7 @@ public class Kontrol1UsbDevice
      */
     public void updateKeyLEDs ()
     {
-        if (this.usbEndpointDisplay == null)
+        if (this.hidDevice == null)
             return;
 
         if (this.busySendingKeyLEDs || Arrays.equals (this.oldKeyColors, this.keyColors))
@@ -823,18 +780,20 @@ public class Kontrol1UsbDevice
 
         final ByteBuffer keyLedBuffer = this.keyLedBlock.createByteBuffer ();
         keyLedBuffer.clear ();
-        keyLedBuffer.put ((byte) 0x82);
+        // keyLedBuffer.put ((byte) 0x82);
         keyLedBuffer.put (this.keyColors);
         keyLedBuffer.put ((byte) 0x0);
         keyLedBuffer.put ((byte) 0x0);
 
         this.busySendingKeyLEDs = true;
         // TODO TEST
-        final byte [] data = new byte [267];
+        final byte [] data = new byte [266];
+        keyLedBuffer.rewind ();
         keyLedBuffer.get (data);
-        this.hidDevice.sendOutputReport ((byte) 0, data, data.length);
 
-        // this.usbEndpointDisplay.send (this.keyLedBlock, TIMEOUT);
+        // TODO Bug in HID impl or is 88*3 too long? --> Try with modified lib
+        this.hidDevice.sendOutputReport ((byte) 0x82, data, 183); // data.length);
+
         this.busySendingKeyLEDs = false;
     }
 
@@ -848,7 +807,6 @@ public class Kontrol1UsbDevice
     private static void fillHeader (final ByteBuffer displayBuffer, final int row)
     {
         displayBuffer.clear ();
-        displayBuffer.put ((byte) 0xe0);
         displayBuffer.put ((byte) 0x00);
         displayBuffer.put ((byte) 0x00);
         displayBuffer.put ((byte) row);
@@ -857,20 +815,6 @@ public class Kontrol1UsbDevice
         displayBuffer.put ((byte) 0x00);
         displayBuffer.put ((byte) 0x01);
         displayBuffer.put ((byte) 0x00);
-    }
-
-
-    /**
-     * Process the received USB message.
-     * 
-     * @param received The number of valid bytes in the data array
-     */
-    private void processMessage (final int received)
-    {
-        final ByteBuffer uiBuffer = this.uiBlock.createByteBuffer ();
-        final byte [] data = new byte [received];
-        uiBuffer.get (data);
-        this.processHIDMessage (data, received);
     }
 
 

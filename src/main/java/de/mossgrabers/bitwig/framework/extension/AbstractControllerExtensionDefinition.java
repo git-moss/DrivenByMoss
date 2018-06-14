@@ -135,11 +135,17 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public void listHardwareDevices (final HardwareDeviceMatcherList matchers)
     {
+        // Are there any USB devices configured?
         final UsbMatcher matcher = this.definition.claimUSBDevice ();
         if (matcher == null)
             return;
 
+        // Are any endpoints configured?
+        // TODO
         final List<EndpointMatcher> endpoints = matcher.getEndpoints ();
+        // if (endpoints.isEmpty ())
+        // return;
+
         final int size = endpoints.size ();
         final UsbInterfaceMatcher [] interfaceMatchers = new UsbInterfaceMatcher [size];
         for (int i = 0; i < size; i++)
