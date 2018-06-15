@@ -79,8 +79,8 @@ public class HidDeviceImpl implements IHidDevice
         {
             l++;
             d = new byte [l];
-            data[0] = reportID;
-            System.arraycopy (data, 0, d, 1, l - 1);
+            d[0] = reportID;
+            System.arraycopy (data, 0, d, 1, data.length);
         }
 
         return this.hidDevice.setOutputReport (reportID, d, d.length);
