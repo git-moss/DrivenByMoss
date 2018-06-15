@@ -46,7 +46,7 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
         0x1410
     };
 
-    private short                  productID;
+    private final int              modelIndex;
 
 
     /**
@@ -57,7 +57,7 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
     public Kontrol1ControllerDefinition (final int modelIndex)
     {
         super ("", "Jürgen Moßgraber", "1.00", EXTENSION_ID[modelIndex], HARDWARE_MODEL[modelIndex], "Native Instruments", 1, 0);
-        this.productID = PRODUCT_ID[modelIndex];
+        this.modelIndex = modelIndex;
     }
 
 
@@ -73,6 +73,6 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
     @Override
     public UsbMatcher claimUSBDevice ()
     {
-        return new UsbMatcher (VENDOR_ID, this.productID, true);
+        return new UsbMatcher (VENDOR_ID, PRODUCT_ID[this.modelIndex], true);
     }
 }

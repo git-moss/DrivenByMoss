@@ -35,7 +35,7 @@ public class VolumeMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
     @Override
     public void updateDisplay ()
     {
-        // TODO
+        // TODO Implement volume display
         // final Kontrol2Display d = (Kontrol2Display) this.surface.getDisplay ();
         //
         // d.clear ();

@@ -168,8 +168,8 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param input
-     * @param usbDevice
+     * @param input The midi input
+     * @param usbDevice The usb device
      */
     public Kontrol1ControlSurface (final IHost host, final ColorManager colorManager, final Kontrol1Configuration configuration, final IMidiInput input, final Kontrol1UsbDevice usbDevice)
     {

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.usb;
 
+import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.usb.IHidCallback;
 import de.mossgrabers.framework.usb.IHidDevice;
 import de.mossgrabers.framework.usb.UsbException;
@@ -12,6 +13,7 @@ import purejavahidapi.HidDeviceInfo;
 import purejavahidapi.PureJavaHidApi;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 
 /**
@@ -62,21 +64,23 @@ public class HidDeviceImpl implements IHidDevice
 
     /** {@inheritDoc} */
     @Override
-    public int sendOutputReport (byte reportID, byte [] data, int length)
+    public int sendOutputReport (byte reportID, IMemoryBlock memoryBlock)
     {
-        if (this.isOpen)
-            return this.hidDevice.setOutputReport (reportID, data, length);
-        return -1;
+        if (!this.isOpen)
+            return -1;
+        final byte [] data = toBuffer (memoryBlock);
+        return this.hidDevice.setOutputReport (reportID, data, data.length);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public int sendFeatureReport (byte reportID, byte [] data, int length)
+    public int sendFeatureReport (byte reportID, IMemoryBlock memoryBlock)
     {
-        if (this.isOpen)
-            return this.hidDevice.setFeatureReport (reportID, data, length);
-        return -1;
+        if (!this.isOpen)
+            return -1;
+        final byte [] data = toBuffer (memoryBlock);
+        return this.hidDevice.setFeatureReport (reportID, data, data.length);
     }
 
 
@@ -85,7 +89,7 @@ public class HidDeviceImpl implements IHidDevice
     public void setCallback (final IHidCallback callback)
     {
         if (this.isOpen)
-            this.hidDevice.setInputReportListener ( (source, id, data, length) -> callback.process (data, length));
+            this.hidDevice.setInputReportListener ( (source, id, data, length) -> callback.process (id, data, length));
     }
 
 
@@ -97,5 +101,16 @@ public class HidDeviceImpl implements IHidDevice
                 return info;
         }
         return null;
+    }
+
+
+    private static byte [] toBuffer (final IMemoryBlock memoryBlock)
+    {
+        final ByteBuffer buffer = memoryBlock.createByteBuffer ();
+        final int size = buffer.capacity ();
+        final byte [] data = new byte [size];
+        buffer.rewind ();
+        buffer.get (data);
+        return data;
     }
 }

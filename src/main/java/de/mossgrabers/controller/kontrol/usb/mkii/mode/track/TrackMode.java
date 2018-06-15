@@ -37,7 +37,7 @@ public class TrackMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Conf
     @Override
     public void updateDisplay ()
     {
-        // TODO
+        // TODO Implement track display
         // final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
         // final ITrack t = currentTrackBank.getSelectedTrack ();
         // final Kontrol2Display d = (Kontrol2Display) this.surface.getDisplay ();

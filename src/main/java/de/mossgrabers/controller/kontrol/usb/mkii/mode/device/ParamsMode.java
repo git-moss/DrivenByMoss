@@ -35,7 +35,7 @@ public class ParamsMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
     @Override
     public void updateDisplay ()
     {
-        // TODO
+        // TODO Implement parameter display
         // final Kontrol2Display d = (Kontrol2Display) this.surface.getDisplay ();
         // d.clear ();
         //

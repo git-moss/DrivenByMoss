@@ -141,7 +141,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
             return;
 
         // Are any endpoints configured?
-        // TODO
+        // TODO Can we use the Bitwig config dialog for HID?
         final List<EndpointMatcher> endpoints = matcher.getEndpoints ();
         // if (endpoints.isEmpty ())
         // return;

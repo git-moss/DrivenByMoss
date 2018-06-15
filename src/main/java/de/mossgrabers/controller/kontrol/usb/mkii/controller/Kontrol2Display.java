@@ -72,16 +72,6 @@ public class Kontrol2Display extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public AbstractDisplay clear ()
-    {
-        // TODO
-
-        return super.clear ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public Kontrol2Display clearRow (final int row)
     {
         for (int i = 0; i < this.noOfCells; i++)
@@ -159,7 +149,6 @@ public class Kontrol2Display extends AbstractDisplay
     @Override
     public void writeLine (final int row, final String text)
     {
-        // TODO Auto-generated method stub
-
+        // Not a line based display
     }
 }

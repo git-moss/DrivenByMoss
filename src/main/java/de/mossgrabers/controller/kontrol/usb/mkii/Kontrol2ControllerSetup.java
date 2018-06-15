@@ -98,8 +98,6 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
         surface.setDisplay (display);
 
         surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
-        
-        this.usbDevice.pollUI ();
     }
 
 
@@ -161,7 +159,7 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
         this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, Kontrol2ControlSurface.BUTTON_NAVIGATE_LEFT, new Kontrol2CursorCommand (Direction.LEFT, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, Kontrol2ControlSurface.BUTTON_NAVIGATE_RIGHT, new Kontrol2CursorCommand (Direction.RIGHT, this.model, surface));
 
-        // TODO
+        // TODO Browser?
         // this.addTriggerCommand (Commands.COMMAND_MUTE, Kontrol2ControlSurface.BUTTON_BACK, new
         // BackButtonCommand (this.model, surface));
         // this.addTriggerCommand (Commands.COMMAND_SOLO, Kontrol2ControlSurface.BUTTON_ENTER, new

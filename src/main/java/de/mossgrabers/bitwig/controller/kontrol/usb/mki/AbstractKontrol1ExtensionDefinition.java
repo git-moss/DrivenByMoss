@@ -22,6 +22,9 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public abstract class AbstractKontrol1ExtensionDefinition extends AbstractControllerExtensionDefinition
 {
+    private final int modelIndex;
+
+
     /**
      * Constructor.
      *
@@ -30,6 +33,7 @@ public abstract class AbstractKontrol1ExtensionDefinition extends AbstractContro
     public AbstractKontrol1ExtensionDefinition (final int modelIndex)
     {
         super (new Kontrol1ControllerDefinition (modelIndex));
+        this.modelIndex = modelIndex;
     }
 
 
@@ -45,6 +49,6 @@ public abstract class AbstractKontrol1ExtensionDefinition extends AbstractContro
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new Kontrol1ControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()));
+        return new Kontrol1ControllerSetup (this.modelIndex, new HostImpl (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()));
     }
 }

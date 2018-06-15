@@ -55,19 +55,21 @@ import de.mossgrabers.framework.view.ViewManager;
  */
 public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1ControlSurface, Kontrol1Configuration>
 {
-    private Kontrol1UsbDevice usbDevice;
+    private final int modelIndex;
 
 
     /**
      * Constructor.
-     *
+     * 
+     * @param modelIndex The index of the model (S25, S49, S61, S88)
      * @param host The DAW host
      * @param factory The factory
      * @param settings The settings
      */
-    public Kontrol1ControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    public Kontrol1ControllerSetup (final int modelIndex, final IHost host, final ISetupFactory factory, final ISettingsUI settings)
     {
         super (factory, host, settings);
+        this.modelIndex = modelIndex;
         this.valueChanger = new DefaultValueChanger (1024, 10, 1);
         this.colorManager = new ColorManager ();
         this.configuration = new Kontrol1Configuration (this.valueChanger);
@@ -93,9 +95,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     protected void createSurface ()
     {
         final IHost host = this.model.getHost ();
-
-        this.usbDevice = new Kontrol1UsbDevice (host);
-        this.usbDevice.init ();
+        final Kontrol1UsbDevice usbDevice = new Kontrol1UsbDevice (this.modelIndex, host);
+        usbDevice.init ();
 
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiInput input = midiAccess.createInput ("Komplete Kontrol 1",
@@ -103,10 +104,10 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
                 "B001??" /* Sustainpedal + Modulation */, "D0????" /* Channel Aftertouch */,
                 "E0????" /* Pitchbend */);
 
-        final Kontrol1ControlSurface surface = new Kontrol1ControlSurface (host, this.colorManager, this.configuration, input, this.usbDevice);
-        this.usbDevice.setCallback (surface);
+        final Kontrol1ControlSurface surface = new Kontrol1ControlSurface (host, this.colorManager, this.configuration, input, usbDevice);
+        usbDevice.setCallback (surface);
         this.surfaces.add (surface);
-        final Kontrol1Display display = new Kontrol1Display (host, this.valueChanger.getUpperBound (), this.configuration, this.usbDevice);
+        final Kontrol1Display display = new Kontrol1Display (host, this.valueChanger.getUpperBound (), this.configuration, usbDevice);
         surface.setDisplay (display);
 
         surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);

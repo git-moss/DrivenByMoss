@@ -19,14 +19,13 @@ import java.util.Map;
 
 
 /**
- * USB connection for display and UI controls of Kontrol 1.
+ * USB connection for display and UI controls of Kontrol 2.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class Kontrol2UsbDevice
 {
-
-    private static final int []                BYTE_1             =
+    private static final int []                BYTE_1           =
     {
         Kontrol2ControlSurface.BUTTON_AUTO,
         Kontrol2ControlSurface.BUTTON_QUANTIZE,
@@ -38,7 +37,7 @@ public class Kontrol2UsbDevice
         Kontrol2ControlSurface.BUTTON_SHIFT,
     };
 
-    private static final int []                BYTE_2             =
+    private static final int []                BYTE_2           =
     {
         Kontrol2ControlSurface.BUTTON_STOP,
         Kontrol2ControlSurface.BUTTON_REC,
@@ -50,7 +49,7 @@ public class Kontrol2UsbDevice
         Kontrol2ControlSurface.BUTTON_PAGE_LEFT
     };
 
-    private static final int []                BYTE_3             =
+    private static final int []                BYTE_3           =
     {
         Kontrol2ControlSurface.BUTTON_MUTE,
         Kontrol2ControlSurface.BUTTON_SOLO,
@@ -61,7 +60,7 @@ public class Kontrol2UsbDevice
         Kontrol2ControlSurface.BUTTON_KEY_MODE,
     };
 
-    private static final int []                BYTE_4             =
+    private static final int []                BYTE_4           =
     {
         Kontrol2ControlSurface.BUTTON_MIXER,
         Kontrol2ControlSurface.BUTTON_PLUGIN,
@@ -71,12 +70,12 @@ public class Kontrol2UsbDevice
         Kontrol2ControlSurface.BUTTON_MIDI
     };
 
-    private static final int []                BYTE_5             =
+    private static final int []                BYTE_5           =
     {
         Kontrol2ControlSurface.TOUCH_ENCODER_MAIN
     };
 
-    private static final int []                BYTE_6             =
+    private static final int []                BYTE_6           =
     {
         Kontrol2ControlSurface.TOUCH_ENCODER_1,
         Kontrol2ControlSurface.TOUCH_ENCODER_2,
@@ -88,7 +87,7 @@ public class Kontrol2UsbDevice
         Kontrol2ControlSurface.TOUCH_ENCODER_8
     };
 
-    private static final int []                TEST_BITS          =
+    private static final int []                TEST_BITS        =
     {
         0x01,
         0x02,
@@ -100,44 +99,42 @@ public class Kontrol2UsbDevice
         0x80
     };
 
-    private static final int                   DATA_SZ            = 249;
-    private static final int                   TIMEOUT            = 0;
+    private static final int                   REPORT_ID_UI     = 1;
 
-    private static final Map<Integer, Integer> LED_MAPPING        = new HashMap<> (21);
+    // TODO correct display size
+    private static final int                   SIZE_DISPLAY     = 248;
+    private static final int                   SIZE_BUTTON_LEDS = 25;
+    private static final int                   SIZE_KEY_LEDS    = 88;
+    private static final int                   TIMEOUT          = 0;
 
-    private boolean                            useHIDForInput;
+    private static final Map<Integer, Integer> LED_MAPPING      = new HashMap<> (21);
+
     private IHost                              host;
     private IUsbDevice                         usbDevice;
-    private IUsbEndpoint                       usbEndpointDisplay;
-    private IUsbEndpoint                       usbEndpointUI;
     private IHidDevice                         hidDevice;
+    private IUsbEndpoint                       usbEndpointDisplay;
 
     private IMemoryBlock                       initBlock;
     private IMemoryBlock                       displayBlock;
     private IMemoryBlock                       ledBlock;
     private IMemoryBlock                       keyLedBlock;
-    private IMemoryBlock                       uiBlock;
-
-    private boolean                            busySendingDisplay = false;
-    private boolean                            busySendingLEDs    = false;
-    private boolean                            busySendingKeyLEDs = false;
 
     private int                                mainEncoderValue;
-    private int []                             encoderValues      = new int [8];
+    private int []                             encoderValues    = new int [8];
 
-    private byte []                            buttonStates       = new byte [21];
-    private byte []                            oldButtonStates    = new byte [21];
+    private byte []                            buttonStates     = new byte [21];
+    private byte []                            oldButtonStates  = new byte [21];
 
-    private byte []                            keyColors          = new byte [88 * 3];
-    private byte []                            oldKeyColors       = new byte [88 * 3];
+    private byte []                            keyColors        = new byte [88 * 3];
+    private byte []                            oldKeyColors     = new byte [88 * 3];
 
-    private boolean                            isFirstStateMsg    = true;
+    private boolean                            isFirstStateMsg  = true;
 
     private UIChangeCallback                   callback;
 
     static
     {
-        // TODO
+        // TODO find out the button indices for Kontrol 2 (are also likely more than 21)
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_SHIFT), Integer.valueOf (0));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_SCALE), Integer.valueOf (1));
         LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_ARP), Integer.valueOf (2));
@@ -165,7 +162,6 @@ public class Kontrol2UsbDevice
     public Kontrol2UsbDevice (final IHost host)
     {
         this.host = host;
-        this.useHIDForInput = OperatingSystem.get () == OperatingSystem.WINDOWS;
 
         try
         {
@@ -174,54 +170,25 @@ public class Kontrol2UsbDevice
             // TODO Implement
             // this.usbEndpointDisplay = this.usbDevice.getEndpoint (1, 0);
 
-            if (this.useHIDForInput)
-            {
-                this.hidDevice = this.usbDevice.getHidDevice ();
-                if (this.hidDevice != null)
-                    this.hidDevice.setCallback (this::processHIDMessage);
-            }
-            else
-            {
-                this.usbEndpointUI = this.usbDevice.getEndpoint (0, 0);
-                this.uiBlock = host.createMemoryBlock (1024);
-            }
+            this.hidDevice = this.usbDevice.getHidDevice ();
+            if (this.hidDevice != null)
+                this.hidDevice.setCallback (this::processHIDMessage);
         }
         catch (final UsbException ex)
         {
             this.usbDevice = null;
-            this.usbEndpointDisplay = null;
-            this.usbEndpointUI = null;
             this.hidDevice = null;
+            this.usbEndpointDisplay = null;
             host.error ("Could not open USB connection: " + ex.getMessage ());
         }
 
-        this.displayBlock = host.createMemoryBlock (DATA_SZ);
-        this.ledBlock = host.createMemoryBlock (26);
-        this.keyLedBlock = host.createMemoryBlock (267);
-        this.initBlock = host.createMemoryBlock (3);
-        final ByteBuffer initBuffer = this.initBlock.createByteBuffer ();
-        initBuffer.put ((byte) 0xA0);
-        initBuffer.put ((byte) 0x00);
-        initBuffer.put ((byte) 0x00);
+        this.displayBlock = host.createMemoryBlock (SIZE_DISPLAY);
+        this.ledBlock = host.createMemoryBlock (SIZE_BUTTON_LEDS);
+        this.keyLedBlock = host.createMemoryBlock (SIZE_KEY_LEDS);
+        this.initBlock = host.createMemoryBlock (2);
 
         // To send black LEDs on startup
         this.oldKeyColors[0] = -1;
-    }
-
-
-    /**
-     * Poll the user interface controls.
-     */
-    public void pollUI ()
-    {
-        if (this.usbEndpointUI == null || this.useHIDForInput)
-            return;
-
-        this.usbEndpointUI.sendAsync (this.uiBlock, resultLength -> {
-            if (resultLength > 0)
-                this.processMessage (resultLength);
-            this.host.scheduleTask (this::pollUI, 10);
-        }, TIMEOUT);
     }
 
 
@@ -241,8 +208,16 @@ public class Kontrol2UsbDevice
      */
     public void init ()
     {
-        if (this.usbEndpointDisplay != null)
-            this.usbEndpointDisplay.send (this.initBlock, TIMEOUT);
+        if (this.hidDevice == null)
+            return;
+
+        synchronized (this.initBlock)
+        {
+            final ByteBuffer buffer = this.initBlock.createByteBuffer ();
+            buffer.put ((byte) 0x00);
+            buffer.put ((byte) 0x00);
+            this.hidDevice.sendOutputReport ((byte) 0xA0, this.initBlock);
+        }
     }
 
 
@@ -251,11 +226,13 @@ public class Kontrol2UsbDevice
      */
     public void sendDisplayData ()
     {
-        if (this.busySendingDisplay || this.usbEndpointDisplay == null)
+        if (this.usbEndpointDisplay == null)
             return;
 
-        // TODO Implement sending to display
-        // Use this.displayBuffer
+        synchronized (this.displayBlock)
+        {
+            // TODO Implement sending to display
+        }
     }
 
 
@@ -264,6 +241,7 @@ public class Kontrol2UsbDevice
      */
     public void shutdown ()
     {
+        this.hidDevice = null;
         this.usbEndpointDisplay = null;
     }
 
@@ -292,25 +270,25 @@ public class Kontrol2UsbDevice
      */
     public void updateButtonLEDs ()
     {
-        if (this.usbEndpointDisplay == null)
+        if (this.hidDevice == null)
             return;
 
-        if (this.busySendingLEDs || Arrays.equals (this.oldButtonStates, this.buttonStates))
-            return;
-        System.arraycopy (this.buttonStates, 0, this.oldButtonStates, 0, this.oldButtonStates.length);
+        synchronized (this.ledBlock)
+        {
+            if (Arrays.equals (this.oldButtonStates, this.buttonStates))
+                return;
+            System.arraycopy (this.buttonStates, 0, this.oldButtonStates, 0, this.oldButtonStates.length);
 
-        final ByteBuffer ledBuffer = this.ledBlock.createByteBuffer ();
-        ledBuffer.clear ();
-        ledBuffer.put ((byte) 0x80);
-        ledBuffer.put (this.buttonStates);
-        ledBuffer.put ((byte) 0);
-        ledBuffer.put ((byte) 0);
-        ledBuffer.put ((byte) 0);
-        ledBuffer.put ((byte) 0);
-
-        this.busySendingLEDs = true;
-        this.usbEndpointDisplay.send (this.ledBlock, TIMEOUT);
-        this.busySendingLEDs = false;
+            final ByteBuffer ledBuffer = this.ledBlock.createByteBuffer ();
+            ledBuffer.clear ();
+            ledBuffer.put (this.buttonStates);
+            // TODO Notwendig?
+            ledBuffer.put ((byte) 0);
+            ledBuffer.put ((byte) 0);
+            ledBuffer.put ((byte) 0);
+            ledBuffer.put ((byte) 0);
+            this.hidDevice.sendOutputReport ((byte) 0x80, this.ledBlock);
+        }
     }
 
 
@@ -340,53 +318,45 @@ public class Kontrol2UsbDevice
      */
     public void updateKeyLEDs ()
     {
-        if (this.usbEndpointDisplay == null)
+        if (this.hidDevice == null)
             return;
 
-        if (this.busySendingKeyLEDs || Arrays.equals (this.oldKeyColors, this.keyColors))
-            return;
-        System.arraycopy (this.keyColors, 0, this.oldKeyColors, 0, this.oldKeyColors.length);
+        synchronized (this.keyLedBlock)
+        {
+            if (Arrays.equals (this.oldKeyColors, this.keyColors))
+                return;
+            System.arraycopy (this.keyColors, 0, this.oldKeyColors, 0, this.oldKeyColors.length);
 
-        final ByteBuffer keyLedBuffer = this.keyLedBlock.createByteBuffer ();
-        keyLedBuffer.clear ();
-        keyLedBuffer.put ((byte) 0x82);
-        keyLedBuffer.put (this.keyColors);
-        keyLedBuffer.put ((byte) 0x0);
-        keyLedBuffer.put ((byte) 0x0);
+            // TODO different reportID and length on Kontrol 2!
 
-        this.busySendingKeyLEDs = true;
-        this.usbEndpointDisplay.send (this.keyLedBlock, TIMEOUT);
-        this.busySendingKeyLEDs = false;
-    }
-
-
-    /**
-     * Process the received USB message.
-     * 
-     * @param received The number of valid bytes in the data array
-     */
-    private void processMessage (final int received)
-    {
-        final ByteBuffer uiBuffer = this.uiBlock.createByteBuffer ();
-        final byte [] data = new byte [received];
-        uiBuffer.get (data);
-        this.processHIDMessage (data, received);
+            final ByteBuffer keyLedBuffer = this.keyLedBlock.createByteBuffer ();
+            keyLedBuffer.clear ();
+            keyLedBuffer.put (this.keyColors, 0, 88); // TODO Convert the colors to 1 byte
+            this.hidDevice.sendOutputReport ((byte) 0x81, this.keyLedBlock);
+        }
     }
 
 
     /**
      * Process the received HID message.
      * 
+     * @param reportID The report (= function/method) number
      * @param data The data
      * @param received The number of valid bytes in the data array
      */
-    private void processHIDMessage (final byte [] data, final int received)
+    private void processHIDMessage (final byte reportID, final byte [] data, final int received)
     {
+        System.out.println ("reportID: " + reportID);
+
+        if (reportID != REPORT_ID_UI)
+            return;
+
+        // TODO fix in pureHID
         final int dataOffset = OperatingSystem.get () == OperatingSystem.WINDOWS ? 0 : 1;
 
         boolean encoderChange = false;
 
-        // Handle button presses
+        // TODO test reportID
         if (data[dataOffset + 30] == 36)
         {
             // Decode main knob
@@ -406,6 +376,7 @@ public class Kontrol2UsbDevice
             this.testByteForButtons (data[dataOffset + 3], BYTE_3);
             this.testByteForButtons (data[dataOffset + 4], BYTE_4);
             // Don't test touch events on encoder change to prevent flickering
+            // TODO order has changed therefore encoderChange is not set!
             if (!encoderChange)
             {
                 this.testByteForButtons (data[dataOffset + 3], BYTE_5);
