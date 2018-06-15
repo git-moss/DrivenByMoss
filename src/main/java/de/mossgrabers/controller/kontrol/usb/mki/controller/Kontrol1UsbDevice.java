@@ -9,7 +9,6 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.usb.IHidDevice;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.UsbException;
-import de.mossgrabers.framework.utils.OperatingSystem;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -826,13 +825,10 @@ public class Kontrol1UsbDevice
         if (reportID != REPORT_ID_UI)
             return;
 
-        // TODO fix in pureHID
-        final int dataOffset = OperatingSystem.get () == OperatingSystem.WINDOWS ? 0 : 1;
-
         boolean encoderChange = false;
 
         // Decode main knob
-        final int currentEncoderValue = Byte.toUnsignedInt (data[dataOffset + 5]);
+        final int currentEncoderValue = Byte.toUnsignedInt (data[5]);
         if (currentEncoderValue != this.mainEncoderValue)
         {
             final boolean valueIncreased = (this.mainEncoderValue < currentEncoderValue || this.mainEncoderValue == 0x0F && currentEncoderValue == 0) && !(this.mainEncoderValue == 0 && currentEncoderValue == 0x0F);
@@ -843,7 +839,7 @@ public class Kontrol1UsbDevice
         }
 
         // Decode 8 value knobs
-        final int start = dataOffset + 6;
+        final int start = 6;
         for (int encIndex = 0; encIndex < 8; encIndex++)
         {
             final int pos = start + 2 * encIndex;
@@ -864,14 +860,14 @@ public class Kontrol1UsbDevice
         this.isFirstStateMsg = false;
 
         // Test the pressed buttons
-        this.testByteForButtons (data[dataOffset], BYTE_0);
-        this.testByteForButtons (data[dataOffset + 1], BYTE_1);
-        this.testByteForButtons (data[dataOffset + 2], BYTE_2);
+        this.testByteForButtons (data[0], BYTE_0);
+        this.testByteForButtons (data[1], BYTE_1);
+        this.testByteForButtons (data[2], BYTE_2);
         // Don't test touch events on encoder change to prevent flickering
         if (!encoderChange)
         {
-            this.testByteForButtons (data[dataOffset + 3], BYTE_3);
-            this.testByteForButtons (data[dataOffset + 4], BYTE_4);
+            this.testByteForButtons (data[3], BYTE_3);
+            this.testByteForButtons (data[4], BYTE_4);
         }
     }
 

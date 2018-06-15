@@ -8,6 +8,7 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.usb.IHidCallback;
 import de.mossgrabers.framework.usb.IHidDevice;
 import de.mossgrabers.framework.usb.UsbException;
+import de.mossgrabers.framework.utils.OperatingSystem;
 import purejavahidapi.HidDevice;
 import purejavahidapi.HidDeviceInfo;
 import purejavahidapi.PureJavaHidApi;
@@ -69,7 +70,20 @@ public class HidDeviceImpl implements IHidDevice
         if (!this.isOpen)
             return -1;
         final byte [] data = toBuffer (memoryBlock);
-        return this.hidDevice.setOutputReport (reportID, data, data.length);
+
+        // purehid documentation says otherwise but MAC also needs the report ID in
+        // data[0], therefore add it
+        byte [] d = data;
+        int l = data.length;
+        if (OperatingSystem.get () == OperatingSystem.MAC)
+        {
+            l++;
+            d = new byte [l];
+            data[0] = reportID;
+            System.arraycopy (data, 0, d, 1, l - 1);
+        }
+
+        return this.hidDevice.setOutputReport (reportID, d, d.length);
     }
 
 
@@ -88,8 +102,23 @@ public class HidDeviceImpl implements IHidDevice
     @Override
     public void setCallback (final IHidCallback callback)
     {
-        if (this.isOpen)
-            this.hidDevice.setInputReportListener ( (source, id, data, length) -> callback.process (id, data, length));
+        if (!this.isOpen)
+            return;
+        this.hidDevice.setInputReportListener ( (source, id, data, length) -> {
+
+            // purehid documentation says otherwise but MAC also contains the report ID in
+            // data[0], therefore remove it
+            byte [] d = data;
+            int l = length;
+            if (OperatingSystem.get () == OperatingSystem.MAC)
+            {
+                l--;
+                d = new byte [l];
+                System.arraycopy (data, 1, d, 0, l);
+            }
+
+            callback.process (id, d, l);
+        });
     }
 
 
