@@ -81,6 +81,6 @@ public class PushControllerDefinition extends DefaultControllerDefinition
     @Override
     public UsbMatcher claimUSBDevice ()
     {
-        return this.isMkII ? new UsbMatcher (VENDOR_ID, PRODUCT_ID, INTERFACE_NUMBER, ENDPOINT_ADDRESS, true, false) : null;
+        return this.isMkII ? new UsbMatcher (VENDOR_ID, PRODUCT_ID, INTERFACE_NUMBER, ENDPOINT_ADDRESS, true) : null;
     }
 }

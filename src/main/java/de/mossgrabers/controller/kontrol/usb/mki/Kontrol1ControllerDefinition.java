@@ -73,6 +73,6 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
     @Override
     public UsbMatcher claimUSBDevice ()
     {
-        return new UsbMatcher (VENDOR_ID, PRODUCT_ID[this.modelIndex], true);
+        return new UsbMatcher (VENDOR_ID, PRODUCT_ID[this.modelIndex]);
     }
 }

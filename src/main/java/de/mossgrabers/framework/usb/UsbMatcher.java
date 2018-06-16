@@ -19,7 +19,6 @@ public class UsbMatcher
     private final short                 vendor;
     private final short                 productID;
     private final List<EndpointMatcher> endpoints = new ArrayList<> ();
-    private final boolean               enableHID;
 
 
     /**
@@ -27,14 +26,11 @@ public class UsbMatcher
      *
      * @param vendor The vendor ID
      * @param productID The product ID
-     * @param enableHID Set to true to use as a HID device
      */
-    public UsbMatcher (final short vendor, final short productID, final boolean enableHID)
+    public UsbMatcher (final short vendor, final short productID)
     {
         this.vendor = vendor;
         this.productID = productID;
-        // TODO Remove if HID works on Linux
-        this.enableHID = enableHID;
     }
 
 
@@ -46,9 +42,8 @@ public class UsbMatcher
      * @param interfaceNumber The interface
      * @param endpointAddress The endpoint
      * @param isBulk True to use bulk otherwise interrupted
-     * @param enableHID Set to true to use as a HID device
      */
-    public UsbMatcher (final short vendor, final short productID, final byte interfaceNumber, final byte endpointAddress, final boolean isBulk, final boolean enableHID)
+    public UsbMatcher (final short vendor, final short productID, final byte interfaceNumber, final byte endpointAddress, final boolean isBulk)
     {
         this (vendor, productID, interfaceNumber, new byte []
         {
@@ -56,7 +51,7 @@ public class UsbMatcher
         }, new boolean []
         {
             isBulk
-        }, enableHID);
+        });
     }
 
 
@@ -68,11 +63,10 @@ public class UsbMatcher
      * @param interfaceNumber The interface
      * @param endpointAddresses The endpoints
      * @param isBulk True to use bulk otherwise interrupted
-     * @param enableHID Set to true to use as a HID device
      */
-    public UsbMatcher (final short vendor, final short productID, final byte interfaceNumber, final byte [] endpointAddresses, final boolean [] isBulk, final boolean enableHID)
+    public UsbMatcher (final short vendor, final short productID, final byte interfaceNumber, final byte [] endpointAddresses, final boolean [] isBulk)
     {
-        this (vendor, productID, enableHID);
+        this (vendor, productID);
         this.addEndpoints (interfaceNumber, endpointAddresses, isBulk);
     }
 
@@ -96,17 +90,6 @@ public class UsbMatcher
     public short getProductID ()
     {
         return this.productID;
-    }
-
-
-    /**
-     * Returns true to use as a HID device.
-     *
-     * @return True to use as a HID device
-     */
-    public boolean isEnableHID ()
-    {
-        return this.enableHID;
     }
 
 

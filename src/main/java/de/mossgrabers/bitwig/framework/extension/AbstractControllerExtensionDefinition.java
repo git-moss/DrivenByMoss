@@ -140,12 +140,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
         if (matcher == null)
             return;
 
-        // Are any endpoints configured?
-        // TODO Can we use the Bitwig config dialog for HID?
         final List<EndpointMatcher> endpoints = matcher.getEndpoints ();
-        // if (endpoints.isEmpty ())
-        // return;
-
         final int size = endpoints.size ();
         final UsbInterfaceMatcher [] interfaceMatchers = new UsbInterfaceMatcher [size];
         for (int i = 0; i < size; i++)
