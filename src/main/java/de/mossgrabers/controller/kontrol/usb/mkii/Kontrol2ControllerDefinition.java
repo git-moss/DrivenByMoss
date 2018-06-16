@@ -72,6 +72,6 @@ public class Kontrol2ControllerDefinition extends DefaultControllerDefinition
     public UsbMatcher claimUSBDevice ()
     {
         // TODO add the display endpoint
-        return new UsbMatcher (VENDOR_ID, this.productID);
+        return new UsbMatcher (VENDOR_ID, this.productID, INTERFACE_NUMBER_DISPLAY, ENDPOINT_ADDRESS_DISPLAY, true);
     }
 }

@@ -9,6 +9,7 @@ import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.Kontrol2Cursor
 import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.Kontrol2PlayCommand;
 import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.MainEncoderButtonCommand;
 import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.ScaleButtonCommand;
+import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2Colors;
 import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2Display;
 import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2UsbDevice;
@@ -64,6 +65,7 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
         super (factory, host, settings);
         this.valueChanger = new DefaultValueChanger (1024, 10, 1);
         this.colorManager = new ColorManager ();
+        Kontrol2Colors.addColors (this.colorManager);
         this.configuration = new Kontrol2Configuration (this.valueChanger);
     }
 

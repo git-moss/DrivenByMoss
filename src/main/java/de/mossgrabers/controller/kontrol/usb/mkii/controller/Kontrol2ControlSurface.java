@@ -92,46 +92,66 @@ public class Kontrol2ControlSurface extends AbstractControlSurface<Kontrol2Confi
     /** The navigate up button. */
     public static final int     BUTTON_NAVIGATE_UP    = 34;
 
+    /** The button 1. */
+    public static final int     BUTTON_GENERIC_1      = 35;
+    /** The button 2. */
+    public static final int     BUTTON_GENERIC_2      = 36;
+    /** The button 3. */
+    public static final int     BUTTON_GENERIC_3      = 37;
+    /** The button 4. */
+    public static final int     BUTTON_GENERIC_4      = 38;
+    /** The button 5. */
+    public static final int     BUTTON_GENERIC_5      = 39;
+    /** The button 6. */
+    public static final int     BUTTON_GENERIC_6      = 40;
+    /** The button 7. */
+    public static final int     BUTTON_GENERIC_7      = 41;
+    /** The button 8. */
+    public static final int     BUTTON_GENERIC_8      = 42;
+
     /** Touching encoder 1. */
-    public static final int     TOUCH_ENCODER_1       = 35;
+    public static final int     TOUCH_ENCODER_1       = 43;
     /** Touching encoder 2. */
-    public static final int     TOUCH_ENCODER_2       = 36;
+    public static final int     TOUCH_ENCODER_2       = 44;
     /** Touching encoder 3. */
-    public static final int     TOUCH_ENCODER_3       = 37;
+    public static final int     TOUCH_ENCODER_3       = 45;
     /** Touching encoder 4. */
-    public static final int     TOUCH_ENCODER_4       = 38;
+    public static final int     TOUCH_ENCODER_4       = 46;
     /** Touching encoder 5. */
-    public static final int     TOUCH_ENCODER_5       = 39;
+    public static final int     TOUCH_ENCODER_5       = 47;
     /** Touching encoder 6. */
-    public static final int     TOUCH_ENCODER_6       = 40;
+    public static final int     TOUCH_ENCODER_6       = 48;
     /** Touching encoder 7. */
-    public static final int     TOUCH_ENCODER_7       = 41;
+    public static final int     TOUCH_ENCODER_7       = 49;
     /** Touching encoder 8. */
-    public static final int     TOUCH_ENCODER_8       = 42;
+    public static final int     TOUCH_ENCODER_8       = 50;
 
     /** Touching the main encoder. */
-    public static final int     TOUCH_ENCODER_MAIN    = 43;
+    public static final int     TOUCH_ENCODER_MAIN    = 51;
+
+    /** The fixed velocity button. */
+    public static final int     BUTTON_FIXED_VEL      = 52;
 
     // Continuous
 
     /** Moving encoder 1. */
-    public static final int     ENCODER_1             = 50;
+    public static final int     ENCODER_1             = 60;
     /** Moving encoder 2. */
-    public static final int     ENCODER_2             = 51;
+    public static final int     ENCODER_2             = 61;
     /** Moving encoder 3. */
-    public static final int     ENCODER_3             = 52;
+    public static final int     ENCODER_3             = 62;
     /** Moving encoder 4. */
-    public static final int     ENCODER_4             = 53;
+    public static final int     ENCODER_4             = 63;
     /** Moving encoder 5. */
-    public static final int     ENCODER_5             = 54;
+    public static final int     ENCODER_5             = 64;
     /** Moving encoder 6. */
-    public static final int     ENCODER_6             = 55;
+    public static final int     ENCODER_6             = 65;
     /** Moving encoder 7. */
-    public static final int     ENCODER_7             = 56;
+    public static final int     ENCODER_7             = 66;
     /** Moving encoder 8. */
-    public static final int     ENCODER_8             = 57;
+    public static final int     ENCODER_8             = 67;
     /** Moving the main encoder. */
-    public static final int     MAIN_ENCODER          = 58;
+    public static final int     MAIN_ENCODER          = 68;
 
     private static final int [] KONTROL2_BUTTONS_ALL  =
     {
@@ -187,9 +207,9 @@ public class Kontrol2ControlSurface extends AbstractControlSurface<Kontrol2Confi
     };
 
     /** Color intensity for an active button. */
-    public static final int     BUTTON_STATE_HI       = 255;
+    public static final int     BUTTON_STATE_HI       = 11;
     /** Color intensity for an enabled button. */
-    public static final int     BUTTON_STATE_ON       = 6;
+    public static final int     BUTTON_STATE_ON       = 4;
     /** Color intensity for an disabled button. */
     public static final int     BUTTON_STATE_OFF      = 0;
 

@@ -102,11 +102,11 @@ public class Kontrol2UsbDevice
 
     // TODO correct display size
     private static final int                   SIZE_DISPLAY     = 248;
-    private static final int                   SIZE_BUTTON_LEDS = 25;
+    private static final int                   SIZE_BUTTON_LEDS = 42;
     private static final int                   SIZE_KEY_LEDS    = 88;
     private static final int                   TIMEOUT          = 0;
 
-    private static final Map<Integer, Integer> LED_MAPPING      = new HashMap<> (21);
+    private static final Map<Integer, Integer> LED_MAPPING      = new HashMap<> (SIZE_BUTTON_LEDS);
 
     private IHost                              host;
     private IUsbDevice                         usbDevice;
@@ -121,11 +121,11 @@ public class Kontrol2UsbDevice
     private int                                mainEncoderValue;
     private int []                             encoderValues    = new int [8];
 
-    private byte []                            buttonStates     = new byte [21];
-    private byte []                            oldButtonStates  = new byte [21];
+    private byte []                            buttonStates     = new byte [SIZE_BUTTON_LEDS];
+    private byte []                            oldButtonStates  = new byte [SIZE_BUTTON_LEDS];
 
-    private byte []                            keyColors        = new byte [88 * 3];
-    private byte []                            oldKeyColors     = new byte [88 * 3];
+    private byte []                            keyColors        = new byte [SIZE_KEY_LEDS];
+    private byte []                            oldKeyColors     = new byte [SIZE_KEY_LEDS];
 
     private boolean                            isFirstStateMsg  = true;
 
@@ -133,23 +133,48 @@ public class Kontrol2UsbDevice
 
     static
     {
-        // TODO find out the button indices for Kontrol 2 (are also likely more than 21)
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_SHIFT), Integer.valueOf (0));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_SCALE), Integer.valueOf (1));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_ARP), Integer.valueOf (2));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_LOOP), Integer.valueOf (3));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PLAY), Integer.valueOf (6));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_REC), Integer.valueOf (7));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_STOP), Integer.valueOf (8));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PAGE_LEFT), Integer.valueOf (9));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PAGE_RIGHT), Integer.valueOf (10));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PRESET_UP), Integer.valueOf (12));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_INSTANCE), Integer.valueOf (13));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PRESET_DOWN), Integer.valueOf (14));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_UP), Integer.valueOf (16));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_LEFT), Integer.valueOf (18));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_DOWN), Integer.valueOf (19));
-        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_RIGHT), Integer.valueOf (20));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_MUTE), Integer.valueOf (0));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_SOLO), Integer.valueOf (1));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_GENERIC_1), Integer.valueOf (2));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_GENERIC_2), Integer.valueOf (3));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_GENERIC_3), Integer.valueOf (4));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_GENERIC_4), Integer.valueOf (5));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_GENERIC_5), Integer.valueOf (6));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_GENERIC_6), Integer.valueOf (7));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_GENERIC_7), Integer.valueOf (8));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_GENERIC_8), Integer.valueOf (9));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_LEFT), Integer.valueOf (10));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_UP), Integer.valueOf (11));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_DOWN), Integer.valueOf (12));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_NAVIGATE_RIGHT), Integer.valueOf (13));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_SHIFT), Integer.valueOf (14));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_SCALE), Integer.valueOf (15));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_ARP), Integer.valueOf (16));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_SCENE), Integer.valueOf (17));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_UNDO), Integer.valueOf (18));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_QUANTIZE), Integer.valueOf (19));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_AUTO), Integer.valueOf (20));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PATTERN), Integer.valueOf (21));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PRESET_UP), Integer.valueOf (22));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_TRACK), Integer.valueOf (23));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_LOOP), Integer.valueOf (24));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_METRO), Integer.valueOf (25));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_TEMPO), Integer.valueOf (26));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PRESET_DOWN), Integer.valueOf (27));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_KEY_MODE), Integer.valueOf (28));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PLAY), Integer.valueOf (29));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_REC), Integer.valueOf (30));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_STOP), Integer.valueOf (31));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PAGE_LEFT), Integer.valueOf (32));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PAGE_RIGHT), Integer.valueOf (33));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_CLEAR), Integer.valueOf (34));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_BROWSER), Integer.valueOf (35));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_PLUGIN), Integer.valueOf (36));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_MIXER), Integer.valueOf (37));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_INSTANCE), Integer.valueOf (38));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_MIDI), Integer.valueOf (39));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_SETUP), Integer.valueOf (40));
+        LED_MAPPING.put (Integer.valueOf (Kontrol2ControlSurface.BUTTON_FIXED_VEL), Integer.valueOf (41));
     }
 
 
@@ -213,8 +238,7 @@ public class Kontrol2UsbDevice
         synchronized (this.initBlock)
         {
             final ByteBuffer buffer = this.initBlock.createByteBuffer ();
-            buffer.put ((byte) 0x00);
-            buffer.put ((byte) 0x00);
+            padBuffer (buffer);
             this.hidDevice.sendOutputReport ((byte) 0xA0, this.initBlock);
         }
     }
@@ -281,11 +305,7 @@ public class Kontrol2UsbDevice
             final ByteBuffer ledBuffer = this.ledBlock.createByteBuffer ();
             ledBuffer.clear ();
             ledBuffer.put (this.buttonStates);
-            // TODO Notwendig?
-            ledBuffer.put ((byte) 0);
-            ledBuffer.put ((byte) 0);
-            ledBuffer.put ((byte) 0);
-            ledBuffer.put ((byte) 0);
+            padBuffer (ledBuffer);
             this.hidDevice.sendOutputReport ((byte) 0x80, this.ledBlock);
         }
     }
@@ -305,10 +325,8 @@ public class Kontrol2UsbDevice
     {
         if (key < 0 || key >= 88)
             return;
-        final int pos = 3 * key;
-        this.keyColors[pos] = (byte) red;
-        this.keyColors[pos + 1] = (byte) green;
-        this.keyColors[pos + 2] = (byte) blue;
+        // TODO Somehow convert the color
+        this.keyColors[key] = 10; // (byte) red + (byte) green + (byte) blue;
     }
 
 
@@ -424,5 +442,12 @@ public class Kontrol2UsbDevice
         for (final Integer buttonLED: LED_MAPPING.values ())
             this.buttonStates[buttonLED.intValue ()] = 0;
         this.updateButtonLEDs ();
+    }
+
+
+    private static void padBuffer (final ByteBuffer buffer)
+    {
+        while (buffer.position () < buffer.capacity ())
+            buffer.put ((byte) 0x00);
     }
 }

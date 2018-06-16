@@ -52,9 +52,12 @@ public class ControlView extends AbstractView<Kontrol2ControlSurface, Kontrol2Co
 
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_SHIFT, this.surface.isShiftPressed () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_SCALE, configuration.isScaleIsActive () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol2ControlSurface.BUTTON_ARP, this.surface.isShiftPressed () && transport.isMetronomeTicksOn () || !this.surface.isShiftPressed () && transport.isMetronomeOn () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol2ControlSurface.BUTTON_ARP, Kontrol2ControlSurface.BUTTON_STATE_OFF);
 
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_LOOP, transport.isLoop () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol2ControlSurface.BUTTON_METRO, this.surface.isShiftPressed () && transport.isMetronomeTicksOn () || !this.surface.isShiftPressed () && transport.isMetronomeOn () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol2ControlSurface.BUTTON_TEMPO, this.surface.isPressed (Kontrol2ControlSurface.BUTTON_TEMPO) ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
+
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_PLAY, transport.isPlaying () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_REC, transport.isRecording () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_STOP, this.surface.isPressed (Kontrol2ControlSurface.BUTTON_STOP) ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
