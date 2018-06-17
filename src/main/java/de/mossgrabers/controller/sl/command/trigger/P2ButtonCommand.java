@@ -9,6 +9,7 @@ import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -56,6 +57,8 @@ public class P2ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SL
                 return;
             tb.scrollTracksPageUp ();
         }
-        this.selectTrack (0);
+        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        if (activeMode != null)
+            activeMode.selectTrack (0);
     }
 }

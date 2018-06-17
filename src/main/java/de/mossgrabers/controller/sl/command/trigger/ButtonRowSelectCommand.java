@@ -10,6 +10,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.View;
@@ -119,11 +120,15 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
         if (isEffect != isEffectTrackBankActive)
             this.model.toggleCurrentTrackBank ();
+        final ModeManager modeManager = this.surface.getModeManager ();
         if (activateMode)
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
+            modeManager.setActiveMode (Modes.MODE_TRACK);
         this.surface.getDisplay ().notify (isEffect ? "Effects" : "Tracks");
-        if (this.model.getSelectedTrack () == null)
-            this.selectTrack (0);
+        if (this.model.getSelectedTrack () != null)
+            return;
+        final Mode activeMode = modeManager.getActiveMode ();
+        if (activeMode != null)
+            activeMode.selectTrack (0);
     }
 
 

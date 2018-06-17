@@ -19,6 +19,7 @@ import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -222,7 +223,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         }
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
-        this.scrollTracksLeft ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        if (activeMode != null)
+            activeMode.selectNextTrack ();
     }
 
 
@@ -269,7 +272,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         }
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
-        this.scrollTracksRight ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        if (activeMode != null)
+            activeMode.selectPreviousTrack ();
     }
 
 
@@ -320,9 +325,6 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
         super.scrollUp ();
-
-        // TODO could be used for layer navigation
-        // VIEW_DEVICE
     }
 
 
@@ -373,9 +375,6 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
         super.scrollDown ();
-
-        // TODO could be used for layer navigation
-        // VIEW_DEVICE
     }
 
 

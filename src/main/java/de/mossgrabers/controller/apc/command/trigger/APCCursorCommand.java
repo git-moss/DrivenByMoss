@@ -8,6 +8,7 @@ import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Mode;
 
 
 /**
@@ -42,7 +43,9 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     @Override
     protected void scrollLeft ()
     {
-        this.scrollTracksLeft ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        if (activeMode != null)
+            activeMode.selectPreviousTrack ();
     }
 
 
@@ -50,6 +53,9 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     @Override
     protected void scrollRight ()
     {
-        this.scrollTracksRight ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        if (activeMode != null)
+            activeMode.selectNextTrack ();
+
     }
 }

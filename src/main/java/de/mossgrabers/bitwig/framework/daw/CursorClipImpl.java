@@ -54,8 +54,7 @@ public class CursorClipImpl implements ICursorClip
             Arrays.fill (this.data[step], 0);
         }
 
-        // TODO We need the old method back to monitor both launcher and arranger - otherwise use
-        // both and check which one exists!
+        // TODO Bugfix required: We need the old method back to monitor both launcher and arranger
         this.clip = host.createLauncherCursorClip (this.numSteps, this.numRows);
 
         this.clip.playingStep ().markInterested ();

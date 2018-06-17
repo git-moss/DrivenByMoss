@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.mode;
 
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -78,4 +79,44 @@ public interface Mode
      * @param event The button event
      */
     void onRowButton (int row, int index, ButtonEvent event);
+
+
+    /**
+     * Select a track.
+     *
+     * @param index The track index
+     */
+    void selectTrack (int index);
+
+
+    /**
+     * Selects the previous track in the bank. If necessary the page is scrolled too.
+     */
+    void selectPreviousTrack ();
+
+
+    /**
+     * Selects the next track in the bank. If necessary the page is scrolled too.
+     */
+    void selectNextTrack ();
+
+
+    /**
+     * Selects the previous track bank page and selects the track with the same index in the page.
+     * If the selected track is null the last track in the page is selected.
+     *
+     * @param selectedTrack The selected track, may be null
+     * @param index The index
+     */
+    void selectPreviousTrackBankPage (ITrack selectedTrack, int index);
+
+
+    /**
+     * Selects the next track bank page and selects the track with the same index in the page. If
+     * the selected track is null the first track in the page is selected.
+     *
+     * @param selectedTrack The selected track, may be null
+     * @param index The index
+     */
+    void selectNextTrackBankPage (ITrack selectedTrack, int index);
 }

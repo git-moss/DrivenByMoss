@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.configuration;
 
+import de.mossgrabers.framework.configuration.IBooleanSetting;
 import de.mossgrabers.framework.configuration.IColorSetting;
 import de.mossgrabers.framework.configuration.IDoubleSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
@@ -42,6 +43,15 @@ public class SettingsUI implements ISettingsUI
     public IEnumSetting getEnumSetting (final String label, final String category, final String [] options, final String initialValue)
     {
         return new EnumSettingImpl (this.preferences.getEnumSetting (label, category, options, initialValue));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IBooleanSetting getBooleanSetting (final String label, final String category, final boolean initialValue)
+    {
+        // TODO API extension required
+        return null;
     }
 
 
