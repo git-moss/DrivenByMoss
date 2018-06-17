@@ -6,13 +6,9 @@ package de.mossgrabers.controller.kontrol.usb.mki.command.trigger;
 
 import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.device.BrowseMode;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.IKontrol1Mode;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -39,27 +35,7 @@ public class MainEncoderButtonCommand extends AbstractTriggerCommand<Kontrol1Con
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_PARAMS))
-        {
-            this.model.getCursorDevice ().toggleWindowOpen ();
-            return;
-        }
-
-        if (modeManager.isActiveMode (Modes.MODE_BROWSER))
-        {
-            final BrowseMode mode = (BrowseMode) modeManager.getMode (Modes.MODE_BROWSER);
-            mode.onValueKnobTouch (7, true);
-            return;
-        }
-
-        this.model.toggleCurrentTrackBank ();
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedTrack ();
-        if (track == null)
-            tb.getTrack (0).select ();
+        if (event == ButtonEvent.DOWN)
+            ((IKontrol1Mode) this.surface.getModeManager ().getActiveMode ()).onMainKnobPressed ();
     }
 }

@@ -145,7 +145,7 @@ public class HostImpl implements IHost
     @Override
     public IOpenSoundControlServer connectToOSCServer (final String serverAddress, final int serverPort)
     {
-        // TODO Fix required: Can only be called in init but needs to listen to host and port
+        // TODO Bugfix required: Can only be called in init but needs to listen to host and port
         // changes
         final OscModule oscModule = this.host.getOscModule ();
         return new OpenSoundControlServerImpl (oscModule.connectToUdpServer (serverAddress, serverPort, oscModule.createAddressSpace ()));

@@ -4,15 +4,13 @@
 
 package de.mossgrabers.controller.kontrol.usb.mki.mode.track;
 
-import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Display;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.AbstractKontrol1Mode;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -21,7 +19,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TrackMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Configuration>
+public class TrackMode extends AbstractKontrol1Mode
 {
     /**
      * Constructor.
@@ -32,7 +30,6 @@ public class TrackMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
     public TrackMode (final Kontrol1ControlSurface surface, final IModel model)
     {
         super (surface, model);
-        this.isTemporary = false;
     }
 
 
@@ -95,13 +92,5 @@ public class TrackMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Conf
                 selectedTrack.getSend (index - 2).changeValue (value);
                 break;
         }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onRowButton (final int row, final int index, final ButtonEvent event)
-    {
-        // Intentionally empty
     }
 }

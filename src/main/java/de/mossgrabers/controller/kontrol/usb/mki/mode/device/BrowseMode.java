@@ -4,15 +4,16 @@
 
 package de.mossgrabers.controller.kontrol.usb.mki.mode.device;
 
-import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.AbstractKontrol1Mode;
+import de.mossgrabers.controller.kontrol.usb.mki.view.Views;
+import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
-import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -21,7 +22,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Configuration>
+public class BrowseMode extends AbstractKontrol1Mode
 {
     /** No selection. */
     public static final int  SELECTION_OFF    = 0;
@@ -42,7 +43,6 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
     public BrowseMode (final Kontrol1ControlSurface surface, final IModel model)
     {
         super (surface, model);
-        this.isTemporary = false;
         this.selectionMode = SELECTION_OFF;
         this.filterColumn = 0;
     }
@@ -132,6 +132,10 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
                     final String text = (items[i].isSelected () ? ">" : " ") + name;
                     d.setCell (i % 2, 1 + i / 2, text);
                 }
+                break;
+
+            default:
+                // No more modes
                 break;
         }
         d.allDone ();
@@ -250,7 +254,86 @@ public class BrowseMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
 
     /** {@inheritDoc} */
     @Override
-    public void onRowButton (final int row, final int index, final ButtonEvent event)
+    public void updateFirstRow ()
+    {
+        final IBrowser browser = this.model.getBrowser ();
+        final boolean canScrollLeft = browser.hasPreviousContentType ();
+        final boolean canScrollRight = browser.hasNextContentType ();
+
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, Kontrol1ControlSurface.BUTTON_STATE_OFF);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, Kontrol1ControlSurface.BUTTON_STATE_OFF);
+
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BACK, Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_ENTER, Kontrol1ControlSurface.BUTTON_STATE_ON);
+
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BROWSE, Kontrol1ControlSurface.BUTTON_STATE_HI);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onMainKnob (final int value)
+    {
+        if (value > 64)
+            this.selectPrevious (1);
+        else
+            this.selectNext (1);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onMainKnobPressed ()
+    {
+        this.onValueKnobTouch (7, true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onBack ()
+    {
+        ((BrowserCommand<?, ?>) this.surface.getViewManager ().getView (Views.VIEW_CONTROL).getTriggerCommand (Commands.COMMAND_BROWSE)).startBrowser (true, true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onEnter ()
+    {
+        ((BrowserCommand<?, ?>) this.surface.getViewManager ().getView (Views.VIEW_CONTROL).getTriggerCommand (Commands.COMMAND_BROWSE)).startBrowser (false, false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollLeft ()
+    {
+        this.model.getBrowser ().previousContentType ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollRight ()
+    {
+        this.model.getBrowser ().nextContentType ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollUp ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollDown ()
     {
         // Intentionally empty
     }

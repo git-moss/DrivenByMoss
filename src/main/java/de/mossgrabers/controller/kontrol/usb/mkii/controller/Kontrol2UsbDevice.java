@@ -104,7 +104,6 @@ public class Kontrol2UsbDevice
     private static final int                   SIZE_DISPLAY     = 248;
     private static final int                   SIZE_BUTTON_LEDS = 42;
     private static final int                   SIZE_KEY_LEDS    = 88;
-    private static final int                   TIMEOUT          = 0;
 
     private static final Map<Integer, Integer> LED_MAPPING      = new HashMap<> (SIZE_BUTTON_LEDS);
 

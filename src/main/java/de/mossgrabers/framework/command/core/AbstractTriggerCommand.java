@@ -8,7 +8,6 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -62,13 +61,5 @@ public abstract class AbstractTriggerCommand<S extends IControlSurface<C>, C ext
     public void executeShifted (final ButtonEvent event)
     {
         // Intentionally empty
-    }
-
-
-    protected void selectTrack (final int index)
-    {
-        final View activeView = this.surface.getViewManager ().getActiveView ();
-        if (activeView != null)
-            activeView.selectTrack (index);
     }
 }

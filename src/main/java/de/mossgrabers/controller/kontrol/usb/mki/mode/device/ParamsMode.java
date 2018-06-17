@@ -4,14 +4,12 @@
 
 package de.mossgrabers.controller.kontrol.usb.mki.mode.device;
 
-import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Display;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.AbstractKontrol1Mode;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,9 +21,9 @@ import java.util.Set;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ParamsMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Configuration>
+public class ParamsMode extends AbstractKontrol1Mode
 {
-    private final static Set<Character> ILLEGAL_LOWER_CHARS = new HashSet<> ();
+    private static final Set<Character> ILLEGAL_LOWER_CHARS = new HashSet<> ();
     static
     {
         Collections.addAll (ILLEGAL_LOWER_CHARS, Character.valueOf ('a'), Character.valueOf ('e'), Character.valueOf ('g'), Character.valueOf ('j'), Character.valueOf ('k'), Character.valueOf ('p'), Character.valueOf ('q'), Character.valueOf ('r'), Character.valueOf ('s'), Character.valueOf ('x'), Character.valueOf ('y'), Character.valueOf ('z'));
@@ -41,7 +39,6 @@ public class ParamsMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
     public ParamsMode (final Kontrol1ControlSurface surface, final IModel model)
     {
         super (surface, model);
-        this.isTemporary = false;
     }
 
 
@@ -68,9 +65,7 @@ public class ParamsMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
             }
         }
         else
-        {
             d.setCell (0, 3, "  PLEASE").setCell (0, 4, "SELECT A").setCell (0, 5, "DEVICE").allDone ();
-        }
         d.allDone ();
     }
 
@@ -83,87 +78,94 @@ public class ParamsMode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Con
     }
 
 
-    /**
-     * Move to the previous parameter page.
-     */
-    public void previousPage ()
+    /** {@inheritDoc} */
+    @Override
+    public void updateFirstRow ()
     {
-        this.model.getCursorDevice ().previousParameterPage ();
-    }
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final boolean canScrollLeft = cursorDevice.hasPreviousParameterPage ();
+        final boolean canScrollRight = cursorDevice.hasNextParameterPage ();
+        final boolean canScrollUp = cursorDevice.canSelectNextFX ();
+        final boolean canScrollDown = cursorDevice.canSelectPreviousFX ();
 
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, canScrollUp ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, canScrollDown ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
 
-    /**
-     * Move to the next parameter page.
-     */
-    public void nextPage ()
-    {
-        this.model.getCursorDevice ().nextParameterPage ();
-    }
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BACK, cursorDevice.isEnabled () ? Kontrol1ControlSurface.BUTTON_STATE_ON : Kontrol1ControlSurface.BUTTON_STATE_OFF);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_ENTER, cursorDevice.isParameterPageSectionVisible () ? Kontrol1ControlSurface.BUTTON_STATE_ON : Kontrol1ControlSurface.BUTTON_STATE_OFF);
 
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BROWSE, Kontrol1ControlSurface.BUTTON_STATE_ON);
 
-    /**
-     * Is there a previous page?
-     *
-     * @return True if there is
-     */
-    public boolean canSelectPreviousPage ()
-    {
-        return this.model.getCursorDevice ().hasPreviousParameterPage ();
-    }
-
-
-    /**
-     * Is there a next page?
-     *
-     * @return True if there is
-     */
-    public boolean canSelectNextPage ()
-    {
-        return this.model.getCursorDevice ().hasNextParameterPage ();
-    }
-
-
-    /**
-     * Select the previous device or parameter page depending on the mode.
-     */
-    public void selectPreviousPage ()
-    {
-        this.model.getCursorDevice ().previousParameterPage ();
-    }
-
-
-    /**
-     * Select the next device or parameter page depending on the mode.
-     */
-    public void selectNextPage ()
-    {
-        this.model.getCursorDevice ().nextParameterPage ();
-    }
-
-
-    /**
-     * Select the previous device bank or parameter page bank depending on the mode.
-     */
-    public void selectPreviousPageBank ()
-    {
-        this.model.getCursorDevice ().previousParameterPageBank ();
-    }
-
-
-    /**
-     * Select the next device bank or parameter page bank depending on the mode.
-     */
-    public void selectNextPageBank ()
-    {
-        this.model.getCursorDevice ().nextParameterPageBank ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onRowButton (final int row, final int index, final ButtonEvent event)
+    public void scrollLeft ()
     {
-        // Intentionally empty
+        if (this.surface.isShiftPressed ())
+            this.model.getCursorDevice ().previousParameterPageBank ();
+        else
+            this.model.getCursorDevice ().previousParameterPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollRight ()
+    {
+        if (this.surface.isShiftPressed ())
+            this.model.getCursorDevice ().nextParameterPageBank ();
+        else
+            this.model.getCursorDevice ().nextParameterPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollUp ()
+    {
+        if (this.surface.isShiftPressed ())
+            this.model.getCursorDevice ().selectNextBank ();
+        else
+            this.model.getCursorDevice ().selectNext ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollDown ()
+    {
+        if (this.surface.isShiftPressed ())
+            this.model.getCursorDevice ().selectPreviousBank ();
+        else
+            this.model.getCursorDevice ().selectPrevious ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onMainKnobPressed ()
+    {
+        this.model.getCursorDevice ().toggleWindowOpen ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onBack ()
+    {
+        this.model.getCursorDevice ().toggleEnabledState ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onEnter ()
+    {
+        this.model.getCursorDevice ().toggleParameterPageSectionVisible ();
     }
 
 

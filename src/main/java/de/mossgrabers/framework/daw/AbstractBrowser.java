@@ -49,7 +49,7 @@ public abstract class AbstractBrowser implements IBrowser
     @Override
     public boolean hasNextContentType ()
     {
-        return this.getSelectedContentTypeIndex () > this.getContentTypeNames ().length - 1;
+        return this.getSelectedContentTypeIndex () < this.getContentTypeNames ().length - 1;
     }
 
 

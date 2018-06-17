@@ -10,7 +10,6 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -24,8 +23,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public abstract class CursorCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private static final int BUTTON_REPEAT_INTERVAL = 75;
-
     /** The direction of the cursor. */
     public enum Direction
     {
@@ -129,9 +126,12 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
 
 
     /**
-     * Update the states of the arrow buttons.
+     * Update the states of the arrow buttons. Override to update arrow states.
      */
-    protected abstract void updateArrowStates ();
+    protected void updateArrowStates ()
+    {
+        // Intentionally empty
+    }
 
 
     /**
@@ -169,53 +169,5 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
             tb.scrollScenesPageDown ();
         else
             tb.scrollScenesDown ();
-    }
-
-
-    protected void scrollTracksLeft ()
-    {
-        final ITrack sel = this.model.getSelectedTrack ();
-        final int index = sel == null ? 0 : sel.getIndex () - 1;
-        if (index == -1 || this.surface.isShiftPressed ())
-        {
-            this.scrollTrackBankLeft (sel, index);
-            return;
-        }
-        this.selectTrack (index);
-    }
-
-
-    protected void scrollTrackBankLeft (final ITrack sel, final int index)
-    {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollTracksUp ())
-            return;
-        tb.scrollTracksPageUp ();
-        final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
-        this.surface.scheduleTask ( () -> this.selectTrack (newSel), BUTTON_REPEAT_INTERVAL);
-    }
-
-
-    protected void scrollTracksRight ()
-    {
-        final ITrack sel = this.model.getSelectedTrack ();
-        final int index = sel == null ? 0 : sel.getIndex () + 1;
-        if (index == 8 || this.surface.isShiftPressed ())
-        {
-            this.scrollTrackBankRight (sel, index);
-            return;
-        }
-        this.selectTrack (index);
-    }
-
-
-    protected void scrollTrackBankRight (final ITrack sel, final int index)
-    {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollTracksDown ())
-            return;
-        tb.scrollTracksPageDown ();
-        final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
-        this.surface.scheduleTask ( () -> this.selectTrack (newSel), BUTTON_REPEAT_INTERVAL);
     }
 }

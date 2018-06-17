@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 
 
@@ -108,7 +109,9 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
-        this.scrollTracksLeft ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        if (activeMode != null)
+            activeMode.selectPreviousTrack ();
     }
 
 
@@ -143,6 +146,8 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
-        this.scrollTracksRight ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        if (activeMode != null)
+            activeMode.selectNextTrack ();
     }
 }

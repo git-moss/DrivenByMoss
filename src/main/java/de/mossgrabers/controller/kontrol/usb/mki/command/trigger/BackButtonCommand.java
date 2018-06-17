@@ -6,14 +6,9 @@ package de.mossgrabers.controller.kontrol.usb.mki.command.trigger;
 
 import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
-import de.mossgrabers.controller.kontrol.usb.mki.view.Views;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.IKontrol1Mode;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -37,28 +32,10 @@ public class BackButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSur
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings("rawtypes")
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_PARAMS))
-        {
-            // No function
-            return;
-        }
-
-        if (modeManager.isActiveMode (Modes.MODE_BROWSER))
-        {
-            ((BrowserCommand) this.surface.getViewManager ().getView (Views.VIEW_CONTROL).getTriggerCommand (Commands.COMMAND_BROWSE)).startBrowser (true, true);
-            return;
-        }
-
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
-        if (selectedTrack != null)
-            selectedTrack.toggleMute ();
+        if (event == ButtonEvent.DOWN)
+            ((IKontrol1Mode) this.surface.getModeManager ().getActiveMode ()).onBack ();
     }
 }

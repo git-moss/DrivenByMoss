@@ -182,10 +182,6 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
         this.colorManager.registerColor (ColorManager.BUTTON_STATE_HI, BUTTON_STATE_HI);
 
         this.shiftButtonId = BUTTON_SHIFT;
-        this.leftButtonId = BUTTON_NAVIGATE_LEFT;
-        this.rightButtonId = BUTTON_NAVIGATE_RIGHT;
-        this.upButtonId = BUTTON_NAVIGATE_UP;
-        this.downButtonId = BUTTON_NAVIGATE_DOWN;
     }
 
 

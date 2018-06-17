@@ -210,6 +210,28 @@ public class Scales
         final int index = this.valueChanger.changeValue (control, this.selectedScale.ordinal (), 1, values.length);
         this.selectedScale = values[index];
     }
+    
+    
+    /**
+     * Returns true if there is a previous scale to select.
+     *
+     * @return True if there is a previous scale to select
+     */
+    public boolean hasPrevScale ()
+    {
+        return this.selectedScale.ordinal () > 0;
+    }
+
+
+    /**
+     * Returns true if there is a next scale to select.
+     *
+     * @return True if there is a next scale to select
+     */
+    public boolean hasNextScale ()
+    {
+        return this.selectedScale.ordinal () < Scale.values ().length - 1;
+    }
 
 
     /**
@@ -232,6 +254,48 @@ public class Scales
     }
 
 
+    /**
+     * Returns true if there is a previous scale offset to select.
+     *
+     * @return True if there is a previous scale offset to select
+     */
+    public boolean hasPrevScaleOffset ()
+    {
+        return this.scaleOffset > 0;
+    }
+
+
+    /**
+     * Returns true if there is a next scale offset to select.
+     *
+     * @return True if there is a next scale offset to select
+     */
+    public boolean hasNextScaleOffset ()
+    {
+        return this.scaleOffset < Scales.OFFSETS.length - 1;
+    }
+
+    
+    
+    
+    /**
+     * Select the previous scale offset.
+     */
+    public void prevScaleOffset ()
+    {
+        this.setScaleOffset (this.scaleOffset - 1);
+    }
+
+
+    /**
+     * Select the next scale offset.
+     */
+    public void nextScaleOffset ()
+    {
+        this.setScaleOffset (this.scaleOffset + 1);
+    }
+
+    
     /**
      * Get the base note (offset) to use for the current scale.
      *

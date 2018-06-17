@@ -5,18 +5,13 @@
 package de.mossgrabers.controller.kontrol.usb.mki.view;
 
 import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
-import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.Kontrol1CursorCommand;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
-import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.view.AbstractView;
-import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -26,6 +21,14 @@ import de.mossgrabers.framework.view.View;
  */
 public class ControlView extends AbstractView<Kontrol1ControlSurface, Kontrol1Configuration>
 {
+    private static final double [] COLOR_OFF = new double []
+    {
+        0,
+        0,
+        0
+    };
+
+
     /**
      * Constructor.
      *
@@ -43,15 +46,10 @@ public class ControlView extends AbstractView<Kontrol1ControlSurface, Kontrol1Co
     @Override
     public void updateButtons ()
     {
-        final ModeManager modeManager = this.surface.getModeManager ();
-        final boolean isBrowseMode = modeManager.isActiveMode (Modes.MODE_BROWSER);
         final ITransport transport = this.model.getTransport ();
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack t = currentTrackBank.getSelectedTrack ();
-        final Kontrol1Configuration configuration = this.surface.getConfiguration ();
 
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_SHIFT, this.surface.isShiftPressed () ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_SCALE, configuration.isScaleIsActive () ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_SCALE, this.surface.getConfiguration ().isScaleIsActive () ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_ARP, this.surface.isShiftPressed () && transport.isMetronomeTicksOn () || !this.surface.isShiftPressed () && transport.isMetronomeOn () ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
 
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_LOOP, transport.isLoop () ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
@@ -61,42 +59,17 @@ public class ControlView extends AbstractView<Kontrol1ControlSurface, Kontrol1Co
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_REC, transport.isRecording () ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_STOP, this.surface.isPressed (Kontrol1ControlSurface.BUTTON_STOP) ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_PAGE_LEFT, Kontrol1ControlSurface.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_PAGE_RIGHT, Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_PAGE_LEFT, this.surface.isPressed (Kontrol1ControlSurface.BUTTON_PAGE_LEFT) ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_PAGE_RIGHT, this.surface.isPressed (Kontrol1ControlSurface.BUTTON_PAGE_RIGHT) ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, isBrowseMode ? Kontrol1ControlSurface.BUTTON_STATE_OFF : Kontrol1ControlSurface.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, isBrowseMode ? Kontrol1ControlSurface.BUTTON_STATE_OFF : Kontrol1ControlSurface.BUTTON_STATE_ON);
-
-        final View activeView = this.surface.getViewManager ().getActiveView ();
-        if (activeView != null)
-            ((Kontrol1CursorCommand) activeView.getTriggerCommand (Commands.COMMAND_ARROW_DOWN)).updateArrows ();
-
-        if (modeManager.isActiveMode (Modes.MODE_TRACK) || modeManager.isActiveMode (Modes.MODE_VOLUME))
-        {
-            this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BACK, t != null && t.isMute () ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
-            this.surface.updateButton (Kontrol1ControlSurface.BUTTON_ENTER, t != null && t.isSolo () ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
-        }
-        else if (isBrowseMode)
-        {
-            this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BACK, Kontrol1ControlSurface.BUTTON_STATE_ON);
-            this.surface.updateButton (Kontrol1ControlSurface.BUTTON_ENTER, Kontrol1ControlSurface.BUTTON_STATE_ON);
-        }
-        else
-        {
-            this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BACK, Kontrol1ControlSurface.BUTTON_STATE_OFF);
-            this.surface.updateButton (Kontrol1ControlSurface.BUTTON_ENTER, Kontrol1ControlSurface.BUTTON_STATE_OFF);
-        }
-
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BROWSE, isBrowseMode ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
+        // Update all mode relevant buttons
+        this.surface.getModeManager ().getActiveMode ().updateFirstRow ();
 
         this.surface.updateButtonLEDs ();
 
-        this.updateKeyLEDs (t == null ? new double []
-        {
-            0,
-            0,
-            0
-        } : t.getColor ());
+        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack t = currentTrackBank.getSelectedTrack ();
+        this.updateKeyLEDs (t == null ? COLOR_OFF : t.getColor ());
     }
 
 

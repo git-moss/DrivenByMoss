@@ -72,7 +72,7 @@ public class Kontrol2Colors
     public static void addColors (final ColorManager colorManager)
     {
         colorManager.registerColor (AbstractMode.BUTTON_COLOR_OFF, KONTROL2_COLOR_BLACK);
-        // TODO add when display is decivered
+        // TODO add when display is deciphered
         // colorManager.registerColor (AbstractMode.BUTTON_COLOR_ON, isPush2 ? PUSH2_COLOR2_GREY_LO
         // : PUSH1_COLOR_GREEN_LO);
         // colorManager.registerColor (AbstractMode.BUTTON_COLOR_HI, isPush2 ? PUSH2_COLOR2_WHITE :

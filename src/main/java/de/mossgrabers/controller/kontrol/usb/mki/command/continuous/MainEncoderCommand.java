@@ -6,14 +6,10 @@ package de.mossgrabers.controller.kontrol.usb.mki.command.continuous;
 
 import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.device.BrowseMode;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.controller.kontrol.usb.mki.mode.IKontrol1Mode;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.View;
+import de.mossgrabers.framework.mode.Mode;
 
 
 /**
@@ -45,23 +41,7 @@ public class MainEncoderCommand extends MasterVolumeCommand<Kontrol1ControlSurfa
             return;
         }
 
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_BROWSER))
-        {
-            final BrowseMode mode = (BrowseMode) modeManager.getMode (Modes.MODE_BROWSER);
-            if (value > 64)
-                mode.selectPrevious (1);
-            else
-                mode.selectNext (1);
-            return;
-        }
-
-        final View activeView = this.surface.getViewManager ().getActiveView ();
-        if (activeView == null)
-            return;
-        if (this.model.getValueChanger ().calcKnobSpeed (value) > 0)
-            activeView.getTriggerCommand (Commands.COMMAND_ARROW_RIGHT).execute (ButtonEvent.DOWN);
-        else
-            activeView.getTriggerCommand (Commands.COMMAND_ARROW_LEFT).execute (ButtonEvent.DOWN);
+        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        ((IKontrol1Mode) activeMode).onMainKnob (value);
     }
 }

@@ -5,10 +5,8 @@
 package de.mossgrabers.controller.kontrol.usb.mkii.view;
 
 import de.mossgrabers.controller.kontrol.usb.mkii.Kontrol2Configuration;
-import de.mossgrabers.controller.kontrol.usb.mkii.command.trigger.Kontrol2CursorCommand;
 import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mkii.mode.Modes;
-import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
@@ -16,7 +14,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.view.AbstractView;
-import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -67,10 +64,6 @@ public class ControlView extends AbstractView<Kontrol2ControlSurface, Kontrol2Co
 
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_NAVIGATE_UP, isBrowseMode ? Kontrol2ControlSurface.BUTTON_STATE_OFF : Kontrol2ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_NAVIGATE_DOWN, isBrowseMode ? Kontrol2ControlSurface.BUTTON_STATE_OFF : Kontrol2ControlSurface.BUTTON_STATE_ON);
-
-        final View activeView = this.surface.getViewManager ().getActiveView ();
-        if (activeView != null)
-            ((Kontrol2CursorCommand) activeView.getTriggerCommand (Commands.COMMAND_ARROW_DOWN)).updateArrows ();
 
         if (modeManager.isActiveMode (Modes.MODE_TRACK) || modeManager.isActiveMode (Modes.MODE_VOLUME))
         {
