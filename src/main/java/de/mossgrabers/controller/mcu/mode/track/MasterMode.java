@@ -66,8 +66,15 @@ public class MasterMode extends BaseMode
     @Override
     public void onRowButton (final int row, final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.UP)
+        if (event == ButtonEvent.DOWN && row > 0)
+        {
+            this.surface.getModeManager ().restoreMode ();
             return;
+        }
+
+        if (event != ButtonEvent.UP || row > 0)
+            return;
+
         switch (index)
         {
             case 0:
@@ -90,6 +97,10 @@ public class MasterMode extends BaseMode
 
             case 7:
                 this.model.getProject ().next ();
+                break;
+
+            default:
+                // Unused
                 break;
         }
     }

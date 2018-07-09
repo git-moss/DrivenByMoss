@@ -40,6 +40,6 @@ public class MCUControllerDefinition extends DefaultControllerDefinition
      */
     public MCUControllerDefinition (final int numMCUExtenders)
     {
-        super ("", "Jürgen Moßgraber", "2.61", EXTENSION_ID[numMCUExtenders], HARDWARE_MODEL[numMCUExtenders], "Mackie", numMCUExtenders + 1, numMCUExtenders + 1);
+        super ("", "Jürgen Moßgraber", "2.62", EXTENSION_ID[numMCUExtenders], HARDWARE_MODEL[numMCUExtenders], "Mackie", numMCUExtenders + 1, numMCUExtenders + 1);
     }
 }
