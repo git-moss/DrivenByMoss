@@ -4,9 +4,8 @@
 
 package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -66,8 +65,7 @@ public class InfoMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         message.addOptionElement ("  Firmware: " + this.surface.getMajorVersion () + "." + this.surface.getMinorVersion () + " Build " + this.surface.getBuildNumber (), "Setup", false, "", "", false, true);
         message.addOptionElement ("", "Info", true, "", "", false, true);
         message.addEmptyElement ();
@@ -76,6 +74,6 @@ public class InfoMode extends BaseMode
         message.addOptionElement ("        Serial Number: " + this.surface.getSerialNumber (), "", false, "", "", false, false);
         message.addEmptyElement ();
         message.addEmptyElement ();
-        display.send (message);
+        message.send ();
     }
 }

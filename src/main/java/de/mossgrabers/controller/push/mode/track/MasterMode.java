@@ -4,10 +4,9 @@
 
 package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.IValueChanger;
@@ -125,9 +124,7 @@ public class MasterMode extends BaseMode
     {
         final IMasterTrack master = this.model.getMasterTrack ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
-
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         message.addChannelElement ("Volume", false, master.getName (), ChannelType.MASTER, master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", valueChanger.toDisplayValue (this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : 0), master.isMute (), master.isSolo (), master.isRecArm (), 0);
 
         for (int i = 1; i < 4; i++)
@@ -144,8 +141,7 @@ public class MasterMode extends BaseMode
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("Project:", "", false, this.model.getProject ().getName (), "Previous", false, false);
         message.addOptionElement ("", "", false, "", "Next", false, false);
-
-        display.send (message);
+        message.send ();
     }
 
 

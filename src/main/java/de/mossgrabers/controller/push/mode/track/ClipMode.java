@@ -4,10 +4,9 @@
 
 package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.controller.push.view.ColorView;
 import de.mossgrabers.controller.push.view.ColorView.SelectMode;
@@ -118,13 +117,12 @@ public class ClipMode extends AbstractTrackMode
     public void updateDisplay2 ()
     {
         final ICursorClip clip = this.model.getCursorClip ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
 
         if (this.displayMidiNotes)
         {
             message.setMidiClipElement (clip, this.model.getTransport ().getQuartersPerMeasure ());
-            display.send (message);
+            message.send ();
             return;
         }
 
@@ -146,7 +144,7 @@ public class ClipMode extends AbstractTrackMode
         message.addParameterElement ("", false, t5.getName (), t5.getType (), t5.getColor (), t5.isSelected (), "", -1, "", false, -1);
         message.addParameterElement ("", false, t6.getName (), t6.getType (), t6.getColor (), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
         message.addParameterElement ("Select color", false, t7.getName (), t7.getType (), t7.getColor (), t7.isSelected (), "Accent", -1, clip.getFormattedAccent (), this.isKnobTouched[7], -1);
-        display.send (message);
+        message.send ();
     }
 
 

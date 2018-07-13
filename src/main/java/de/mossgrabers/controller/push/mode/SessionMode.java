@@ -4,9 +4,8 @@
 
 package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
@@ -229,7 +228,7 @@ public class SessionMode extends BaseMode
         final int maxCols = 8;
         final int maxRows = this.rowDisplayMode == RowDisplayMode.ALL ? 8 : 4;
 
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int col = 0; col < maxCols; col++)
         {
             final String [] items = new String [maxRows];
@@ -254,7 +253,7 @@ public class SessionMode extends BaseMode
     private void updateDisplay2Clips ()
     {
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final DisplayMessage message = ((PushDisplay) this.surface.getDisplay ()).createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
 
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
 

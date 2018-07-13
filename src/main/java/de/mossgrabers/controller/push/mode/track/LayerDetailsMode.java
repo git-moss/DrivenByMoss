@@ -4,10 +4,9 @@
 
 package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.controller.push.view.ColorView;
 import de.mossgrabers.controller.push.view.Views;
@@ -123,9 +122,7 @@ public class LayerDetailsMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
-
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
         if (deviceChain == null)
             message.setMessage (3, "Please select a layer...");
@@ -140,6 +137,6 @@ public class LayerDetailsMode extends BaseMode
             message.addEmptyElement ();
             message.addOptionElement ("", "", false, "", "Select Color", false, false);
         }
-        display.send (message);
+        message.send ();
     }
 }

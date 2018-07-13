@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -96,14 +96,13 @@ public class ScaleLayoutMode extends BaseMode
         final int pos = sl / 2;
         final String [] names = ScaleLayout.getNames ();
 
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int i = 0; i < names.length; i += 2)
             message.addOptionElement ("", "", false, i == 0 ? "Scale layout" : "", names[i].replace (" ^", ""), pos == i / 2, false);
 
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("", "", false, "", sl % 2 == 0 ? "Horizontal" : "Vertical", false, false);
-        display.send (message);
+        message.send ();
     }
 }

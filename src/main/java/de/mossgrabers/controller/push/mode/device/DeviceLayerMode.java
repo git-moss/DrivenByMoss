@@ -5,10 +5,10 @@
 package de.mossgrabers.controller.push.mode.device;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.command.Commands;
@@ -372,13 +372,12 @@ public class DeviceLayerMode extends BaseMode
     public void updateDisplay2 ()
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         if (!cd.hasSelectedDevice ())
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
-            display.send (message);
+            message.send ();
             return;
         }
 
@@ -387,12 +386,12 @@ public class DeviceLayerMode extends BaseMode
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 3 ? "Please create a " + (cd.hasDrumPads () ? "Drum Pad..." : "Device Layer...") : "", i == 7 ? "Up" : "", true, "", "", false, true);
-            display.send (message);
+            message.send ();
             return;
         }
 
         this.updateDisplayElements (message, cd, cd.getSelectedLayerOrDrumPad ());
-        display.send (message);
+        message.send ();
     }
 
 
@@ -403,7 +402,7 @@ public class DeviceLayerMode extends BaseMode
      * @param cd The cursor device
      * @param l The channel data
      */
-    protected void updateDisplayElements (final DisplayMessage message, final ICursorDevice cd, final IChannel l)
+    protected void updateDisplayElements (final DisplayModel message, final ICursorDevice cd, final IChannel l)
     {
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
@@ -464,7 +463,7 @@ public class DeviceLayerMode extends BaseMode
 
 
     // Called from sub-classes
-    protected void updateChannelDisplay (final DisplayMessage message, final ICursorDevice cd, final int selectedMenu, final boolean isVolume, final boolean isPan)
+    protected void updateChannelDisplay (final DisplayModel message, final ICursorDevice cd, final int selectedMenu, final boolean isVolume, final boolean isPan)
     {
         this.updateMenuItems (selectedMenu);
 

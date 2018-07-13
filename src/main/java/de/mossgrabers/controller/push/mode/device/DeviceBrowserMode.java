@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.push.mode.device;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
@@ -246,8 +246,7 @@ public class DeviceBrowserMode extends BaseMode
             return;
         }
 
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         switch (this.selectionMode)
         {
             case DeviceBrowserMode.SELECTION_OFF:
@@ -274,7 +273,7 @@ public class DeviceBrowserMode extends BaseMode
                 {
                     for (int i = 0; i < 8; i++)
                         message.addOptionElement (i == 3 ? "No results available..." : "", "", false, "", "", false, false);
-                    display.send (message);
+                    message.send ();
                     return;
                 }
 
@@ -312,7 +311,7 @@ public class DeviceBrowserMode extends BaseMode
                 break;
         }
 
-        display.send (message);
+        message.send ();
     }
 
 

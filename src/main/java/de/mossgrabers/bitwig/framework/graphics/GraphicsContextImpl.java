@@ -122,6 +122,14 @@ public class GraphicsContextImpl implements IGraphicsContext
     @Override
     public void drawTextInBounds (final String text, final double x, final double y, final double width, final double height, final Align alignment, final ColorEx color, final double fontSize)
     {
+        this.drawTextInBounds (text, x, y, width, height, alignment, color, null, fontSize);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void drawTextInBounds (final String text, final double x, final double y, final double width, final double height, final Align alignment, final ColorEx color, final ColorEx backgroundColor, final double fontSize)
+    {
         if (text == null || text.length () == 0)
             return;
 
@@ -131,12 +139,21 @@ public class GraphicsContextImpl implements IGraphicsContext
         // We need to calculate the text height from a character which has no ascent, since showText
         // always draws the text on the baseline of the font!
         final double h = this.gc.getTextExtents ("T").getHeight ();
-        final double pos = alignment == Align.CENTER ? x + (width - this.gc.getTextExtents (text).getWidth ()) / 2.0 : x;
+        final double w = this.gc.getTextExtents (text).getWidth ();
+        final double posX = alignment == Align.CENTER ? x + (width - w) / 2.0 : x;
+        final double posY = y + (height + h) / 2;
 
         this.gc.rectangle (x, y, width, height);
         this.gc.clip ();
+
+        if (backgroundColor != null)
+        {
+            final double inset = 12.0;
+            this.fillRoundedRectangle (posX - inset, posY - h - inset, w + 2 * inset, h + 2 * inset, inset, backgroundColor);
+        }
+
         this.setColor (color);
-        this.gc.moveTo (pos, y + (height + h) / 2);
+        this.gc.moveTo (posX, posY);
         this.gc.showText (text);
         this.gc.resetClip ();
         this.gc.restore ();

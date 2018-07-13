@@ -2,13 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.controller.display.model.grid;
+package de.mossgrabers.controller.push.controller.display.grid;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.graphics.Align;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
-import de.mossgrabers.framework.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,20 +20,25 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ListGridElement extends AbstractGridElement
+public class BoxListGridElement extends AbstractGridElement
 {
-    private final List<Pair<String, Boolean>> items = new ArrayList<> (6);
+    private String []     items;
+    private List<ColorEx> colors = new ArrayList<> ();
 
 
     /**
      * Constructor.
      *
      * @param items The list items
+     * @param colors The colors for the background boxes
      */
-    public ListGridElement (final List<Pair<String, Boolean>> items)
+    public BoxListGridElement (final String [] items, final List<double []> colors)
     {
         super (null, false, null, null, null, false);
-        this.items.addAll (items);
+
+        this.items = items;
+        for (final double [] color: colors)
+            this.colors.add (new ColorEx (color[0], color[1], color[2]));
     }
 
 
@@ -42,21 +46,21 @@ public class ListGridElement extends AbstractGridElement
     @Override
     public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
-        final int size = this.items.size ();
+        final int size = this.items.length;
         final double itemHeight = DISPLAY_HEIGHT / (double) size;
 
         final ColorEx textColor = configuration.getColorText ();
-        final ColorEx borderColor = configuration.getColorBorder ();
+        final ColorEx borderColor = configuration.getColorBackgroundLighter ();
 
         for (int i = 0; i < size; i++)
         {
-            final Pair<String, Boolean> item = this.items.get (i);
-            final boolean isSelected = item.getValue ().booleanValue ();
             final double itemLeft = left + SEPARATOR_SIZE;
             final double itemTop = i * itemHeight;
             final double itemWidth = width - SEPARATOR_SIZE;
-            gc.fillRectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE, isSelected ? textColor : borderColor);
-            gc.drawTextInBounds (item.getKey (), itemLeft + INSET, itemTop, itemWidth - 2 * INSET, itemHeight, Align.LEFT, isSelected ? borderColor : textColor, itemHeight / 2);
+
+            gc.fillRectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE, this.colors.get (i));
+            gc.strokeRectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE, borderColor);
+            gc.drawTextInBounds (this.items[i], itemLeft + INSET, itemTop - 1, itemWidth - 2 * INSET, itemHeight, Align.LEFT, textColor, itemHeight / 2);
         }
     }
 }

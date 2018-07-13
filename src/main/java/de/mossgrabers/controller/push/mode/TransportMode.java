@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
@@ -144,8 +144,7 @@ public class TransportMode extends BaseMode
         final String preroll = transport.getPreroll ();
         final double tempo = transport.getTempo ();
 
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         message.addOptionElement ("Play Metronome during Pre-Roll?", transport.isPrerollMetronomeEnabled () ? "Yes" : "No", transport.isPrerollMetronomeEnabled (), "Pre-roll", "None", preroll == ITransport.PREROLL_NONE, false);
         message.addOptionElement ("", "", false, "", "1 Bar", preroll == ITransport.PREROLL_1_BAR, false);
         message.addOptionElement ("", "", false, "", "2 Bars", preroll == ITransport.PREROLL_2_BARS, false);
@@ -154,7 +153,7 @@ public class TransportMode extends BaseMode
         message.addOptionElement ("  Time Sig.", "", false, "       " + transport.getNumerator () + " / " + transport.getDenominator (), "", false, false);
         message.addOptionElement ("        Play Position", "", false, "        " + transport.getPositionText (), "", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
-        display.send (message);
+        message.send ();
     }
 
 

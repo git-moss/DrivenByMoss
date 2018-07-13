@@ -4,9 +4,8 @@
 
 package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
@@ -109,8 +108,7 @@ public class SendMode extends AbstractTrackMode
         this.updateTrackMenu (5 + sendIndex % 4);
 
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
         final int sendOffset = this.surface.getConfiguration ().isSendsAreToggled () ? 4 : 0;
@@ -136,8 +134,7 @@ public class SendMode extends AbstractTrackMode
             final Pair<String, Boolean> pair = this.menu.get (i);
             message.addSendsElement (pair.getKey (), pair.getValue ().booleanValue (), t.doesExist () ? t.getName () : "", t.getType (), t.getColor (), t.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
         }
-
-        display.send (message);
+        message.send ();
     }
 
 

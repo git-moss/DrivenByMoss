@@ -5,9 +5,9 @@
 package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -160,12 +160,11 @@ public class RibbonMode extends BaseMode
         final String ribbonModeCC = Integer.toString (config.getRibbonModeCCVal ());
         final int ribbonMode = config.getRibbonMode ();
 
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int i = 0; i < 7; i++)
             message.addOptionElement (i == 0 ? "CC Quick Select" : "", RibbonMode.CC_QUICK_SELECT[i], false, i == 0 ? "Function" : "", RibbonMode.FUNCTION[i], i < RibbonMode.FUNCTION_IDS.length && ribbonMode == RibbonMode.FUNCTION_IDS[i], false);
         message.addParameterElement ("Midi CC", -1, ribbonModeCC, this.isKnobTouched[5], -1);
-        display.send (message);
+        message.send ();
         return;
     }
 }

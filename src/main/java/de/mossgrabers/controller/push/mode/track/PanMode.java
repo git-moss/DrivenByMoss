@@ -4,8 +4,8 @@
 
 package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IChannelBank;
@@ -91,6 +91,6 @@ public class PanMode extends AbstractTrackMode
     @Override
     public void updateDisplay2 ()
     {
-        this.updateChannelDisplay (DisplayMessage.GRID_ELEMENT_CHANNEL_PAN, false, true);
+        this.updateChannelDisplay (DisplayModel.GRID_ELEMENT_CHANNEL_PAN, false, true);
     }
 }

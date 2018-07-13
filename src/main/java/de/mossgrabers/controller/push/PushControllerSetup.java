@@ -354,7 +354,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 this.host.error ("Mode " + debugMode + " not registered.");
         });
         this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, () -> {
-            ((PushDisplay) this.getSurface ().getDisplay ()).showDebugWindow ();
+            this.getSurface ().getDisplay ().showDebugWindow ();
         });
 
         this.createScaleObservers (this.configuration);

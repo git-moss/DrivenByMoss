@@ -4,10 +4,10 @@
 
 package de.mossgrabers.controller.push.mode.device;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.command.Commands;
@@ -360,15 +360,13 @@ public class DeviceParamsMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
-
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.hasSelectedDevice ())
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
-            display.send (message);
+            message.send ();
             return;
         }
 
@@ -443,7 +441,7 @@ public class DeviceParamsMode extends BaseMode
             message.addParameterElement (i != 5 || hasPinning ? MENU[i] : "", isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
 
-        display.send (message);
+        message.send ();
     }
 
 

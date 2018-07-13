@@ -2,25 +2,31 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.controller;
+package de.mossgrabers.controller.push.controller.display;
 
-import de.mossgrabers.controller.push.controller.display.model.DisplayModel;
-import de.mossgrabers.controller.push.controller.display.model.grid.BoxListGridElement;
-import de.mossgrabers.controller.push.controller.display.model.grid.ChannelGridElement;
-import de.mossgrabers.controller.push.controller.display.model.grid.ChannelSelectionGridElement;
-import de.mossgrabers.controller.push.controller.display.model.grid.GridElement;
-import de.mossgrabers.controller.push.controller.display.model.grid.ListGridElement;
-import de.mossgrabers.controller.push.controller.display.model.grid.MidiClipElement;
-import de.mossgrabers.controller.push.controller.display.model.grid.OptionsGridElement;
-import de.mossgrabers.controller.push.controller.display.model.grid.ParamGridElement;
-import de.mossgrabers.controller.push.controller.display.model.grid.SendsGridElement;
+import de.mossgrabers.controller.push.controller.display.grid.BoxListGridElement;
+import de.mossgrabers.controller.push.controller.display.grid.ChannelGridElement;
+import de.mossgrabers.controller.push.controller.display.grid.ChannelSelectionGridElement;
+import de.mossgrabers.controller.push.controller.display.grid.GridChangeListener;
+import de.mossgrabers.controller.push.controller.display.grid.GridElement;
+import de.mossgrabers.controller.push.controller.display.grid.ListGridElement;
+import de.mossgrabers.controller.push.controller.display.grid.MidiClipElement;
+import de.mossgrabers.controller.push.controller.display.grid.OptionsGridElement;
+import de.mossgrabers.controller.push.controller.display.grid.ParamGridElement;
+import de.mossgrabers.controller.push.controller.display.grid.SendsGridElement;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.utils.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -28,39 +34,71 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DisplayMessage
+public class DisplayModel
 {
     /** Display only a channel name for selection. */
-    public static final int         GRID_ELEMENT_CHANNEL_SELECTION  = 0;
+    public static final int                GRID_ELEMENT_CHANNEL_SELECTION  = 0;
     /** Display a channel, edit volume. */
-    public static final int         GRID_ELEMENT_CHANNEL_VOLUME     = 1;
+    public static final int                GRID_ELEMENT_CHANNEL_VOLUME     = 1;
     /** Display a channel, edit panorama. */
-    public static final int         GRID_ELEMENT_CHANNEL_PAN        = 2;
+    public static final int                GRID_ELEMENT_CHANNEL_PAN        = 2;
     /** Display a channel, edit crossfader. */
-    public static final int         GRID_ELEMENT_CHANNEL_CROSSFADER = 3;
+    public static final int                GRID_ELEMENT_CHANNEL_CROSSFADER = 3;
     /** Display a channel sends. */
-    public static final int         GRID_ELEMENT_CHANNEL_SENDS      = 4;
+    public static final int                GRID_ELEMENT_CHANNEL_SENDS      = 4;
     /** Display a channel, edit all parameters. */
-    public static final int         GRID_ELEMENT_CHANNEL_ALL        = 5;
+    public static final int                GRID_ELEMENT_CHANNEL_ALL        = 5;
     /** Display a parameter with name and value. */
-    public static final int         GRID_ELEMENT_PARAMETERS         = 6;
+    public static final int                GRID_ELEMENT_PARAMETERS         = 6;
     /** Display options on top and bottom. */
-    public static final int         GRID_ELEMENT_OPTIONS            = 7;
+    public static final int                GRID_ELEMENT_OPTIONS            = 7;
     /** Display a list. */
-    public static final int         GRID_ELEMENT_LIST               = 8;
+    public static final int                GRID_ELEMENT_LIST               = 8;
 
-    private DisplayModel            model;
-    private final List<GridElement> elements                        = new ArrayList<> (8);
+    /** Timeout for displaying the notification message. */
+    private static final int               TIMEOUT                         = 2;
+
+    private final AtomicInteger            counter                         = new AtomicInteger ();
+    private final ScheduledExecutorService executor                        = Executors.newSingleThreadScheduledExecutor ();
+
+    private final List<GridChangeListener> listeners                       = new ArrayList<> ();
+    private final List<GridElement>        elements                        = new ArrayList<> (8);
+    private final AtomicReference<String>  notificationMessage             = new AtomicReference<> ();
+    private ModelInfo                      info                            = new ModelInfo (null, Collections.emptyList ());
 
 
     /**
-     * Constructor. Uses the grid command.
-     *
-     * @param model The display model
+     * Constructor.
      */
-    public DisplayMessage (final DisplayModel model)
+    public DisplayModel ()
     {
-        this.model = model;
+        this.executor.scheduleAtFixedRate ( () -> {
+            final int c = this.counter.get ();
+            if (c <= 0)
+                return;
+            if (this.counter.decrementAndGet () == 0)
+                this.notificationMessage.set (null);
+        }, 1, 1, TimeUnit.SECONDS);
+    }
+
+
+    /**
+     * Shutdown the count down process.
+     */
+    public void shutdown ()
+    {
+        this.executor.shutdown ();
+    }
+
+
+    /**
+     * Adds a listener for grid element changes
+     *
+     * @param listener A listener
+     */
+    public void addGridElementChangeListener (final GridChangeListener listener)
+    {
+        this.listeners.add (listener);
     }
 
 
@@ -69,20 +107,34 @@ public class DisplayMessage
      */
     public void send ()
     {
-        this.model.setGridElements (this.elements);
+        this.info = new ModelInfo (this.notificationMessage.get (), this.elements);
+        this.elements.clear ();
+        for (final GridChangeListener listener: this.listeners)
+            listener.gridHasChanged ();
     }
 
 
     /**
-     * Set a midi clip to display in a piano roll
+     * Set a midi clip to display in a piano roll.
      *
      * @param clip The clip to display
      * @param quartersPerMeasure The quarters of a measure
      */
     public void setMidiClipElement (final ICursorClip clip, final int quartersPerMeasure)
     {
-        this.elements.clear ();
         this.elements.add (new MidiClipElement (clip, quartersPerMeasure));
+    }
+
+
+    /**
+     * Set a notification message on the display, which overlays the current content.
+     *
+     * @param message The text to display
+     */
+    public void setNotificationMessage (final String message)
+    {
+        this.counter.set (TIMEOUT);
+        this.notificationMessage.set (message);
     }
 
 
@@ -93,7 +145,7 @@ public class DisplayMessage
      * @param text The text to display
      * @return The message
      */
-    public DisplayMessage setMessage (final int column, final String text)
+    public DisplayModel setMessage (final int column, final String text)
     {
         for (int i = 0; i < 8; i++)
             this.addOptionElement (column == i ? text : "", "", false, "", "", false, false);
@@ -149,7 +201,7 @@ public class DisplayMessage
      */
     public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
     {
-        this.addChannelElement (DisplayMessage.GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vu, mute, solo, recarm, crossfadeMode);
+        this.addChannelElement (DisplayModel.GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vu, mute, solo, recarm, crossfadeMode);
     }
 
 
@@ -323,5 +375,16 @@ public class DisplayMessage
     public void addBoxListElement (final String [] items, final List<double []> colors)
     {
         this.elements.add (new BoxListGridElement (items, colors));
+    }
+
+
+    /**
+     * Get the drawing info object.
+     *
+     * @return The info.
+     */
+    public ModelInfo getInfo ()
+    {
+        return this.info;
     }
 }

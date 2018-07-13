@@ -4,9 +4,8 @@
 
 package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
@@ -248,11 +247,10 @@ public class FrameMode extends BaseMode
     public void updateDisplay2 ()
     {
         final IApplication app = this.model.getApplication ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int i = 0; i < FrameMode.ARRANGER1.length; i++)
             message.addOptionElement (app.isArrangeLayout () ? FrameMode.ARRANGER1[i] : app.isMixerLayout () ? FrameMode.MIXER1[i] : "", app.isArrangeLayout () ? FrameMode.ARRANGER2[i] : app.isMixerLayout () ? FrameMode.MIXER2[i] : "", this.getSecondRowButtonState (i) > 0, FrameMode.LAYOUTS1[i], FrameMode.LAYOUTS2[i], this.getFirstRowButtonState (i), false);
-        display.send (message);
+        message.send ();
     }
 
 

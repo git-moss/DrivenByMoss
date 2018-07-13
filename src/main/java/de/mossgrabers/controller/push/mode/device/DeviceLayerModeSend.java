@@ -5,8 +5,8 @@
 package de.mossgrabers.controller.push.mode.device;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
@@ -117,7 +117,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplayElements (final DisplayMessage message, final ICursorDevice cd, final IChannel l)
+    public void updateDisplayElements (final DisplayModel message, final ICursorDevice cd, final IChannel l)
     {
         final int sendIndex = this.getCurrentSendIndex ();
         final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();

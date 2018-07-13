@@ -590,6 +590,14 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
     /** {@inheritDoc} */
     @Override
+    public PushDisplay getDisplay ()
+    {
+        return (PushDisplay) super.getDisplay ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getSceneButton (final int index)
     {
         return PUSH_BUTTON_SCENE1 + index;

@@ -5,9 +5,8 @@
 package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -105,8 +104,7 @@ public class SetupMode extends BaseMode
     public void updateDisplay2 ()
     {
         final PushConfiguration config = this.surface.getConfiguration ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         message.addOptionElement ("", "Setup", true, "", "", false, true);
         message.addOptionElement ("Brightness", "Info", false, "", "", false, true);
         message.addParameterElement ("Display", config.getDisplayBrightness () * 1023 / 100, config.getDisplayBrightness () + "%", this.isKnobTouched[2], -1);
@@ -115,6 +113,6 @@ public class SetupMode extends BaseMode
         message.addParameterElement ("Sensitivity", config.getPadSensitivity () * 1023 / 10, Integer.toString (config.getPadSensitivity ()), this.isKnobTouched[5], -1);
         message.addParameterElement ("Gain", config.getPadGain () * 1023 / 10, Integer.toString (config.getPadGain ()), this.isKnobTouched[6], -1);
         message.addParameterElement ("Dynamics", config.getPadDynamics () * 1023 / 10, Integer.toString (config.getPadDynamics ()), this.isKnobTouched[7], -1);
-        display.send (message);
+        message.send ();
     }
 }

@@ -5,9 +5,9 @@
 package de.mossgrabers.controller.push.mode.track;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
@@ -134,7 +134,7 @@ public class TrackMode extends AbstractTrackMode
                     return;
                 }
 
-                final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+                final PushDisplay display = this.surface.getDisplay ();
                 switch (index)
                 {
                     case 0:
@@ -207,7 +207,7 @@ public class TrackMode extends AbstractTrackMode
                 return;
             }
 
-            final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
+            final PushDisplay display = this.surface.getDisplay ();
             switch (index)
             {
                 case 0:
@@ -319,8 +319,7 @@ public class TrackMode extends AbstractTrackMode
         this.updateMenuItems (0);
 
         final PushConfiguration config = this.surface.getConfiguration ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         final boolean displayCrossfader = config.isDisplayCrossfader ();
         for (int i = 0; i < 8; i++)
         {
@@ -374,6 +373,6 @@ public class TrackMode extends AbstractTrackMode
             else
                 message.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, t.getType (), bottomMenuColor, isBottomMenuOn);
         }
-        display.send (message);
+        message.send ();
     }
 }

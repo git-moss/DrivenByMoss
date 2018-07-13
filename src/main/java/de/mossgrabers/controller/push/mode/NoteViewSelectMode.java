@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
@@ -108,8 +108,7 @@ public class NoteViewSelectMode extends BaseMode
     public void updateDisplay2 ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int i = 0; i < VIEWS.length; i++)
         {
             String menuBottomName = "";
@@ -124,7 +123,7 @@ public class NoteViewSelectMode extends BaseMode
             final boolean isMenuTopSelected = VIEWS_TOP[i] != null && viewManager.isActiveView (VIEWS_TOP[i]);
             message.addOptionElement ("", menuTopName, isMenuTopSelected, i == 0 ? "Note view" : "", menuBottomName, isMenuBottomSelected, false);
         }
-        display.send (message);
+        message.send ();
     }
 
 

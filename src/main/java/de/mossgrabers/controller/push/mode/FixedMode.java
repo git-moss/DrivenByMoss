@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
@@ -102,10 +102,9 @@ public class FixedMode extends BaseMode
     public void updateDisplay2 ()
     {
         final int newClipLength = this.surface.getConfiguration ().getNewClipLength ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int i = 0; i < 8; i++)
             message.addOptionElement (i == 0 ? "Create Clip (length not stored)" : "", AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i], false, i == 0 ? "New Clip Length" : "", AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i], newClipLength == i, false);
-        display.send (message);
+        message.send ();
     }
 }

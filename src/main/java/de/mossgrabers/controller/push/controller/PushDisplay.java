@@ -5,10 +5,10 @@
 package de.mossgrabers.controller.push.controller;
 
 import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.controller.display.PushUsbDisplay;
-import de.mossgrabers.controller.push.controller.display.model.DisplayModel;
-import de.mossgrabers.controller.push.controller.display.model.VirtualDisplay;
-import de.mossgrabers.controller.push.controller.display.model.grid.GridChangeListener;
+import de.mossgrabers.controller.push.controller.display.VirtualDisplay;
+import de.mossgrabers.controller.push.controller.display.grid.GridChangeListener;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
@@ -111,20 +111,9 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
      *
      * @return The message
      */
-    public DisplayMessage createMessage ()
+    public DisplayModel getModel ()
     {
-        return new DisplayMessage (this.model);
-    }
-
-
-    /**
-     * Send a message to the display.
-     *
-     * @param message The message to send
-     */
-    public void send (final DisplayMessage message)
-    {
-        message.send ();
+        return this.model;
     }
 
 
@@ -134,9 +123,10 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     {
         if (this.isPush2)
         {
-            this.send (this.createMessage ().setMessage (3, "Please start " + this.host.getName () + " to play..."));
+            this.model.setMessage (3, "Please start " + this.host.getName () + " to play...").send ();
             if (this.usbDisplay != null)
                 this.usbDisplay.shutdown ();
+            this.model.shutdown ();
         }
         else
             this.clear ().setBlock (1, 1, "     Please start").setBlock (1, 2, this.host.getName () + " to play...").allDone ().flush ();
@@ -204,7 +194,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     protected void notifyOnDisplay (final String message)
     {
         if (this.isPush2)
-            this.send (this.createMessage ().setMessage (3, message));
+            this.model.setNotificationMessage (message);
         else
             super.notifyOnDisplay (message);
     }

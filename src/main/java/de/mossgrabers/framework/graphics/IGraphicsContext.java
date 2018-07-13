@@ -109,6 +109,23 @@ public interface IGraphicsContext
 
 
     /**
+     * Draws a text into a boundary. The text is clipped on the right border of the bounds.
+     * Calculates the text descent.
+     *
+     * @param text The text to draw
+     * @param x The x position of the boundary
+     * @param y The y position of the boundary
+     * @param width The width position of the boundary
+     * @param height The height position of the boundary
+     * @param alignment The alignment of the text: Label.LEFT or Label.CENTER
+     * @param color The color of the text
+     * @param backgroundColor Draws a background behind the text with this color
+     * @param fontSize The size of the font
+     */
+    void drawTextInBounds (String text, double x, double y, double width, double height, Align alignment, ColorEx color, ColorEx backgroundColor, double fontSize);
+
+
+    /**
      * Draw an image.
      *
      * @param image The image to draw

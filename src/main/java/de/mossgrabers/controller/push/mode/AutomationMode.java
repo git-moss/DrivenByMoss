@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
@@ -52,11 +52,10 @@ public class AutomationMode extends BaseMode
     public void updateDisplay2 ()
     {
         final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int i = 0; i < 8; i++)
             message.addOptionElement ("", "", false, i == 0 ? "Automation Mode" : "", i < ITransport.AUTOMATION_MODES.length ? ITransport.AUTOMATION_MODES[i] : "", i < ITransport.AUTOMATION_MODES.length && ITransport.AUTOMATION_MODES_VALUES[i].equals (writeMode), false);
-        display.send (message);
+        message.send ();
     }
 
 
