@@ -110,15 +110,6 @@ public interface IChannelBank extends ObserverManagement
 
 
     /**
-     * Find the color of the first clip of the scene.
-     *
-     * @param scene The index of the scene
-     * @return The color as an identifier string. Returns green if none is found
-     */
-    String getColorOfFirstClipInScene (final int scene);
-
-
-    /**
      * Launch a scene.
      *
      * @param scene The index of the scene

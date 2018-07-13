@@ -7,6 +7,7 @@ package de.mossgrabers.bitwig.framework.daw.data;
 import de.mossgrabers.framework.daw.data.IScene;
 
 import com.bitwig.extension.controller.api.Scene;
+import com.bitwig.extension.controller.api.SettableColorValue;
 
 
 /**
@@ -35,6 +36,7 @@ public class SceneImpl implements IScene
         scene.exists ().markInterested ();
         scene.name ().markInterested ();
         scene.sceneIndex ().markInterested ();
+        scene.color ().markInterested ();
         scene.addIsSelectedInEditorObserver (value -> this.isSelected = value);
     }
 
@@ -46,6 +48,7 @@ public class SceneImpl implements IScene
         this.scene.exists ().setIsSubscribed (enable);
         this.scene.name ().setIsSubscribed (enable);
         this.scene.sceneIndex ().setIsSubscribed (enable);
+        this.scene.color ().setIsSubscribed (enable);
     }
 
 
@@ -86,5 +89,27 @@ public class SceneImpl implements IScene
     public boolean isSelected ()
     {
         return this.isSelected;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public double [] getColor ()
+    {
+        final SettableColorValue color = this.scene.color ();
+        return new double []
+        {
+            color.red (),
+            color.green (),
+            color.blue ()
+        };
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setColor (final double red, final double green, final double blue)
+    {
+        this.scene.color ().set ((float) red, (float) green, (float) blue);
     }
 }

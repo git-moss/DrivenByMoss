@@ -5,7 +5,6 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 
 import java.util.Arrays;
@@ -129,20 +128,6 @@ public abstract class AbstractChannelBank implements IChannelBank
             return DAWColors.COLOR_OFF;
         final double [] color = selectedTrack.getColor ();
         return DAWColors.getColorIndex (color[0], color[1], color[2]);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getColorOfFirstClipInScene (final int scene)
-    {
-        for (int t = 0; t < this.getNumTracks (); t++)
-        {
-            final ISlot slot = this.getTrack (t).getSlot (scene);
-            if (slot.doesExist () && slot.hasContent ())
-                return DAWColors.getColorIndex (slot.getColor ());
-        }
-        return DAWColors.DAW_COLOR_GREEN;
     }
 
 

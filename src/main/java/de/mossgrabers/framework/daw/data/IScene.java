@@ -53,4 +53,23 @@ public interface IScene extends ObserverManagement
      * @return True if selected
      */
     boolean isSelected ();
+
+
+    /**
+     * Get the color of the channel.
+     *
+     * @return The color in RGB
+     */
+    double [] getColor ();
+
+
+    /**
+     * Set the color of the track as a RGB value.
+     *
+     * @param red The red part of the color
+     * @param green The green part of the color
+     * @param blue The blue part of the color
+     */
+    void setColor (double red, double green, double blue);
+
 }
