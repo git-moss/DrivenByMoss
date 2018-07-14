@@ -6,13 +6,13 @@ package de.mossgrabers.controller.push.controller.display;
 
 import de.mossgrabers.controller.push.controller.display.grid.BoxListGridElement;
 import de.mossgrabers.controller.push.controller.display.grid.ChannelGridElement;
-import de.mossgrabers.controller.push.controller.display.grid.ChannelSelectionGridElement;
 import de.mossgrabers.controller.push.controller.display.grid.GridChangeListener;
 import de.mossgrabers.controller.push.controller.display.grid.GridElement;
 import de.mossgrabers.controller.push.controller.display.grid.ListGridElement;
 import de.mossgrabers.controller.push.controller.display.grid.MidiClipElement;
 import de.mossgrabers.controller.push.controller.display.grid.OptionsGridElement;
 import de.mossgrabers.controller.push.controller.display.grid.ParamGridElement;
+import de.mossgrabers.controller.push.controller.display.grid.SelectionGridElement;
 import de.mossgrabers.controller.push.controller.display.grid.SendsGridElement;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.ICursorClip;
@@ -174,7 +174,7 @@ public class DisplayModel
      */
     public void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn)
     {
-        this.elements.add (new ChannelSelectionGridElement (topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type));
+        this.elements.add (new SelectionGridElement (topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type));
     }
 
 
@@ -193,15 +193,16 @@ public class DisplayModel
      * @param pan The panorama
      * @param modulatedPan The modulated panorama
      * @param panStr The panorama as string
-     * @param vu The VU meter value
+     * @param vuLeft The VU meter value of the left channel
+     * @param vuRight The VU meter value of the right channel
      * @param mute The mute state
      * @param solo The solo state
      * @param recarm The recording armed state
      * @param crossfadeMode Crossfade mode (0-2)
      */
-    public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
+    public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
     {
-        this.addChannelElement (DisplayModel.GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vu, mute, solo, recarm, crossfadeMode);
+        this.addChannelElement (DisplayModel.GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, crossfadeMode);
     }
 
 
@@ -221,13 +222,14 @@ public class DisplayModel
      * @param pan The panorama
      * @param modulatedPan The modulated panorama
      * @param panStr The panorama as string
-     * @param vu The VU meter value
+     * @param vuLeft The VU meter value of the left channel
+     * @param vuRight The VU meter value of the right channel
      * @param mute The mute state
      * @param solo The solo state
      * @param recarm The recording armed state
      * @param crossfadeMode Crossfade mode (0-2)
      */
-    public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vu, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
+    public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final int crossfadeMode)
     {
         int editType;
         switch (channelType)
@@ -245,7 +247,7 @@ public class DisplayModel
                 editType = ChannelGridElement.EDIT_TYPE_ALL;
                 break;
         }
-        this.elements.add (new ChannelGridElement (editType, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vu, mute, solo, recarm, crossfadeMode));
+        this.elements.add (new ChannelGridElement (editType, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, crossfadeMode));
     }
 
 

@@ -5,14 +5,11 @@
 package de.mossgrabers.framework.daw.data;
 
 /**
- * The interface to a drum pad channel.
+ * The interface to a layer channel.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IDrumPad extends ILayer
+public interface ILayer extends IChannel
 {
-    /**
-     * Start the browser to insert a new device and create a device chain.
-     */
-    void browseToInsert ();
+    // Intentionally empty
 }

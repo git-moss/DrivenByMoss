@@ -125,7 +125,10 @@ public class MasterMode extends BaseMode
         final IMasterTrack master = this.model.getMasterTrack ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final DisplayModel message = this.surface.getDisplay ().getModel ();
-        message.addChannelElement ("Volume", false, master.getName (), ChannelType.MASTER, master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", valueChanger.toDisplayValue (this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : 0), master.isMute (), master.isSolo (), master.isRecArm (), 0);
+        final boolean enableVUMeters = this.surface.getConfiguration ().isEnableVUMeters ();
+        final int vuR = valueChanger.toDisplayValue (enableVUMeters ? master.getVuRight () : 0);
+        final int vuL = valueChanger.toDisplayValue (enableVUMeters ? master.getVuLeft () : 0);
+        message.addChannelElement ("Volume", false, master.getName (), ChannelType.MASTER, master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", vuL, vuR, master.isMute (), master.isSolo (), master.isRecArm (), 0);
 
         for (int i = 1; i < 4; i++)
         {

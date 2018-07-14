@@ -19,7 +19,7 @@ import de.mossgrabers.framework.graphics.IGraphicsContext;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ParamGridElement extends ChannelSelectionGridElement
+public class ParamGridElement extends SelectionGridElement
 {
     private final String  paramName;
     private final String  paramValueText;

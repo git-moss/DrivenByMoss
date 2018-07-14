@@ -4,8 +4,8 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
-import de.mossgrabers.bitwig.framework.daw.data.ChannelImpl;
 import de.mossgrabers.bitwig.framework.daw.data.DrumPadImpl;
+import de.mossgrabers.bitwig.framework.daw.data.LayerImpl;
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColors;
@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumPad;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.IParameter;
 
 import com.bitwig.extension.controller.api.Channel;
@@ -51,7 +52,7 @@ public class CursorDeviceImpl implements ICursorDevice
     private String []                parameterPageNames = new String [0];
     private IParameter []            fxparams;
     private DeviceLayerBank          layerBank;
-    private IChannel []              deviceLayers;
+    private ILayer []                deviceLayers;
     private IDrumPad []              drumPadLayers;
     private DeviceBank []            deviceBanks;
     private DrumPadBank              drumPadBank;
@@ -133,12 +134,12 @@ public class CursorDeviceImpl implements ICursorDevice
         if (this.numDeviceLayers > 0)
         {
             this.layerBank = this.cursorDevice.createLayerBank (this.numDeviceLayers);
-            this.deviceLayers = new IChannel [this.numDeviceLayers];
+            this.deviceLayers = new ILayer [this.numDeviceLayers];
             this.deviceBanks = new DeviceBank [this.numDeviceLayers];
             for (int i = 0; i < this.numDeviceLayers; i++)
             {
-                final Channel layer = this.layerBank.getItemAt (i);
-                this.deviceLayers[i] = new ChannelImpl (layer, valueChanger, i, numSends);
+                final DeviceLayer layer = this.layerBank.getItemAt (i);
+                this.deviceLayers[i] = new LayerImpl (layer, valueChanger, i, numSends);
                 this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
 
                 final int index = i;
@@ -1318,9 +1319,9 @@ public class CursorDeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
-    public IChannel getSelectedDrumPad ()
+    public IDrumPad getSelectedDrumPad ()
     {
-        for (final IChannel drumPadLayer: this.drumPadLayers)
+        for (final IDrumPad drumPadLayer: this.drumPadLayers)
         {
             if (drumPadLayer.isSelected ())
                 return drumPadLayer;

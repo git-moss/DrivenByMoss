@@ -18,7 +18,7 @@ import de.mossgrabers.framework.graphics.IImage;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ChannelGridElement extends ChannelSelectionGridElement
+public class ChannelGridElement extends SelectionGridElement
 {
     /** Edit volume. */
     public static final int EDIT_TYPE_VOLUME     = 0;
@@ -36,7 +36,8 @@ public class ChannelGridElement extends ChannelSelectionGridElement
     private final double    panValue;
     private final double    modulatedPanValue;
     private final String    panText;
-    private final double    vuValue;
+    private final double    vuValueLeft;
+    private final double    vuValueRight;
     private final boolean   isMute;
     private final boolean   isSolo;
     private final boolean   isArm;
@@ -59,13 +60,14 @@ public class ChannelGridElement extends ChannelSelectionGridElement
      * @param panValue The value of the panorama
      * @param modulatedPanValue The modulated value of the panorama, -1 if not modulated
      * @param panText The textual form of the panorama
-     * @param vuValue The value of the VU
+     * @param vuValueLeft The value of the VU of the left channel
+     * @param vuValueRight The value of the VU of the right channel
      * @param isMute True if muted
      * @param isSolo True if soloed
      * @param isArm True if recording is armed
      * @param crossfadeMode The crossfader mode: 0 = A, 1 = AB, B = 2, -1 turns it off
      */
-    public ChannelGridElement (final double editType, final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type, final double volumeValue, final double modulatedVolumeValue, final String volumeText, final double panValue, final double modulatedPanValue, final String panText, final double vuValue, final boolean isMute, final boolean isSolo, final boolean isArm, final double crossfadeMode)
+    public ChannelGridElement (final double editType, final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type, final double volumeValue, final double modulatedVolumeValue, final String volumeText, final double panValue, final double modulatedPanValue, final String panText, final double vuValueLeft, final double vuValueRight, final boolean isMute, final boolean isSolo, final boolean isArm, final double crossfadeMode)
     {
         super (menuName, isMenuSelected, name, color, isSelected, type);
 
@@ -76,7 +78,8 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         this.panValue = panValue;
         this.modulatedPanValue = modulatedPanValue;
         this.panText = panText;
-        this.vuValue = vuValue;
+        this.vuValueLeft = vuValueLeft;
+        this.vuValueRight = vuValueRight;
         this.isMute = isMute;
         this.isSolo = isSolo;
         this.isArm = isArm;
@@ -103,7 +106,8 @@ public class ChannelGridElement extends ChannelSelectionGridElement
 
         final double faderOffset = controlWidth / 4;
         final double faderTop = panTop + panHeight + SEPARATOR_SIZE + 1;
-        final double faderLeft = controlStart + SEPARATOR_SIZE + faderOffset;
+        double vuX = controlStart + SEPARATOR_SIZE;
+        final double faderLeft = vuX + faderOffset;
         final double faderHeight = trackRowTop - faderTop - INSET + 1;
         final double faderInnerHeight = faderHeight - 2 * SEPARATOR_SIZE;
 
@@ -201,11 +205,14 @@ public class ChannelGridElement extends ChannelSelectionGridElement
         }
 
         // VU
-        final double vuHeight = this.vuValue >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.vuValue / maxValue;
-        final double vuOffset = faderInnerHeight - vuHeight;
-
-        gc.fillRectangle (controlStart + SEPARATOR_SIZE, faderTop + SEPARATOR_SIZE, faderOffset - SEPARATOR_SIZE, faderInnerHeight, backgroundDarker);
-        gc.fillRectangle (controlStart + SEPARATOR_SIZE, faderTop + SEPARATOR_SIZE + vuOffset, faderOffset - SEPARATOR_SIZE, vuHeight, configuration.getColorVu ());
+        final double vuHeightLeft = this.vuValueLeft >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.vuValueLeft / maxValue;
+        final double vuHeightRight = this.vuValueRight >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.vuValueRight / maxValue;
+        final double vuOffsetLeft = faderInnerHeight - vuHeightLeft;
+        final double vuOffsetRight = faderInnerHeight - vuHeightRight;
+        double vuWidth = faderOffset - SEPARATOR_SIZE;
+        gc.fillRectangle (vuX, faderTop + SEPARATOR_SIZE, vuWidth + 1, faderInnerHeight, backgroundDarker);
+        gc.fillRectangle (vuX, faderTop + SEPARATOR_SIZE + vuOffsetLeft, vuWidth / 2, vuHeightLeft, configuration.getColorVu ());
+        gc.fillRectangle (vuX + vuWidth / 2, faderTop + SEPARATOR_SIZE + vuOffsetRight, vuWidth / 2, vuHeightRight, configuration.getColorVu ());
 
         double buttonTop = faderTop;
 

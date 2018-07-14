@@ -349,7 +349,10 @@ public abstract class AbstractTrackMode extends BaseMode
             final String topMenu = pair.getKey ();
             final boolean isTopMenuOn = pair.getValue ().booleanValue ();
             final int crossfadeMode = displayCrossfader ? t.getCrossfadeModeAsNumber () : -1;
-            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName (12) : "", t.getType (), t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr () : "", valueChanger.toDisplayValue (config.isEnableVUMeters () ? t.getVu () : 0), t.isMute (), t.isSolo (), t.isRecArm (), crossfadeMode);
+            final boolean enableVUMeters = config.isEnableVUMeters ();
+            final int vuR = valueChanger.toDisplayValue (enableVUMeters ? t.getVuRight () : 0);
+            final int vuL = valueChanger.toDisplayValue (enableVUMeters ? t.getVuLeft () : 0);
+            message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName (12) : "", t.getType (), t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr (8) : "", vuL, vuR, t.isMute (), t.isSolo (), t.isRecArm (), crossfadeMode);
         }
 
         message.send ();

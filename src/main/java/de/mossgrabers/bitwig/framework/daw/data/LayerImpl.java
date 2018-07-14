@@ -5,40 +5,37 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.daw.data.IDrumPad;
+import de.mossgrabers.framework.daw.data.ILayer;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 
-import com.bitwig.extension.controller.api.DrumPad;
+import com.bitwig.extension.controller.api.Channel;
 
 
 /**
- * The data of a channel.
+ * The data of a layer.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumPadImpl extends LayerImpl implements IDrumPad
+public class LayerImpl extends ChannelImpl implements ILayer
 {
-    private DrumPad drumPad;
-
-
     /**
      * Constructor.
      *
-     * @param drumPad The drum pad
+     * @param layer The layer
      * @param valueChanger The valueChanger
      * @param index The index of the channel in the page
      * @param numSends The number of sends of a bank
      */
-    public DrumPadImpl (final DrumPad drumPad, final IValueChanger valueChanger, final int index, final int numSends)
+    public LayerImpl (final Channel layer, final IValueChanger valueChanger, final int index, final int numSends)
     {
-        super (drumPad, valueChanger, index, numSends);
-        this.drumPad = drumPad;
+        super (layer, valueChanger, index, numSends);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void browseToInsert ()
+    public ChannelType getType ()
     {
-        this.drumPad.insertionPoint ().browse ();
+        return ChannelType.LAYER;
     }
 }

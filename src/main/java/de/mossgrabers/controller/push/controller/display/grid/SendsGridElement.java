@@ -16,7 +16,7 @@ import de.mossgrabers.framework.graphics.IGraphicsContext;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendsGridElement extends ChannelSelectionGridElement
+public class SendsGridElement extends SelectionGridElement
 {
     final String []    sendNames           = new String []
     {
