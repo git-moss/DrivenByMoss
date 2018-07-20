@@ -60,7 +60,7 @@ public class PianoView extends PlayView
                 for (int j = 0; j < 8; j++)
                 {
                     final int n = 36 + 8 * i + j;
-                    gridPad.light (n, this.pressedKeys[n] > 0 ? playKeyColor : whiteKeyColor, -1, false);
+                    gridPad.light (n, this.keyManager.isKeyPressed (n) ? playKeyColor : whiteKeyColor, -1, false);
                 }
             }
             else
@@ -71,25 +71,9 @@ public class PianoView extends PlayView
                     if (j == 0 || j == 3 || j == 7)
                         gridPad.light (n, offKeyColor, -1, false);
                     else
-                        gridPad.light (n, this.pressedKeys[n] > 0 ? playKeyColor : blackKeyColor, -1, false);
+                        gridPad.light (n, this.keyManager.isKeyPressed (n) ? playKeyColor : blackKeyColor, -1, false);
                 }
             }
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onGridNote (final int note, final int velocity)
-    {
-        if (!this.model.canSelectedTrackHoldNotes () || this.noteMap[note] == -1)
-            return;
-
-        // Mark selected notes
-        for (int i = 0; i < 128; i++)
-        {
-            if (this.noteMap[note] == this.noteMap[i])
-                this.pressedKeys[i] = velocity;
         }
     }
 
@@ -100,7 +84,7 @@ public class PianoView extends PlayView
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.clearPressedKeys ();
+        this.keyManager.clearPressedKeys ();
         this.scales.decPianoOctave ();
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getPianoRangeText (), true, true);
@@ -113,7 +97,7 @@ public class PianoView extends PlayView
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.clearPressedKeys ();
+        this.keyManager.clearPressedKeys ();
         this.scales.incPianoOctave ();
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getPianoRangeText (), true, true);
@@ -124,7 +108,7 @@ public class PianoView extends PlayView
     @Override
     public void updateNoteMapping ()
     {
-        this.surface.scheduleTask (this::delayedUpdateNoteMapping, 100);
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getPianoMatrix () : EMPTY_TABLE);
     }
 
 
@@ -148,12 +132,5 @@ public class PianoView extends PlayView
         this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
         this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
         this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-    }
-
-
-    private void delayedUpdateNoteMapping ()
-    {
-        this.noteMap = this.model.canSelectedTrackHoldNotes () ? this.scales.getPianoMatrix () : Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (this.noteMap));
     }
 }

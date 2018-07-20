@@ -7,8 +7,8 @@ package de.mossgrabers.framework.command.continuous;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 
 
@@ -43,8 +43,8 @@ public class FaderAbsoluteCommand<S extends IControlSurface<C>, C extends Config
     @Override
     public void execute (final int value)
     {
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack track = currentTrackBank.getTrack (this.index);
+        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack track = currentTrackBank.getItem (this.index);
         if (!track.doesExist ())
             return;
 

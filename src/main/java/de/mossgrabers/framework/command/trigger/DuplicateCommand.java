@@ -8,6 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -48,7 +49,8 @@ public class DuplicateCommand<S extends IControlSurface<C>, C extends Configurat
             return;
 
         // Is there a selected slot?
-        final ISlot slot = track.getSelectedSlot ();
+        final ISlotBank slotBank = track.getSlotBank ();
+        final ISlot slot = slotBank.getSelectedItem ();
         if (slot == null)
             return;
 
@@ -62,7 +64,7 @@ public class DuplicateCommand<S extends IControlSurface<C>, C extends Configurat
 
         // Need to wait a bit with starting the duplicated clip until it is selected
         this.model.getHost ().scheduleTask ( () -> {
-            final ISlot slotNew = track.getSelectedSlot ();
+            final ISlot slotNew = slotBank.getSelectedItem ();
             if (slotNew != null)
             {
                 slotNew.launch ();
@@ -70,9 +72,9 @@ public class DuplicateCommand<S extends IControlSurface<C>, C extends Configurat
             }
 
             // Try to find the clip in the next page...
-            track.scrollClipPageForwards ();
+            slotBank.scrollPageForwards ();
             this.model.getHost ().scheduleTask ( () -> {
-                final ISlot slotNew2 = track.getSelectedSlot ();
+                final ISlot slotNew2 = slotBank.getSelectedItem ();
                 if (slotNew2 != null)
                     slotNew2.launch ();
             }, 200);

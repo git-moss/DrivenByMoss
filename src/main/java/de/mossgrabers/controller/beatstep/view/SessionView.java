@@ -9,6 +9,7 @@ import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.view.AbstractView;
 
 
@@ -55,6 +56,8 @@ public class SessionView extends AbstractView<BeatstepControlSurface, BeatstepCo
         if (velocity == 0)
             return;
 
+        final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
+
         final int index = note - 36;
         switch (index)
         {
@@ -68,11 +71,11 @@ public class SessionView extends AbstractView<BeatstepControlSurface, BeatstepCo
                 break;
 
             case 6:
-                this.model.getCurrentTrackBank ().scrollScenesPageUp ();
+                sceneBank.scrollPageBackwards ();
                 break;
 
             case 7:
-                this.model.getCurrentTrackBank ().scrollScenesPageDown ();
+                sceneBank.scrollPageForwards ();
                 break;
 
             case 8:
@@ -83,7 +86,7 @@ public class SessionView extends AbstractView<BeatstepControlSurface, BeatstepCo
             case 13:
             case 14:
             case 15:
-                this.model.getCurrentTrackBank ().launchScene (index - 8);
+                sceneBank.getItem (index - 8).launch ();
                 break;
         }
     }

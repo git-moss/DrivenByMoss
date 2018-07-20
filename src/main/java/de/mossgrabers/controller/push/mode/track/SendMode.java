@@ -10,8 +10,8 @@ import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.Pair;
@@ -40,7 +40,7 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).getSend (this.getCurrentSendIndex ()).changeValue (value);
+        this.model.getCurrentTrackBank ().getItem (index).getSendBank ().getItem (this.getCurrentSendIndex ()).changeValue (value);
     }
 
 
@@ -52,8 +52,8 @@ public class SendMode extends AbstractTrackMode
 
         this.isKnobTouched[index] = isTouched;
 
-        final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
-        final ISend send = t.getSend (sendIndex);
+        final ITrack t = this.model.getCurrentTrackBank ().getItem (index);
+        final ISend send = t.getSendBank ().getItem (sendIndex);
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
@@ -63,9 +63,9 @@ public class SendMode extends AbstractTrackMode
                 return;
             }
 
-            final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
+            final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
             if (t.doesExist ())
-                this.surface.getDisplay ().notify ("Send " + (fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendIndex).getName ()) + ": " + send.getValue ());
+                this.surface.getDisplay ().notify ("Send " + (fxTrackBank == null ? send.getName () : fxTrackBank.getItem (sendIndex).getName ()) + ": " + send.getValue ());
         }
 
         send.touchValue (isTouched);
@@ -79,13 +79,13 @@ public class SendMode extends AbstractTrackMode
     {
         final Display d = this.surface.getDisplay ();
         final int sendIndex = this.getCurrentSendIndex ();
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack t = tb.getTrack (i);
+            final ITrack t = tb.getItem (i);
             if (t.doesExist ())
             {
-                final ISend send = t.getSend (sendIndex);
+                final ISend send = t.getSendBank ().getItem (sendIndex);
                 d.setCell (0, i, send.getName ());
                 d.setCell (1, i, send.getDisplayedValue (8));
                 d.setCell (2, i, send.getValue (), Format.FORMAT_VALUE);
@@ -107,14 +107,14 @@ public class SendMode extends AbstractTrackMode
         final int sendIndex = this.getCurrentSendIndex ();
         this.updateTrackMenu (5 + sendIndex % 4);
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final DisplayModel message = this.surface.getDisplay ().getModel ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
         final int sendOffset = this.surface.getConfiguration ().isSendsAreToggled () ? 4 : 0;
         for (int i = 0; i < 8; i++)
         {
-            final ITrack t = tb.getTrack (i);
+            final ITrack t = tb.getItem (i);
             final String [] sendName = new String [4];
             final String [] valueStr = new String [4];
             final int [] value = new int [4];
@@ -123,7 +123,7 @@ public class SendMode extends AbstractTrackMode
             for (int j = 0; j < 4; j++)
             {
                 final int sendPos = sendOffset + j;
-                final ISend send = t.getSend (sendPos);
+                final ISend send = t.getSendBank ().getItem (sendPos);
                 final boolean exists = send != null && send.doesExist ();
                 sendName[j] = exists ? send.getName () : " ";
                 valueStr[j] = exists && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue (8) : "";

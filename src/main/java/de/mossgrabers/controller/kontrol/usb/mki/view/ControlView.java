@@ -6,8 +6,8 @@ package de.mossgrabers.controller.kontrol.usb.mki.view;
 
 import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scale;
@@ -38,7 +38,6 @@ public class ControlView extends AbstractView<Kontrol1ControlSurface, Kontrol1Co
     public ControlView (final Kontrol1ControlSurface surface, final IModel model)
     {
         super ("Control", surface, model);
-        this.scales = model.getScales ();
     }
 
 
@@ -67,8 +66,8 @@ public class ControlView extends AbstractView<Kontrol1ControlSurface, Kontrol1Co
 
         this.surface.updateButtonLEDs ();
 
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack t = currentTrackBank.getSelectedTrack ();
+        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack t = currentTrackBank.getSelectedItem ();
         this.updateKeyLEDs (t == null ? COLOR_OFF : t.getColor ());
     }
 

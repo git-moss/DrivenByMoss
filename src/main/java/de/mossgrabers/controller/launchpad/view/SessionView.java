@@ -10,9 +10,9 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.launchpad.mode.Modes;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -98,12 +98,12 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
             {
                 this.surface.setButtonConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
-                final IChannelBank tb = this.model.getCurrentTrackBank ();
-                final ITrack track = tb.getTrack (t);
+                final ITrackBank tb = this.model.getCurrentTrackBank ();
+                final ITrack track = tb.getItem (t);
                 if (track.doesExist ())
                 {
                     final int s = this.rows - 1 - index / this.columns;
-                    track.getSlot (s).duplicate ();
+                    track.getSlotBank ().getItem (s).duplicate ();
                 }
                 return;
             }
@@ -132,12 +132,12 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         if (isOff)
             return;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final PadGrid pads = this.surface.getPadGrid ();
         final ModeManager modeManager = this.surface.getModeManager ();
         for (int x = 0; x < this.columns; x++)
         {
-            final ITrack track = tb.getTrack (x);
+            final ITrack track = tb.getItem (x);
             final boolean exists = track.doesExist ();
             if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
                 pads.lightEx (x, 7, exists ? track.isRecArm () ? LaunchpadColors.LAUNCHPAD_COLOR_RED_HI : LaunchpadColors.LAUNCHPAD_COLOR_RED_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
@@ -167,11 +167,11 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void updateSceneButtons ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ISceneBank sceneBank = tb.getSceneBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IScene scene = sceneBank.getScene (i);
+            final IScene scene = sceneBank.getItem (i);
             if (scene.doesExist ())
                 this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1 - i * 10, DAWColors.getColorIndex (scene.getColor ()));
             else
@@ -223,11 +223,12 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final int x = index % this.columns;
         final int y = this.rows - 1 - index / this.columns;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = tb.getSceneBank ();
 
         // Calculate page offsets
-        final int trackPosition = tb.getTrack (0).getPosition () / tb.getNumTracks ();
-        final int scenePosition = tb.getScenePosition () / tb.getNumScenes ();
+        final int trackPosition = tb.getItem (0).getPosition () / tb.getPageSize ();
+        final int scenePosition = sceneBank.getScrollPosition () / sceneBank.getPageSize ();
         final boolean flip = this.surface.getConfiguration ().isFlipSession ();
         final int selX = flip ? scenePosition : trackPosition;
         final int selY = flip ? trackPosition : scenePosition;
@@ -235,8 +236,8 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final int padsY = flip ? this.columns : isOffset ? this.rows + 1 : this.rows;
         final int offsetX = selX / padsX * padsX;
         final int offsetY = selY / padsY * padsY;
-        tb.scrollToChannel (offsetX * tb.getNumTracks () + (flip ? y : x) * padsX);
-        tb.scrollToScene (offsetY * tb.getNumScenes () + (flip ? x : y) * padsY);
+        tb.scrollTo (offsetX * tb.getPageSize () + (flip ? y : x) * padsX);
+        sceneBank.scrollTo (offsetY * sceneBank.getPageSize () + (flip ? x : y) * padsY);
     }
 
 
@@ -244,7 +245,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     {
         // First row mode handling
         final int index = note - 36;
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
 
         if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
         {

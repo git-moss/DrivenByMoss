@@ -53,7 +53,7 @@ public class AftertouchAbstractPlayViewCommand<S extends IControlSurface<C>, C e
 
             case -2:
                 // Translate notes of Poly aftertouch to current note mapping
-                final int n = this.view.getMidiNoteFromGrid (note);
+                final int n = this.view.getKeyManager ().getMidiNoteFromGrid (note);
                 if (n != -1)
                     this.surface.sendMidiEvent (0xA0, n, value);
                 break;

@@ -134,14 +134,14 @@ public class MCUDisplay extends AbstractDisplay
     public void writeLine (final int row, final String text)
     {
         final LatestTaskExecutor executor = this.executors[row + (this.isFirst ? 0 : 2)];
-        if (executor != null)
-            executor.execute ( () -> sendDisplayLine (row, text));
+        if (!executor.isShutdown ())
+            executor.execute ( () -> this.sendDisplayLine (row, text));
     }
 
 
     /**
      * Send a line to the display
-     * 
+     *
      * @param row The row
      * @param text The text to send
      */
@@ -179,7 +179,7 @@ public class MCUDisplay extends AbstractDisplay
 
         // Prevent further sends
         for (int i = 0; i < 4; i++)
-            this.executors[i] = null;
+            this.executors[i].shutdown ();
     }
 
 

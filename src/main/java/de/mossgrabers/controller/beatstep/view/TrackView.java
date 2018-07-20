@@ -8,7 +8,6 @@ import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
 import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -48,8 +47,8 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
             return;
         }
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedItem ();
         if (selectedTrack == null)
             return;
 
@@ -58,8 +57,8 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
             // Send 5 - 6
             case 12:
             case 13:
-                if (tb instanceof ITrackBank)
-                    selectedTrack.getSend (index - 8).changeValue (value);
+                if (!this.model.isEffectTrackBankActive ())
+                    selectedTrack.getSendBank ().getItem (index - 8).changeValue (value);
                 break;
 
             case 14:
@@ -81,7 +80,7 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
         if (velocity == 0)
             return;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
 
         int track;
         ITrack selectedTrack;
@@ -92,20 +91,20 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
         {
             // Toggle Activate
             case 0:
-                selectedTrack = tb.getSelectedTrack ();
+                selectedTrack = tb.getSelectedItem ();
                 if (selectedTrack != null)
                     selectedTrack.toggleIsActivated ();
                 break;
 
             // Track left
             case 1:
-                sel = tb.getSelectedTrack ();
+                sel = tb.getSelectedItem ();
                 index = sel == null ? 0 : sel.getIndex () - 1;
                 if (index == -1 || this.surface.isShiftPressed ())
                 {
-                    if (!tb.canScrollTracksUp ())
+                    if (!tb.canScrollBackwards ())
                         return;
-                    tb.scrollTracksPageUp ();
+                    tb.scrollPageBackwards ();
                     newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
                     this.surface.scheduleTask ( () -> this.selectTrack (newSel), 75);
                     return;
@@ -115,13 +114,13 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
             // Track right
             case 2:
-                sel = tb.getSelectedTrack ();
+                sel = tb.getSelectedItem ();
                 index = sel == null ? 0 : sel.getIndex () + 1;
                 if (index == 8 || this.surface.isShiftPressed ())
                 {
-                    if (!tb.canScrollTracksDown ())
+                    if (!tb.canScrollForwards ())
                         return;
-                    tb.scrollTracksPageDown ();
+                    tb.scrollPageForwards ();
                     newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
                     this.surface.scheduleTask ( () -> this.selectTrack (newSel), 75);
                     return;
@@ -131,14 +130,12 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
             // Move down
             case 3:
-                if (tb instanceof ITrackBank)
-                    ((ITrackBank) tb).selectChildren ();
+                tb.selectChildren ();
                 break;
 
             // Move up
             case 4:
-                if (tb instanceof ITrackBank)
-                    ((ITrackBank) tb).selectParent ();
+                tb.selectParent ();
                 break;
 
             // Unused
@@ -167,12 +164,12 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
     @Override
     public void drawGrid ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final PadGrid padGrid = this.surface.getPadGrid ();
         for (int i = 0; i < 8; i++)
-            padGrid.light (44 + i, tb.getTrack (i).isSelected () ? BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
+            padGrid.light (44 + i, tb.getItem (i).isSelected () ? BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
 
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedItem ();
         padGrid.light (36, sel != null && sel.isActivated () ? BeatstepColors.BEATSTEP_BUTTON_STATE_RED : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
         padGrid.light (37, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
         padGrid.light (38, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
@@ -186,12 +183,12 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
     private void scrollTracksLeft ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollTracksUp ())
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        if (!tb.canScrollBackwards ())
             return;
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedItem ();
         final int index = sel == null ? 0 : sel.getIndex () - 1;
-        tb.scrollTracksPageUp ();
+        tb.scrollPageBackwards ();
         final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
         this.surface.scheduleTask ( () -> this.selectTrack (newSel), 100);
     }
@@ -199,12 +196,12 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
     private void scrollTracksRight ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollTracksDown ())
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        if (!tb.canScrollForwards ())
             return;
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedItem ();
         final int index = sel == null ? 0 : sel.getIndex () + 1;
-        tb.scrollTracksPageDown ();
+        tb.scrollPageForwards ();
         final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
         this.surface.scheduleTask ( () -> this.selectTrack (newSel), 100);
     }

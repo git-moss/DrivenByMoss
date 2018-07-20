@@ -8,9 +8,9 @@ import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.MCUControllerSetup;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -54,7 +54,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
             return;
         }
 
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (channel);
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (channel);
         if (row == 1)
             track.toggleRecArm ();
         else if (row == 2)
@@ -81,11 +81,11 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
     @Override
     public void updateFirstRow ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = tb.getTrack (extenderOffset + i);
+            final ITrack track = tb.getItem (extenderOffset + i);
             this.surface.updateButton (MCUControlSurface.MCU_ARM1 + i, track.isRecArm () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF);
             this.surface.updateButton (MCUControlSurface.MCU_SOLO1 + i, track.isSolo () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF);
             this.surface.updateButton (MCUControlSurface.MCU_MUTE1 + i, track.isMute () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF);
@@ -104,7 +104,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         if (!this.surface.getConfiguration ().hasDisplay2 ())
             return;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
 
         // Format track names
         final Display d2 = this.surface.getSecondDisplay ();
@@ -114,7 +114,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
 
         for (int i = 0; i < 8; i++)
         {
-            final ITrack t = tb.getTrack (extenderOffset + i);
+            final ITrack t = tb.getItem (extenderOffset + i);
             d2.setCell (0, i, StringUtils.shortenAndFixASCII (t.getName (), isMainDevice ? 6 : 7));
         }
 
@@ -128,7 +128,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         {
             final IMasterTrack masterTrack = this.model.getMasterTrack ();
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            final ITrack selectedTrack = masterTrack.isSelected () ? masterTrack : tb.getSelectedTrack ();
+            final ITrack selectedTrack = masterTrack.isSelected () ? masterTrack : tb.getSelectedItem ();
             d2.setBlock (1, 0, "Sel. track:").setBlock (1, 1, selectedTrack == null ? "None" : StringUtils.shortenAndFixASCII (selectedTrack.getName (), 11));
             d2.setBlock (1, 2, "Sel. devce:").setBlock (1, 3, cursorDevice.hasSelectedDevice () ? StringUtils.shortenAndFixASCII (cursorDevice.getName (), 11) : "None");
         }

@@ -114,10 +114,10 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -188,11 +188,11 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
-        trackBank.addTrackSelectionObserver (this::handleTrackChange);
-        final IChannelBank effectTrackBank = this.model.getEffectTrackBank ();
+        trackBank.addSelectionObserver (this::handleTrackChange);
+        final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
         if (effectTrackBank != null)
-            effectTrackBank.addTrackSelectionObserver (this::handleTrackChange);
-        this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
+            effectTrackBank.addSelectionObserver (this::handleTrackChange);
+        this.model.getMasterTrack ().addSelectionObserver ( (index, isSelected) -> {
             final PushControlSurface surface = this.getSurface ();
             final ModeManager modeManager = surface.getModeManager ();
             if (isSelected)
@@ -623,7 +623,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     private void updateIndication (final Integer mode)
     {
         final ITrackBank tb = this.model.getTrackBank ();
-        final IChannelBank tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tbe = this.model.getEffectTrackBank ();
         final PushControlSurface surface = this.getSurface ();
         final boolean isSession = surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
@@ -635,20 +635,21 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             tbe.setIndication (isEffect && isSession);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
-        for (int i = 0; i < tb.getNumTracks (); i++)
+        final ITrack selectedTrack = tb.getSelectedItem ();
+        for (int i = 0; i < tb.getPageSize (); i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
-            final ITrack track = tb.getTrack (i);
+            final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
             track.setPanIndication (!isEffect && (isPan || hasTrackSel));
 
-            for (int j = 0; j < tb.getNumSends (); j++)
-                track.getSend (j).setIndication (!isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
+            final ISendBank sendBank = track.getSendBank ();
+            for (int j = 0; j < sendBank.getPageSize (); j++)
+                sendBank.getItem (j).setIndication (!isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
 
             if (tbe != null)
             {
-                final ITrack fxTrack = tbe.getTrack (i);
+                final ITrack fxTrack = tbe.getItem (i);
                 fxTrack.setVolumeIndication (isEffect);
                 fxTrack.setPanIndication (isEffect && isPan);
             }

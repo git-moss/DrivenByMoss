@@ -14,9 +14,10 @@ public interface NoteObserver
 {
     /**
      * The callback function.
-     *
+     * 
+     * @param trackIndex The index of the track on which the note is playing
      * @param note The played note
      * @param velocity The played velocity
      */
-    void call (int note, int velocity);
+    void call (int trackIndex, int note, int velocity);
 }

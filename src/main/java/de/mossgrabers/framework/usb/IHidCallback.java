@@ -13,7 +13,7 @@ public interface IHidCallback
 {
     /**
      * Called when ready to process the results.
-     * 
+     *
      * @param reportID The report (= function/method) number
      * @param data The received data
      * @param length The length of the received data, -1 if an error occured

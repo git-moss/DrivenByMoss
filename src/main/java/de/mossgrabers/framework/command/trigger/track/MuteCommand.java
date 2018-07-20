@@ -43,7 +43,7 @@ public class MuteCommand<S extends IControlSurface<C>, C extends Configuration> 
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getTrack (this.index).toggleMute ();
+            this.model.getCurrentTrackBank ().getItem (this.index).toggleMute ();
     }
 
 
@@ -52,6 +52,6 @@ public class MuteCommand<S extends IControlSurface<C>, C extends Configuration> 
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getTrack (this.index).toggleMonitor ();
+            this.model.getCurrentTrackBank ().getItem (this.index).toggleMonitor ();
     }
 }

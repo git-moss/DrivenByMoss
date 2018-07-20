@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IParameter;
 
 import com.bitwig.extension.controller.api.Parameter;
@@ -15,11 +16,10 @@ import com.bitwig.extension.controller.api.Parameter;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ParameterImpl implements IParameter
+public class ParameterImpl extends AbstractItemImpl implements IParameter
 {
     private IValueChanger   valueChanger;
     private final Parameter parameter;
-    private final int       maxParameterValue;
 
     private int             value;
     private int             modulatedValue;
@@ -30,13 +30,16 @@ public class ParameterImpl implements IParameter
      *
      * @param valueChanger The value changer
      * @param parameter The parameter
-     * @param maxParameterValue The maximum number for values (range is 0 till maxParameterValue-1)
+     * @param index The index of the item in the page
      */
-    public ParameterImpl (final IValueChanger valueChanger, final Parameter parameter, final int maxParameterValue)
+    public ParameterImpl (final IValueChanger valueChanger, final Parameter parameter, final int index)
     {
+        super (index);
+
         this.valueChanger = valueChanger;
         this.parameter = parameter;
-        this.maxParameterValue = maxParameterValue;
+
+        final int maxParameterValue = this.valueChanger.getUpperBound ();
 
         parameter.exists ().markInterested ();
         parameter.name ().markInterested ();
@@ -62,7 +65,7 @@ public class ParameterImpl implements IParameter
     @Override
     public void inc (final double increment)
     {
-        this.parameter.inc (Double.valueOf (increment), Integer.valueOf (this.maxParameterValue));
+        this.parameter.inc (Double.valueOf (increment), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -118,7 +121,7 @@ public class ParameterImpl implements IParameter
     @Override
     public void setValue (final double value)
     {
-        this.parameter.set (Double.valueOf (value), Integer.valueOf (this.maxParameterValue));
+        this.parameter.set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 

@@ -106,7 +106,6 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         this.configuration = this.surface.getConfiguration ();
 
         this.selectedIndex = 4;
-        this.scales = this.model.getScales ();
 
         this.offsetY = 0;
 
@@ -206,7 +205,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     protected int getScrollOffset ()
     {
         final int pos = this.numSequencerRows;
-        return pos / 7 * 12 + this.noteMap[pos % 7] - this.noteMap[0];
+        return pos / 7 * 12 + this.keyManager.map (pos % 7) - this.keyManager.map (0);
     }
 
 

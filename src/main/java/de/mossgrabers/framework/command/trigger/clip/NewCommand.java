@@ -8,6 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -62,9 +63,10 @@ public class NewCommand<S extends IControlSurface<C>, C extends Configuration> e
             return;
         }
 
-        final ISlot selectedSlot = track.getSelectedSlot ();
+        final ISlotBank slotBank = track.getSlotBank ();
+        final ISlot selectedSlot = slotBank.getSelectedItem ();
         final int slotIndex = selectedSlot == null ? 0 : selectedSlot.getIndex ();
-        final ISlot slot = track.getEmptySlot (slotIndex);
+        final ISlot slot = slotBank.getEmptySlot (slotIndex);
         if (slot == null)
         {
             this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.", true, true);

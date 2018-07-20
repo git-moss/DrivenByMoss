@@ -43,7 +43,7 @@ public class StopClipCommand<S extends IControlSurface<C>, C extends Configurati
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getTrack (this.index).stop ();
+            this.model.getCurrentTrackBank ().getItem (this.index).stop ();
     }
 
 
@@ -52,6 +52,6 @@ public class StopClipCommand<S extends IControlSurface<C>, C extends Configurati
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getTrack (this.index).returnToArrangement ();
+            this.model.getCurrentTrackBank ().getItem (this.index).returnToArrangement ();
     }
 }

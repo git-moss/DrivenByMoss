@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.NoteObserver;
+
+
 /**
  * Interface to a track.
  *
@@ -11,14 +15,6 @@ package de.mossgrabers.framework.daw.data;
  */
 public interface ITrack extends IChannel
 {
-    /**
-     * Get the position of the track in all tracks.
-     *
-     * @return The position
-     */
-    int getPosition ();
-
-
     /**
      * Is the track a group?
      *
@@ -156,47 +152,11 @@ public interface ITrack extends IChannel
 
 
     /**
-     * Get the number of slots (of a page).
+     * Get the slot bank.
      *
-     * @return The number of slots
+     * @return The slot bank
      */
-    int getNumSlots ();
-
-
-    /**
-     * Get a clip slot of the track.
-     *
-     * @param slotIndex The index of the slot
-     * @return The slot
-     */
-    ISlot getSlot (final int slotIndex);
-
-
-    /**
-     * Returns an array with the selected slots of a track.
-     *
-     * @return The array is empty if none is selected.
-     */
-    ISlot [] getSelectedSlots ();
-
-
-    /**
-     * Returns the first selected slot or null if none is selected.
-     *
-     * @return The first selected slot or null if none is selected
-     */
-    ISlot getSelectedSlot ();
-
-
-    /**
-     * Returns the first empty slot in the current clip window. If none is empty null is returned.
-     * If startFrom is set the search starts from the given index (and wraps around after the last
-     * one to 0).
-     *
-     * @param startFrom At what index to start the search
-     * @return The empty slot or null if none is found
-     */
-    ISlot getEmptySlot (final int startFrom);
+    ISlotBank getSlotBank ();
 
 
     /**
@@ -220,13 +180,9 @@ public interface ITrack extends IChannel
 
 
     /**
-     * Scroll to the previous clip page.
+     * Add a note observer.
+     *
+     * @param observer The note observer
      */
-    void scrollClipPageBackwards ();
-
-
-    /**
-     * Scroll to the next clip page.
-     */
-    void scrollClipPageForwards ();
+    void addNoteObserver (final NoteObserver observer);
 }

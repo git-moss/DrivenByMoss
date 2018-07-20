@@ -7,8 +7,8 @@ package de.mossgrabers.controller.apc.view;
 import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
@@ -38,11 +38,14 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.model.canSelectedTrackHoldNotes () || this.noteMap[note] == -1)
+        if (!this.model.canSelectedTrackHoldNotes ())
             return;
-        // Mark selected notes
-        this.setPressedKeys (this.noteMap[note], velocity);
-        this.surface.sendMidiEvent (0x90, this.noteMap[note], velocity);
+
+        super.onGridNote (note, velocity);
+
+        final int mapped = this.keyManager.map (note);
+        if (mapped != -1)
+            this.surface.sendMidiEvent (0x90, mapped, velocity);
     }
 
 
@@ -62,10 +65,10 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
     @Override
     public void updateArrows ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedTrack ();
-        this.canScrollLeft = sel != null && sel.getIndex () > 0 || tb.canScrollTracksUp ();
-        this.canScrollRight = sel != null && sel.getIndex () < 7 || tb.canScrollTracksDown ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack sel = tb.getSelectedItem ();
+        this.canScrollLeft = sel != null && sel.getIndex () > 0 || tb.canScrollBackwards ();
+        this.canScrollRight = sel != null && sel.getIndex () < 7 || tb.canScrollForwards ();
 
         super.updateArrows ();
     }

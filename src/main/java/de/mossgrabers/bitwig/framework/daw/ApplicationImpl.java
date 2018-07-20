@@ -94,7 +94,7 @@ public class ApplicationImpl implements IApplication
     @Override
     public boolean isArrangeLayout ()
     {
-        return PANEL_LAYOUT_ARRANGE.equals (this.application.panelLayout ().get ());
+        return PANEL_LAYOUT_ARRANGE.equals (this.getPanelLayout ());
     }
 
 
@@ -102,7 +102,7 @@ public class ApplicationImpl implements IApplication
     @Override
     public boolean isMixerLayout ()
     {
-        return PANEL_LAYOUT_MIX.equals (this.application.panelLayout ().get ());
+        return PANEL_LAYOUT_MIX.equals (this.getPanelLayout ());
     }
 
 
@@ -110,7 +110,7 @@ public class ApplicationImpl implements IApplication
     @Override
     public boolean isEditLayout ()
     {
-        return PANEL_LAYOUT_EDIT.equals (this.application.panelLayout ().get ());
+        return PANEL_LAYOUT_EDIT.equals (this.getPanelLayout ());
     }
 
 
@@ -118,7 +118,7 @@ public class ApplicationImpl implements IApplication
     @Override
     public boolean isPlayLayout ()
     {
-        return PANEL_LAYOUT_PLAY.equals (this.application.panelLayout ().get ());
+        return PANEL_LAYOUT_PLAY.equals (this.getPanelLayout ());
     }
 
 
@@ -313,6 +313,22 @@ public class ApplicationImpl implements IApplication
     {
         // No track height increase method available
         this.invokeAction ("toggle_double_or_single_row_track_height");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void sliceToSampler ()
+    {
+        this.invokeAction ("slice_to_multi_sampler_track");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void sliceToDrumMachine ()
+    {
+        this.invokeAction ("slice_to_drum_track");
     }
 
 

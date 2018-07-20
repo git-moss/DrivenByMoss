@@ -11,15 +11,18 @@ import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.mode.Modes;
 import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.controller.sl.mode.device.DevicePresetsMode;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
+
+import java.util.List;
 
 
 /**
@@ -111,12 +114,13 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
                 final ITrack t = this.model.getSelectedTrack ();
                 if (t == null)
                     return;
-                final ISlot [] slotIndexes = t.getSelectedSlots ();
-                final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
+                final ISlotBank slotBank = t.getSlotBank ();
+                final List<ISlot> slotIndexes = slotBank.getSelectedItems ();
+                final int slotIndex = slotIndexes.isEmpty () ? 0 : slotIndexes.get (0).getIndex ();
                 for (int i = 0; i < 8; i++)
                 {
                     final int sIndex = (slotIndex + i) % 8;
-                    final ISlot s = t.getSlot (sIndex);
+                    final ISlot s = slotBank.getItem (sIndex);
                     if (!s.hasContent ())
                     {
                         this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());
@@ -342,7 +346,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     @Override
     public void updateButtons ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ICursorDevice cd = this.model.getCursorDevice ();
         final ITransport transport = this.model.getTransport ();
         final int clipLength = this.surface.getConfiguration ().getNewClipLength ();
@@ -392,7 +396,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
         else
         {
             final boolean isNoOverlayMode = mode != Modes.MODE_FRAME && mode != Modes.MODE_BROWSER;
-            final ITrack track = tb.getSelectedTrack ();
+            final ITrack track = tb.getSelectedItem ();
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW2_1, isNoOverlayMode && track != null && track.isMute () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW2_2, isNoOverlayMode && track != null && track.isSolo () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW2_3, isNoOverlayMode && track != null && track.isRecArm () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
@@ -405,7 +409,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
 
         // Button row 3: Selected track indication
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW3_1 + i, tb.getTrack (i).isSelected () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
+            this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW3_1 + i, tb.getItem (i).isSelected () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
 
         // LED indications for device parameters
         ((DeviceParamsMode) this.surface.getModeManager ().getMode (Modes.MODE_PARAMS)).setLEDs ();

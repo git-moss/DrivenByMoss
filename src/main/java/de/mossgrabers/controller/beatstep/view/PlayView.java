@@ -79,7 +79,7 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
 
             // Octave
             case 15:
-                this.clearPressedKeys ();
+                this.keyManager.clearPressedKeys ();
                 if (isInc)
                     this.scales.incOctave ();
                 else
@@ -94,37 +94,22 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
 
     /** {@inheritDoc} */
     @Override
-    public void onGridNote (final int note, final int velocity)
-    {
-        if (!this.model.canSelectedTrackHoldNotes ())
-            return;
-
-        // Mark selected notes
-        for (int i = 0; i < 128; i++)
-        {
-            if (this.noteMap[note] == this.noteMap[i])
-                this.pressedKeys[i] = velocity;
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateNoteMapping ()
-    {
-        this.noteMap = this.model.canSelectedTrackHoldNotes () ? this.scales.getNoteMatrix () : Scales.getEmptyMatrix ();
-        this.surface.scheduleTask ( () -> this.surface.setKeyTranslationTable (this.noteMap), 100);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void drawGrid ()
     {
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
         final PadGrid padGrid = this.surface.getPadGrid ();
-        final ColorManager colorManager = this.model.getColorManager ();
         for (int i = 36; i < 52; i++)
-            padGrid.light (i, isKeyboardEnabled ? this.pressedKeys[i] > 0 ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : colorManager.getColor (this.scales.getColor (this.noteMap, i)) : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
+            padGrid.light (i, this.getPadColor (isKeyboardEnabled, i));
+    }
+
+
+    protected int getPadColor (final boolean isKeyboardEnabled, int pad)
+    {
+        if (!isKeyboardEnabled)
+            return BeatstepColors.BEATSTEP_BUTTON_STATE_OFF;
+        if (this.keyManager.isKeyPressed (pad))
+            return BeatstepColors.BEATSTEP_BUTTON_STATE_PINK;
+        final ColorManager colorManager = this.model.getColorManager ();
+        return colorManager.getColor (this.keyManager.getColor (pad));
     }
 }

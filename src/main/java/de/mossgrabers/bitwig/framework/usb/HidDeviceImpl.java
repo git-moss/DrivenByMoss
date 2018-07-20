@@ -65,7 +65,7 @@ public class HidDeviceImpl implements IHidDevice
 
     /** {@inheritDoc} */
     @Override
-    public int sendOutputReport (byte reportID, IMemoryBlock memoryBlock)
+    public int sendOutputReport (final byte reportID, final IMemoryBlock memoryBlock)
     {
         if (!this.isOpen)
             return -1;
@@ -89,7 +89,7 @@ public class HidDeviceImpl implements IHidDevice
 
     /** {@inheritDoc} */
     @Override
-    public int sendFeatureReport (byte reportID, IMemoryBlock memoryBlock)
+    public int sendFeatureReport (final byte reportID, final IMemoryBlock memoryBlock)
     {
         if (!this.isOpen)
             return -1;
@@ -124,7 +124,7 @@ public class HidDeviceImpl implements IHidDevice
 
     private static HidDeviceInfo lookupDevice (final short vendorID, final short productID)
     {
-        for (HidDeviceInfo info: PureJavaHidApi.enumerateDevices ())
+        for (final HidDeviceInfo info: PureJavaHidApi.enumerateDevices ())
         {
             if (info.getVendorId () == vendorID && info.getProductId () == productID)
                 return info;

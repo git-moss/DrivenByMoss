@@ -128,7 +128,7 @@ public class ParamsMode extends AbstractKontrol1Mode
     public void scrollUp ()
     {
         if (this.surface.isShiftPressed ())
-            this.model.getCursorDevice ().selectNextBank ();
+            this.model.getCursorDevice ().getDeviceBank ().scrollPageForwards ();
         else
             this.model.getCursorDevice ().selectNext ();
     }
@@ -139,7 +139,7 @@ public class ParamsMode extends AbstractKontrol1Mode
     public void scrollDown ()
     {
         if (this.surface.isShiftPressed ())
-            this.model.getCursorDevice ().selectPreviousBank ();
+            this.model.getCursorDevice ().getDeviceBank ().scrollPageBackwards ();
         else
             this.model.getCursorDevice ().selectPrevious ();
     }

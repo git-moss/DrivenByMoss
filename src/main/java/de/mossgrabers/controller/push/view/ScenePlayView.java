@@ -65,7 +65,7 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
         final ISceneBank sceneBank = this.trackBank.getSceneBank ();
         for (int i = 0; i < 64; i++)
         {
-            final IScene scene = sceneBank.getScene (i);
+            final IScene scene = sceneBank.getItem (i);
             final String color = scene.doesExist () ? DAWColors.getColorIndex (scene.getColor ()) : PadGrid.GRID_OFF;
             this.surface.getPadGrid ().light (36 + i, color);
         }
@@ -77,7 +77,7 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     public void onGridNote (final int note, final int velocity)
     {
         if (velocity != 0)
-            this.trackBank.launchScene (note - 36);
+            this.trackBank.getSceneBank ().getItem (note - 36).launch ();
     }
 
 

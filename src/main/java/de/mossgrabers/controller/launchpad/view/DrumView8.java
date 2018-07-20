@@ -9,7 +9,6 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.scale.Scales;
 
 
 /**
@@ -88,7 +87,7 @@ public class DrumView8 extends DrumViewBase
     @Override
     public void updateNoteMapping ()
     {
-        this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (Scales.getEmptyMatrix ()));
+        this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (EMPTY_TABLE));
     }
 
 

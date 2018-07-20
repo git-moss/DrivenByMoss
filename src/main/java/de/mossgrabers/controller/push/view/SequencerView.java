@@ -111,7 +111,7 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
         // https://github.com/teotigraphix/Framework4Bitwig/issues/124
         final int x = index % 8;
         final ICursorClip cursorClip = this.model.getCursorClip (8, 128);
-        final int state = cursorClip.getStep (x, this.noteMap[y]);
+        final int state = cursorClip.getStep (x, this.keyManager.map (y));
         final ModeManager modeManager = this.surface.getModeManager ();
         final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.MODE_NOTE);
         noteMode.setValues (cursorClip, x, note, state == 2 ? 1.0 : 0, 127);
@@ -133,7 +133,7 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
         {
             // Toggle the note on up, so we can intercept the long presses
             if (velocity == 0)
-                this.getClip ().toggleStep (x, this.noteMap[y], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getGridNoteVelocity (note));
+                this.getClip ().toggleStep (x, this.keyManager.map (y), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getGridNoteVelocity (note));
             return;
         }
 

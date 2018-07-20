@@ -13,10 +13,8 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Arrays;
 
 
 /**
@@ -56,7 +54,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     private int                allLines;
     private int                sequencerSteps;
     private int                halfColumns;
-    private int []             pressedKeys;
 
 
     /**
@@ -83,14 +80,11 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.canScrollUp = false;
         this.canScrollDown = false;
 
-        this.pressedKeys = new int [128];
-        Arrays.fill (this.pressedKeys, 0);
-        this.noteMap = Scales.getEmptyMatrix ();
-
         final ITrackBank tb = model.getTrackBank ();
         // Light notes send from the sequencer
-        tb.addNoteObserver ( (note, velocity) -> this.pressedKeys[note] = velocity);
-        tb.addTrackSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
+        for (int i = 0; i < tb.getPageSize (); i++)
+            tb.getItem (i).addNoteObserver (this::updateNote);
+        tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
     }
 
 
@@ -148,7 +142,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             final int playedPad = velocity == 0 ? -1 : this.selectedPad;
 
             // Mark selected note
-            this.pressedKeys[this.offsetY + this.selectedPad] = velocity;
+            this.keyManager.setKeyPressed (this.offsetY + this.selectedPad, velocity);
             this.playNote (this.offsetY + this.selectedPad, velocity);
 
             if (playedPad < 0)
@@ -238,7 +232,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected String getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed, final boolean isRecording)
     {
         // Playing note?
-        if (this.pressedKeys[this.offsetY + index] > 0)
+        if (this.keyManager.isKeyPressed (this.offsetY + index))
             return isRecording ? AbstractDrumView.COLOR_PAD_RECORD : AbstractDrumView.COLOR_PAD_PLAY;
         // Selected?
         if (this.selectedPad == index)
@@ -277,19 +271,11 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     }
 
 
-    protected void clearPressedKeys ()
-    {
-        for (int i = 0; i < 128; i++)
-            this.pressedKeys[i] = 0;
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public void updateNoteMapping ()
     {
-        this.noteMap = this.canPadsBeTurnedOn () ? this.scales.getDrumMatrix () : Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (this.noteMap));
+        this.delayedUpdateNoteMapping (this.canPadsBeTurnedOn () ? this.scales.getDrumMatrix () : EMPTY_TABLE);
     }
 
 
@@ -299,7 +285,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.clearPressedKeys ();
+        this.keyManager.clearPressedKeys ();
         final int oldDrumOctave = this.scales.getDrumOctave ();
         this.scales.decDrumOctave ();
         final int newDrumOctave = this.scales.getDrumOctave ();
@@ -317,7 +303,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.clearPressedKeys ();
+        this.keyManager.clearPressedKeys ();
         final int oldDrumOctave = this.scales.getDrumOctave ();
         this.scales.incDrumOctave ();
         final int newDrumOctave = this.scales.getDrumOctave ();
@@ -463,5 +449,20 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             final int y = col / GRID_COLUMNS;
             padGrid.lightEx (x, y, this.getStepColor (isSet, hilite));
         }
+    }
+
+
+    /**
+     * The callback function for playing note changes.
+     * 
+     * @param trackIndex The index of the track on which the note is playing
+     * @param note The played note
+     * @param velocity The played velocity
+     */
+    private void updateNote (int trackIndex, int note, int velocity)
+    {
+        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel != null && sel.getIndex () == trackIndex)
+            this.keyManager.setKeyPressed (note, velocity);
     }
 }

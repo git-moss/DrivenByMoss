@@ -35,9 +35,18 @@ public class ConvertCommand<S extends IControlSurface<C>, C extends Configuratio
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void executeNormal (ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getApplication ().invokeAction (this.surface.isShiftPressed () ? "slice_to_multi_sampler_track" : "slice_to_drum_track");
+            this.model.getApplication ().sliceToDrumMachine ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (ButtonEvent event)
+    {
+        if (event == ButtonEvent.DOWN)
+            this.model.getApplication ().sliceToSampler ();
     }
 }

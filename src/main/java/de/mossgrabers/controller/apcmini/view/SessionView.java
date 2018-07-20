@@ -7,8 +7,9 @@ package de.mossgrabers.controller.apcmini.view;
 import de.mossgrabers.controller.apcmini.APCminiConfiguration;
 import de.mossgrabers.controller.apcmini.controller.APCminiColors;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -50,12 +51,13 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
     @Override
     public void drawGrid ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int x = 0; x < 8; x++)
         {
-            final ITrack t = tb.getTrack (x);
+            final ITrack t = tb.getItem (x);
+            final ISlotBank slotBank = t.getSlotBank ();
             for (int y = 0; y < 8; y++)
-                this.drawPad (t.getSlot (y), x, y, t.isRecArm ());
+                this.drawPad (slotBank.getItem (y), x, y, t.isRecArm ());
         }
     }
 

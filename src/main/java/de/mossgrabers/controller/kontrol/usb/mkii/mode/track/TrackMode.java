@@ -6,8 +6,8 @@ package de.mossgrabers.controller.kontrol.usb.mkii.mode.track;
 
 import de.mossgrabers.controller.kontrol.usb.mkii.Kontrol2Configuration;
 import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2ControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -38,7 +38,7 @@ public class TrackMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Conf
     public void updateDisplay ()
     {
         // TODO Implement track display
-        // final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
+        // final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
         // final ITrack t = currentTrackBank.getSelectedTrack ();
         // final Kontrol2Display d = (Kontrol2Display) this.surface.getDisplay ();
         //
@@ -83,8 +83,8 @@ public class TrackMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Conf
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedItem ();
         if (selectedTrack == null)
             return;
 
@@ -97,7 +97,7 @@ public class TrackMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Conf
                 selectedTrack.changePan (value);
                 return;
             default:
-                selectedTrack.getSend (index - 2).changeValue (value);
+                selectedTrack.getSendBank ().getItem (index - 2).changeValue (value);
                 break;
         }
     }

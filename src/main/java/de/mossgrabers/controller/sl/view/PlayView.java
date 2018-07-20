@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -58,14 +59,13 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         this.pressedKeys = new int [128];
         Arrays.fill (this.pressedKeys, 0);
 
-        this.noteMap = Scales.getEmptyMatrix ();
-
         this.isPlayMode = true;
 
         final ITrackBank tb = model.getTrackBank ();
         // Light notes send from the sequencer
-        tb.addNoteObserver ( (note, velocity) -> this.pressedKeys[note] = velocity);
-        tb.addTrackSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
+        for (int i = 0; i < tb.getPageSize (); i++)
+            tb.getItem (i).addNoteObserver (this::updateNote);
+        tb.addSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
     }
 
 
@@ -97,7 +97,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (activeModeId != Modes.MODE_SESSION)
             modeManager.setActiveMode (Modes.MODE_SESSION);
 
-        this.model.getSceneBank ().launchScene (index);
+        this.model.getSceneBank ().getItem (index).launch ();
     }
 
 
@@ -227,9 +227,9 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (activeModeId == Modes.MODE_SESSION)
         {
             if (isUp)
-                this.model.getSceneBank ().scrollScenesPageDown ();
+                this.model.getSceneBank ().scrollPageForwards ();
             else
-                this.model.getSceneBank ().scrollScenesPageUp ();
+                this.model.getSceneBank ().scrollPageBackwards ();
             return;
         }
 
@@ -399,7 +399,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             // Mark selected note
             this.pressedKeys[this.offsetY + this.selectedPad] = velocity;
 
-            this.surface.sendMidiEvent (0x90, this.noteMap[note], velocity);
+            this.surface.sendMidiEvent (0x90, this.keyManager.map (note), velocity);
         }
         else
         {
@@ -413,8 +413,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     @Override
     public void updateNoteMapping ()
     {
-        this.noteMap = this.model.canSelectedTrackHoldNotes () && this.isPlayMode ? this.scales.getDrumMatrix () : Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.noteMap);
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () && this.isPlayMode ? this.scales.getDrumMatrix () : EMPTY_TABLE);
     }
 
 
@@ -476,5 +475,20 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     public void updateSceneButtons ()
     {
         // Intentionally empty
+    }
+
+
+    /**
+     * The callback function for playing note changes.
+     * 
+     * @param trackIndex The index of the track on which the note is playing
+     * @param note The played note
+     * @param velocity The played velocity
+     */
+    private void updateNote (int trackIndex, int note, int velocity)
+    {
+        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel != null && sel.getIndex () == trackIndex)
+            this.pressedKeys[note] = velocity;
     }
 }

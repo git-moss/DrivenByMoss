@@ -15,9 +15,10 @@ import de.mossgrabers.controller.launchpad.view.SequencerView;
 import de.mossgrabers.controller.launchpad.view.Views;
 import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.scale.Scale;
@@ -52,7 +53,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     @Override
     protected void updateArrowStates ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ViewManager viewManager = this.surface.getViewManager ();
 
         if (viewManager.isActiveView (Views.VIEW_PLAY))
@@ -142,12 +143,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
 
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedItem ();
         final int selIndex = sel != null ? sel.getIndex () : -1;
-        this.canScrollLeft = selIndex > 0 || tb.canScrollTracksUp ();
-        this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getTrack (selIndex + 1).doesExist () || tb.canScrollTracksDown ();
-        this.canScrollUp = tb.canScrollScenesUp ();
-        this.canScrollDown = tb.canScrollScenesDown ();
+        this.canScrollLeft = selIndex > 0 || tb.canScrollBackwards ();
+        this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollForwards ();
+        final ISceneBank sceneBank = tb.getSceneBank ();
+        this.canScrollUp = sceneBank.canScrollBackwards ();
+        this.canScrollDown = sceneBank.canScrollForwards ();
     }
 
 

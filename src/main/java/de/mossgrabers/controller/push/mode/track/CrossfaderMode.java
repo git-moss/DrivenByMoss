@@ -8,8 +8,8 @@ import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 
 
@@ -40,7 +40,7 @@ public class CrossfaderMode extends AbstractTrackMode
 
         if (isTouched)
         {
-            final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
+            final ITrack t = this.model.getCurrentTrackBank ().getItem (index);
             if (t.doesExist ())
             {
                 if (this.surface.isDeletePressed ())
@@ -62,7 +62,7 @@ public class CrossfaderMode extends AbstractTrackMode
     public void onValueKnob (final int index, final int value)
     {
         if (this.increaseKnobMovement ())
-            this.model.getCurrentTrackBank ().getTrack (index).changeCrossfadeModeAsNumber (value);
+            this.model.getCurrentTrackBank ().getItem (index).changeCrossfadeModeAsNumber (value);
     }
 
 
@@ -71,11 +71,11 @@ public class CrossfaderMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack t = tb.getTrack (i);
+            final ITrack t = tb.getItem (i);
             d.setCell (0, i, t.doesExist () ? "Crossfdr" : "");
             if (t.doesExist ())
             {

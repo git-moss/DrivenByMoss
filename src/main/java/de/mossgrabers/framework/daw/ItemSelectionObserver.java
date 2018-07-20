@@ -5,18 +5,18 @@
 package de.mossgrabers.framework.daw;
 
 /**
- * Callback interface for observing track selection changes.
+ * Callback interface for observing item selection changes in a bank.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 @FunctionalInterface
-public interface TrackSelectionObserver
+public interface ItemSelectionObserver
 {
     /**
      * The callback function.
      *
      * @param index The index of the track
-     * @param isSelected Has the track been selected?
+     * @param isSelected Has the item been selected?
      */
     void call (int index, boolean isSelected);
 }

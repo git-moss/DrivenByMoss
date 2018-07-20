@@ -31,6 +31,6 @@ public class VolumeMode extends BaseMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).setVolume (value);
+        this.model.getCurrentTrackBank ().getItem (index).setVolume (value);
     }
 }

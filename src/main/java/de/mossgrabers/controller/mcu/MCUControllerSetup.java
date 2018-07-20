@@ -70,9 +70,9 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.Relative2ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IApplication;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
@@ -197,9 +197,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
-        trackBank.addTrackSelectionObserver (this::handleTrackChange);
+        trackBank.addSelectionObserver (this::handleTrackChange);
 
-        this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
+        this.model.getMasterTrack ().addSelectionObserver ( (index, isSelected) -> {
             final ModeManager modeManager = this.getSurface ().getModeManager ();
             if (isSelected)
                 modeManager.setActiveMode (Modes.MODE_MASTER);
@@ -586,7 +586,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         final boolean enableVUMeters = this.configuration.isEnableVUMeters ();
         final boolean hasMotorFaders = this.configuration.hasMotorFaders ();
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         IMidiOutput output;
         for (int index = 0; index < this.numMCUDevices; index++)
         {
@@ -596,7 +596,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             for (int i = 0; i < 8; i++)
             {
                 final int channel = extenderOffset + i;
-                final ITrack track = tb.getTrack (channel);
+                final ITrack track = tb.getItem (channel);
 
                 // Update VU LEDs of channel
                 if (enableVUMeters)
@@ -690,30 +690,30 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                                     value = crossfadeMode == 2 ? this.valueChanger.getUpperBound () : crossfadeMode == 1 ? this.valueChanger.getUpperBound () / 2 : 0;
                                 }
                                 else if (!effectTrackBankActive)
-                                    value = selectedTrack.getSend (0).getValue ();
+                                    value = selectedTrack.getSendBank ().getItem (0).getValue ();
                             }
                             else if (!effectTrackBankActive)
-                                value = selectedTrack.getSend (index - (this.configuration.isDisplayCrossfader () ? 3 : 2)).getValue ();
+                                value = selectedTrack.getSendBank ().getItem (index - (this.configuration.isDisplayCrossfader () ? 3 : 2)).getValue ();
                             break;
                     }
                 }
             }
             else if (modeManager.isActiveMode (Modes.MODE_SEND1))
-                value = track.getSend (0).getValue ();
+                value = track.getSendBank ().getItem (0).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND2))
-                value = track.getSend (1).getValue ();
+                value = track.getSendBank ().getItem (1).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND3))
-                value = track.getSend (2).getValue ();
+                value = track.getSendBank ().getItem (2).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND4))
-                value = track.getSend (3).getValue ();
+                value = track.getSendBank ().getItem (3).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND5))
-                value = track.getSend (4).getValue ();
+                value = track.getSendBank ().getItem (4).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND6))
-                value = track.getSend (5).getValue ();
+                value = track.getSendBank ().getItem (5).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND7))
-                value = track.getSend (6).getValue ();
+                value = track.getSendBank ().getItem (6).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_SEND8))
-                value = track.getSend (7).getValue ();
+                value = track.getSendBank ().getItem (7).getValue ();
             else if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
                 value = this.model.getCursorDevice ().getFXParam (channel).getValue ();
         }
@@ -740,7 +740,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     private void updateIndication (final Integer mode)
     {
         final ITrackBank tb = this.model.getTrackBank ();
-        final IChannelBank tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tbe = this.model.getEffectTrackBank ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isPan = Modes.MODE_PAN.equals (mode);
         final boolean isTrack = Modes.MODE_TRACK.equals (mode);
@@ -751,20 +751,21 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             tbe.setIndication (isEffect);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
-        for (int i = 0; i < tb.getNumTracks (); i++)
+        final ITrack selectedTrack = tb.getSelectedItem ();
+        for (int i = 0; i < tb.getPageSize (); i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrack;
-            final ITrack track = tb.getTrack (i);
+            final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect && (isTrack || hasTrackSel));
             track.setPanIndication (!isEffect && (isPan || hasTrackSel));
 
-            for (int j = 0; j < tb.getNumSends (); j++)
-                track.getSend (j).setIndication (!isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
+            final ISendBank sendBank = track.getSendBank ();
+            for (int j = 0; j < sendBank.getPageSize (); j++)
+                sendBank.getItem (j).setIndication (!isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
 
             if (tbe != null)
             {
-                final ITrack fxTrack = tbe.getTrack (i);
+                final ITrack fxTrack = tbe.getItem (i);
                 fxTrack.setVolumeIndication (isEffect);
                 fxTrack.setPanIndication (isEffect && isPan);
             }

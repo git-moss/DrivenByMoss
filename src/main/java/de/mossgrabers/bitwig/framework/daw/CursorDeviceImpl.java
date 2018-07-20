@@ -10,6 +10,7 @@ import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumPad;
@@ -19,7 +20,6 @@ import de.mossgrabers.framework.daw.data.IParameter;
 import com.bitwig.extension.controller.api.Channel;
 import com.bitwig.extension.controller.api.CursorDeviceLayer;
 import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
-import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.DeviceLayer;
 import com.bitwig.extension.controller.api.DeviceLayerBank;
@@ -39,13 +39,11 @@ public class CursorDeviceImpl implements ICursorDevice
 {
     private IHost                    host;
     private PinnableCursorDevice     cursorDevice;
-    private DeviceBank               siblings;
     private CursorRemoteControlsPage remoteControls;
     private CursorDeviceLayer        cursorDeviceLayer;
     private IValueChanger            valueChanger;
 
     private int                      numParams;
-    private int                      numDevicesInBank;
     private int                      numDeviceLayers;
     private int                      numDrumPadLayers;
 
@@ -57,6 +55,7 @@ public class CursorDeviceImpl implements ICursorDevice
     private DeviceBank []            deviceBanks;
     private DrumPadBank              drumPadBank;
     private DeviceBank []            drumPadBanks;
+    private DeviceBankImpl           deviceBank;
 
 
     /**
@@ -78,7 +77,7 @@ public class CursorDeviceImpl implements ICursorDevice
         this.valueChanger = valueChanger;
 
         this.numParams = numParams >= 0 ? numParams : 8;
-        this.numDevicesInBank = numDevicesInBank >= 0 ? numDevicesInBank : 8;
+        final int numDevices = numDevicesInBank >= 0 ? numDevicesInBank : 8;
         this.numDeviceLayers = numDeviceLayers >= 0 ? numDeviceLayers : 8;
         this.numDrumPadLayers = numDrumPadLayers >= 0 ? numDrumPadLayers : 16;
 
@@ -110,21 +109,13 @@ public class CursorDeviceImpl implements ICursorDevice
             for (int i = 0; i < this.numParams; i++)
             {
                 final RemoteControl p = this.getParameter (i);
-                this.fxparams[i] = new ParameterImpl (valueChanger, p, valueChanger.getUpperBound ());
+                this.fxparams[i] = new ParameterImpl (valueChanger, p, i);
             }
         }
 
         // Monitor the sibling devices of the cursor device
-        if (this.numDevicesInBank > 0)
-        {
-            this.siblings = this.cursorDevice.createSiblingsDeviceBank (this.numDevicesInBank);
-            for (int i = 0; i < this.numDevicesInBank; i++)
-            {
-                final Device device = this.siblings.getDevice (i);
-                device.exists ().markInterested ();
-                device.name ().markInterested ();
-            }
-        }
+        final DeviceBank siblings = numDevices > 0 ? this.cursorDevice.createSiblingsDeviceBank (numDevices) : null;
+        this.deviceBank = new DeviceBankImpl (siblings, numDevices);
 
         this.cursorDeviceLayer = this.cursorDevice.createCursorLayer ();
         this.cursorDeviceLayer.hasPrevious ().markInterested ();
@@ -140,7 +131,7 @@ public class CursorDeviceImpl implements ICursorDevice
             {
                 final DeviceLayer layer = this.layerBank.getItemAt (i);
                 this.deviceLayers[i] = new LayerImpl (layer, valueChanger, i, numSends);
-                this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
+                this.deviceBanks[i] = layer.createDeviceBank (numDevices);
 
                 final int index = i;
                 layer.addIsSelectedInEditorObserver (this.deviceLayers[index]::setSelected);
@@ -157,7 +148,7 @@ public class CursorDeviceImpl implements ICursorDevice
             {
                 final DrumPad layer = this.drumPadBank.getItemAt (i);
                 this.drumPadLayers[i] = new DrumPadImpl (layer, valueChanger, i, numSends);
-                this.drumPadBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
+                this.drumPadBanks[i] = layer.createDeviceBank (numDevices);
 
                 final int index = i;
                 layer.addIsSelectedInEditorObserver (this.drumPadLayers[index]::setSelected);
@@ -197,12 +188,7 @@ public class CursorDeviceImpl implements ICursorDevice
         for (int i = 0; i < this.numParams; i++)
             this.fxparams[i].enableObservers (enable);
 
-        for (int i = 0; i < this.numDevicesInBank; i++)
-        {
-            final Device device = this.siblings.getDevice (i);
-            device.exists ().setIsSubscribed (enable);
-            device.name ().setIsSubscribed (enable);
-        }
+        this.deviceBank.enableObservers (enable);
 
         this.cursorDeviceLayer.hasPrevious ().setIsSubscribed (enable);
         this.cursorDeviceLayer.hasNext ().setIsSubscribed (enable);
@@ -288,6 +274,28 @@ public class CursorDeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
+    public void selectPrevious ()
+    {
+        final boolean moveBank = this.getPositionInBank () == 0;
+        this.cursorDevice.selectPrevious ();
+        if (moveBank)
+            this.deviceBank.scrollPageBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNext ()
+    {
+        final boolean moveBank = this.getPositionInBank () == this.getDeviceBank ().getPageSize () - 1;
+        this.cursorDevice.selectNext ();
+        if (moveBank)
+            this.deviceBank.scrollPageForwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isPlugin ()
     {
         return this.cursorDevice.isPlugin ().get ();
@@ -306,7 +314,7 @@ public class CursorDeviceImpl implements ICursorDevice
     @Override
     public int getPositionInBank ()
     {
-        return this.getPositionInChain () % this.numDevicesInBank;
+        return this.getPositionInChain () % this.deviceBank.getPageSize ();
     }
 
 
@@ -555,76 +563,6 @@ public class CursorDeviceImpl implements ICursorDevice
     public void toggleWindowOpen ()
     {
         this.cursorDevice.isWindowOpen ().toggle ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectPrevious ()
-    {
-        final boolean moveBank = this.getPositionInBank () == 0;
-        this.cursorDevice.selectPrevious ();
-        if (moveBank)
-            this.selectPreviousBank ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectNext ()
-    {
-        final boolean moveBank = this.getPositionInBank () == 7;
-        this.cursorDevice.selectNext ();
-        if (moveBank)
-            this.selectNextBank ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean doesSiblingExist (final int index)
-    {
-        return this.siblings.getDevice (index).exists ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getSiblingDeviceName (final int index)
-    {
-        return this.siblings.getDevice (index).name ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getSiblingDeviceName (final int index, final int limit)
-    {
-        return this.siblings.getDevice (index).name ().getLimited (limit);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectSibling (final int index)
-    {
-        this.siblings.getDevice (index).selectInEditor ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectPreviousBank ()
-    {
-        this.siblings.scrollPageUp ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectNextBank ()
-    {
-        this.siblings.scrollPageDown ();
     }
 
 
@@ -1629,14 +1567,6 @@ public class CursorDeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
-    public int getNumDevices ()
-    {
-        return this.numDevicesInBank;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public int getNumLayers ()
     {
         return this.numDeviceLayers;
@@ -1656,5 +1586,13 @@ public class CursorDeviceImpl implements ICursorDevice
     public int getNumParameters ()
     {
         return this.numParams;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IDeviceBank getDeviceBank ()
+    {
+        return this.deviceBank;
     }
 }

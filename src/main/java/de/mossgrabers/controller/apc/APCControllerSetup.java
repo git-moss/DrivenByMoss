@@ -63,9 +63,9 @@ import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -146,7 +146,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 5, 8, 16, 16, true, -1, -1, -1, -1);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
-        trackBank.addTrackSelectionObserver (this::handleTrackChange);
+        trackBank.addSelectionObserver (this::handleTrackChange);
     }
 
 
@@ -358,14 +358,14 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         surface.updateButton (APCControlSurface.APC_BUTTON_RECORD, t.isRecording () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
 
         // Activator, Solo, Record Arm
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selTrack = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selTrack = tb.getSelectedItem ();
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
         final int clipLength = surface.getConfiguration ().getNewClipLength ();
         final ModeManager modeManager = surface.getModeManager ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = tb.getTrack (i);
+            final ITrack track = tb.getItem (i);
             boolean isOn;
             if (isShift)
                 isOn = i == clipLength;
@@ -467,7 +467,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     private void updateIndication (final Integer mode)
     {
         final ITrackBank tb = this.model.getTrackBank ();
-        final IChannelBank tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tbe = this.model.getEffectTrackBank ();
         final APCControlSurface surface = this.getSurface ();
         final boolean isSession = surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
@@ -480,15 +480,16 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = tb.getTrack (i);
+            final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect);
             track.setPanIndication (!isEffect && isPan);
+            final ISendBank sendBank = track.getSendBank ();
             for (int j = 0; j < 8; j++)
-                track.getSend (j).setIndication (!isEffect && (mode == Modes.MODE_SEND1 && j == 0 || mode == Modes.MODE_SEND2 && j == 1 || mode == Modes.MODE_SEND3 && j == 2 || mode == Modes.MODE_SEND4 && j == 3 || mode == Modes.MODE_SEND5 && j == 4 || mode == Modes.MODE_SEND6 && j == 5 || mode == Modes.MODE_SEND7 && j == 6 || mode == Modes.MODE_SEND8 && j == 7));
+                sendBank.getItem (j).setIndication (!isEffect && (mode == Modes.MODE_SEND1 && j == 0 || mode == Modes.MODE_SEND2 && j == 1 || mode == Modes.MODE_SEND3 && j == 2 || mode == Modes.MODE_SEND4 && j == 3 || mode == Modes.MODE_SEND5 && j == 4 || mode == Modes.MODE_SEND6 && j == 5 || mode == Modes.MODE_SEND7 && j == 6 || mode == Modes.MODE_SEND8 && j == 7));
 
             if (tbe != null)
             {
-                final ITrack fxTrack = tbe.getTrack (i);
+                final ITrack fxTrack = tbe.getItem (i);
                 fxTrack.setVolumeIndication (isEffect);
                 fxTrack.setPanIndication (isEffect && isPan);
             }

@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.beatstep.view;
 
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -46,8 +45,8 @@ public class TrackEditing
         if (value == 64)
             return;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedItem ();
         if (selectedTrack == null)
             return;
 
@@ -89,8 +88,8 @@ public class TrackEditing
             case 9:
             case 10:
             case 11:
-                if (tb instanceof ITrackBank)
-                    selectedTrack.getSend (index - 8).changeValue (value);
+                if (!this.model.isEffectTrackBankActive ())
+                    selectedTrack.getSendBank ().getItem (index - 8).changeValue (value);
                 break;
         }
     }

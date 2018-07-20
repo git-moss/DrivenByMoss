@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 
@@ -18,9 +19,8 @@ import com.bitwig.extension.controller.api.CursorBrowserItem;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowserColumnImpl implements IBrowserColumn
+public class BrowserColumnImpl extends AbstractItemImpl implements IBrowserColumn
 {
-    private final int                 index;
     private final BrowserFilterColumn column;
     private IBrowserColumnItem []     items;
     private BrowserItemBank<?>        itemBank;
@@ -36,7 +36,8 @@ public class BrowserColumnImpl implements IBrowserColumn
      */
     public BrowserColumnImpl (final BrowserFilterColumn column, final int index, final int numFilterColumnEntries)
     {
-        this.index = index;
+        super (index);
+
         this.column = column;
 
         column.exists ().markInterested ();
@@ -75,14 +76,6 @@ public class BrowserColumnImpl implements IBrowserColumn
 
     /** {@inheritDoc} */
     @Override
-    public int getIndex ()
-    {
-        return this.index;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean doesExist ()
     {
         return this.column.exists ().get ();
@@ -94,6 +87,14 @@ public class BrowserColumnImpl implements IBrowserColumn
     public String getName ()
     {
         return this.column.name ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getName (int limit)
+    {
+        return this.column.name ().getLimited (limit);
     }
 
 

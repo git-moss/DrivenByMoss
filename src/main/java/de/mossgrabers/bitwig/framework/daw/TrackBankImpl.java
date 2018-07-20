@@ -5,10 +5,10 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.daw.ITrackBank;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.TrackBank;
 
 
 /**
@@ -16,38 +16,27 @@ import com.bitwig.extension.controller.api.CursorTrack;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TrackBankImpl extends AbstractTrackBankImpl implements ITrackBank
+public class TrackBankImpl extends AbstractTrackBankImpl
 {
     private CursorTrack cursorTrack;
 
 
     /**
      * Constructor.
-     *
+     * 
+     * @param bank The Bitwig track bank
      * @param host The host
      * @param valueChanger The value changer
      * @param cursorTrack The cursor track
      * @param numTracks The number of tracks in a bank page
      * @param numScenes The number of scenes in a bank page
      * @param numSends The number of sends in a bank page
-     * @param hasFlatTrackList True if group navigation should not be supported, instead all tracks
-     *            are flat
      */
-    public TrackBankImpl (final ControllerHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final int numSends, final boolean hasFlatTrackList)
+    public TrackBankImpl (final TrackBank bank, final ControllerHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final int numSends)
     {
-        super (valueChanger, numTracks, numScenes, numSends);
+        super (bank, valueChanger, numTracks, numScenes, numSends);
 
         this.cursorTrack = cursorTrack;
-
-        if (hasFlatTrackList)
-        {
-            this.trackBank = host.createMainTrackBank (numTracks, numSends, numScenes);
-            this.trackBank.followCursorTrack (cursorTrack);
-        }
-        else
-            this.trackBank = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
-
-        this.init ();
     }
 
 
@@ -80,7 +69,7 @@ public class TrackBankImpl extends AbstractTrackBankImpl implements ITrackBank
     @Override
     public boolean canEditSend (final int sendIndex)
     {
-        return this.getTrack (0).getSend (sendIndex).doesExist ();
+        return this.getItem (0).getSendBank ().getItem (sendIndex).doesExist ();
     }
 
 
@@ -88,6 +77,6 @@ public class TrackBankImpl extends AbstractTrackBankImpl implements ITrackBank
     @Override
     public String getEditSendName (final int sendIndex)
     {
-        return this.getTrack (0).getSend (sendIndex).getName ();
+        return this.getItem (0).getSendBank ().getItem (sendIndex).getName ();
     }
 }

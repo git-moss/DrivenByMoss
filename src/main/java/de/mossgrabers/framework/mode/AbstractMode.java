@@ -6,8 +6,8 @@ package de.mossgrabers.framework.mode;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -137,11 +137,11 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectPreviousTrackBankPage (final ITrack sel, final int index)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollTracksUp ())
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        if (!tb.canScrollBackwards ())
             return;
-        tb.scrollTracksPageUp ();
-        final int newSel = index == -1 || sel == null ? tb.getNumTracks () - 1 : sel.getIndex ();
+        tb.scrollPageBackwards ();
+        final int newSel = index == -1 || sel == null ? tb.getPageSize () - 1 : sel.getIndex ();
         this.surface.scheduleTask ( () -> this.selectTrack (newSel), BUTTON_REPEAT_INTERVAL);
     }
 
@@ -150,10 +150,10 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectNextTrack ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack sel = tb.getSelectedItem ();
         final int index = sel == null ? 0 : sel.getIndex () + 1;
-        if (index == tb.getNumTracks () || this.surface.isShiftPressed ())
+        if (index == tb.getPageSize () || this.surface.isShiftPressed ())
         {
             this.selectNextTrackBankPage (sel, index);
             return;
@@ -166,10 +166,10 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectNextTrackBankPage (final ITrack sel, final int index)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollTracksDown ())
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        if (!tb.canScrollForwards ())
             return;
-        tb.scrollTracksPageDown ();
+        tb.scrollPageForwards ();
         final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
         this.surface.scheduleTask ( () -> this.selectTrack (newSel), BUTTON_REPEAT_INTERVAL);
     }
@@ -179,6 +179,6 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectTrack (final int index)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).selectAndMakeVisible ();
+        this.model.getCurrentTrackBank ().getItem (index).select ();
     }
 }

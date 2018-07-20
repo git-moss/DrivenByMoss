@@ -247,4 +247,16 @@ public interface IApplication extends ObserverManagement
      * Increase the track height.
      */
     void incTrackHeight ();
+
+
+    /**
+     * Slices the currently selected audio clip to a new sampler instance.
+     */
+    void sliceToSampler ();
+
+
+    /**
+     * Slices the currently selected audio clip to a new drum machine instance.
+     */
+    void sliceToDrumMachine ();
 }

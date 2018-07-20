@@ -9,12 +9,15 @@ import de.mossgrabers.controller.osc.OSCConfiguration;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ISendBank;
+import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.EmptyTrackData;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
@@ -29,6 +32,7 @@ import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.osc.AbstractOpenSoundControlWriter;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.KeyManager;
 
 
 /**
@@ -126,11 +130,11 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         // Master-/Track(-commands)
         //
 
-        final IChannelBank trackBank = this.model.getCurrentTrackBank ();
-        for (int i = 0; i < trackBank.getNumTracks (); i++)
-            this.flushTrack ("/track/" + (i + 1) + "/", trackBank.getTrack (i), dump);
+        final ITrackBank trackBank = this.model.getCurrentTrackBank ();
+        for (int i = 0; i < trackBank.getPageSize (); i++)
+            this.flushTrack ("/track/" + (i + 1) + "/", trackBank.getItem (i), dump);
         this.flushTrack ("/master/", this.model.getMasterTrack (), dump);
-        final ITrack selectedTrack = trackBank.getSelectedTrack ();
+        final ITrack selectedTrack = trackBank.getSelectedItem ();
         this.flushTrack ("/track/selected/", selectedTrack == null ? EmptyTrackData.INSTANCE : selectedTrack, dump);
         this.sendOSC ("/track/toggleBank", this.model.isEffectTrackBankActive () ? 1 : 0, dump);
 
@@ -139,11 +143,8 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         //
 
         final ISceneBank sceneBank = this.model.getSceneBank ();
-        if (sceneBank != null)
-        {
-            for (int i = 0; i < sceneBank.getNumScenes (); i++)
-                this.flushScene ("/scene/" + (i + 1) + "/", sceneBank.getScene (i), dump);
-        }
+        for (int i = 0; i < sceneBank.getPageSize (); i++)
+            this.flushScene ("/scene/" + (i + 1) + "/", sceneBank.getItem (i), dump);
 
         //
         // Device / Primary Device
@@ -204,12 +205,14 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         this.sendOSC (trackAddress + "canHoldAudioData", track.canHoldAudioData (), dump);
         this.sendOSC (trackAddress + "position", track.getPosition (), dump);
 
-        for (int i = 0; i < track.getNumSends (); i++)
-            this.flushParameterData (trackAddress + "send/" + (i + 1) + "/", track.getSend (i), dump);
+        final ISendBank sendBank = track.getSendBank ();
+        for (int i = 0; i < sendBank.getPageSize (); i++)
+            this.flushParameterData (trackAddress + "send/" + (i + 1) + "/", sendBank.getItem (i), dump);
 
-        for (int i = 0; i < track.getNumSlots (); i++)
+        final ISlotBank slotBank = track.getSlotBank ();
+        for (int i = 0; i < slotBank.getPageSize (); i++)
         {
-            final ISlot slot = track.getSlot (i);
+            final ISlot slot = slotBank.getItem (i);
             final String clipAddress = trackAddress + "clip/" + (i + 1) + "/";
             this.sendOSC (clipAddress + "name", slot.getName (), dump);
             this.sendOSC (clipAddress + "isSelected", slot.isSelected (), dump);
@@ -266,10 +269,11 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         this.sendOSC (deviceAddress + "expand", device.isExpanded (), dump);
         this.sendOSC (deviceAddress + "window", device.isWindowOpen (), dump);
         final int positionInBank = device.getPositionInBank ();
-        for (int i = 0; i < device.getNumDevices (); i++)
+        final IDeviceBank deviceBank = device.getDeviceBank ();
+        for (int i = 0; i < deviceBank.getPageSize (); i++)
         {
             final int oneplus = i + 1;
-            this.sendOSC (deviceAddress + "sibling/" + oneplus + "/name", device.getSiblingDeviceName (i), dump);
+            this.sendOSC (deviceAddress + "sibling/" + oneplus + "/name", deviceBank.getItem (i).getName (), dump);
             this.sendOSC (deviceAddress + "sibling/" + oneplus + "/selected", i == positionInBank, dump);
 
         }
@@ -365,8 +369,9 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         this.sendOSC (deviceAddress + "mute", channel.isMute (), dump);
         this.sendOSC (deviceAddress + "solo", channel.isSolo (), dump);
 
-        for (int i = 0; i < channel.getNumSends (); i++)
-            this.flushParameterData (deviceAddress + "send/" + (i + 1) + "/", channel.getSend (i), dump);
+        final ISendBank sendBank = channel.getSendBank ();
+        for (int i = 0; i < sendBank.getPageSize (); i++)
+            this.flushParameterData (deviceAddress + "send/" + (i + 1) + "/", sendBank.getItem (i), dump);
 
         if (((OSCConfiguration) this.configuration).isEnableVUMeters ())
             this.sendOSC (deviceAddress + "vu", channel.getVu (), dump);
@@ -423,11 +428,7 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
             return OSCColors.getColor (Scales.SCALE_COLOR_OFF);
 
         if (!this.keyManager.isKeyPressed (note))
-        {
-            final Scales scales = this.model.getScales ();
-            final String color = scales.getColor (this.keyManager.getKeyTranslationMatrix (), note);
-            return OSCColors.getColor (color);
-        }
+            return OSCColors.getColor (this.keyManager.getColor (note));
 
         final boolean isRecording = this.model.hasRecordingState ();
         return isRecording ? OSCColors.COLOR_RED : OSCColors.COLOR_GREEN;

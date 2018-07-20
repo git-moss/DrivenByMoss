@@ -210,8 +210,8 @@ public class Scales
         final int index = this.valueChanger.changeValue (control, this.selectedScale.ordinal (), 1, values.length);
         this.selectedScale = values[index];
     }
-    
-    
+
+
     /**
      * Returns true if there is a previous scale to select.
      *
@@ -275,9 +275,9 @@ public class Scales
         return this.scaleOffset < Scales.OFFSETS.length - 1;
     }
 
-    
-    
-    
+
+
+
     /**
      * Select the previous scale offset.
      */
@@ -295,7 +295,7 @@ public class Scales
         this.setScaleOffset (this.scaleOffset + 1);
     }
 
-    
+
     /**
      * Get the base note (offset) to use for the current scale.
      *

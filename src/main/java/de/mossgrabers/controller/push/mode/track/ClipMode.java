@@ -12,9 +12,9 @@ import de.mossgrabers.controller.push.view.ColorView;
 import de.mossgrabers.controller.push.view.ColorView.SelectMode;
 import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -126,15 +126,15 @@ public class ClipMode extends AbstractTrackMode
             return;
         }
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t0 = tb.getTrack (0);
-        final ITrack t1 = tb.getTrack (1);
-        final ITrack t2 = tb.getTrack (2);
-        final ITrack t3 = tb.getTrack (3);
-        final ITrack t4 = tb.getTrack (4);
-        final ITrack t5 = tb.getTrack (5);
-        final ITrack t6 = tb.getTrack (6);
-        final ITrack t7 = tb.getTrack (7);
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t0 = tb.getItem (0);
+        final ITrack t1 = tb.getItem (1);
+        final ITrack t2 = tb.getItem (2);
+        final ITrack t3 = tb.getItem (3);
+        final ITrack t4 = tb.getItem (4);
+        final ITrack t5 = tb.getItem (5);
+        final ITrack t6 = tb.getItem (6);
+        final ITrack t7 = tb.getItem (7);
 
         message.addParameterElement (this.model.getHost ().hasClips () ? "Session" : "", this.displayMidiNotes, t0.getName (), t0.getType (), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
         message.addParameterElement ("Piano Roll", false, t1.getName (), t1.getType (), t1.getColor (), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);

@@ -8,8 +8,8 @@ import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 
 
@@ -36,7 +36,7 @@ public class PanMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).changePan (value);
+        this.model.getCurrentTrackBank ().getItem (index).changePan (value);
     }
 
 
@@ -46,7 +46,7 @@ public class PanMode extends AbstractTrackMode
     {
         this.isKnobTouched[index] = isTouched;
 
-        final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack t = this.model.getCurrentTrackBank ().getItem (index);
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
@@ -70,11 +70,11 @@ public class PanMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
 
         for (int i = 0; i < 8; i++)
         {
-            final ITrack t = tb.getTrack (i);
+            final ITrack t = tb.getItem (i);
             d.setCell (0, i, t.doesExist () ? "Pan" : "").setCell (1, i, t.getPanStr (8));
             if (t.doesExist ())
                 d.setCell (2, i, t.getPan (), Format.FORMAT_PAN);

@@ -193,12 +193,21 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Sets the mapping of midi notes to the midi notes sent to the DAW
+     * Set the mapping of midi notes to the midi notes sent to the DAW.
      *
      * @param table The table has 128 items. The index is the incoming note, the value at the index
      *            the outgoing note.
      */
     void setKeyTranslationTable (int [] table);
+
+
+    /**
+     * Get the mapping of midi notes to the midi notes sent to the DAW.
+     *
+     * @return The table has 128 items. The index is the incoming note, the value at the index the
+     *         outgoing note.
+     */
+    int [] getKeyTranslationTable ();
 
 
     /**

@@ -40,7 +40,7 @@ public class VolumeMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
         //
         // d.clear ();
         //
-        // final IChannelBank tb = this.model.getCurrentTrackBank ();
+        // final ITrackBank tb = this.model.getCurrentTrackBank ();
         //
         // final StringBuilder sb = new StringBuilder ();
         // final int positionFirst = tb.getTrackPositionFirst ();
@@ -61,7 +61,7 @@ public class VolumeMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
         // for (int i = 0; i < 8; i++)
         // {
         // final boolean isSel = i == selIndex;
-        // final ITrack t = tb.getTrack (i);
+        // final ITrack t = tb.getItem (i);
         // final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8).toUpperCase
         // ();
         // d.setCell (0, 1 + i, isSel ? ">" + n : n).setCell (1, 1 + i, t.isMute () ? "-MUTED-" :
@@ -78,7 +78,7 @@ public class VolumeMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).changeVolume (value);
+        this.model.getCurrentTrackBank ().getItem (index).changeVolume (value);
     }
 
 

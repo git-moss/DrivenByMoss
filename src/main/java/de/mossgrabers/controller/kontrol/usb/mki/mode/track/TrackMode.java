@@ -7,8 +7,9 @@ package de.mossgrabers.controller.kontrol.usb.mki.mode.track;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Display;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.AbstractKontrol1Mode;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISendBank;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -37,8 +38,8 @@ public class TrackMode extends AbstractKontrol1Mode
     @Override
     public void updateDisplay ()
     {
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack t = currentTrackBank.getSelectedTrack ();
+        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack t = currentTrackBank.getSelectedItem ();
         final Kontrol1Display d = (Kontrol1Display) this.surface.getDisplay ();
 
         d.clear ();
@@ -59,10 +60,11 @@ public class TrackMode extends AbstractKontrol1Mode
 
         if (!isEffectTrackBankActive)
         {
+            final ISendBank sendBank = t.getSendBank ();
             for (int i = 0; i < 6; i++)
             {
                 final int pos = 3 + i;
-                final ISend sendData = t.getSend (i);
+                final ISend sendData = sendBank.getItem (i);
                 d.setCell (0, pos, StringUtils.shortenAndFixASCII (sendData.getName (8), 8).toUpperCase ()).setCell (1, pos, sendData.getDisplayedValue (8));
                 d.setBar (pos, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_1 + 2 + i) && sendData.doesExist (), sendData.getValue ());
             }
@@ -75,8 +77,8 @@ public class TrackMode extends AbstractKontrol1Mode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedItem ();
         if (selectedTrack == null)
             return;
 
@@ -89,7 +91,7 @@ public class TrackMode extends AbstractKontrol1Mode
                 selectedTrack.changePan (value);
                 return;
             default:
-                selectedTrack.getSend (index - 2).changeValue (value);
+                selectedTrack.getSendBank ().getItem (index - 2).changeValue (value);
                 break;
         }
     }

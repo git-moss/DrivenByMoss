@@ -10,9 +10,9 @@ import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -77,10 +77,10 @@ public class DeviceLayerModeSend extends DeviceLayerMode
                 return;
             }
 
-            final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
-            final String name = fxTrackBank == null ? layer.getSend (sendIndex).getName () : fxTrackBank.getTrack (sendIndex).getName ();
+            final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
+            final String name = fxTrackBank == null ? layer.getSendBank ().getItem (sendIndex).getName () : fxTrackBank.getItem (sendIndex).getName ();
             if (!name.isEmpty ())
-                this.surface.getDisplay ().notify ("Send " + name + ": " + layer.getSend (sendIndex).getDisplayedValue ());
+                this.surface.getDisplay ().notify ("Send " + name + ": " + layer.getSendBank ().getItem (sendIndex).getDisplayedValue ());
         }
 
         cd.touchLayerOrDrumPadSend (offset + index, sendIndex, isTouched);
@@ -102,7 +102,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
         {
             final IChannel layer = cd.getLayerOrDrumPad (offset + i);
             final boolean exists = layer.doesExist ();
-            final ISend send = layer.getSend (sendIndex);
+            final ISend send = layer.getSendBank ().getItem (sendIndex);
             d.setCell (0, i, exists ? send.getName () : "").setCell (1, i, send.getDisplayedValue (8));
             if (exists)
                 d.setCell (2, i, send.getValue (), Format.FORMAT_VALUE);
@@ -120,7 +120,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
     public void updateDisplayElements (final DisplayModel message, final ICursorDevice cd, final IChannel l)
     {
         final int sendIndex = this.getCurrentSendIndex ();
-        final IChannelBank fxTrackBank = this.model.getEffectTrackBank ();
+        final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
 
         this.updateMenuItems (5 + sendIndex % 4);
 
@@ -146,8 +146,8 @@ public class DeviceLayerModeSend extends DeviceLayerMode
             for (int j = 0; j < 4; j++)
             {
                 final int sendPos = sendOffset + j;
-                final ISend send = layer.getSend (sendPos);
-                sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getTrack (sendPos).getName ();
+                final ISend send = layer.getSendBank ().getItem (sendPos);
+                sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getItem (sendPos).getName ();
                 valueStr[j] = send.doesExist () && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue () : "";
                 value[j] = send.doesExist () ? send.getValue () : 0;
                 modulatedValue[j] = send.doesExist () ? send.getModulatedValue () : 0;

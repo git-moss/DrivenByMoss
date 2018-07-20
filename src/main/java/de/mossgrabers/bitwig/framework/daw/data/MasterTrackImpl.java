@@ -5,7 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.daw.TrackSelectionObserver;
+import de.mossgrabers.framework.daw.ItemSelectionObserver;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 
@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class MasterTrackImpl extends TrackImpl implements IMasterTrack
 {
-    private final List<TrackSelectionObserver> observers = new ArrayList<> ();
+    private final List<ItemSelectionObserver> observers = new ArrayList<> ();
 
 
     /**
@@ -41,7 +41,7 @@ public class MasterTrackImpl extends TrackImpl implements IMasterTrack
 
     /** {@inheritDoc} */
     @Override
-    public void addTrackSelectionObserver (final TrackSelectionObserver observer)
+    public void addSelectionObserver (final ItemSelectionObserver observer)
     {
         this.observers.add (observer);
     }
@@ -55,7 +55,7 @@ public class MasterTrackImpl extends TrackImpl implements IMasterTrack
     private void handleIsSelected (final boolean isSelected)
     {
         this.setSelected (isSelected);
-        for (final TrackSelectionObserver observer: this.observers)
+        for (final ItemSelectionObserver observer: this.observers)
             observer.call (-1, isSelected);
     }
 

@@ -150,7 +150,7 @@ public interface IModel
      *
      * @return The current track bank
      */
-    IChannelBank getCurrentTrackBank ();
+    ITrackBank getCurrentTrackBank ();
 
 
     /**
@@ -166,7 +166,7 @@ public interface IModel
      *
      * @return The effect track bank
      */
-    IChannelBank getEffectTrackBank ();
+    ITrackBank getEffectTrackBank ();
 
 
     /**

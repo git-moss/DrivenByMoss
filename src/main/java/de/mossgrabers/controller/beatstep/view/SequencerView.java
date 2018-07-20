@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -37,15 +38,11 @@ public class SequencerView extends BaseSequencerView
         this.offsetY = SequencerView.START_KEY;
 
         final ITrackBank tb = model.getTrackBank ();
-        tb.addNoteObserver ( (note, velocity) -> {
-            // Light notes send from the sequencer
-            for (int i = 0; i < 128; i++)
-            {
-                if (this.noteMap[i] == note)
-                    this.pressedKeys[i] = velocity;
-            }
-        });
-        tb.addTrackSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
+
+        // Light notes send from the sequencer
+        for (int i = 0; i < tb.getPageSize (); i++)
+            tb.getItem (i).addNoteObserver (this::updateNote);
+        tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
     }
 
 
@@ -74,7 +71,7 @@ public class SequencerView extends BaseSequencerView
 
             // Up/Down
             case 14:
-                this.clearPressedKeys ();
+                this.keyManager.clearPressedKeys ();
                 if (isInc)
                 {
                     this.scales.incDrumOctave ();
@@ -116,8 +113,8 @@ public class SequencerView extends BaseSequencerView
             // Mark selected notes
             for (int i = 0; i < 128; i++)
             {
-                if (this.noteMap[note] == this.noteMap[i])
-                    this.pressedKeys[i] = velocity;
+                if (this.keyManager.map (note) == this.keyManager.map (i))
+                    this.keyManager.setKeyPressed (i, velocity);
             }
         }
         else
@@ -132,8 +129,7 @@ public class SequencerView extends BaseSequencerView
     @Override
     public void updateNoteMapping ()
     {
-        this.noteMap = this.model.canSelectedTrackHoldNotes () && this.isPlayMode ? this.scales.getNoteMatrix () : Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.noteMap);
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () && this.isPlayMode ? this.scales.getNoteMatrix () : Scales.getEmptyMatrix ());
     }
 
 
@@ -152,7 +148,7 @@ public class SequencerView extends BaseSequencerView
         {
             for (int i = 36; i < 52; i++)
             {
-                padGrid.light (i, this.pressedKeys[i] > 0 || this.selectedPad == i - 36 ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : this.model.getColorManager ().getColor (this.scales.getColor (this.noteMap, i)));
+                padGrid.light (i, this.keyManager.isKeyPressed (i) || this.selectedPad == i - 36 ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : this.model.getColorManager ().getColor (this.keyManager.getColor (i)));
             }
         }
         else
@@ -168,6 +164,28 @@ public class SequencerView extends BaseSequencerView
                 final int x = col % 8;
                 final int y = col / 8;
                 padGrid.lightEx (x, 1 - y, isSet > 0 ? hilite ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE : hilite ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
+            }
+        }
+    }
+
+
+    /**
+     * The callback function for playing note changes.
+     * 
+     * @param trackIndex The index of the track on which the note is playing
+     * @param note The played note
+     * @param velocity The played velocity
+     */
+    private void updateNote (int trackIndex, int note, int velocity)
+    {
+        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel != null && sel.getIndex () == trackIndex)
+        {
+            // Light notes send from the sequencer
+            for (int i = 0; i < 128; i++)
+            {
+                if (this.keyManager.map (i) == note)
+                    this.keyManager.setKeyPressed (i, velocity);
             }
         }
     }

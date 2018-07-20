@@ -4,40 +4,13 @@
 
 package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.framework.daw.ObserverManagement;
-
-
 /**
  * Interface to a browser column.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IBrowserColumn extends ObserverManagement
+public interface IBrowserColumn extends IItem
 {
-    /**
-     * Get the index.
-     *
-     * @return The index
-     */
-    int getIndex ();
-
-
-    /**
-     * Does the column exist?
-     *
-     * @return True if it exists
-     */
-    boolean doesExist ();
-
-
-    /**
-     * Get the name of the column.
-     *
-     * @return The name of the column
-     */
-    String getName ();
-
-
     /**
      * Get the name of the wildcard.
      *

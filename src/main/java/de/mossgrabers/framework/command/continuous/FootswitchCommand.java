@@ -12,6 +12,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -91,8 +92,9 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
                     return;
                 }
 
-                final ISlot selectedSlot = track.getSelectedSlot ();
-                final ISlot slot = selectedSlot == null ? track.getSlot (0) : selectedSlot;
+                final ISlotBank slotBank = track.getSlotBank ();
+                final ISlot selectedSlot = slotBank.getSelectedItem ();
+                final ISlot slot = selectedSlot == null ? slotBank.getItem (0) : selectedSlot;
                 if (event == ButtonEvent.DOWN)
                 {
                     if (slot.hasContent ())

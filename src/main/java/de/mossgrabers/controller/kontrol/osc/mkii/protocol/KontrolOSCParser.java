@@ -7,7 +7,6 @@ package de.mossgrabers.controller.kontrol.osc.mkii.protocol;
 import de.mossgrabers.controller.kontrol.osc.mkii.KontrolOSCConfiguration;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.controller.DummyControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -163,9 +162,9 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
                 if ("view".equals (oscParts.removeFirst ())) // 1.5
                 {
                     final int trackIndex = toIntValue (objects);
-                    final IChannelBank effectTrackBank = this.model.getEffectTrackBank ();
+                    final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
                     if (effectTrackBank != null)
-                        effectTrackBank.getTrack (trackIndex).selectAndMakeVisible ();
+                        effectTrackBank.getItem (trackIndex).select ();
                 }
                 break;
 
@@ -176,7 +175,7 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
                     return;
                 }
                 if ("view".equals (oscParts.removeFirst ())) // 1.5
-                    this.model.getMasterTrack ().selectAndMakeVisible ();
+                    this.model.getMasterTrack ().select ();
                 break;
 
             case "scene": // 1.x
@@ -233,17 +232,17 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
                 switch (subCommand)
                 {
                     case "scene": // 1.6
-                        this.model.getSceneBank ().launchScene (toIntValue (0, objects));
+                        this.model.getSceneBank ().getItem (toIntValue (0, objects)).launch ();
                         break;
 
                     case "clipslot": // 1.5
                     case "clip": // 1.6
-                        final IChannelBank tb = this.model.getCurrentTrackBank ();
+                        final ITrackBank tb = this.model.getCurrentTrackBank ();
                         if (tb != null)
                         {
                             final int trackIndex = toIntValue (0, objects);
                             final int sceneIndex = toIntValue (1, objects);
-                            tb.getTrack (trackIndex).getSlot (sceneIndex).launch ();
+                            tb.getItem (trackIndex).getSlotBank ().getItem (sceneIndex).launch ();
                         }
                         break;
 
@@ -308,13 +307,13 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
                         break;
 
                     case "track": // 1.6
-                        this.model.getCurrentTrackBank ().getTrack (toIntValue (0, objects)).stop ();
+                        this.model.getCurrentTrackBank ().getItem (toIntValue (0, objects)).stop ();
                         break;
 
                     case "clip": // 1.6
                         // Since you cannot run multiple clips on a track, it does the same as
                         // "track".
-                        this.model.getCurrentTrackBank ().getTrack (toIntValue (0, objects)).stop ();
+                        this.model.getCurrentTrackBank ().getItem (toIntValue (0, objects)).stop ();
                         break;
 
                     default:
@@ -417,24 +416,24 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
                     if (trackPosition < 0)
                     {
                         // Normal channels are negative in reverse order
-                        final int trackIndex = tb.getTrackCount () + trackPosition;
-                        tb.getTrack (trackIndex).selectAndMakeVisible ();
+                        final int trackIndex = tb.getPageSize () + trackPosition;
+                        tb.getItem (trackIndex).select ();
                     }
                     else
                     {
                         // Send channels are positive, highest channel is master track
-                        final IChannelBank tbe = this.model.getEffectTrackBank ();
-                        if (tbe != null && trackPosition < tbe.getTrackCount ())
-                            tbe.getTrack (trackPosition).selectAndMakeVisible ();
+                        final ITrackBank tbe = this.model.getEffectTrackBank ();
+                        if (tbe != null && trackPosition < tbe.getItemCount ())
+                            tbe.getItem (trackPosition).select ();
                         else
-                            this.model.getMasterTrack ().selectAndMakeVisible ();
+                            this.model.getMasterTrack ().select ();
                     }
                 }
                 else
                 {
                     // 1.5
                     final int trackIndex = toIntValue (values);
-                    tb.getTrack (trackIndex).selectAndMakeVisible ();
+                    tb.getItem (trackIndex).select ();
                 }
                 break;
 
@@ -474,7 +473,7 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
                 if (selectedTrack == null)
                     return;
                 final int sceneIndex = toIntValue (values);
-                selectedTrack.getSlot (sceneIndex).select ();
+                selectedTrack.getSlotBank ().getItem (sceneIndex).select ();
                 this.sendOSC ("scene", new int []
                 {
                     sceneIndex

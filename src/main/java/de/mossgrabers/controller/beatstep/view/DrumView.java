@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -39,8 +40,9 @@ public class DrumView extends BaseSequencerView
 
         final ITrackBank tb = model.getTrackBank ();
         // Light notes send from the sequencer
-        tb.addNoteObserver ( (note, velocity) -> this.pressedKeys[note] = velocity);
-        tb.addTrackSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
+        for (int i = 0; i < tb.getPageSize (); i++)
+            tb.getItem (i).addNoteObserver (this::updateNote);
+        tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
     }
 
 
@@ -69,7 +71,7 @@ public class DrumView extends BaseSequencerView
 
             // Up/Down
             case 14:
-                this.clearPressedKeys ();
+                this.keyManager.clearPressedKeys ();
                 if (isInc)
                 {
                     this.scales.incDrumOctave ();
@@ -109,7 +111,7 @@ public class DrumView extends BaseSequencerView
             this.selectedPad = index; // 0-16
 
             // Mark selected note
-            this.pressedKeys[this.offsetY + this.selectedPad] = velocity;
+            this.keyManager.setKeyPressed (this.offsetY + this.selectedPad, velocity);
         }
         else
         {
@@ -123,8 +125,7 @@ public class DrumView extends BaseSequencerView
     @Override
     public void updateNoteMapping ()
     {
-        this.noteMap = this.model.canSelectedTrackHoldNotes () && this.isPlayMode ? this.scales.getDrumMatrix () : Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.noteMap);
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () && this.isPlayMode ? this.scales.getDrumMatrix () : EMPTY_TABLE);
     }
 
 
@@ -185,7 +186,7 @@ public class DrumView extends BaseSequencerView
     private int getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed)
     {
         // Playing note?
-        if (this.pressedKeys[this.offsetY + index] > 0)
+        if (this.keyManager.isKeyPressed (this.offsetY + index))
             return BeatstepColors.BEATSTEP_BUTTON_STATE_PINK;
         // Selected?
         if (this.selectedPad == index)
@@ -198,5 +199,20 @@ public class DrumView extends BaseSequencerView
         if (drumPad.isMute () || isSoloed && !drumPad.isSolo ())
             return BeatstepColors.BEATSTEP_BUTTON_STATE_OFF;
         return BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE;
+    }
+
+
+    /**
+     * The callback function for playing note changes.
+     * 
+     * @param trackIndex The index of the track on which the note is playing
+     * @param note The played note
+     * @param velocity The played velocity
+     */
+    private void updateNote (int trackIndex, int note, int velocity)
+    {
+        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel != null && sel.getIndex () == trackIndex)
+            this.keyManager.setKeyPressed (note, velocity);
     }
 }

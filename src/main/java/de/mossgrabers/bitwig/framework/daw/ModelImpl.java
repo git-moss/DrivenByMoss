@@ -19,6 +19,7 @@ import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.MasterTrack;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
+import com.bitwig.extension.controller.api.TrackBank;
 
 
 /**
@@ -71,7 +72,16 @@ public class ModelImpl extends AbstractModel
         this.cursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", 0, 0, true);
         this.cursorTrack.isPinned ().markInterested ();
 
-        this.trackBank = new TrackBankImpl (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
+        final TrackBank tb;
+        if (hasFlatTrackList)
+        {
+            tb = controllerHost.createMainTrackBank (numTracks, numSends, numScenes);
+            tb.followCursorTrack (this.cursorTrack);
+        }
+        else
+            tb = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
+
+        this.trackBank = new TrackBankImpl (tb, controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.numSends);
         this.effectTrackBank = new EffectTrackBankImpl (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
 
         this.primaryDevice = new CursorDeviceImpl (this.host, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
@@ -103,7 +113,9 @@ public class ModelImpl extends AbstractModel
     @Override
     public ITrackBank createSceneViewTrackBank (final int numTracks, final int numScenes)
     {
-        return new TrackBankImpl (this.controllerHost, this.valueChanger, this.cursorTrack, numTracks, numScenes, 0, true);
+        final TrackBank tb = this.controllerHost.createMainTrackBank (numTracks, this.numSends, numScenes);
+        tb.followCursorTrack (this.cursorTrack);
+        return new TrackBankImpl (tb, this.controllerHost, this.valueChanger, this.cursorTrack, numTracks, numScenes, 0);
     }
 
 

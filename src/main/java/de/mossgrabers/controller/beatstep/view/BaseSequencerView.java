@@ -7,10 +7,7 @@ package de.mossgrabers.controller.beatstep.view;
 import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractSequencerView;
-
-import java.util.Arrays;
 
 
 /**
@@ -21,7 +18,6 @@ import java.util.Arrays;
 public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {
     protected TrackEditing extensions;
-    protected int []       pressedKeys;
     protected int          selectedPad;
     protected boolean      isPlayMode = true;
 
@@ -40,9 +36,6 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
         super (name, surface, model, rows, cols);
 
         this.extensions = new TrackEditing (surface, model);
-        this.noteMap = Scales.getEmptyMatrix ();
-        this.pressedKeys = new int [128];
-        Arrays.fill (this.pressedKeys, 0);
     }
 
 
@@ -61,13 +54,6 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
         final boolean isInc = value >= 65;
         this.selectedIndex = Math.max (0, Math.min (RESOLUTIONS.length - 1, isInc ? this.selectedIndex + 1 : this.selectedIndex - 1));
         this.getClip ().setStepLength (RESOLUTIONS[this.selectedIndex]);
-    }
-
-
-    protected void clearPressedKeys ()
-    {
-        for (int i = 0; i < 128; i++)
-            this.pressedKeys[i] = 0;
     }
 
 

@@ -10,9 +10,10 @@ import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.controller.push.mode.device.DeviceBrowserMode;
 import de.mossgrabers.controller.push.mode.device.DeviceParamsMode;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -42,9 +43,10 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
     @Override
     protected void updateArrowStates ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        this.canScrollUp = tb.canScrollScenesUp ();
-        this.canScrollDown = tb.canScrollScenesDown ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = tb.getSceneBank ();
+        this.canScrollUp = sceneBank.canScrollBackwards ();
+        this.canScrollDown = sceneBank.canScrollForwards ();
 
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
@@ -71,10 +73,10 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedItem ();
         final int selIndex = sel != null ? sel.getIndex () : -1;
-        this.canScrollLeft = selIndex > 0 || tb.canScrollTracksUp ();
-        this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getTrack (selIndex + 1).doesExist () || tb.canScrollTracksDown ();
+        this.canScrollLeft = selIndex > 0 || tb.canScrollBackwards ();
+        this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollForwards ();
     }
 
 

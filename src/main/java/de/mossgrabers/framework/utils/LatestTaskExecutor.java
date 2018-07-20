@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.utils;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class LatestTaskExecutor implements Executor
 {
     private final AtomicReference<Runnable> lastTask = new AtomicReference<> ();
-    private final Executor                  executor;
+    private final ExecutorService           executor;
 
 
     /**
@@ -40,5 +41,25 @@ public class LatestTaskExecutor implements Executor
             if (task != null)
                 task.run ();
         });
+    }
+
+
+    /**
+     * Shutdown the executor.
+     */
+    public void shutdown ()
+    {
+        this.executor.shutdown ();
+    }
+
+
+    /**
+     * Returns {@code true} if this executor has been shut down.
+     *
+     * @return {@code true} if this executor has been shut down
+     */
+    public boolean isShutdown ()
+    {
+        return this.executor.isShutdown ();
     }
 }

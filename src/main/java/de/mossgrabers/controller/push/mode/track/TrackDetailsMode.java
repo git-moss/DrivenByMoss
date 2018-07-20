@@ -11,8 +11,8 @@ import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.controller.push.view.ColorView;
 import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -87,8 +87,8 @@ public class TrackDetailsMode extends BaseMode
 
     private void onFirstRowTrack (final int index)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getSelectedItem ();
         if (t == null)
             return;
 

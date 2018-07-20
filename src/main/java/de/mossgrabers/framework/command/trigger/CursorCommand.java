@@ -8,8 +8,8 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -151,11 +151,11 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
      */
     protected void scrollUp ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
         if (this.surface.isShiftPressed ())
-            tb.scrollScenesPageUp ();
+            sceneBank.scrollPageBackwards ();
         else
-            tb.scrollScenesUp ();
+            sceneBank.scrollBackwards ();
     }
 
 
@@ -164,10 +164,10 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
      */
     protected void scrollDown ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
         if (this.surface.isShiftPressed ())
-            tb.scrollScenesPageDown ();
+            sceneBank.scrollPageForwards ();
         else
-            tb.scrollScenesDown ();
+            sceneBank.scrollForwards ();
     }
 }

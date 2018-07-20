@@ -43,7 +43,7 @@ public class SessionMode extends AbstractMode<SLControlSurface, SLConfiguration>
         final ISceneBank sceneBank = this.model.getSceneBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IScene scene = sceneBank.getScene (i);
+            final IScene scene = sceneBank.getItem (i);
             final String name = StringUtils.fixASCII (scene.getName ());
             d.setCell (2, i, name.isEmpty () ? "Scene " + (i + 1) : name);
         }

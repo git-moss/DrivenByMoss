@@ -98,7 +98,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         if (y < this.numSequencerRows)
         {
             if (velocity != 0)
-                clip.toggleStep (x, this.noteMap[y], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                clip.toggleStep (x, this.keyManager.map (y), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
             return;
         }
 
@@ -160,7 +160,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             for (int y = 0; y < this.numSequencerRows; y++)
             {
                 // 0: not set, 1: note continues playing, 2: start of note
-                final int isSet = clip.getStep (x, this.noteMap[y]);
+                final int isSet = clip.getStep (x, this.keyManager.map (y));
                 gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (isSet, x == hiStep, y, selectedTrack));
             }
         }
@@ -227,7 +227,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
 
     protected void updateScale ()
     {
-        this.noteMap = this.model.canSelectedTrackHoldNotes () ? this.scales.getSequencerMatrix (8, this.offsetY) : Scales.getEmptyMatrix ();
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getSequencerMatrix (8, this.offsetY) : EMPTY_TABLE);
     }
 
 
@@ -235,6 +235,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     {
         this.offsetY = value;
         this.updateScale ();
-        this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.noteMap[0], this.noteMap[this.numSequencerRows - 1]), true, true);
+        final String text = Scales.getSequencerRangeText (this.keyManager.map (0), this.keyManager.map (this.numSequencerRows - 1));
+        this.surface.getDisplay ().notify (text, true, true);
     }
 }

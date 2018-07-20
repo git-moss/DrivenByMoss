@@ -14,10 +14,11 @@ import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.DAWColors;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -138,7 +139,7 @@ public class DeviceParamsMode extends BaseMode
 
             if (cd.getPositionInBank () != index)
             {
-                cd.selectSibling (index);
+                cd.getDeviceBank ().getItem (index).select ();
                 return;
             }
 
@@ -224,7 +225,7 @@ public class DeviceParamsMode extends BaseMode
         if (this.showDevices)
         {
             for (int i = 0; i < 8; i++)
-                this.surface.updateButton (20 + i, cd.doesSiblingExist (i) ? i == cd.getPositionInBank () ? selectedColor : existsColor : offColor);
+                this.surface.updateButton (20 + i, cd.getDeviceBank ().getItem (i).doesExist () ? i == cd.getPositionInBank () ? selectedColor : existsColor : offColor);
         }
         else
         {
@@ -338,7 +339,10 @@ public class DeviceParamsMode extends BaseMode
         if (this.showDevices)
         {
             for (int i = 0; i < 8; i++)
-                d.setCell (3, i, cd.doesSiblingExist (i) ? (i == cd.getPositionInBank () ? PushDisplay.RIGHT_ARROW : "") + cd.getSiblingDeviceName (i) : "");
+            {
+                final IDevice device = cd.getDeviceBank ().getItem (i);
+                d.setCell (3, i, device.doesExist () ? (i == cd.getPositionInBank () ? PushDisplay.RIGHT_ARROW : "") + device.getName (i) : "");
+            }
         }
         else
         {
@@ -370,7 +374,7 @@ public class DeviceParamsMode extends BaseMode
             return;
         }
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final String color = tb.getSelectedTrackColorEntry ();
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
@@ -417,7 +421,8 @@ public class DeviceParamsMode extends BaseMode
             boolean isBottomMenuOn;
             if (this.showDevices)
             {
-                bottomMenu = cd.doesSiblingExist (i) ? cd.getSiblingDeviceName (i, 12) : "";
+                final IDevice item = cd.getDeviceBank ().getItem (i);
+                bottomMenu = item.doesExist () ? item.getName (12) : "";
                 isBottomMenuOn = i == cd.getPositionInBank ();
             }
             else
@@ -502,7 +507,7 @@ public class DeviceParamsMode extends BaseMode
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (this.showDevices)
-            cd.selectPreviousBank ();
+            cd.getDeviceBank ().scrollPageBackwards ();
         else
             cd.previousParameterPageBank ();
     }
@@ -515,7 +520,7 @@ public class DeviceParamsMode extends BaseMode
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (this.showDevices)
-            cd.selectNextBank ();
+            cd.getDeviceBank ().scrollPageForwards ();
         else
             cd.nextParameterPageBank ();
     }

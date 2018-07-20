@@ -7,8 +7,8 @@ package de.mossgrabers.controller.kontrol.usb.mki.mode.track;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Display;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.AbstractKontrol1Mode;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -40,27 +40,27 @@ public class VolumeMode extends AbstractKontrol1Mode
 
         d.clear ();
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
 
         final StringBuilder sb = new StringBuilder ();
-        final int positionFirst = tb.getTrackPositionFirst ();
+        final int positionFirst = tb.getScrollPosition ();
         if (positionFirst >= 0)
         {
             sb.append (Integer.toString (positionFirst + 1));
-            final int positionLast = tb.getTrackPositionLast ();
+            final int positionLast = tb.getPositionOfLastItem ();
             if (positionLast >= 0)
                 sb.append (" - ").append (Integer.toString (positionLast + 1));
         }
 
         d.setCell (0, 0, this.model.isEffectTrackBankActive () ? "VOL-FX" : "VOLUME").setCell (1, 0, sb.toString ());
 
-        final ITrack selTrack = tb.getSelectedTrack ();
+        final ITrack selTrack = tb.getSelectedItem ();
 
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
         for (int i = 0; i < 8; i++)
         {
             final boolean isSel = i == selIndex;
-            final ITrack t = tb.getTrack (i);
+            final ITrack t = tb.getItem (i);
             final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8).toUpperCase ();
             d.setCell (0, 1 + i, isSel ? ">" + n : n).setCell (1, 1 + i, t.isMute () ? "-MUTED-" : t.isSolo () ? "-SOLO-" : t.getVolumeStr (8));
 
@@ -74,6 +74,6 @@ public class VolumeMode extends AbstractKontrol1Mode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).changeVolume (value);
+        this.model.getCurrentTrackBank ().getItem (index).changeVolume (value);
     }
 }

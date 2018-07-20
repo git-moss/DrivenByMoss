@@ -134,7 +134,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
 
     private void activateMasterMode (final boolean activateMode)
     {
-        this.model.getMasterTrack ().selectAndMakeVisible ();
+        this.model.getMasterTrack ().select ();
         if (activateMode)
             this.surface.getModeManager ().setActiveMode (Modes.MODE_MASTER);
         this.surface.getDisplay ().notify ("Master");

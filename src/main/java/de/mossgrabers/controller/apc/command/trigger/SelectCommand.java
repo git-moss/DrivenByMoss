@@ -51,7 +51,7 @@ public class SelectCommand extends AbstractTriggerCommand<APCControlSurface, APC
             return;
         }
 
-        this.model.getCurrentTrackBank ().getTrack (this.index).selectAndMakeVisible ();
+        this.model.getCurrentTrackBank ().getItem (this.index).select ();
     }
 
 

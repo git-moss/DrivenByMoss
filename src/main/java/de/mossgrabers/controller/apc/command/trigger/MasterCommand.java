@@ -58,6 +58,6 @@ public class MasterCommand extends AbstractTriggerCommand<APCControlSurface, APC
         }
 
         if (this.model.getSelectedTrack () == null)
-            this.model.getCurrentTrackBank ().getTrack (0).select ();
+            this.model.getCurrentTrackBank ().getItem (0).select ();
     }
 }

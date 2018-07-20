@@ -23,7 +23,7 @@ public class ModelInfo
 
     /**
      * Constructor.
-     * 
+     *
      * @param notification The notification message, if any
      * @param elements The elements
      */

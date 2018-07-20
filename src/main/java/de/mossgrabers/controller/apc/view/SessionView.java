@@ -62,7 +62,7 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
     {
         if (event == ButtonEvent.DOWN)
         {
-            this.model.getCurrentTrackBank ().launchScene (scene);
+            this.model.getCurrentTrackBank ().getSceneBank ().getItem (scene).launch ();
             this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1 + scene, ColorManager.BUTTON_STATE_ON);
         }
         else if (event == ButtonEvent.UP)

@@ -11,6 +11,7 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -65,9 +66,6 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         this.canScrollUp = false;
         this.canScrollDown = false;
 
-        this.scales = this.model.getScales ();
-        this.noteMap = Scales.getEmptyMatrix ();
-
         this.columns = 8;
         this.rows = 8;
 
@@ -75,8 +73,9 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
 
         final ITrackBank tb = model.getTrackBank ();
         // Light notes send from the sequencer
-        tb.addNoteObserver ( (note, velocity) -> this.pressedKeys[note] = velocity);
-        tb.addTrackSelectionObserver ( (final int index, final boolean isSelected) -> this.clearPressedKeys ());
+        for (int i = 0; i < tb.getPageSize (); i++)
+            tb.getItem (i).addNoteObserver (this::updateNote);
+        tb.addSelectionObserver ( (final int index, final boolean isSelected) -> this.clearPressedKeys ());
     }
 
 
@@ -211,8 +210,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
     public void updateNoteMapping ()
     {
         final boolean turnOn = this.model.canSelectedTrackHoldNotes () && !this.surface.isSelectPressed () && !this.surface.isDeletePressed () && !this.surface.isMutePressed () && !this.surface.isSoloPressed ();
-        this.noteMap = turnOn ? this.getDrumMatrix () : Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (this.noteMap));
+        this.delayedUpdateNoteMapping (turnOn ? this.getDrumMatrix () : EMPTY_TABLE);
     }
 
 
@@ -321,13 +319,13 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
     private int [] getDrumMatrix ()
     {
         final int [] matrix = DRUM_MATRIX;
-        this.noteMap = Scales.getEmptyMatrix ();
+        final int [] noteMap = Scales.getEmptyMatrix ();
         for (int i = 0; i < 64; i++)
         {
             final int n = matrix[i] == -1 ? -1 : matrix[i] + DRUM_START_KEY + this.drumOctave * 16;
-            this.noteMap[DRUM_START_KEY + i] = n < 0 || n > 127 ? -1 : n;
+            noteMap[DRUM_START_KEY + i] = n < 0 || n > 127 ? -1 : n;
         }
-        return this.noteMap;
+        return noteMap;
     }
 
 
@@ -346,5 +344,20 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
     public int getDrumOctave ()
     {
         return this.drumOctave;
+    }
+
+
+    /**
+     * The callback function for playing note changes.
+     * 
+     * @param trackIndex The index of the track on which the note is playing
+     * @param note The played note
+     * @param velocity The played velocity
+     */
+    private void updateNote (int trackIndex, int note, int velocity)
+    {
+        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel != null && sel.getIndex () == trackIndex)
+            this.pressedKeys[note] = velocity;
     }
 }

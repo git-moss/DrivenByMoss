@@ -60,7 +60,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
     /**
      * Constructor.
-     * 
+     *
      * @param modelIndex The index of the model (S25, S49, S61, S88)
      * @param host The DAW host
      * @param factory The factory
@@ -82,7 +82,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     {
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
         final ITrackBank trackBank = this.model.getTrackBank ();
-        trackBank.addTrackSelectionObserver ( (index, isSelected) -> {
+        trackBank.addSelectionObserver ( (index, isSelected) -> {
             final View activeView = this.getSurface ().getViewManager ().getActiveView ();
             if (activeView instanceof ControlView)
                 ((ControlView) activeView).updateButtons ();

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 
 import com.bitwig.extension.controller.api.BrowserFilterItem;
@@ -15,9 +16,8 @@ import com.bitwig.extension.controller.api.BrowserItem;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowserColumnItemImpl implements IBrowserColumnItem
+public class BrowserColumnItemImpl extends AbstractItemImpl implements IBrowserColumnItem
 {
-    private final int         index;
     private final BrowserItem item;
 
 
@@ -29,7 +29,8 @@ public class BrowserColumnItemImpl implements IBrowserColumnItem
      */
     public BrowserColumnItemImpl (final BrowserItem item, final int index)
     {
-        this.index = index;
+        super (index);
+
         this.item = item;
 
         item.exists ().markInterested ();
@@ -49,14 +50,6 @@ public class BrowserColumnItemImpl implements IBrowserColumnItem
         this.item.isSelected ().setIsSubscribed (enable);
         if (this.item instanceof BrowserFilterItem)
             ((BrowserFilterItem) this.item).hitCount ().setIsSubscribed (enable);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getIndex ()
-    {
-        return this.index;
     }
 
 

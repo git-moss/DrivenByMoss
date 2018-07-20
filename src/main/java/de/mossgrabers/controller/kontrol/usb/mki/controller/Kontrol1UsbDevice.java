@@ -463,11 +463,11 @@ public class Kontrol1UsbDevice
 
     /**
      * Constructor.
-     * 
+     *
      * @param modelIndex The index of the model (S25, S49, S61, S88)
      * @param host The controller host
      */
-    public Kontrol1UsbDevice (int modelIndex, final IHost host)
+    public Kontrol1UsbDevice (final int modelIndex, final IHost host)
     {
         this.host = host;
 
@@ -812,7 +812,7 @@ public class Kontrol1UsbDevice
 
     /**
      * Process the received HID message.
-     * 
+     *
      * @param reportID The report (= function/method) number
      * @param data The data
      * @param received The number of valid bytes in the data array

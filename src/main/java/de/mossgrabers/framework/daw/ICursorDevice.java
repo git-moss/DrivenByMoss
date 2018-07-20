@@ -338,54 +338,6 @@ public interface ICursorDevice extends ObserverManagement
 
 
     /**
-     * Does the sibling at the given index exist?
-     *
-     * @param index The index of a sibling
-     * @return True if it has a sibling
-     */
-    boolean doesSiblingExist (int index);
-
-
-    /**
-     * Get the name of the sibling at the given index.
-     *
-     * @param index The index of a sibling
-     * @return The name
-     */
-    String getSiblingDeviceName (int index);
-
-
-    /**
-     * Get the name of the sibling at the given index.
-     *
-     * @param index The index of a sibling
-     * @param limit Limit the text to this length
-     * @return The name
-     */
-    String getSiblingDeviceName (int index, final int limit);
-
-
-    /**
-     * Select the sibling at the given index.
-     *
-     * @param index The index of the sibling
-     */
-    void selectSibling (int index);
-
-
-    /**
-     * Select the previous sibling page.
-     */
-    void selectPreviousBank ();
-
-
-    /**
-     * Select the next sibling page.
-     */
-    void selectNextBank ();
-
-
-    /**
      * Is there a current device?
      *
      * @return True if there is a device
@@ -1217,14 +1169,6 @@ public interface ICursorDevice extends ObserverManagement
 
 
     /**
-     * Get the number of devices of a bank page.
-     *
-     * @return The number
-     */
-    int getNumDevices ();
-
-
-    /**
      * Get the number of layers of a bank page.
      *
      * @return The number
@@ -1246,4 +1190,12 @@ public interface ICursorDevice extends ObserverManagement
      * @return The number
      */
     int getNumParameters ();
+
+
+    /**
+     * Get the device sibling bank.
+     *
+     * @return The bank
+     */
+    IDeviceBank getDeviceBank ();
 }

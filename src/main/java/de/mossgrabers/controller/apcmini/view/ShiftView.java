@@ -10,9 +10,11 @@ import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.controller.apcmini.mode.Modes;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -22,6 +24,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.ViewManager;
+
+import java.util.List;
 
 
 /**
@@ -64,7 +68,6 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
     {
         super ("Shift", surface, model);
 
-        this.scales = this.model.getScales ();
         this.playCommand = new PlayCommand<> (this.model, this.surface);
     }
 
@@ -271,22 +274,22 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         if (event != ButtonEvent.DOWN)
             return;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ModeManager modeManager = this.surface.getModeManager ();
 
         switch (index)
         {
             case 0:
-                tb.scrollScenesPageUp ();
+                tb.getSceneBank ().scrollPageBackwards ();
                 break;
             case 1:
-                tb.scrollScenesPageDown ();
+                tb.getSceneBank ().scrollPageForwards ();
                 break;
             case 2:
-                tb.scrollTracksPageUp ();
+                tb.scrollPageBackwards ();
                 break;
             case 3:
-                tb.scrollTracksPageDown ();
+                tb.scrollPageForwards ();
                 break;
 
             case 4:
@@ -388,11 +391,12 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON7, APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON8, APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1, tb.canScrollScenesUp () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON2, tb.canScrollScenesDown () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3, tb.canScrollTracksUp () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON4, tb.canScrollTracksDown () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = tb.getSceneBank ();
+        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1, sceneBank.canScrollBackwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON2, sceneBank.canScrollForwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3, tb.canScrollBackwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON4, tb.canScrollForwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
         final Integer mode = this.surface.getModeManager ().getActiveModeId ();
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON5, Modes.MODE_VOLUME.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
@@ -408,14 +412,15 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         final ITrack t = this.model.getSelectedTrack ();
         if (t != null)
         {
-            final ISlot [] slotIndexes = t.getSelectedSlots ();
-            if (slotIndexes.length > 0)
+            final ISlotBank slotBank = t.getSlotBank ();
+            final List<ISlot> slotIndexes = slotBank.getSelectedItems ();
+            if (!slotIndexes.isEmpty ())
             {
-                final int slotIndex = slotIndexes[0].getIndex ();
+                final int slotIndex = slotIndexes.get (0).getIndex ();
                 for (int i = 0; i < 8; i++)
                 {
                     final int sIndex = (slotIndex + i) % 8;
-                    final ISlot s = t.getSlot (sIndex);
+                    final ISlot s = slotIndexes.get (sIndex);
                     if (s.hasContent ())
                         continue;
                     this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());

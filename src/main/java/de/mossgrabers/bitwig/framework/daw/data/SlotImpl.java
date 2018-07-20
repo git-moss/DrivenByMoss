@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.ISlot;
 
 import com.bitwig.extension.controller.api.ClipLauncherSlot;
@@ -16,9 +17,8 @@ import com.bitwig.extension.controller.api.ColorValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SlotImpl implements ISlot
+public class SlotImpl extends AbstractItemImpl implements ISlot
 {
-    private final int                  index;
     private final ClipLauncherSlot     slot;
     private final ClipLauncherSlotBank csBank;
 
@@ -33,11 +33,13 @@ public class SlotImpl implements ISlot
      */
     public SlotImpl (final ClipLauncherSlotBank csBank, final ClipLauncherSlot slot, final int index)
     {
+        super (index);
+
         this.csBank = csBank;
-        this.index = index;
         this.slot = slot;
 
         slot.exists ().markInterested ();
+        slot.sceneIndex ().markInterested ();
         slot.name ().markInterested ();
         slot.hasContent ().markInterested ();
         slot.color ().markInterested ();
@@ -57,6 +59,7 @@ public class SlotImpl implements ISlot
     public void enableObservers (final boolean enable)
     {
         this.slot.exists ().setIsSubscribed (enable);
+        this.slot.sceneIndex ().setIsSubscribed (enable);
         this.slot.name ().setIsSubscribed (enable);
         this.slot.hasContent ().setIsSubscribed (enable);
         this.slot.color ().setIsSubscribed (enable);
@@ -71,17 +74,17 @@ public class SlotImpl implements ISlot
 
     /** {@inheritDoc} */
     @Override
-    public int getIndex ()
+    public boolean doesExist ()
     {
-        return this.index;
+        return this.slot.exists ().get ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public boolean doesExist ()
+    public int getPosition ()
     {
-        return this.slot.exists ().get ();
+        return this.slot.sceneIndex ().get ();
     }
 
 
@@ -183,7 +186,7 @@ public class SlotImpl implements ISlot
     @Override
     public void select ()
     {
-        this.csBank.select (this.index);
+        this.csBank.select (this.getIndex ());
     }
 
 
@@ -199,7 +202,7 @@ public class SlotImpl implements ISlot
     @Override
     public void record ()
     {
-        this.csBank.record (this.index);
+        this.csBank.record (this.getIndex ());
     }
 
 
@@ -207,7 +210,7 @@ public class SlotImpl implements ISlot
     @Override
     public void create (final int length)
     {
-        this.csBank.createEmptyClip (this.index, length);
+        this.csBank.createEmptyClip (this.getIndex (), length);
     }
 
 
@@ -215,7 +218,7 @@ public class SlotImpl implements ISlot
     @Override
     public void delete ()
     {
-        this.csBank.deleteClip (this.index);
+        this.csBank.deleteClip (this.getIndex ());
     }
 
 
@@ -223,7 +226,7 @@ public class SlotImpl implements ISlot
     @Override
     public void duplicate ()
     {
-        this.csBank.duplicateClip (this.index);
+        this.csBank.duplicateClip (this.getIndex ());
     }
 
 

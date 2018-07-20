@@ -8,8 +8,11 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.DAWColors;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -62,10 +65,13 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
+    public void onScene (final int sceneIndex, final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().launchScene (scene);
+        if (event != ButtonEvent.DOWN)
+            return;
+        final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (sceneIndex);
+        scene.select ();
+        scene.launch ();
     }
 
 
@@ -88,8 +94,8 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
             s = dummy;
         }
 
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (t);
-        final ISlot slot = track.getSlot (s);
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (t);
+        final ISlot slot = track.getSlotBank ().getItem (s);
 
         // Delete selected clip
         if (this.surface.isDeletePressed ())
@@ -160,13 +166,14 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
      */
     protected void drawSessionGrid ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
         for (int x = 0; x < this.columns; x++)
         {
-            final ITrack t = tb.getTrack (x);
+            final ITrack t = tb.getItem (x);
+            final ISlotBank slotBank = t.getSlotBank ();
             for (int y = 0; y < this.rows; y++)
-                this.drawPad (t.getSlot (y), flipSession ? y : x, flipSession ? x : y, t.isRecArm ());
+                this.drawPad (slotBank.getItem (y), flipSession ? y : x, flipSession ? x : y, t.isRecArm ());
         }
     }
 
@@ -176,15 +183,16 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
      */
     protected void drawBirdsEyeGrid ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final int numTracks = tb.getNumTracks ();
-        final int numScenes = tb.getNumScenes ();
-        final int sceneCount = this.model.getSceneBank ().getSceneCount ();
-        final int trackCount = tb.getTrackCount ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = this.model.getSceneBank ();
+        final int numTracks = tb.getPageSize ();
+        final int numScenes = sceneBank.getPageSize ();
+        final int sceneCount = sceneBank.getItemCount ();
+        final int trackCount = tb.getItemCount ();
         final int maxScenePads = sceneCount / numScenes + (sceneCount % numScenes > 0 ? 1 : 0);
         final int maxTrackPads = trackCount / numTracks + (trackCount % numTracks > 0 ? 1 : 0);
-        final int scenePosition = tb.getScenePosition ();
-        final int trackPosition = tb.getTrack (0).getPosition ();
+        final int scenePosition = sceneBank.getScrollPosition ();
+        final int trackPosition = tb.getItem (0).getPosition ();
         final int sceneSelection = scenePosition / numScenes + (scenePosition % numScenes > 0 ? 1 : 0);
         final int trackSelection = trackPosition / numTracks + (trackPosition % numTracks > 0 ? 1 : 0);
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();

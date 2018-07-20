@@ -67,9 +67,9 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.DAWColors;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -136,7 +136,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     {
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
         final ITrackBank trackBank = this.model.getTrackBank ();
-        trackBank.addTrackSelectionObserver (this::handleTrackChange);
+        trackBank.addSelectionObserver (this::handleTrackChange);
     }
 
 
@@ -340,7 +340,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_STOP_CLIP, modeManager.isActiveMode (Modes.MODE_STOP_CLIP) ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : index == 7 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
 
         // Update the front LED with the color of the current track
-        final ITrack track = index == -1 ? null : this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack track = index == -1 ? null : this.model.getCurrentTrackBank ().getItem (index);
         final int color = track != null && track.doesExist () ? this.colorManager.getColor (DAWColors.getColorIndex (track.getColor ())) : 0;
         if (color != this.frontColor)
         {
@@ -359,7 +359,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final boolean isDevice = viewManager.isActiveView (Views.VIEW_DEVICE);
 
         final ITrackBank tb = this.model.getTrackBank ();
-        final IChannelBank tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tbe = this.model.getEffectTrackBank ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final View view = viewManager.getActiveView ();
         final int selSend = view instanceof SendsView ? ((SendsView) view).getSelectedSend () : -1;
@@ -373,15 +373,16 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = tb.getTrack (i);
+            final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect && isVolume);
             track.setPanIndication (!isEffect && isPan);
+            final ISendBank sendBank = track.getSendBank ();
             for (int j = 0; j < 8; j++)
-                track.getSend (j).setIndication (!isEffect && isSends && selSend == j);
+                sendBank.getItem (j).setIndication (!isEffect && isSends && selSend == j);
 
             if (tbe != null)
             {
-                final ITrack fxTrack = tbe.getTrack (i);
+                final ITrack fxTrack = tbe.getItem (i);
                 fxTrack.setVolumeIndication (isEffect && isVolume);
                 fxTrack.setPanIndication (isEffect && isPan);
             }

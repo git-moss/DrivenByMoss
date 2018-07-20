@@ -37,7 +37,7 @@ public class SendMode extends BaseMode
     @Override
     public void setValue (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).getSend (this.sendIndex).setValue (value);
+        this.model.getCurrentTrackBank ().getItem (index).getSendBank ().getItem (this.sendIndex).setValue (value);
     }
 
 
@@ -47,7 +47,7 @@ public class SendMode extends BaseMode
     {
         if (this.model.isEffectTrackBankActive ())
             return Integer.valueOf (0);
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
-        return track.doesExist () ? Integer.valueOf (track.getSend (this.sendIndex).getValue ()) : null;
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        return track.doesExist () ? Integer.valueOf (track.getSendBank ().getItem (this.sendIndex).getValue ()) : null;
     }
 }

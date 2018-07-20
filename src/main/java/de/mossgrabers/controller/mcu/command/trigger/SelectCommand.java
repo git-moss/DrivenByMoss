@@ -10,8 +10,8 @@ import de.mossgrabers.controller.mcu.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -59,8 +59,8 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         // Select Send channels when Send button is additionally pressed
         if (this.surface.isPressed (MCUControlSurface.MCU_MODE_SENDS))
         {
-            final IChannelBank effectTrackBank = this.model.getEffectTrackBank ();
-            if (effectTrackBank != null && effectTrackBank.getTrack (this.channel).doesExist ())
+            final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+            if (effectTrackBank != null && effectTrackBank.getItem (this.channel).doesExist ())
             {
                 this.surface.getModeManager ().setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + this.index));
                 display.notify ("Send channel " + (this.channel + 1) + " selected.");
@@ -81,11 +81,11 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
 
         if (this.surface.isSelectPressed ())
         {
-            this.model.getCurrentTrackBank ().getTrack (this.channel).stop ();
+            this.model.getCurrentTrackBank ().getItem (this.channel).stop ();
             return;
         }
 
-        this.model.getCurrentTrackBank ().getTrack (this.channel).selectAndMakeVisible ();
+        this.model.getCurrentTrackBank ().getItem (this.channel).select ();
     }
 
 

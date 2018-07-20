@@ -12,6 +12,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
@@ -97,10 +98,13 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
+    public void onScene (final int sceneIndex, final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().launchScene (scene);
+        if (event != ButtonEvent.DOWN)
+            return;
+        final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (sceneIndex);
+        scene.select ();
+        scene.launch ();
     }
 
 
@@ -112,8 +116,13 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
         final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;
+        final int orange = isPush2 ? PushColors.PUSH2_COLOR_SCENE_ORANGE_HI : PushColors.PUSH1_COLOR_SCENE_ORANGE;
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, sceneBank != null && sceneBank.sceneExists (7 - i) ? green : off);
+        {
+            final IScene scene = sceneBank.getItem (7 - i);
+            final int color = scene.doesExist () ? (scene.isSelected () ? orange : green) : off;
+            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
+        }
     }
 
 
@@ -124,10 +133,9 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
         if (this.surface.isDeletePressed ())
         {
             this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-            this.model.getCursorClip ().clearRow (this.noteMap[note]);
+            this.model.getCursorClip ().clearRow (this.keyManager.map (note));
             return;
         }
-
         super.onGridNote (note, velocity);
     }
 }

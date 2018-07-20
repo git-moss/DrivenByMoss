@@ -106,7 +106,7 @@ public class ChannelGridElement extends SelectionGridElement
 
         final double faderOffset = controlWidth / 4;
         final double faderTop = panTop + panHeight + SEPARATOR_SIZE + 1;
-        double vuX = controlStart + SEPARATOR_SIZE;
+        final double vuX = controlStart + SEPARATOR_SIZE;
         final double faderLeft = vuX + faderOffset;
         final double faderHeight = trackRowTop - faderTop - INSET + 1;
         final double faderInnerHeight = faderHeight - 2 * SEPARATOR_SIZE;
@@ -209,7 +209,7 @@ public class ChannelGridElement extends SelectionGridElement
         final double vuHeightRight = this.vuValueRight >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.vuValueRight / maxValue;
         final double vuOffsetLeft = faderInnerHeight - vuHeightLeft;
         final double vuOffsetRight = faderInnerHeight - vuHeightRight;
-        double vuWidth = faderOffset - SEPARATOR_SIZE;
+        final double vuWidth = faderOffset - SEPARATOR_SIZE;
         gc.fillRectangle (vuX, faderTop + SEPARATOR_SIZE, vuWidth + 1, faderInnerHeight, backgroundDarker);
         gc.fillRectangle (vuX, faderTop + SEPARATOR_SIZE + vuOffsetLeft, vuWidth / 2, vuHeightLeft, configuration.getColorVu ());
         gc.fillRectangle (vuX + vuWidth / 2, faderTop + SEPARATOR_SIZE + vuOffsetRight, vuWidth / 2, vuHeightRight, configuration.getColorVu ());

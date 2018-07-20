@@ -59,10 +59,10 @@ public class TrackMode extends AbstractTrackMode
             if (config.isDisplayCrossfader ())
                 selectedTrack.changeCrossfadeModeAsNumber (value);
             else if (!effectTrackBankActive)
-                selectedTrack.getSend (0).changeValue (value);
+                selectedTrack.getSendBank ().getItem (0).changeValue (value);
         }
         else if (!effectTrackBankActive)
-            selectedTrack.getSend (index - (config.isDisplayCrossfader () ? 3 : 2)).changeValue (value);
+            selectedTrack.getSendBank ().getItem (index - (config.isDisplayCrossfader () ? 3 : 2)).changeValue (value);
     }
 
 
@@ -115,7 +115,7 @@ public class TrackMode extends AbstractTrackMode
             final int pos = sendStart + i;
             if (!isEffectTrackBankActive)
             {
-                final ISend send = selectedTrack.getSend (i);
+                final ISend send = selectedTrack.getSendBank ().getItem (i);
                 if (send.doesExist ())
                 {
                     if (!displayTrackNames)
@@ -159,7 +159,7 @@ public class TrackMode extends AbstractTrackMode
 
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
         for (int i = 0; i < end; i++)
-            this.surface.setKnobLED (start + i, MCUControlSurface.KNOB_LED_MODE_WRAP, isEffectTrackBankActive ? 0 : t.getSend (i).getValue (), upperBound);
+            this.surface.setKnobLED (start + i, MCUControlSurface.KNOB_LED_MODE_WRAP, isEffectTrackBankActive ? 0 : t.getSendBank ().getItem (i).getValue (), upperBound);
     }
 
 
@@ -182,11 +182,11 @@ public class TrackMode extends AbstractTrackMode
                 if (this.surface.getConfiguration ().isDisplayCrossfader ())
                     selectedTrack.setCrossfadeMode ("AB");
                 else if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSend (0).resetValue ();
+                    selectedTrack.getSendBank ().getItem (0).resetValue ();
                 break;
             default:
                 if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSend (index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).resetValue ();
+                    selectedTrack.getSendBank ().getItem (index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).resetValue ();
                 break;
         }
     }

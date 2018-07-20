@@ -10,11 +10,8 @@ import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -35,9 +32,8 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     /** ID of the color to use when a pad does not contain a note. */
     public static final String COLOR_OFF    = "PLAY_VIEW_COLOR_OFF";
 
-    protected int []           pressedKeys;
-    protected int []           defaultVelocity;
-    private boolean            useTrackColor;
+    protected final int []     defaultVelocity;
+    protected final boolean    useTrackColor;
 
 
     /**
@@ -66,19 +62,16 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
         super (name, surface, model);
 
         this.useTrackColor = useTrackColor;
-        this.scales = model.getScales ();
-        this.noteMap = Scales.getEmptyMatrix ();
 
-        this.pressedKeys = new int [128];
-        Arrays.fill (this.pressedKeys, 0);
         this.defaultVelocity = new int [128];
         for (int i = 0; i < 128; i++)
             this.defaultVelocity[i] = i;
 
         final ITrackBank tb = model.getTrackBank ();
         // Light notes sent from the sequencer
-        tb.addNoteObserver (this::setPressedKeys);
-        tb.addTrackSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
+        for (int i = 0; i < tb.getPageSize (); i++)
+            tb.getItem (i).addNoteObserver (this.keyManager::call);
+        tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
     }
 
 
@@ -96,6 +89,17 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNote (final int note, final int velocity)
+    {
+        if (!this.model.canSelectedTrackHoldNotes () || this.keyManager.map (note) == -1)
+            return;
+        // Mark selected notes immediately for better performance
+        this.keyManager.setKeyPressed (note, velocity);
+    }
+
+
     /**
      * Get the color for a pad.
      *
@@ -109,7 +113,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     {
         if (isKeyboardEnabled)
         {
-            if (this.pressedKeys[note] > 0)
+            if (this.keyManager.isKeyPressed (note))
                 return isRecording ? AbstractPlayView.COLOR_RECORD : AbstractPlayView.COLOR_PLAY;
             return this.getColor (note, this.useTrackColor ? track : null);
         }
@@ -119,22 +123,11 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
 
     /** {@inheritDoc} */
     @Override
-    public void onGridNote (final int note, final int velocity)
-    {
-        if (!this.model.canSelectedTrackHoldNotes () || this.noteMap[note] == -1)
-            return;
-        // Mark selected notes
-        this.setPressedKeys (this.noteMap[note], velocity);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onOctaveDown (final ButtonEvent event)
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.clearPressedKeys ();
+        this.keyManager.clearPressedKeys ();
         this.scales.decOctave ();
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getRangeText (), true, true);
@@ -147,44 +140,10 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.clearPressedKeys ();
+        this.keyManager.clearPressedKeys ();
         this.scales.incOctave ();
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getRangeText (), true, true);
-    }
-
-
-    /**
-     * Get the midi note from the grid.
-     *
-     * @param note The note on the grid
-     * @return The translated note depending on applied scales, etc.
-     */
-    public int getMidiNoteFromGrid (final int note)
-    {
-        final PadGrid padGrid = this.surface.getPadGrid ();
-        if (padGrid == null)
-            return -1;
-        final int translated = padGrid.translateToGrid (note);
-        return translated < 0 ? -1 : this.noteMap[translated];
-    }
-
-
-    protected void clearPressedKeys ()
-    {
-        for (int i = 0; i < 128; i++)
-            this.pressedKeys[i] = 0;
-    }
-
-
-    protected void setPressedKeys (final int note, final int velocity)
-    {
-        // Loop over all pads since the note can be present multiple time!
-        for (int i = 0; i < 128; i++)
-        {
-            if (this.noteMap[i] == note)
-                this.pressedKeys[i] = velocity;
-        }
     }
 
 
@@ -195,13 +154,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
      */
     public List<Integer> getPressedKeys ()
     {
-        final List<Integer> keys = new ArrayList<> ();
-        for (int i = 0; i < 128; i++)
-        {
-            if (this.pressedKeys[i] != 0)
-                keys.add (Integer.valueOf (i));
-        }
-        return keys;
+        return this.keyManager.getPressedKeys ();
     }
 
 
@@ -209,13 +162,6 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     @Override
     public void updateNoteMapping ()
     {
-        this.surface.scheduleTask (this::delayedUpdateNoteMapping, 100);
-    }
-
-
-    private void delayedUpdateNoteMapping ()
-    {
-        this.noteMap = this.model.canSelectedTrackHoldNotes () ? this.scales.getNoteMatrix () : Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (this.noteMap));
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getNoteMatrix () : EMPTY_TABLE);
     }
 }

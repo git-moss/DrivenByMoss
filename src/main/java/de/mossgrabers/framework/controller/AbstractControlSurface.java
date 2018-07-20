@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.LatestTaskExecutor;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
@@ -72,6 +73,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     private boolean []                            gridNoteConsumed;
     private ButtonEvent []                        gridNoteStates;
     private int []                                gridNoteVelocities;
+    private int []                                keyTranslationTable;
+
+    private final LatestTaskExecutor              flushExecutor         = new LatestTaskExecutor ();
 
 
     /**
@@ -323,10 +327,19 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     {
         if (this.input == null)
             return;
+        this.keyTranslationTable = table;
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
             t[i] = Integer.valueOf (table[i]);
         this.input.setKeyTranslationTable (t);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int [] getKeyTranslationTable ()
+    {
+        return this.keyTranslationTable;
     }
 
 
@@ -575,8 +588,10 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void flush ()
     {
-        this.scheduledFlush ();
-        this.redrawGrid ();
+        this.flushExecutor.execute ( () -> {
+            this.scheduledFlush ();
+            this.redrawGrid ();
+        });
     }
 
 
@@ -584,7 +599,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void shutdown ()
     {
-        // Intentionally empty
+        this.flushExecutor.shutdown ();
     }
 
 

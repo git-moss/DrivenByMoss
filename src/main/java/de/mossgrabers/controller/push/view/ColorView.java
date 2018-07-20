@@ -15,7 +15,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
@@ -63,16 +62,6 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     public void setMode (final SelectMode mode)
     {
         this.mode = mode;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        super.onActivate ();
-        this.noteMap = Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.noteMap);
     }
 
 

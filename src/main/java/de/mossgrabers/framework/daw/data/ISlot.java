@@ -4,57 +4,13 @@
 
 package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.framework.daw.ObserverManagement;
-
-
 /**
  * Interface to a slot.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface ISlot extends ObserverManagement
+public interface ISlot extends IItem
 {
-    /**
-     * Get the index.
-     *
-     * @return The index
-     */
-    int getIndex ();
-
-
-    /**
-     * Does the slot exist?
-     *
-     * @return True if it exists
-     */
-    boolean doesExist ();
-
-
-    /**
-     * get the name of the slot.
-     *
-     * @return The name of the slot
-     */
-    String getName ();
-
-
-    /**
-     * Get the name of the slot.
-     *
-     * @param limit Limit the text to this length
-     * @return The name of the slot
-     */
-    String getName (int limit);
-
-
-    /**
-     * Is the slot selected?
-     *
-     * @return True if selected
-     */
-    boolean isSelected ();
-
-
     /**
      * Does the slot have content?
      *
@@ -119,12 +75,6 @@ public interface ISlot extends ObserverManagement
      * @param blue The blue
      */
     void setColor (double red, double green, double blue);
-
-
-    /**
-     * Select a clip.
-     */
-    void select ();
 
 
     /**

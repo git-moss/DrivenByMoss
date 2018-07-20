@@ -10,7 +10,6 @@ import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
@@ -73,16 +72,6 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
             yellowLo,
             yellowLime
         };
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        super.onActivate ();
-        this.noteMap = Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.noteMap);
     }
 
 

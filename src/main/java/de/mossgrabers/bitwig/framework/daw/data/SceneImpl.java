@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IScene;
 
 import com.bitwig.extension.controller.api.Scene;
@@ -15,11 +16,9 @@ import com.bitwig.extension.controller.api.SettableColorValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SceneImpl implements IScene
+public class SceneImpl extends AbstractItemImpl implements IScene
 {
-    private final int   index;
     private final Scene scene;
-    private boolean     isSelected;
 
 
     /**
@@ -30,14 +29,15 @@ public class SceneImpl implements IScene
      */
     public SceneImpl (final Scene scene, final int index)
     {
-        this.index = index;
+        super (index);
+
         this.scene = scene;
 
         scene.exists ().markInterested ();
         scene.name ().markInterested ();
         scene.sceneIndex ().markInterested ();
         scene.color ().markInterested ();
-        scene.addIsSelectedInEditorObserver (value -> this.isSelected = value);
+        scene.addIsSelectedInEditorObserver (this::setSelected);
     }
 
 
@@ -49,14 +49,6 @@ public class SceneImpl implements IScene
         this.scene.name ().setIsSubscribed (enable);
         this.scene.sceneIndex ().setIsSubscribed (enable);
         this.scene.color ().setIsSubscribed (enable);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getIndex ()
-    {
-        return this.index;
     }
 
 
@@ -86,9 +78,9 @@ public class SceneImpl implements IScene
 
     /** {@inheritDoc} */
     @Override
-    public boolean isSelected ()
+    public void select ()
     {
-        return this.isSelected;
+        this.scene.selectInEditor ();
     }
 
 
@@ -111,5 +103,21 @@ public class SceneImpl implements IScene
     public void setColor (final double red, final double green, final double blue)
     {
         this.scene.color ().set ((float) red, (float) green, (float) blue);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getPosition ()
+    {
+        return this.scene.sceneIndex ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void launch ()
+    {
+        this.scene.launch ();
     }
 }

@@ -13,9 +13,10 @@ import de.mossgrabers.framework.controller.Relative2ValueChanger;
 import de.mossgrabers.framework.controller.Relative3ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IApplication;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -255,7 +256,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SELECT:
             case TRACK_7_SELECT:
             case TRACK_8_SELECT:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).isSelected () ? 127 : 0;
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).isSelected () ? 127 : 0;
 
             case TRACK_1_TOGGLE_ACTIVE:
             case TRACK_2_TOGGLE_ACTIVE:
@@ -265,7 +266,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_ACTIVE:
             case TRACK_7_TOGGLE_ACTIVE:
             case TRACK_8_TOGGLE_ACTIVE:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_ACTIVE:
                 final ITrack selectedTrack = this.model.getSelectedTrack ();
@@ -279,7 +280,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_VOLUME:
             case TRACK_7_SET_VOLUME:
             case TRACK_8_SET_VOLUME:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SET_VOLUME.ordinal ()).getVolume ();
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_VOLUME.ordinal ()).getVolume ();
 
             case TRACK_SELECTED_SET_VOLUME_TRACK:
                 final ITrack sel = this.model.getSelectedTrack ();
@@ -293,7 +294,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_PANORAMA:
             case TRACK_7_SET_PANORAMA:
             case TRACK_8_SET_PANORAMA:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SET_PANORAMA.ordinal ()).getPan ();
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_PANORAMA.ordinal ()).getPan ();
 
             case TRACK_SELECTED_SET_PANORAMA:
                 final ITrack selTrack = this.model.getSelectedTrack ();
@@ -307,7 +308,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_MUTE:
             case TRACK_7_TOGGLE_MUTE:
             case TRACK_8_TOGGLE_MUTE:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).isMute () ? 127 : 0;
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).isMute () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_MUTE:
                 final ITrack track = this.model.getSelectedTrack ();
@@ -321,7 +322,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_SOLO:
             case TRACK_7_TOGGLE_SOLO:
             case TRACK_8_TOGGLE_SOLO:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).isSolo () ? 127 : 0;
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).isSolo () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_SOLO:
                 final ITrack track2 = this.model.getSelectedTrack ();
@@ -335,7 +336,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_ARM:
             case TRACK_7_TOGGLE_ARM:
             case TRACK_8_TOGGLE_ARM:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).isRecArm () ? 127 : 0;
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).isRecArm () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_ARM:
                 final ITrack track3 = this.model.getSelectedTrack ();
@@ -349,7 +350,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_MONITOR:
             case TRACK_7_TOGGLE_MONITOR:
             case TRACK_8_TOGGLE_MONITOR:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).isMonitor () ? 127 : 0;
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).isMonitor () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_MONITOR:
                 final ITrack track4 = this.model.getSelectedTrack ();
@@ -363,7 +364,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_AUTO_MONITOR:
             case TRACK_7_TOGGLE_AUTO_MONITOR:
             case TRACK_8_TOGGLE_AUTO_MONITOR:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).isAutoMonitor () ? 127 : 0;
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).isAutoMonitor () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_AUTO_MONITOR:
                 final ITrack track5 = this.model.getSelectedTrack ();
@@ -377,7 +378,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_1:
             case TRACK_7_SET_SEND_1:
             case TRACK_8_SET_SEND_1:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal ()).getSend (0).getValue ();
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal ()).getSendBank ().getItem (0).getValue ();
 
             case TRACK_1_SET_SEND_2:
             case TRACK_2_SET_SEND_2:
@@ -387,7 +388,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_2:
             case TRACK_7_SET_SEND_2:
             case TRACK_8_SET_SEND_2:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_2.ordinal ()).getSend (1).getValue ();
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_2.ordinal ()).getSendBank ().getItem (1).getValue ();
 
             case TRACK_1_SET_SEND_3:
             case TRACK_2_SET_SEND_3:
@@ -397,7 +398,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_3:
             case TRACK_7_SET_SEND_3:
             case TRACK_8_SET_SEND_3:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_3.ordinal ()).getSend (2).getValue ();
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_3.ordinal ()).getSendBank ().getItem (2).getValue ();
 
             case TRACK_1_SET_SEND_4:
             case TRACK_2_SET_SEND_4:
@@ -407,7 +408,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_4:
             case TRACK_7_SET_SEND_4:
             case TRACK_8_SET_SEND_4:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_4.ordinal ()).getSend (3).getValue ();
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_4.ordinal ()).getSendBank ().getItem (3).getValue ();
 
             case TRACK_1_SET_SEND_5:
             case TRACK_2_SET_SEND_5:
@@ -417,7 +418,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_5:
             case TRACK_7_SET_SEND_5:
             case TRACK_8_SET_SEND_5:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_5.ordinal ()).getSend (4).getValue ();
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_5.ordinal ()).getSendBank ().getItem (4).getValue ();
 
             case TRACK_1_SET_SEND_6:
             case TRACK_2_SET_SEND_6:
@@ -427,7 +428,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_6:
             case TRACK_7_SET_SEND_6:
             case TRACK_8_SET_SEND_6:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_6.ordinal ()).getSend (5).getValue ();
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_6.ordinal ()).getSendBank ().getItem (5).getValue ();
 
             case TRACK_1_SET_SEND_7:
             case TRACK_2_SET_SEND_7:
@@ -437,7 +438,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_7:
             case TRACK_7_SET_SEND_7:
             case TRACK_8_SET_SEND_7:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_7.ordinal ()).getSend (6).getValue ();
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_7.ordinal ()).getSendBank ().getItem (6).getValue ();
 
             case TRACK_1_SET_SEND_8:
             case TRACK_2_SET_SEND_8:
@@ -447,7 +448,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_8:
             case TRACK_7_SET_SEND_8:
             case TRACK_8_SET_SEND_8:
-                return this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_8.ordinal ()).getSend (7).getValue ();
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_8.ordinal ()).getSendBank ().getItem (7).getValue ();
 
             case TRACK_SELECTED_SET_SEND_1:
             case TRACK_SELECTED_SET_SEND_2:
@@ -458,7 +459,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_SELECTED_SET_SEND_7:
             case TRACK_SELECTED_SET_SEND_8:
                 final ITrack track6 = this.model.getSelectedTrack ();
-                return track6 == null ? 0 : track6.getSend (command.ordinal () - FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal ()).getValue ();
+                return track6 == null ? 0 : track6.getSendBank ().getItem (command.ordinal () - FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal ()).getValue ();
 
             case MASTER_SET_VOLUME:
                 return this.model.getMasterTrack ().getVolume ();
@@ -910,7 +911,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_SELECT:
             case TRACK_8_SELECT:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).selectAndMakeVisible ();
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).select ();
                 break;
             // Track 1-8: Toggle Active
             case TRACK_1_TOGGLE_ACTIVE:
@@ -922,7 +923,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_ACTIVE:
             case TRACK_8_TOGGLE_ACTIVE:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).toggleIsActivated ();
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).toggleIsActivated ();
                 break;
             case TRACK_SELECTED_TOGGLE_ACTIVE:
                 if (value > 0)
@@ -972,7 +973,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_MUTE:
             case TRACK_8_TOGGLE_MUTE:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).toggleMute ();
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).toggleMute ();
                 break;
             // Track Selected: Toggle Mute
             case TRACK_SELECTED_TOGGLE_MUTE:
@@ -993,7 +994,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_SOLO:
             case TRACK_8_TOGGLE_SOLO:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).toggleSolo ();
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).toggleSolo ();
                 break;
             // Track Selected: Toggle Solo
             case TRACK_SELECTED_TOGGLE_SOLO:
@@ -1014,7 +1015,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_ARM:
             case TRACK_8_TOGGLE_ARM:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).toggleRecArm ();
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).toggleRecArm ();
                 break;
             // Track Selected: Toggle Arm
             case TRACK_SELECTED_TOGGLE_ARM:
@@ -1035,7 +1036,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_MONITOR:
             case TRACK_8_TOGGLE_MONITOR:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).toggleMonitor ();
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).toggleMonitor ();
                 break;
             // Track Selected: Toggle Monitor
             case TRACK_SELECTED_TOGGLE_MONITOR:
@@ -1056,7 +1057,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_AUTO_MONITOR:
             case TRACK_8_TOGGLE_AUTO_MONITOR:
                 if (value > 0)
-                    this.model.getTrackBank ().getTrack (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).toggleAutoMonitor ();
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).toggleAutoMonitor ();
                 break;
             // Track Selected: Toggle Auto Monitor
             case TRACK_SELECTED_TOGGLE_AUTO_MONITOR:
@@ -1362,18 +1363,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case SCENE_7_LAUNCH_SCENE:
             case SCENE_8_LAUNCH_SCENE:
                 if (value > 0)
-                    this.model.getSceneBank ().launchScene (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_SCENE.ordinal ());
+                    this.model.getSceneBank ().getItem (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_SCENE.ordinal ()).launch ();
                 break;
 
             // Scene: Select Previous Bank
             case SCENE_SELECT_PREVIOUS_BANK:
                 if (value > 0)
-                    this.model.getSceneBank ().scrollScenesPageUp ();
+                    this.model.getSceneBank ().scrollPageBackwards ();
                 break;
             // Scene: Select Next Bank
             case SCENE_SELECT_NEXT_BANK:
                 if (value > 0)
-                    this.model.getSceneBank ().scrollScenesPageDown ();
+                    this.model.getSceneBank ().scrollPageForwards ();
                 break;
             // Scene: Create Scene from playing Clips
             case SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS:
@@ -1451,7 +1452,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final ITrack track = this.getTrack (trackIndex);
         if (track == null)
             return;
-        final ISend send = track.getSend (sendIndex);
+        final ISend send = track.getSendBank ().getItem (sendIndex);
         if (send == null)
             return;
         if (knobMode == KNOB_MODE_ABSOLUTE)
@@ -1557,51 +1558,51 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private void scrollTrackLeft (final boolean switchBank)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack sel = tb.getSelectedItem ();
         final int index = sel == null ? 0 : sel.getIndex () - 1;
         if (index == -1 || switchBank)
         {
             this.scrollTrackBankLeft (sel, index);
             return;
         }
-        tb.getTrack (index).selectAndMakeVisible ();
+        tb.getItem (index).select ();
     }
 
 
     private void scrollTrackBankLeft (final ITrack sel, final int index)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollTracksUp ())
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        if (!tb.canScrollBackwards ())
             return;
-        tb.scrollTracksPageUp ();
+        tb.scrollPageBackwards ();
         final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
-        this.scheduleTask ( () -> tb.getTrack (newSel).selectAndMakeVisible (), BUTTON_REPEAT_INTERVAL);
+        this.scheduleTask ( () -> tb.getItem (newSel).select (), BUTTON_REPEAT_INTERVAL);
     }
 
 
     private void scrollTrackRight (final boolean switchBank)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack sel = tb.getSelectedItem ();
         final int index = sel == null ? 0 : sel.getIndex () + 1;
         if (index == 8 || switchBank)
         {
             this.scrollTrackBankRight (sel, index);
             return;
         }
-        tb.getTrack (index).selectAndMakeVisible ();
+        tb.getItem (index).select ();
     }
 
 
     private void scrollTrackBankRight (final ITrack sel, final int index)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollTracksDown ())
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        if (!tb.canScrollForwards ())
             return;
-        tb.scrollTracksPageDown ();
+        tb.scrollPageForwards ();
         final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
-        this.scheduleTask ( () -> tb.getTrack (newSel).selectAndMakeVisible (), BUTTON_REPEAT_INTERVAL);
+        this.scheduleTask ( () -> tb.getItem (newSel).select (), BUTTON_REPEAT_INTERVAL);
     }
 
 
@@ -1691,58 +1692,49 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private void scrollClipLeft (final boolean switchBank)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getSelectedItem ();
         if (track == null)
             return;
-        final ISlot sel = track.getSelectedSlot ();
+        final ISlotBank slotBank = track.getSlotBank ();
+        final ISlot sel = slotBank.getSelectedItem ();
         final int index = sel == null ? 0 : sel.getIndex () - 1;
         if (index == -1 || switchBank)
         {
-            this.scrollClipBankLeft (track, sel, index);
+            tb.getSceneBank ().scrollPageBackwards ();
+            final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
+            this.scheduleTask ( () -> slotBank.getItem (newSel).select (), BUTTON_REPEAT_INTERVAL);
             return;
         }
-        track.getSlot (index).select ();
+        slotBank.getItem (index).select ();
     }
 
 
     private void scrollClipRight (final boolean switchBank)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getSelectedItem ();
         if (track == null)
             return;
-        final ISlot sel = track.getSelectedSlot ();
+        final ISlotBank slotBank = track.getSlotBank ();
+        final ISlot sel = slotBank.getSelectedItem ();
         final int index = sel == null ? 0 : sel.getIndex () + 1;
-        if (index == tb.getNumScenes () || switchBank)
+        final ISceneBank sceneBank = tb.getSceneBank ();
+        if (index == sceneBank.getPageSize () || switchBank)
         {
-            this.scrollClipBankRight (track, sel, index);
+            sceneBank.scrollPageForwards ();
+            final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
+            this.scheduleTask ( () -> slotBank.getItem (newSel).select (), BUTTON_REPEAT_INTERVAL);
             return;
         }
-        track.getSlot (index).select ();
-    }
-
-
-    private void scrollClipBankLeft (final ITrack track, final ISlot sel, final int index)
-    {
-        track.scrollClipPageBackwards ();
-        final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
-        this.scheduleTask ( () -> track.getSlot (newSel).select (), BUTTON_REPEAT_INTERVAL);
-    }
-
-
-    private void scrollClipBankRight (final ITrack track, final ISlot sel, final int index)
-    {
-        track.scrollClipPageForwards ();
-        final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
-        this.scheduleTask ( () -> track.getSlot (newSel).select (), BUTTON_REPEAT_INTERVAL);
+        slotBank.getItem (index).select ();
     }
 
 
     private ITrack getTrack (final int trackIndex)
     {
         final ITrackBank tb = this.model.getTrackBank ();
-        return trackIndex < 0 ? tb.getSelectedTrack () : tb.getTrack (trackIndex);
+        return trackIndex < 0 ? tb.getSelectedItem () : tb.getItem (trackIndex);
     }
 
 

@@ -6,8 +6,8 @@ package de.mossgrabers.controller.kontrol.usb.mki.mode;
 
 import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 
@@ -36,13 +36,13 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     @Override
     public void updateFirstRow ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getSelectedItem ();
         final int selIndex = t != null ? t.getIndex () : -1;
-        final boolean canScrollLeft = selIndex > 0 || tb.canScrollTracksUp ();
-        final boolean canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getTrack (selIndex + 1).doesExist () || tb.canScrollTracksDown ();
-        final boolean canScrollUp = tb.canScrollTracksDown ();
-        final boolean canScrollDown = tb.canScrollTracksUp ();
+        final boolean canScrollLeft = selIndex > 0 || tb.canScrollBackwards ();
+        final boolean canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollForwards ();
+        final boolean canScrollUp = tb.canScrollForwards ();
+        final boolean canScrollDown = tb.canScrollBackwards ();
 
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
@@ -58,7 +58,7 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
 
     /** {@inheritDoc} */
     @Override
-    public void onMainKnob (int value)
+    public void onMainKnob (final int value)
     {
         if (this.model.getValueChanger ().calcKnobSpeed (value) > 0)
             this.scrollRight ();
@@ -72,10 +72,10 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     public void onMainKnobPressed ()
     {
         this.model.toggleCurrentTrackBank ();
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getSelectedItem ();
         if (track == null)
-            tb.getTrack (0).select ();
+            tb.getItem (0).select ();
     }
 
 
@@ -83,7 +83,7 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     @Override
     public void onBack ()
     {
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (selectedTrack != null)
             selectedTrack.toggleMute ();
     }
@@ -93,7 +93,7 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     @Override
     public void onEnter ()
     {
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (selectedTrack != null)
             selectedTrack.toggleSolo ();
     }

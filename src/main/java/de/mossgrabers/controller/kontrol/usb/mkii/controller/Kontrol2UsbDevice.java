@@ -355,7 +355,7 @@ public class Kontrol2UsbDevice
 
     /**
      * Process the received HID message.
-     * 
+     *
      * @param reportID The report (= function/method) number
      * @param data The data
      * @param received The number of valid bytes in the data array

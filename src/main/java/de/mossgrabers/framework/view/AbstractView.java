@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.KeyManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,10 +32,15 @@ import java.util.Map;
  */
 public abstract class AbstractView<S extends IControlSurface<C>, C extends Configuration> implements View
 {
-    private static final int []                   EMPTY_TABLE        = Scales.getEmptyMatrix ();
+    protected static final int []                 EMPTY_TABLE        = Scales.getEmptyMatrix ();
 
-    protected S                                   surface;
-    protected IModel                              model;
+    private final String                          name;
+
+    protected final S                             surface;
+    protected final IModel                        model;
+    protected final Scales                        scales;
+    protected final KeyManager                    keyManager;
+
     private AftertouchCommand                     aftertouchCommand;
     private PitchbendCommand                      pitchbendCommand;
 
@@ -46,11 +52,6 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
     protected boolean                             canScrollRight;
     protected boolean                             canScrollUp;
     protected boolean                             canScrollDown;
-
-    protected Scales                              scales;
-    protected int []                              noteMap;
-
-    private final String                          name;
 
 
     /**
@@ -65,6 +66,8 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
         this.name = name;
         this.surface = surface;
         this.model = model;
+        this.scales = model.getScales ();
+        this.keyManager = new KeyManager (model, surface.getPadGrid ());
 
         this.canScrollLeft = true;
         this.canScrollRight = true;
@@ -101,7 +104,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectTrack (final int index)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).selectAndMakeVisible ();
+        this.model.getCurrentTrackBank ().getItem (index).select ();
     }
 
 
@@ -271,7 +274,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
      */
     protected String getColor (final int pad, final ITrack track)
     {
-        return replaceOctaveColorWithTrackColor (track, this.scales.getColor (this.noteMap, pad));
+        return replaceOctaveColorWithTrackColor (track, this.keyManager.getColor (pad));
     }
 
 
@@ -319,6 +322,27 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
     @Override
     public void updateNoteMapping ()
     {
-        this.surface.setKeyTranslationTable (EMPTY_TABLE);
+        this.delayedUpdateNoteMapping (EMPTY_TABLE);
+    }
+
+
+    protected void delayedUpdateNoteMapping (int [] matrix)
+    {
+        this.surface.scheduleTask ( () -> {
+            this.keyManager.setNoteMatrix (matrix);
+            if (matrix.length == 128)
+                this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (matrix));
+        }, 6);
+    }
+
+
+    /**
+     * Get the key manager.
+     *
+     * @return The key manager
+     */
+    public KeyManager getKeyManager ()
+    {
+        return this.keyManager;
     }
 }

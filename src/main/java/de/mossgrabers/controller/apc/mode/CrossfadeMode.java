@@ -32,7 +32,7 @@ public class CrossfadeMode extends BaseMode
     @Override
     public void setValue (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).setPan (value);
+        this.model.getCurrentTrackBank ().getItem (index).setPan (value);
     }
 
 
@@ -40,7 +40,7 @@ public class CrossfadeMode extends BaseMode
     @Override
     public Integer getValue (final int index)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
         if (!track.doesExist ())
             return null;
 

@@ -43,7 +43,7 @@ public class SoloCommand<S extends IControlSurface<C>, C extends Configuration> 
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getTrack (this.index).toggleSolo ();
+            this.model.getCurrentTrackBank ().getItem (this.index).toggleSolo ();
     }
 
 
@@ -52,6 +52,6 @@ public class SoloCommand<S extends IControlSurface<C>, C extends Configuration> 
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getTrack (this.index).toggleAutoMonitor ();
+            this.model.getCurrentTrackBank ().getItem (this.index).toggleAutoMonitor ();
     }
 }

@@ -11,6 +11,8 @@ import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.IUsbEndpoint;
 import de.mossgrabers.framework.usb.UsbException;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 
 /**
  * Connects to the display of the Push 2 via USB.
@@ -48,7 +50,7 @@ public class PushUsbDisplay
     private IUsbEndpoint         usbEndpoint;
     private final IMemoryBlock   headerBlock;
     private final IMemoryBlock   imageBlock;
-    private boolean              isSending      = false;
+    private AtomicBoolean        isSending      = new AtomicBoolean (false);
 
 
     /**
@@ -83,14 +85,14 @@ public class PushUsbDisplay
      */
     public void send (final IBitmap image)
     {
-        if (this.usbDevice == null || this.usbEndpoint == null || this.isSending)
+        if (this.usbDevice == null || this.usbEndpoint == null || this.isSending.get ())
             return;
 
-        this.isSending = true;
+        this.isSending.set (true);
         image.fillTransferBuffer (this.imageBlock.createByteBuffer ());
         this.usbEndpoint.send (this.headerBlock, TIMEOUT);
         this.usbEndpoint.send (this.imageBlock, TIMEOUT);
-        this.isSending = false;
+        this.isSending.set (false);
     }
 
 

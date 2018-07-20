@@ -43,6 +43,6 @@ public class CrossfadeModeCommand<S extends IControlSurface<C>, C extends Config
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getTrack (this.index).toggleCrossfadeMode ();
+            this.model.getCurrentTrackBank ().getItem (this.index).toggleCrossfadeMode ();
     }
 }

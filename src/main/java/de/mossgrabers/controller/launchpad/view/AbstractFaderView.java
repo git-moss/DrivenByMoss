@@ -108,7 +108,7 @@ public abstract class AbstractFaderView extends SessionView
      */
     public void setupFader (final int index)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
         final int color = this.model.getColorManager ().getColor (DAWColors.getColorIndex (track.getColor ()));
         this.surface.setupFader (index, color);
     }

@@ -106,7 +106,7 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
     public void onFirstRow (final int index, final ButtonEvent event)
     {
         if (event == ButtonEvent.UP)
-            this.model.getCurrentTrackBank ().getTrack (index).select ();
+            this.model.getCurrentTrackBank ().getItem (index).select ();
     }
 
 

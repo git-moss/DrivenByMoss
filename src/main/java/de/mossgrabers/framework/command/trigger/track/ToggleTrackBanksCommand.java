@@ -7,8 +7,8 @@ package de.mossgrabers.framework.command.trigger.track;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -42,8 +42,8 @@ public class ToggleTrackBanksCommand<S extends IControlSurface<C>, C extends Con
             return;
 
         this.model.toggleCurrentTrackBank ();
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        if (currentTrackBank.getSelectedTrack () == null)
-            currentTrackBank.getTrack (0).select ();
+        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
+        if (currentTrackBank.getSelectedItem () == null)
+            currentTrackBank.getItem (0).select ();
     }
 }

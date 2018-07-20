@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -31,9 +32,9 @@ public abstract class AbstractModel implements IModel
     protected IProject                 project;
     protected IBrowser                 browser;
 
-    protected IChannelBank             currentTrackBank;
+    protected ITrackBank               currentTrackBank;
     protected ITrackBank               trackBank;
-    protected IChannelBank             effectTrackBank;
+    protected ITrackBank               effectTrackBank;
     protected IMasterTrack             masterTrack;
 
     protected ICursorDevice            primaryDevice;
@@ -223,7 +224,7 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public IChannelBank getCurrentTrackBank ()
+    public ITrackBank getCurrentTrackBank ()
     {
         return this.currentTrackBank;
     }
@@ -239,7 +240,7 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public IChannelBank getEffectTrackBank ()
+    public ITrackBank getEffectTrackBank ()
     {
         return this.effectTrackBank;
     }
@@ -297,7 +298,7 @@ public abstract class AbstractModel implements IModel
     @Override
     public boolean canSelectedTrackHoldNotes ()
     {
-        final ITrack t = this.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack t = this.getCurrentTrackBank ().getSelectedItem ();
         return t != null && t.canHoldNotes ();
     }
 
@@ -306,8 +307,8 @@ public abstract class AbstractModel implements IModel
     @Override
     public ITrack getSelectedTrack ()
     {
-        final IChannelBank tb = this.getCurrentTrackBank ();
-        return tb == null ? null : tb.getSelectedTrack ();
+        final ITrackBank tb = this.getCurrentTrackBank ();
+        return tb == null ? null : tb.getSelectedItem ();
     }
 
 
@@ -316,7 +317,7 @@ public abstract class AbstractModel implements IModel
     public ISlot getSelectedSlot ()
     {
         final ITrack track = this.getSelectedTrack ();
-        return track == null ? null : track.getSelectedSlot ();
+        return track == null ? null : track.getSlotBank ().getSelectedItem ();
     }
 
 
@@ -327,8 +328,8 @@ public abstract class AbstractModel implements IModel
         final ITrack selectedTrack = this.getSelectedTrack ();
         if (selectedTrack == null)
             return false;
-        final ISlot [] slots = selectedTrack.getSelectedSlots ();
-        if (slots.length == 0)
+        final List<ISlot> slots = selectedTrack.getSlotBank ().getSelectedItems ();
+        if (slots.isEmpty ())
             return false;
         for (final ISlot slot: slots)
         {
