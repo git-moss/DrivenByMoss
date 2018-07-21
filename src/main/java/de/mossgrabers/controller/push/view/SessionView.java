@@ -131,7 +131,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
                 return;
             track.getSlotBank ().getItem (s).browse ();
             final ModeManager modeManager = this.surface.getModeManager ();
-            if (!modeManager.isActiveMode (Modes.MODE_BROWSER))
+            if (!modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
                 this.activateMode ();
             return;
         }

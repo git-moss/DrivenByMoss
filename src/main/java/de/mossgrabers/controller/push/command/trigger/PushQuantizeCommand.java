@@ -47,7 +47,7 @@ public class PushQuantizeCommand extends QuantizeCommand<PushControlSurface, Pus
         if (event != ButtonEvent.UP)
             return;
 
-        if (Modes.MODE_GROOVE.equals (modeManager.getActiveModeId ()))
+        if (Modes.MODE_GROOVE.equals (modeManager.getActiveOrTempModeId ()))
             modeManager.restoreMode ();
         else
             this.quantize ();

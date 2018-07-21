@@ -27,7 +27,7 @@ public class SendBankImpl extends AbstractBankImpl<SendBank, ISend> implements I
      *
      * @param sendBank The send bank
      * @param numSends The number of sends in the page of the bank
-     * @param valueChanger
+     * @param valueChanger The value changer
      */
     public SendBankImpl (final SendBank sendBank, final int numSends, final IValueChanger valueChanger)
     {

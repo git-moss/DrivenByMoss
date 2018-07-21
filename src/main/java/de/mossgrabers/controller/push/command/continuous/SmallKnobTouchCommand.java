@@ -42,11 +42,11 @@ public class SmallKnobTouchCommand extends AbstractTriggerCommand<PushControlSur
 
         // Avoid accidentally leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_BROWSER))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
             return;
 
         // Prevent flickering if a knob is touched accidentally while fiddling with other knobs
-        final Mode activeMode = modeManager.getActiveMode ();
+        final Mode activeMode = modeManager.getActiveOrTempMode ();
         if (activeMode instanceof BaseMode && ((BaseMode) activeMode).isAKnobTouched ())
             return;
 

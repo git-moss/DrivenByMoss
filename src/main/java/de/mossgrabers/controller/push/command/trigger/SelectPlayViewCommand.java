@@ -42,6 +42,7 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
         if (event != ButtonEvent.DOWN)
             return;
 
+        final ModeManager modeManager = this.surface.getModeManager ();
         final ViewManager viewManager = this.surface.getViewManager ();
         if (Views.isSessionView (viewManager.getActiveViewId ()))
         {
@@ -54,11 +55,14 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
 
             final Integer preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
             viewManager.setActiveView (preferredView == null ? Views.VIEW_PLAY : preferredView);
+
+            if (modeManager.isActiveMode (Modes.MODE_SESSION) || modeManager.getActiveOrTempMode ().isTemporary ())
+                modeManager.restoreMode ();
+
             return;
         }
 
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_VIEW_SELECT))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_VIEW_SELECT))
             modeManager.restoreMode ();
         else
             modeManager.setActiveMode (Modes.MODE_VIEW_SELECT);

@@ -91,12 +91,15 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
 
     /** {@inheritDoc} */
     @Override
-    public void onGridNote (final int note, final int velocity)
+    public void onGridNote (final int key, final int velocity)
     {
-        if (!this.model.canSelectedTrackHoldNotes () || this.keyManager.map (note) == -1)
+        if (!this.model.canSelectedTrackHoldNotes ())
             return;
+
         // Mark selected notes immediately for better performance
-        this.keyManager.setKeyPressed (note, velocity);
+        final int note = this.keyManager.map (key);
+        if (note != -1)
+            this.keyManager.setAllKeysPressed (note, velocity);
     }
 
 

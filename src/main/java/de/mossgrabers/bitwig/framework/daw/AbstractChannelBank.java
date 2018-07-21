@@ -50,12 +50,12 @@ public abstract class AbstractChannelBank<B extends Bank<?>, T extends IChannel>
 
     /** {@inheritDoc} */
     @Override
-    public String getSelectedTrackColorEntry ()
+    public String getSelectedChannelColorEntry ()
     {
-        final T selectedTrack = this.getSelectedItem ();
-        if (selectedTrack == null)
+        final T sel = this.getSelectedItem ();
+        if (sel == null)
             return DAWColors.COLOR_OFF;
-        final double [] color = selectedTrack.getColor ();
+        final double [] color = sel.getColor ();
         return DAWColors.getColorIndex (color[0], color[1], color[2]);
     }
 

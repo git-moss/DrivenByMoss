@@ -36,6 +36,6 @@ public class EnterButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSu
     public void execute (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            ((IKontrol1Mode) this.surface.getModeManager ().getActiveMode ()).onEnter ();
+            ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTempMode ()).onEnter ();
     }
 }

@@ -42,6 +42,8 @@ public class DeviceTypes
         DEVICES.put ("Bit-8", TypeIcon.ICON_WAVE);
         DEVICES.put ("Blur", TypeIcon.ICON_WAVE);
         DEVICES.put ("Chain", TypeIcon.ICON_FOLDER);
+        DEVICES.put ("Channel Filter", TypeIcon.ICON_NOTE);
+        DEVICES.put ("Channel Map", TypeIcon.ICON_NOTE);
         DEVICES.put ("Chorus", TypeIcon.ICON_WAVE);
         DEVICES.put ("Comb", TypeIcon.ICON_WAVE);
         DEVICES.put ("Compressor", TypeIcon.ICON_WAVE);
@@ -89,6 +91,7 @@ public class DeviceTypes
         DEVICES.put ("Multiband FX-3", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Note Echo", TypeIcon.ICON_NOTE);
         DEVICES.put ("Note Filter", TypeIcon.ICON_NOTE);
+        DEVICES.put ("Note FX Layer", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Note Harmonizer", TypeIcon.ICON_NOTE);
         DEVICES.put ("Note Latch", TypeIcon.ICON_NOTE);
         DEVICES.put ("Note Length", TypeIcon.ICON_NOTE);

@@ -96,13 +96,13 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
     {
         final ModeManager modeManager = this.surface.getModeManager ();
 
-        if (modeManager.isActiveMode (Modes.MODE_MASTER))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_MASTER))
         {
             this.activateTrackMode (true, false);
             return;
         }
 
-        if (modeManager.isActiveMode (Modes.MODE_TRACK))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_TRACK))
         {
             if (this.model.isEffectTrackBankActive ())
                 this.activateMasterMode (true);
@@ -126,7 +126,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
         this.surface.getDisplay ().notify (isEffect ? "Effects" : "Tracks");
         if (this.model.getSelectedTrack () != null)
             return;
-        final Mode activeMode = modeManager.getActiveMode ();
+        final Mode activeMode = modeManager.getActiveOrTempMode ();
         if (activeMode != null)
             activeMode.selectTrack (0);
     }
@@ -145,7 +145,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
     {
         final ModeManager modeManager = this.surface.getModeManager ();
 
-        if (!modeManager.isActiveMode (Modes.MODE_VOLUME))
+        if (!modeManager.isActiveOrTempMode (Modes.MODE_VOLUME))
         {
             modeManager.setActiveMode (Modes.MODE_VOLUME);
             this.activateTrackMode (false, false);

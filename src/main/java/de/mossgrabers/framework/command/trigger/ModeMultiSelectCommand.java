@@ -52,7 +52,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveModeId ();
+        final Integer activeModeId = modeManager.getActiveOrTempModeId ();
         int index = this.modeIds.indexOf (activeModeId) + 1;
         if (index < 0 || index >= this.modeIds.size ())
             index = 0;

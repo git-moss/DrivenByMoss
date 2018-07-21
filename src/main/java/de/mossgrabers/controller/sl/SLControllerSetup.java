@@ -178,7 +178,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
             if (!isSelected)
                 return;
             final ModeManager modeManager = this.getSurface ().getModeManager ();
-            if (!modeManager.isActiveMode (Modes.MODE_VOLUME))
+            if (!modeManager.isActiveOrTempMode (Modes.MODE_VOLUME))
                 modeManager.setActiveMode (Modes.MODE_MASTER);
         });
     }
@@ -300,7 +300,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     private void updateIndication ()
     {
         final SLControlSurface surface = this.getSurface ();
-        final Integer mode = surface.getModeManager ().getActiveModeId ();
+        final Integer mode = surface.getModeManager ().getActiveOrTempModeId ();
 
         final IMasterTrack mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (Modes.MODE_MASTER.equals (mode));
@@ -345,7 +345,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     private void handleTrackChange (final int index, final boolean isSelected)
     {
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (isSelected && modeManager.isActiveMode (Modes.MODE_MASTER))
+        if (isSelected && modeManager.isActiveOrTempMode (Modes.MODE_MASTER))
             modeManager.setActiveMode (Modes.MODE_TRACK);
     }
 }

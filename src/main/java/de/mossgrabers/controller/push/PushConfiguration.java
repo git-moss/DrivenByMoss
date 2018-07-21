@@ -86,6 +86,10 @@ public class PushConfiguration extends AbstractConfiguration
     public static final Integer    COLOR_BACKGROUND_DARKER          = Integer.valueOf (59);
     /** Background color lighter of an element. */
     public static final Integer    COLOR_BACKGROUND_LIGHTER         = Integer.valueOf (60);
+    /** Session view options. */
+    public static final Integer    SESSION_VIEW                     = Integer.valueOf (61);
+    /** Display scenes or clips. */
+    public static final Integer    DISPLAY_SCENES_CLIPS             = Integer.valueOf (62);
 
     private static final ColorEx   DEFAULT_COLOR_BACKGROUND         = ColorEx.fromRGB (83, 83, 83);
     private static final ColorEx   DEFAULT_COLOR_BORDER             = ColorEx.BLACK;
@@ -126,7 +130,16 @@ public class PushConfiguration extends AbstractConfiguration
         "Fader"
     };
 
+    private static final String [] SESSION_VIEW_OPTIONS             =
+    {
+        "Session",
+        "Flipped",
+        "Scenes"
+    };
+
     private Integer                defaultNoteView                  = Views.VIEW_PLAY;
+    private boolean                displayScenesClips;
+    private boolean                isScenesClipView;
 
     /** What does the ribbon send? **/
     private int                    ribbonMode                       = RIBBON_MODE_PITCH;
@@ -182,6 +195,8 @@ public class PushConfiguration extends AbstractConfiguration
     private IColorSetting          colorRecordSetting;
     private IColorSetting          colorSoloSetting;
     private IColorSetting          colorMuteSetting;
+    private IEnumSetting           sessionViewSetting;
+    private IEnumSetting           displayScenesClipsSetting;
 
 
     /**
@@ -217,7 +232,7 @@ public class PushConfiguration extends AbstractConfiguration
         // Session
         if (this.host.hasClips ())
         {
-            this.activateFlipSessionSetting (settingsUI);
+            this.activateSessionView (settingsUI);
             this.activateLockFlipSessionSetting (settingsUI);
             this.activateSelectClipOnLaunchSetting (settingsUI);
             this.activateDrawRecordStripeSetting (settingsUI);
@@ -877,6 +892,77 @@ public class PushConfiguration extends AbstractConfiguration
     public void setDebugMode (final Integer debugMode)
     {
         this.debugModeSetting.set (debugMode.toString ());
+    }
+
+
+    /**
+     * Activate the session view settings.
+     *
+     * @param settingsUI The settings
+     */
+    private void activateSessionView (final ISettingsUI settingsUI)
+    {
+        this.sessionViewSetting = settingsUI.getEnumSetting ("Session view", CATEGORY_SESSION, SESSION_VIEW_OPTIONS, SESSION_VIEW_OPTIONS[0]);
+        this.sessionViewSetting.addValueObserver (value -> {
+            this.flipSession = SESSION_VIEW_OPTIONS[1].equals (value);
+            this.isScenesClipView = SESSION_VIEW_OPTIONS[2].equals (value);
+            this.notifyObservers (AbstractConfiguration.FLIP_SESSION);
+            this.notifyObservers (PushConfiguration.SESSION_VIEW);
+        });
+
+        this.displayScenesClipsSetting = settingsUI.getEnumSetting ("Display scenes/clips", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.displayScenesClipsSetting.addValueObserver (value -> {
+            this.displayScenesClips = "On".equals (value);
+            this.notifyObservers (PushConfiguration.DISPLAY_SCENES_CLIPS);
+        });
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setFlipSession (final boolean enabled)
+    {
+        this.sessionViewSetting.set (enabled ? SESSION_VIEW_OPTIONS[1] : SESSION_VIEW_OPTIONS[0]);
+    }
+
+
+    /**
+     * Set the scene view.
+     */
+    public void setSceneView ()
+    {
+        this.sessionViewSetting.set (SESSION_VIEW_OPTIONS[2]);
+    }
+
+
+    /**
+     * Returns true if the session view should also switch to the scene/clip mode.
+     *
+     * @return True if the session view should also switch to the scene/clip mode.
+     */
+    public boolean shouldDisplayScenesOrClips ()
+    {
+        return this.displayScenesClips;
+    }
+
+
+    /**
+     * Returns true if the scene/clip view is enabled (otherwise the normal session view).
+     *
+     * @return True if the scene/clip view is enabled
+     */
+    public boolean isScenesClipViewSelected ()
+    {
+        return this.isScenesClipView;
+    }
+
+
+    /**
+     * Toggles the mode display for scenes/clips in session view.
+     */
+    public void toggleScenesClipMode ()
+    {
+        this.displayScenesClipsSetting.set (this.displayScenesClips ? ON_OFF_OPTIONS[0] : ON_OFF_OPTIONS[1]);
     }
 
 

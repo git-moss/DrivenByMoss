@@ -46,7 +46,7 @@ public class DeviceKnobRowCommand extends AbstractContinuousCommand<SLControlSur
         // Convert negative relative value
         final int v = value > 64 ? 127 - (value - 64) : value;
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (!modeManager.isActiveMode (Modes.MODE_PARAMS))
+        if (!modeManager.isActiveOrTempMode (Modes.MODE_PARAMS))
             modeManager.setActiveMode (Modes.MODE_PARAMS);
         modeManager.getMode (Modes.MODE_PARAMS).onValueKnob (this.index, v);
     }

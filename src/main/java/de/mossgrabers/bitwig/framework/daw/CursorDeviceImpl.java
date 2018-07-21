@@ -55,7 +55,7 @@ public class CursorDeviceImpl implements ICursorDevice
     private DeviceBank []            deviceBanks;
     private DrumPadBank              drumPadBank;
     private DeviceBank []            drumPadBanks;
-    private DeviceBankImpl           deviceBank;
+    private IDeviceBank              deviceBank;
 
 
     /**

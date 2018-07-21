@@ -169,7 +169,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.updateButtons ();
         final PushControlSurface surface = this.getSurface ();
-        this.updateMode (surface.getModeManager ().getActiveModeId ());
+        this.updateMode (surface.getModeManager ().getActiveOrTempModeId ());
 
         final View activeView = surface.getViewManager ().getActiveView ();
         if (activeView == null)
@@ -197,7 +197,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             final ModeManager modeManager = surface.getModeManager ();
             if (isSelected)
                 modeManager.setActiveMode (Modes.MODE_MASTER);
-            else if (modeManager.isActiveMode (Modes.MODE_MASTER))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_MASTER))
                 modeManager.restoreMode ();
         });
     }
@@ -355,6 +355,27 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         });
         this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, () -> {
             this.getSurface ().getDisplay ().showDebugWindow ();
+        });
+
+        this.configuration.addSettingObserver (PushConfiguration.DISPLAY_SCENES_CLIPS, () -> {
+            if (Views.isSessionView (this.getSurface ().getViewManager ().getActiveViewId ()))
+            {
+                final ModeManager modeManager = this.getSurface ().getModeManager ();
+                if (modeManager.isActiveMode (Modes.MODE_SESSION))
+                    modeManager.restoreMode ();
+                else
+                    modeManager.setActiveMode (Modes.MODE_SESSION);
+            }
+        });
+
+        this.configuration.addSettingObserver (PushConfiguration.SESSION_VIEW, () -> {
+            final ViewManager viewManager = this.getSurface ().getViewManager ();
+            if (!Views.isSessionView (viewManager.getActiveViewId ()))
+                return;
+            if (this.configuration.isScenesClipViewSelected ())
+                viewManager.setActiveView (Views.VIEW_SCENE_PLAY);
+            else
+                viewManager.setActiveView (Views.VIEW_SESSION);
         });
 
         this.createScaleObservers (this.configuration);
@@ -537,7 +558,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         if (this.isPush2)
         {
             final ModeManager modeManager = surface.getModeManager ();
-            if (modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER))
+            if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER))
             {
                 final ICursorDevice cd = this.model.getCursorDevice ();
                 final IChannel layer = cd.getSelectedLayerOrDrumPad ();
@@ -546,7 +567,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             }
             else
             {
-                final ITrack selTrack = modeManager.isActiveMode (Modes.MODE_MASTER) ? this.model.getMasterTrack () : this.model.getSelectedTrack ();
+                final ITrack selTrack = modeManager.isActiveOrTempMode (Modes.MODE_MASTER) ? this.model.getMasterTrack () : this.model.getSelectedTrack ();
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, selTrack != null && selTrack.isMute () ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, selTrack != null && selTrack.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
             }
@@ -685,7 +706,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             }
         }
 
-        if (modeManager.isActiveMode (Modes.MODE_MASTER))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_MASTER))
             modeManager.setActiveMode (Modes.MODE_TRACK);
 
         if (viewManager.isActiveView (Views.VIEW_PLAY))

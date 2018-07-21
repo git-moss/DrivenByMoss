@@ -49,15 +49,15 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
         this.canScrollDown = sceneBank.canScrollForwards ();
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
         {
-            final DeviceParamsMode mode = (DeviceParamsMode) modeManager.getActiveMode ();
+            final DeviceParamsMode mode = (DeviceParamsMode) modeManager.getActiveOrTempMode ();
             this.canScrollLeft = mode.canSelectPreviousPage ();
             this.canScrollRight = mode.canSelectNextPage ();
             return;
         }
 
-        if (modeManager.isActiveMode (Modes.MODE_BROWSER))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
         {
             final IBrowser browser = this.model.getBrowser ();
             this.canScrollLeft = browser.hasPreviousContentType ();
@@ -65,7 +65,7 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
-        if (Modes.isLayerMode (modeManager.getActiveModeId ()))
+        if (Modes.isLayerMode (modeManager.getActiveOrTempModeId ()))
         {
             final ICursorDevice cd = this.model.getCursorDevice ();
             this.canScrollLeft = cd.canScrollLayersOrDrumPadsUp ();
@@ -85,9 +85,9 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
     protected void scrollLeft ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
         {
-            final DeviceParamsMode paramsMode = (DeviceParamsMode) modeManager.getActiveMode ();
+            final DeviceParamsMode paramsMode = (DeviceParamsMode) modeManager.getActiveOrTempMode ();
             if (this.surface.isShiftPressed ())
                 paramsMode.selectPreviousPageBank ();
             else
@@ -95,14 +95,14 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
-        if (modeManager.isActiveMode (Modes.MODE_BROWSER))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
         {
-            ((DeviceBrowserMode) modeManager.getActiveMode ()).resetFilterColumn ();
+            ((DeviceBrowserMode) modeManager.getActiveOrTempMode ()).resetFilterColumn ();
             this.model.getBrowser ().previousContentType ();
             return;
         }
 
-        if (Modes.isLayerMode (modeManager.getActiveModeId ()))
+        if (Modes.isLayerMode (modeManager.getActiveOrTempModeId ()))
         {
             if (this.surface.isShiftPressed ())
                 this.model.getCursorDevice ().previousLayerOrDrumPadBank ();
@@ -111,7 +111,7 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
-        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
         if (activeMode != null)
             activeMode.selectPreviousTrack ();
     }
@@ -122,9 +122,9 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
     protected void scrollRight ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
         {
-            final DeviceParamsMode activeMode = (DeviceParamsMode) modeManager.getActiveMode ();
+            final DeviceParamsMode activeMode = (DeviceParamsMode) modeManager.getActiveOrTempMode ();
             if (this.surface.isShiftPressed ())
                 activeMode.selectNextPageBank ();
             else
@@ -132,14 +132,14 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
-        if (modeManager.isActiveMode (Modes.MODE_BROWSER))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
         {
-            ((DeviceBrowserMode) modeManager.getActiveMode ()).resetFilterColumn ();
+            ((DeviceBrowserMode) modeManager.getActiveOrTempMode ()).resetFilterColumn ();
             this.model.getBrowser ().nextContentType ();
             return;
         }
 
-        if (Modes.isLayerMode (modeManager.getActiveModeId ()))
+        if (Modes.isLayerMode (modeManager.getActiveOrTempModeId ()))
         {
             if (this.surface.isShiftPressed ())
                 this.model.getCursorDevice ().nextLayerOrDrumPadBank ();
@@ -148,7 +148,7 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
-        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
         if (activeMode != null)
             activeMode.selectNextTrack ();
     }

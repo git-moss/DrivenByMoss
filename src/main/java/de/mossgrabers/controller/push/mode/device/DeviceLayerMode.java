@@ -240,14 +240,14 @@ public class DeviceLayerMode extends BaseMode
         switch (index)
         {
             case 0:
-                if (modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER_VOLUME))
+                if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_VOLUME))
                     modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
                 else
                     modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER_VOLUME);
                 break;
 
             case 1:
-                if (modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER_PAN))
+                if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_PAN))
                     modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
                 else
                     modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER_PAN);
@@ -269,7 +269,7 @@ public class DeviceLayerMode extends BaseMode
                 }
                 config.setSendsAreToggled (!config.isSendsAreToggled ());
 
-                if (!modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER))
+                if (!modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER))
                     modeManager.setActiveMode (Integer.valueOf (Modes.MODE_DEVICE_LAYER_SEND1.intValue () + (config.isSendsAreToggled () ? 4 : 0)));
                 break;
 
@@ -301,7 +301,7 @@ public class DeviceLayerMode extends BaseMode
             return;
         final Integer si = Integer.valueOf (Modes.MODE_DEVICE_LAYER_SEND1.intValue () + sendIndex);
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (modeManager.isActiveMode (si) ? Modes.MODE_DEVICE_LAYER : si);
+        modeManager.setActiveMode (modeManager.isActiveOrTempMode (si) ? Modes.MODE_DEVICE_LAYER : si);
     }
 
 
@@ -616,14 +616,14 @@ public class DeviceLayerMode extends BaseMode
             }
 
             final ModeManager modeManager = this.surface.getModeManager ();
-            this.surface.updateButton (102, modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER_VOLUME) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (103, modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER_PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateButton (102, modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_VOLUME) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateButton (103, modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             this.surface.updateButton (104, PushColors.PUSH2_COLOR_BLACK);
             this.surface.updateButton (105, PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (106, modeManager.isActiveMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND5 : Modes.MODE_DEVICE_LAYER_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (107, modeManager.isActiveMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND6 : Modes.MODE_DEVICE_LAYER_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (108, modeManager.isActiveMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND7 : Modes.MODE_DEVICE_LAYER_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (109, modeManager.isActiveMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND8 : Modes.MODE_DEVICE_LAYER_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateButton (106, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND5 : Modes.MODE_DEVICE_LAYER_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateButton (107, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND6 : Modes.MODE_DEVICE_LAYER_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateButton (108, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND7 : Modes.MODE_DEVICE_LAYER_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateButton (109, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND8 : Modes.MODE_DEVICE_LAYER_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             return;
         }
 

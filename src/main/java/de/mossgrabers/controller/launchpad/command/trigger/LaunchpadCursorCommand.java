@@ -225,7 +225,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         }
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
-        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
         if (activeMode != null)
             activeMode.selectNextTrack ();
     }
@@ -274,7 +274,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         }
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
-        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
         if (activeMode != null)
             activeMode.selectPreviousTrack ();
     }

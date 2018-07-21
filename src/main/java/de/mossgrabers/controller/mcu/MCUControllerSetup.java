@@ -185,7 +185,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.flushSurfaces ();
 
         this.updateButtons ();
-        this.updateMode (this.getSurface ().getModeManager ().getActiveModeId ());
+        this.updateMode (this.getSurface ().getModeManager ().getActiveOrTempModeId ());
     }
 
 
@@ -279,7 +279,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             {
                 final MCUControlSurface surface = this.getSurface (index);
                 surface.switchVuMode (this.configuration.isEnableVUMeters () ? MCUControlSurface.VUMODE_LED_AND_LCD : MCUControlSurface.VUMODE_OFF);
-                final Mode activeMode = surface.getModeManager ().getActiveMode ();
+                final Mode activeMode = surface.getModeManager ().getActiveOrTempMode ();
                 if (activeMode != null)
                     activeMode.updateDisplay ();
                 ((MCUDisplay) surface.getDisplay ()).forceFlush ();
@@ -483,7 +483,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     private void updateButtons ()
     {
         final MCUControlSurface surface = this.getSurface ();
-        final Integer mode = surface.getModeManager ().getActiveModeId ();
+        final Integer mode = surface.getModeManager ().getActiveOrTempModeId ();
         if (mode == null)
             return;
 
@@ -537,7 +537,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         surface.updateButton (MCUControlSurface.MCU_NAME_VALUE, surface.getConfiguration ().isDisplayTrackNames () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         surface.updateButton (MCUControlSurface.MCU_ZOOM, surface.getConfiguration ().isZoomState () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_SCRUB, surface.getModeManager ().isActiveMode (Modes.MODE_DEVICE_PARAMS) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_SCRUB, surface.getModeManager ().isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         surface.updateButton (MCUControlSurface.MCU_MIDI_TRACKS, MCU_BUTTON_STATE_OFF);
         surface.updateButton (MCUControlSurface.MCU_INPUTS, MCU_BUTTON_STATE_OFF);
@@ -661,11 +661,11 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         if (this.configuration.useFadersAsKnobs ())
         {
             final ModeManager modeManager = this.getSurface ().getModeManager ();
-            if (modeManager.isActiveMode (Modes.MODE_VOLUME))
+            if (modeManager.isActiveOrTempMode (Modes.MODE_VOLUME))
                 value = track.getVolume ();
-            else if (modeManager.isActiveMode (Modes.MODE_PAN))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_PAN))
                 value = track.getPan ();
-            else if (modeManager.isActiveMode (Modes.MODE_TRACK))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_TRACK))
             {
                 final ITrack selectedTrack = this.model.getSelectedTrack ();
                 if (selectedTrack == null)
@@ -698,23 +698,23 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                     }
                 }
             }
-            else if (modeManager.isActiveMode (Modes.MODE_SEND1))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND1))
                 value = track.getSendBank ().getItem (0).getValue ();
-            else if (modeManager.isActiveMode (Modes.MODE_SEND2))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND2))
                 value = track.getSendBank ().getItem (1).getValue ();
-            else if (modeManager.isActiveMode (Modes.MODE_SEND3))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND3))
                 value = track.getSendBank ().getItem (2).getValue ();
-            else if (modeManager.isActiveMode (Modes.MODE_SEND4))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND4))
                 value = track.getSendBank ().getItem (3).getValue ();
-            else if (modeManager.isActiveMode (Modes.MODE_SEND5))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND5))
                 value = track.getSendBank ().getItem (4).getValue ();
-            else if (modeManager.isActiveMode (Modes.MODE_SEND6))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND6))
                 value = track.getSendBank ().getItem (5).getValue ();
-            else if (modeManager.isActiveMode (Modes.MODE_SEND7))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND7))
                 value = track.getSendBank ().getItem (6).getValue ();
-            else if (modeManager.isActiveMode (Modes.MODE_SEND8))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND8))
                 value = track.getSendBank ().getItem (7).getValue ();
-            else if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
                 value = this.model.getCursorDevice ().getFXParam (channel).getValue ();
         }
 
@@ -788,7 +788,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             return;
 
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_MASTER))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_MASTER))
             modeManager.setActiveMode (Modes.MODE_TRACK);
     }
 }

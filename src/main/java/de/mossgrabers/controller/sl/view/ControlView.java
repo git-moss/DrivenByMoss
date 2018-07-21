@@ -58,7 +58,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        Integer activeModeId = modeManager.getActiveModeId ();
+        Integer activeModeId = modeManager.getActiveOrTempModeId ();
         if (activeModeId == Modes.MODE_VIEW_SELECT)
         {
             if (index == 1)
@@ -160,7 +160,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        Integer cm = modeManager.getActiveModeId ();
+        Integer cm = modeManager.getActiveOrTempModeId ();
         if (cm != Modes.MODE_TRACK_TOGGLES && cm != Modes.MODE_FRAME && cm != Modes.MODE_BROWSER)
         {
             modeManager.setActiveMode (Modes.MODE_TRACK_TOGGLES);
@@ -298,7 +298,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     public void onButtonRow1Select ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final boolean selectFixed = modeManager.getActiveModeId () == Modes.MODE_FUNCTIONS;
+        final boolean selectFixed = modeManager.getActiveOrTempModeId () == Modes.MODE_FUNCTIONS;
         modeManager.setActiveMode (selectFixed ? Modes.MODE_FIXED : Modes.MODE_FUNCTIONS);
         this.surface.getDisplay ().notify (selectFixed ? "Fixed Length" : "Functions");
     }
@@ -309,7 +309,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     public void onButtonRow2Select ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final boolean selectFrame = modeManager.getActiveModeId () == Modes.MODE_TRACK_TOGGLES;
+        final boolean selectFrame = modeManager.getActiveOrTempModeId () == Modes.MODE_TRACK_TOGGLES;
         modeManager.setActiveMode (selectFrame ? Modes.MODE_FRAME : Modes.MODE_TRACK_TOGGLES);
         this.surface.getDisplay ().notify (selectFrame ? "Layouts & Panels" : "Track & Device");
     }
@@ -323,7 +323,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveModeId ();
+        final Integer activeModeId = modeManager.getActiveOrTempModeId ();
         if (activeModeId == Modes.MODE_FUNCTIONS || activeModeId == Modes.MODE_FIXED)
             this.onButtonRow1Select ();
         else if (activeModeId == Modes.MODE_VOLUME)
@@ -351,7 +351,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
         final ITransport transport = this.model.getTransport ();
         final int clipLength = this.surface.getConfiguration ().getNewClipLength ();
 
-        final Integer mode = this.surface.getModeManager ().getActiveModeId ();
+        final Integer mode = this.surface.getModeManager ().getActiveOrTempModeId ();
         final boolean isTrack = mode == Modes.MODE_TRACK;
         final boolean isTrackToggles = mode == Modes.MODE_TRACK_TOGGLES;
         final boolean isVolume = mode == Modes.MODE_VOLUME;

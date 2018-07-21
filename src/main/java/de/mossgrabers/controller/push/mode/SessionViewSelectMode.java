@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.push.mode;
 
+import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.controller.push.controller.display.DisplayModel;
@@ -30,9 +31,6 @@ public class SessionViewSelectMode extends BaseMode
         Views.VIEW_SESSION,
         Views.VIEW_SCENE_PLAY,
         null,
-        null,
-        null,
-        null,
         null
     };
 
@@ -42,9 +40,6 @@ public class SessionViewSelectMode extends BaseMode
         "Session",
         "Flipped",
         "Scenes",
-        "",
-        "",
-        "",
         "",
         ""
     };
@@ -69,10 +64,30 @@ public class SessionViewSelectMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        if (index < 2)
-            this.surface.getConfiguration ().setFlipSession (index == 1);
+        final PushConfiguration configuration = this.surface.getConfiguration ();
 
-        this.activateView (VIEWS[index]);
+        switch (index)
+        {
+            case 0:
+            case 1:
+                configuration.setFlipSession (index == 1);
+                this.activateView (VIEWS[index]);
+                break;
+
+            case 2:
+                configuration.setSceneView ();
+                this.surface.getModeManager ().restoreMode ();
+                break;
+
+            case 7:
+                configuration.toggleScenesClipMode ();
+                this.surface.getModeManager ().restoreMode ();
+                break;
+
+            default:
+                // Not used
+                break;
+        }
     }
 
 
@@ -88,6 +103,10 @@ public class SessionViewSelectMode extends BaseMode
             if (VIEWS[i] != null)
                 d.setCell (3, i, (this.isSelected (viewManager, i) ? PushDisplay.RIGHT_ARROW : "") + VIEW_NAMES[i]);
         }
+        d.setBlock (1, 3, "Display scenes or");
+        d.setCell (2, 6, "clips:");
+        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
+        d.setCell (3, 7, isOn ? "  On" : "  Off");
         d.allDone ();
     }
 
@@ -103,6 +122,10 @@ public class SessionViewSelectMode extends BaseMode
             final boolean isMenuBottomSelected = VIEWS[i] != null && this.isSelected (viewManager, i);
             message.addOptionElement ("", "", false, i == 0 ? "Session view" : "", VIEW_NAMES[i], isMenuBottomSelected, false);
         }
+        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
+        message.addOptionElement ("", "", false, "                         Display scenes/clips", "", false, false);
+        message.addOptionElement ("", "", false, "", "", false, false);
+        message.addOptionElement ("", "", false, "", isOn ? "On" : "Off", isOn, false);
         message.send ();
     }
 
@@ -113,8 +136,13 @@ public class SessionViewSelectMode extends BaseMode
     {
         final ColorManager colorManager = this.model.getColorManager ();
         final ViewManager viewManager = this.surface.getViewManager ();
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < VIEWS.length; i++)
             this.surface.updateButton (20 + i, colorManager.getColor (VIEWS[i] == null ? AbstractMode.BUTTON_COLOR_OFF : this.isSelected (viewManager, i) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+
+        this.surface.updateButton (25, AbstractMode.BUTTON_COLOR_OFF);
+        this.surface.updateButton (26, AbstractMode.BUTTON_COLOR_OFF);
+        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
+        this.surface.updateButton (27, isOn ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
     }
 
 
@@ -122,10 +150,7 @@ public class SessionViewSelectMode extends BaseMode
     {
         if (viewID == null)
             return;
-
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.setActiveView (viewID);
-
+        this.surface.getViewManager ().setActiveView (viewID);
         this.surface.getModeManager ().restoreMode ();
     }
 

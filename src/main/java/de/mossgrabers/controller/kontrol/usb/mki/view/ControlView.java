@@ -62,7 +62,7 @@ public class ControlView extends AbstractView<Kontrol1ControlSurface, Kontrol1Co
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_PAGE_RIGHT, this.surface.isPressed (Kontrol1ControlSurface.BUTTON_PAGE_RIGHT) ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
 
         // Update all mode relevant buttons
-        this.surface.getModeManager ().getActiveMode ().updateFirstRow ();
+        this.surface.getModeManager ().getActiveOrTempMode ().updateFirstRow ();
 
         this.surface.updateButtonLEDs ();
 

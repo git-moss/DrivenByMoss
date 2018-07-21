@@ -43,7 +43,7 @@ public class MastertrackCommand extends AbstractTriggerCommand<PushControlSurfac
     {
         // Avoid accidentally leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_BROWSER))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
             return;
 
         switch (event)
@@ -72,7 +72,7 @@ public class MastertrackCommand extends AbstractTriggerCommand<PushControlSurfac
             return;
         }
 
-        if (modeManager.getActiveModeId () == Modes.MODE_MASTER)
+        if (modeManager.getActiveOrTempModeId () == Modes.MODE_MASTER)
         {
             if (this.selectedTrackBeforeMasterMode >= 0)
                 this.model.getCurrentTrackBank ().getItem (this.selectedTrackBeforeMasterMode).select ();

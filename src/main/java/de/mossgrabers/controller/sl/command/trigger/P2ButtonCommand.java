@@ -57,7 +57,7 @@ public class P2ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SL
                 return;
             tb.scrollPageBackwards ();
         }
-        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
         if (activeMode != null)
             activeMode.selectTrack (0);
     }

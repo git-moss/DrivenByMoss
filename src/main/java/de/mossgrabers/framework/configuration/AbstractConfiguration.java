@@ -240,7 +240,7 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                  enableVUMeters              = false;
     private BehaviourOnStop                          behaviourOnStop             = BehaviourOnStop.MOVE_PLAY_CURSOR;
     protected boolean                                displayCrossfader           = true;
-    private boolean                                  flipSession                 = false;
+    protected boolean                                flipSession                 = false;
     private boolean                                  lockFlipSession             = false;
     private boolean                                  selectClipOnLaunch          = true;
     private boolean                                  drawRecordStripe            = true;

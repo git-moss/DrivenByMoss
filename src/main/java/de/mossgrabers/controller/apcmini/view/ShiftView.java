@@ -307,7 +307,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
             case 6:
                 if (this.model.isEffectTrackBankActive ())
                     return;
-                Integer mode = Integer.valueOf (modeManager.getActiveModeId ().intValue () + 1);
+                Integer mode = Integer.valueOf (modeManager.getActiveOrTempModeId ().intValue () + 1);
                 // Wrap
                 if (!Modes.isSendMode (mode))
                     mode = Modes.MODE_SEND1;
@@ -321,7 +321,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 break;
 
             case 7:
-                if (modeManager.isActiveMode (Modes.MODE_DEVICE))
+                if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE))
                 {
                     this.model.getBrowser ().browseForPresets ();
                     final ViewManager viewManager = this.surface.getViewManager ();
@@ -356,7 +356,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 {
                     // No Sends on effect tracks
                     final ModeManager modeManager = this.surface.getModeManager ();
-                    if (Modes.isSendMode (modeManager.getActiveModeId ()))
+                    if (Modes.isSendMode (modeManager.getActiveOrTempModeId ()))
                         modeManager.setActiveMode (Modes.MODE_VOLUME);
                 }
                 this.surface.getDisplay ().notify (isEffectTrackBank ? "Effect Tracks" : "Instrument/Audio Tracks");
@@ -398,7 +398,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3, tb.canScrollBackwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON4, tb.canScrollForwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
-        final Integer mode = this.surface.getModeManager ().getActiveModeId ();
+        final Integer mode = this.surface.getModeManager ().getActiveOrTempModeId ();
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON5, Modes.MODE_VOLUME.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON6, Modes.MODE_PAN.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON7, Modes.isSendMode (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);

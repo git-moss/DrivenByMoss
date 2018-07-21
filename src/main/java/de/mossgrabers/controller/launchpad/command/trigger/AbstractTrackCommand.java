@@ -44,7 +44,7 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
         {
             case DOWN:
                 this.firstRowUsed = false;
-                if (modeManager.isActiveMode (controlMode))
+                if (modeManager.isActiveOrTempMode (controlMode))
                 {
                     modeManager.setActiveMode (null);
                     return;

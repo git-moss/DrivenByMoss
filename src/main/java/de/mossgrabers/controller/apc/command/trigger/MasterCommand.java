@@ -52,7 +52,7 @@ public class MasterCommand extends AbstractTriggerCommand<APCControlSurface, APC
         {
             // No Sends on effect tracks
             final ModeManager modeManager = this.surface.getModeManager ();
-            final int mode = modeManager.getActiveModeId ().intValue ();
+            final int mode = modeManager.getActiveOrTempModeId ().intValue ();
             if (mode >= Modes.MODE_SEND1.intValue () && mode <= Modes.MODE_SEND8.intValue ())
                 modeManager.setActiveMode (Modes.MODE_PAN);
         }

@@ -40,7 +40,7 @@ public class ControlView extends AbstractView<Kontrol2ControlSurface, Kontrol2Co
     public void updateButtons ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final boolean isBrowseMode = modeManager.isActiveMode (Modes.MODE_BROWSER);
+        final boolean isBrowseMode = modeManager.isActiveOrTempMode (Modes.MODE_BROWSER);
         final ITransport transport = this.model.getTransport ();
         final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
         final ITrack t = currentTrackBank.getSelectedItem ();
@@ -64,7 +64,7 @@ public class ControlView extends AbstractView<Kontrol2ControlSurface, Kontrol2Co
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_NAVIGATE_UP, isBrowseMode ? Kontrol2ControlSurface.BUTTON_STATE_OFF : Kontrol2ControlSurface.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol2ControlSurface.BUTTON_NAVIGATE_DOWN, isBrowseMode ? Kontrol2ControlSurface.BUTTON_STATE_OFF : Kontrol2ControlSurface.BUTTON_STATE_ON);
 
-        if (modeManager.isActiveMode (Modes.MODE_TRACK) || modeManager.isActiveMode (Modes.MODE_VOLUME))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_TRACK) || modeManager.isActiveOrTempMode (Modes.MODE_VOLUME))
         {
             this.surface.updateButton (Kontrol2ControlSurface.BUTTON_MUTE, t != null && t.isMute () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
             this.surface.updateButton (Kontrol2ControlSurface.BUTTON_SOLO, t != null && t.isSolo () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);

@@ -13,7 +13,7 @@ import com.bitwig.extension.controller.api.Bank;
 /**
  * An abstract bank which uses internally a Bitwig bank.
  *
- * @param <B> THe specific Bitwig bank type
+ * @param <B> The specific Bitwig bank type
  * @param <T> The specific item type of the bank item
  *
  * @author J&uuml;rgen Mo&szlig;graber

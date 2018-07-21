@@ -21,7 +21,7 @@ public interface IChannelBank<T extends IChannel> extends IBank<T>
      *
      * @return The color ID
      */
-    String getSelectedTrackColorEntry ();
+    String getSelectedChannelColorEntry ();
 
 
     /**

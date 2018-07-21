@@ -34,7 +34,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void scrollLeft ()
     {
-        ((IKontrol1Mode) this.surface.getModeManager ().getActiveMode ()).scrollLeft ();
+        ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTempMode ()).scrollLeft ();
     }
 
 
@@ -42,7 +42,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void scrollRight ()
     {
-        ((IKontrol1Mode) this.surface.getModeManager ().getActiveMode ()).scrollRight ();
+        ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTempMode ()).scrollRight ();
     }
 
 
@@ -50,7 +50,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void scrollUp ()
     {
-        ((IKontrol1Mode) this.surface.getModeManager ().getActiveMode ()).scrollUp ();
+        ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTempMode ()).scrollUp ();
     }
 
 
@@ -58,6 +58,6 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void scrollDown ()
     {
-        ((IKontrol1Mode) this.surface.getModeManager ().getActiveMode ()).scrollDown ();
+        ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTempMode ()).scrollDown ();
     }
 }

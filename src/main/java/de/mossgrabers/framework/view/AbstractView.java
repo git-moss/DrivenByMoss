@@ -112,7 +112,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
     @Override
     public void updateControlSurface ()
     {
-        final Mode m = this.surface.getModeManager ().getActiveMode ();
+        final Mode m = this.surface.getModeManager ().getActiveOrTempMode ();
         if (m != null)
         {
             m.updateDisplay ();

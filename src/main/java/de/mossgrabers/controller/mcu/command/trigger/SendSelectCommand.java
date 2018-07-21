@@ -52,7 +52,7 @@ public class SendSelectCommand extends AbstractTriggerCommand<MCUControlSurface,
         if (this.model.isEffectTrackBankActive ())
             return;
 
-        final Integer activeModeId = this.surface.getModeManager ().getActiveModeId ();
+        final Integer activeModeId = this.surface.getModeManager ().getActiveOrTempModeId ();
         int index = this.modeIds.indexOf (activeModeId) + 1;
         if (index < 0 || index >= this.modeIds.size ())
             index = 0;

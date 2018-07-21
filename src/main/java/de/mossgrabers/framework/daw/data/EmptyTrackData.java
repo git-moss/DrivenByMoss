@@ -4,8 +4,7 @@
 
 package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.bitwig.framework.daw.SendBankImpl;
-import de.mossgrabers.bitwig.framework.daw.SlotBankImpl;
+import de.mossgrabers.framework.daw.EmptyBank;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.NoteObserver;
@@ -22,18 +21,8 @@ public class EmptyTrackData implements ITrack
     /** The singleton. */
     public static final ITrack INSTANCE = new EmptyTrackData ();
 
-    private ISlotBank          slotBank;
-    private ISendBank          sendBank;
-
-
-    /**
-     * Constructor.
-     */
-    private EmptyTrackData ()
-    {
-        this.slotBank = new SlotBankImpl (null, 0);
-        this.sendBank = new SendBankImpl (null, 0, null);
-    }
+    private final ISlotBank    slotBank = new EmptySlotBank ();
+    private final ISendBank    sendBank = new EmptySendBank ();
 
 
     /** {@inheritDoc} */
@@ -575,6 +564,20 @@ public class EmptyTrackData implements ITrack
     /** {@inheritDoc} */
     @Override
     public void addNoteObserver (final NoteObserver observer)
+    {
+        // Intentionally empty
+    }
+
+    class EmptySlotBank extends EmptyBank<ISlot> implements ISlotBank
+    {
+        @Override
+        public ISlot getEmptySlot (int startFrom)
+        {
+            return null;
+        }
+    }
+
+    class EmptySendBank extends EmptyBank<ISend> implements ISendBank
     {
         // Intentionally empty
     }

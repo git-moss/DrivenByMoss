@@ -76,6 +76,32 @@ public class KeyManager implements NoteObserver
 
 
     /**
+     * Loop over all pads since the note can be present multiple time.
+     *
+     * @param key The key to set
+     * @param velocity The velocity
+     */
+    public void setAllKeysPressed (int key, int velocity)
+    {
+        for (int i = 0; i < 128; i++)
+        {
+            if (this.noteMap[i] == key)
+                this.setKeyPressed (i, velocity);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void call (final int trackIndex, final int note, final int velocity)
+    {
+        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel != null && sel.getIndex () == trackIndex)
+            this.setAllKeysPressed (note, velocity);
+    }
+
+
+    /**
      * Get the currently pressed keys.
      *
      * @return The list with the keys
@@ -128,22 +154,6 @@ public class KeyManager implements NoteObserver
     public int map (final int note)
     {
         return this.noteMap[note];
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void call (final int trackIndex, final int note, final int velocity)
-    {
-        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (sel == null || sel.getIndex () != trackIndex)
-            return;
-        // Loop over all pads since the note can be present multiple time!
-        for (int i = 0; i < 128; i++)
-        {
-            if (this.noteMap[i] == note)
-                this.pressedKeys[i] = velocity;
-        }
     }
 
 

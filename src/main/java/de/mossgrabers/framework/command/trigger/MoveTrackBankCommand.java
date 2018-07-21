@@ -51,7 +51,7 @@ public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Config
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.surface.getModeManager ().isActiveMode (this.deviceMode))
+        if (this.surface.getModeManager ().isActiveOrTempMode (this.deviceMode))
         {
             if (this.moveBy1)
             {

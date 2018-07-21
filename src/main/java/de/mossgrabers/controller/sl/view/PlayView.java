@@ -77,7 +77,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveModeId ();
+        final Integer activeModeId = modeManager.getActiveOrTempModeId ();
         if (activeModeId == Modes.MODE_VIEW_SELECT)
         {
             if (index == 0)
@@ -109,7 +109,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer cm = modeManager.getActiveModeId ();
+        final Integer cm = modeManager.getActiveOrTempModeId ();
         if (cm != Modes.MODE_PLAY_OPTIONS)
             modeManager.setActiveMode (Modes.MODE_PLAY_OPTIONS);
 
@@ -223,7 +223,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (event != ButtonEvent.DOWN)
             return;
 
-        final Integer activeModeId = this.surface.getModeManager ().getActiveModeId ();
+        final Integer activeModeId = this.surface.getModeManager ().getActiveOrTempModeId ();
         if (activeModeId == Modes.MODE_SESSION)
         {
             if (isUp)
@@ -288,7 +288,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             this.drawDrumGrid ();
         }
 
-        final Integer mode = this.surface.getModeManager ().getActiveModeId ();
+        final Integer mode = this.surface.getModeManager ().getActiveOrTempModeId ();
         final boolean isSession = mode == Modes.MODE_SESSION;
         final boolean isDevice = mode == Modes.MODE_PARAMS;
         final boolean isPlayOptions = mode == Modes.MODE_PLAY_OPTIONS;

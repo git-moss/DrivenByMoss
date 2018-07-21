@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.bitwig.framework.daw.SendBankImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -30,7 +31,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     private int             vuRight;
     private IParameter      volumeParameter;
     private IParameter      panParameter;
-    private SendBankImpl    sendBank;
+    private ISendBank       sendBank;
 
 
     /**
@@ -403,7 +404,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
-    public SendBankImpl getSendBank ()
+    public ISendBank getSendBank ()
     {
         return this.sendBank;
     }

@@ -159,7 +159,7 @@ public class TransportControl
     {
         this.surface.turnOffTransport ();
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_VIEW_SELECT))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_VIEW_SELECT))
             modeManager.restoreMode ();
     }
 }

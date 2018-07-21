@@ -49,7 +49,7 @@ public class ScaleButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSu
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_SCALE))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_SCALE))
             modeManager.restoreMode ();
         else
             modeManager.setActiveMode (Modes.MODE_SCALE);

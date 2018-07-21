@@ -161,6 +161,6 @@ public class DeviceLayerModeSend extends DeviceLayerMode
 
     private int getCurrentSendIndex ()
     {
-        return this.surface.getModeManager ().getActiveModeId ().intValue () - Modes.MODE_DEVICE_LAYER_SEND1.intValue ();
+        return this.surface.getModeManager ().getActiveOrTempModeId ().intValue () - Modes.MODE_DEVICE_LAYER_SEND1.intValue ();
     }
 }

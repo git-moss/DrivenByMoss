@@ -83,7 +83,7 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
             return;
         }
 
-        final Integer activeModeId = this.surface.getModeManager ().getActiveModeId ();
+        final Integer activeModeId = this.surface.getModeManager ().getActiveOrTempModeId ();
         if (Modes.isTrackMode (activeModeId))
         {
             final ITrack selTrack = this.model.getSelectedTrack ();

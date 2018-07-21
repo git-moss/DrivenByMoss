@@ -341,7 +341,14 @@ public class DeviceParamsMode extends BaseMode
             for (int i = 0; i < 8; i++)
             {
                 final IDevice device = cd.getDeviceBank ().getItem (i);
-                d.setCell (3, i, device.doesExist () ? (i == cd.getPositionInBank () ? PushDisplay.RIGHT_ARROW : "") + device.getName (i) : "");
+                final StringBuilder sb = new StringBuilder ();
+                if (device.doesExist ())
+                {
+                    if (i == cd.getPositionInBank ())
+                        sb.append (PushDisplay.RIGHT_ARROW);
+                    sb.append (device.getName ());
+                }
+                d.setCell (3, i, sb.toString ());
             }
         }
         else
@@ -375,7 +382,7 @@ public class DeviceParamsMode extends BaseMode
         }
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final String color = tb.getSelectedTrackColorEntry ();
+        final String color = tb.getSelectedChannelColorEntry ();
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
@@ -417,16 +424,18 @@ public class DeviceParamsMode extends BaseMode
             }
 
             String bottomMenu;
-            final String bottomMenuIcon = "";
+            final String bottomMenuIcon;
             boolean isBottomMenuOn;
             if (this.showDevices)
             {
                 final IDevice item = cd.getDeviceBank ().getItem (i);
+                bottomMenuIcon = item.getName ();
                 bottomMenu = item.doesExist () ? item.getName (12) : "";
                 isBottomMenuOn = i == cd.getPositionInBank ();
             }
             else
             {
+                bottomMenuIcon = cd.getName ();
                 final int index = start + i;
                 bottomMenu = index < pages.length ? pages[index] : "";
                 if (bottomMenu.length () > 12)

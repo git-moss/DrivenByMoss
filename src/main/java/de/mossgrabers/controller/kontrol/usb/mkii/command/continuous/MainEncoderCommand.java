@@ -41,7 +41,7 @@ public class MainEncoderCommand extends MasterVolumeCommand<Kontrol2ControlSurfa
             return;
         }
 
-        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
         ((IKontrol1Mode) activeMode).onMainKnob (value);
     }
 }

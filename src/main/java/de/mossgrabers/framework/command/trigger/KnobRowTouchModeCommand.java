@@ -43,7 +43,7 @@ public class KnobRowTouchModeCommand<S extends IControlSurface<C>, C extends Con
     @Override
     public void execute (final ButtonEvent event)
     {
-        final Mode m = this.surface.getModeManager ().getActiveMode ();
+        final Mode m = this.surface.getModeManager ().getActiveOrTempMode ();
         if (m != null && event != ButtonEvent.LONG)
             m.onValueKnobTouch (this.index, event == ButtonEvent.DOWN);
     }

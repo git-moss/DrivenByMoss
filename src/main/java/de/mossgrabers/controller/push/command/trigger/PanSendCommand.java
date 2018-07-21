@@ -41,7 +41,7 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer currentMode = modeManager.getActiveModeId ();
+        final Integer currentMode = modeManager.getActiveOrTempModeId ();
 
         // Layer mode selection for Push 1
         Integer mode;

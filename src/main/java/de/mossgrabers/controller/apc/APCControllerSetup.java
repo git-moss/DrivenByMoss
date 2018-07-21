@@ -370,7 +370,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             if (isShift)
                 isOn = i == clipLength;
             else
-                isOn = isSendA ? modeManager.isActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i)) : i == selIndex;
+                isOn = isSendA ? modeManager.isActiveOrTempMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i)) : i == selIndex;
             surface.updateButtonEx (APCControlSurface.APC_BUTTON_TRACK_SELECTION, i, isOn ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             surface.updateButtonEx (APCControlSurface.APC_BUTTON_SOLO, i, track.doesExist () && (isShift ? track.isAutoMonitor () : track.isSolo ()) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             surface.updateButtonEx (APCControlSurface.APC_BUTTON_ACTIVATOR, i, track.doesExist () && (isShift ? track.isMonitor () : !track.isMute ()) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
@@ -429,7 +429,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     private void updateMode (final Integer mode)
     {
         final APCControlSurface surface = this.getSurface ();
-        final Integer m = mode == null ? surface.getModeManager ().getActiveModeId () : mode;
+        final Integer m = mode == null ? surface.getModeManager ().getActiveOrTempModeId () : mode;
         this.updateIndication (m);
         surface.updateButton (APCControlSurface.APC_BUTTON_PAN, m == Modes.MODE_PAN ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         if (surface.isMkII ())

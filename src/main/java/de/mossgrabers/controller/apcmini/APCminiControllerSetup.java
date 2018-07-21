@@ -256,7 +256,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
 
     private void updateMode (final Integer mode)
     {
-        this.updateIndication (mode == null ? this.getSurface ().getModeManager ().getActiveModeId () : mode);
+        this.updateIndication (mode == null ? this.getSurface ().getModeManager ().getActiveOrTempModeId () : mode);
     }
 
 

@@ -43,7 +43,7 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     @Override
     protected void scrollLeft ()
     {
-        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
         if (activeMode != null)
             activeMode.selectPreviousTrack ();
     }
@@ -53,7 +53,7 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     @Override
     protected void scrollRight ()
     {
-        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
         if (activeMode != null)
             activeMode.selectNextTrack ();
 

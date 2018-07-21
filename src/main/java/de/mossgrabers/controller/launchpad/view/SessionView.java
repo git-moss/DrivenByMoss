@@ -79,7 +79,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     public void onGridNote (final int note, final int velocity)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveModeId ();
+        final Integer activeModeId = modeManager.getActiveOrTempModeId ();
         // Block 1st row if mode is active
         final boolean isNotRow1 = note >= 44;
         if (activeModeId == null || isNotRow1)
@@ -121,7 +121,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void drawGrid ()
     {
-        final Integer controlMode = this.surface.getModeManager ().getActiveModeId ();
+        final Integer controlMode = this.surface.getModeManager ().getActiveOrTempModeId ();
         final boolean isOff = controlMode == null;
         final boolean flip = this.surface.getConfiguration ().isFlipSession ();
         this.rows = isOff || flip ? 8 : 7;
@@ -139,15 +139,15 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         {
             final ITrack track = tb.getItem (x);
             final boolean exists = track.doesExist ();
-            if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
+            if (modeManager.isActiveOrTempMode (Modes.MODE_REC_ARM))
                 pads.lightEx (x, 7, exists ? track.isRecArm () ? LaunchpadColors.LAUNCHPAD_COLOR_RED_HI : LaunchpadColors.LAUNCHPAD_COLOR_RED_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActiveMode (Modes.MODE_TRACK_SELECT))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_TRACK_SELECT))
                 pads.lightEx (x, 7, exists ? track.isSelected () ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActiveMode (Modes.MODE_MUTE))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_MUTE))
                 pads.lightEx (x, 7, exists ? track.isMute () ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColors.LAUNCHPAD_COLOR_YELLOW_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActiveMode (Modes.MODE_SOLO))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SOLO))
                 pads.lightEx (x, 7, exists ? track.isSolo () ? LaunchpadColors.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColors.LAUNCHPAD_COLOR_BLUE_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActiveMode (Modes.MODE_STOP_CLIP))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_STOP_CLIP))
                 pads.lightEx (x, 7, exists ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
         }
     }
@@ -254,15 +254,15 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             return;
         }
 
-        if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_REC_ARM))
             track.toggleRecArm ();
-        else if (modeManager.isActiveMode (Modes.MODE_TRACK_SELECT))
+        else if (modeManager.isActiveOrTempMode (Modes.MODE_TRACK_SELECT))
             this.selectTrack (index);
-        else if (modeManager.isActiveMode (Modes.MODE_MUTE))
+        else if (modeManager.isActiveOrTempMode (Modes.MODE_MUTE))
             track.toggleMute ();
-        else if (modeManager.isActiveMode (Modes.MODE_SOLO))
+        else if (modeManager.isActiveOrTempMode (Modes.MODE_SOLO))
             track.toggleSolo ();
-        else if (modeManager.isActiveMode (Modes.MODE_STOP_CLIP))
+        else if (modeManager.isActiveOrTempMode (Modes.MODE_STOP_CLIP))
             track.stop ();
     }
 }
