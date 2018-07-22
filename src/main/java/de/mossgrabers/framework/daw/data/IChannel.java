@@ -285,4 +285,10 @@ public interface IChannel extends IItem
      * @return The send bank
      */
     ISendBank getSendBank ();
+
+
+    /**
+     * Enter sub-channels of the channel, if any.
+     */
+    void enter ();
 }

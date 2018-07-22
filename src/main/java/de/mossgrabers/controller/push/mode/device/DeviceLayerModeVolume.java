@@ -41,9 +41,9 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + index);
         if (layer.doesExist ())
-            cd.changeLayerOrDrumPadVolume (offset + index, value);
+            layer.changeVolume (value);
     }
 
 
@@ -57,7 +57,7 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + index);
         if (!layer.doesExist ())
             return;
 
@@ -66,14 +66,14 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
             if (this.surface.isDeletePressed ())
             {
                 this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                cd.resetLayerOrDrumPadVolume (offset + index);
+                layer.resetVolume ();
                 return;
             }
 
             this.surface.getDisplay ().notify ("Volume: " + layer.getVolumeStr ());
         }
 
-        cd.touchLayerOrDrumPadVolume (layer.getIndex (), isTouched);
+        layer.touchVolume (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 
@@ -90,7 +90,7 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
         final PushConfiguration config = this.surface.getConfiguration ();
         for (int i = 0; i < 8; i++)
         {
-            final IChannel layer = cd.getLayerOrDrumPad (offset + i);
+            final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + i);
             d.setCell (0, i, layer.doesExist () ? "Volume" : "").setCell (1, i, layer.getVolumeStr (8));
             if (layer.doesExist ())
                 d.setCell (2, i, config.isEnableVUMeters () ? layer.getVu () : layer.getVolume (), Format.FORMAT_VALUE);

@@ -75,12 +75,12 @@ public class DrumView extends BaseSequencerView
                 if (isInc)
                 {
                     this.scales.incDrumOctave ();
-                    this.model.getPrimaryDevice ().scrollDrumPadsPageDown ();
+                    this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageForwards ();
                 }
                 else
                 {
                     this.scales.decDrumOctave ();
-                    this.model.getPrimaryDevice ().scrollDrumPadsPageUp ();
+                    this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageBackwards ();
                 }
                 this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
@@ -149,7 +149,7 @@ public class DrumView extends BaseSequencerView
             {
                 for (int i = 0; i < 16; i++)
                 {
-                    if (primary.getDrumPad (i).isSolo ())
+                    if (primary.getDrumPadBank ().getItem (i).isSolo ())
                     {
                         isSoloed = true;
                         break;
@@ -192,7 +192,7 @@ public class DrumView extends BaseSequencerView
         if (this.selectedPad == index)
             return BeatstepColors.BEATSTEP_BUTTON_STATE_RED;
         // Exists and active?
-        final IChannel drumPad = primary.getDrumPad (index);
+        final IChannel drumPad = primary.getDrumPadBank ().getItem (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return BeatstepColors.BEATSTEP_BUTTON_STATE_OFF;
         // Muted or soloed?

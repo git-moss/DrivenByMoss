@@ -153,9 +153,9 @@ public class DeviceParamsMode extends BaseMode
                 return;
             }
 
-            final IChannel layer = cd.getSelectedLayerOrDrumPad ();
+            final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
             if (layer == null)
-                cd.selectLayerOrDrumPad (0);
+                cd.getLayerOrDrumPadBank ().getItem (0).select ();
             modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
             return;
         }

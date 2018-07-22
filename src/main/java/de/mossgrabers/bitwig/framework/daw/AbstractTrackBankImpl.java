@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.TrackImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 
@@ -22,15 +23,16 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBank<TrackBan
     /**
      * Constructor.
      *
-     * @param bank The bank to encapsulate
+     * @param host The DAW host
      * @param valueChanger The value changer
+     * @param bank The bank to encapsulate
      * @param numTracks The number of tracks of a bank page
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractTrackBankImpl (final TrackBank bank, final IValueChanger valueChanger, final int numTracks, final int numScenes, final int numSends)
+    public AbstractTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final int numTracks, final int numScenes, final int numSends)
     {
-        super (bank, valueChanger, numTracks, numScenes, numSends);
+        super (host, valueChanger, bank, numTracks, numScenes, numSends);
 
         this.initItems ();
 
@@ -45,7 +47,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBank<TrackBan
             }
         });
 
-        this.sceneBank = new SceneBankImpl (this.bank.sceneBank (), this.numScenes);
+        this.sceneBank = new SceneBankImpl (host, valueChanger, this.bank.sceneBank (), this.numScenes);
     }
 
 
@@ -54,6 +56,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBank<TrackBan
     public void enableObservers (final boolean enable)
     {
         super.enableObservers (enable);
+
         this.sceneBank.enableObservers (enable);
     }
 
@@ -90,7 +93,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBank<TrackBan
     protected void initItems ()
     {
         for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new TrackImpl (this.bank.getItemAt (i), this.valueChanger, i, this.numSends, this.numScenes));
+            this.items.add (new TrackImpl (this.host, this.valueChanger, this.bank.getItemAt (i), i, this.numSends, this.numScenes));
     }
 
 

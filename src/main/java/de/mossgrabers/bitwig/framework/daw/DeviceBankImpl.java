@@ -5,7 +5,9 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.DeviceImpl;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IDeviceBank;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IDevice;
 
 import com.bitwig.extension.controller.api.DeviceBank;
@@ -21,12 +23,14 @@ public class DeviceBankImpl extends AbstractBankImpl<DeviceBank, IDevice> implem
     /**
      * Constructor.
      *
+     * @param host The DAW host
+     * @param valueChanger The value changer
      * @param deviceBank The device bank
      * @param numDevices The number of devices in the page of the bank
      */
-    public DeviceBankImpl (final DeviceBank deviceBank, final int numDevices)
+    public DeviceBankImpl (final IHost host, final IValueChanger valueChanger, final DeviceBank deviceBank, final int numDevices)
     {
-        super (deviceBank, numDevices);
+        super (host, valueChanger, deviceBank, numDevices);
         this.initItems ();
     }
 

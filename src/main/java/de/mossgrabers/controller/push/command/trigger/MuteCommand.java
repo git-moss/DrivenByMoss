@@ -93,9 +93,9 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
         else if (Modes.isLayerMode (activeModeId))
         {
             final ICursorDevice cd = this.model.getCursorDevice ();
-            final IChannel layer = cd.getSelectedLayerOrDrumPad ();
+            final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
             if (layer != null)
-                cd.toggleLayerOrDrumPadMute (layer.getIndex ());
+                layer.toggleMute ();
         }
         else if (activeModeId == Modes.MODE_MASTER)
             this.model.getMasterTrack ().toggleMute ();

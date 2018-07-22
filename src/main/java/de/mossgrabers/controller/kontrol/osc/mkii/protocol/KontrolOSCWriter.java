@@ -347,8 +347,7 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         final ICursorDevice instrumentDevice = this.model.getPrimaryDevice ();
         if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
         {
-            // TODO The parameter seems to be only empty (also does not work with Live
-            // Therefore, lets send always the first one
+            // TODO Spec missing: The parameter is currently not sent to Bitwig!
             return "NIKB00";
         }
         return "";
@@ -362,7 +361,8 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         parameters.add (Integer.valueOf (TrackType.toTrackType (track.getType ())));
         parameters.add (Integer.valueOf (trackIndex));
         parameters.add (track.getName ());
-        parameters.add (Integer.valueOf (1)); // TODO How to convert? track.getColor ()
+        parameters.add (Integer.valueOf (1)); // TODO Spec missing: How to convert? track.getColor
+                                              // ()
         parameters.add (Integer.valueOf (track.isRecArm () ? 1 : 0));
         parameters.add (Integer.valueOf (track.isSolo () ? 1 : 0));
         parameters.add (Integer.valueOf (track.isMute () ? 1 : 0));

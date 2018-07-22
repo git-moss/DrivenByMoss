@@ -4,7 +4,9 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.AbstractBank;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IItem;
 
 import com.bitwig.extension.controller.api.Bank;
@@ -20,18 +22,25 @@ import com.bitwig.extension.controller.api.Bank;
  */
 public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> extends AbstractBank<T>
 {
-    protected final B bank;
+    protected final IHost         host;
+    protected final IValueChanger valueChanger;
+    protected final B             bank;
 
 
     /**
      * Constructor.
-     *
+     * 
+     * @param host The DAW host
+     * @param valueChanger The value changer
      * @param bank The bank to encapsulate
      * @param pageSize The number of elements in a page of the bank
      */
-    public AbstractBankImpl (final B bank, final int pageSize)
+    public AbstractBankImpl (final IHost host, final IValueChanger valueChanger, final B bank, final int pageSize)
     {
         super (pageSize);
+
+        this.host = host;
+        this.valueChanger = valueChanger;
         this.bank = bank;
 
         if (this.bank == null)
@@ -134,5 +143,53 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
         final int pageSize = this.getPageSize ();
         this.bank.scrollPosition ().set (position / pageSize * pageSize);
         this.bank.scrollIntoView (position);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        final T sel = this.getSelectedItem ();
+        final int index = sel == null ? 0 : sel.getIndex () + 1;
+        if (index == this.pageSize)
+            this.selectNextPage ();
+        else
+            this.getItem (index).select ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        final T sel = this.getSelectedItem ();
+        final int index = sel == null ? 0 : sel.getIndex () - 1;
+        if (index == -1)
+            this.selectPreviousPage ();
+        else
+            this.getItem (index).select ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousPage ()
+    {
+        if (!this.canScrollBackwards ())
+            return;
+        this.scrollPageBackwards ();
+        this.host.scheduleTask ( () -> this.getItem (this.pageSize - 1).select (), 75);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextPage ()
+    {
+        if (!this.canScrollForwards ())
+            return;
+        this.scrollPageForwards ();
+        this.host.scheduleTask ( () -> this.getItem (0).select (), 75);
     }
 }

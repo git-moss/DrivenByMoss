@@ -95,7 +95,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
 
         final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
         drumDevice64.enableObservers (true);
-        drumDevice64.setDrumPadIndication (true);
+        drumDevice64.getDrumPadBank ().setIndication (true);
     }
 
 
@@ -107,7 +107,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
 
         final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
         drumDevice64.enableObservers (false);
-        drumDevice64.setDrumPadIndication (false);
+        drumDevice64.getDrumPadBank ().setIndication (false);
     }
 
 
@@ -154,7 +154,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         {
             for (int i = 0; i < numPads; i++)
             {
-                if (drumDevice64.getDrumPad (i).isSolo ())
+                if (drumDevice64.getDrumPadBank ().getItem (i).isSolo ())
                 {
                     isSoloed = true;
                     break;
@@ -181,7 +181,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
             return AbstractDrumView.COLOR_PAD_SELECTED;
 
         // Exists and active?
-        final IChannel drumPad = primary.getDrumPad (index);
+        final IChannel drumPad = primary.getDrumPadBank ().getItem (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return this.surface.getConfiguration ().isTurnOffEmptyDrumPads () ? AbstractDrumView.COLOR_PAD_OFF : AbstractDrumView.COLOR_PAD_NO_CONTENT;
         // Muted or soloed?
@@ -232,8 +232,9 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         {
             final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
             // TODO Bugfix required: scrollChannelsUp scrolls the whole bank
-            for (int i = 0; i < 16; i++)
-                drumDevice64.scrollDrumPadsUp ();
+            // TODO TEST
+            // for (int i = 0; i < 16; i++)
+            drumDevice64.getDrumPadBank ().scrollPageBackwards ();
         }
     }
 
@@ -255,8 +256,9 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         {
             final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
             // TODO Bugfix required: scrollChannelsUp scrolls the whole bank
-            for (int i = 0; i < 16; i++)
-                drumDevice64.scrollDrumPadsDown ();
+            // TODO TEST
+            // for (int i = 0; i < 16; i++)
+            drumDevice64.getDrumPadBank ().scrollPageForwards ();
         }
     }
 
@@ -298,14 +300,14 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
     protected void handleMuteButton (final int playedPad)
     {
         this.surface.setButtonConsumed (this.surface.getMuteButtonId ());
-        this.model.getDrumDevice64 ().toggleLayerOrDrumPadMute (playedPad);
+        this.model.getDrumDevice64 ().getDrumPadBank ().getItem (playedPad).toggleMute ();
     }
 
 
     protected void handleSoloButton (final int playedPad)
     {
         this.surface.setButtonConsumed (this.surface.getSoloButtonId ());
-        this.model.getDrumDevice64 ().toggleLayerOrDrumPadSolo (playedPad);
+        this.model.getDrumDevice64 ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
     }
 
 

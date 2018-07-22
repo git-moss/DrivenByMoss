@@ -131,4 +131,31 @@ public interface IBank<T> extends ObserverManagement
      * @return The position or -1
      */
     int getPositionOfLastItem ();
+
+
+    /**
+     * Select the next item after the currently selected, if any. Scrolls the page, if necessary.
+     */
+    void selectNextItem ();
+
+
+    /**
+     * Select the previous item after the currently selected, if any. Scrolls the page, if
+     * necessary.
+     */
+    void selectPreviousItem ();
+
+
+    /**
+     * Select the next page after the currently selected, if any. Selects the first item on the new
+     * page.
+     */
+    void selectNextPage ();
+
+
+    /**
+     * Select the previous page before the currently selected, if any. Selects the last item on the
+     * new page.
+     */
+    void selectPreviousPage ();
 }

@@ -5,6 +5,8 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.SceneImpl;
+import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.data.IScene;
 
@@ -21,12 +23,14 @@ public class SceneBankImpl extends AbstractBankImpl<SceneBank, IScene> implement
     /**
      * Constructor.
      *
+     * @param host The DAW host
+     * @param valueChanger The value changer
      * @param sceneBank The scene bank
      * @param numScenes The number of scenes in the page of the bank
      */
-    public SceneBankImpl (final SceneBank sceneBank, final int numScenes)
+    public SceneBankImpl (final IHost host, final IValueChanger valueChanger, final SceneBank sceneBank, final int numScenes)
     {
-        super (sceneBank, numScenes);
+        super (host, valueChanger, sceneBank, numScenes);
         this.initItems ();
     }
 

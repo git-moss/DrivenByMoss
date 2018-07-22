@@ -8,6 +8,7 @@ import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
 import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterPageBank;
@@ -66,10 +67,9 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             return;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
+        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+        final IChannel sel = bank.getSelectedItem ();
 
-        IChannel sel;
-        int index;
-        IChannel dl;
         switch (note - 36)
         {
             // Toggle device on/off
@@ -81,9 +81,8 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             case 1:
                 if (this.isLayer)
                 {
-                    sel = cd.getSelectedLayer ();
-                    index = sel == null || sel.getIndex () == 0 ? 0 : sel.getIndex () - 1;
-                    cd.selectLayer (index);
+                    final int index = sel == null || sel.getIndex () == 0 ? 0 : sel.getIndex () - 1;
+                    bank.getItem (index).select ();
                 }
                 else
                     cd.selectPrevious ();
@@ -93,9 +92,8 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             case 2:
                 if (this.isLayer)
                 {
-                    sel = cd.getSelectedLayer ();
-                    index = sel == null ? 0 : sel.getIndex () + 1;
-                    cd.selectLayer (index > 7 ? 7 : index);
+                    final int index = sel == null ? 0 : sel.getIndex () + 1;
+                    bank.getItem (index > 7 ? 7 : index).select ();
                 }
                 else
                     cd.selectNext ();
@@ -105,17 +103,13 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             case 3:
                 if (!cd.hasLayers ())
                     return;
-                dl = cd.getSelectedLayerOrDrumPad ();
                 if (this.isLayer)
                 {
-                    if (dl != null)
-                    {
-                        cd.enterLayerOrDrumPad (dl.getIndex ());
-                        cd.selectFirstDeviceInLayerOrDrumPad (dl.getIndex ());
-                    }
+                    if (sel != null)
+                        sel.enter ();
                 }
-                else if (dl == null)
-                    cd.selectLayerOrDrumPad (0);
+                else if (sel == null)
+                    bank.getItem (0).select ();
 
                 this.isLayer = !this.isLayer;
                 break;

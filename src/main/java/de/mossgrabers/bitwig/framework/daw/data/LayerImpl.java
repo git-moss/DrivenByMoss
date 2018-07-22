@@ -5,10 +5,12 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 
 import com.bitwig.extension.controller.api.Channel;
+import com.bitwig.extension.controller.api.DeviceBank;
 
 
 /**
@@ -18,17 +20,25 @@ import com.bitwig.extension.controller.api.Channel;
  */
 public class LayerImpl extends ChannelImpl implements ILayer
 {
+    private final DeviceBank deviceBank;
+
+
     /**
      * Constructor.
      *
-     * @param layer The layer
+     * @param host The DAW host
      * @param valueChanger The valueChanger
+     * @param layer The layer
      * @param index The index of the channel in the page
      * @param numSends The number of sends of a bank
+     * @param numDevices The number of devices of a bank
      */
-    public LayerImpl (final Channel layer, final IValueChanger valueChanger, final int index, final int numSends)
+    public LayerImpl (final IHost host, final IValueChanger valueChanger, final Channel layer, final int index, final int numSends, final int numDevices)
     {
-        super (layer, valueChanger, index, numSends);
+        super (host, valueChanger, layer, index, numSends);
+
+        this.deviceBank = layer.createDeviceBank (numDevices);
+        layer.addIsSelectedInEditorObserver (this::setSelected);
     }
 
 
@@ -37,5 +47,13 @@ public class LayerImpl extends ChannelImpl implements ILayer
     public ChannelType getType ()
     {
         return ChannelType.LAYER;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void enter ()
+    {
+        this.deviceBank.getItemAt (0).selectInEditor ();
     }
 }

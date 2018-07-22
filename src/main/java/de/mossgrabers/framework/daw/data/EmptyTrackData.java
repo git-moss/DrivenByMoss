@@ -563,6 +563,14 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
+    public void enter ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void addNoteObserver (final NoteObserver observer)
     {
         // Intentionally empty

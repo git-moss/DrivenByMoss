@@ -5,10 +5,11 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
 
-import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.TrackBank;
 
 
 /**
@@ -26,14 +27,15 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
      *
      * @param host The host
      * @param valueChanger The value changer
+     * @param effectTrackBank The effect track bank
      * @param cursorTrack The cursor track
      * @param numTracks The number of track of a bank page
      * @param numScenes The number of scenes of a bank page
      * @param audioInstrumentTrackBank The trackbank which monitors the audio and instrument tracks
      */
-    public EffectTrackBankImpl (final ControllerHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final ITrackBank audioInstrumentTrackBank)
+    public EffectTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank effectTrackBank, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final ITrackBank audioInstrumentTrackBank)
     {
-        super (host.createEffectTrackBank (numTracks, numScenes), valueChanger, numTracks, numScenes, 0);
+        super (host, valueChanger, effectTrackBank, numTracks, numScenes, 0);
 
         this.bank.followCursorTrack (cursorTrack);
         this.audioInstrumentTrackBank = audioInstrumentTrackBank;

@@ -69,7 +69,7 @@ public class ControlView extends AbstractView<Kontrol2ControlSurface, Kontrol2Co
             this.surface.updateButton (Kontrol2ControlSurface.BUTTON_MUTE, t != null && t.isMute () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
             this.surface.updateButton (Kontrol2ControlSurface.BUTTON_SOLO, t != null && t.isSolo () ? Kontrol2ControlSurface.BUTTON_STATE_HI : Kontrol2ControlSurface.BUTTON_STATE_ON);
         }
-        // TODO Browser?
+        // TODO Spec missing: Browser?
         // else if (isBrowseMode)
         // {
         // this.surface.updateButton (Kontrol2ControlSurface.BUTTON_BACK,

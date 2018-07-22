@@ -11,6 +11,7 @@ import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView64;
 
@@ -71,7 +72,8 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
             return;
 
         // Do not reselect
-        if (drumDevice64.getDrumPad (playedPad).isSelected ())
+        final IChannel drumPad = drumDevice64.getDrumPadBank ().getItem (playedPad);
+        if (drumPad.isSelected ())
             return;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
@@ -79,7 +81,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
             cd.selectParent ();
 
         this.surface.getModeManager ().setActiveMode (Modes.MODE_DEVICE_LAYER);
-        drumDevice64.selectDrumPad (playedPad);
+        drumPad.select ();
     }
 
 

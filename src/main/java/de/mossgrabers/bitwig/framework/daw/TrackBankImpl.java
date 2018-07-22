@@ -5,8 +5,8 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 
-import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.TrackBank;
 
@@ -23,18 +23,18 @@ public class TrackBankImpl extends AbstractTrackBankImpl
 
     /**
      * Constructor.
-     *
-     * @param bank The Bitwig track bank
+     * 
      * @param host The host
      * @param valueChanger The value changer
+     * @param bank The Bitwig track bank
      * @param cursorTrack The cursor track
      * @param numTracks The number of tracks in a bank page
      * @param numScenes The number of scenes in a bank page
      * @param numSends The number of sends in a bank page
      */
-    public TrackBankImpl (final TrackBank bank, final ControllerHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final int numSends)
+    public TrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final int numSends)
     {
-        super (bank, valueChanger, numTracks, numScenes, numSends);
+        super (host, valueChanger, bank, numTracks, numScenes, numSends);
 
         this.cursorTrack = cursorTrack;
     }

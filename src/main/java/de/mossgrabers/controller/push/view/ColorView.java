@@ -10,9 +10,7 @@ import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorClip;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -117,9 +115,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
                     break;
 
                 case MODE_LAYER:
-                    final ICursorDevice cd = this.model.getCursorDevice ();
-                    final IChannel deviceChain = cd.getSelectedLayerOrDrumPad ();
-                    cd.setLayerOrDrumPadColor (deviceChain.getIndex (), entry[0], entry[1], entry[2]);
+                    this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ().setColor (entry[0], entry[1], entry[2]);
                     break;
 
                 case MODE_CLIP:

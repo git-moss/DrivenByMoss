@@ -12,6 +12,7 @@ import de.mossgrabers.controller.sl.mode.Modes;
 import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
@@ -119,7 +120,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             case 0:
                 this.clearPressedKeys ();
                 this.scales.decDrumOctave ();
-                this.model.getPrimaryDevice ().scrollDrumPadsPageUp ();
+                this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageBackwards ();
                 this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
@@ -129,7 +130,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             case 1:
                 this.clearPressedKeys ();
                 this.scales.incDrumOctave ();
-                this.model.getPrimaryDevice ().scrollDrumPadsPageDown ();
+                this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageForwards ();
                 this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
@@ -325,9 +326,10 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             boolean isSoloed = false;
             if (hasDrumPads)
             {
+                final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
                 for (int i = 0; i < 16; i++)
                 {
-                    if (primary.getDrumPad (i).isSolo ())
+                    if (drumPadBank.getItem (i).isSolo ())
                     {
                         isSoloed = true;
                         break;
@@ -426,7 +428,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (this.selectedPad == index)
             return SLControlSurface.MKII_BUTTON_STATE_ON;
         // Exists and active?
-        final IChannel drumPad = primary.getDrumPad (index);
+        final IChannel drumPad = primary.getDrumPadBank ().getItem (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
         // Muted or soloed?

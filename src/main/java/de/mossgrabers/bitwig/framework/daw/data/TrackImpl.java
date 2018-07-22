@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.bitwig.framework.daw.SlotBankImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.NoteObserver;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -38,16 +39,17 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /**
      * Constructor.
-     *
-     * @param track The track
+     * 
+     * @param host The DAW host
      * @param valueChanger The valueChanger
+     * @param track The track
      * @param index The index of the track in the page
      * @param numSends The number of sends of a bank
      * @param numScenes The number of scenes of a bank
      */
-    public TrackImpl (final Track track, final IValueChanger valueChanger, final int index, final int numSends, final int numScenes)
+    public TrackImpl (final IHost host, final IValueChanger valueChanger, final Track track, final int index, final int numSends, final int numScenes)
     {
-        super (track, valueChanger, index, numSends);
+        super (host, valueChanger, track, index, numSends);
 
         this.track = track;
 
@@ -63,7 +65,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         track.isStopped ().markInterested ();
         track.playingNotes ().addValueObserver (this::handleNotes);
 
-        this.slotBank = new SlotBankImpl (track.clipLauncherSlotBank (), numScenes);
+        this.slotBank = new SlotBankImpl (host, valueChanger, track.clipLauncherSlotBank (), numScenes);
 
         Arrays.fill (this.noteCache, NOTE_OFF);
     }

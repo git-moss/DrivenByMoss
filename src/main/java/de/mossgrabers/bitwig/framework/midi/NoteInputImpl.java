@@ -21,7 +21,7 @@ class NoteInputImpl implements INoteInput
 
     /**
      * Constructor.
-     * 
+     *
      * @param noteInput The Bitwig note input to wrap
      */
     public NoteInputImpl (final NoteInput noteInput)

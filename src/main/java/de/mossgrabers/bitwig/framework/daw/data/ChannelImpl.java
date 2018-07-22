@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.bitwig.framework.daw.SendBankImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -37,12 +38,13 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     /**
      * Constructor.
      *
-     * @param channel The channel
+     * @param host The DAW host
      * @param valueChanger The valueChanger
+     * @param channel The channel
      * @param index The index of the channel in the page
      * @param numSends The number of sends of a bank
      */
-    public ChannelImpl (final Channel channel, final IValueChanger valueChanger, final int index, final int numSends)
+    public ChannelImpl (final IHost host, final IValueChanger valueChanger, final Channel channel, final int index, final int numSends)
     {
         super (index);
 
@@ -67,7 +69,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
         channel.addVuMeterObserver (maxParameterValue, 0, true, value -> this.handleVULeftMeter (maxParameterValue, value));
         channel.addVuMeterObserver (maxParameterValue, 1, true, value -> this.handleVURightMeter (maxParameterValue, value));
 
-        this.sendBank = new SendBankImpl (numSends == 0 ? null : channel.sendBank (), numSends, valueChanger);
+        this.sendBank = new SendBankImpl (host, valueChanger, numSends == 0 ? null : channel.sendBank (), numSends);
     }
 
 
@@ -407,6 +409,14 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     public ISendBank getSendBank ()
     {
         return this.sendBank;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void enter ()
+    {
+        // Intentionally empty
     }
 
 

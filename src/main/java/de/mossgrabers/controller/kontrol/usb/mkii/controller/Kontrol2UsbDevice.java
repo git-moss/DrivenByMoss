@@ -100,7 +100,7 @@ public class Kontrol2UsbDevice
 
     private static final int                   REPORT_ID_UI     = 1;
 
-    // TODO correct display size
+    // TODO Spec missing: correct display size
     private static final int                   SIZE_DISPLAY     = 248;
     private static final int                   SIZE_BUTTON_LEDS = 42;
     private static final int                   SIZE_KEY_LEDS    = 88;
@@ -190,7 +190,7 @@ public class Kontrol2UsbDevice
         {
             this.usbDevice = host.getUsbDevice (0);
 
-            // TODO Implement
+            // TODO Spec missing: Implement
             // this.usbEndpointDisplay = this.usbDevice.getEndpoint (1, 0);
 
             this.hidDevice = this.usbDevice.getHidDevice ();
@@ -253,7 +253,7 @@ public class Kontrol2UsbDevice
 
         synchronized (this.displayBlock)
         {
-            // TODO Implement sending to display
+            // TODO Spec missing: Implement sending to display
         }
     }
 
@@ -324,7 +324,7 @@ public class Kontrol2UsbDevice
     {
         if (key < 0 || key >= 88)
             return;
-        // TODO Somehow convert the color
+        // TODO Spec missing: Somehow convert the color
         this.keyColors[key] = 10; // (byte) red + (byte) green + (byte) blue;
     }
 
@@ -343,11 +343,12 @@ public class Kontrol2UsbDevice
                 return;
             System.arraycopy (this.keyColors, 0, this.oldKeyColors, 0, this.oldKeyColors.length);
 
-            // TODO different reportID and length on Kontrol 2!
+            // TODO Spec missing: different reportID and length on Kontrol 2!
 
             final ByteBuffer keyLedBuffer = this.keyLedBlock.createByteBuffer ();
             keyLedBuffer.clear ();
-            keyLedBuffer.put (this.keyColors, 0, 88); // TODO Convert the colors to 1 byte
+            keyLedBuffer.put (this.keyColors, 0, 88); // TODO Spec missing: Convert the colors to 1
+                                                      // byte
             this.hidDevice.sendOutputReport ((byte) 0x81, this.keyLedBlock);
         }
     }
@@ -369,7 +370,7 @@ public class Kontrol2UsbDevice
 
         boolean encoderChange = false;
 
-        // TODO test reportID
+        // TODO Spec missing: test reportID
         if (data[30] == 36)
         {
             // Decode main knob
@@ -389,7 +390,7 @@ public class Kontrol2UsbDevice
             this.testByteForButtons (data[3], BYTE_3);
             this.testByteForButtons (data[4], BYTE_4);
             // Don't test touch events on encoder change to prevent flickering
-            // TODO order has changed therefore encoderChange is not set!
+            // TODO Spec missing: order has changed therefore encoderChange is not set!
             if (!encoderChange)
             {
                 this.testByteForButtons (data[3], BYTE_5);

@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -96,7 +97,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
         final ICursorDevice primary = this.model.getPrimaryDevice ();
         primary.enableObservers (true);
-        primary.setDrumPadIndication (true);
+        primary.getDrumPadBank ().setIndication (true);
     }
 
 
@@ -108,7 +109,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
         final ICursorDevice primary = this.model.getPrimaryDevice ();
         primary.enableObservers (false);
-        primary.setDrumPadIndication (false);
+        primary.getDrumPadBank ().setIndication (false);
     }
 
 
@@ -206,9 +207,10 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         boolean isSoloed = false;
         if (hasDrumPads)
         {
+            final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
             for (int i = 0; i < this.halfColumns * this.playLines; i++)
             {
-                if (primary.getDrumPad (i).isSolo ())
+                if (drumPadBank.getItem (i).isSolo ())
                 {
                     isSoloed = true;
                     break;
@@ -238,7 +240,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         if (this.selectedPad == index)
             return AbstractDrumView.COLOR_PAD_SELECTED;
         // Exists and active?
-        final IChannel drumPad = primary.getDrumPad (index);
+        final IChannel drumPad = primary.getDrumPadBank ().getItem (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return this.surface.getConfiguration ().isTurnOffEmptyDrumPads () ? AbstractDrumView.COLOR_PAD_OFF : AbstractDrumView.COLOR_PAD_NO_CONTENT;
         // Muted or soloed?
@@ -293,7 +295,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getDrumRangeText (), true, true);
         if (oldDrumOctave != newDrumOctave)
-            this.model.getPrimaryDevice ().scrollDrumPadsPageUp ();
+            this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageBackwards ();
     }
 
 
@@ -311,7 +313,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getDrumRangeText (), true, true);
         if (oldDrumOctave != newDrumOctave)
-            this.model.getPrimaryDevice ().scrollDrumPadsPageDown ();
+            this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageForwards ();
     }
 
 
@@ -370,7 +372,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         this.surface.setButtonConsumed (this.surface.getMuteButtonId ());
         this.updateNoteMapping ();
-        this.model.getPrimaryDevice ().toggleLayerOrDrumPadMute (playedPad);
+        this.model.getPrimaryDevice ().getDrumPadBank ().getItem (playedPad).toggleMute ();
     }
 
 
@@ -378,7 +380,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         this.surface.setButtonConsumed (this.surface.getSoloButtonId ());
         this.updateNoteMapping ();
-        this.model.getPrimaryDevice ().toggleLayerOrDrumPadSolo (playedPad);
+        this.model.getPrimaryDevice ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
     }
 
 

@@ -8,6 +8,7 @@ import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -40,9 +41,9 @@ public class DeviceLayerModePan extends DeviceLayerMode
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + index);
         if (layer.doesExist ())
-            cd.changeLayerOrDrumPadPan (offset + index, value);
+            layer.changePan (value);
     }
 
 
@@ -56,7 +57,7 @@ public class DeviceLayerModePan extends DeviceLayerMode
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + index);
         if (!layer.doesExist ())
             return;
 
@@ -65,14 +66,14 @@ public class DeviceLayerModePan extends DeviceLayerMode
             if (this.surface.isDeletePressed ())
             {
                 this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                cd.resetLayerOrDrumPadPan (offset + index);
+                layer.resetPan ();
                 return;
             }
 
             this.surface.getDisplay ().notify ("Pan: " + layer.getPanStr ());
         }
 
-        cd.touchLayerOrDrumPadPan (layer.getIndex (), isTouched);
+        layer.touchPan (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 
@@ -86,9 +87,10 @@ public class DeviceLayerModePan extends DeviceLayerMode
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
 
+        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IChannel layer = cd.getLayerOrDrumPad (offset + i);
+            final IChannel layer = bank.getItem (offset + i);
             d.setCell (0, i, layer.doesExist () ? "Pan" : "").setCell (1, i, layer.getPanStr (8));
             if (layer.doesExist ())
                 d.setCell (2, i, layer.getPan (), Format.FORMAT_VALUE);

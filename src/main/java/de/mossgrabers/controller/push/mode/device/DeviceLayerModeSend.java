@@ -10,6 +10,7 @@ import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -46,9 +47,9 @@ public class DeviceLayerModeSend extends DeviceLayerMode
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + index);
         if (layer.doesExist ())
-            cd.changeLayerOrDrumPadSend (offset + index, this.getCurrentSendIndex (), value);
+            layer.getSendBank ().getItem (this.getCurrentSendIndex ()).changeValue (value);
     }
 
 
@@ -62,7 +63,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + index);
         if (!layer.doesExist ())
             return;
 
@@ -73,7 +74,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
             if (this.surface.isDeletePressed ())
             {
                 this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                cd.resetLayerOrDrumPadSend (offset + index, sendIndex);
+                layer.getSendBank ().getItem (sendIndex).resetValue ();
                 return;
             }
 
@@ -83,7 +84,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
                 this.surface.getDisplay ().notify ("Send " + name + ": " + layer.getSendBank ().getItem (sendIndex).getDisplayedValue ());
         }
 
-        cd.touchLayerOrDrumPadSend (offset + index, sendIndex, isTouched);
+        layer.getSendBank ().getItem (sendIndex).touchValue (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 
@@ -98,9 +99,10 @@ public class DeviceLayerModeSend extends DeviceLayerMode
         final int offset = getDrumPadIndex (cd);
         final int sendIndex = this.getCurrentSendIndex ();
 
+        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IChannel layer = cd.getLayerOrDrumPad (offset + i);
+            final IChannel layer = bank.getItem (offset + i);
             final boolean exists = layer.doesExist ();
             final ISend send = layer.getSendBank ().getItem (sendIndex);
             d.setCell (0, i, exists ? send.getName () : "").setCell (1, i, send.getDisplayedValue (8));
@@ -129,9 +131,10 @@ public class DeviceLayerModeSend extends DeviceLayerMode
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
         final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
+        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IChannel layer = cd.getLayerOrDrumPad (offset + i);
+            final IChannel layer = bank.getItem (offset + i);
 
             final Pair<String, Boolean> pair = this.menu.get (i);
             final String topMenu = pair.getKey ();
@@ -154,7 +157,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
                 selected[j] = sendIndex == sendPos;
             }
 
-            message.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, cd.getLayerOrDrumPad (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
+            message.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, bank.getItem (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, false);
         }
     }
 

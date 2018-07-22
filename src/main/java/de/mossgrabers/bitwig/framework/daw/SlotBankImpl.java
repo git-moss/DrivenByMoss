@@ -5,6 +5,8 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.SlotImpl;
+import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 
@@ -21,12 +23,14 @@ public class SlotBankImpl extends AbstractBankImpl<ClipLauncherSlotBank, ISlot> 
     /**
      * Constructor.
      *
+     * @param host The DAW host
+     * @param valueChanger The value changer
      * @param slotBank The slot bank
      * @param numSlots The number of slots in the page of the bank
      */
-    public SlotBankImpl (final ClipLauncherSlotBank slotBank, final int numSlots)
+    public SlotBankImpl (final IHost host, final IValueChanger valueChanger, final ClipLauncherSlotBank slotBank, final int numSlots)
     {
-        super (slotBank, numSlots);
+        super (host, valueChanger, slotBank, numSlots);
         this.initItems ();
     }
 

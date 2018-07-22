@@ -562,7 +562,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER))
             {
                 final ICursorDevice cd = this.model.getCursorDevice ();
-                final IChannel layer = cd.getSelectedLayerOrDrumPad ();
+                final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, layer != null && layer.isMute () ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, layer != null && layer.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
             }

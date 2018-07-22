@@ -11,7 +11,9 @@ import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
+import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ILayerBank;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -155,11 +157,13 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         this.flushDevice ("/device/", cd, dump);
         if (cd.hasDrumPads ())
         {
-            for (int i = 0; i < cd.getNumDrumPads (); i++)
-                this.flushDeviceLayers ("/device/drumpad/" + (i + 1) + "/", cd.getLayerOrDrumPad (i), dump);
+            final IDrumPadBank drumPadBank = cd.getDrumPadBank ();
+            for (int i = 0; i < drumPadBank.getPageSize (); i++)
+                this.flushDeviceLayers ("/device/drumpad/" + (i + 1) + "/", drumPadBank.getItem (i), dump);
         }
-        for (int i = 0; i < cd.getNumLayers (); i++)
-            this.flushDeviceLayers ("/device/layer/" + (i + 1) + "/", cd.getLayerOrDrumPad (i), dump);
+        final ILayerBank layerBank = cd.getLayerBank ();
+        for (int i = 0; i < layerBank.getPageSize (); i++)
+            this.flushDeviceLayers ("/device/layer/" + (i + 1) + "/", layerBank.getItem (i), dump);
         this.flushDevice ("/primary/", this.model.getPrimaryDevice (), dump);
 
         //

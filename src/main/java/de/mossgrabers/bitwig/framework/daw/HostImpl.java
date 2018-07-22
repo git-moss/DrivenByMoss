@@ -26,6 +26,8 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.HardwareDevice;
 import com.bitwig.extension.controller.api.UsbDevice;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,7 +123,11 @@ public class HostImpl implements IHost
     public void error (final String text, final Throwable ex)
     {
         this.host.errorln (text);
-        this.host.errorln (ex.getClass () + ":" + ex.getMessage ());
+
+        final StringWriter sw = new StringWriter ();
+        final PrintWriter writer = new PrintWriter (sw);
+        ex.printStackTrace (writer);
+        this.host.errorln (sw.toString ());
     }
 
 

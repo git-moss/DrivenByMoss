@@ -589,8 +589,15 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     public void flush ()
     {
         this.flushExecutor.execute ( () -> {
-            this.scheduledFlush ();
-            this.redrawGrid ();
+            try
+            {
+                this.scheduledFlush ();
+                this.redrawGrid ();
+            }
+            catch (final RuntimeException ex)
+            {
+                this.host.error ("Crash during flush.", ex);
+            }
         });
     }
 

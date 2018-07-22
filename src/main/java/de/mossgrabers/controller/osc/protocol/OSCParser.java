@@ -1225,7 +1225,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
             final int layerNo;
             if ("selected".equals (command))
             {
-                final IChannel selectedLayerOrDrumPad = cursorDevice.getSelectedLayerOrDrumPad ();
+                final IChannel selectedLayerOrDrumPad = cursorDevice.getLayerOrDrumPadBank ().getSelectedItem ();
                 layerNo = selectedLayerOrDrumPad == null ? -1 : selectedLayerOrDrumPad.getIndex ();
             }
             else
@@ -1247,11 +1247,11 @@ public class OSCParser extends AbstractOpenSoundControlParser
                     break;
 
                 case "+":
-                    cursorDevice.nextLayerOrDrumPad ();
+                    cursorDevice.getLayerOrDrumPadBank ().selectNextItem ();
                     break;
 
                 case "-":
-                    cursorDevice.previousLayerOrDrumPad ();
+                    cursorDevice.getLayerOrDrumPadBank ().selectPreviousItem ();
                     break;
 
                 case "page":
@@ -1261,9 +1261,9 @@ public class OSCParser extends AbstractOpenSoundControlParser
                         return;
                     }
                     if ("+".equals (parts.get (0)))
-                        cursorDevice.nextLayerOrDrumPadBank ();
+                        cursorDevice.getLayerOrDrumPadBank ().selectNextPage ();
                     else
-                        cursorDevice.previousLayerOrDrumPadBank ();
+                        cursorDevice.getLayerOrDrumPadBank ().selectPreviousPage ();
                     break;
 
                 default:
@@ -1365,7 +1365,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
     }
 
 
-    private void parseDeviceLayerValue (final ICursorDevice cursorDevice, final int layer, final LinkedList<String> parts, final Object value)
+    private void parseDeviceLayerValue (final ICursorDevice cursorDevice, final int layerIndex, final LinkedList<String> parts, final Object value)
     {
         if (parts.isEmpty ())
         {
@@ -1374,51 +1374,51 @@ public class OSCParser extends AbstractOpenSoundControlParser
         }
         final String command = parts.removeFirst ();
         final int numValue = value instanceof Number ? ((Number) value).intValue () : -1;
+        final IChannel layer = cursorDevice.getLayerOrDrumPadBank ().getItem (layerIndex);
         switch (command)
         {
             case "select":
-                cursorDevice.selectLayer (layer);
+                cursorDevice.getLayerOrDrumPadBank ().getItem (layerIndex).select ();
                 break;
 
             case PART_VOLUME:
                 if (parts.isEmpty ())
-                    cursorDevice.setLayerOrDrumPadVolume (layer, numValue);
+                    layer.setVolume (numValue);
                 else if (PART_TOUCH.equals (parts.get (0)))
-                    cursorDevice.touchLayerOrDrumPadVolume (layer, numValue > 0);
+                    layer.touchVolume (numValue > 0);
                 break;
 
             case "pan":
                 if (parts.isEmpty ())
-                    cursorDevice.setLayerOrDrumPadPan (layer, numValue);
+                    layer.setPan (numValue);
                 else if (PART_TOUCH.equals (parts.get (0)))
-                    cursorDevice.touchLayerOrDrumPadPan (layer, numValue > 0);
+                    layer.touchPan (numValue > 0);
                 break;
 
             case "mute":
                 if (numValue < 0)
-                    cursorDevice.toggleLayerOrDrumPadMute (layer);
+                    layer.toggleMute ();
                 else
-                    cursorDevice.setLayerOrDrumPadMute (layer, numValue > 0);
+                    layer.setMute (numValue > 0);
                 break;
 
             case "solo":
                 if (numValue < 0)
-                    cursorDevice.toggleLayerOrDrumPadSolo (layer);
+                    layer.toggleSolo ();
                 else
-                    cursorDevice.setLayerOrDrumPadSolo (layer, numValue > 0);
+                    layer.setSolo (numValue > 0);
                 break;
 
             case "send":
                 final int sendNo = Integer.parseInt (parts.removeFirst ()) - 1;
                 if (parts.isEmpty ())
-                    cursorDevice.setLayerOrDrumPadSend (layer, sendNo, numValue);
+                    layer.getSendBank ().getItem (sendNo).setValue (numValue);
                 else if (PART_TOUCH.equals (parts.get (0)))
-                    cursorDevice.touchLayerOrDrumPadSend (layer, sendNo, numValue > 0);
+                    layer.getSendBank ().getItem (sendNo).touchValue (numValue > 0);
                 break;
 
             case "enter":
-                cursorDevice.enterLayerOrDrumPad (layer);
-                cursorDevice.selectFirstDeviceInLayerOrDrumPad (layer);
+                layer.enter ();
                 break;
 
             default:

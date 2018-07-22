@@ -128,4 +128,36 @@ public abstract class AbstractBank<T extends IItem> implements IBank<T>
      * Initialise the internal items.
      */
     protected abstract void initItems ();
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousPage ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextPage ()
+    {
+        // Intentionally empty
+    }
 }

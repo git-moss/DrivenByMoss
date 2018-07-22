@@ -7,6 +7,7 @@ package de.mossgrabers.bitwig.framework.daw;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 
@@ -23,26 +24,25 @@ import com.bitwig.extension.controller.api.Bank;
  */
 public abstract class AbstractChannelBank<B extends Bank<?>, T extends IChannel> extends AbstractBankImpl<B, T> implements IChannelBank<T>
 {
-    protected int                 numScenes;
-    protected int                 numSends;
-    protected ISceneBank          sceneBank;
-    protected final IValueChanger valueChanger;
+    protected int        numScenes;
+    protected int        numSends;
+    protected ISceneBank sceneBank;
 
 
     /**
      * Constructor.
-     *
-     * @param bank The Bitwig bank to encapsulate
+     * 
+     * @param host The DAW host
      * @param valueChanger The value changer
+     * @param bank The Bitwig bank to encapsulate
      * @param numTracks The number of tracks of a bank page
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractChannelBank (final B bank, final IValueChanger valueChanger, final int numTracks, final int numScenes, final int numSends)
+    public AbstractChannelBank (final IHost host, final IValueChanger valueChanger, final B bank, final int numTracks, final int numScenes, final int numSends)
     {
-        super (bank, numTracks);
+        super (host, valueChanger, bank, numTracks);
 
-        this.valueChanger = valueChanger;
         this.numScenes = numScenes;
         this.numSends = numSends;
     }

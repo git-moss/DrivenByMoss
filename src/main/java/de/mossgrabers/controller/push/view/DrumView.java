@@ -46,7 +46,7 @@ public class DrumView extends DrumViewBase
             final ICursorDevice primary = this.model.getPrimaryDevice ();
             if (!primary.hasDrumPads ())
                 return;
-            final IDrumPad drumPad = primary.getDrumPad (playedPad);
+            final IDrumPad drumPad = primary.getDrumPadBank ().getItem (playedPad);
             drumPad.browseToInsert ();
             this.activateMode ();
             return;
@@ -64,8 +64,9 @@ public class DrumView extends DrumViewBase
         if (!primary.hasDrumPads ())
             return;
 
+        final IDrumPad drumPad = primary.getDrumPadBank ().getItem (playedPad);
         // Do not reselect
-        if (primary.getDrumPad (playedPad).isSelected ())
+        if (drumPad.isSelected ())
             return;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
@@ -73,7 +74,7 @@ public class DrumView extends DrumViewBase
             cd.selectParent ();
 
         this.surface.getModeManager ().setActiveMode (Modes.MODE_DEVICE_LAYER);
-        primary.selectDrumPad (playedPad);
+        drumPad.select ();
 
         this.updateNoteMapping ();
     }

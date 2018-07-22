@@ -42,20 +42,20 @@ public class LayerDetailsMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
-        if (deviceChain == null)
+        final IChannel channel = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
+        if (channel == null)
             return;
 
         switch (index)
         {
             case 0:
-                this.model.getCursorDevice ().toggleLayerOrDrumPadIsActivated (deviceChain.getIndex ());
+                channel.toggleIsActivated ();
                 break;
             case 2:
-                this.model.getCursorDevice ().toggleLayerOrDrumPadMute (deviceChain.getIndex ());
+                channel.toggleMute ();
                 break;
             case 3:
-                this.model.getCursorDevice ().toggleLayerOrDrumPadSolo (deviceChain.getIndex ());
+                channel.toggleSolo ();
                 break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();
@@ -73,7 +73,7 @@ public class LayerDetailsMode extends BaseMode
     @Override
     public void updateFirstRow ()
     {
-        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
+        final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
         if (deviceChain == null)
         {
             this.disableFirstRow ();
@@ -97,7 +97,7 @@ public class LayerDetailsMode extends BaseMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
+        final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
         if (deviceChain == null)
             d.setRow (1, "                     Please selecta layer...                        ").clearRow (0).clearRow (2).done (0).done (2);
         else
@@ -123,7 +123,7 @@ public class LayerDetailsMode extends BaseMode
     public void updateDisplay2 ()
     {
         final DisplayModel message = this.surface.getDisplay ().getModel ();
-        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
+        final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
         if (deviceChain == null)
             message.setMessage (3, "Please select a layer...");
         else

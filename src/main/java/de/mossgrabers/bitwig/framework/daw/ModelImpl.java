@@ -67,7 +67,7 @@ public class ModelImpl extends AbstractModel
         this.transport = new TransportImpl (controllerHost, valueChanger);
         this.groove = new GrooveImpl (controllerHost, valueChanger);
         final MasterTrack master = controllerHost.createMasterTrack (0);
-        this.masterTrack = new MasterTrackImpl (master, valueChanger);
+        this.masterTrack = new MasterTrackImpl (this.host, valueChanger, master);
 
         this.cursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", 0, 0, true);
         this.cursorTrack.isPinned ().markInterested ();
@@ -81,19 +81,17 @@ public class ModelImpl extends AbstractModel
         else
             tb = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
 
-        this.trackBank = new TrackBankImpl (tb, controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.numSends);
-        this.effectTrackBank = new EffectTrackBankImpl (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
+        this.trackBank = new TrackBankImpl (this.host, valueChanger, tb, this.cursorTrack, this.numTracks, this.numScenes, this.numSends);
+        final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numTracks, numScenes);
+        this.effectTrackBank = new EffectTrackBankImpl (this.host, valueChanger, effectTrackBank, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
 
         this.primaryDevice = new CursorDeviceImpl (this.host, valueChanger, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
-        this.primaryDevice.setDrumPadIndication (false);
         PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", this.numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
         this.cursorDevice = new CursorDeviceImpl (this.host, valueChanger, cd, this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
-        this.cursorDevice.setDrumPadIndication (false);
         if (this.numDrumPadLayers > 0)
         {
             cd = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
             this.drumDevice64 = new CursorDeviceImpl (this.host, valueChanger, cd, 0, 0, -1, 64, 64);
-            this.drumDevice64.setDrumPadIndication (false);
         }
         if (this.numResults > 0)
             this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
@@ -115,7 +113,7 @@ public class ModelImpl extends AbstractModel
     {
         final TrackBank tb = this.controllerHost.createMainTrackBank (numTracks, this.numSends, numScenes);
         tb.followCursorTrack (this.cursorTrack);
-        return new TrackBankImpl (tb, this.controllerHost, this.valueChanger, this.cursorTrack, numTracks, numScenes, 0);
+        return new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, numTracks, numScenes, 0);
     }
 
 
