@@ -571,7 +571,7 @@ public class EmptyTrackData implements ITrack
     class EmptySlotBank extends EmptyBank<ISlot> implements ISlotBank
     {
         @Override
-        public ISlot getEmptySlot (int startFrom)
+        public ISlot getEmptySlot (final int startFrom)
         {
             return null;
         }

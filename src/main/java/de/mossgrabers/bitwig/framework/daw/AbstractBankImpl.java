@@ -25,7 +25,7 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
 
     /**
      * Constructor.
-     * 
+     *
      * @param bank The bank to encapsulate
      * @param pageSize The number of elements in a page of the bank
      */
@@ -132,7 +132,7 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
         if (position < 0 || position >= this.getItemCount ())
             return;
         final int pageSize = this.getPageSize ();
-        this.bank.scrollPosition ().set ((position / pageSize) * pageSize);
+        this.bank.scrollPosition ().set (position / pageSize * pageSize);
         this.bank.scrollIntoView (position);
     }
 }

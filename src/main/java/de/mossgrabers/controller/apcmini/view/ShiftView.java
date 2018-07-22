@@ -12,6 +12,7 @@ import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -203,17 +204,21 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
             // Device Parameters up/down
             case 24:
-                if (cursorDevice.hasPreviousParameterPage ())
+            {
+                final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+                if (parameterBank.canScrollBackwards ())
                 {
-                    cursorDevice.previousParameterPage ();
-                    this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getSelectedParameterPageName ());
+                    parameterBank.scrollBackwards ();
+                    this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getParameterPageBank ().getSelectedItem ());
                 }
                 break;
+            }
             case 25:
-                if (cursorDevice.hasNextParameterPage ())
+                final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+                if (parameterBank.canScrollForwards ())
                 {
-                    cursorDevice.nextParameterPage ();
-                    this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getSelectedParameterPageName ());
+                    parameterBank.scrollForwards ();
+                    this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getParameterPageBank ().getSelectedItem ());
                 }
                 break;
 

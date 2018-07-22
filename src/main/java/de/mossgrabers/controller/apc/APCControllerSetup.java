@@ -65,6 +65,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
@@ -453,13 +454,13 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         if (view == null)
             return;
 
-        final ICursorDevice cd = this.model.getCursorDevice ();
+        final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
 
             final Integer deviceKnobCommand = Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i);
             if (!((DeviceKnobRowCommand) view.getContinuousCommand (deviceKnobCommand)).isKnobMoving ())
-                surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, cd.getFXParam (i).getValue ());
+                surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, parameterBank.getItem (i).getValue ());
         }
     }
 
@@ -471,13 +472,14 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final APCControlSurface surface = this.getSurface ();
         final boolean isSession = surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isPan = mode == Modes.MODE_PAN;
+        final boolean isPan = Modes.MODE_PAN.equals (mode);
 
         tb.setIndication (!isEffect && isSession);
         if (tbe != null)
             tbe.setIndication (isEffect && isSession);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getItem (i);
@@ -494,7 +496,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
                 fxTrack.setPanIndication (isEffect && isPan);
             }
 
-            cursorDevice.indicateParameter (i, true);
+            parameterBank.getItem (i).setIndication (true);
         }
     }
 

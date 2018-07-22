@@ -293,7 +293,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
                 fxTrack.setPanIndication (isEffect && isPan);
             }
 
-            cursorDevice.indicateParameter (i, isDevice || isShiftView);
+            cursorDevice.getParameterBank ().getItem (i).setIndication (isDevice || isShiftView);
         }
     }
 

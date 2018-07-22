@@ -326,7 +326,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
     }
 
 
-    protected void delayedUpdateNoteMapping (int [] matrix)
+    protected void delayedUpdateNoteMapping (final int [] matrix)
     {
         this.surface.scheduleTask ( () -> {
             this.keyManager.setNoteMatrix (matrix);

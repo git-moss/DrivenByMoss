@@ -72,6 +72,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
@@ -715,7 +716,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND8))
                 value = track.getSendBank ().getItem (7).getValue ();
             else if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
-                value = this.model.getCursorDevice ().getFXParam (channel).getValue ();
+                value = this.model.getCursorDevice ().getParameterBank ().getItem (channel).getValue ();
         }
 
         if (value != this.faderValues[channel])
@@ -771,8 +772,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             }
         }
 
-        for (int i = 0; i < cursorDevice.getNumParameters (); i++)
-            cursorDevice.indicateParameter (i, isDevice);
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+        for (int i = 0; i < parameterBank.getPageSize (); i++)
+            parameterBank.getItem (i).setIndication (isDevice);
     }
 
 

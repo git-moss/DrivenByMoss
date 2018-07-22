@@ -46,7 +46,7 @@ public class DeviceKnobRowCommand extends AbstractContinuousCommand<APCControlSu
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
             return;
-        cd.setParameter (this.index, value);
+        cd.getParameterBank ().getItem (this.index).setValue (value);
 
         this.moveStartTime = new Date ().getTime ();
         if (this.isKnobMoving)

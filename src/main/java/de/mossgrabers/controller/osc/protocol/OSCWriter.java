@@ -14,6 +14,8 @@ import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ISlotBank;
@@ -277,28 +279,22 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
             this.sendOSC (deviceAddress + "sibling/" + oneplus + "/selected", i == positionInBank, dump);
 
         }
-        for (int i = 0; i < device.getNumParameters (); i++)
+        final IParameterBank parameterBank = device.getParameterBank ();
+        for (int i = 0; i < parameterBank.getPageSize (); i++)
         {
             final int oneplus = i + 1;
-            this.flushParameterData (deviceAddress + "param/" + oneplus + "/", device.getFXParam (i), dump);
+            this.flushParameterData (deviceAddress + "param/" + oneplus + "/", parameterBank.getItem (i), dump);
         }
-        final String [] parameterPageNames = device.getParameterPageNames ();
-        final int selectedParameterPage = device.getSelectedParameterPage ();
 
-        final int page = Math.min (Math.max (0, selectedParameterPage), parameterPageNames.length - 1);
-        final int start = page / 8 * 8;
-
-        for (int i = 0; i < 8; i++)
+        final IParameterPageBank parameterPageBank = device.getParameterPageBank ();
+        final int selectedParameterPage = parameterPageBank.getSelectedItemIndex ();
+        for (int i = 0; i < parameterPageBank.getPageSize (); i++)
         {
-            final int index = start + i;
-            final String pageName = index < parameterPageNames.length ? parameterPageNames[index] : "";
-
             final int oneplus = i + 1;
-            this.sendOSC (deviceAddress + "page/" + oneplus + "/", pageName, dump);
-            this.sendOSC (deviceAddress + "page/" + oneplus + "/selected", page == index, dump);
+            this.sendOSC (deviceAddress + "page/" + oneplus + "/", parameterPageBank.getItem (i), dump);
+            this.sendOSC (deviceAddress + "page/" + oneplus + "/selected", selectedParameterPage == i, dump);
         }
-        final int sel = page % 8;
-        this.sendOSC (deviceAddress + "page/selected/name", sel >= 0 && sel < 8 ? parameterPageNames[sel] : "", dump);
+        this.sendOSC (deviceAddress + "page/selected/name", parameterPageBank.getSelectedItem (), dump);
     }
 
 

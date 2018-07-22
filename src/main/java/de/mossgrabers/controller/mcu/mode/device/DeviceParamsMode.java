@@ -9,6 +9,7 @@ import de.mossgrabers.controller.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -37,7 +38,7 @@ public class DeviceParamsMode extends BaseMode
     public void onValueKnob (final int index, final int value)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        this.model.getCursorDevice ().changeParameter (extenderOffset + index, value);
+        this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + index).changeValue (value);
     }
 
 
@@ -58,9 +59,10 @@ public class DeviceParamsMode extends BaseMode
 
         // Row 1 & 2
         final int extenderOffset = this.surface.getExtenderOffset ();
+        final IParameterBank parameterBank = cd.getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IParameter param = cd.getFXParam (extenderOffset + i);
+            final IParameter param = parameterBank.getItem (extenderOffset + i);
             d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName ()) : "").setCell (1, i, param.getDisplayedValue (8));
         }
 
@@ -75,9 +77,10 @@ public class DeviceParamsMode extends BaseMode
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         final ICursorDevice cd = this.model.getCursorDevice ();
         final int extenderOffset = this.surface.getExtenderOffset ();
+        final IParameterBank parameterBank = cd.getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IParameter param = cd.getFXParam (extenderOffset + i);
+            final IParameter param = parameterBank.getItem (extenderOffset + i);
             this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, param.doesExist () ? param.getValue () : 0, upperBound);
         }
     }
@@ -88,6 +91,6 @@ public class DeviceParamsMode extends BaseMode
     protected void resetParameter (final int index)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        this.model.getCursorDevice ().resetParameter (extenderOffset + index);
+        this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + index).resetValue ();
     }
 }

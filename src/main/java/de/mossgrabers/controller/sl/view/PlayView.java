@@ -480,12 +480,12 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
     /**
      * The callback function for playing note changes.
-     * 
+     *
      * @param trackIndex The index of the track on which the note is playing
      * @param note The played note
      * @param velocity The played velocity
      */
-    private void updateNote (int trackIndex, int note, int velocity)
+    private void updateNote (final int trackIndex, final int note, final int velocity)
     {
         final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (sel != null && sel.getIndex () == trackIndex)

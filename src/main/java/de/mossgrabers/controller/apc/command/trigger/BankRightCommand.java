@@ -35,7 +35,7 @@ public class BankRightCommand extends AbstractTriggerCommand<APCControlSurface, 
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCursorDevice ().nextParameterPage ();
+            this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
     }
 
 

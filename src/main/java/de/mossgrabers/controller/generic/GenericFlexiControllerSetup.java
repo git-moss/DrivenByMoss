@@ -11,8 +11,8 @@ import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -63,10 +63,12 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     protected void createModel ()
     {
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
+        // TODO only enable if parameter is mapped!
         this.model.getTrackBank ().setIndication (true);
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        for (int i = 0; i < cursorDevice.getNumParameters (); i++)
-            cursorDevice.getFXParam (i).setIndication (true);
+        final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
+        // TODO only enable if parameter is mapped!
+        for (int i = 0; i < parameterBank.getPageSize (); i++)
+            parameterBank.getItem (i).setIndication (true);
     }
 
 

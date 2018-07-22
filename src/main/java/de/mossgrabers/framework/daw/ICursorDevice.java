@@ -5,8 +5,8 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDevice;
 import de.mossgrabers.framework.daw.data.IDrumPad;
-import de.mossgrabers.framework.daw.data.IParameter;
 
 
 /**
@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.data.IParameter;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface ICursorDevice extends ObserverManagement
+public interface ICursorDevice extends IDevice
 {
     /**
      * Start the browser to replace a device.
@@ -47,36 +47,11 @@ public interface ICursorDevice extends ObserverManagement
 
 
     /**
-     * Returns true if the cursor device exists.
-     *
-     * @return True if the cursor device exists
-     */
-    boolean doesExist ();
-
-
-    /**
      * Returns true if the cursor device is enabled.
      *
      * @return True if the cursor device is enabled
      */
     boolean isEnabled ();
-
-
-    /**
-     * Get the name of the cursor device.
-     *
-     * @return The name
-     */
-    String getName ();
-
-
-    /**
-     * Get the name of the cursor device.
-     *
-     * @param limit Limit the text to this length
-     * @return The name
-     */
-    String getName (final int limit);
 
 
     /**
@@ -190,130 +165,6 @@ public interface ICursorDevice extends ObserverManagement
 
 
     /**
-     * Change a parameter.
-     *
-     * @param index The index of the parameter
-     * @param control The control value
-     */
-    void changeParameter (int index, int control);
-
-
-    /**
-     * Set a parameter.
-     *
-     * @param index The index of the parameter
-     * @param value The parameter
-     */
-    void setParameter (int index, int value);
-
-
-    /**
-     * Reset a parameter.
-     *
-     * @param index The index of the parameter
-     */
-    void resetParameter (int index);
-
-
-    /**
-     * Set parameter indication.
-     *
-     * @param index The index of the parameter
-     * @param indicate True to enable indication
-     */
-    void indicateParameter (int index, boolean indicate);
-
-
-    /**
-     * Touch parameter indication.
-     *
-     * @param index The index of the parameter
-     * @param indicate True to enable touch indication
-     */
-    void touchParameter (int index, boolean indicate);
-
-
-    /**
-     * Select the previous parameter page, cycles to the last page from the first.
-     */
-    void previousParameterPage ();
-
-
-    /**
-     * Select the next parameter page, cycles to the first page from the last.
-     */
-    void nextParameterPage ();
-
-
-    /**
-     * Returns true if there is a previous parameter page.
-     *
-     * @return True if there is a previous parameter page
-     */
-    boolean hasPreviousParameterPage ();
-
-
-    /**
-     * Returns true if there is a next parameter page.
-     *
-     * @return True if there is a next parameter page
-     */
-    boolean hasNextParameterPage ();
-
-
-    /**
-     * Get the names of the parameter pages.
-     *
-     * @return The names of the parameter pages
-     */
-    String [] getParameterPageNames ();
-
-
-    /**
-     * Get the name of the selected parameter page.
-     *
-     * @return The name of the selected parameter page
-     */
-    String getSelectedParameterPageName ();
-
-
-    /**
-     * Get the index of the selected parameter page.
-     *
-     * @return The index of the selected parameter page
-     */
-    int getSelectedParameterPage ();
-
-
-    /**
-     * Set the index of the selected parameter page.
-     *
-     * @param index The index of the selected parameter page
-     */
-    void setSelectedParameterPage (int index);
-
-
-    /**
-     * Set the index of the selected parameter page relative to the current bank.
-     *
-     * @param index The index of the selected parameter page
-     */
-    void setSelectedParameterPageInBank (int index);
-
-
-    /**
-     * Select the previous parameter page bank.
-     */
-    void previousParameterPageBank ();
-
-
-    /**
-     * Select the next parameter page bank.
-     */
-    void nextParameterPageBank ();
-
-
-    /**
      * Toggle the device on/off.
      */
     void toggleEnabledState ();
@@ -343,15 +194,6 @@ public interface ICursorDevice extends ObserverManagement
      * @return True if there is a device
      */
     boolean hasSelectedDevice ();
-
-
-    /**
-     * Get the parameter data.
-     *
-     * @param index The index of the parameter
-     * @return The parameter data
-     */
-    IParameter getFXParam (int index);
 
 
     /**
@@ -1185,17 +1027,25 @@ public interface ICursorDevice extends ObserverManagement
 
 
     /**
-     * Get the number of a page in the parameters bank.
-     *
-     * @return The number
-     */
-    int getNumParameters ();
-
-
-    /**
      * Get the device sibling bank.
      *
      * @return The bank
      */
     IDeviceBank getDeviceBank ();
+
+
+    /**
+     * Get the parameter page bank.
+     *
+     * @return The bank
+     */
+    IParameterPageBank getParameterPageBank ();
+
+
+    /**
+     * Get the parameter bank.
+     *
+     * @return The bank
+     */
+    IParameterBank getParameterBank ();
 }

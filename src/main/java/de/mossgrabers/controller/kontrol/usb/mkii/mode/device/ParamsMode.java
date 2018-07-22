@@ -70,7 +70,7 @@ public class ParamsMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCursorDevice ().changeParameter (index, value);
+        this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
     }
 
 
@@ -79,7 +79,7 @@ public class ParamsMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
      */
     public void previousPage ()
     {
-        this.model.getCursorDevice ().previousParameterPage ();
+        this.model.getCursorDevice ().getParameterBank ().scrollPageBackwards ();
     }
 
 
@@ -88,7 +88,7 @@ public class ParamsMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
      */
     public void nextPage ()
     {
-        this.model.getCursorDevice ().nextParameterPage ();
+        this.model.getCursorDevice ().getParameterBank ().scrollPageForwards ();
     }
 
 
@@ -99,7 +99,7 @@ public class ParamsMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
      */
     public boolean canSelectPreviousPage ()
     {
-        return this.model.getCursorDevice ().hasPreviousParameterPage ();
+        return this.model.getCursorDevice ().getParameterBank ().canScrollBackwards ();
     }
 
 
@@ -110,7 +110,7 @@ public class ParamsMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
      */
     public boolean canSelectNextPage ()
     {
-        return this.model.getCursorDevice ().hasNextParameterPage ();
+        return this.model.getCursorDevice ().getParameterBank ().canScrollForwards ();
     }
 
 
@@ -119,7 +119,7 @@ public class ParamsMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
      */
     public void selectPreviousPage ()
     {
-        this.model.getCursorDevice ().previousParameterPage ();
+        this.model.getCursorDevice ().getParameterBank ().scrollPageBackwards ();
     }
 
 
@@ -128,7 +128,7 @@ public class ParamsMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
      */
     public void selectNextPage ()
     {
-        this.model.getCursorDevice ().nextParameterPage ();
+        this.model.getCursorDevice ().getParameterBank ().scrollPageForwards ();
     }
 
 
@@ -137,7 +137,7 @@ public class ParamsMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
      */
     public void selectPreviousPageBank ()
     {
-        this.model.getCursorDevice ().previousParameterPageBank ();
+        this.model.getCursorDevice ().getParameterPageBank ().scrollPageBackwards ();
     }
 
 
@@ -146,7 +146,7 @@ public class ParamsMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
      */
     public void selectNextPageBank ()
     {
-        this.model.getCursorDevice ().nextParameterPageBank ();
+        this.model.getCursorDevice ().getParameterPageBank ().scrollPageForwards ();
     }
 
 

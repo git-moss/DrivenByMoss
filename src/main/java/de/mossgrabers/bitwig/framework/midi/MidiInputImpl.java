@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.midi;
 
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.MidiShortCallback;
 import de.mossgrabers.framework.daw.midi.MidiSysExCallback;
 
@@ -75,10 +76,9 @@ class MidiInputImpl implements IMidiInput
 
     /** {@inheritDoc} */
     @Override
-    public void createNoteInput (final String name, final String... filters)
+    public INoteInput createNoteInput (final String name, final String... filters)
     {
-        final NoteInput ni = this.port.createNoteInput (name, filters);
-        ni.setShouldConsumeEvents (false);
+        return new NoteInputImpl (this.port.createNoteInput (name, filters));
     }
 
 

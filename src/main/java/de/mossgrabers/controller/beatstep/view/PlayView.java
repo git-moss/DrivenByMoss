@@ -103,7 +103,7 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
     }
 
 
-    protected int getPadColor (final boolean isKeyboardEnabled, int pad)
+    protected int getPadColor (final boolean isKeyboardEnabled, final int pad)
     {
         if (!isKeyboardEnabled)
             return BeatstepColors.BEATSTEP_BUTTON_STATE_OFF;

@@ -117,6 +117,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
@@ -650,6 +651,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isPan = Modes.MODE_PAN.equals (mode);
         final boolean isVolume = Modes.MODE_VOLUME.equals (mode);
+        final boolean isDevice = Modes.isDeviceMode (mode) || Modes.isLayerMode (mode);
 
         tb.setIndication (!isEffect && isSession);
         if (tbe != null)
@@ -657,6 +659,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final ITrack selectedTrack = tb.getSelectedItem ();
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         for (int i = 0; i < tb.getPageSize (); i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
@@ -675,7 +678,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 fxTrack.setPanIndication (isEffect && isPan);
             }
 
-            cursorDevice.indicateParameter (i, true);
+            parameterBank.getItem (i).setIndication (isDevice);
         }
     }
 

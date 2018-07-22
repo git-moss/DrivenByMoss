@@ -23,7 +23,7 @@ public class TrackBankImpl extends AbstractTrackBankImpl
 
     /**
      * Constructor.
-     * 
+     *
      * @param bank The Bitwig track bank
      * @param host The host
      * @param valueChanger The value changer

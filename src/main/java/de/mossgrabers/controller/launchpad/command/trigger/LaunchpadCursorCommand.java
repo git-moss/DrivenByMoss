@@ -17,6 +17,7 @@ import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -117,8 +118,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             this.canScrollUp = cursorDevice.canSelectNextFX ();
             this.canScrollDown = cursorDevice.canSelectPreviousFX ();
-            this.canScrollLeft = cursorDevice.hasPreviousParameterPage ();
-            this.canScrollRight = cursorDevice.hasNextParameterPage ();
+            final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+            this.canScrollLeft = parameterBank.canScrollBackwards ();
+            this.canScrollRight = parameterBank.canScrollForwards ();
             return;
         }
 
@@ -202,8 +204,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.VIEW_DEVICE))
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            cursorDevice.previousParameterPage ();
-            this.surface.getDisplay ().notify (cursorDevice.getSelectedParameterPageName ());
+            cursorDevice.getParameterBank ().scrollBackwards ();
+            this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
             return;
         }
 
@@ -251,8 +253,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.VIEW_DEVICE))
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            cursorDevice.nextParameterPage ();
-            this.surface.getDisplay ().notify (cursorDevice.getSelectedParameterPageName ());
+            cursorDevice.getParameterBank ().scrollForwards ();
+            this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
             return;
         }
 

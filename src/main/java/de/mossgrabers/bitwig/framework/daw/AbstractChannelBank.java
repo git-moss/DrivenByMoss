@@ -31,7 +31,7 @@ public abstract class AbstractChannelBank<B extends Bank<?>, T extends IChannel>
 
     /**
      * Constructor.
-     * 
+     *
      * @param bank The Bitwig bank to encapsulate
      * @param valueChanger The value changer
      * @param numTracks The number of tracks of a bank page

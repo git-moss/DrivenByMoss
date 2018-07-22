@@ -47,7 +47,7 @@ public class TouchpadCommand extends AbstractContinuousCommand<SLControlSurface,
                 break;
 
             case SLConfiguration.TOUCHPAD_MODE_PARAMETER:
-                this.model.getCursorDevice ().setParameter (this.isXDirection ? 0 : 1, value);
+                this.model.getCursorDevice ().getParameterBank ().getItem (this.isXDirection ? 0 : 1).setValue (value);
                 break;
         }
     }

@@ -4,18 +4,19 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.bitwig.framework.daw.data.DeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.DrumPadImpl;
 import de.mossgrabers.bitwig.framework.daw.data.LayerImpl;
-import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.ILayer;
-import de.mossgrabers.framework.daw.data.IParameter;
 
 import com.bitwig.extension.controller.api.Channel;
 import com.bitwig.extension.controller.api.CursorDeviceLayer;
@@ -26,8 +27,6 @@ import com.bitwig.extension.controller.api.DeviceLayerBank;
 import com.bitwig.extension.controller.api.DrumPad;
 import com.bitwig.extension.controller.api.DrumPadBank;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
-import com.bitwig.extension.controller.api.RemoteControl;
-import com.bitwig.extension.controller.api.SettableIntegerValue;
 
 
 /**
@@ -35,43 +34,45 @@ import com.bitwig.extension.controller.api.SettableIntegerValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class CursorDeviceImpl implements ICursorDevice
+public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 {
-    private IHost                    host;
-    private PinnableCursorDevice     cursorDevice;
-    private CursorRemoteControlsPage remoteControls;
-    private CursorDeviceLayer        cursorDeviceLayer;
-    private IValueChanger            valueChanger;
+    private IHost                host;
+    private PinnableCursorDevice cursorDevice;
+    private CursorDeviceLayer    cursorDeviceLayer;
+    private IValueChanger        valueChanger;
 
-    private int                      numParams;
-    private int                      numDeviceLayers;
-    private int                      numDrumPadLayers;
+    private int                  numParams;
+    private int                  numDeviceLayers;
+    private int                  numDrumPadLayers;
 
-    private String []                parameterPageNames = new String [0];
-    private IParameter []            fxparams;
-    private DeviceLayerBank          layerBank;
-    private ILayer []                deviceLayers;
-    private IDrumPad []              drumPadLayers;
-    private DeviceBank []            deviceBanks;
-    private DrumPadBank              drumPadBank;
-    private DeviceBank []            drumPadBanks;
-    private IDeviceBank              deviceBank;
+    private IParameterPageBank   parameterPageBank;
+    private IParameterBank       parameterBank;
+
+    private DeviceLayerBank      layerBank;
+    private ILayer []            deviceLayers;
+    private IDrumPad []          drumPadLayers;
+    private DeviceBank []        deviceBanks;
+    private DrumPadBank          drumPadBank;
+    private DeviceBank []        drumPadBanks;
+    private IDeviceBank          deviceBank;
 
 
     /**
      * Constructor.
      *
      * @param host The host
-     * @param cursorDevice The cursor device
      * @param valueChanger The value changer
+     * @param cursorDevice The cursor device
      * @param numSends The number of sends
      * @param numParams The number of parameters
      * @param numDevicesInBank The number of devices
      * @param numDeviceLayers The number of layers
      * @param numDrumPadLayers The number of drum pad layers
      */
-    public CursorDeviceImpl (final IHost host, final PinnableCursorDevice cursorDevice, final IValueChanger valueChanger, final int numSends, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public CursorDeviceImpl (final IHost host, final IValueChanger valueChanger, final PinnableCursorDevice cursorDevice, final int numSends, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
+        super (cursorDevice, -1);
+
         this.host = host;
         this.cursorDevice = cursorDevice;
         this.valueChanger = valueChanger;
@@ -81,9 +82,7 @@ public class CursorDeviceImpl implements ICursorDevice
         this.numDeviceLayers = numDeviceLayers >= 0 ? numDeviceLayers : 8;
         this.numDrumPadLayers = numDrumPadLayers >= 0 ? numDrumPadLayers : 16;
 
-        this.cursorDevice.exists ().markInterested ();
         this.cursorDevice.isEnabled ().markInterested ();
-        this.cursorDevice.name ().markInterested ();
         this.cursorDevice.isPlugin ().markInterested ();
         this.cursorDevice.position ().markInterested ();
         this.cursorDevice.hasPrevious ().markInterested ();
@@ -99,18 +98,11 @@ public class CursorDeviceImpl implements ICursorDevice
 
         if (this.numParams > 0)
         {
-            this.remoteControls = this.cursorDevice.createCursorRemoteControlsPage (this.numParams);
-            this.remoteControls.hasPrevious ().markInterested ();
-            this.remoteControls.hasNext ().markInterested ();
-            this.remoteControls.selectedPageIndex ().markInterested ();
-            this.remoteControls.pageNames ().addValueObserver (this::handlePageNames);
-
-            this.fxparams = new IParameter [this.numParams];
-            for (int i = 0; i < this.numParams; i++)
-            {
-                final RemoteControl p = this.getParameter (i);
-                this.fxparams[i] = new ParameterImpl (valueChanger, p, i);
-            }
+            final CursorRemoteControlsPage remoteControlsPage = this.cursorDevice.createCursorRemoteControlsPage (this.numParams);
+            // We use the same number of page entries (numParams) for the page bank, add a specific
+            // parameter if there is one controller who wants that differently
+            this.parameterPageBank = new ParameterPageBankImpl (remoteControlsPage, numParams);
+            this.parameterBank = new ParameterBankImpl (valueChanger, this.parameterPageBank, remoteControlsPage, numParams);
         }
 
         // Monitor the sibling devices of the cursor device
@@ -161,11 +153,11 @@ public class CursorDeviceImpl implements ICursorDevice
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.cursorDevice.exists ().setIsSubscribed (enable);
+        super.enableObservers (enable);
+
         this.cursorDevice.isEnabled ().setIsSubscribed (enable);
         this.cursorDevice.isPlugin ().setIsSubscribed (enable);
         this.cursorDevice.position ().setIsSubscribed (enable);
-        this.cursorDevice.name ().setIsSubscribed (enable);
         this.cursorDevice.hasPrevious ().setIsSubscribed (enable);
         this.cursorDevice.hasNext ().setIsSubscribed (enable);
         this.cursorDevice.isExpanded ().setIsSubscribed (enable);
@@ -177,17 +169,11 @@ public class CursorDeviceImpl implements ICursorDevice
         this.cursorDevice.hasSlots ().setIsSubscribed (enable);
         this.cursorDevice.isPinned ().setIsSubscribed (enable);
 
-        if (this.remoteControls != null)
+        if (this.parameterBank != null)
         {
-            this.remoteControls.hasPrevious ().setIsSubscribed (enable);
-            this.remoteControls.hasNext ().setIsSubscribed (enable);
-            this.remoteControls.selectedPageIndex ().setIsSubscribed (enable);
-            this.remoteControls.pageNames ().setIsSubscribed (enable);
+            this.parameterBank.enableObservers (enable);
+            this.parameterPageBank.enableObservers (enable);
         }
-
-        for (int i = 0; i < this.numParams; i++)
-            this.fxparams[i].enableObservers (enable);
-
         this.deviceBank.enableObservers (enable);
 
         this.cursorDeviceLayer.hasPrevious ().setIsSubscribed (enable);
@@ -242,33 +228,9 @@ public class CursorDeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
-    public boolean doesExist ()
-    {
-        return this.cursorDevice.exists ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean isEnabled ()
     {
         return this.cursorDevice.isEnabled ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName ()
-    {
-        return this.cursorDevice.name ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName (final int limit)
-    {
-        return this.cursorDevice.name ().getLimited (limit);
     }
 
 
@@ -406,150 +368,6 @@ public class CursorDeviceImpl implements ICursorDevice
     }
 
 
-    /**
-     * Get a parameter.
-     *
-     * @param index The index of the parameter
-     * @return The parameter
-     */
-    private RemoteControl getParameter (final int index)
-    {
-        return this.remoteControls.getParameter (index);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void changeParameter (final int index, final int control)
-    {
-        this.getParameter (index).inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setParameter (final int index, final int value)
-    {
-        this.getParameter (index).set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void resetParameter (final int index)
-    {
-        this.getParameter (index).reset ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void indicateParameter (final int index, final boolean indicate)
-    {
-        this.getParameter (index).setIndication (indicate);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void touchParameter (final int index, final boolean indicate)
-    {
-        this.getParameter (index).touch (indicate);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void previousParameterPage ()
-    {
-        this.remoteControls.selectPreviousPage (true);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void nextParameterPage ()
-    {
-        this.remoteControls.selectNextPage (true);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasPreviousParameterPage ()
-    {
-        return this.remoteControls.hasPrevious ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasNextParameterPage ()
-    {
-        return this.remoteControls.hasNext ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String [] getParameterPageNames ()
-    {
-        return this.parameterPageNames;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getSelectedParameterPageName ()
-    {
-        final int sel = this.getSelectedParameterPage ();
-        return sel >= 0 && sel < this.parameterPageNames.length ? this.parameterPageNames[sel] : "";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getSelectedParameterPage ()
-    {
-        return this.remoteControls.selectedPageIndex ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setSelectedParameterPage (final int index)
-    {
-        this.remoteControls.selectedPageIndex ().set (index);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setSelectedParameterPageInBank (final int index)
-    {
-        final SettableIntegerValue pageIndex = this.remoteControls.selectedPageIndex ();
-        pageIndex.set (pageIndex.get () / 8 * 8 + index);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void previousParameterPageBank ()
-    {
-        final SettableIntegerValue index = this.remoteControls.selectedPageIndex ();
-        index.set (Math.max (index.get () - 8, 0));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void nextParameterPageBank ()
-    {
-        final SettableIntegerValue index = this.remoteControls.selectedPageIndex ();
-        index.set (Math.min (index.get () + 8, this.parameterPageNames.length - 1));
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public void toggleEnabledState ()
@@ -571,14 +389,6 @@ public class CursorDeviceImpl implements ICursorDevice
     public boolean hasSelectedDevice ()
     {
         return this.cursorDevice.exists ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IParameter getFXParam (final int index)
-    {
-        return this.fxparams[index];
     }
 
 
@@ -1559,12 +1369,6 @@ public class CursorDeviceImpl implements ICursorDevice
     }
 
 
-    private void handlePageNames (final String [] pageNames)
-    {
-        this.parameterPageNames = pageNames;
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public int getNumLayers ()
@@ -1583,16 +1387,24 @@ public class CursorDeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
-    public int getNumParameters ()
+    public IDeviceBank getDeviceBank ()
     {
-        return this.numParams;
+        return this.deviceBank;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public IDeviceBank getDeviceBank ()
+    public IParameterPageBank getParameterPageBank ()
     {
-        return this.deviceBank;
+        return this.parameterPageBank;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameterBank getParameterBank ()
+    {
+        return this.parameterBank;
     }
 }

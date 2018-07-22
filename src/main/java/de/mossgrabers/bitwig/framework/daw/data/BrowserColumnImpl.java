@@ -92,7 +92,7 @@ public class BrowserColumnImpl extends AbstractItemImpl implements IBrowserColum
 
     /** {@inheritDoc} */
     @Override
-    public String getName (int limit)
+    public String getName (final int limit)
     {
         return this.column.name ().getLimited (limit);
     }

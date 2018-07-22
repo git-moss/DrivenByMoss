@@ -76,7 +76,7 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
             else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND8))
                 track.getSendBank ().getItem (7).setValue (value);
             else if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
-                this.model.getCursorDevice ().setParameter (extenderOffset + channel, (int) value);
+                this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + channel).setValue ((int) value);
             return;
         }
 

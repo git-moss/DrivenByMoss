@@ -15,7 +15,10 @@ import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDevice;
@@ -89,7 +92,7 @@ public class DeviceParamsMode extends BaseMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCursorDevice ().changeParameter (index, value);
+        this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
     }
 
 
@@ -100,20 +103,20 @@ public class DeviceParamsMode extends BaseMode
         this.isKnobTouched[index] = isTouched;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
+        final IParameter param = cd.getParameterBank ().getItem (index);
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
             {
                 this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                cd.resetParameter (index);
+                param.resetValue ();
                 return;
             }
 
-            final IParameter param = cd.getFXParam (index);
             if (!param.getName ().isEmpty ())
                 this.surface.getDisplay ().notify (param.getName () + ": " + param.getDisplayedValue ());
         }
-        cd.touchParameter (index, isTouched);
+        param.touchValue (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 
@@ -133,7 +136,7 @@ public class DeviceParamsMode extends BaseMode
 
             if (!this.showDevices)
             {
-                cd.setSelectedParameterPageInBank (index);
+                cd.getParameterPageBank ().selectPage (index);
                 return;
             }
 
@@ -224,19 +227,16 @@ public class DeviceParamsMode extends BaseMode
 
         if (this.showDevices)
         {
-            for (int i = 0; i < 8; i++)
-                this.surface.updateButton (20 + i, cd.getDeviceBank ().getItem (i).doesExist () ? i == cd.getPositionInBank () ? selectedColor : existsColor : offColor);
+            final IDeviceBank bank = cd.getDeviceBank ();
+            for (int i = 0; i < bank.getPageSize (); i++)
+                this.surface.updateButton (20 + i, bank.getItem (i).doesExist () ? i == cd.getPositionInBank () ? selectedColor : existsColor : offColor);
         }
         else
         {
-            final String [] pages = cd.getParameterPageNames ();
-            final int page = Math.min (Math.max (0, cd.getSelectedParameterPage ()), pages.length - 1);
-            final int start = page / 8 * 8;
-            for (int i = 0; i < 8; i++)
-            {
-                final int index = start + i;
-                this.surface.updateButton (20 + i, index < pages.length ? index == page ? selectedColor : existsColor : offColor);
-            }
+            final IParameterPageBank bank = cd.getParameterPageBank ();
+            final int selectedItemIndex = bank.getSelectedItemIndex ();
+            for (int i = 0; i < bank.getPageSize (); i++)
+                this.surface.updateButton (20 + i, !bank.getItem (i).isEmpty () ? i == selectedItemIndex ? selectedColor : existsColor : offColor);
         }
     }
 
@@ -326,9 +326,10 @@ public class DeviceParamsMode extends BaseMode
         }
 
         // Row 1 & 2
+        final IParameterBank parameterBank = cd.getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IParameter param = cd.getFXParam (i);
+            final IParameter param = parameterBank.getItem (i);
             d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName ()) : "").setCell (1, i, param.getDisplayedValue (8));
         }
 
@@ -338,9 +339,10 @@ public class DeviceParamsMode extends BaseMode
         // Row 4
         if (this.showDevices)
         {
+            final IDeviceBank deviceBank = cd.getDeviceBank ();
             for (int i = 0; i < 8; i++)
             {
-                final IDevice device = cd.getDeviceBank ().getItem (i);
+                final IDevice device = deviceBank.getItem (i);
                 final StringBuilder sb = new StringBuilder ();
                 if (device.doesExist ())
                 {
@@ -353,13 +355,12 @@ public class DeviceParamsMode extends BaseMode
         }
         else
         {
-            final String [] pages = cd.getParameterPageNames ();
-            final int page = Math.min (Math.max (0, cd.getSelectedParameterPage ()), pages.length - 1);
-            final int start = page / 8 * 8;
-            for (int i = 0; i < 8; i++)
+            final IParameterPageBank bank = cd.getParameterPageBank ();
+            final int selectedItemIndex = bank.getSelectedItemIndex ();
+            for (int i = 0; i < bank.getPageSize (); i++)
             {
-                final int index = start + i;
-                d.setCell (3, i, index < pages.length ? (index == page ? PushDisplay.RIGHT_ARROW : "") + pages[index] : "");
+                final String item = bank.getItem (i);
+                d.setCell (3, i, !item.isEmpty () ? (i == selectedItemIndex ? PushDisplay.RIGHT_ARROW : "") + item : "");
             }
         }
 
@@ -386,12 +387,12 @@ public class DeviceParamsMode extends BaseMode
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
-        final String [] pages = cd.getParameterPageNames ();
-        final int page = Math.min (Math.max (0, cd.getSelectedParameterPage ()), pages.length - 1);
-        final int start = page / 8 * 8;
+        final IParameterBank parameterBank = cd.getParameterBank ();
+        final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
+        final int selectedItemIndex = parameterPageBank.getSelectedItemIndex ();
 
         final boolean hasPinning = this.model.getHost ().hasPinning ();
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < parameterPageBank.getPageSize (); i++)
         {
             boolean isTopMenuOn;
             switch (i)
@@ -436,15 +437,15 @@ public class DeviceParamsMode extends BaseMode
             else
             {
                 bottomMenuIcon = cd.getName ();
-                final int index = start + i;
-                bottomMenu = index < pages.length ? pages[index] : "";
+                bottomMenu = parameterPageBank.getItem (i);
+
                 if (bottomMenu.length () > 12)
                     bottomMenu = bottomMenu.substring (0, 12);
-                isBottomMenuOn = index == page;
+                isBottomMenuOn = i == selectedItemIndex;
             }
 
             final double [] bottomMenuColor = DAWColors.getColorEntry (color);
-            final IParameter param = cd.getFXParam (i);
+            final IParameter param = parameterBank.getItem (i);
             final boolean exists = param.doesExist ();
             final String parameterName = exists ? param.getName (9) : "";
             final int parameterValue = valueChanger.toDisplayValue (exists ? param.getValue () : 0);
@@ -467,7 +468,7 @@ public class DeviceParamsMode extends BaseMode
     public boolean canSelectPreviousPage ()
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        return this.showDevices ? cursorDevice.canSelectPreviousFX () : cursorDevice.hasPreviousParameterPage ();
+        return this.showDevices ? cursorDevice.canSelectPreviousFX () : cursorDevice.getParameterBank ().canScrollBackwards ();
     }
 
 
@@ -479,7 +480,7 @@ public class DeviceParamsMode extends BaseMode
     public boolean canSelectNextPage ()
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        return this.showDevices ? cursorDevice.canSelectNextFX () : cursorDevice.hasNextParameterPage ();
+        return this.showDevices ? cursorDevice.canSelectNextFX () : cursorDevice.getParameterBank ().canScrollForwards ();
     }
 
 
@@ -492,7 +493,7 @@ public class DeviceParamsMode extends BaseMode
         if (this.showDevices)
             cursorDevice.selectPrevious ();
         else
-            cursorDevice.previousParameterPage ();
+            cursorDevice.getParameterBank ().scrollBackwards ();
     }
 
 
@@ -505,7 +506,7 @@ public class DeviceParamsMode extends BaseMode
         if (this.showDevices)
             cursorDevice.selectNext ();
         else
-            cursorDevice.nextParameterPage ();
+            cursorDevice.getParameterBank ().scrollForwards ();
     }
 
 
@@ -514,11 +515,11 @@ public class DeviceParamsMode extends BaseMode
      */
     public void selectPreviousPageBank ()
     {
-        final ICursorDevice cd = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         if (this.showDevices)
-            cd.getDeviceBank ().scrollPageBackwards ();
+            cursorDevice.getDeviceBank ().scrollPageBackwards ();
         else
-            cd.previousParameterPageBank ();
+            cursorDevice.getParameterBank ().scrollPageBackwards ();
     }
 
 
@@ -527,10 +528,10 @@ public class DeviceParamsMode extends BaseMode
      */
     public void selectNextPageBank ()
     {
-        final ICursorDevice cd = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         if (this.showDevices)
-            cd.getDeviceBank ().scrollPageForwards ();
+            cursorDevice.getDeviceBank ().scrollPageForwards ();
         else
-            cd.nextParameterPageBank ();
+            cursorDevice.getParameterBank ().scrollPageForwards ();
     }
 }

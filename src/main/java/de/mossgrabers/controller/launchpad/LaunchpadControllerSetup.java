@@ -69,6 +69,7 @@ import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
@@ -371,6 +372,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         if (tbe != null)
             tbe.setIndication (isEffect && isSession);
 
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getItem (i);
@@ -387,7 +389,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
                 fxTrack.setPanIndication (isEffect && isPan);
             }
 
-            cursorDevice.indicateParameter (i, isDevice);
+            parameterBank.getItem (i).setIndication (isDevice);
         }
     }
 

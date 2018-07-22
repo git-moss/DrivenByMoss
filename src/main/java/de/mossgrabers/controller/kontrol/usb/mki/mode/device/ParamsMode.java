@@ -9,6 +9,7 @@ import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Display;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.AbstractKontrol1Mode;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.data.IParameter;
 
 import java.util.Collections;
@@ -52,11 +53,12 @@ public class ParamsMode extends AbstractKontrol1Mode
         if (this.model.hasSelectedDevice ())
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            d.setCell (0, 0, cursorDevice.getName (8).toUpperCase ()).setCell (1, 0, cursorDevice.getSelectedParameterPageName ().toUpperCase ());
+            d.setCell (0, 0, cursorDevice.getName (8).toUpperCase ()).setCell (1, 0, cursorDevice.getParameterPageBank ().getSelectedItem ().toUpperCase ());
 
+            final IParameterBank parameterBank = cursorDevice.getParameterBank ();
             for (int i = 0; i < 8; i++)
             {
-                final IParameter p = cursorDevice.getFXParam (i);
+                final IParameter p = parameterBank.getItem (i);
                 final String name = p.getName (8).toUpperCase ();
                 if (!name.isEmpty ())
                     d.setCell (0, 1 + i, name).setCell (1, 1 + i, checkForUpperCase (p.getDisplayedValue (8)));
@@ -74,7 +76,7 @@ public class ParamsMode extends AbstractKontrol1Mode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCursorDevice ().changeParameter (index, value);
+        this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
     }
 
 
@@ -83,8 +85,9 @@ public class ParamsMode extends AbstractKontrol1Mode
     public void updateFirstRow ()
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final boolean canScrollLeft = cursorDevice.hasPreviousParameterPage ();
-        final boolean canScrollRight = cursorDevice.hasNextParameterPage ();
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+        final boolean canScrollLeft = parameterBank.canScrollBackwards ();
+        final boolean canScrollRight = parameterBank.canScrollForwards ();
         final boolean canScrollUp = cursorDevice.canSelectNextFX ();
         final boolean canScrollDown = cursorDevice.canSelectPreviousFX ();
 
@@ -106,9 +109,9 @@ public class ParamsMode extends AbstractKontrol1Mode
     public void scrollLeft ()
     {
         if (this.surface.isShiftPressed ())
-            this.model.getCursorDevice ().previousParameterPageBank ();
+            this.model.getCursorDevice ().getParameterPageBank ().scrollBackwards ();
         else
-            this.model.getCursorDevice ().previousParameterPage ();
+            this.model.getCursorDevice ().getParameterBank ().scrollBackwards ();
     }
 
 
@@ -117,9 +120,9 @@ public class ParamsMode extends AbstractKontrol1Mode
     public void scrollRight ()
     {
         if (this.surface.isShiftPressed ())
-            this.model.getCursorDevice ().nextParameterPageBank ();
+            this.model.getCursorDevice ().getParameterPageBank ().scrollForwards ();
         else
-            this.model.getCursorDevice ().nextParameterPage ();
+            this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
     }
 
 

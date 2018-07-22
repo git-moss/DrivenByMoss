@@ -84,15 +84,15 @@ public class ModelImpl extends AbstractModel
         this.trackBank = new TrackBankImpl (tb, controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.numSends);
         this.effectTrackBank = new EffectTrackBankImpl (controllerHost, valueChanger, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
 
-        this.primaryDevice = new CursorDeviceImpl (this.host, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), valueChanger, this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
+        this.primaryDevice = new CursorDeviceImpl (this.host, valueChanger, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
         this.primaryDevice.setDrumPadIndication (false);
         PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", this.numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
-        this.cursorDevice = new CursorDeviceImpl (this.host, cd, valueChanger, this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
+        this.cursorDevice = new CursorDeviceImpl (this.host, valueChanger, cd, this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
         this.cursorDevice.setDrumPadIndication (false);
         if (this.numDrumPadLayers > 0)
         {
             cd = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
-            this.drumDevice64 = new CursorDeviceImpl (this.host, cd, valueChanger, 0, 0, -1, 64, 64);
+            this.drumDevice64 = new CursorDeviceImpl (this.host, valueChanger, cd, 0, 0, -1, 64, 64);
             this.drumDevice64.setDrumPadIndication (false);
         }
         if (this.numResults > 0)

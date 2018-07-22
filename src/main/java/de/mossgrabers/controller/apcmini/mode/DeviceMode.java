@@ -31,6 +31,6 @@ public class DeviceMode extends BaseMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCursorDevice ().setParameter (index, value);
+        this.model.getCursorDevice ().getParameterBank ().getItem (index).setValue (value);
     }
 }

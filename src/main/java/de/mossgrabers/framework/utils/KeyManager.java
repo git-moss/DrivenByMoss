@@ -81,7 +81,7 @@ public class KeyManager implements NoteObserver
      * @param key The key to set
      * @param velocity The velocity
      */
-    public void setAllKeysPressed (int key, int velocity)
+    public void setAllKeysPressed (final int key, final int velocity)
     {
         for (int i = 0; i < 128; i++)
         {

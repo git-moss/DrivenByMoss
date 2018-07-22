@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -65,7 +66,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
      * @param midiInput The midi input
      * @param keyManager The key manager
      */
-    public OSCParser (final IHost host, OSCControlSurface surface, final IModel model, final IOpenSoundControlConfiguration configuration, final IOpenSoundControlWriter writer, final IMidiInput midiInput, final KeyManager keyManager)
+    public OSCParser (final IHost host, final OSCControlSurface surface, final IModel model, final IOpenSoundControlConfiguration configuration, final IOpenSoundControlWriter writer, final IMidiInput midiInput, final KeyManager keyManager)
     {
         super (host, model, midiInput, configuration, writer);
 
@@ -1032,15 +1033,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 {
                     case "selected":
                         if (numValue > 0)
-                        {
-                            final String [] parameterPageNames = cursorDevice.getParameterPageNames ();
-                            final int selectedParameterPage = cursorDevice.getSelectedParameterPage ();
-                            final int page = Math.min (Math.max (0, selectedParameterPage), parameterPageNames.length - 1);
-                            final int start = page / 8 * 8;
-                            final int bankPage = start + bankNo - 1;
-                            if (bankPage < parameterPageNames.length)
-                                cursorDevice.setSelectedParameterPage (bankPage);
-                        }
+                            cursorDevice.getParameterPageBank ().selectPage (bankNo - 1);
                         break;
 
                     default:
@@ -1123,8 +1116,9 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 switch (oscParts.removeFirst ())
                 {
                     case "param":
-                        for (int i = 0; i < cursorDevice.getNumParameters (); i++)
-                            cursorDevice.indicateParameter (i, numValue > 0);
+                        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+                        for (int i = 0; i < parameterBank.getPageSize (); i++)
+                            parameterBank.getItem (i).setIndication (numValue > 0);
                         break;
 
                     default:
@@ -1152,10 +1146,10 @@ public class OSCParser extends AbstractOpenSoundControlParser
                         switch (part)
                         {
                             case "+":
-                                cursorDevice.nextParameterPage ();
+                                cursorDevice.getParameterBank ().scrollPageForwards ();
                                 break;
                             case "-":
-                                cursorDevice.previousParameterPage ();
+                                cursorDevice.getParameterBank ().scrollPageBackwards ();
                                 break;
 
                             case "bank":
@@ -1174,9 +1168,9 @@ public class OSCParser extends AbstractOpenSoundControlParser
                                             return;
                                         }
                                         if ("+".equals (oscParts.removeFirst ()))
-                                            cursorDevice.nextParameterPageBank ();
+                                            cursorDevice.getParameterPageBank ().scrollPageForwards ();
                                         else // "-"
-                                            cursorDevice.previousParameterPageBank ();
+                                            cursorDevice.getParameterPageBank ().scrollPageBackwards ();
                                         break;
                                     default:
                                         this.host.error ("Unknown Device Param Bank subcommand: " + subCommand4);
@@ -1447,20 +1441,20 @@ public class OSCParser extends AbstractOpenSoundControlParser
         {
             case "value":
                 if (parts.size () == 1 && value != null)
-                    cursorDevice.setParameter (fxparamIndex, numValue);
+                    cursorDevice.getParameterBank ().getItem (fxparamIndex).setValue (numValue);
                 break;
 
             case PART_INDICATE:
                 if (parts.size () == 1 && value != null)
-                    cursorDevice.indicateParameter (fxparamIndex, numValue > 0);
+                    cursorDevice.getParameterBank ().getItem (fxparamIndex).setIndication (numValue > 0);
                 break;
 
             case PART_RESET:
-                cursorDevice.resetParameter (fxparamIndex);
+                cursorDevice.getParameterBank ().getItem (fxparamIndex).resetValue ();
                 break;
 
             case PART_TOUCH:
-                cursorDevice.touchParameter (fxparamIndex, numValue > 0);
+                cursorDevice.getParameterBank ().getItem (fxparamIndex).touchValue (numValue > 0);
                 break;
 
             default:

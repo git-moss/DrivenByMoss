@@ -120,7 +120,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
         for (int i = 0; i < 8; i++)
         {
             final IScene scene = sceneBank.getItem (7 - i);
-            final int color = scene.doesExist () ? (scene.isSelected () ? orange : green) : off;
+            final int color = scene.doesExist () ? scene.isSelected () ? orange : green : off;
             this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
         }
     }

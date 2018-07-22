@@ -10,6 +10,7 @@ import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.view.AbstractView;
 
@@ -50,7 +51,7 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             return;
         }
 
-        cd.changeParameter (index - 8, value);
+        cd.getParameterBank ().getItem (index - 8).changeValue (value);
     }
 
 
@@ -69,8 +70,6 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
         IChannel sel;
         int index;
         IChannel dl;
-        int bank;
-        int offset;
         switch (note - 36)
         {
             // Toggle device on/off
@@ -143,18 +142,16 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
 
             // Param bank down
             case 6:
-                cd.setSelectedParameterPage (Math.max (cd.getSelectedParameterPage () - 8, 0));
+                cd.getParameterBank ().scrollBackwards ();
                 break;
 
             // Param bank page up
             case 7:
-                cd.setSelectedParameterPage (Math.min (cd.getSelectedParameterPage () + 8, cd.getParameterPageNames ().length - 1));
+                cd.getParameterBank ().scrollForwards ();
                 break;
 
             default:
-                bank = note - 36 - 8;
-                offset = cd.getSelectedParameterPage () / 8 * 8;
-                cd.setSelectedParameterPage (offset + bank);
+                cd.getParameterPageBank ().selectPage (note - 36 - 8);
                 break;
         }
     }
@@ -165,10 +162,11 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
     public void drawGrid ()
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final int offset = cd.getSelectedParameterPage () / 8 * 8;
+        final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
+        final int selectedItemIndex = parameterPageBank.getSelectedItemIndex ();
         final PadGrid padGrid = this.surface.getPadGrid ();
-        for (int i = 0; i < 8; i++)
-            padGrid.light (44 + i, offset + i == cd.getSelectedParameterPage () ? BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
+        for (int i = 0; i < parameterPageBank.getPageSize (); i++)
+            padGrid.light (44 + i, i == selectedItemIndex ? BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
         padGrid.light (36, cd.isEnabled () ? BeatstepColors.BEATSTEP_BUTTON_STATE_RED : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
         padGrid.light (37, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
         padGrid.light (38, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);

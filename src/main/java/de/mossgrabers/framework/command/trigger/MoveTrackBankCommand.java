@@ -7,7 +7,9 @@ package de.mossgrabers.framework.command.trigger;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -53,36 +55,38 @@ public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Config
 
         if (this.surface.getModeManager ().isActiveOrTempMode (this.deviceMode))
         {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             if (this.moveBy1)
             {
                 if (this.moveLeft)
-                    this.model.getCursorDevice ().previousParameterPage ();
+                    cursorDevice.getParameterBank ().scrollBackwards ();
                 else
-                    this.model.getCursorDevice ().nextParameterPage ();
+                    cursorDevice.getParameterBank ().scrollForwards ();
             }
             else
             {
                 if (this.moveLeft)
-                    this.model.getCursorDevice ().selectPrevious ();
+                    cursorDevice.selectPrevious ();
                 else
-                    this.model.getCursorDevice ().selectNext ();
+                    cursorDevice.selectNext ();
             }
             return;
         }
 
+        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
         if (this.moveBy1)
         {
             if (this.moveLeft)
-                this.model.getCurrentTrackBank ().scrollBackwards ();
+                currentTrackBank.scrollBackwards ();
             else
-                this.model.getCurrentTrackBank ().scrollForwards ();
+                currentTrackBank.scrollForwards ();
         }
         else
         {
             if (this.moveLeft)
-                this.model.getCurrentTrackBank ().scrollPageBackwards ();
+                currentTrackBank.scrollPageBackwards ();
             else
-                this.model.getCurrentTrackBank ().scrollPageForwards ();
+                currentTrackBank.scrollPageForwards ();
         }
     }
 }
