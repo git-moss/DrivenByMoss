@@ -78,7 +78,6 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     @Override
     protected void createObservers ()
     {
-        this.keyManager = new KeyManager (this.model, this.getSurface ().getPadGrid ());
         final ITrackBank tb = this.model.getTrackBank ();
         for (int i = 0; i < tb.getPageSize (); i++)
             tb.getItem (i).addNoteObserver (this.keyManager);
@@ -95,6 +94,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
 
         final OSCControlSurface surface = new OSCControlSurface (this.model.getHost (), this.configuration, this.colorManager, input);
         this.surfaces.add (surface);
+        this.keyManager = new KeyManager (this.model, surface.getPadGrid ());
 
         // Send OSC messages
         final IOpenSoundControlServer oscServer = this.host.connectToOSCServer (this.configuration.getSendHost (), this.configuration.getSendPort ());

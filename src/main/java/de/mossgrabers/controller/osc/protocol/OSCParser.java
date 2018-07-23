@@ -1168,9 +1168,9 @@ public class OSCParser extends AbstractOpenSoundControlParser
                                             return;
                                         }
                                         if ("+".equals (oscParts.removeFirst ()))
-                                            cursorDevice.getParameterPageBank ().scrollPageForwards ();
+                                            cursorDevice.getParameterPageBank ().scrollForwards ();
                                         else // "-"
-                                            cursorDevice.getParameterPageBank ().scrollPageBackwards ();
+                                            cursorDevice.getParameterPageBank ().scrollBackwards ();
                                         break;
                                     default:
                                         this.host.error ("Unknown Device Param Bank subcommand: " + subCommand4);

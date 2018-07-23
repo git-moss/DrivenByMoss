@@ -39,8 +39,12 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -145,6 +149,14 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     protected void createObservers ()
     {
         this.createScaleObservers (this.configuration);
+
+        this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
+
+        final ITrackBank trackBank = this.model.getTrackBank ();
+        trackBank.addSelectionObserver (this::handleTrackChange);
+        final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+        if (effectTrackBank != null)
+            effectTrackBank.addSelectionObserver (this::handleTrackChange);
     }
 
 
@@ -225,5 +237,56 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     public void flush ()
     {
         this.flushSurfaces ();
+    }
+
+
+    /**
+     * Handle a track selection change.
+     *
+     * @param index The index of the track
+     * @param isSelected Has the track been selected?
+     */
+    private void handleTrackChange (final int index, final boolean isSelected)
+    {
+        if (isSelected)
+            this.updateIndication (this.getSurface ().getModeManager ().getActiveModeId ());
+    }
+
+
+    private void updateIndication (final Integer mode)
+    {
+        final ITrackBank tb = this.model.getTrackBank ();
+        final ITrackBank tbe = this.model.getEffectTrackBank ();
+        final boolean isEffect = this.model.isEffectTrackBankActive ();
+
+        final boolean isVolume = Modes.MODE_VOLUME.equals (mode);
+        final boolean isDevice = Modes.MODE_PARAMS.equals (mode);
+
+        tb.setIndication (isVolume);
+        if (tbe != null)
+            tbe.setIndication (isEffect && isVolume);
+
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final ITrack selectedTrack = tb.getSelectedItem ();
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+        for (int i = 0; i < tb.getPageSize (); i++)
+        {
+            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
+            final ITrack track = tb.getItem (i);
+            track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
+            track.setPanIndication (!isEffect && hasTrackSel);
+
+            final ISendBank sendBank = track.getSendBank ();
+            for (int j = 0; j < 6; j++)
+                sendBank.getItem (j).setIndication (!isEffect && hasTrackSel);
+
+            if (tbe != null)
+            {
+                final ITrack fxTrack = tbe.getItem (i);
+                fxTrack.setVolumeIndication (isEffect);
+            }
+
+            parameterBank.getItem (i).setIndication (isDevice);
+        }
     }
 }
