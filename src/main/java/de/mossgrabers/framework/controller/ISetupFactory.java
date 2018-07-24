@@ -33,9 +33,10 @@ public interface ISetupFactory
      * @param numDevicesInBank The number of devices to monitor
      * @param numDeviceLayers The number of device layers to monitor
      * @param numDrumPadLayers The number of drum pad layers to monitor
+     * @param numMarkers The number of markers
      * @return The model
      */
-    IModel createModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers);
+    IModel createModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers, final int numMarkers);
 
 
     /**

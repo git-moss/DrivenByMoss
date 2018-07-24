@@ -84,7 +84,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1, 0);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver ( (index, isSelected) -> {
             final View activeView = this.getSurface ().getViewManager ().getActiveView ();

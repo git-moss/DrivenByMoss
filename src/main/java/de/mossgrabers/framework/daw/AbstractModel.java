@@ -25,12 +25,14 @@ public abstract class AbstractModel implements IModel
 {
     protected IHost                    host;
     protected IApplication             application;
-    protected IArranger                arranger;
     protected IMixer                   mixer;
     protected ITransport               transport;
     protected IGroove                  groove;
     protected IProject                 project;
     protected IBrowser                 browser;
+
+    protected IArranger                arranger;
+    protected IMarkerBank              markerBank;
 
     protected ITrackBank               currentTrackBank;
     protected ITrackBank               trackBank;
@@ -115,6 +117,14 @@ public abstract class AbstractModel implements IModel
     public IArranger getArranger ()
     {
         return this.arranger;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IMarkerBank getMarkerBank ()
+    {
+        return this.markerBank;
     }
 
 

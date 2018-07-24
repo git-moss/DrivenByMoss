@@ -71,6 +71,14 @@ public interface IHost
 
 
     /**
+     * Returns true if the DAW supports editing markers.
+     *
+     * @return True if the DAW supports editing markerst
+     */
+    boolean canEditMarkers ();
+
+
+    /**
      * Schedules the given task for execution after the given delay.
      *
      * @param task The task to execute

@@ -194,7 +194,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8 * this.numMCUDevices, 8, 8, 8, 8, true, 8 * this.numMCUDevices, -1, 0, 0);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8 * this.numMCUDevices, 8, 8, 8, 8, true, 8 * this.numMCUDevices, -1, 0, 0, 0);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);

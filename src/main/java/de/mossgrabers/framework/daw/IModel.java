@@ -52,6 +52,14 @@ public interface IModel
 
 
     /**
+     * Get the marker bank.
+     *
+     * @return The marker bank
+     */
+    IMarkerBank getMarkerBank ();
+
+
+    /**
      * Get the mixer.
      *
      * @return The mixer

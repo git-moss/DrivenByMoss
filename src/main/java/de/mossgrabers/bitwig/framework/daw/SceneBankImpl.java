@@ -48,6 +48,6 @@ public class SceneBankImpl extends AbstractBankImpl<SceneBank, IScene> implement
     protected void initItems ()
     {
         for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new SceneImpl (this.bank.getScene (i), i));
+            this.items.add (new SceneImpl (this.bank.getItemAt (i), i));
     }
 }

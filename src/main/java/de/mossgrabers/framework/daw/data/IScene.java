@@ -12,7 +12,7 @@ package de.mossgrabers.framework.daw.data;
 public interface IScene extends IItem
 {
     /**
-     * Get the color of the channel.
+     * Get the color of the scene.
      *
      * @return The color in RGB
      */
@@ -20,7 +20,7 @@ public interface IScene extends IItem
 
 
     /**
-     * Set the color of the track as a RGB value.
+     * Set the color of the scene as a RGB value.
      *
      * @param red The red part of the color
      * @param green The green part of the color

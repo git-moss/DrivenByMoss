@@ -24,6 +24,8 @@ public class OptionsGridElement extends AbstractGridElement
     private final String  menuBottomName;
     private final boolean isMenuBottomSelected;
     private final boolean useSmallTopMenu;
+    private ColorEx       menuTopColor;
+    private ColorEx       menuBottomColor;
 
 
     /**
@@ -32,19 +34,23 @@ public class OptionsGridElement extends AbstractGridElement
      * @param headerTop A header for the top menu options (may span multiple grids), may be null
      * @param menuTopName A name for the to menu, may be null
      * @param isMenuTopSelected Is the top menu selected?
+     * @param menuTopColor The color to use for the background top menu, may be null
      * @param headerBottom A header for the bottom menu options (may span multiple grids), may be
      *            null
      * @param menuBottomName A name for the bottom menu, may be null
      * @param isMenuBottomSelected Is the bottom menu selected?
+     * @param menuBottomColor The color to use for the background bottom menu, may be null
      * @param useSmallTopMenu Draw the small version of the top menu if true
      */
-    public OptionsGridElement (final String headerTop, final String menuTopName, final boolean isMenuTopSelected, final String headerBottom, final String menuBottomName, final boolean isMenuBottomSelected, final boolean useSmallTopMenu)
+    public OptionsGridElement (final String headerTop, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottom, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu)
     {
         super (menuTopName, isMenuTopSelected, null, null, null, false);
         this.headerTop = headerTop;
         this.headerBottom = headerBottom;
+        this.menuBottomColor = menuBottomColor == null ? null : new ColorEx (menuBottomColor[0], menuBottomColor[1], menuBottomColor[2]);
         this.menuBottomName = menuBottomName;
         this.isMenuBottomSelected = isMenuBottomSelected;
+        this.menuTopColor = menuTopColor == null ? null : new ColorEx (menuTopColor[0], menuTopColor[1], menuTopColor[2]);
         this.useSmallTopMenu = useSmallTopMenu;
     }
 
@@ -55,11 +61,13 @@ public class OptionsGridElement extends AbstractGridElement
     {
         final double menuHeight = MENU_HEIGHT * 2;
 
+        final ColorEx colorBackground = configuration.getColorBackground ();
+
         if (this.useSmallTopMenu)
             this.drawMenu (gc, left, width, configuration);
         else
-            drawLargeMenu (gc, left, 0, width, menuHeight, this.menuName, this.isMenuSelected, configuration);
-        drawLargeMenu (gc, left, DISPLAY_HEIGHT - 2 * MENU_HEIGHT, width, menuHeight, this.menuBottomName, this.isMenuBottomSelected, configuration);
+            drawLargeMenu (gc, left, 0, width, menuHeight, this.menuName, this.isMenuSelected, configuration, this.menuTopColor == null ? colorBackground : this.menuTopColor);
+        drawLargeMenu (gc, left, DISPLAY_HEIGHT - 2 * MENU_HEIGHT, width, menuHeight, this.menuBottomName, this.isMenuBottomSelected, configuration, this.menuBottomColor == null ? colorBackground : this.menuBottomColor);
 
         final boolean hasTopHeader = this.headerTop != null && this.headerTop.length () > 0;
         final boolean hasBottomHeader = this.headerBottom != null && this.headerBottom.length () > 0;
@@ -86,13 +94,14 @@ public class OptionsGridElement extends AbstractGridElement
      * @param menu The menu text
      * @param isSelected True if the menu is selected
      * @param configuration The layout settings to use
+     * @param colorBackground The color to use for the background menu, may be null
      */
-    protected static void drawLargeMenu (final IGraphicsContext gc, final double left, final double top, final double width, final double height, final String menu, final boolean isSelected, final PushConfiguration configuration)
+    protected static void drawLargeMenu (final IGraphicsContext gc, final double left, final double top, final double width, final double height, final String menu, final boolean isSelected, final PushConfiguration configuration, final ColorEx colorBackground)
     {
         if (menu == null || menu.length () == 0)
             return;
         final ColorEx textColor = configuration.getColorText ();
-        gc.fillRectangle (left, top, width, height, isSelected ? textColor : configuration.getColorBackground ());
+        gc.fillRectangle (left, top, width, height, isSelected ? textColor : colorBackground);
         gc.drawTextInBounds (menu, left, top, width, height, Align.CENTER, isSelected ? configuration.getColorBorder () : textColor, height / 2);
     }
 }

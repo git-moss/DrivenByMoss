@@ -45,6 +45,7 @@ import de.mossgrabers.controller.push.mode.FixedMode;
 import de.mossgrabers.controller.push.mode.FrameMode;
 import de.mossgrabers.controller.push.mode.GrooveMode;
 import de.mossgrabers.controller.push.mode.InfoMode;
+import de.mossgrabers.controller.push.mode.MarkersMode;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.controller.push.mode.NoteViewSelectMode;
@@ -185,7 +186,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, this.isPush2 ? 48 : 16, this.isPush2 ? 48 : 16, false, -1, -1, -1, -1);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, this.isPush2 ? 48 : 16, this.isPush2 ? 48 : 16, false, -1, -1, -1, -1, 8);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
@@ -263,6 +264,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.MODE_GROOVE, new GrooveMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_VIEW_SELECT, new NoteViewSelectMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_SESSION, new SessionMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_MARKERS, new MarkersMode (surface, this.model));
 
         modeManager.registerMode (Modes.MODE_AUTOMATION, new AutomationMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_TRANSPORT, new TransportMode (surface, this.model));

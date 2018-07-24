@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.scale.Scales;
 
 import com.bitwig.extension.controller.api.Application;
+import com.bitwig.extension.controller.api.Arranger;
 import com.bitwig.extension.controller.api.BooleanValue;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
@@ -51,8 +52,9 @@ public class ModelImpl extends AbstractModel
      * @param numDevicesInBank The number of devices to monitor
      * @param numDeviceLayers The number of device layers to monitor
      * @param numDrumPadLayers The number of drum pad layers to monitor
+     * @param numMarkers The number of markers
      */
-    public ModelImpl (final ControllerHost controllerHost, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public ModelImpl (final ControllerHost controllerHost, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers, final int numMarkers)
     {
         super (colorManager, valueChanger, scales, numTracks, numScenes, numSends, numFilterColumnEntries, numResults, hasFlatTrackList, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
 
@@ -62,7 +64,12 @@ public class ModelImpl extends AbstractModel
         final Application app = controllerHost.createApplication ();
         this.application = new ApplicationImpl (app);
         this.project = new ProjectImpl (controllerHost.getProject (), app);
-        this.arranger = new ArrangerImpl (controllerHost.createArranger ());
+
+        final Arranger bwArranger = controllerHost.createArranger ();
+        this.arranger = new ArrangerImpl (bwArranger);
+        if (numMarkers > 0)
+            this.markerBank = new MarkerBankImpl (this.host, valueChanger, bwArranger.createCueMarkerBank (numMarkers), numMarkers);
+
         this.mixer = new MixerImpl (controllerHost.createMixer ());
         this.transport = new TransportImpl (controllerHost, valueChanger);
         this.groove = new GrooveImpl (controllerHost, valueChanger);

@@ -69,7 +69,7 @@ public class KontrolOSCControllerSetup extends AbstractControllerSetup<IControlS
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 128, 128, 0, 0, 0, true, 0, 0, 0, 0);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 128, 128, 0, 0, 0, true, 0, 0, 0, 0, 0);
     }
 
 

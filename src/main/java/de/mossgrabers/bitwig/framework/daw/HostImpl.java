@@ -104,6 +104,14 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
+    public boolean canEditMarkers ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void scheduleTask (final Runnable task, final long delay)
     {
         this.host.scheduleTask (task, delay);

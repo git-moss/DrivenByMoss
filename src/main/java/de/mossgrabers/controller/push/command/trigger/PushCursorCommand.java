@@ -11,6 +11,7 @@ import de.mossgrabers.controller.push.mode.device.DeviceBrowserMode;
 import de.mossgrabers.controller.push.mode.device.DeviceParamsMode;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IMarkerBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -65,6 +66,14 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
+        if (modeManager.isActiveOrTempMode (Modes.MODE_MARKERS))
+        {
+            final IMarkerBank markerBank = this.model.getMarkerBank ();
+            this.canScrollLeft = markerBank.canScrollBackwards ();
+            this.canScrollRight = markerBank.canScrollForwards ();
+            return;
+        }
+
         if (Modes.isLayerMode (modeManager.getActiveOrTempModeId ()))
         {
             final IChannelBank<?> layerBank = this.model.getCursorDevice ().getLayerOrDrumPadBank ();
@@ -102,6 +111,12 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
+        if (modeManager.isActiveOrTempMode (Modes.MODE_MARKERS))
+        {
+            this.model.getMarkerBank ().scrollPageBackwards ();
+            return;
+        }
+
         if (Modes.isLayerMode (modeManager.getActiveOrTempModeId ()))
         {
             if (this.surface.isShiftPressed ())
@@ -136,6 +151,12 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
         {
             ((DeviceBrowserMode) modeManager.getActiveOrTempMode ()).resetFilterColumn ();
             this.model.getBrowser ().nextContentType ();
+            return;
+        }
+
+        if (modeManager.isActiveOrTempMode (Modes.MODE_MARKERS))
+        {
+            this.model.getMarkerBank ().scrollPageForwards ();
             return;
         }
 

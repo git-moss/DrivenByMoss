@@ -62,7 +62,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1, 0);
         // TODO only enable if parameter is mapped!
         this.model.getTrackBank ().setIndication (true);
         final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();

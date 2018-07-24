@@ -70,7 +70,7 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1, 0);
     }
 
 

@@ -79,6 +79,10 @@ public class SessionViewSelectMode extends BaseMode
                 this.surface.getModeManager ().restoreMode ();
                 break;
 
+            case 6:
+                this.surface.getModeManager ().setActiveMode (Modes.MODE_MARKERS);
+                break;
+
             case 7:
                 configuration.toggleScenesClipMode ();
                 this.surface.getModeManager ().restoreMode ();
@@ -103,10 +107,10 @@ public class SessionViewSelectMode extends BaseMode
             if (VIEWS[i] != null)
                 d.setCell (3, i, (this.isSelected (viewManager, i) ? PushDisplay.RIGHT_ARROW : "") + VIEW_NAMES[i]);
         }
-        d.setBlock (1, 3, "Display scenes or");
-        d.setCell (2, 6, "clips:");
+        d.setBlock (1, 3, "Session mode:");
         final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
-        d.setCell (3, 7, isOn ? "  On" : "  Off");
+        d.setCell (3, 6, "Markers");
+        d.setCell (3, 7, (isOn ? PushDisplay.RIGHT_ARROW : "") + " Clips");
         d.allDone ();
     }
 
@@ -123,9 +127,9 @@ public class SessionViewSelectMode extends BaseMode
             message.addOptionElement ("", "", false, i == 0 ? "Session view" : "", VIEW_NAMES[i], isMenuBottomSelected, false);
         }
         final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
-        message.addOptionElement ("", "", false, "                         Display scenes/clips", "", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
-        message.addOptionElement ("", "", false, "", isOn ? "On" : "Off", isOn, false);
+        message.addOptionElement ("", "", false, "Session mode", "Markers", false, false);
+        message.addOptionElement ("", "", false, "", "Clips", isOn, false);
         message.send ();
     }
 
@@ -140,7 +144,7 @@ public class SessionViewSelectMode extends BaseMode
             this.surface.updateButton (20 + i, colorManager.getColor (VIEWS[i] == null ? AbstractMode.BUTTON_COLOR_OFF : this.isSelected (viewManager, i) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
 
         this.surface.updateButton (25, AbstractMode.BUTTON_COLOR_OFF);
-        this.surface.updateButton (26, AbstractMode.BUTTON_COLOR_OFF);
+        this.surface.updateButton (26, AbstractMode.BUTTON_COLOR_ON);
         final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
         this.surface.updateButton (27, isOn ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
     }
