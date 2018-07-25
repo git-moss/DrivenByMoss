@@ -262,7 +262,7 @@ public class CursorClipImpl implements ICursorClip
     @Override
     public String getFormattedAccent ()
     {
-        return Math.round (this.getAccent () * 10000) / 100 + "%";
+        return Math.round (this.getAccent () * 200 - 100) + "%";
     }
 
 
@@ -278,7 +278,7 @@ public class CursorClipImpl implements ICursorClip
     @Override
     public void resetAccent ()
     {
-        this.clip.getAccent ().set (0.5);
+        this.clip.getAccent ().setImmediately (0.5);
     }
 
 

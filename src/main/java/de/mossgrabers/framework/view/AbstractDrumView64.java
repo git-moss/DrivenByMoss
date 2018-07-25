@@ -231,9 +231,6 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         if (oldDrumOctave != this.drumOctave)
         {
             final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
-            // TODO Bugfix required: scrollChannelsUp scrolls the whole bank
-            // TODO TEST
-            // for (int i = 0; i < 16; i++)
             drumDevice64.getDrumPadBank ().scrollPageBackwards ();
         }
     }
@@ -255,9 +252,6 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         if (oldDrumOctave != this.drumOctave)
         {
             final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
-            // TODO Bugfix required: scrollChannelsUp scrolls the whole bank
-            // TODO TEST
-            // for (int i = 0; i < 16; i++)
             drumDevice64.getDrumPadBank ().scrollPageForwards ();
         }
     }
