@@ -46,6 +46,8 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final int        FOOTSWITCH_2_PREV_MODE      = 15;
     /** Use a Function button to switch to next mode. */
     public static final int        FOOTSWITCH_2_NEXT_MODE      = 16;
+    /** Use a Function button to switch to Marker mode. */
+    public static final int        SHOW_MARKER_MODE            = 17;
 
     private static final String    DEVICE_SELECT               = "<Select a profile>";
     private static final String    DEVICE_ICON_PLATFORM_M      = "icon Platform M / M+";
@@ -80,7 +82,8 @@ public class MCUConfiguration extends AbstractConfiguration
         "Add effect track",
         "Quantize",
         "Previous mode",
-        "Next mode"
+        "Next mode",
+        "Marker mode"
     };
 
     private static final String [] ASSIGNABLE_BUTTON_NAMES     = new String []

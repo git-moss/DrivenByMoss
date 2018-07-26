@@ -28,6 +28,7 @@ import de.mossgrabers.controller.mcu.command.trigger.ZoomCommand;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mcu.controller.MCUDisplay;
 import de.mossgrabers.controller.mcu.controller.MCUSegmentDisplay;
+import de.mossgrabers.controller.mcu.mode.MarkerMode;
 import de.mossgrabers.controller.mcu.mode.Modes;
 import de.mossgrabers.controller.mcu.mode.device.DeviceBrowserMode;
 import de.mossgrabers.controller.mcu.mode.device.DeviceParamsMode;
@@ -194,7 +195,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8 * this.numMCUDevices, 8, 8, 8, 8, true, 8 * this.numMCUDevices, -1, 0, 0, 0);
+        int adjustedNum = 8 * this.numMCUDevices;
+
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, adjustedNum, 8, 8, 8, 8, true, adjustedNum, -1, 0, 0, adjustedNum);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
@@ -245,11 +248,11 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             final SendMode modeSend = new SendMode (surface, this.model);
             for (int i = 0; i < 8; i++)
                 modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), modeSend);
+            modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (surface, this.model, false));
 
             modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
             modeManager.registerMode (Modes.MODE_BROWSER, new DeviceBrowserMode (surface, this.model));
-
-            modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (surface, this.model, false));
+            modeManager.registerMode (Modes.MODE_MARKER, new MarkerMode (surface, this.model));
         }
     }
 

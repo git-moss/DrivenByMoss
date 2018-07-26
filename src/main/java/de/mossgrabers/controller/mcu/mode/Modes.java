@@ -46,6 +46,8 @@ public class Modes
 
     /** Browser mode. */
     public static final Integer       MODE_BROWSER       = Integer.valueOf (30);
+    /** The marker mode. */
+    public static final Integer       MODE_MARKER        = Integer.valueOf (31);
 
     private static final Set<Integer> TRACK_MODES        = new HashSet<> ();
 
