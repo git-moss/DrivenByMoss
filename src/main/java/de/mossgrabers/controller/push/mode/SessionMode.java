@@ -204,7 +204,8 @@ public class SessionMode extends BaseMode
                 {
                     String optimizedName = StringUtils.shortenAndFixASCII (slot.getName (8), 8);
                     // TODO Bugfix required: Workaround to displaying unnamed clips, since
-                    // doesExist does not work reliably
+                    // doesExist does not work reliably -
+                    // https://github.com/teotigraphix/Framework4Bitwig/issues/193
                     if (optimizedName.length () == 0)
                     {
                         final double [] color = slot.getColor ();

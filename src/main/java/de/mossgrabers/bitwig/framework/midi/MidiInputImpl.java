@@ -129,6 +129,6 @@ class MidiInputImpl implements IMidiInput
     @Override
     public void toggleRepeat ()
     {
-        // TODO API extension required
+        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/20
     }
 }

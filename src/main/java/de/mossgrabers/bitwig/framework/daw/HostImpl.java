@@ -160,7 +160,7 @@ public class HostImpl implements IHost
     public IOpenSoundControlServer connectToOSCServer (final String serverAddress, final int serverPort)
     {
         // TODO Bugfix required: Can only be called in init but needs to listen to host and port
-        // changes
+        // changes - https://github.com/teotigraphix/Framework4Bitwig/issues/208
         final OscModule oscModule = this.host.getOscModule ();
         return new OpenSoundControlServerImpl (oscModule.connectToUdpServer (serverAddress, serverPort, oscModule.createAddressSpace ()));
     }

@@ -101,4 +101,12 @@ public class MarkerImpl extends AbstractItemImpl implements IMarker
     {
         // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/215
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void select ()
+    {
+        // Markers cannot be selected but should also not crash
+    }
 }

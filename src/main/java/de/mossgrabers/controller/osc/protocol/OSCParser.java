@@ -14,12 +14,14 @@ import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IMarkerBank;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IMarker;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -240,6 +242,28 @@ public class OSCParser extends AbstractOpenSoundControlParser
 
             case "primary":
                 this.parseDeviceValue (this.model.getPrimaryDevice (), oscParts, value);
+                break;
+
+            //
+            // Marker
+            //
+
+            case "marker":
+                if (oscParts.isEmpty ())
+                {
+                    this.host.error ("Missing Marker index or command.");
+                    return;
+                }
+                try
+                {
+                    final int markerNo = Integer.parseInt (oscParts.get (0));
+                    oscParts.removeFirst ();
+                    this.parseMarkerValue (this.model.getMarkerBank ().getItem (markerNo - 1), oscParts);
+                }
+                catch (final NumberFormatException ex)
+                {
+                    this.parseMarker (oscParts);
+                }
                 break;
 
             //
@@ -1270,6 +1294,69 @@ public class OSCParser extends AbstractOpenSoundControlParser
                     this.host.println ("Unknown Layour/Drum command: " + command);
                     break;
             }
+        }
+    }
+
+
+    private void parseMarker (final LinkedList<String> parts)
+    {
+        if (parts.isEmpty ())
+        {
+            this.host.println ("Missing Marker command.");
+            return;
+        }
+
+        final IMarkerBank markerBank = this.model.getMarkerBank ();
+
+        final String command = parts.removeFirst ();
+        switch (command)
+        {
+            case "bank":
+                if (parts.isEmpty ())
+                {
+                    this.host.error ("Missing Marker Bank subcommand.");
+                    return;
+                }
+                final String subCommand = parts.removeFirst ();
+                switch (subCommand)
+                {
+                    case "+":
+                        markerBank.scrollPageForwards ();
+                        this.host.scheduleTask ( () -> markerBank.getItem (0).select (), 75);
+                        break;
+                    case "-":
+                        markerBank.scrollPageBackwards ();
+                        this.host.scheduleTask ( () -> markerBank.getItem (markerBank.getPageSize () - 1).select (), 75);
+                        break;
+                    default:
+                        this.host.error ("Unknown Marker Bank subcommand: " + subCommand);
+                        break;
+                }
+                break;
+            default:
+                this.host.println ("Unknown Marker Command: " + command);
+                break;
+        }
+    }
+
+
+    private void parseMarkerValue (final IMarker marker, final LinkedList<String> parts)
+    {
+        if (parts.isEmpty ())
+        {
+            this.host.error ("Missing Marker command.");
+            return;
+        }
+
+        final String command = parts.removeFirst ();
+        switch (command)
+        {
+            case "launch":
+                marker.launch (true);
+                break;
+            default:
+                this.host.println ("Unknown Marker Command: " + command);
+                break;
         }
     }
 

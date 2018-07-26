@@ -54,7 +54,8 @@ public class CursorClipImpl implements ICursorClip
             Arrays.fill (this.data[step], 0);
         }
 
-        // TODO Bugfix required: We need the old method back to monitor both launcher and arranger
+        // TODO Bugfix required: We need the old method back to monitor both launcher and arranger -
+        // https://github.com/teotigraphix/Framework4Bitwig/issues/140
         this.clip = host.createLauncherCursorClip (this.numSteps, this.numRows);
 
         this.clip.playingStep ().markInterested ();
@@ -85,6 +86,8 @@ public class CursorClipImpl implements ICursorClip
         this.clip.isLoopEnabled ().setIsSubscribed (enable);
         this.clip.getShuffle ().setIsSubscribed (enable);
         this.clip.getAccent ().setIsSubscribed (enable);
+        this.clip.canScrollStepsBackwards ().setIsSubscribed (enable);
+        this.clip.canScrollStepsForwards ().setIsSubscribed (enable);
         this.clip.color ().setIsSubscribed (enable);
     }
 
@@ -458,7 +461,8 @@ public class CursorClipImpl implements ICursorClip
     public boolean canScrollStepsBackwards ()
     {
         // TODO Bugfix required: this.clip.canScrollStepsBackwards ().get ();
-        return true;
+        // https://github.com/teotigraphix/Framework4Bitwig/issues/217
+        return this.getEditPage () > 0;
     }
 
 
@@ -467,6 +471,7 @@ public class CursorClipImpl implements ICursorClip
     public boolean canScrollStepsForwards ()
     {
         // TODO Bugfix required: this.clip.canScrollStepsForwards ().get ();
+        // https://github.com/teotigraphix/Framework4Bitwig/issues/217
         return true;
     }
 

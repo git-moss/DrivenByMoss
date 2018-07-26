@@ -60,7 +60,7 @@ public class TrackBankImpl extends AbstractTrackBankImpl
     @Override
     public boolean hasParent ()
     {
-        // TODO API extension required
+        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/205
         return true;
     }
 

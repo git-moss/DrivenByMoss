@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ILayerBank;
+import de.mossgrabers.framework.daw.IMarkerBank;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -27,6 +28,7 @@ import de.mossgrabers.framework.daw.data.EmptyTrackData;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IMarker;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -124,6 +126,13 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         this.sendOSC ("/mixer/meterSectionVisibility", mix.isMeterSectionVisible (), dump);
 
         //
+        // Markers
+        //
+        final IMarkerBank markerBank = this.model.getMarkerBank ();
+        for (int i = 0; i < markerBank.getPageSize (); i++)
+            this.flushMarker ("/marker/" + (i + 1) + "/", markerBank.getItem (i), dump);
+
+        //
         // Project
         //
 
@@ -179,6 +188,22 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         this.flushNotes ("/vkb_midi/note/", dump);
 
         this.flush ();
+    }
+
+
+    /**
+     * Flush all data of a marker.
+     *
+     * @param markerAddress The start address for the marker
+     * @param marker The marker
+     * @param dump Forces a flush if true otherwise only changed values are flushed
+     */
+    private void flushMarker (final String markerAddress, final IMarker marker, final boolean dump)
+    {
+        this.sendOSC (markerAddress + "exists", marker.doesExist (), dump);
+        this.sendOSC (markerAddress + "name", marker.getName (), dump);
+        final double [] color = marker.getColor ();
+        this.sendOSCColor (markerAddress + "color", color[0], color[1], color[2], dump);
     }
 
 

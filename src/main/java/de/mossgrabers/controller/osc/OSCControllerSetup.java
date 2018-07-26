@@ -70,7 +70,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, false, 8, 8, 8, 16, 0);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, false, 8, 8, 8, 16, 8);
     }
 
 
