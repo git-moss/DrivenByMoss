@@ -105,12 +105,12 @@ public class SessionViewSelectMode extends BaseMode
         for (int i = 0; i < VIEWS.length; i++)
         {
             if (VIEWS[i] != null)
-                d.setCell (3, i, (this.isSelected (viewManager, i) ? PushDisplay.RIGHT_ARROW : "") + VIEW_NAMES[i]);
+                d.setCell (3, i, (this.isSelected (viewManager, i) ? PushDisplay.SELECT_ARROW : "") + VIEW_NAMES[i]);
         }
         d.setBlock (1, 3, "Session mode:");
         final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
         d.setCell (3, 6, "Markers");
-        d.setCell (3, 7, (isOn ? PushDisplay.RIGHT_ARROW : "") + " Clips");
+        d.setCell (3, 7, (isOn ? PushDisplay.SELECT_ARROW : "") + " Clips");
         d.allDone ();
     }
 

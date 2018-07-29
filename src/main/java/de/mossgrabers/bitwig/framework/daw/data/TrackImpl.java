@@ -65,7 +65,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         track.isStopped ().markInterested ();
         track.playingNotes ().addValueObserver (this::handleNotes);
 
-        this.slotBank = new SlotBankImpl (host, valueChanger, track.clipLauncherSlotBank (), numScenes);
+        this.slotBank = new SlotBankImpl (host, valueChanger, this, track.clipLauncherSlotBank (), numScenes);
 
         Arrays.fill (this.noteCache, NOTE_OFF);
     }

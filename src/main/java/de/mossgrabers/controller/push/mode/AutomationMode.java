@@ -42,7 +42,7 @@ public class AutomationMode extends BaseMode
         final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
         d.clear ().setBlock (1, 0, "Automation Mode:");
         for (int i = 0; i < ITransport.AUTOMATION_MODES.length; i++)
-            d.setCell (3, i, (ITransport.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? PushDisplay.RIGHT_ARROW : "") + ITransport.AUTOMATION_MODES[i]);
+            d.setCell (3, i, (ITransport.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? PushDisplay.SELECT_ARROW : "") + ITransport.AUTOMATION_MODES[i]);
         d.allDone ();
     }
 

@@ -91,7 +91,7 @@ public class FixedMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             d.setCell (0, i, AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i]);
-            d.setCell (3, i, (newClipLength == i ? PushDisplay.RIGHT_ARROW : "") + AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i]);
+            d.setCell (3, i, (newClipLength == i ? PushDisplay.SELECT_ARROW : "") + AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i]);
         }
         d.allDone ();
     }

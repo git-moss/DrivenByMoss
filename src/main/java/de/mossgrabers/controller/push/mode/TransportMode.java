@@ -124,10 +124,10 @@ public class TransportMode extends BaseMode
         final double tempo = transport.getTempo ();
         d.clear ();
         d.setBlock (2, 0, "Pre-roll");
-        d.setCell (3, 0, (preroll == ITransport.PREROLL_NONE ? PushDisplay.RIGHT_ARROW : " ") + "None");
-        d.setCell (3, 1, (preroll == ITransport.PREROLL_1_BAR ? PushDisplay.RIGHT_ARROW : " ") + "1 Bar");
-        d.setCell (3, 2, (preroll == ITransport.PREROLL_2_BARS ? PushDisplay.RIGHT_ARROW : " ") + "2 Bars");
-        d.setCell (3, 3, (preroll == ITransport.PREROLL_4_BARS ? PushDisplay.RIGHT_ARROW : " ") + "4 Bars");
+        d.setCell (3, 0, (preroll == ITransport.PREROLL_NONE ? PushDisplay.SELECT_ARROW : " ") + "None");
+        d.setCell (3, 1, (preroll == ITransport.PREROLL_1_BAR ? PushDisplay.SELECT_ARROW : " ") + "1 Bar");
+        d.setCell (3, 2, (preroll == ITransport.PREROLL_2_BARS ? PushDisplay.SELECT_ARROW : " ") + "2 Bars");
+        d.setCell (3, 3, (preroll == ITransport.PREROLL_4_BARS ? PushDisplay.SELECT_ARROW : " ") + "4 Bars");
         d.setBlock (0, 0, "Play Metro during").setBlock (0, 1, "Pre-roll?");
         d.setCell (1, 0, transport.isPrerollMetronomeEnabled () ? " Yes" : " No");
         d.setCell (0, 4, "Tempo").setCell (1, 4, transport.formatTempo (tempo)).setCell (2, 4, formatTempoBars (tempo));

@@ -43,6 +43,8 @@ public class ListGridElement extends AbstractGridElement
     public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
     {
         final int size = this.items.size ();
+        final double itemLeft = left + SEPARATOR_SIZE;
+        final double itemWidth = width - SEPARATOR_SIZE;
         final double itemHeight = DISPLAY_HEIGHT / (double) size;
 
         final ColorEx textColor = configuration.getColorText ();
@@ -52,9 +54,7 @@ public class ListGridElement extends AbstractGridElement
         {
             final Pair<String, Boolean> item = this.items.get (i);
             final boolean isSelected = item.getValue ().booleanValue ();
-            final double itemLeft = left + SEPARATOR_SIZE;
             final double itemTop = i * itemHeight;
-            final double itemWidth = width - SEPARATOR_SIZE;
             gc.fillRectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE, isSelected ? textColor : borderColor);
             gc.drawTextInBounds (item.getKey (), itemLeft + INSET, itemTop, itemWidth - 2 * INSET, itemHeight, Align.LEFT, isSelected ? borderColor : textColor, itemHeight / 2);
         }

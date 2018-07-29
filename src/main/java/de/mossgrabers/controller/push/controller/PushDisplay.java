@@ -33,7 +33,11 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     /** Push character codes for value bars - four dashes. */
     private static final String    NON_4         = BARS_NON + BARS_NON + BARS_NON + BARS_NON;
     /** Push character codes for value bars - the right arrow. */
-    public static final String     RIGHT_ARROW   = Character.toString ((char) 127);
+    public static final String     SELECT_ARROW  = Character.toString ((char) 127);
+    /** Push character for a degree sign. */
+    public static final String     DEGREE        = Character.toString ((char) 9);
+    /** Push character for a right arrow. */
+    public static final String     RIGHT_ARROW   = Character.toString ((char) 30);
 
     private static final String [] SPACES        =
     {

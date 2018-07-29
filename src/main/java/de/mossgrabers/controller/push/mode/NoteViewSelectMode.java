@@ -94,10 +94,10 @@ public class NoteViewSelectMode extends BaseMode
             if (VIEWS[i] != null)
             {
                 final View view = viewManager.getView (VIEWS[i]);
-                d.setCell (3, i, view == null ? "" : (viewManager.isActiveView (VIEWS[i]) ? PushDisplay.RIGHT_ARROW : "") + view.getName ());
+                d.setCell (3, i, view == null ? "" : (viewManager.isActiveView (VIEWS[i]) ? PushDisplay.SELECT_ARROW : "") + view.getName ());
             }
             if (VIEWS_TOP[i] != null)
-                d.setCell (0, i, (viewManager.isActiveView (VIEWS_TOP[i]) ? PushDisplay.RIGHT_ARROW : "") + viewManager.getView (VIEWS_TOP[i]).getName ());
+                d.setCell (0, i, (viewManager.isActiveView (VIEWS_TOP[i]) ? PushDisplay.SELECT_ARROW : "") + viewManager.getView (VIEWS_TOP[i]).getName ());
         }
         d.allDone ();
     }

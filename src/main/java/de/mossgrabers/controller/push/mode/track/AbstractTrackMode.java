@@ -307,7 +307,7 @@ public abstract class AbstractTrackMode extends BaseMode
             final boolean isSel = i == selIndex;
             final ITrack t = tb.getItem (i);
             final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8);
-            d.setCell (3, i, isSel ? PushDisplay.RIGHT_ARROW + n : n);
+            d.setCell (3, i, isSel ? PushDisplay.SELECT_ARROW + n : n);
         }
         d.done (3);
     }

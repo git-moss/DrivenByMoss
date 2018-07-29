@@ -59,13 +59,21 @@ public class GraphicsContextImpl implements IGraphicsContext
 
     /** {@inheritDoc} */
     @Override
-    public void strokeRectangle (final double x, final double y, final double width, final double height, final ColorEx color)
+    public void strokeRectangle (final double left, final double top, final double width, final double height, final ColorEx color)
+    {
+        this.strokeRectangle (left, top, width, height, color, 1);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void strokeRectangle (final double left, final double top, final double width, final double height, final ColorEx color, final double lineWidth)
     {
         // Turn off antialias or otherwise we do not get a single line
         this.gc.setAntialias (AntialiasMode.OFF);
         this.setColor (color);
-        this.gc.setLineWidth (1);
-        this.gc.rectangle (x, y, width, height);
+        this.gc.setLineWidth (lineWidth);
+        this.gc.rectangle (left, top, width, height);
         this.gc.stroke ();
         this.gc.setAntialias (AntialiasMode.BEST);
     }
@@ -114,6 +122,16 @@ public class GraphicsContextImpl implements IGraphicsContext
         this.gc.lineTo (x2, y2);
         this.gc.lineTo (x3, y3);
         this.gc.lineTo (x1, y1);
+        this.gc.fill ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void fillCircle (final double x, final double y, final double radius, final ColorEx fillColor)
+    {
+        this.setColor (fillColor);
+        this.gc.circle (x, y, Math.max (0, radius));
         this.gc.fill ();
     }
 

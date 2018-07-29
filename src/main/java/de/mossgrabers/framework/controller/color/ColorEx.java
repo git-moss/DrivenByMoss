@@ -38,6 +38,17 @@ public class ColorEx
     /**
      * Constructor.
      *
+     * @param color The red, gree and blue components
+     */
+    public ColorEx (final double [] color)
+    {
+        this (color[0], color[1], color[2]);
+    }
+
+
+    /**
+     * Constructor.
+     *
      * @param red The red component
      * @param green The green component
      * @param blue The blue component

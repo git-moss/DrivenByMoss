@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
 
@@ -20,17 +21,22 @@ import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
  */
 public class SlotBankImpl extends AbstractBankImpl<ClipLauncherSlotBank, ISlot> implements ISlotBank
 {
+    private final ITrack track;
+
+
     /**
      * Constructor.
      *
      * @param host The DAW host
      * @param valueChanger The value changer
-     * @param slotBank The slot bank
+     * @param track The track, which contains the slot bank
+     * @param clipLauncherSlotBank The slot bank
      * @param numSlots The number of slots in the page of the bank
      */
-    public SlotBankImpl (final IHost host, final IValueChanger valueChanger, final ClipLauncherSlotBank slotBank, final int numSlots)
+    public SlotBankImpl (final IHost host, final IValueChanger valueChanger, final ITrack track, final ClipLauncherSlotBank clipLauncherSlotBank, final int numSlots)
     {
-        super (host, valueChanger, slotBank, numSlots);
+        super (host, valueChanger, clipLauncherSlotBank, numSlots);
+        this.track = track;
         this.initItems ();
     }
 
@@ -56,6 +62,6 @@ public class SlotBankImpl extends AbstractBankImpl<ClipLauncherSlotBank, ISlot> 
     protected void initItems ()
     {
         for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new SlotImpl (this.bank, this.bank.getItemAt (i), i));
+            this.items.add (new SlotImpl (this.track, this.bank, this.bank.getItemAt (i), i));
     }
 }

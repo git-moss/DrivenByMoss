@@ -347,7 +347,7 @@ public class DeviceParamsMode extends BaseMode
                 if (device.doesExist ())
                 {
                     if (i == cd.getPositionInBank ())
-                        sb.append (PushDisplay.RIGHT_ARROW);
+                        sb.append (PushDisplay.SELECT_ARROW);
                     sb.append (device.getName ());
                 }
                 d.setCell (3, i, sb.toString ());
@@ -360,7 +360,7 @@ public class DeviceParamsMode extends BaseMode
             for (int i = 0; i < bank.getPageSize (); i++)
             {
                 final String item = bank.getItem (i);
-                d.setCell (3, i, !item.isEmpty () ? (i == selectedItemIndex ? PushDisplay.RIGHT_ARROW : "") + item : "");
+                d.setCell (3, i, !item.isEmpty () ? (i == selectedItemIndex ? PushDisplay.SELECT_ARROW : "") + item : "");
             }
         }
 

@@ -134,7 +134,7 @@ public class ScalesMode extends BaseMode
         final int offset = this.scales.getScaleOffset ();
         final Scale [] scaleValues = Scale.values ();
         final String rangeText = this.scales.getRangeText ();
-        d.setBlock (0, 0, PushDisplay.RIGHT_ARROW + scale.getName ()).clearBlock (0, 1).clearBlock (0, 2).setBlock (0, 3, rangeText).done (0);
+        d.setBlock (0, 0, PushDisplay.SELECT_ARROW + scale.getName ()).clearBlock (0, 1).clearBlock (0, 2).setBlock (0, 3, rangeText).done (0);
         int pos = scale.ordinal () + 1;
         final String name1 = pos < scaleValues.length ? scaleValues[pos].getName () : "";
         d.setBlock (1, 0, " " + name1).clearBlock (1, 1).clearBlock (1, 2).clearBlock (1, 3).done (1);
@@ -142,13 +142,13 @@ public class ScalesMode extends BaseMode
         final String name2 = pos < scaleValues.length ? scaleValues[pos].getName () : "";
         d.setCell (2, 0, " " + name2);
         for (int i = 0; i < 6; i++)
-            d.setCell (2, i + 1, "  " + (offset == i ? PushDisplay.RIGHT_ARROW : " ") + Scales.BASES[i]);
+            d.setCell (2, i + 1, "  " + (offset == i ? PushDisplay.SELECT_ARROW : " ") + Scales.BASES[i]);
         d.clearCell (2, 7).done (2);
         pos++;
         final String name3 = pos < scaleValues.length ? scaleValues[pos].getName () : "";
         d.setCell (3, 0, " " + name3);
         for (int i = 6; i < 12; i++)
-            d.setCell (3, i - 5, "  " + (offset == i ? PushDisplay.RIGHT_ARROW : " ") + Scales.BASES[i]);
+            d.setCell (3, i - 5, "  " + (offset == i ? PushDisplay.SELECT_ARROW : " ") + Scales.BASES[i]);
         d.setCell (3, 7, this.scales.isChromatic () ? "Chromatc" : "In Key").done (3);
     }
 

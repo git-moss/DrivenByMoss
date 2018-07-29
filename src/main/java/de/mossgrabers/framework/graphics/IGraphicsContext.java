@@ -39,6 +39,19 @@ public interface IGraphicsContext
 
 
     /**
+     * Draw a rectangle.
+     *
+     * @param left The left position of the rectangle
+     * @param top The top position of the rectangle
+     * @param width The width of the rectangle
+     * @param height The height of the rectangle
+     * @param color The color of the border of the rectangle
+     * @param lineWidth The width of the line
+     */
+    void strokeRectangle (double left, double top, double width, double height, ColorEx color, double lineWidth);
+
+
+    /**
      * Draw a filled rounded rectangle.
      *
      * @param left The left position of the rectangle
@@ -77,6 +90,17 @@ public interface IGraphicsContext
      * @param fillColor The color of the triangle
      */
     void fillTriangle (double x1, double y1, double x2, double y2, double x3, double y3, ColorEx fillColor);
+
+
+    /**
+     * Draw a filled circle.
+     *
+     * @param x The X position of the circles center
+     * @param y The Y position of the circles center
+     * @param radius The radius of the circle
+     * @param fillColor The color of the circle
+     */
+    void fillCircle (double x, double y, double radius, ColorEx fillColor);
 
 
     /**

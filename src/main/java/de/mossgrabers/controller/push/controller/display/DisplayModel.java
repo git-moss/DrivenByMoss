@@ -4,18 +4,22 @@
 
 package de.mossgrabers.controller.push.controller.display;
 
-import de.mossgrabers.controller.push.controller.display.grid.BoxListGridElement;
 import de.mossgrabers.controller.push.controller.display.grid.ChannelGridElement;
+import de.mossgrabers.controller.push.controller.display.grid.ClipListGridElement;
 import de.mossgrabers.controller.push.controller.display.grid.GridChangeListener;
 import de.mossgrabers.controller.push.controller.display.grid.GridElement;
 import de.mossgrabers.controller.push.controller.display.grid.ListGridElement;
 import de.mossgrabers.controller.push.controller.display.grid.MidiClipElement;
 import de.mossgrabers.controller.push.controller.display.grid.OptionsGridElement;
 import de.mossgrabers.controller.push.controller.display.grid.ParamGridElement;
+import de.mossgrabers.controller.push.controller.display.grid.SceneListGridElement;
 import de.mossgrabers.controller.push.controller.display.grid.SelectionGridElement;
 import de.mossgrabers.controller.push.controller.display.grid.SendsGridElement;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -388,14 +392,24 @@ public class DisplayModel
 
 
     /**
+     * Add a list of scene elements to the message.
+     * 
+     * @param scenes The scenes
+     */
+    public void addSceneListElement (final List<IScene> scenes)
+    {
+        this.elements.add (new SceneListGridElement (scenes));
+    }
+
+
+    /**
      * Add a list of box elements to the message.
      *
-     * @param items Must contain X number of texts
-     * @param colors Must contain X number of states
+     * @param slots Must contain X number of slot items
      */
-    public void addBoxListElement (final String [] items, final List<double []> colors)
+    public void addSlotListElement (final List<Pair<ITrack, ISlot>> slots)
     {
-        this.elements.add (new BoxListGridElement (items, colors));
+        this.elements.add (new ClipListGridElement (slots));
     }
 
 

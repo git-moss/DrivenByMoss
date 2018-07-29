@@ -148,7 +148,7 @@ public class RibbonMode extends BaseMode
         final String ribbonModeCC = Integer.toString (config.getRibbonModeCCVal ());
         final int ribbonMode = config.getRibbonMode ();
         d.clear ().setCell (0, 0, "Modulatn").setCell (0, 1, "Expressn").setCell (0, 2, "Volume").setCell (0, 3, "Sustain").setCell (0, 7, "Midi CC");
-        d.setCell (1, 7, ribbonModeCC).setCell (3, 0, (ribbonMode == PushConfiguration.RIBBON_MODE_PITCH ? PushDisplay.RIGHT_ARROW : "") + "Pitchbd").setCell (3, 1, (ribbonMode == PushConfiguration.RIBBON_MODE_CC ? PushDisplay.RIGHT_ARROW : "") + "CC").setCell (3, 2, (ribbonMode == PushConfiguration.RIBBON_MODE_CC_PB ? PushDisplay.RIGHT_ARROW : "") + "CC/Pitch").setCell (3, 3, (ribbonMode == PushConfiguration.RIBBON_MODE_PB_CC ? PushDisplay.RIGHT_ARROW : "") + "Pitch/CC").setCell (3, 4, (ribbonMode == PushConfiguration.RIBBON_MODE_FADER ? PushDisplay.RIGHT_ARROW : "") + "Fader").allDone ();
+        d.setCell (1, 7, ribbonModeCC).setCell (3, 0, (ribbonMode == PushConfiguration.RIBBON_MODE_PITCH ? PushDisplay.SELECT_ARROW : "") + "Pitchbd").setCell (3, 1, (ribbonMode == PushConfiguration.RIBBON_MODE_CC ? PushDisplay.SELECT_ARROW : "") + "CC").setCell (3, 2, (ribbonMode == PushConfiguration.RIBBON_MODE_CC_PB ? PushDisplay.SELECT_ARROW : "") + "CC/Pitch").setCell (3, 3, (ribbonMode == PushConfiguration.RIBBON_MODE_PB_CC ? PushDisplay.SELECT_ARROW : "") + "Pitch/CC").setCell (3, 4, (ribbonMode == PushConfiguration.RIBBON_MODE_FADER ? PushDisplay.SELECT_ARROW : "") + "Fader").allDone ();
     }
 
 

@@ -82,7 +82,7 @@ public class ScaleLayoutMode extends BaseMode
         final String [] names = ScaleLayout.getNames ();
         d.clear ().setBlock (1, 0, "Scale layout:");
         for (int i = 0; i < names.length; i += 2)
-            d.setCell (3, i / 2, (pos == i / 2 ? PushDisplay.RIGHT_ARROW : " ") + names[i].replace (" ^", ""));
+            d.setCell (3, i / 2, (pos == i / 2 ? PushDisplay.SELECT_ARROW : " ") + names[i].replace (" ^", ""));
         d.setCell (3, 7, sl % 2 == 0 ? "Horizontal" : "Vertical");
         d.allDone ();
     }

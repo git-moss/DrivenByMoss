@@ -676,7 +676,7 @@ public class DeviceLayerMode extends BaseMode
         {
             final IChannel layer = bank.getItem (offset + i);
             final String n = StringUtils.shortenAndFixASCII (layer.getName (), layer.isSelected () ? 7 : 8);
-            d.setCell (3, i, layer.isSelected () ? PushDisplay.RIGHT_ARROW + n : n);
+            d.setCell (3, i, layer.isSelected () ? PushDisplay.SELECT_ARROW + n : n);
         }
         d.allDone ();
     }
