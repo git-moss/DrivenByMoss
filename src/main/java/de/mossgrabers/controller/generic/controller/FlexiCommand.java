@@ -285,7 +285,17 @@ public enum FlexiCommand
     CLIP_PLAY("Clip: Play", true),
     CLIP_STOP("Clip: Stop", true),
     CLIP_RECORD("Clip: Record", true),
-    CLIP_NEW("Clip: New", true);
+    CLIP_NEW("Clip: New", true),
+    MARKER_1_LAUNCH_MARKER("Marker 1: Launch Marker", true),
+    MARKER_2_LAUNCH_MARKER("Marker 2: Launch Marker", true),
+    MARKER_3_LAUNCH_MARKER("Marker 3: Launch Marker", true),
+    MARKER_4_LAUNCH_MARKER("Marker 4: Launch Marker", true),
+    MARKER_5_LAUNCH_MARKER("Marker 5: Launch Marker", true),
+    MARKER_6_LAUNCH_MARKER("Marker 6: Launch Marker", true),
+    MARKER_7_LAUNCH_MARKER("Marker 7: Launch Marker", true),
+    MARKER_8_LAUNCH_MARKER("Marker 8: Launch Marker", true),
+    MARKER_SELECT_PREVIOUS_BANK("Marker: Select Previous Bank", true),
+    MARKER_SELECT_NEXT_BANK("Marker: Select Next Bank", true);
 
     private final String  name;
     private final boolean isTrigger;

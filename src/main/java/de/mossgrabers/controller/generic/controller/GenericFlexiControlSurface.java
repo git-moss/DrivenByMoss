@@ -558,6 +558,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case CLIP_NEW:
                 return -1;
 
+            case MARKER_1_LAUNCH_MARKER:
+            case MARKER_2_LAUNCH_MARKER:
+            case MARKER_3_LAUNCH_MARKER:
+            case MARKER_4_LAUNCH_MARKER:
+            case MARKER_5_LAUNCH_MARKER:
+            case MARKER_6_LAUNCH_MARKER:
+            case MARKER_7_LAUNCH_MARKER:
+            case MARKER_8_LAUNCH_MARKER:
+            case MARKER_SELECT_PREVIOUS_BANK:
+            case MARKER_SELECT_NEXT_BANK:
+                return -1;
+
             default:
                 return -1;
         }
@@ -1426,6 +1438,26 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case CLIP_NEW:
                 if (value > 0)
                     new NewCommand<> (this.model, this).executeNormal (ButtonEvent.DOWN);
+                break;
+
+            case MARKER_1_LAUNCH_MARKER:
+            case MARKER_2_LAUNCH_MARKER:
+            case MARKER_3_LAUNCH_MARKER:
+            case MARKER_4_LAUNCH_MARKER:
+            case MARKER_5_LAUNCH_MARKER:
+            case MARKER_6_LAUNCH_MARKER:
+            case MARKER_7_LAUNCH_MARKER:
+            case MARKER_8_LAUNCH_MARKER:
+                final int index = command.ordinal () - FlexiCommand.MARKER_1_LAUNCH_MARKER.ordinal ();
+                this.model.getMarkerBank ().getItem (index).launch (true);
+                break;
+
+            case MARKER_SELECT_PREVIOUS_BANK:
+                this.model.getMarkerBank ().selectPreviousPage ();
+                break;
+
+            case MARKER_SELECT_NEXT_BANK:
+                this.model.getMarkerBank ().selectNextPage ();
                 break;
         }
 
