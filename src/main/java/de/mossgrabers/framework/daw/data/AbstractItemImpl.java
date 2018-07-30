@@ -11,8 +11,8 @@ package de.mossgrabers.framework.daw.data;
  */
 public abstract class AbstractItemImpl implements IItem
 {
-    private boolean     selected;
     protected final int index;
+    private boolean     selected;
 
 
     /**

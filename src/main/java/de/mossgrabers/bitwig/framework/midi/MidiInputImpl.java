@@ -21,45 +21,15 @@ import com.bitwig.extension.controller.api.NoteInput;
  */
 class MidiInputImpl implements IMidiInput
 {
-    private final int portNumber;
     private MidiIn    port;
-    private NoteInput noteInput;
+    private NoteInput defaultNoteInput;
 
 
     /**
-     * Default constructor. Uses port number 0.
-     */
-    public MidiInputImpl ()
-    {
-        this (0);
-    }
-
-
-    /**
-     * Constructor.
+     * Constructor. Creates a default note input.
      *
      * @param portNumber The number of the midi input port
-     */
-    public MidiInputImpl (final int portNumber)
-    {
-        this.portNumber = portNumber;
-    }
-
-
-    /**
-     * Initialise the input.
-     *
-     * @param host The host
-     */
-    public void init (final ControllerHost host)
-    {
-        this.port = host.getMidiInPort (this.portNumber);
-    }
-
-
-    /**
-     * Create a note input.
-     *
+     * @param host The Bitwig host
      * @param name the name of the note input as it appears in the track input choosers in Bitwig
      *            Studio
      * @param filters a filter string formatted as hexadecimal value with `?` as wildcard. For
@@ -67,10 +37,15 @@ class MidiInputImpl implements IMidiInput
      *            {@null}, a standard filter will be used to forward note-related messages on
      *            channel 1 (0).
      */
-    protected void createNoteInputBase (final String name, final String... filters)
+    public MidiInputImpl (final int portNumber, final ControllerHost host, final String name, final String [] filters)
     {
-        this.noteInput = this.port.createNoteInput (name, filters);
-        this.noteInput.setShouldConsumeEvents (false);
+        this.port = host.getMidiInPort (portNumber);
+
+        if (name != null)
+        {
+            this.defaultNoteInput = this.port.createNoteInput (name, filters);
+            this.defaultNoteInput.setShouldConsumeEvents (false);
+        }
     }
 
 
@@ -102,8 +77,8 @@ class MidiInputImpl implements IMidiInput
     @Override
     public void setKeyTranslationTable (final Integer [] table)
     {
-        if (this.noteInput != null)
-            this.noteInput.setKeyTranslationTable (table);
+        if (this.defaultNoteInput != null)
+            this.defaultNoteInput.setKeyTranslationTable (table);
     }
 
 
@@ -111,8 +86,8 @@ class MidiInputImpl implements IMidiInput
     @Override
     public void setVelocityTranslationTable (final Integer [] table)
     {
-        if (this.noteInput != null)
-            this.noteInput.setVelocityTranslationTable (table);
+        if (this.defaultNoteInput != null)
+            this.defaultNoteInput.setVelocityTranslationTable (table);
     }
 
 
@@ -120,8 +95,8 @@ class MidiInputImpl implements IMidiInput
     @Override
     public void sendRawMidiEvent (final int status, final int data1, final int data2)
     {
-        if (this.noteInput != null)
-            this.noteInput.sendRawMidiEvent (status, data1, data2);
+        if (this.defaultNoteInput != null)
+            this.defaultNoteInput.sendRawMidiEvent (status, data1, data2);
     }
 
 
