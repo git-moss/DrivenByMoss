@@ -135,7 +135,16 @@ public class MCUDisplay extends AbstractDisplay
     {
         final LatestTaskExecutor executor = this.executors[row + (this.isFirst ? 0 : 2)];
         if (!executor.isShutdown ())
-            executor.execute ( () -> this.sendDisplayLine (row, text));
+            executor.execute ( () -> {
+                try
+                {
+                    this.sendDisplayLine (row, text);
+                }
+                catch (final RuntimeException ex)
+                {
+                    this.host.error ("Could not send line to MCU display.", ex);
+                }
+            });
     }
 
 
