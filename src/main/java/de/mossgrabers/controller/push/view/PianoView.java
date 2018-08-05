@@ -86,7 +86,7 @@ public class PianoView extends PlayView
         this.keyManager.clearPressedKeys ();
         this.scales.decPianoOctave ();
         this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.scales.getPianoRangeText (), true, true);
+        this.surface.getDisplay ().notify (this.scales.getPianoRangeText ());
     }
 
 
@@ -99,7 +99,7 @@ public class PianoView extends PlayView
         this.keyManager.clearPressedKeys ();
         this.scales.incPianoOctave ();
         this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.scales.getPianoRangeText (), true, true);
+        this.surface.getDisplay ().notify (this.scales.getPianoRangeText ());
     }
 
 

@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.push.view;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
@@ -16,6 +15,7 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SceneView;
 
 import java.util.Arrays;
@@ -112,15 +112,16 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
     @Override
     public void updateSceneButtons ()
     {
+        final ColorManager colorManager = this.model.getColorManager ();
+        final int colorScene = colorManager.getColor (AbstractSessionView.COLOR_SCENE);
+        final int colorSceneSelected = colorManager.getColor (AbstractSessionView.COLOR_SELECTED_SCENE);
+        final int colorSceneOff = colorManager.getColor (AbstractSessionView.COLOR_SCENE_OFF);
+
         final ISceneBank sceneBank = this.model.getSceneBank ();
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
-        final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;
-        final int orange = isPush2 ? PushColors.PUSH2_COLOR_SCENE_ORANGE_HI : PushColors.PUSH1_COLOR_SCENE_ORANGE;
         for (int i = 0; i < 8; i++)
         {
             final IScene scene = sceneBank.getItem (7 - i);
-            final int color = scene.doesExist () ? scene.isSelected () ? orange : green : off;
+            final int color = scene.doesExist () ? scene.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
             this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
         }
     }

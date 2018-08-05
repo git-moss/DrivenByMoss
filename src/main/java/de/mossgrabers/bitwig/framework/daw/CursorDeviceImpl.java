@@ -63,7 +63,6 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 
         this.cursorDevice.isEnabled ().markInterested ();
         this.cursorDevice.isPlugin ().markInterested ();
-        this.cursorDevice.position ().markInterested ();
         this.cursorDevice.hasPrevious ().markInterested ();
         this.cursorDevice.hasNext ().markInterested ();
         this.cursorDevice.isExpanded ().markInterested ();
@@ -114,7 +113,6 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 
         this.cursorDevice.isEnabled ().setIsSubscribed (enable);
         this.cursorDevice.isPlugin ().setIsSubscribed (enable);
-        this.cursorDevice.position ().setIsSubscribed (enable);
         this.cursorDevice.hasPrevious ().setIsSubscribed (enable);
         this.cursorDevice.hasNext ().setIsSubscribed (enable);
         this.cursorDevice.isExpanded ().setIsSubscribed (enable);
@@ -143,41 +141,9 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
-    public void browseToReplaceDevice ()
+    public int getIndex ()
     {
-        this.cursorDevice.replaceDeviceInsertionPoint ().browse ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void browseToInsertBeforeDevice ()
-    {
-        this.cursorDevice.beforeDeviceInsertionPoint ().browse ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void browseToInsertAfterDevice ()
-    {
-        this.cursorDevice.afterDeviceInsertionPoint ().browse ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectParent ()
-    {
-        this.cursorDevice.selectParent ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectChannel ()
-    {
-        this.cursorDevice.channel ().selectInEditor ();
+        return this.getPosition () % this.deviceBank.getPageSize ();
     }
 
 
@@ -191,63 +157,9 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
-    public void selectPrevious ()
-    {
-        final boolean moveBank = this.getPositionInBank () == 0;
-        this.cursorDevice.selectPrevious ();
-        if (moveBank)
-            this.deviceBank.scrollPageBackwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectNext ()
-    {
-        final boolean moveBank = this.getPositionInBank () == this.getDeviceBank ().getPageSize () - 1;
-        this.cursorDevice.selectNext ();
-        if (moveBank)
-            this.deviceBank.scrollPageForwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean isPlugin ()
     {
         return this.cursorDevice.isPlugin ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getPositionInChain ()
-    {
-        return this.cursorDevice.position ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getPositionInBank ()
-    {
-        return this.getPositionInChain () % this.deviceBank.getPageSize ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canSelectPreviousFX ()
-    {
-        return this.cursorDevice.hasPrevious ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canSelectNextFX ()
-    {
-        return this.cursorDevice.hasNext ().get ();
     }
 
 
@@ -317,6 +229,44 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
+    public boolean canSelectPreviousFX ()
+    {
+        return this.cursorDevice.hasPrevious ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canSelectNextFX ()
+    {
+        return this.cursorDevice.hasNext ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPrevious ()
+    {
+        final boolean moveBank = this.getIndex () == 0;
+        this.cursorDevice.selectPrevious ();
+        if (moveBank)
+            this.deviceBank.scrollPageBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNext ()
+    {
+        final boolean moveBank = this.getIndex () == this.getDeviceBank ().getPageSize () - 1;
+        this.cursorDevice.selectNext ();
+        if (moveBank)
+            this.deviceBank.scrollPageForwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void togglePinned ()
     {
         this.cursorDevice.isPinned ().toggle ();
@@ -336,14 +286,6 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
     public void toggleWindowOpen ()
     {
         this.cursorDevice.isWindowOpen ().toggle ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasSelectedDevice ()
-    {
-        return this.cursorDevice.exists ().get ();
     }
 
 
@@ -408,5 +350,45 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
     public IChannelBank<?> getLayerOrDrumPadBank ()
     {
         return this.hasDrumPads () ? this.drumPadBank : this.layerBank;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void browseToReplaceDevice ()
+    {
+        this.cursorDevice.replaceDeviceInsertionPoint ().browse ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void browseToInsertBeforeDevice ()
+    {
+        this.cursorDevice.beforeDeviceInsertionPoint ().browse ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void browseToInsertAfterDevice ()
+    {
+        this.cursorDevice.afterDeviceInsertionPoint ().browse ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectParent ()
+    {
+        this.cursorDevice.selectParent ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectChannel ()
+    {
+        this.cursorDevice.channel ().selectInEditor ();
     }
 }

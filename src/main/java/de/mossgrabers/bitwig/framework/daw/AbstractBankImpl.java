@@ -29,7 +29,7 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
 
     /**
      * Constructor.
-     * 
+     *
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param bank The bank to encapsulate

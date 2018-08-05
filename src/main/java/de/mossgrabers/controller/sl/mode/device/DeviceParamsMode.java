@@ -45,7 +45,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
 
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IParameterBank parameterBank = cd.getParameterBank ();
-        if (cd.hasSelectedDevice ())
+        if (cd.doesExist ())
         {
             for (int i = 0; i < 8; i++)
             {

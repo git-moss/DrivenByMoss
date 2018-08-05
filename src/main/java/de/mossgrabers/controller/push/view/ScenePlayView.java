@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 
@@ -85,7 +86,16 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     {
         if (velocity == 0)
             return;
+
         final IScene scene = this.trackBank.getSceneBank ().getItem (note - 36);
+
+        if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
+        {
+            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
+            scene.duplicate ();
+            return;
+        }
+
         scene.launch ();
         scene.select ();
     }
@@ -103,8 +113,8 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     @Override
     public void updateSceneButtons ()
     {
-        final int black = this.surface.getConfiguration ().isPush2 () ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
+        final int colorOff = this.model.getColorManager ().getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, black);
+            this.surface.updateButton (this.surface.getSceneButton (i), colorOff);
     }
 }

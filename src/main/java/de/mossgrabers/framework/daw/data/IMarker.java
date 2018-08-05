@@ -21,7 +21,7 @@ public interface IMarker extends IItem
 
     /**
      * Launches the marker.
-     * 
+     *
      * @param quantized Specified if the marker should be launched quantized or immediately
      */
     void launch (boolean quantized);

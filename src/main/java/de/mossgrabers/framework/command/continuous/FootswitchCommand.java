@@ -88,7 +88,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
                 final ITrack track = this.model.getSelectedTrack ();
                 if (track == null)
                 {
-                    this.surface.getDisplay ().notify ("Please select an Instrument track first.", true, true);
+                    this.surface.getDisplay ().notify ("Please select an Instrument track first.");
                     return;
                 }
 

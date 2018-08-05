@@ -29,12 +29,12 @@ public class PushConfiguration extends AbstractConfiguration
     /** Settings for different Mute and Solo behaviour. */
     public enum TrackState
     {
-        /** Use Mute, Solo for muting/soloing the current track. */
-        NONE,
-        /** Use all mode buttons for muting. */
-        MUTE,
-        /** Use all mode buttons for soloing. */
-        SOLO
+    /** Use Mute, Solo for muting/soloing the current track. */
+    NONE,
+    /** Use all mode buttons for muting. */
+    MUTE,
+    /** Use all mode buttons for soloing. */
+    SOLO
     }
 
     /** Setting for the ribbon mode. */

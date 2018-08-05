@@ -37,6 +37,16 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     public static final String       COLOR_ACTIVE_PAGE            = "COLOR_ACTIVE_PAGE";
     /** The color for a selected page. */
     public static final String       COLOR_SELECTED_PAGE          = "COLOR_SELECTED_PAGE";
+    /** The color for resolution off. */
+    public static final String       COLOR_RESOLUTION_OFF         = "COLOR_RESOLUTION_OFF";
+    /** The color for resolution. */
+    public static final String       COLOR_RESOLUTION             = "COLOR_RESOLUTION";
+    /** The color for selected resolution. */
+    public static final String       COLOR_RESOLUTION_SELECTED    = "COLOR_RESOLUTION_SELECTED";
+    /** The color for transposition. */
+    public static final String       COLOR_TRANSPOSE              = "COLOR_TRANSPOSE";
+    /** The color for selected transposition. */
+    public static final String       COLOR_TRANSPOSE_SELECTED     = "COLOR_TRANSPOSE_SELECTED";
 
     protected static final double [] RESOLUTIONS                  =
     {

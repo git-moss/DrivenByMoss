@@ -71,6 +71,13 @@ public abstract class AbstractTrackMode extends BaseMode
                 return;
             }
 
+            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DELETE))
+            {
+                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+                track.remove ();
+                return;
+            }
+
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
             {
                 this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_CLIP_STOP);

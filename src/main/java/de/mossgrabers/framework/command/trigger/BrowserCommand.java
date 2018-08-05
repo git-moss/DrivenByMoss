@@ -83,7 +83,7 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
             return;
         }
 
-        if (!insertDevice && this.model.getCursorDevice ().hasSelectedDevice ())
+        if (!insertDevice && this.model.getCursorDevice ().doesExist ())
             browser.browseForPresets ();
         else
         {

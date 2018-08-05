@@ -27,7 +27,7 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
 
     /**
      * Constructor.
-     * 
+     *
      * @param track The track which contains the slot
      * @param csBank The slot bank. Required since some functions are not avaiable on the slot but
      *            on the bank
@@ -224,7 +224,7 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
 
     /** {@inheritDoc} */
     @Override
-    public void delete ()
+    public void remove ()
     {
         this.csBank.deleteClip (this.getIndex ());
     }

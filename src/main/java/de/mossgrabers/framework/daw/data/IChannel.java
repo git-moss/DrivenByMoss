@@ -274,6 +274,12 @@ public interface IChannel extends IItem
 
 
     /**
+     * Delete the channel.
+     */
+    void remove ();
+
+
+    /**
      * Duplicate the channel.
      */
     void duplicate ();

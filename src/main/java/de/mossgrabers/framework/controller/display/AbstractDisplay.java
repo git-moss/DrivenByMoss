@@ -142,18 +142,8 @@ public abstract class AbstractDisplay implements Display
     @Override
     public void notify (final String message)
     {
-        this.notify (message, false, true);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void notify (final String message, final boolean onDisplay, final boolean onScreen)
-    {
-        if (onScreen)
-            this.host.showNotification (message);
-        if (onDisplay)
-            this.notifyOnDisplay (message);
+        this.host.showNotification (message);
+        this.notifyOnDisplay (message);
     }
 
 

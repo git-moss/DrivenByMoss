@@ -184,7 +184,7 @@ public class MCUDisplay extends AbstractDisplay
     @Override
     public void shutdown ()
     {
-        this.notify ("Please start " + this.host.getName () + "...", true, false);
+        this.notify ("Please start " + this.host.getName () + "...");
 
         // Prevent further sends
         for (int i = 0; i < 4; i++)

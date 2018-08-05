@@ -63,7 +63,7 @@ public class SendMode extends AbstractTrackMode
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         if (!tb.canEditSend (sendIndex))
         {
-            d.notify ("Send channel " + (sendIndex + 1) + " does not exist.", true, false);
+            d.notify ("Send channel " + (sendIndex + 1) + " does not exist.");
             return;
         }
         final int extenderOffset = this.surface.getExtenderOffset ();

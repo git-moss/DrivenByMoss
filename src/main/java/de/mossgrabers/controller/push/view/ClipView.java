@@ -131,8 +131,11 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
         if (event != ButtonEvent.DOWN)
             return;
         final int res = 7 - index;
-        if (res <= 3)
-            this.padResolution = res;
+        if (res > 3)
+            return;
+
+        this.padResolution = res;
+        this.surface.getDisplay ().notify ("1/" + this.padResolutions[this.padResolution]);
     }
 
 
@@ -140,17 +143,14 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     @Override
     public void updateSceneButtons ()
     {
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int yellow = isPush2 ? PushColors.PUSH2_COLOR_SCENE_YELLOW : PushColors.PUSH1_COLOR_SCENE_YELLOW;
-        final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;
-        final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
-        for (int i = 0; i < 8; i++)
-        {
-            if (i < 3)
-                this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, i == this.padResolution ? yellow : green);
-            else
-                this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, off);
-        }
+        final ColorManager colorManager = this.model.getColorManager ();
+        final int colorResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION);
+        final int colorSelectedResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED);
+        final int colorOff = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
+        for (int i = 0; i < 3; i++)
+            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, i == this.padResolution ? colorSelectedResolution : colorResolution);
+        for (int i = 3; i < 8; i++)
+            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, colorOff);
     }
 
 

@@ -226,7 +226,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         this.drumOctave = Math.max (-2, this.drumOctave - 1);
         this.offsetY = DRUM_START_KEY + this.drumOctave * 16;
         this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.getDrumRangeText (), true, true);
+        this.surface.getDisplay ().notify (this.getDrumRangeText ());
 
         if (oldDrumOctave != this.drumOctave)
         {
@@ -248,7 +248,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         this.drumOctave = Math.min (1, this.drumOctave + 1);
         this.offsetY = DRUM_START_KEY + this.drumOctave * 16;
         this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.getDrumRangeText (), true, true);
+        this.surface.getDisplay ().notify (this.getDrumRangeText ());
         if (oldDrumOctave != this.drumOctave)
         {
             final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
@@ -257,7 +257,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
     }
 
 
-    private void handleButtonCombinations (final int playedPad)
+    protected void handleButtonCombinations (final int playedPad)
     {
         if (this.surface.isDeletePressed ())
         {

@@ -299,7 +299,7 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         this.sendOSC (deviceAddress + "bypass", !device.isEnabled (), dump);
         this.sendOSC (deviceAddress + "expand", device.isExpanded (), dump);
         this.sendOSC (deviceAddress + "window", device.isWindowOpen (), dump);
-        final int positionInBank = device.getPositionInBank ();
+        final int positionInBank = device.getIndex ();
         final IDeviceBank deviceBank = device.getDeviceBank ();
         for (int i = 0; i < deviceBank.getPageSize (); i++)
         {

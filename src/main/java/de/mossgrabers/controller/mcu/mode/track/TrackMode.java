@@ -82,7 +82,7 @@ public class TrackMode extends AbstractTrackMode
         final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)
         {
-            d.notify ("Please select a track...", true, false);
+            d.notify ("Please select a track...");
             return;
         }
 

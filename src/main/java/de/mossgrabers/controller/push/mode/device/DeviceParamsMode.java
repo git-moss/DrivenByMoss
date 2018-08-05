@@ -19,7 +19,6 @@ import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.IParameterPageBank;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -131,7 +130,7 @@ public class DeviceParamsMode extends BaseMode
         if (event == ButtonEvent.UP)
         {
             final ICursorDevice cd = this.model.getCursorDevice ();
-            if (!cd.hasSelectedDevice ())
+            if (!cd.doesExist ())
                 return;
 
             if (!this.showDevices)
@@ -140,7 +139,21 @@ public class DeviceParamsMode extends BaseMode
                 return;
             }
 
-            if (cd.getPositionInBank () != index)
+            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
+            {
+                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
+                cd.duplicate ();
+                return;
+            }
+
+            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DELETE))
+            {
+                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+                cd.remove ();
+                return;
+            }
+
+            if (cd.getIndex () != index)
             {
                 cd.getDeviceBank ().getItem (index).select ();
                 return;
@@ -174,7 +187,7 @@ public class DeviceParamsMode extends BaseMode
         // There is no device on the track move upwards to the track view
         final ICursorDevice cd = this.model.getCursorDevice ();
         final View activeView = this.surface.getViewManager ().getActiveView ();
-        if (!cd.hasSelectedDevice ())
+        if (!cd.doesExist ())
         {
             activeView.executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
             return;
@@ -215,7 +228,7 @@ public class DeviceParamsMode extends BaseMode
     public void updateFirstRow ()
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.hasSelectedDevice ())
+        if (!cd.doesExist ())
         {
             this.disableFirstRow ();
             return;
@@ -229,7 +242,7 @@ public class DeviceParamsMode extends BaseMode
         {
             final IDeviceBank bank = cd.getDeviceBank ();
             for (int i = 0; i < bank.getPageSize (); i++)
-                this.surface.updateButton (20 + i, bank.getItem (i).doesExist () ? i == cd.getPositionInBank () ? selectedColor : existsColor : offColor);
+                this.surface.updateButton (20 + i, bank.getItem (i).doesExist () ? i == cd.getIndex () ? selectedColor : existsColor : offColor);
         }
         else
         {
@@ -251,27 +264,27 @@ public class DeviceParamsMode extends BaseMode
         switch (index)
         {
             case 0:
-                if (device.hasSelectedDevice ())
+                if (device.doesExist ())
                     device.toggleEnabledState ();
                 break;
             case 1:
-                if (device.hasSelectedDevice ())
+                if (device.doesExist ())
                     device.toggleParameterPageSectionVisible ();
                 break;
             case 2:
-                if (device.hasSelectedDevice ())
+                if (device.doesExist ())
                     device.toggleExpanded ();
                 break;
             case 4:
-                if (device.hasSelectedDevice ())
+                if (device.doesExist ())
                     this.showDevices = !this.showDevices;
                 break;
             case 5:
-                if (device.hasSelectedDevice ())
+                if (device.doesExist ())
                     device.togglePinned ();
                 break;
             case 6:
-                if (device.hasSelectedDevice ())
+                if (device.doesExist ())
                     device.toggleWindowOpen ();
                 break;
             case 7:
@@ -288,7 +301,7 @@ public class DeviceParamsMode extends BaseMode
         final int white = this.isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.hasSelectedDevice ())
+        if (!cd.doesExist ())
         {
             this.disableSecondRow ();
             this.surface.updateButton (109, white);
@@ -319,7 +332,7 @@ public class DeviceParamsMode extends BaseMode
         final Display d = this.surface.getDisplay ().clear ();
 
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.hasSelectedDevice ())
+        if (!cd.doesExist ())
         {
             d.clear ().setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
             return;
@@ -346,7 +359,7 @@ public class DeviceParamsMode extends BaseMode
                 final StringBuilder sb = new StringBuilder ();
                 if (device.doesExist ())
                 {
-                    if (i == cd.getPositionInBank ())
+                    if (i == cd.getIndex ())
                         sb.append (PushDisplay.SELECT_ARROW);
                     sb.append (device.getName ());
                 }
@@ -374,7 +387,7 @@ public class DeviceParamsMode extends BaseMode
     {
         final DisplayModel message = this.surface.getDisplay ().getModel ();
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.hasSelectedDevice ())
+        if (!cd.doesExist ())
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
@@ -382,17 +395,16 @@ public class DeviceParamsMode extends BaseMode
             return;
         }
 
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final String color = tb.getSelectedChannelColorEntry ();
-
+        final String color = this.model.getCurrentTrackBank ().getSelectedChannelColorEntry ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
+        final IDeviceBank deviceBank = cd.getDeviceBank ();
         final IParameterBank parameterBank = cd.getParameterBank ();
         final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
-        final int selectedItemIndex = parameterPageBank.getSelectedItemIndex ();
+        final int selectedPage = parameterPageBank.getSelectedItemIndex ();
 
         final boolean hasPinning = this.model.getHost ().hasPinning ();
-        for (int i = 0; i < parameterPageBank.getPageSize (); i++)
+        for (int i = 0; i < parameterBank.getPageSize (); i++)
         {
             boolean isTopMenuOn;
             switch (i)
@@ -429,10 +441,10 @@ public class DeviceParamsMode extends BaseMode
             boolean isBottomMenuOn;
             if (this.showDevices)
             {
-                final IDevice item = cd.getDeviceBank ().getItem (i);
+                final IDevice item = deviceBank.getItem (i);
                 bottomMenuIcon = item.getName ();
                 bottomMenu = item.doesExist () ? item.getName (12) : "";
-                isBottomMenuOn = i == cd.getPositionInBank ();
+                isBottomMenuOn = i == cd.getIndex ();
             }
             else
             {
@@ -441,7 +453,7 @@ public class DeviceParamsMode extends BaseMode
 
                 if (bottomMenu.length () > 12)
                     bottomMenu = bottomMenu.substring (0, 12);
-                isBottomMenuOn = i == selectedItemIndex;
+                isBottomMenuOn = i == selectedPage;
             }
 
             final double [] bottomMenuColor = DAWColors.getColorEntry (color);

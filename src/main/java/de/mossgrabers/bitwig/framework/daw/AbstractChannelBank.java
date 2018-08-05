@@ -31,7 +31,7 @@ public abstract class AbstractChannelBank<B extends Bank<?>, T extends IChannel>
 
     /**
      * Constructor.
-     * 
+     *
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param bank The Bitwig bank to encapsulate

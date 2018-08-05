@@ -28,18 +28,25 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public abstract class AbstractSessionView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
 {
-    // Needs to be overwritten with device specific colors
-    protected SessionColor clipColorIsRecording       = new SessionColor (0, -1, false);
-    protected SessionColor clipColorIsRecordingQueued = new SessionColor (1, -1, false);
-    protected SessionColor clipColorIsPlaying         = new SessionColor (2, -1, false);
-    protected SessionColor clipColorIsPlayingQueued   = new SessionColor (3, -1, false);
-    protected SessionColor clipColorHasContent        = new SessionColor (4, -1, false);
-    protected SessionColor clipColorHasNoContent      = new SessionColor (5, -1, false);
-    protected SessionColor clipColorIsRecArmed        = new SessionColor (6, -1, false);
+    /** The color for a scene. */
+    public static final String COLOR_SCENE                = "COLOR_SCENE";
+    /** The color for a selected scene. */
+    public static final String COLOR_SELECTED_SCENE       = "COLOR_SELECTED_SCENE";
+    /** The color for no scene. */
+    public static final String COLOR_SCENE_OFF            = "COLOR_SELECTED_OFF";
 
-    protected int          rows;
-    protected int          columns;
-    protected boolean      useClipColor;
+    // Needs to be overwritten with device specific colors
+    protected SessionColor     clipColorIsRecording       = new SessionColor (0, -1, false);
+    protected SessionColor     clipColorIsRecordingQueued = new SessionColor (1, -1, false);
+    protected SessionColor     clipColorIsPlaying         = new SessionColor (2, -1, false);
+    protected SessionColor     clipColorIsPlayingQueued   = new SessionColor (3, -1, false);
+    protected SessionColor     clipColorHasContent        = new SessionColor (4, -1, false);
+    protected SessionColor     clipColorHasNoContent      = new SessionColor (5, -1, false);
+    protected SessionColor     clipColorIsRecArmed        = new SessionColor (6, -1, false);
+
+    protected int              rows;
+    protected int              columns;
+    protected boolean          useClipColor;
 
 
     /**
@@ -101,7 +108,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         if (this.surface.isDeletePressed ())
         {
             this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-            slot.delete ();
+            slot.remove ();
             return;
         }
 

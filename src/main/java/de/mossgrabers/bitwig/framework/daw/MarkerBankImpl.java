@@ -22,7 +22,7 @@ public class MarkerBankImpl extends AbstractBankImpl<CueMarkerBank, IMarker> imp
 {
     /**
      * Constructor.
-     * 
+     *
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param bank The Bitwig bank to encapsulate

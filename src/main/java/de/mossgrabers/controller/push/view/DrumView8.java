@@ -8,6 +8,7 @@ import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.view.AbstractSequencerView;
 
 
 /**
@@ -106,14 +107,14 @@ public class DrumView8 extends DrumViewBase
     @Override
     protected void updateLowerSceneButtons ()
     {
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int yellow = isPush2 ? PushColors.PUSH2_COLOR_SCENE_YELLOW : PushColors.PUSH1_COLOR_SCENE_YELLOW;
-        final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;
-        final int off = isPush2 ? PushColors.PUSH2_COLOR2_BLACK : PushColors.PUSH1_COLOR2_BLACK;
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1, this.soundOffset == 0 ? yellow : green);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE2, this.soundOffset == 8 ? yellow : green);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE3, off);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE4, off);
+        final ColorManager colorManager = this.model.getColorManager ();
+        final int colorTranspose = colorManager.getColor (AbstractSequencerView.COLOR_TRANSPOSE);
+        final int colorSelectedTranspose = colorManager.getColor (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED);
+        final int colorOff = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
+        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1, this.soundOffset == 0 ? colorSelectedTranspose : colorTranspose);
+        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE2, this.soundOffset == 8 ? colorSelectedTranspose : colorTranspose);
+        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE3, colorOff);
+        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE4, colorOff);
     }
 
 

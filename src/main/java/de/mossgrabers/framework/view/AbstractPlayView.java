@@ -133,7 +133,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
         this.keyManager.clearPressedKeys ();
         this.scales.decOctave ();
         this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.scales.getRangeText (), true, true);
+        this.surface.getDisplay ().notify (this.scales.getRangeText ());
     }
 
 
@@ -146,7 +146,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
         this.keyManager.clearPressedKeys ();
         this.scales.incOctave ();
         this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.scales.getRangeText (), true, true);
+        this.surface.getDisplay ().notify (this.scales.getRangeText ());
     }
 
 

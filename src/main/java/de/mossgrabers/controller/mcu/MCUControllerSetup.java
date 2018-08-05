@@ -195,7 +195,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     @Override
     protected void createModel ()
     {
-        int adjustedNum = 8 * this.numMCUDevices;
+        final int adjustedNum = 8 * this.numMCUDevices;
 
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, adjustedNum, 8, 8, 8, 8, true, adjustedNum, -1, 0, 0, adjustedNum);
 

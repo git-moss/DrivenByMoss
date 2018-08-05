@@ -61,22 +61,6 @@ public interface ICursorDevice extends IDevice
 
 
     /**
-     * Get the position of the device in the chain.
-     *
-     * @return The position of the device in the chain.
-     */
-    int getPositionInChain ();
-
-
-    /**
-     * Get the position of the device in the bank page.
-     *
-     * @return The position of the device in the bank page.
-     */
-    int getPositionInBank ();
-
-
-    /**
      * Is there a previous device?
      *
      * @return True if there is a previous device
@@ -184,14 +168,6 @@ public interface ICursorDevice extends IDevice
      * Select the next device (if any).
      */
     void selectNext ();
-
-
-    /**
-     * Is there a current device?
-     *
-     * @return True if there is a device
-     */
-    boolean hasSelectedDevice ();
 
 
     /**

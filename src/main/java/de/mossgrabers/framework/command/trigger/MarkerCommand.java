@@ -37,7 +37,7 @@ public class MarkerCommand<S extends IControlSurface<C>, C extends Configuration
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (ButtonEvent event)
+    public void executeNormal (final ButtonEvent event)
     {
         if (event != ButtonEvent.DOWN)
             return;
@@ -51,7 +51,7 @@ public class MarkerCommand<S extends IControlSurface<C>, C extends Configuration
 
     /** {@inheritDoc} */
     @Override
-    public void executeShifted (ButtonEvent event)
+    public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
             this.model.getArranger ().toggleCueMarkerVisibility ();

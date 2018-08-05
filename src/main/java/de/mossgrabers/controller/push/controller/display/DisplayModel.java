@@ -111,6 +111,9 @@ public class DisplayModel
      */
     public void send ()
     {
+        if (this.executor.isShutdown ())
+            return;
+
         this.info = new ModelInfo (this.notificationMessage.get (), this.elements);
         this.elements.clear ();
         for (final GridChangeListener listener: this.listeners)
@@ -393,7 +396,7 @@ public class DisplayModel
 
     /**
      * Add a list of scene elements to the message.
-     * 
+     *
      * @param scenes The scenes
      */
     public void addSceneListElement (final List<IScene> scenes)

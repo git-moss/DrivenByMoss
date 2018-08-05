@@ -33,4 +33,16 @@ public interface IScene extends IItem
      * Launches the scene.
      */
     void launch ();
+
+
+    /**
+     * Delete the scene.
+     */
+    void remove ();
+
+
+    /**
+     * Duplicate the scene.
+     */
+    void duplicate ();
 }

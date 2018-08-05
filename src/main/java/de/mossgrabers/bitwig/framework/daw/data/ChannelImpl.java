@@ -24,15 +24,15 @@ import com.bitwig.extension.controller.api.SettableColorValue;
  */
 public class ChannelImpl extends AbstractItemImpl implements IChannel
 {
-    protected IValueChanger valueChanger;
-    protected Channel       channel;
+    protected final IValueChanger valueChanger;
+    protected final Channel       channel;
 
-    private int             vu;
-    private int             vuLeft;
-    private int             vuRight;
-    private IParameter      volumeParameter;
-    private IParameter      panParameter;
-    private ISendBank       sendBank;
+    private int                   vu;
+    private int                   vuLeft;
+    private int                   vuRight;
+    private IParameter            volumeParameter;
+    private IParameter            panParameter;
+    private ISendBank             sendBank;
 
 
     /**
@@ -382,6 +382,14 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     public int getVuRight ()
     {
         return this.vuRight;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void remove ()
+    {
+        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/180
     }
 
 

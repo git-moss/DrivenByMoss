@@ -39,7 +39,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /**
      * Constructor.
-     * 
+     *
      * @param host The DAW host
      * @param valueChanger The valueChanger
      * @param track The track

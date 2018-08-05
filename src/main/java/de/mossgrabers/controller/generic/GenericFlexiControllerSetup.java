@@ -114,15 +114,15 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i;
 
             final ITrack track = trackBank.getItem (i);
-            track.setVolumeIndication ((hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_VOLUME_TRACK)) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_VOLUME.ordinal () + i]));
-            track.setPanIndication ((hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_PANORAMA)) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_PANORAMA.ordinal () + i]));
+            track.setVolumeIndication (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_VOLUME_TRACK) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_VOLUME.ordinal () + i]));
+            track.setPanIndication (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_PANORAMA) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_PANORAMA.ordinal () + i]));
 
             final ISendBank sendBank = track.getSendBank ();
             final int sendPageSize = sendBank.getPageSize ();
             for (int j = 0; j < sendPageSize; j++)
             {
                 final ISend send = sendBank.getItem (j);
-                send.setIndication ((hasTrackSel && commands.contains (allCommands[FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal () + j])) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_SEND_1.ordinal () + j * sendPageSize + i]));
+                send.setIndication (hasTrackSel && commands.contains (allCommands[FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal () + j]) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_SEND_1.ordinal () + j * sendPageSize + i]));
             }
         }
         final IMasterTrack masterTrack = this.model.getMasterTrack ();

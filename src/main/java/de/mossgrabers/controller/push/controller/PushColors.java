@@ -12,6 +12,7 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.AbstractSessionView;
 
 
 /**
@@ -143,16 +144,16 @@ public class PushColors
     public static final int    PUSH2_COLOR_GREEN_HI_FBLINK            = 24;
 
     // Scene button colors
-    public static final int    PUSH2_COLOR_SCENE_RED                  = PUSH2_COLOR2_RED;
+    public static final int    PUSH2_COLOR_SCENE_RED                  = 65;
     public static final int    PUSH2_COLOR_SCENE_RED_BLINK            = 2;
     public static final int    PUSH2_COLOR_SCENE_RED_BLINK_FAST       = 3;
     public static final int    PUSH2_COLOR_SCENE_RED_HI               = PUSH2_COLOR2_RED_HI;
     public static final int    PUSH2_COLOR_SCENE_RED_HI_BLINK         = 5;
     public static final int    PUSH2_COLOR_SCENE_RED_HI_BLINK_FAST    = 6;
-    public static final int    PUSH2_COLOR_SCENE_ORANGE               = 7;
+    public static final int    PUSH2_COLOR_SCENE_ORANGE               = 70;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_BLINK         = 8;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_BLINK_FAST    = 9;
-    public static final int    PUSH2_COLOR_SCENE_ORANGE_HI            = 10;
+    public static final int    PUSH2_COLOR_SCENE_ORANGE_HI            = 69;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_HI_BLINK      = 11;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_HI_BLINK_FAST = 12;
     public static final int    PUSH2_COLOR_SCENE_YELLOW               = PUSH2_COLOR2_YELLOW;
@@ -167,6 +168,7 @@ public class PushColors
     public static final int    PUSH2_COLOR_SCENE_GREEN_HI             = PUSH2_COLOR2_GREEN_HI;
     public static final int    PUSH2_COLOR_SCENE_GREEN_HI_BLINK       = 23;
     public static final int    PUSH2_COLOR_SCENE_GREEN_HI_BLINK_FAST  = 24;
+    public static final int    PUSH2_COLOR_SCENE_WHITE                = 60;
 
     // First row colors
     public static final int    PUSH1_COLOR_BLACK                      = 0;
@@ -325,6 +327,11 @@ public class PushColors
         colorManager.registerColor (AbstractSequencerView.COLOR_PAGE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
         colorManager.registerColor (AbstractSequencerView.COLOR_ACTIVE_PAGE, isPush2 ? PUSH2_COLOR2_GREEN : PUSH1_COLOR2_GREEN);
         colorManager.registerColor (AbstractSequencerView.COLOR_SELECTED_PAGE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
+        colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION, isPush2 ? PushColors.PUSH2_COLOR_SCENE_ORANGE : PushColors.PUSH1_COLOR_SCENE_ORANGE);
+        colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, isPush2 ? PushColors.PUSH2_COLOR_SCENE_ORANGE_HI : PushColors.PUSH1_COLOR_SCENE_ORANGE_HI);
+        colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        colorManager.registerColor (AbstractSequencerView.COLOR_TRANSPOSE, isPush2 ? PushColors.PUSH2_COLOR_SCENE_WHITE : PushColors.PUSH1_COLOR_SCENE_YELLOW);
+        colorManager.registerColor (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED, isPush2 ? PushColors.PUSH2_COLOR_SCENE_YELLOW_HI : PushColors.PUSH1_COLOR_SCENE_YELLOW_HI);
 
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_OFF, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_RECORD, isPush2 ? PUSH2_COLOR2_RED_HI : PUSH1_COLOR2_RED_HI);
@@ -337,6 +344,10 @@ public class PushColors
         colorManager.registerColor (AbstractPlayView.COLOR_PLAY, isPush2 ? PUSH2_COLOR2_GREEN_HI : PUSH1_COLOR2_GREEN_HI);
         colorManager.registerColor (AbstractPlayView.COLOR_RECORD, isPush2 ? PUSH2_COLOR2_RED_HI : PUSH1_COLOR2_RED_HI);
         colorManager.registerColor (AbstractPlayView.COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+
+        colorManager.registerColor (AbstractSessionView.COLOR_SCENE, isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN);
+        colorManager.registerColor (AbstractSessionView.COLOR_SELECTED_SCENE, isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN_HI : PushColors.PUSH1_COLOR_SCENE_GREEN_HI);
+        colorManager.registerColor (AbstractSessionView.COLOR_SCENE_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
 
         colorManager.registerColor (PadGrid.GRID_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
 

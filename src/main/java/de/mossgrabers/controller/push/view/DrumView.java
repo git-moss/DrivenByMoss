@@ -7,6 +7,7 @@ package de.mossgrabers.controller.push.view;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 
@@ -20,7 +21,8 @@ public class DrumView extends DrumViewBase
 {
     private static final int NUMBER_OF_RETRIES = 20;
 
-    protected int            startRetries;
+    private int              startRetries;
+    private int              scrollPosition    = -1;
 
 
     /**
@@ -46,7 +48,10 @@ public class DrumView extends DrumViewBase
             final ICursorDevice primary = this.model.getPrimaryDevice ();
             if (!primary.hasDrumPads ())
                 return;
-            final IDrumPad drumPad = primary.getDrumPadBank ().getItem (playedPad);
+
+            final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
+            this.scrollPosition = drumPadBank.getScrollPosition ();
+            final IDrumPad drumPad = drumPadBank.getItem (playedPad);
             drumPad.browseToInsert ();
             this.activateMode ();
             return;
@@ -92,5 +97,16 @@ public class DrumView extends DrumViewBase
             this.startRetries++;
             this.surface.scheduleTask (this::activateMode, 200);
         }
+    }
+
+
+    /**
+     * Filling a slot from the browser moves the bank view to that slot. This function moves it back
+     * to the correct position.
+     */
+    public void repositionBankPage ()
+    {
+        if (this.scrollPosition >= 0)
+            this.model.getPrimaryDevice ().getDrumPadBank ().scrollTo (this.scrollPosition);
     }
 }

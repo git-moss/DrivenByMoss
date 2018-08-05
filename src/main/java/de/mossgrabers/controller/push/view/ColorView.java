@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.push.view;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
@@ -14,6 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 
@@ -28,12 +28,12 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     /** What should the color be selected for? */
     public enum SelectMode
     {
-        /** Select a track color. */
-        MODE_TRACK,
-        /** Select a layer color. */
-        MODE_LAYER,
-        /** Select a clip color. */
-        MODE_CLIP
+    /** Select a track color. */
+    MODE_TRACK,
+    /** Select a layer color. */
+    MODE_LAYER,
+    /** Select a clip color. */
+    MODE_CLIP
     }
 
     private SelectMode mode;
@@ -141,8 +141,8 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     @Override
     public void updateSceneButtons ()
     {
-        final int black = this.surface.getConfiguration ().isPush2 () ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
+        final int colorOff = this.model.getColorManager ().getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, black);
+            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, colorOff);
     }
 }

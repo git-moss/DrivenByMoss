@@ -80,7 +80,7 @@ public class DeviceBrowserMode extends BaseMode
         final Display d = this.surface.getDisplay ();
         final boolean isPresetSession = browser.isPresetContentType ();
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (isPresetSession && !(browser.isActive () && cd.hasSelectedDevice ()))
+        if (isPresetSession && !(browser.isActive () && cd.doesExist ()))
         {
             d.notify ("No active Browsing Session. Select device and press Browser...");
             return;

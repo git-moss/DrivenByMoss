@@ -116,6 +116,22 @@ public class SceneImpl extends AbstractItemImpl implements IScene
 
     /** {@inheritDoc} */
     @Override
+    public void duplicate ()
+    {
+        this.scene.nextSceneInsertionPoint ().copySlotsOrScenes (this.scene);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void remove ()
+    {
+        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/180
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void launch ()
     {
         this.scene.launch ();

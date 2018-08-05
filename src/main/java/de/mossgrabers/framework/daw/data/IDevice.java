@@ -11,5 +11,14 @@ package de.mossgrabers.framework.daw.data;
  */
 public interface IDevice extends IItem
 {
-    // Intentionally empty
+    /**
+     * Delete the channel.
+     */
+    void remove ();
+
+
+    /**
+     * Duplicate the channel.
+     */
+    void duplicate ();
 }

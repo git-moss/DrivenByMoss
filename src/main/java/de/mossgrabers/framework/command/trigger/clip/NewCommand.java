@@ -59,7 +59,7 @@ public class NewCommand<S extends IControlSurface<C>, C extends Configuration> e
         final ITrack track = this.model.getSelectedTrack ();
         if (track == null)
         {
-            this.surface.getDisplay ().notify ("Please select an Instrument track first.", true, true);
+            this.surface.getDisplay ().notify ("Please select an Instrument track first.");
             return;
         }
 
@@ -69,7 +69,7 @@ public class NewCommand<S extends IControlSurface<C>, C extends Configuration> e
         final ISlot slot = slotBank.getEmptySlot (slotIndex);
         if (slot == null)
         {
-            this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.", true, true);
+            this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.");
             return;
         }
 

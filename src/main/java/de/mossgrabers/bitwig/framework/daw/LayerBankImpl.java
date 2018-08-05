@@ -24,14 +24,14 @@ import com.bitwig.extension.controller.api.DeviceLayerBank;
  */
 public class LayerBankImpl extends AbstractBankImpl<DeviceLayerBank, ILayer> implements ILayerBank
 {
-    private int               numSends;
-    private int               numDevices;
-    private CursorDeviceLayer cursorDeviceLayer;
+    private final CursorDeviceLayer cursorDeviceLayer;
+    private int                     numSends;
+    private int                     numDevices;
 
 
     /**
      * Constructor.
-     * 
+     *
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param layerBank The layer bank

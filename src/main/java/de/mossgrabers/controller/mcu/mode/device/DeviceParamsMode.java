@@ -51,9 +51,9 @@ public class DeviceParamsMode extends BaseMode
         final Display d = this.surface.getDisplay ().clear ();
 
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.hasSelectedDevice ())
+        if (!cd.doesExist ())
         {
-            d.notify ("Please select a Device...", true, false);
+            d.notify ("Please select a Device...");
             return;
         }
 

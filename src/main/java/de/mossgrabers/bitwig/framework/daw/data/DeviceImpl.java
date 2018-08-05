@@ -33,6 +33,7 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
         this.device = device;
 
         device.exists ().markInterested ();
+        device.position ().markInterested ();
         device.name ().markInterested ();
     }
 
@@ -42,6 +43,7 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
     public void enableObservers (final boolean enable)
     {
         this.device.exists ().setIsSubscribed (enable);
+        this.device.position ().setIsSubscribed (enable);
         this.device.name ().setIsSubscribed (enable);
     }
 
@@ -51,6 +53,14 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
     public boolean doesExist ()
     {
         return this.device.exists ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getPosition ()
+    {
+        return this.device.position ().get ();
     }
 
 
@@ -75,5 +85,21 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
     public void select ()
     {
         this.device.selectInEditor ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void remove ()
+    {
+        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/180
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void duplicate ()
+    {
+        this.device.afterDeviceInsertionPoint ().copyDevices (this.device);
     }
 }

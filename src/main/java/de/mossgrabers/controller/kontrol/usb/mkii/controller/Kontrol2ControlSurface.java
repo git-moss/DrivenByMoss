@@ -254,7 +254,7 @@ public class Kontrol2ControlSurface extends AbstractControlSurface<Kontrol2Confi
         this.updateKeyLEDs ();
 
         this.display.clear ();
-        this.display.notify ("START " + this.host.getName ().toUpperCase () + " TO PLAY", true, false);
+        this.display.notify ("START " + this.host.getName ().toUpperCase () + " TO PLAY");
         this.display.shutdown ();
     }
 

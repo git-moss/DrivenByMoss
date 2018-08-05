@@ -100,7 +100,7 @@ public interface ISlot extends IItem
     /**
      * Delete a clip.
      */
-    void delete ();
+    void remove ();
 
 
     /**

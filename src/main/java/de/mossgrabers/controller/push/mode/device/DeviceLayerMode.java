@@ -171,7 +171,7 @@ public class DeviceLayerMode extends BaseMode
         if (event == ButtonEvent.UP)
         {
             final ICursorDevice cd = this.model.getCursorDevice ();
-            if (!cd.hasSelectedDevice ())
+            if (!cd.doesExist ())
                 return;
 
             final int offset = getDrumPadIndex (cd);
@@ -207,7 +207,7 @@ public class DeviceLayerMode extends BaseMode
     {
         // There is no device on the track move upwards to the track view
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.hasSelectedDevice ())
+        if (!cd.doesExist ())
         {
             this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
             return;
@@ -314,7 +314,7 @@ public class DeviceLayerMode extends BaseMode
     {
         final Display d = this.surface.getDisplay ().clear ();
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.hasSelectedDevice ())
+        if (!cd.doesExist ())
         {
             d.setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
             return;
@@ -377,7 +377,7 @@ public class DeviceLayerMode extends BaseMode
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
         final DisplayModel message = this.surface.getDisplay ().getModel ();
-        if (!cd.hasSelectedDevice ())
+        if (!cd.doesExist ())
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);

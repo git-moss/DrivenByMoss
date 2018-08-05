@@ -216,9 +216,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         // Collect all command slot commands
         final Set<FlexiCommand> commands = new HashSet<> ();
-        for (int i = 0; i < this.commandSlots.length; i++)
+        for (final CommandSlot commandSlot: this.commandSlots)
         {
-            final FlexiCommand cmd = this.commandSlots[i].getCommand ();
+            final FlexiCommand cmd = commandSlot.getCommand ();
             if (cmd != null)
                 commands.add (cmd);
         }
@@ -299,7 +299,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      */
     public void setCommandObserver (final IValueObserver<FlexiCommand> observer)
     {
-        for (int i = 0; i < this.commandSlots.length; i++)
-            this.commandSlots[i].setCommandObserver (observer);
+        for (final CommandSlot commandSlot: this.commandSlots)
+            commandSlot.setCommandObserver (observer);
     }
 }

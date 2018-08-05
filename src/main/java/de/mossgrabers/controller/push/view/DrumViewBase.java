@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.push.view;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
@@ -13,6 +12,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
+import de.mossgrabers.framework.view.AbstractSequencerView;
 
 
 /**
@@ -57,15 +57,15 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
         if (event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
             return;
 
-        if (!this.surface.isShiftPressed ())
+        if (this.surface.isShiftPressed ())
         {
-            super.onScene (index, event);
+            final ITrack selectedTrack = this.model.getSelectedTrack ();
+            if (selectedTrack != null)
+                this.onLowerScene (index);
             return;
         }
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
-        if (selectedTrack != null)
-            this.onLowerScene (index);
+        super.onScene (index, event);
     }
 
 
@@ -94,20 +94,21 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
     @Override
     public void updateSceneButtons ()
     {
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
+        final ColorManager colorManager = this.model.getColorManager ();
+
         if (this.surface.isShiftPressed ())
         {
-            final int off = isPush2 ? PushColors.PUSH2_COLOR2_BLACK : PushColors.PUSH1_COLOR2_BLACK;
+            final int colorOff = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
             for (int i = 4; i < 8; i++)
-                this.surface.updateButton (this.surface.getSceneButton (i), off);
+                this.surface.updateButton (this.surface.getSceneButton (i), colorOff);
             this.updateLowerSceneButtons ();
             return;
         }
 
-        final int yellow = isPush2 ? PushColors.PUSH2_COLOR_SCENE_YELLOW : PushColors.PUSH1_COLOR_SCENE_YELLOW;
-        final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;
+        final int colorResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION);
+        final int colorSelectedResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED);
         for (int i = PushControlSurface.PUSH_BUTTON_SCENE1; i <= PushControlSurface.PUSH_BUTTON_SCENE8; i++)
-            this.surface.updateButton (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedIndex ? yellow : green);
+            this.surface.updateButton (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedIndex ? colorSelectedResolution : colorResolution);
     }
 
 
@@ -116,9 +117,8 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
      */
     protected void updateLowerSceneButtons ()
     {
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int off = isPush2 ? PushColors.PUSH2_COLOR2_BLACK : PushColors.PUSH1_COLOR2_BLACK;
+        final int colorOff = this.model.getColorManager ().getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
         for (int i = 0; i < 4; i++)
-            this.surface.updateButton (this.surface.getSceneButton (i), off);
+            this.surface.updateButton (this.surface.getSceneButton (i), colorOff);
     }
 }
