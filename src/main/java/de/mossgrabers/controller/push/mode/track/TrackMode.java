@@ -6,7 +6,6 @@ package de.mossgrabers.controller.push.mode.track;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
@@ -136,30 +135,6 @@ public class TrackMode extends AbstractTrackMode
                     }
                     return;
                 }
-
-                final PushDisplay display = this.surface.getDisplay ();
-                switch (index)
-                {
-                    case 0:
-                        display.notify ("Volume: " + selectedTrack.getVolumeStr (8));
-                        break;
-                    case 1:
-                        display.notify ("Pan: " + selectedTrack.getPanStr (8));
-                        break;
-                    case 2:
-                        display.notify ("Crossfader: " + selectedTrack.getCrossfadeMode ());
-                        break;
-                    case 3:
-                        // Not used
-                        break;
-                    default:
-                        final int sendIndex = index - 4;
-                        final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
-                        final String name = fxTrackBank == null ? sendBank.getItem (sendIndex).getName () : fxTrackBank.getItem (sendIndex).getName ();
-                        if (name.length () > 0)
-                            display.notify ("Send " + name + ": " + sendBank.getItem (sendIndex).getDisplayedValue (8));
-                        break;
-                }
             }
 
             switch (index)
@@ -208,36 +183,6 @@ public class TrackMode extends AbstractTrackMode
                         break;
                 }
                 return;
-            }
-
-            final PushDisplay display = this.surface.getDisplay ();
-            switch (index)
-            {
-                case 0:
-                    display.notify ("Volume: " + selectedTrack.getVolumeStr (8));
-                    break;
-                case 1:
-                    display.notify ("Pan: " + selectedTrack.getPanStr (8));
-                    break;
-                case 2:
-                    if (config.isDisplayCrossfader ())
-                        display.notify ("Crossfader: " + selectedTrack.getCrossfadeMode ());
-                    else
-                    {
-                        final int sendIndex = 0;
-                        final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
-                        final String name = fxTrackBank == null ? sendBank.getItem (sendIndex).getName () : fxTrackBank.getItem (sendIndex).getName ();
-                        if (name.length () > 0)
-                            display.notify ("Send " + name + ": " + sendBank.getItem (sendIndex).getDisplayedValue (8));
-                    }
-                    break;
-                default:
-                    final int sendIndex = index - (config.isDisplayCrossfader () ? 3 : 2);
-                    final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
-                    final String name = fxTrackBank == null ? sendBank.getItem (sendIndex).getName () : fxTrackBank.getItem (sendIndex).getName ();
-                    if (name.length () > 0)
-                        display.notify ("Send " + name + ": " + sendBank.getItem (sendIndex).getDisplayedValue (8));
-                    break;
             }
         }
 

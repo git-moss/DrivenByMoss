@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.controller.push.controller.display.DisplayModel;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IMarkerBank;
@@ -22,17 +23,19 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MarkersMode extends BaseMode
 {
-    private static final String [] EDIT_MENU = new String []
+    private static final String [] EDIT_MENU        = new String []
     {
-        "Add",
+        "Add Marker",
         "",
         "",
         "",
         "",
         "",
-        "",
+        "Select",
         "Launch",
     };
+
+    private boolean                actionModeLaunch = false;
 
 
     /**
@@ -55,8 +58,13 @@ public class MarkersMode extends BaseMode
             return;
 
         final IMarker marker = this.model.getMarkerBank ().getItem (index);
-        if (marker.doesExist ())
+        if (!marker.doesExist ())
+            return;
+
+        if (this.actionModeLaunch)
             marker.launch (true);
+        else
+            marker.select ();
     }
 
 
@@ -67,13 +75,20 @@ public class MarkersMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
+        final boolean canEditMarkers = this.model.getHost ().canEditMarkers ();
+
         switch (index)
         {
             case 0:
                 this.model.getMarkerBank ().addMarker ();
                 break;
+            case 6:
+                if (canEditMarkers)
+                    this.actionModeLaunch = false;
+                break;
             case 7:
-                // Toggle launch
+                if (canEditMarkers)
+                    this.actionModeLaunch = true;
                 break;
             default:
                 // Not used
@@ -96,12 +111,19 @@ public class MarkersMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             if (canEditMarkers)
-                d.setCell (0, i, EDIT_MENU[i]);
+            {
+                final boolean isMenuTopSelected = i == 6 && !this.actionModeLaunch || i == 7 && this.actionModeLaunch;
+                d.setCell (0, i, (isMenuTopSelected ? PushDisplay.SELECT_ARROW : "") + EDIT_MENU[i]);
+            }
 
             final IMarker marker = markerBank.getItem (i);
             if (marker.doesExist ())
                 d.setCell (3, i, StringUtils.shortenAndFixASCII (marker.getName (), 8));
         }
+
+        if (canEditMarkers)
+            d.setCell (0, 5, "Action:");
+
         d.allDone ();
     }
 
@@ -116,7 +138,11 @@ public class MarkersMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final IMarker marker = markerBank.getItem (i);
-            message.addOptionElement ("", canEditMarkers ? EDIT_MENU[i] : "", false, null, i == 0 ? "Markers" : "", marker.doesExist () ? marker.getName (12) : "", false, marker.getColor (), false);
+            final String menuTopName = canEditMarkers ? EDIT_MENU[i] : "";
+            final String headerBottomName = i == 0 ? "Markers" : "";
+            final String headerTopName = canEditMarkers && i == 6 ? "Action" : "";
+            final boolean isMenuTopSelected = i == 6 && !this.actionModeLaunch || i == 7 && this.actionModeLaunch;
+            message.addOptionElement (headerTopName, menuTopName, isMenuTopSelected, null, headerBottomName, marker.doesExist () ? marker.getName (12) : "", false, marker.getColor (), false);
         }
         message.send ();
     }

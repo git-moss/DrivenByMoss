@@ -55,9 +55,6 @@ public class PanMode extends AbstractTrackMode
                 t.resetPan ();
                 return;
             }
-
-            if (t.doesExist ())
-                this.surface.getDisplay ().notify ("Pan: " + t.getPanStr (8));
         }
 
         t.touchPan (isTouched);

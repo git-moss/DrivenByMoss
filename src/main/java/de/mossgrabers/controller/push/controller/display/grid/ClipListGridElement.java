@@ -65,9 +65,6 @@ public class ClipListGridElement extends AbstractGridElement
 
             final double itemTop = i * itemHeight;
 
-            if (!slot.doesExist ())
-                continue;
-
             String name = slot.getName ();
 
             final double boxTop = itemTop + (itemHeight - fontHeight) / 2;
@@ -84,36 +81,39 @@ public class ClipListGridElement extends AbstractGridElement
             else
                 gc.fillRectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE, clipBackgroundColor);
 
-            // Draw the play/record state indicator box
-            final boolean isPlaying = slot.isPlaying ();
-            if (isPlaying || slot.isRecording () || slot.isPlayingQueued () || slot.isRecordingQueued ())
-                gc.fillRectangle (boxLeft, boxTop, fontHeight, fontHeight, ColorEx.BLACK);
-
-            // Draw the play, record or stop symbol depending on the slots state
-            if (slot.hasContent ())
+            if (slot.doesExist ())
             {
-                if (slot.isRecording ())
-                    gc.fillCircle (boxLeft + SEPARATOR_SIZE + radius, boxTop + SEPARATOR_SIZE + radius, radius, ColorEx.RED);
+                // Draw the play/record state indicator box
+                final boolean isPlaying = slot.isPlaying ();
+                if (isPlaying || slot.isRecording () || slot.isPlayingQueued () || slot.isRecordingQueued ())
+                    gc.fillRectangle (boxLeft, boxTop, fontHeight, fontHeight, ColorEx.BLACK);
+
+                // Draw the play, record or stop symbol depending on the slots state
+                if (slot.hasContent ())
+                {
+                    if (slot.isRecording ())
+                        gc.fillCircle (boxLeft + SEPARATOR_SIZE + radius, boxTop + SEPARATOR_SIZE + radius, radius, ColorEx.RED);
+                    else
+                    {
+                        ColorEx fillColor = ColorEx.darker (clipBackgroundColor);
+                        if (isPlaying)
+                            fillColor = ColorEx.GREEN;
+                        else if (slot.isPlayingQueued () || slot.isRecordingQueued ())
+                            fillColor = ColorEx.WHITE;
+                        gc.fillTriangle (boxLeft + SEPARATOR_SIZE, boxTop + SEPARATOR_SIZE, boxLeft + SEPARATOR_SIZE, boxTop + fontHeight - SEPARATOR_SIZE, boxLeft + fontHeight - SEPARATOR_SIZE, boxTop + fontHeight / 2, fillColor);
+                    }
+                }
                 else
                 {
-                    ColorEx fillColor = ColorEx.darker (clipBackgroundColor);
-                    if (isPlaying)
-                        fillColor = ColorEx.GREEN;
-                    else if (slot.isPlayingQueued () || slot.isRecordingQueued ())
-                        fillColor = ColorEx.WHITE;
-                    gc.fillTriangle (boxLeft + SEPARATOR_SIZE, boxTop + SEPARATOR_SIZE, boxLeft + SEPARATOR_SIZE, boxTop + fontHeight - SEPARATOR_SIZE, boxLeft + fontHeight - SEPARATOR_SIZE, boxTop + fontHeight / 2, fillColor);
+                    if (track.isRecArm ())
+                        gc.fillCircle (boxLeft + SEPARATOR_SIZE + radius, boxTop + SEPARATOR_SIZE + radius, radius, ColorEx.DARK_GRAY);
+                    else
+                        gc.fillRectangle (boxLeft + SEPARATOR_SIZE, boxTop + SEPARATOR_SIZE, boxWidth, boxWidth, ColorEx.DARK_GRAY);
                 }
-            }
-            else
-            {
-                if (track.isRecArm ())
-                    gc.fillCircle (boxLeft + SEPARATOR_SIZE + radius, boxTop + SEPARATOR_SIZE + radius, radius, ColorEx.DARK_GRAY);
-                else
-                    gc.fillRectangle (boxLeft + SEPARATOR_SIZE, boxTop + SEPARATOR_SIZE, boxWidth, boxWidth, ColorEx.DARK_GRAY);
-            }
 
-            // Draw the text
-            gc.drawTextInBounds (name, itemLeft + 2 * INSET + fontHeight, itemTop - 1, itemWidth - 2 * INSET, itemHeight, Align.LEFT, ColorEx.BLACK, fontHeight);
+                // Draw the text
+                gc.drawTextInBounds (name, itemLeft + 2 * INSET + fontHeight, itemTop - 1, itemWidth - 2 * INSET, itemHeight, Align.LEFT, ColorEx.BLACK, fontHeight);
+            }
 
             // Draw the border
             ColorEx color = borderColor;

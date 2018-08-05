@@ -77,11 +77,6 @@ public class DeviceLayerModeSend extends DeviceLayerMode
                 layer.getSendBank ().getItem (sendIndex).resetValue ();
                 return;
             }
-
-            final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
-            final String name = fxTrackBank == null ? layer.getSendBank ().getItem (sendIndex).getName () : fxTrackBank.getItem (sendIndex).getName ();
-            if (!name.isEmpty ())
-                this.surface.getDisplay ().notify ("Send " + name + ": " + layer.getSendBank ().getItem (sendIndex).getDisplayedValue ());
         }
 
         layer.getSendBank ().getItem (sendIndex).touchValue (isTouched);

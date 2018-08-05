@@ -69,8 +69,6 @@ public class DeviceLayerModePan extends DeviceLayerMode
                 layer.resetPan ();
                 return;
             }
-
-            this.surface.getDisplay ().notify ("Pan: " + layer.getPanStr ());
         }
 
         layer.touchPan (isTouched);

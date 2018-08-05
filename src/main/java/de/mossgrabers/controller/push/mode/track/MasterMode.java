@@ -87,11 +87,6 @@ public class MasterMode extends BaseMode
                     this.model.getMasterTrack ().resetPan ();
                 return;
             }
-
-            if (index == 0)
-                this.surface.getDisplay ().notify ("Volume: " + this.model.getMasterTrack ().getVolumeStr (8));
-            else if (index == 1)
-                this.surface.getDisplay ().notify ("Pan: " + this.model.getMasterTrack ().getPanStr (8));
         }
 
         if (index == 0)

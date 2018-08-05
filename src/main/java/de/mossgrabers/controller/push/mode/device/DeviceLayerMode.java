@@ -119,26 +119,6 @@ public class DeviceLayerMode extends BaseMode
                 }
                 return;
             }
-
-            final PushDisplay display = this.surface.getDisplay ();
-            switch (index)
-            {
-                case 0:
-                    display.notify ("Volume: " + channel.getVolumeStr ());
-                    break;
-                case 1:
-                    display.notify ("Pan: " + channel.getPanStr ());
-                    break;
-                default:
-                    if (this.isPush2 && index < 4)
-                        break;
-                    final int sendIndex = index - (this.isPush2 ? this.surface.getConfiguration ().isSendsAreToggled () ? 0 : 4 : 2);
-                    final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
-                    final String name = fxTrackBank == null ? sendBank.getItem (sendIndex).getName () : fxTrackBank.getItem (sendIndex).getName ();
-                    if (!name.isEmpty ())
-                        display.notify ("Send " + name + ": " + sendBank.getItem (sendIndex).getDisplayedValue ());
-                    break;
-            }
         }
 
         switch (index)

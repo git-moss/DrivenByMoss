@@ -69,8 +69,6 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
                 layer.resetVolume ();
                 return;
             }
-
-            this.surface.getDisplay ().notify ("Volume: " + layer.getVolumeStr ());
         }
 
         layer.touchVolume (isTouched);

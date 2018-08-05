@@ -67,7 +67,11 @@ public class MarkerMode extends BaseMode
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
         final IMarker item = this.model.getMarkerBank ().getItem (extenderOffset + index);
-        if (item.doesExist ())
+        if (!item.doesExist ())
+            return;
+        if (this.surface.isShiftPressed ())
+            item.select ();
+        else
             item.launch (true);
     }
 

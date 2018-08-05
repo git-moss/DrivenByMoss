@@ -61,7 +61,7 @@ public class OptionsGridElement extends AbstractGridElement
     {
         final double menuHeight = MENU_HEIGHT * 2;
 
-        final ColorEx colorBackground = configuration.getColorBackground ();
+        final ColorEx colorBackground = configuration.getColorBackgroundDarker ();
 
         if (this.useSmallTopMenu)
             this.drawMenu (gc, left, width, configuration);
@@ -100,8 +100,8 @@ public class OptionsGridElement extends AbstractGridElement
     {
         if (menu == null || menu.length () == 0)
             return;
-        final ColorEx textColor = configuration.getColorText ();
-        gc.fillRectangle (left, top, width, height, isSelected ? textColor : colorBackground);
-        gc.drawTextInBounds (menu, left, top, width, height, Align.CENTER, isSelected ? configuration.getColorBorder () : textColor, height / 2);
+        final ColorEx backgroundColor = isSelected ? configuration.getColorText () : colorBackground;
+        gc.fillRectangle (left, top, width, height, backgroundColor);
+        gc.drawTextInBounds (menu, left, top, width, height, Align.CENTER, ColorEx.calcContrastColor (backgroundColor), height / 2);
     }
 }

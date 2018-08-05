@@ -100,7 +100,7 @@ public class PushConfiguration extends AbstractConfiguration
     private static final ColorEx   DEFAULT_COLOR_RECORD             = ColorEx.RED;
     private static final ColorEx   DEFAULT_COLOR_SOLO               = ColorEx.YELLOW;
     private static final ColorEx   DEFAULT_COLOR_MUTE               = ColorEx.fromRGB (245, 129, 17);
-    private static final ColorEx   DEFAULT_COLOR_BACKGROUND_DARKER  = ColorEx.fromRGB (58, 58, 58);
+    private static final ColorEx   DEFAULT_COLOR_BACKGROUND_DARKER  = ColorEx.fromRGB (39, 39, 39);
     private static final ColorEx   DEFAULT_COLOR_BACKGROUND_LIGHTER = ColorEx.fromRGB (118, 118, 118);
 
     /** Use ribbon for pitch bend. */

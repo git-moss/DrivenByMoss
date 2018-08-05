@@ -56,9 +56,10 @@ public class SceneListGridElement extends AbstractGridElement
             final double itemTop = i * itemHeight;
 
             final IScene scene = this.scenes.get (i);
-
-            gc.fillRectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE, new ColorEx (scene.getColor ()));
-            gc.drawTextInBounds (scene.getName (), itemLeft + INSET, itemTop - 1, itemWidth - 2 * INSET, itemHeight, Align.LEFT, textColor, itemHeight / 2);
+            final ColorEx backgroundColor = new ColorEx (scene.getColor ());
+            gc.fillRectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE, backgroundColor);
+            if (scene.doesExist ())
+                gc.drawTextInBounds (scene.getName (), itemLeft + INSET, itemTop - 1, itemWidth - 2 * INSET, itemHeight, Align.LEFT, ColorEx.calcContrastColor (backgroundColor), itemHeight / 2);
             gc.strokeRectangle (itemLeft, itemTop + SEPARATOR_SIZE, itemWidth, itemHeight - 2 * SEPARATOR_SIZE, scene.isSelected () ? textColor : borderColor, scene.isSelected () ? 2 : 1);
         }
     }

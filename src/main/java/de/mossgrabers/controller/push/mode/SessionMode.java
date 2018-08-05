@@ -65,8 +65,6 @@ public class SessionMode extends AbstractTrackMode
     public void onValueKnobTouch (final int index, final boolean isTouched)
     {
         this.isKnobTouched[index] = isTouched;
-
-        // Intentionally empty
     }
 
 

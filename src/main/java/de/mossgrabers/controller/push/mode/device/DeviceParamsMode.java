@@ -111,9 +111,6 @@ public class DeviceParamsMode extends BaseMode
                 param.resetValue ();
                 return;
             }
-
-            if (!param.getName ().isEmpty ())
-                this.surface.getDisplay ().notify (param.getName () + ": " + param.getDisplayedValue ());
         }
         param.touchValue (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);

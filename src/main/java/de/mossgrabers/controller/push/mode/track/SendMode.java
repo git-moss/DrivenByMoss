@@ -62,10 +62,6 @@ public class SendMode extends AbstractTrackMode
                 send.resetValue ();
                 return;
             }
-
-            final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
-            if (t.doesExist ())
-                this.surface.getDisplay ().notify ("Send " + (fxTrackBank == null ? send.getName () : fxTrackBank.getItem (sendIndex).getName ()) + ": " + send.getValue ());
         }
 
         send.touchValue (isTouched);

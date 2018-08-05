@@ -123,6 +123,20 @@ public class ColorEx
 
 
     /**
+     * Calculates if the color white or black has a higher contrast to the given color.
+     *
+     * @param c A color
+     * @return Black or white, depending on which one has the higher contrast
+     */
+    public static ColorEx calcContrastColor (final ColorEx c)
+    {
+        // The formula is based on the W3C Accessibility Guidelines - https://www.w3.org/TR/WCAG20/
+        final double l = 0.2126 * c.getRed () + 0.7152 * c.getGreen () + 0.0722 * c.getBlue ();
+        return l > 0.179 ? ColorEx.BLACK : ColorEx.WHITE;
+    }
+
+
+    /**
      * Get the red component.
      *
      * @return The red component
