@@ -325,9 +325,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setKeyTranslationTable (final int [] table)
     {
+        this.keyTranslationTable = table;
         if (this.input == null)
             return;
-        this.keyTranslationTable = table;
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
             t[i] = Integer.valueOf (table[i]);
