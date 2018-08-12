@@ -35,7 +35,7 @@ public class PushBrowserCommand extends BrowserCommand<PushControlSurface, PushC
 
     /** {@inheritDoc} */
     @Override
-    protected void discardBrowser (boolean commit)
+    protected void discardBrowser (final boolean commit)
     {
         super.discardBrowser (commit);
 
