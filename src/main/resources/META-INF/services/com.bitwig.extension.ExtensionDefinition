@@ -20,5 +20,5 @@ de.mossgrabers.bitwig.controller.kontrol.usb.mki.Kontrol1S25ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.usb.mki.Kontrol1S49ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.usb.mki.Kontrol1S61ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.usb.mki.Kontrol1S88ExtensionDefinition
-#de.mossgrabers.bitwig.controller.kontrol.usb.mkii.Kontrol2S49ExtensionDefinition
-#de.mossgrabers.bitwig.controller.kontrol.usb.mkii.Kontrol2S61ExtensionDefinition
+de.mossgrabers.bitwig.controller.kontrol.usb.mkii.Kontrol2S49ExtensionDefinition
+de.mossgrabers.bitwig.controller.kontrol.usb.mkii.Kontrol2S61ExtensionDefinition
