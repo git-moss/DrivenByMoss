@@ -33,6 +33,7 @@ import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -70,7 +71,8 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1, 0);
+        final ModelSetup ms = new ModelSetup ();
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 

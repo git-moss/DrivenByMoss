@@ -31,6 +31,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
@@ -160,7 +161,8 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1, 0);
+        final ModelSetup ms = new ModelSetup ();
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getTrackBank ().addSelectionObserver (this::handleTrackChange);
     }
 

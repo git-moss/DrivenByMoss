@@ -77,6 +77,7 @@ import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
@@ -197,7 +198,15 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     {
         final int adjustedNum = 8 * this.numMCUDevices;
 
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, adjustedNum, 8, 8, 8, 8, true, adjustedNum, -1, 0, 0, adjustedNum);
+        final ModelSetup ms = new ModelSetup ();
+        ms.setNumTracks (adjustedNum);
+        ms.setNumFilterColumnEntries (8);
+        ms.setNumResults (8);
+        ms.setNumParams (adjustedNum);
+        ms.setNumDeviceLayers (0);
+        ms.setNumDrumPadLayers (0);
+        ms.setNumMarkers (adjustedNum);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);

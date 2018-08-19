@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.AbstractModel;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.scale.Scales;
 
 import com.bitwig.extension.controller.api.Application;
@@ -42,21 +43,11 @@ public class ModelImpl extends AbstractModel
      * @param colorManager The color manager
      * @param valueChanger The value changer
      * @param scales The scales object
-     * @param numTracks The number of track to monitor (per track bank)
-     * @param numScenes The number of scenes to monitor (per scene bank)
-     * @param numSends The number of sends to monitor
-     * @param numFilterColumnEntries The number of entries in one filter column to monitor
-     * @param numResults The number of search results in the browser to monitor
-     * @param hasFlatTrackList Don't navigate groups, all tracks are flat
-     * @param numParams The number of parameter of a device to monitor
-     * @param numDevicesInBank The number of devices to monitor
-     * @param numDeviceLayers The number of device layers to monitor
-     * @param numDrumPadLayers The number of drum pad layers to monitor
-     * @param numMarkers The number of markers
+     * @param modelSetup The configuration parameters for the model
      */
-    public ModelImpl (final ControllerHost controllerHost, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers, final int numMarkers)
+    public ModelImpl (final ControllerHost controllerHost, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
     {
-        super (colorManager, valueChanger, scales, numTracks, numScenes, numSends, numFilterColumnEntries, numResults, hasFlatTrackList, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        super (colorManager, valueChanger, scales, modelSetup);
 
         this.controllerHost = controllerHost;
         this.host = new HostImpl (controllerHost);
@@ -67,6 +58,7 @@ public class ModelImpl extends AbstractModel
 
         final Arranger bwArranger = controllerHost.createArranger ();
         this.arranger = new ArrangerImpl (bwArranger);
+        final int numMarkers = modelSetup.getNumMarkers ();
         if (numMarkers > 0)
             this.markerBank = new MarkerBankImpl (this.host, valueChanger, bwArranger.createCueMarkerBank (numMarkers), numMarkers);
 
@@ -80,7 +72,10 @@ public class ModelImpl extends AbstractModel
         this.cursorTrack.isPinned ().markInterested ();
 
         final TrackBank tb;
-        if (hasFlatTrackList)
+        final int numTracks = this.modelSetup.getNumTracks ();
+        final int numSends = this.modelSetup.getNumSends ();
+        final int numScenes = this.modelSetup.getNumScenes ();
+        if (this.modelSetup.hasFlatTrackList ())
         {
             tb = controllerHost.createMainTrackBank (numTracks, numSends, numScenes);
             tb.followCursorTrack (this.cursorTrack);
@@ -88,20 +83,25 @@ public class ModelImpl extends AbstractModel
         else
             tb = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
 
-        this.trackBank = new TrackBankImpl (this.host, valueChanger, tb, this.cursorTrack, this.numTracks, this.numScenes, this.numSends);
+        this.trackBank = new TrackBankImpl (this.host, valueChanger, tb, this.cursorTrack, numTracks, numScenes, numSends);
         final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numTracks, numScenes);
-        this.effectTrackBank = new EffectTrackBankImpl (this.host, valueChanger, effectTrackBank, this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
+        this.effectTrackBank = new EffectTrackBankImpl (this.host, valueChanger, effectTrackBank, this.cursorTrack, numTracks, numScenes, this.trackBank);
 
-        this.primaryDevice = new CursorDeviceImpl (this.host, valueChanger, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
-        PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", this.numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
-        this.cursorDevice = new CursorDeviceImpl (this.host, valueChanger, cd, this.numSends, this.numParams, this.numDevicesInBank, this.numDeviceLayers, this.numDrumPadLayers);
-        if (this.numDrumPadLayers > 0)
+        final int numParams = this.modelSetup.getNumParams ();
+        final int numDeviceLayers = this.modelSetup.getNumDeviceLayers ();
+        final int numDrumPadLayers = this.modelSetup.getNumDrumPadLayers ();
+        final int numDevicesInBank = this.modelSetup.getNumDevicesInBank ();
+        this.primaryDevice = new CursorDeviceImpl (this.host, valueChanger, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
+        this.cursorDevice = new CursorDeviceImpl (this.host, valueChanger, cd, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        if (numDrumPadLayers > 0)
         {
             cd = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
             this.drumDevice64 = new CursorDeviceImpl (this.host, valueChanger, cd, 0, 0, -1, 64, 64);
         }
-        if (this.numResults > 0)
-            this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
+        final int numResults = this.modelSetup.getNumResults ();
+        if (numResults > 0)
+            this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.modelSetup.getNumFilterColumnEntries (), numResults);
 
         this.masterTrackEqualsValue = cd.channel ().createEqualsValue (master);
         this.masterTrackEqualsValue.markInterested ();
@@ -118,7 +118,7 @@ public class ModelImpl extends AbstractModel
     @Override
     public ITrackBank createSceneViewTrackBank (final int numTracks, final int numScenes)
     {
-        final TrackBank tb = this.controllerHost.createMainTrackBank (numTracks, this.numSends, numScenes);
+        final TrackBank tb = this.controllerHost.createMainTrackBank (numTracks, this.modelSetup.getNumSends (), numScenes);
         tb.followCursorTrack (this.cursorTrack);
         return new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, numTracks, numScenes, 0);
     }

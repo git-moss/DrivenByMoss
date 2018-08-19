@@ -30,15 +30,12 @@ public abstract class AbstractModel implements IModel
     protected IGroove                  groove;
     protected IProject                 project;
     protected IBrowser                 browser;
-
     protected IArranger                arranger;
     protected IMarkerBank              markerBank;
-
     protected ITrackBank               currentTrackBank;
     protected ITrackBank               trackBank;
     protected ITrackBank               effectTrackBank;
     protected IMasterTrack             masterTrack;
-
     protected ICursorDevice            primaryDevice;
     protected ICursorDevice            cursorDevice;
     protected ICursorDevice            drumDevice64;
@@ -47,17 +44,7 @@ public abstract class AbstractModel implements IModel
     protected Scales                   scales;
     protected ColorManager             colorManager;
     protected IValueChanger            valueChanger;
-
-    protected int                      numTracks;
-    protected int                      numScenes;
-    protected int                      numSends;
-    protected int                      numFilterColumnEntries;
-    protected int                      numResults;
-    protected int                      numParams;
-    protected int                      numDevicesInBank;
-    protected int                      numDeviceLayers;
-    protected int                      numDrumPadLayers;
-    protected boolean                  hasFlatTrackList;
+    protected ModelSetup               modelSetup;
 
 
     /**
@@ -66,33 +53,14 @@ public abstract class AbstractModel implements IModel
      * @param colorManager The color manager
      * @param valueChanger The value changer
      * @param scales The scales object
-     * @param numTracks The number of track to monitor (per track bank)
-     * @param numScenes The number of scenes to monitor (per scene bank)
-     * @param numSends The number of sends to monitor
-     * @param numFilterColumnEntries The number of entries in one filter column to monitor
-     * @param numResults The number of search results in the browser to monitor
-     * @param hasFlatTrackList Don't navigate groups, all tracks are flat
-     * @param numParams The number of parameter of a device to monitor
-     * @param numDevicesInBank The number of devices to monitor
-     * @param numDeviceLayers The number of device layers to monitor
-     * @param numDrumPadLayers The number of drum pad layers to monitor
+     * @param modelSetup The configuration parameters for the model
      */
-    public AbstractModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public AbstractModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
     {
         this.colorManager = colorManager;
         this.valueChanger = valueChanger;
         this.scales = scales;
-
-        this.numTracks = numTracks < 0 ? 8 : numTracks;
-        this.numScenes = numScenes < 0 ? 8 : numScenes;
-        this.numSends = numSends < 0 ? 6 : numSends;
-        this.numFilterColumnEntries = numFilterColumnEntries < 0 ? 16 : numFilterColumnEntries;
-        this.numResults = numResults < 0 ? 16 : numResults;
-        this.numParams = numParams >= 0 ? numParams : 8;
-        this.numDevicesInBank = numDevicesInBank >= 0 ? numDevicesInBank : 8;
-        this.numDeviceLayers = numDeviceLayers >= 0 ? numDeviceLayers : 8;
-        this.numDrumPadLayers = numDrumPadLayers >= 0 ? numDrumPadLayers : 16;
-        this.hasFlatTrackList = hasFlatTrackList ? true : false;
+        this.modelSetup = modelSetup;
     }
 
 
@@ -212,7 +180,7 @@ public abstract class AbstractModel implements IModel
     @Override
     public ICursorClip getCursorClip ()
     {
-        return this.getCursorClip (this.numTracks, this.numScenes);
+        return this.getCursorClip (this.modelSetup.getNumTracks (), this.modelSetup.getNumScenes ());
     }
 
 

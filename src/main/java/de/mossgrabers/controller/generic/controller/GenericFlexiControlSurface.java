@@ -1243,6 +1243,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 this.scrollDevice (commandSlot.getKnobMode (), value);
                 break;
 
+            case DEVICE_SELECT_PREVIOUS_PARAMETER_PAGE:
+                if (value > 0)
+                    this.model.getCursorDevice ().getParameterBank ().scrollBackwards ();
+                break;
+            case DEVICE_SELECT_NEXT_PARAMETER_PAGE:
+                if (value > 0)
+                    this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
+                break;
+            case DEVICE_SCROLL_PARAMETER_PAGES:
+                this.scrollParameterPage (commandSlot.getKnobMode (), value);
+                break;
+
             // Device: Select Previous Parameter Bank
             case DEVICE_SELECT_PREVIOUS_PARAMETER_BANK:
                 if (value > 0)
@@ -1650,6 +1662,21 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             this.model.getCursorDevice ().selectNext ();
         else
             this.model.getCursorDevice ().selectPrevious ();
+    }
+
+
+    private void scrollParameterPage (final int knobMode, final int value)
+    {
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            return;
+
+        if (!this.increaseKnobMovement ())
+            return;
+
+        if (this.getRelativeSpeed (knobMode, value) > 0)
+            this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
+        else
+            this.model.getCursorDevice ().getParameterBank ().scrollBackwards ();
     }
 
 

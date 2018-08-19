@@ -205,10 +205,12 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         final int trackType = TrackType.toTrackType (track.getType ());
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
+        final double normalizedVolume = valueChanger.toNormalizedValue (track.getVolume ());
+
         if (is16)
         {
             // 1.6
-            this.sendTrackOSC (this.daw + "track/volume", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVolume ()))), dump);
+            this.sendTrackOSC (this.daw + "track/volume", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) normalizedVolume)), dump);
             this.sendTrackOSC (this.daw + "track/pan", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) (valueChanger.toNormalizedValue (track.getPan ()) * 2.0 - 1.0))), dump);
             this.sendTrackVuOSC (this.daw + "track/meter", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (0), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuLeft ()))), dump);
             this.sendTrackVuOSC (this.daw + "track/meter", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (1), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuRight ()))), dump);
@@ -219,7 +221,7 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         else
         {
             // 1.5
-            this.sendTrackOSC (this.daw + "volume", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVolume ()))), dump);
+            this.sendTrackOSC (this.daw + "volume", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) normalizedVolume)), dump);
             this.sendTrackOSC (this.daw + "pan", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) (valueChanger.toNormalizedValue (track.getPan ()) * 2.0 - 1.0))), dump);
             // type and index are switched with these 2 messages...
             this.sendTrackVuOSC (this.daw + "meter", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (0), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuLeft ()))), dump);

@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -72,7 +73,9 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1, 8);
+        final ModelSetup ms = new ModelSetup ();
+        ms.setNumMarkers (8);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 

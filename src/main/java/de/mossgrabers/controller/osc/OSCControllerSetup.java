@@ -14,6 +14,7 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
@@ -70,7 +71,10 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, false, 8, 8, 8, 16, 8);
+        final ModelSetup ms = new ModelSetup ();
+        ms.setHasFlatTrackList (false);
+        ms.setNumMarkers (8);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 
