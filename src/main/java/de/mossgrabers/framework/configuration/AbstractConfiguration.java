@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.configuration;
 
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
@@ -23,107 +24,119 @@ import java.util.Set;
 public abstract class AbstractConfiguration implements Configuration
 {
     /** ID for scale setting. */
-    public static final Integer   SCALES_SCALE                      = Integer.valueOf (0);
+    public static final Integer    SCALES_SCALE                      = Integer.valueOf (0);
     /** ID for scale base note setting. */
-    public static final Integer   SCALES_BASE                       = Integer.valueOf (1);
+    public static final Integer    SCALES_BASE                       = Integer.valueOf (1);
     /** ID for scale in-key setting. */
-    public static final Integer   SCALES_IN_KEY                     = Integer.valueOf (2);
+    public static final Integer    SCALES_IN_KEY                     = Integer.valueOf (2);
     /** ID for scale layout setting. */
-    public static final Integer   SCALES_LAYOUT                     = Integer.valueOf (3);
+    public static final Integer    SCALES_LAYOUT                     = Integer.valueOf (3);
     /** ID for enabling VU meters setting. */
-    public static final Integer   ENABLE_VU_METERS                  = Integer.valueOf (4);
+    public static final Integer    ENABLE_VU_METERS                  = Integer.valueOf (4);
     /** ID for behaviour on stop setting. */
-    public static final Integer   BEHAVIOUR_ON_STOP                 = Integer.valueOf (5);
+    public static final Integer    BEHAVIOUR_ON_STOP                 = Integer.valueOf (5);
     /** ID for displaying the crossfader in tracks setting. */
-    public static final Integer   DISPLAY_CROSSFADER                = Integer.valueOf (6);
+    public static final Integer    DISPLAY_CROSSFADER                = Integer.valueOf (6);
     /** ID for flipping the session grid setting. */
-    public static final Integer   FLIP_SESSION                      = Integer.valueOf (7);
+    public static final Integer    FLIP_SESSION                      = Integer.valueOf (7);
     /** ID for locking the flip the session grid setting. */
-    public static final Integer   LOCK_FLIP_SESSION                 = Integer.valueOf (8);
+    public static final Integer    LOCK_FLIP_SESSION                 = Integer.valueOf (8);
     /** ID for selecting the clip on launch setting. */
-    public static final Integer   SELECT_CLIP_ON_LAUNCH             = Integer.valueOf (9);
+    public static final Integer    SELECT_CLIP_ON_LAUNCH             = Integer.valueOf (9);
     /** ID for drawing record stripes setting. */
-    public static final Integer   DRAW_RECORD_STRIPE                = Integer.valueOf (10);
+    public static final Integer    DRAW_RECORD_STRIPE                = Integer.valueOf (10);
     /** ID for converting the aftertouch data setting. */
-    public static final Integer   CONVERT_AFTERTOUCH                = Integer.valueOf (11);
+    public static final Integer    CONVERT_AFTERTOUCH                = Integer.valueOf (11);
     /** ID for activating the fixed accent setting. */
-    public static final Integer   ACTIVATE_FIXED_ACCENT             = Integer.valueOf (12);
+    public static final Integer    ACTIVATE_FIXED_ACCENT             = Integer.valueOf (12);
     /** ID for the value of the fixed accent setting. */
-    public static final Integer   FIXED_ACCENT_VALUE                = Integer.valueOf (13);
+    public static final Integer    FIXED_ACCENT_VALUE                = Integer.valueOf (13);
     /** ID for the quantize amount setting. */
-    public static final Integer   QUANTIZE_AMOUNT                   = Integer.valueOf (14);
+    public static final Integer    QUANTIZE_AMOUNT                   = Integer.valueOf (14);
     /** ID for the flip recording setting. */
-    public static final Integer   FLIP_RECORD                       = Integer.valueOf (15);
+    public static final Integer    FLIP_RECORD                       = Integer.valueOf (15);
     /** Setting for automatic selecting the drum channel. */
-    public static final Integer   AUTO_SELECT_DRUM                  = Integer.valueOf (16);
+    public static final Integer    AUTO_SELECT_DRUM                  = Integer.valueOf (16);
     /** Setting for new clip length. */
-    public static final Integer   NEW_CLIP_LENGTH                   = Integer.valueOf (17);
+    public static final Integer    NEW_CLIP_LENGTH                   = Integer.valueOf (17);
     /** Setting for turning off empty drum pads (otherwise orange). */
-    public static final Integer   TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (18);
+    public static final Integer    TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (18);
     /** Setting for action for rec armed pad. */
-    public static final Integer   ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (19);
+    public static final Integer    ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (19);
     /** Setting for the footswitch functionality. */
-    public static final Integer   FOOTSWITCH_2                      = Integer.valueOf (20);
+    public static final Integer    FOOTSWITCH_2                      = Integer.valueOf (20);
     /** Setting for displaying browser column 1. */
-    public static final Integer   BROWSER_DISPLAY_FILTER1           = Integer.valueOf (21);
+    public static final Integer    BROWSER_DISPLAY_FILTER1           = Integer.valueOf (21);
     /** Setting for displaying browser column 2. */
-    public static final Integer   BROWSER_DISPLAY_FILTER2           = Integer.valueOf (22);
+    public static final Integer    BROWSER_DISPLAY_FILTER2           = Integer.valueOf (22);
     /** Setting for displaying browser column 3. */
-    public static final Integer   BROWSER_DISPLAY_FILTER3           = Integer.valueOf (23);
+    public static final Integer    BROWSER_DISPLAY_FILTER3           = Integer.valueOf (23);
     /** Setting for displaying browser column 4. */
-    public static final Integer   BROWSER_DISPLAY_FILTER4           = Integer.valueOf (24);
+    public static final Integer    BROWSER_DISPLAY_FILTER4           = Integer.valueOf (24);
     /** Setting for displaying browser column 5. */
-    public static final Integer   BROWSER_DISPLAY_FILTER5           = Integer.valueOf (25);
+    public static final Integer    BROWSER_DISPLAY_FILTER5           = Integer.valueOf (25);
     /** Setting for displaying browser column 6. */
-    public static final Integer   BROWSER_DISPLAY_FILTER6           = Integer.valueOf (26);
+    public static final Integer    BROWSER_DISPLAY_FILTER6           = Integer.valueOf (26);
     /** Setting for displaying browser column 7. */
-    public static final Integer   BROWSER_DISPLAY_FILTER7           = Integer.valueOf (27);
+    public static final Integer    BROWSER_DISPLAY_FILTER7           = Integer.valueOf (27);
     /** Setting for displaying browser column 8. */
-    public static final Integer   BROWSER_DISPLAY_FILTER8           = Integer.valueOf (28);
+    public static final Integer    BROWSER_DISPLAY_FILTER8           = Integer.valueOf (28);
 
-    protected static final String CATEGORY_DRUMS                    = "Drum Sequencer";
-    protected static final String CATEGORY_SCALES                   = "Scales";
-    protected static final String CATEGORY_SESSION                  = "Session";
-    protected static final String CATEGORY_TRANSPORT                = "Transport";
-    protected static final String CATEGORY_WORKFLOW                 = "Workflow";
-    protected static final String CATEGORY_PADS                     = "Pads";
-    protected static final String CATEGORY_PLAY_AND_SEQUENCE        = "Play and Sequence";
-    protected static final String CATEGORY_HARDWARE_SETUP           = "Hardware Setup";
-    protected static final String CATEGORY_DEBUG                    = "Debug";
+    protected static final String  CATEGORY_DRUMS                    = "Drum Sequencer";
+    protected static final String  CATEGORY_SCALES                   = "Scales";
+    protected static final String  CATEGORY_SESSION                  = "Session";
+    protected static final String  CATEGORY_TRANSPORT                = "Transport";
+    protected static final String  CATEGORY_WORKFLOW                 = "Workflow";
+    protected static final String  CATEGORY_PADS                     = "Pads";
+    protected static final String  CATEGORY_PLAY_AND_SEQUENCE        = "Play and Sequence";
+    protected static final String  CATEGORY_HARDWARE_SETUP           = "Hardware Setup";
+    protected static final String  CATEGORY_DEBUG                    = "Debug";
 
-    private static final String   SCALE_IN_KEY                      = "In Key";
-    private static final String   SCALE_CHROMATIC                   = "Chromatic";
+    private static final String    SCALE_IN_KEY                      = "In Key";
+    private static final String    SCALE_CHROMATIC                   = "Chromatic";
 
     /** Use footswitch 2 for toggling play. */
-    public static final int       FOOTSWITCH_2_TOGGLE_PLAY          = 0;
+    public static final int        FOOTSWITCH_2_TOGGLE_PLAY          = 0;
     /** Use footswitch 2 for toggling record. */
-    public static final int       FOOTSWITCH_2_TOGGLE_RECORD        = 1;
+    public static final int        FOOTSWITCH_2_TOGGLE_RECORD        = 1;
     /** Use footswitch 2 for stopping all clips. */
-    public static final int       FOOTSWITCH_2_STOP_ALL_CLIPS       = 2;
+    public static final int        FOOTSWITCH_2_STOP_ALL_CLIPS       = 2;
     /** Use footswitch 2 for toggling clip overdub. */
-    public static final int       FOOTSWITCH_2_TOGGLE_CLIP_OVERDUB  = 3;
+    public static final int        FOOTSWITCH_2_TOGGLE_CLIP_OVERDUB  = 3;
     /** Use footswitch 2 for undo. */
-    public static final int       FOOTSWITCH_2_UNDO                 = 4;
+    public static final int        FOOTSWITCH_2_UNDO                 = 4;
     /** Use footswitch 2 for tapping tempo. */
-    public static final int       FOOTSWITCH_2_TAP_TEMPO            = 5;
+    public static final int        FOOTSWITCH_2_TAP_TEMPO            = 5;
     /** Use footswitch 2 as the new button. */
-    public static final int       FOOTSWITCH_2_NEW_BUTTON           = 6;
+    public static final int        FOOTSWITCH_2_NEW_BUTTON           = 6;
     /** Use footswitch 2 as clip based looper. */
-    public static final int       FOOTSWITCH_2_CLIP_BASED_LOOPER    = 7;
+    public static final int        FOOTSWITCH_2_CLIP_BASED_LOOPER    = 7;
     /** Use footswitch 2 to trigger the arrange layout. */
-    public static final int       FOOTSWITCH_2_PANEL_LAYOUT_ARRANGE = 8;
+    public static final int        FOOTSWITCH_2_PANEL_LAYOUT_ARRANGE = 8;
     /** Use footswitch 2 to trigger the mix layout. */
-    public static final int       FOOTSWITCH_2_PANEL_LAYOUT_MIX     = 9;
+    public static final int        FOOTSWITCH_2_PANEL_LAYOUT_MIX     = 9;
     /** Use footswitch 2 to trigger the edit layout. */
-    public static final int       FOOTSWITCH_2_PANEL_LAYOUT_EDIT    = 10;
+    public static final int        FOOTSWITCH_2_PANEL_LAYOUT_EDIT    = 10;
     /** Use footswitch 2 to add a new instrument track. */
-    public static final int       FOOTSWITCH_2_ADD_INSTRUMENT_TRACK = 11;
+    public static final int        FOOTSWITCH_2_ADD_INSTRUMENT_TRACK = 11;
     /** Use footswitch 2 to add a new audio track. */
-    public static final int       FOOTSWITCH_2_ADD_AUDIO_TRACK      = 12;
+    public static final int        FOOTSWITCH_2_ADD_AUDIO_TRACK      = 12;
     /** Use footswitch 2 to add a new effect track. */
-    public static final int       FOOTSWITCH_2_ADD_EFFECT_TRACK     = 13;
+    public static final int        FOOTSWITCH_2_ADD_EFFECT_TRACK     = 13;
     /** Use footswitch 2 to quantize the selected clip. */
-    public static final int       FOOTSWITCH_2_QUANTIZE             = 14;
+    public static final int        FOOTSWITCH_2_QUANTIZE             = 14;
+
+    protected static final ColorEx DEFAULT_COLOR_BACKGROUND          = ColorEx.fromRGB (83, 83, 83);
+    protected static final ColorEx DEFAULT_COLOR_BORDER              = ColorEx.BLACK;
+    protected static final ColorEx DEFAULT_COLOR_TEXT                = ColorEx.WHITE;
+    protected static final ColorEx DEFAULT_COLOR_FADER               = ColorEx.fromRGB (69, 44, 19);
+    protected static final ColorEx DEFAULT_COLOR_VU                  = ColorEx.GREEN;
+    protected static final ColorEx DEFAULT_COLOR_EDIT                = ColorEx.fromRGB (240, 127, 17);
+    protected static final ColorEx DEFAULT_COLOR_RECORD              = ColorEx.RED;
+    protected static final ColorEx DEFAULT_COLOR_SOLO                = ColorEx.YELLOW;
+    protected static final ColorEx DEFAULT_COLOR_MUTE                = ColorEx.fromRGB (245, 129, 17);
+    protected static final ColorEx DEFAULT_COLOR_BACKGROUND_DARKER   = ColorEx.fromRGB (39, 39, 39);
+    protected static final ColorEx DEFAULT_COLOR_BACKGROUND_LIGHTER  = ColorEx.fromRGB (118, 118, 118);
 
     /** The behaviour when the stop button is pressed. */
     public enum BehaviourOnStop

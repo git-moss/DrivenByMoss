@@ -15,6 +15,7 @@ import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 
 import java.util.Set;
 
@@ -24,7 +25,7 @@ import java.util.Set;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PushConfiguration extends AbstractConfiguration
+public class PushConfiguration extends AbstractConfiguration implements IGraphicsConfiguration
 {
     /** Settings for different Mute and Solo behaviour. */
     public enum TrackState
@@ -90,18 +91,6 @@ public class PushConfiguration extends AbstractConfiguration
     public static final Integer    SESSION_VIEW                     = Integer.valueOf (61);
     /** Display scenes or clips. */
     public static final Integer    DISPLAY_SCENES_CLIPS             = Integer.valueOf (62);
-
-    private static final ColorEx   DEFAULT_COLOR_BACKGROUND         = ColorEx.fromRGB (83, 83, 83);
-    private static final ColorEx   DEFAULT_COLOR_BORDER             = ColorEx.BLACK;
-    private static final ColorEx   DEFAULT_COLOR_TEXT               = ColorEx.WHITE;
-    private static final ColorEx   DEFAULT_COLOR_FADER              = ColorEx.fromRGB (69, 44, 19);
-    private static final ColorEx   DEFAULT_COLOR_VU                 = ColorEx.GREEN;
-    private static final ColorEx   DEFAULT_COLOR_EDIT               = ColorEx.fromRGB (240, 127, 17);
-    private static final ColorEx   DEFAULT_COLOR_RECORD             = ColorEx.RED;
-    private static final ColorEx   DEFAULT_COLOR_SOLO               = ColorEx.YELLOW;
-    private static final ColorEx   DEFAULT_COLOR_MUTE               = ColorEx.fromRGB (245, 129, 17);
-    private static final ColorEx   DEFAULT_COLOR_BACKGROUND_DARKER  = ColorEx.fromRGB (39, 39, 39);
-    private static final ColorEx   DEFAULT_COLOR_BACKGROUND_LIGHTER = ColorEx.fromRGB (118, 118, 118);
 
     /** Use ribbon for pitch bend. */
     public static final int        RIBBON_MODE_PITCH                = 0;
@@ -752,121 +741,88 @@ public class PushConfiguration extends AbstractConfiguration
     }
 
 
-    /**
-     * Get the background color of an element.
-     *
-     * @return The background color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorBackground ()
     {
         return this.colorBackground;
     }
 
 
-    /**
-     * Get the background darker color of an element.
-     *
-     * @return The background color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorBackgroundDarker ()
     {
         return this.colorBackgroundDarker;
     }
 
 
-    /**
-     * Get the background lighter color of an element.
-     *
-     * @return The background color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorBackgroundLighter ()
     {
         return this.colorBackgroundLighter;
     }
 
 
-    /**
-     * Get the border color of an element.
-     *
-     * @return The border color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorBorder ()
     {
         return this.colorBorder;
     }
 
 
-    /**
-     * Get the text color of an element.
-     *
-     * @return The text color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorText ()
     {
         return this.colorText;
     }
 
 
-    /**
-     * Get the edit color of an element.
-     *
-     * @return The edit color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorEdit ()
     {
         return this.colorEdit;
     }
 
 
-    /**
-     * Get the fader color of an element.
-     *
-     * @return The fader color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorFader ()
     {
         return this.colorFader;
     }
 
 
-    /**
-     * Get the VU color of an element.
-     *
-     * @return The VU color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorVu ()
     {
         return this.colorVU;
     }
 
 
-    /**
-     * Get the record color of an element.
-     *
-     * @return The record color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorRecord ()
     {
         return this.colorRecord;
     }
 
 
-    /**
-     * Get the solo color of an element.
-     *
-     * @return The solo color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorSolo ()
     {
         return this.colorSolo;
     }
 
 
-    /**
-     * Get the mute color of an element.
-     *
-     * @return The border mute of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorMute ()
     {
         return this.colorMute;

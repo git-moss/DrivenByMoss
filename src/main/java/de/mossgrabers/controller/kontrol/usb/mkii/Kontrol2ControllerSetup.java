@@ -11,9 +11,6 @@ import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2ControlSurf
 import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2Display;
 import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2UsbDevice;
 import de.mossgrabers.controller.kontrol.usb.mkii.mode.Modes;
-import de.mossgrabers.controller.kontrol.usb.mkii.mode.ScaleMode;
-import de.mossgrabers.controller.kontrol.usb.mkii.mode.device.BrowseMode;
-import de.mossgrabers.controller.kontrol.usb.mkii.mode.device.ParamsMode;
 import de.mossgrabers.controller.kontrol.usb.mkii.mode.track.TrackMode;
 import de.mossgrabers.controller.kontrol.usb.mkii.mode.track.VolumeMode;
 import de.mossgrabers.controller.kontrol.usb.mkii.view.ControlView;
@@ -110,10 +107,6 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
 
         modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_PARAMS, new ParamsMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_BROWSER, new BrowseMode (surface, this.model));
-
-        modeManager.registerMode (Modes.MODE_SCALE, new ScaleMode (surface, this.model));
     }
 
 

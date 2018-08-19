@@ -2,12 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.controller.display.grid;
+package de.mossgrabers.framework.graphics.grid;
 
-import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
+import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 
 
 /**
@@ -57,24 +58,24 @@ public class OptionsGridElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
+    public void draw (final IGraphicsContext gc, final IGraphicsConfiguration configuration, IGraphicsDimensions dimensions, final double left, final double width, final double height)
     {
-        final double menuHeight = MENU_HEIGHT * 2;
+        final double menuHeight = 2 * dimensions.getMenuHeight ();
 
         final ColorEx colorBackground = configuration.getColorBackgroundDarker ();
 
         if (this.useSmallTopMenu)
-            this.drawMenu (gc, left, width, configuration);
+            this.drawMenu (gc, configuration, dimensions, left, width);
         else
             drawLargeMenu (gc, left, 0, width, menuHeight, this.menuName, this.isMenuSelected, configuration, this.menuTopColor == null ? colorBackground : this.menuTopColor);
-        drawLargeMenu (gc, left, DISPLAY_HEIGHT - 2 * MENU_HEIGHT, width, menuHeight, this.menuBottomName, this.isMenuBottomSelected, configuration, this.menuBottomColor == null ? colorBackground : this.menuBottomColor);
+        drawLargeMenu (gc, left, height - menuHeight, width, menuHeight, this.menuBottomName, this.isMenuBottomSelected, configuration, this.menuBottomColor == null ? colorBackground : this.menuBottomColor);
 
         final boolean hasTopHeader = this.headerTop != null && this.headerTop.length () > 0;
         final boolean hasBottomHeader = this.headerBottom != null && this.headerBottom.length () > 0;
         if (!hasTopHeader && !hasBottomHeader)
             return;
 
-        final double headerHeight = (DISPLAY_HEIGHT - 2 * menuHeight) / 2;
+        final double headerHeight = (height - 2 * menuHeight) / 2;
         final ColorEx textColor = configuration.getColorText ();
         if (hasTopHeader)
             gc.drawTextInHeight (this.headerTop, left, menuHeight, headerHeight, textColor, headerHeight / 2.0);
@@ -96,7 +97,7 @@ public class OptionsGridElement extends AbstractGridElement
      * @param configuration The layout settings to use
      * @param colorBackground The color to use for the background menu, may be null
      */
-    protected static void drawLargeMenu (final IGraphicsContext gc, final double left, final double top, final double width, final double height, final String menu, final boolean isSelected, final PushConfiguration configuration, final ColorEx colorBackground)
+    protected static void drawLargeMenu (final IGraphicsContext gc, final double left, final double top, final double width, final double height, final String menu, final boolean isSelected, final IGraphicsConfiguration configuration, final ColorEx colorBackground)
     {
         if (menu == null || menu.length () == 0)
             return;

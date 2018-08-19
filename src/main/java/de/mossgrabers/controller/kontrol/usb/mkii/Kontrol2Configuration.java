@@ -8,6 +8,8 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 
 
 /**
@@ -15,12 +17,27 @@ import de.mossgrabers.framework.controller.IValueChanger;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Kontrol2Configuration extends AbstractConfiguration
+public class Kontrol2Configuration extends AbstractConfiguration implements IGraphicsConfiguration
 {
-    private static final Integer SCALE_IS_ACTIVE = Integer.valueOf (40);
+    // TODO
+    private static final Integer SCALE_IS_ACTIVE        = Integer.valueOf (40);
+    /** Push 2 display debug window. */
+    public static final Integer  DEBUG_WINDOW           = Integer.valueOf (42);
 
     private IEnumSetting         scaleIsActiveSetting;
     private boolean              scaleIsActive;
+
+    private ColorEx              colorBackground        = DEFAULT_COLOR_BACKGROUND;
+    private ColorEx              colorBorder            = DEFAULT_COLOR_BORDER;
+    private ColorEx              colorText              = DEFAULT_COLOR_TEXT;
+    private ColorEx              colorFader             = DEFAULT_COLOR_FADER;
+    private ColorEx              colorVU                = DEFAULT_COLOR_VU;
+    private ColorEx              colorEdit              = DEFAULT_COLOR_EDIT;
+    private ColorEx              colorRecord            = DEFAULT_COLOR_RECORD;
+    private ColorEx              colorSolo              = DEFAULT_COLOR_SOLO;
+    private ColorEx              colorMute              = DEFAULT_COLOR_MUTE;
+    private ColorEx              colorBackgroundDarker  = DEFAULT_COLOR_BACKGROUND_DARKER;
+    private ColorEx              colorBackgroundLighter = DEFAULT_COLOR_BACKGROUND_LIGHTER;
 
 
     /**
@@ -61,6 +78,8 @@ public class Kontrol2Configuration extends AbstractConfiguration
         // Workflow
 
         this.activateEnableVUMetersSetting (settingsUI);
+
+        settingsUI.getSignalSetting (" ", CATEGORY_DEBUG, "Display window").addValueObserver (value -> this.notifyObservers (DEBUG_WINDOW));
     }
 
 
@@ -81,5 +100,93 @@ public class Kontrol2Configuration extends AbstractConfiguration
     public void toggleScaleIsActive ()
     {
         this.scaleIsActiveSetting.set (ON_OFF_OPTIONS[this.scaleIsActive ? 0 : 1]);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorBackground ()
+    {
+        return this.colorBackground;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorBackgroundDarker ()
+    {
+        return this.colorBackgroundDarker;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorBackgroundLighter ()
+    {
+        return this.colorBackgroundLighter;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorBorder ()
+    {
+        return this.colorBorder;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorText ()
+    {
+        return this.colorText;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorEdit ()
+    {
+        return this.colorEdit;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorFader ()
+    {
+        return this.colorFader;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorVu ()
+    {
+        return this.colorVU;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorRecord ()
+    {
+        return this.colorRecord;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorSolo ()
+    {
+        return this.colorSolo;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorMute ()
+    {
+        return this.colorMute;
     }
 }

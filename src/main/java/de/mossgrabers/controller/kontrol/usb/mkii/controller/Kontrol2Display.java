@@ -9,34 +9,24 @@ import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.graphics.IGraphicsDimensions;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
+import de.mossgrabers.framework.graphics.display.VirtualDisplay;
+import de.mossgrabers.framework.graphics.grid.DefaultGraphicsDimensions;
+import de.mossgrabers.framework.graphics.grid.GridChangeListener;
 
 
 /**
- * The display of Kontrol 1.
+ * The display of Kontrol 2.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Kontrol2Display extends AbstractDisplay
+public class Kontrol2Display extends AbstractDisplay implements GridChangeListener
 {
-    private static final String [] SPACES =
-    {
-        "",
-        " ",
-        "  ",
-        "   ",
-        "    ",
-        "     ",
-        "      ",
-        "       ",
-        "        ",
-        "         ",
-        "          ",
-        "           ",
-        "            ",
-        "             "
-    };
-
-    private Kontrol2UsbDevice      usbDevice;
+    private final Kontrol2UsbDevice  usbDevice;
+    private final DisplayModel       model;
+    private final VirtualDisplay     virtualDisplay;
+    private final Kontrol2UsbDisplay usbDisplay;
 
 
     /**
@@ -50,6 +40,24 @@ public class Kontrol2Display extends AbstractDisplay
     {
         super (host, null, 2 /* No of rows */, 9 /* No of cells */, 72 /* No of characters */);
         this.usbDevice = usbDevice;
+
+        this.model = new DisplayModel ();
+        this.model.addGridElementChangeListener (this);
+
+        final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (2 * 480, 360);
+        this.virtualDisplay = new VirtualDisplay (host, this.model, configuration, dimensions, "Kontrol mkII Display");
+        this.usbDisplay = new Kontrol2UsbDisplay (host);
+    }
+
+
+    /**
+     * Get the dislay model.
+     *
+     * @return The display model
+     */
+    public DisplayModel getModel ()
+    {
+        return this.model;
     }
 
 
@@ -72,19 +80,9 @@ public class Kontrol2Display extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Kontrol2Display clearRow (final int row)
-    {
-        for (int i = 0; i < this.noOfCells; i++)
-            this.clearCell (row, i);
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public Kontrol2Display clearCell (final int row, final int cell)
     {
-        this.cells[row * this.noOfCells + cell] = "        ";
+        // Not a line based display
         return this;
     }
 
@@ -93,17 +91,7 @@ public class Kontrol2Display extends AbstractDisplay
     @Override
     public Kontrol2Display setBlock (final int row, final int block, final String value)
     {
-        final int cell = 2 * block;
-        if (value.length () > 9)
-        {
-            this.cells[row * this.noOfCells + cell] = value.substring (0, 9);
-            this.cells[row * this.noOfCells + cell + 1] = pad (value.substring (9), 8);
-        }
-        else
-        {
-            this.cells[row * this.noOfCells + cell] = pad (value, 9);
-            this.clearCell (row, cell + 1);
-        }
+        // Not a line based display
         return this;
     }
 
@@ -112,7 +100,7 @@ public class Kontrol2Display extends AbstractDisplay
     @Override
     public Display setCell (final int row, final int column, final int value, final Format format)
     {
-        this.setCell (row, column, Integer.toString (value));
+        // Not a line based display
         return this;
     }
 
@@ -121,27 +109,8 @@ public class Kontrol2Display extends AbstractDisplay
     @Override
     public Kontrol2Display setCell (final int row, final int cell, final String value)
     {
-        this.cells[row * this.noOfCells + cell] = pad (value, 8);
+        // Not a line based display
         return this;
-    }
-
-
-    /**
-     * Pad the given text with the given character until it reaches the given length.
-     *
-     * @param str The text to pad
-     * @param length The maximum length
-     * @return The padded text
-     */
-    public static String pad (final String str, final int length)
-    {
-        final String text = str == null ? "" : str;
-        final int diff = length - text.length ();
-        if (diff < 0)
-            return text.substring (0, length);
-        if (diff > 0)
-            return text + Kontrol2Display.SPACES[diff];
-        return text;
     }
 
 
@@ -150,5 +119,24 @@ public class Kontrol2Display extends AbstractDisplay
     public void writeLine (final int row, final String text)
     {
         // Not a line based display
+    }
+
+
+    /**
+     * Show the display debug window.
+     */
+    public void showDebugWindow ()
+    {
+        if (this.virtualDisplay != null)
+            this.virtualDisplay.getImage ().showDisplayWindow ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void gridHasChanged ()
+    {
+        if (this.usbDisplay != null)
+            this.usbDisplay.send (this.virtualDisplay.getImage ());
     }
 }

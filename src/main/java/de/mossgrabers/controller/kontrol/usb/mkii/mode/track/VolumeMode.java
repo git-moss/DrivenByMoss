@@ -4,73 +4,29 @@
 
 package de.mossgrabers.controller.kontrol.usb.mkii.mode.track;
 
-import de.mossgrabers.controller.kontrol.usb.mkii.Kontrol2Configuration;
 import de.mossgrabers.controller.kontrol.usb.mkii.controller.Kontrol2ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 
 
 /**
- * Volume mode.
+ * Mode for editing a volume parameter of all tracks.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class VolumeMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Configuration>
+public class VolumeMode extends AbstractTrackMode
 {
     /**
      * Constructor.
      *
-     * @param surface The surface
+     * @param surface The control surface
      * @param model The model
      */
     public VolumeMode (final Kontrol2ControlSurface surface, final IModel model)
     {
         super (surface, model);
-        this.isTemporary = false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateDisplay ()
-    {
-        // TODO Spec missing: Implement volume display
-        // final Kontrol2Display d = (Kontrol2Display) this.surface.getDisplay ();
-        //
-        // d.clear ();
-        //
-        // final ITrackBank tb = this.model.getCurrentTrackBank ();
-        //
-        // final StringBuilder sb = new StringBuilder ();
-        // final int positionFirst = tb.getTrackPositionFirst ();
-        // if (positionFirst >= 0)
-        // {
-        // sb.append (Integer.toString (positionFirst + 1));
-        // final int positionLast = tb.getTrackPositionLast ();
-        // if (positionLast >= 0)
-        // sb.append (" - ").append (Integer.toString (positionLast + 1));
-        // }
-        //
-        // d.setCell (0, 0, this.model.isEffectTrackBankActive () ? "VOL-FX" : "VOLUME").setCell (1,
-        // 0, sb.toString ());
-        //
-        // final ITrack selTrack = tb.getSelectedTrack ();
-        //
-        // final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
-        // for (int i = 0; i < 8; i++)
-        // {
-        // final boolean isSel = i == selIndex;
-        // final ITrack t = tb.getItem (i);
-        // final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8).toUpperCase
-        // ();
-        // d.setCell (0, 1 + i, isSel ? ">" + n : n).setCell (1, 1 + i, t.isMute () ? "-MUTED-" :
-        // t.isSolo () ? "-SOLO-" : t.getVolumeStr (8));
-        //
-        // d.setBar (1 + i, this.surface.isPressed (Kontrol2ControlSurface.TOUCH_ENCODER_1 + i) &&
-        // t.doesExist (), t.getVolume ());
-        // }
-        // d.allDone ();
     }
 
 
@@ -84,8 +40,33 @@ public class VolumeMode extends AbstractMode<Kontrol2ControlSurface, Kontrol2Con
 
     /** {@inheritDoc} */
     @Override
-    public void onRowButton (final int row, final int index, final ButtonEvent event)
+    public void onValueKnobTouch (final int index, final boolean isTouched)
     {
-        // Intentionally empty
+        this.isKnobTouched[index] = isTouched;
+
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getItem (index);
+        if (!t.doesExist ())
+            return;
+
+        if (isTouched)
+        {
+            if (this.surface.isDeletePressed ())
+            {
+                this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+                t.resetVolume ();
+            }
+        }
+
+        t.touchVolume (isTouched);
+        this.checkStopAutomationOnKnobRelease (isTouched);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateDisplay ()
+    {
+        this.updateChannelDisplay (DisplayModel.GRID_ELEMENT_CHANNEL_VOLUME, true, false);
     }
 }

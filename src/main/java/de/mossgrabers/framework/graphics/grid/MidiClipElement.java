@@ -2,13 +2,14 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.controller.display.grid;
+package de.mossgrabers.framework.graphics.grid;
 
-import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
+import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -42,7 +43,7 @@ public class MidiClipElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
+    public void draw (final IGraphicsContext gc, final IGraphicsConfiguration configuration, IGraphicsDimensions dimensions, final double left, final double width, final double height)
     {
         final int top = 14;
         final double noteAreaHeight = height - top;

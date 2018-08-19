@@ -8,7 +8,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 
 
 /**
- * .
+ * Interface to drawing functions.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

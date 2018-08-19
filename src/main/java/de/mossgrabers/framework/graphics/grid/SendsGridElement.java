@@ -2,13 +2,14 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.controller.display.grid;
+package de.mossgrabers.framework.graphics.grid;
 
-import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
+import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 
 
 /**
@@ -90,48 +91,54 @@ public class SendsGridElement extends SelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
+    public void draw (final IGraphicsContext gc, final IGraphicsConfiguration configuration, IGraphicsDimensions dimensions, final double left, final double width, final double height)
     {
-        super.draw (gc, left, width, height, configuration);
+        super.draw (gc, configuration, dimensions, left, width, height);
 
         final String name = this.getName ();
         // Element is off if the name is empty
         if ((name == null || name.length () == 0) && !this.isExMode)
             return;
 
-        final double trackRowTop = height - TRACK_ROW_HEIGHT - UNIT - SEPARATOR_SIZE;
-        final double sliderWidth = width - 2 * INSET - 1;
-        final double t = MENU_HEIGHT + 1;
+        final double separatorSize = dimensions.getSeparatorSize ();
+        final double menuHeight = dimensions.getMenuHeight ();
+        final double unit = dimensions.getUnit ();
+        final double inset = dimensions.getInset ();
+
+        final int trackRowHeight = (int) (1.6 * unit);
+        final double trackRowTop = height - trackRowHeight - unit - separatorSize;
+        final double sliderWidth = width - 2 * inset - 1;
+        final double t = menuHeight + 1;
         final double h = trackRowTop - t;
         final double sliderAreaHeight = h;
         // 4 rows of Texts and 4 rows of faders
         final double sendRowHeight = sliderAreaHeight / 8;
-        final double sliderHeight = sendRowHeight - 2 * SEPARATOR_SIZE;
+        final double sliderHeight = sendRowHeight - 2 * separatorSize;
 
         // Background of slider area
         final ColorEx backgroundColor = configuration.getColorBackground ();
-        gc.fillRectangle (this.isExMode ? left - SEPARATOR_SIZE : left, t, this.isExMode ? width + SEPARATOR_SIZE : width, this.isExMode ? h - 2 : h, this.isSelected () || this.isExMode ? configuration.getColorBackgroundLighter () : backgroundColor);
+        gc.fillRectangle (this.isExMode ? left - separatorSize : left, t, this.isExMode ? width + separatorSize : width, this.isExMode ? h - 2 : h, this.isSelected () || this.isExMode ? configuration.getColorBackgroundLighter () : backgroundColor);
 
-        double topy = MENU_HEIGHT + (this.isExMode ? 0 : SEPARATOR_SIZE);
+        double topy = menuHeight + (this.isExMode ? 0 : separatorSize);
 
         final ColorEx textColor = configuration.getColorText ();
         final ColorEx borderColor = configuration.getColorBorder ();
         final ColorEx faderColor = configuration.getColorFader ();
         final ColorEx editColor = configuration.getColorEdit ();
-        final double faderLeft = left + INSET;
+        final double faderLeft = left + inset;
         for (int i = 0; i < 4; i++)
         {
             if (this.sendNames[i].length () == 0)
                 break;
 
-            gc.drawTextInBounds (this.sendNames[i], faderLeft, topy + SEPARATOR_SIZE, sliderWidth, sendRowHeight, Align.LEFT, textColor, sendRowHeight);
+            gc.drawTextInBounds (this.sendNames[i], faderLeft, topy + separatorSize, sliderWidth, sendRowHeight, Align.LEFT, textColor, sendRowHeight);
             topy += sendRowHeight;
-            gc.fillRectangle (faderLeft, topy + SEPARATOR_SIZE, sliderWidth, sliderHeight, borderColor);
+            gc.fillRectangle (faderLeft, topy + separatorSize, sliderWidth, sliderHeight, borderColor);
 
             final double valueWidth = this.sendValues[i] * sliderWidth / getMaxValue ();
             final boolean isSendModulated = this.modulatedSendValues[i] != -1;
             final double modulatedValueWidth = isSendModulated ? (double) (this.modulatedSendValues[i] * sliderWidth / getMaxValue ()) : valueWidth;
-            final double faderTop = topy + SEPARATOR_SIZE + 1;
+            final double faderTop = topy + separatorSize + 1;
             gc.fillRectangle (faderLeft + 1, faderTop, modulatedValueWidth - 1, sliderHeight - 2, faderColor);
 
             if (this.sendEdited[i])
@@ -147,7 +154,7 @@ public class SendsGridElement extends SelectionGridElement
         // Draw volume text on top if set
         final double boxWidth = sliderWidth / 2;
         final double boxLeft = faderLeft + sliderWidth - boxWidth;
-        topy = MENU_HEIGHT;
+        topy = menuHeight;
         final ColorEx backgroundDarker = configuration.getColorBackgroundDarker ();
         for (int i = 0; i < 4; i++)
         {
@@ -155,10 +162,10 @@ public class SendsGridElement extends SelectionGridElement
 
             if (this.sendTexts[i].length () > 0)
             {
-                final double volumeTextTop = topy + sliderHeight + 1 + (this.isExMode ? 0 : SEPARATOR_SIZE);
-                gc.fillRectangle (boxLeft, volumeTextTop, boxWidth, UNIT, backgroundDarker);
-                gc.strokeRectangle (boxLeft, volumeTextTop, boxWidth - 1, UNIT, borderColor);
-                gc.drawTextInBounds (this.sendTexts[i], boxLeft, volumeTextTop, boxWidth, UNIT, Align.CENTER, textColor, UNIT);
+                final double volumeTextTop = topy + sliderHeight + 1 + (this.isExMode ? 0 : separatorSize);
+                gc.fillRectangle (boxLeft, volumeTextTop, boxWidth, unit, backgroundDarker);
+                gc.strokeRectangle (boxLeft, volumeTextTop, boxWidth - 1, unit, borderColor);
+                gc.drawTextInBounds (this.sendTexts[i], boxLeft, volumeTextTop, boxWidth, unit, Align.CENTER, textColor, unit);
             }
 
             topy += sendRowHeight;

@@ -2,12 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.controller.display.grid;
+package de.mossgrabers.framework.graphics.grid;
 
-import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
+import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 
 
 /**
@@ -15,7 +16,7 @@ import de.mossgrabers.framework.graphics.IGraphicsContext;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractGridElement implements GridElement
+public abstract class AbstractGridElement implements IGridElement
 {
     /** The maximum possible value for a parameter. */
     private static double   maxValue = 1024;
@@ -98,25 +99,29 @@ public abstract class AbstractGridElement implements GridElement
      * Draws a menu at the top of the element.
      *
      * @param gc The graphics context
+     * @param configuration The layout settings to use
+     * @param dimensions Pre-calculated grid dimensions
      * @param left The left bound of the menus drawing area
      * @param width The width of the menu
-     * @param configuration The layout settings to use
      */
-    protected void drawMenu (final IGraphicsContext gc, final double left, final double width, final PushConfiguration configuration)
+    protected void drawMenu (final IGraphicsContext gc, final IGraphicsConfiguration configuration, IGraphicsDimensions dimensions, final double left, final double width)
     {
+        final double separatorSize = dimensions.getSeparatorSize ();
+        final double menuHeight = dimensions.getMenuHeight ();
         final ColorEx borderColor = configuration.getColorBorder ();
         if (this.menuName == null || this.menuName.length () == 0)
         {
             // Remove the 2 pixels of the previous menus border line
-            gc.fillRectangle (left - SEPARATOR_SIZE, MENU_HEIGHT - 2, SEPARATOR_SIZE, 1, borderColor);
+            gc.fillRectangle (left - separatorSize, menuHeight - 2, separatorSize, 1, borderColor);
             return;
         }
 
         final ColorEx textColor = configuration.getColorText ();
-        gc.fillRectangle (left, 0, width, MENU_HEIGHT - 1.0, this.isMenuSelected ? textColor : borderColor);
-        gc.fillRectangle (left, MENU_HEIGHT - 2.0, width + SEPARATOR_SIZE, 1, textColor);
+        gc.fillRectangle (left, 0, width, menuHeight - 1.0, this.isMenuSelected ? textColor : borderColor);
+        gc.fillRectangle (left, menuHeight - 2.0, width + separatorSize, 1, textColor);
 
-        gc.drawTextInBounds (this.menuName, left, 1, width, UNIT + SEPARATOR_SIZE, Align.CENTER, this.isMenuSelected ? borderColor : textColor, UNIT);
+        final double unit = dimensions.getUnit ();
+        gc.drawTextInBounds (this.menuName, left, 1, width, unit + separatorSize, Align.CENTER, this.isMenuSelected ? borderColor : textColor, unit);
     }
 
 

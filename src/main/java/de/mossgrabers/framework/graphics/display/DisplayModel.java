@@ -2,25 +2,25 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.controller.display;
+package de.mossgrabers.framework.graphics.display;
 
-import de.mossgrabers.controller.push.controller.display.grid.ChannelGridElement;
-import de.mossgrabers.controller.push.controller.display.grid.ClipListGridElement;
-import de.mossgrabers.controller.push.controller.display.grid.GridChangeListener;
-import de.mossgrabers.controller.push.controller.display.grid.GridElement;
-import de.mossgrabers.controller.push.controller.display.grid.ListGridElement;
-import de.mossgrabers.controller.push.controller.display.grid.MidiClipElement;
-import de.mossgrabers.controller.push.controller.display.grid.OptionsGridElement;
-import de.mossgrabers.controller.push.controller.display.grid.ParamGridElement;
-import de.mossgrabers.controller.push.controller.display.grid.SceneListGridElement;
-import de.mossgrabers.controller.push.controller.display.grid.SelectionGridElement;
-import de.mossgrabers.controller.push.controller.display.grid.SendsGridElement;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.graphics.grid.ChannelGridElement;
+import de.mossgrabers.framework.graphics.grid.ClipListGridElement;
+import de.mossgrabers.framework.graphics.grid.GridChangeListener;
+import de.mossgrabers.framework.graphics.grid.IGridElement;
+import de.mossgrabers.framework.graphics.grid.ListGridElement;
+import de.mossgrabers.framework.graphics.grid.MidiClipElement;
+import de.mossgrabers.framework.graphics.grid.OptionsGridElement;
+import de.mossgrabers.framework.graphics.grid.ParamGridElement;
+import de.mossgrabers.framework.graphics.grid.SceneListGridElement;
+import de.mossgrabers.framework.graphics.grid.SelectionGridElement;
+import de.mossgrabers.framework.graphics.grid.SendsGridElement;
 import de.mossgrabers.framework.utils.Pair;
 
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class DisplayModel
     private final ScheduledExecutorService executor                        = Executors.newSingleThreadScheduledExecutor ();
 
     private final List<GridChangeListener> listeners                       = new ArrayList<> ();
-    private final List<GridElement>        elements                        = new ArrayList<> (8);
+    private final List<IGridElement>        elements                        = new ArrayList<> (8);
     private final AtomicReference<String>  notificationMessage             = new AtomicReference<> ();
     private ModelInfo                      info                            = new ModelInfo (null, Collections.emptyList ());
 

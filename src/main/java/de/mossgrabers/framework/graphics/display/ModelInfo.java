@@ -2,9 +2,9 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.controller.display;
+package de.mossgrabers.framework.graphics.display;
 
-import de.mossgrabers.controller.push.controller.display.grid.GridElement;
+import de.mossgrabers.framework.graphics.grid.IGridElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 public class ModelInfo
 {
     private String                  notification;
-    private final List<GridElement> elements;
+    private final List<IGridElement> elements;
 
 
     /**
@@ -27,7 +27,7 @@ public class ModelInfo
      * @param notification The notification message, if any
      * @param elements The elements
      */
-    public ModelInfo (final String notification, final List<GridElement> elements)
+    public ModelInfo (final String notification, final List<IGridElement> elements)
     {
         this.notification = notification;
         this.elements = new ArrayList<> (elements);
@@ -50,7 +50,7 @@ public class ModelInfo
      *
      * @return The elements
      */
-    public List<GridElement> getElements ()
+    public List<IGridElement> getElements ()
     {
         return this.elements;
     }

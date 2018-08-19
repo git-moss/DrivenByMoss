@@ -5,14 +5,15 @@
 package de.mossgrabers.controller.push.controller;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.display.DisplayModel;
-import de.mossgrabers.controller.push.controller.display.PushUsbDisplay;
-import de.mossgrabers.controller.push.controller.display.VirtualDisplay;
-import de.mossgrabers.controller.push.controller.display.grid.GridChangeListener;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.graphics.IGraphicsDimensions;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
+import de.mossgrabers.framework.graphics.display.VirtualDisplay;
+import de.mossgrabers.framework.graphics.grid.DefaultGraphicsDimensions;
+import de.mossgrabers.framework.graphics.grid.GridChangeListener;
 
 
 /**
@@ -105,15 +106,16 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
         this.model = new DisplayModel ();
         this.model.addGridElementChangeListener (this);
 
-        this.virtualDisplay = this.isPush2 ? new VirtualDisplay (host, this.model, configuration) : null;
+        final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (960, 160);
+        this.virtualDisplay = this.isPush2 ? new VirtualDisplay (host, this.model, configuration, dimensions, "Push 2 Display") : null;
         this.usbDisplay = this.isPush2 ? new PushUsbDisplay (host) : null;
     }
 
 
     /**
-     * Create a message.
+     * Get the dislay model.
      *
-     * @return The message
+     * @return The display model
      */
     public DisplayModel getModel ()
     {

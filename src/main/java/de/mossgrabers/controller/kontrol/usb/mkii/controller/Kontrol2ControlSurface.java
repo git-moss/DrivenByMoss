@@ -245,6 +245,14 @@ public class Kontrol2ControlSurface extends AbstractControlSurface<Kontrol2Confi
 
     /** {@inheritDoc} */
     @Override
+    public Kontrol2Display getDisplay ()
+    {
+        return (Kontrol2Display) super.getDisplay ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void shutdown ()
     {
         this.usbDevice.turnOffButtonLEDs ();

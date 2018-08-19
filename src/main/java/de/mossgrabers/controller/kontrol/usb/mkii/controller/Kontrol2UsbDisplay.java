@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.controller.display;
+package de.mossgrabers.controller.kontrol.usb.mkii.controller;
 
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PushUsbDisplay
+public class Kontrol2UsbDisplay
 {
     /** The size of the display content. */
     private static final int     DATA_SZ        = 20 * 0x4000;
@@ -58,7 +58,7 @@ public class PushUsbDisplay
      *
      * @param host The controller host
      */
-    public PushUsbDisplay (final IHost host)
+    public Kontrol2UsbDisplay (final IHost host)
     {
         try
         {

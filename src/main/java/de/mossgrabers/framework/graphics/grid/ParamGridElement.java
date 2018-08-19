@@ -2,14 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.controller.display.grid;
+package de.mossgrabers.framework.graphics.grid;
 
-import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.daw.resource.DeviceTypes;
 import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
+import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 
 
 /**
@@ -102,34 +103,41 @@ public class ParamGridElement extends SelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final IGraphicsContext gc, final double left, final double width, final double height, final PushConfiguration configuration)
+    public void draw (final IGraphicsContext gc, final IGraphicsConfiguration configuration, IGraphicsDimensions dimensions, final double left, final double width, final double height)
     {
-        this.drawMenu (gc, left, width, configuration);
+        final double separatorSize = dimensions.getSeparatorSize ();
+        final double menuHeight = dimensions.getMenuHeight ();
+        final double unit = dimensions.getUnit ();
+        final double controlsTop = dimensions.getControlsTop ();
+        final double inset = dimensions.getInset ();
+
+        this.drawMenu (gc, configuration, dimensions, left, width);
 
         final boolean isValueMissing = this.paramValue == -1;
         final boolean isModulated = this.modulatedParamValue != -1;
 
-        final double trackRowTop = height - TRACK_ROW_HEIGHT - UNIT - SEPARATOR_SIZE;
+        final int trackRowHeight = (int) (1.6 * unit);
+        final double trackRowTop = height - trackRowHeight - unit - separatorSize;
         final String name = this.getName ();
         if (name != null && name.length () > 0)
-            this.drawTrackInfo (gc, left, width, height, trackRowTop, name, configuration);
+            this.drawTrackInfo (gc, configuration, dimensions, left, width, height, trackRowTop, name);
 
         // Element is off if the name is empty
         if (this.paramName == null || this.paramName.length () == 0)
             return;
 
-        final double elementWidth = width - 2 * INSET;
-        final double elementHeight = (trackRowTop - CONTROLS_TOP - INSET) / 3;
+        final double elementWidth = width - 2 * inset;
+        final double elementHeight = (trackRowTop - controlsTop - inset) / 3;
 
         // Draw the background
         final ColorEx backgroundColor = configuration.getColorBackground ();
-        gc.fillRectangle (left, MENU_HEIGHT + 1, width, trackRowTop - (isValueMissing ? CONTROLS_TOP + elementHeight : MENU_HEIGHT + 1), this.isTouched ? configuration.getColorBackgroundLighter () : backgroundColor);
+        gc.fillRectangle (left, menuHeight + 1, width, trackRowTop - (isValueMissing ? controlsTop + elementHeight : menuHeight + 1), this.isTouched ? configuration.getColorBackgroundLighter () : backgroundColor);
 
         // Draw the name and value texts
         final ColorEx textColor = configuration.getColorText ();
         final double fontSize = elementHeight * 2 / 3;
-        gc.drawTextInBounds (this.paramName, left + INSET - 1, CONTROLS_TOP - INSET, elementWidth, elementHeight, Align.CENTER, textColor, fontSize);
-        gc.drawTextInBounds (this.paramValueText, left + INSET - 1, CONTROLS_TOP - INSET + elementHeight, elementWidth, elementHeight, Align.CENTER, textColor, fontSize);
+        gc.drawTextInBounds (this.paramName, left + inset - 1, controlsTop - inset, elementWidth, elementHeight, Align.CENTER, textColor, fontSize);
+        gc.drawTextInBounds (this.paramValueText, left + inset - 1, controlsTop - inset + elementHeight, elementWidth, elementHeight, Align.CENTER, textColor, fontSize);
 
         // Value slider
         if (isValueMissing)
@@ -138,14 +146,14 @@ public class ParamGridElement extends SelectionGridElement
         final double maxValue = getMaxValue ();
         final double value = isModulated ? this.modulatedParamValue : this.paramValue;
         final double valueSliderWidth = value >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * value / maxValue;
-        final double innerTop = CONTROLS_TOP + 2 * elementHeight + 1;
+        final double innerTop = controlsTop + 2 * elementHeight + 1;
         final ColorEx borderColor = configuration.getColorBorder ();
-        gc.fillRectangle (left + INSET - 1, CONTROLS_TOP + 2 * elementHeight, elementWidth, elementHeight, borderColor);
-        gc.fillRectangle (left + INSET, innerTop, valueSliderWidth, elementHeight - 2, configuration.getColorFader ());
+        gc.fillRectangle (left + inset - 1, controlsTop + 2 * elementHeight, elementWidth, elementHeight, borderColor);
+        gc.fillRectangle (left + inset, innerTop, valueSliderWidth, elementHeight - 2, configuration.getColorFader ());
 
         final double w = this.isTouched ? 3 : 1;
         final double valueWidth = this.paramValue >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * this.paramValue / maxValue;
-        gc.fillRectangle (left + INSET + Math.max (0, valueWidth - w), innerTop, w, elementHeight - 2, configuration.getColorEdit ());
+        gc.fillRectangle (left + inset + Math.max (0, valueWidth - w), innerTop, w, elementHeight - 2, configuration.getColorEdit ());
     }
 
 
