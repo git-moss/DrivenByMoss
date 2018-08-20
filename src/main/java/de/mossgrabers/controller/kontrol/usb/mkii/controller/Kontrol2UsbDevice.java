@@ -24,6 +24,8 @@ import java.util.Map;
  */
 public class Kontrol2UsbDevice
 {
+    private static final int                   TIMEOUT          = 1000;
+
     private static final int []                BYTE_1           =
     {
         Kontrol2ControlSurface.BUTTON_AUTO,
@@ -100,8 +102,6 @@ public class Kontrol2UsbDevice
 
     private static final int                   REPORT_ID_UI     = 1;
 
-    // TODO Spec missing: correct display size
-    private static final int                   SIZE_DISPLAY     = 840;
     private static final int                   SIZE_BUTTON_LEDS = 42;
     private static final int                   SIZE_KEY_LEDS    = 88;
 
@@ -110,10 +110,9 @@ public class Kontrol2UsbDevice
     private IHost                              host;
     private IUsbDevice                         usbDevice;
     private IHidDevice                         hidDevice;
-    private IUsbEndpoint                       usbEndpointDisplay;
+    private IUsbEndpoint                       usbEndpoint;
 
     private IMemoryBlock                       initBlock;
-    private IMemoryBlock                       displayBlock;
     private IMemoryBlock                       ledBlock;
     private IMemoryBlock                       keyLedBlock;
 
@@ -189,21 +188,21 @@ public class Kontrol2UsbDevice
         try
         {
             this.usbDevice = host.getUsbDevice (0);
-            this.usbEndpointDisplay = this.usbDevice.getEndpoint (0, 0);
 
             this.hidDevice = this.usbDevice.getHidDevice ();
             if (this.hidDevice != null)
                 this.hidDevice.setCallback (this::processHIDMessage);
+
+            this.usbEndpoint = this.usbDevice.getEndpoint (0, 0);
         }
         catch (final UsbException ex)
         {
             this.usbDevice = null;
             this.hidDevice = null;
-            this.usbEndpointDisplay = null;
+            this.usbEndpoint = null;
             host.error ("Could not open USB connection: " + ex.getMessage ());
         }
 
-        this.displayBlock = host.createMemoryBlock (SIZE_DISPLAY);
         this.ledBlock = host.createMemoryBlock (SIZE_BUTTON_LEDS);
         this.keyLedBlock = host.createMemoryBlock (SIZE_KEY_LEDS);
         this.initBlock = host.createMemoryBlock (2);
@@ -242,70 +241,13 @@ public class Kontrol2UsbDevice
 
 
     /**
-     * Send all display data to the device.
-     */
-    public void sendDisplayData ()
-    {
-        if (this.usbEndpointDisplay == null)
-            return;
-
-        synchronized (this.displayBlock)
-        {
-            // TODO Spec missing: Implement sending to display
-
-            // final String example =
-            // "8400006000000000000000f9007a0017020000fb00000003000031a65aeb632c4a4908610200003900000005000039e7dedbfffffffffffffffff7be84100000020000380000000539c7ffdffffff7bebdf7bdd7f79effffffff84100200003800000006bdd7ffffef5d21040000000018c3dedbfffff79e084100000200003700000006f79effff8c710000000000000000738effffffff294500000200003700000006a534a5344a490000000000000000738effffffff294500000200003900000004000000000020d6bafffff79e00200000020000390000000300000841ad75ffffffff73ae0200003a000000034228defbffffffffa514000002000039000000031082a534fffffffff79e6b4d020000390000000400002945dedbffffffffad7518c3000002000039000000041082e71cffffef7d528a00000000000002000039000000028c51ffffffff4a690100000318e318e300000001000000000200003700000001defbffff01000004ffffffff00000001108200000200003700000001ffdfffff01000004ffffffff0000000110820000020001250300000040000000";
-            final String example = "8400016000000000000000f9007a0017020000fb00000003000031a65aeb632c4a4908610200003900000005000039e66666666666666666666666666b10000002000038000000053966666666666666666666666666666666666610020000380000000666666666666621040000000018c3d6666666666e0841000002000037000000066666666666660000000000000000666666666666294500000200003700000006a534a5344a490000000000000000738e666666662945000002000039000000040000000000206666666666660020000002000039000000030000066666666666666663ae0200003a00000003422666666666666ba514000002000039000000031082a534f666666666666666620000390000000400002666666666666666666b18c3000002000039000000041082e71c66666666666600000000000002000039000000026666666666664a690100000318e318e300000001000000000200003700000001def6666b0100000466666666000000011082000002000037000000016666666601000004666666660000000110820000020001250300000040000000";
-
-            final ByteBuffer buffer = this.displayBlock.createByteBuffer ();
-            for (int i = 0; i < example.length () / 2; i++)
-            {
-                final int pos = i * 2;
-                buffer.put ((byte) Integer.parseInt (example.substring (pos, pos + 2), 16));
-            }
-            this.usbEndpointDisplay.send (this.displayBlock, 100);
-
-            // 24 byte header 840 - 24 = 816
-
-            // 2 - First two bytes always seem to be 8400.
-            // 1 - Third byte if 00 if data is send to the first display or 01 if it goes to the
-            // second one.
-            // 6 - The byte arrays always continues with 600000000000
-            // 1 - next byte (there: 00) is the position on the X-axis where the bitmap begins
-            // 1 - next byte (there: 00) moves the position somehow diagonal when raised
-            // 1 - next byte (there: f9 ) is the position on the y-axis
-            // 1 - next byte (there: 00) no idea what it is (whole image looks like an analogue
-            // scrambled payTV channel if not 00)
-            // 1 - next byte (there: 7a) ??? (image becomes rotated if you change the value by 1 and
-            // becomes inrecognizable if you change it by a greater value)
-            // 3 - next three bytes (there: 00 17 02) ??? can by changed anyhow and nothing happens
-            // in this case
-            // 3 - next three bytes: (there: 00 00 fb) also moves the image anyhow but different
-            // than above.
-            // 1 - next byte (there: 00) ??? places a short line on the position where the image
-            // usually should appear and shifts the image itself to the right and the top
-            // 3 - next three bytes (there: 00 00 03) ??? if you transmit anything different than 0,
-            // the USB endpoint freezes and you need to power-cycle before you can continue,
-            // sometimes, a rastered square is drawn before
-            //
-            // From there, a pixel per pixel bitmap data follows. It is an indexed palette of 256
-            // colors. 00=black, ff=white, other values=something. For example: the number 2 in
-            // green by replacing some bytes with 66:
-            //
-            // Code:
-            // 8400016000000000000000f9007a0017020000fb00000003000031a65aeb632c4a4908610200003900000005000039e66666666666666666666666666b10000002000038000000053966666666666666666666666666666666666610020000380000000666666666666621040000000018c3d6666666666e0841000002000037000000066666666666660000000000000000666666666666294500000200003700000006a534a5344a490000000000000000738e666666662945000002000039000000040000000000206666666666660020000002000039000000030000066666666666666663ae0200003a00000003422666666666666ba514000002000039000000031082a534f666666666666666620000390000000400002666666666666666666b18c3000002000039000000041082e71c66666666666600000000000002000039000000026666666666664a690100000318e318e300000001000000000200003700000001def6666b0100000466666666000000011082000002000037000000016666666601000004666666660000000110820000020001250300000040000000
-
-        }
-    }
-
-
-    /**
      * Stop sending USB data.
      */
     public void shutdown ()
     {
+        this.usbDevice = null;
         this.hidDevice = null;
-        this.usbEndpointDisplay = null;
+        this.usbEndpoint = null;
     }
 
 
@@ -483,6 +425,18 @@ public class Kontrol2UsbDevice
         for (final Integer buttonLED: LED_MAPPING.values ())
             this.buttonStates[buttonLED.intValue ()] = 0;
         this.updateButtonLEDs ();
+    }
+
+
+    /**
+     * Send the buffered image to the screen.
+     *
+     * @param memory The data to send
+     */
+    public void sendToDisplay (final IMemoryBlock memory)
+    {
+        if (this.usbEndpoint != null)
+            this.usbEndpoint.send (memory, TIMEOUT);
     }
 
 

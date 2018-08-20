@@ -44,9 +44,6 @@ import de.mossgrabers.framework.view.ViewManager;
  */
 public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2ControlSurface, Kontrol2Configuration>
 {
-    private Kontrol2UsbDevice usbDevice;
-
-
     /**
      * Constructor.
      *
@@ -79,8 +76,8 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
     {
         final IHost host = this.model.getHost ();
 
-        this.usbDevice = new Kontrol2UsbDevice (host);
-        this.usbDevice.init ();
+        final Kontrol2UsbDevice usbDevice = new Kontrol2UsbDevice (host);
+        usbDevice.init ();
 
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiInput input = midiAccess.createInput ("Komplete Kontrol 2",
@@ -88,10 +85,10 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
                 "B001??" /* Sustainpedal + Modulation */, "D0????" /* Channel Aftertouch */,
                 "E0????" /* Pitchbend */);
 
-        final Kontrol2ControlSurface surface = new Kontrol2ControlSurface (host, this.colorManager, this.configuration, input, this.usbDevice);
-        this.usbDevice.setCallback (surface);
+        final Kontrol2ControlSurface surface = new Kontrol2ControlSurface (host, this.colorManager, this.configuration, input, usbDevice);
+        usbDevice.setCallback (surface);
         this.surfaces.add (surface);
-        final Kontrol2Display display = new Kontrol2Display (host, this.configuration, this.usbDevice);
+        final Kontrol2Display display = new Kontrol2Display (host, this.configuration, usbDevice);
         surface.setDisplay (display);
 
         surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
@@ -125,6 +122,10 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
     protected void createObservers ()
     {
         this.createScaleObservers (this.configuration);
+
+        this.configuration.addSettingObserver (Kontrol2Configuration.DEBUG_WINDOW, () -> {
+            this.getSurface ().getDisplay ().showDebugWindow ();
+        });
     }
 
 

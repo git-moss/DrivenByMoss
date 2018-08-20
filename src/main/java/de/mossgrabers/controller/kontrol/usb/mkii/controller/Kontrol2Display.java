@@ -9,11 +9,16 @@ import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IMemoryBlock;
+import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.graphics.display.VirtualDisplay;
 import de.mossgrabers.framework.graphics.grid.DefaultGraphicsDimensions;
 import de.mossgrabers.framework.graphics.grid.GridChangeListener;
+
+import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -23,10 +28,39 @@ import de.mossgrabers.framework.graphics.grid.GridChangeListener;
  */
 public class Kontrol2Display extends AbstractDisplay implements GridChangeListener
 {
-    private final Kontrol2UsbDevice  usbDevice;
-    private final DisplayModel       model;
-    private final VirtualDisplay     virtualDisplay;
-    private final Kontrol2UsbDisplay usbDisplay;
+    /** The size of the display content. */
+    private static final int        DATA_SZ        = 20 * 0x4000;              // TODO This must be
+                                                                               // the
+                                                                               // size of the full
+                                                                               // image 960 x 360 (1
+                                                                               // int = 1 pixel?)
+
+    private static final byte []    DISPLAY_HEADER =
+    {
+        (byte) 0xef,
+        (byte) 0xcd,
+        (byte) 0xab,
+        (byte) 0x89,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    };
+
+    private final Kontrol2UsbDevice usbDevice;
+    private final DisplayModel      model;
+    private final VirtualDisplay    virtualDisplay;
+    private final IMemoryBlock      headerBlock;
+    private final IMemoryBlock      imageBlock;
+    private final AtomicBoolean     isSending      = new AtomicBoolean (false);
 
 
     /**
@@ -46,7 +80,10 @@ public class Kontrol2Display extends AbstractDisplay implements GridChangeListen
 
         final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (2 * 480, 360);
         this.virtualDisplay = new VirtualDisplay (host, this.model, configuration, dimensions, "Kontrol mkII Display");
-        this.usbDisplay = new Kontrol2UsbDisplay (host);
+
+        this.headerBlock = host.createMemoryBlock (DISPLAY_HEADER.length);
+        this.headerBlock.createByteBuffer ().put (DISPLAY_HEADER);
+        this.imageBlock = host.createMemoryBlock (DATA_SZ);
     }
 
 
@@ -65,16 +102,7 @@ public class Kontrol2Display extends AbstractDisplay implements GridChangeListen
     @Override
     public void shutdown ()
     {
-        this.usbDevice.shutdown ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void flush ()
-    {
-        super.flush ();
-        this.usbDevice.sendDisplayData ();
+        // Intentionally empty
     }
 
 
@@ -136,7 +164,30 @@ public class Kontrol2Display extends AbstractDisplay implements GridChangeListen
     @Override
     public void gridHasChanged ()
     {
-        if (this.usbDisplay != null)
-            this.usbDisplay.send (this.virtualDisplay.getImage ());
+        this.send (this.virtualDisplay.getImage ());
+    }
+
+
+    /**
+     * Send the buffered image to the screen.
+     *
+     * @param image An image of size 2 x 480 x 360 pixel
+     */
+    public void send (final IBitmap image)
+    {
+        if (this.usbDevice == null || this.isSending.get ())
+            return;
+
+        this.isSending.set (true);
+
+        final ByteBuffer rawBuffer = this.imageBlock.createByteBuffer ();
+        image.fillTransferBuffer (rawBuffer);
+
+        // TODO encode the data
+
+        this.usbDevice.sendToDisplay (this.headerBlock);
+        this.usbDevice.sendToDisplay (this.imageBlock);
+
+        this.isSending.set (false);
     }
 }
