@@ -5,17 +5,13 @@
 package de.mossgrabers.controller.kontrol.usb.mkii.controller;
 
 import de.mossgrabers.controller.kontrol.usb.mkii.Kontrol2Configuration;
-import de.mossgrabers.framework.controller.display.AbstractDisplay;
-import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.GraphicDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IGraphicsDimensions;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.graphics.display.VirtualDisplay;
 import de.mossgrabers.framework.graphics.grid.DefaultGraphicsDimensions;
-import de.mossgrabers.framework.graphics.grid.GridChangeListener;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,45 +22,53 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Kontrol2Display extends AbstractDisplay implements GridChangeListener
+public class Kontrol2Display extends GraphicDisplay
 {
-    /** The size of the display content. */
-    private static final int        DATA_SZ        = 20 * 0x4000;              // TODO This must be
-                                                                               // the
-                                                                               // size of the full
-                                                                               // image 960 x 360 (1
-                                                                               // int = 1 pixel?)
+    private static final int            DISPLAY_WIDTH      = 480;
+    private static final int            DISPLAY_HEIGHT     = 360;
+    private static final int            DISPLAY_WIDTH_LINE = DISPLAY_WIDTH * 4;
 
-    private static final byte []    DISPLAY_HEADER =
+    private static final byte []        BLOCK_HEADER       =
     {
-        (byte) 0xef,
-        (byte) 0xcd,
-        (byte) 0xab,
-        (byte) 0x89,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
+        (byte) 0x02,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00
     };
 
-    private final Kontrol2UsbDevice usbDevice;
-    private final DisplayModel      model;
-    private final VirtualDisplay    virtualDisplay;
-    private final IMemoryBlock      headerBlock;
-    private final IMemoryBlock      imageBlock;
-    private final AtomicBoolean     isSending      = new AtomicBoolean (false);
+    private static final byte []        FOOTER             =
+    {
+        (byte) 0x02,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x01,
+        (byte) 0x03,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x40,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00
+    };
+
+    // One pixel is 16 bit
+    private static final int            NUM_OF_PIXELS      = 2 * DISPLAY_WIDTH * DISPLAY_HEIGHT;
+    private static final int            DATA_SZ            = FOOTER.length + NUM_OF_PIXELS + (NUM_OF_PIXELS / 6) * (BLOCK_HEADER.length + 1);
+
+    private final Kontrol2UsbDevice     usbDevice;
+    private final Kontrol2DisplayHeader header0;
+    private final Kontrol2DisplayHeader header1;
+    private final IMemoryBlock          imageBlock0;
+    private final IMemoryBlock          imageBlock1;
+    private final AtomicBoolean         isSending          = new AtomicBoolean (false);
 
 
     /**
-     * Constructor. 2 rows (0-1) with 9 blocks (0-8). Each block consists of 8 characters.
+     * Constructor.
      *
      * @param host The host
      * @param configuration The configuration
@@ -72,121 +76,73 @@ public class Kontrol2Display extends AbstractDisplay implements GridChangeListen
      */
     public Kontrol2Display (final IHost host, final Kontrol2Configuration configuration, final Kontrol2UsbDevice usbDevice)
     {
-        super (host, null, 2 /* No of rows */, 9 /* No of cells */, 72 /* No of characters */);
+        super (host);
         this.usbDevice = usbDevice;
 
-        this.model = new DisplayModel ();
-        this.model.addGridElementChangeListener (this);
+        this.header0 = new Kontrol2DisplayHeader (host, true);
+        this.header1 = new Kontrol2DisplayHeader (host, false);
 
-        final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (2 * 480, 360);
+        final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (2 * DISPLAY_WIDTH, DISPLAY_HEIGHT);
         this.virtualDisplay = new VirtualDisplay (host, this.model, configuration, dimensions, "Kontrol mkII Display");
 
-        this.headerBlock = host.createMemoryBlock (DISPLAY_HEADER.length);
-        this.headerBlock.createByteBuffer ().put (DISPLAY_HEADER);
-        this.imageBlock = host.createMemoryBlock (DATA_SZ);
-    }
-
-
-    /**
-     * Get the dislay model.
-     *
-     * @return The display model
-     */
-    public DisplayModel getModel ()
-    {
-        return this.model;
+        this.imageBlock0 = host.createMemoryBlock (DATA_SZ);
+        this.imageBlock1 = host.createMemoryBlock (DATA_SZ);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void shutdown ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public Kontrol2Display clearCell (final int row, final int cell)
-    {
-        // Not a line based display
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public Kontrol2Display setBlock (final int row, final int block, final String value)
-    {
-        // Not a line based display
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public Display setCell (final int row, final int column, final int value, final Format format)
-    {
-        // Not a line based display
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public Kontrol2Display setCell (final int row, final int cell, final String value)
-    {
-        // Not a line based display
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void writeLine (final int row, final String text)
-    {
-        // Not a line based display
-    }
-
-
-    /**
-     * Show the display debug window.
-     */
-    public void showDebugWindow ()
-    {
-        if (this.virtualDisplay != null)
-            this.virtualDisplay.getImage ().showDisplayWindow ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void gridHasChanged ()
-    {
-        this.send (this.virtualDisplay.getImage ());
-    }
-
-
-    /**
-     * Send the buffered image to the screen.
-     *
-     * @param image An image of size 2 x 480 x 360 pixel
-     */
-    public void send (final IBitmap image)
+    protected void send (final IBitmap image)
     {
         if (this.usbDevice == null || this.isSending.get ())
             return;
 
         this.isSending.set (true);
 
-        final ByteBuffer rawBuffer = this.imageBlock.createByteBuffer ();
-        image.fillTransferBuffer (rawBuffer);
+        final ByteBuffer buffer0 = this.imageBlock0.createByteBuffer ();
+        final ByteBuffer buffer1 = this.imageBlock1.createByteBuffer ();
 
-        // TODO encode the data
+        image.encode ( (imageBuffer, width, height) -> {
+            buffer0.clear ();
+            buffer1.clear ();
 
-        this.usbDevice.sendToDisplay (this.headerBlock);
-        this.usbDevice.sendToDisplay (this.imageBlock);
+            for (int i = 0; i < imageBuffer.capacity (); i += 4)
+            {
+                if (i / DISPLAY_WIDTH_LINE == 0)
+                {
+                    if (i % 24 == 0)
+                    {
+                        buffer0.put (BLOCK_HEADER);
+                        buffer0.put ((byte) 0x06);
+                    }
+                    buffer0.put (imageBuffer.get ());
+                    buffer0.put (imageBuffer.get ());
+                    buffer0.put (imageBuffer.get ());
+                    imageBuffer.get (); // Drop transparency
+                }
+                else
+                {
+                    if (i % 24 == 0)
+                    {
+                        buffer1.put (BLOCK_HEADER);
+                        buffer1.put ((byte) 0x06);
+                    }
+                    buffer1.put (imageBuffer.get ());
+                    buffer1.put (imageBuffer.get ());
+                    buffer1.put (imageBuffer.get ());
+                    imageBuffer.get (); // Drop transparency
+                }
+            }
+            buffer0.put (FOOTER);
+            buffer1.put (FOOTER);
+
+            imageBuffer.rewind ();
+        });
+
+        this.usbDevice.sendToDisplay (this.header0.getMemoryBlock ());
+        this.usbDevice.sendToDisplay (this.imageBlock0);
+        this.usbDevice.sendToDisplay (this.header1.getMemoryBlock ());
+        this.usbDevice.sendToDisplay (this.imageBlock1);
 
         this.isSending.set (false);
     }

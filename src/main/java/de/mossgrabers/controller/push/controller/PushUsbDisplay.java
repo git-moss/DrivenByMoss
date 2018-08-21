@@ -11,6 +11,7 @@ import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.IUsbEndpoint;
 import de.mossgrabers.framework.usb.UsbException;
 
+import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -89,7 +90,35 @@ public class PushUsbDisplay
             return;
 
         this.isSending.set (true);
-        image.fillTransferBuffer (this.imageBlock.createByteBuffer ());
+
+        final ByteBuffer buffer = this.imageBlock.createByteBuffer ();
+
+        image.encode ( (imageBuffer, width, height) -> {
+            buffer.clear ();
+
+            final int padding = (buffer.capacity () - height * width * 2) / height;
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    final int blue = imageBuffer.get ();
+                    final int green = imageBuffer.get ();
+                    final int red = imageBuffer.get ();
+                    imageBuffer.get (); // Drop unused Alpha
+
+                    final int pixel = SPixelFromRGB (red, green, blue);
+                    buffer.put ((byte) (pixel & 0x00FF));
+                    buffer.put ((byte) ((pixel & 0xFF00) >> 8));
+                }
+
+                for (int x = 0; x < padding; x++)
+                    buffer.put ((byte) 0x00);
+            }
+
+            imageBuffer.rewind ();
+        });
+
         this.usbEndpoint.send (this.headerBlock, TIMEOUT);
         this.usbEndpoint.send (this.imageBlock, TIMEOUT);
         this.isSending.set (false);
@@ -103,5 +132,16 @@ public class PushUsbDisplay
     {
         this.usbDevice = null;
         this.usbEndpoint = null;
+    }
+
+
+    private static int SPixelFromRGB (final int red, final int green, final int blue)
+    {
+        int pixel = (blue & 0xF8) >> 3;
+        pixel <<= 6;
+        pixel += (green & 0xFC) >> 2;
+        pixel <<= 5;
+        pixel += (red & 0xF8) >> 3;
+        return pixel;
     }
 }

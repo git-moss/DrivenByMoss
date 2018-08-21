@@ -4,9 +4,6 @@
 
 package de.mossgrabers.framework.graphics;
 
-import java.nio.ByteBuffer;
-
-
 /**
  * An interface to a bitmap, which can also be displayed in a window.
  *
@@ -37,9 +34,9 @@ public interface IBitmap
 
 
     /**
-     * Fill and encode the buffer for USB transmission of the bitmap.
+     * Encode the bitmap data into a different format.
      *
-     * @param buffer The buffer to fill
+     * @param encoder The encoder to use
      */
-    void fillTransferBuffer (ByteBuffer buffer);
+    void encode (IEncoder encoder);
 }

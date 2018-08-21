@@ -5,15 +5,14 @@
 package de.mossgrabers.controller.push.controller;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.GraphicDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IGraphicsDimensions;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.graphics.display.VirtualDisplay;
 import de.mossgrabers.framework.graphics.grid.DefaultGraphicsDimensions;
-import de.mossgrabers.framework.graphics.grid.GridChangeListener;
 
 
 /**
@@ -21,7 +20,7 @@ import de.mossgrabers.framework.graphics.grid.GridChangeListener;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PushDisplay extends AbstractDisplay implements GridChangeListener
+public class PushDisplay extends GraphicDisplay
 {
     /** Push character codes for value bars - a dash. */
     public static final String     BARS_NON      = Character.toString ((char) 6);
@@ -82,9 +81,7 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
 
     private int                    maxParameterValue;
     private boolean                isPush2;
-    private DisplayModel           model;
 
-    private final VirtualDisplay   virtualDisplay;
     private final PushUsbDisplay   usbDisplay;
 
 
@@ -101,25 +98,13 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     public PushDisplay (final IHost host, final boolean isPush2, final int maxParameterValue, final IMidiOutput output, final PushConfiguration configuration)
     {
         super (host, output, 4 /* No of rows */, 8 /* No of cells */, 68 /* No of characters */);
+
         this.maxParameterValue = maxParameterValue;
         this.isPush2 = isPush2;
-        this.model = new DisplayModel ();
-        this.model.addGridElementChangeListener (this);
 
         final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (960, 160);
         this.virtualDisplay = this.isPush2 ? new VirtualDisplay (host, this.model, configuration, dimensions, "Push 2 Display") : null;
         this.usbDisplay = this.isPush2 ? new PushUsbDisplay (host) : null;
-    }
-
-
-    /**
-     * Get the dislay model.
-     *
-     * @return The display model
-     */
-    public DisplayModel getModel ()
-    {
-        return this.model;
     }
 
 
@@ -284,19 +269,9 @@ public class PushDisplay extends AbstractDisplay implements GridChangeListener
     }
 
 
-    /**
-     * Show the display debug window.
-     */
-    public void showDebugWindow ()
-    {
-        if (this.virtualDisplay != null)
-            this.virtualDisplay.getImage ().showDisplayWindow ();
-    }
-
-
     /** {@inheritDoc} */
     @Override
-    public void gridHasChanged ()
+    protected void send (final IBitmap image)
     {
         if (this.usbDisplay != null)
             this.usbDisplay.send (this.virtualDisplay.getImage ());
