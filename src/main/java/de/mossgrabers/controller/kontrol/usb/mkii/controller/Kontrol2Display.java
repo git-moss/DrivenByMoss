@@ -30,28 +30,28 @@ public class Kontrol2Display extends GraphicDisplay
 
     private static final byte []        BLOCK_HEADER       =
     {
-            (byte) 0x02,
-            (byte) 0x00,
-            (byte) 0x00,
-            (byte) 0x00,
-            (byte) 0x00,
-            (byte) 0x00,
-            (byte) 0x00
+        (byte) 0x02,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00
     };
 
     private static final byte []        FOOTER0            =
     {
-            (byte) 0x40,
-            (byte) 0x00,
-            (byte) 0x00,
-            (byte) 0x00
+        (byte) 0x40,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00
     };
     private static final byte []        FOOTER1            =
     {
-            (byte) 0x40,
-            (byte) 0x00,
-            (byte) 0x00,
-            (byte) 0x00
+        (byte) 0x40,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x00
     };
 
     // One pixel is 16 bit
@@ -106,19 +106,16 @@ public class Kontrol2Display extends GraphicDisplay
             img.put ((byte) i);
             img.put ((byte) 0);
         }
-
         img.rewind ();
-        KompleteKontrolImageConverter converter = new KompleteKontrolImageConverter (img, (byte) 0, (byte) 0, (byte) 0, (short) 10, (short) 10);
+
+        final ByteBuffer data = Kontrol2DisplayProtocol.encodeImage (img, 1, 0, 0, 10, 10);
 
         final ByteBuffer buffer0 = this.imageBlock0.createByteBuffer ();
         buffer0.clear ();
 
-        ByteBuffer b = converter.getBuffer ();
-        int length = b.position ();
-        b.rewind ();
-
-        for (int i = 0; i < length; i++)
-            buffer0.put (b.get ());
+        data.rewind ();
+        for (int i = 0; i < data.limit (); i++)
+            buffer0.put (data.get ());
 
         this.usbDevice.sendToDisplay (this.imageBlock0);
 
@@ -160,92 +157,5 @@ public class Kontrol2Display extends GraphicDisplay
         // this.usbDevice.sendToDisplay (this.imageBlock1);
 
         this.isSending.set (false);
-    }
-
-    class KompleteKontrolImageConverter
-    {
-        private static final int COMMAND_TRANSMIT_PIXEL = 0x0000;
-        private static final int COMMAND_REPEAT_PIXEL   = 0x0100;
-        private static final int COMMAND_SKIP_PIXEL     = 0x0200;
-        private static final int COMMAND_BLIT           = 0x0300;
-        private static final int COMMAND_START_OF_DATA  = 0x8400;
-        private static final int COMMAND_END_OF_DATA    = 0x4000;
-
-        ByteBuffer               buffer                 = ByteBuffer.allocate (1000);
-
-
-        public KompleteKontrolImageConverter (ByteBuffer image, byte display, byte x, byte y, short width, short height)
-        {
-            startOfData (display, x, y, width, height);
-            writeImage (image);
-            blit ();
-            endOfData (display);
-        }
-
-
-        public ByteBuffer getBuffer ()
-        {
-            return this.buffer;
-        }
-
-
-        void startOfData (byte display, byte x, byte y, short width, short height)
-        {
-            buffer.putShort ((short) COMMAND_START_OF_DATA); // TODO
-            buffer.put (display);
-            buffer.put ((byte) 0x60);
-            buffer.putShort ((short) 0);
-            buffer.putShort ((short) 0);
-            buffer.putShort ((short) 0);
-            buffer.put (x);
-            buffer.put (y);
-            buffer.putShort (width);
-            buffer.putShort (height);
-        }
-
-
-        void writeImage (ByteBuffer image)
-        {
-            buffer.putShort ((short) COMMAND_TRANSMIT_PIXEL); // TODO
-
-            int length = image.capacity () / 4;
-
-            buffer.putShort ((short) (length / 4));
-
-            for (int i = 0; i < length; i++)
-            {
-                final byte red = image.get ();
-                final byte green = image.get ();
-                final byte blue = image.get ();
-                image.get (); // Drop transparency
-
-                int color = (red / 7) | ((green / 3) * 64) | ((blue / 7) * 2048);
-                buffer.putShort ((short) color);
-            }
-
-            // buffer.putInt ((int)(image.byteCount()/4);
-            // ushort *swappedData = reinterpret_cast<ushort *>(image.bits());
-            // for (int i = 0; i < image.byteCount() / 2; i++)
-            // {
-            // swappedData[i] = _byteswap_ushort(swappedData[i]);
-            // }
-            // buffer.write(reinterpret_cast<const char*>(swappedData), image.byteCount());
-        }
-
-
-        void blit ()
-        {
-            buffer.putShort ((short) COMMAND_BLIT);
-            buffer.putShort ((short) 0);
-
-        }
-
-
-        void endOfData (byte display)
-        {
-            buffer.putShort ((short) COMMAND_END_OF_DATA);
-            buffer.put (display);
-            buffer.put ((byte) 0);
-        }
     }
 }

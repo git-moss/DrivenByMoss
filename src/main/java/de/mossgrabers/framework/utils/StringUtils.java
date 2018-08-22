@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.utils;
 
+import java.nio.ByteBuffer;
+
+
 /**
  * Helper class for string methods.
  *
@@ -133,7 +136,7 @@ public class StringUtils
 
 
     /**
-     * Convert the bytes to a hex string
+     * Convert the bytes to a hex string.
      *
      * @param data The data to convert
      * @return The hex string
@@ -143,6 +146,22 @@ public class StringUtils
         final StringBuilder sysex = new StringBuilder ();
         for (final int d: data)
             sysex.append (toHexStr (d)).append (' ');
+        return sysex.toString ();
+    }
+
+
+    /**
+     * Convert the bytes to a hex string. Rewinds the buffer and adds the bytes from the beginning
+     * till the capacity.
+     *
+     * @param data The data to convert
+     * @return The hex string
+     */
+    public static String toHexStr (final ByteBuffer data)
+    {
+        final StringBuilder sysex = new StringBuilder ();
+        while (data.position () < data.limit ())
+            sysex.append (toHexStr (Byte.toUnsignedInt (data.get ()))).append (' ');
         return sysex.toString ();
     }
 
