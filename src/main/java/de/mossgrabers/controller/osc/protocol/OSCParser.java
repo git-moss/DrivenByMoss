@@ -18,6 +18,7 @@ import de.mossgrabers.framework.daw.IMarkerBank;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -120,19 +121,23 @@ public class OSCParser extends AbstractOpenSoundControlParser
                     return;
                 }
                 final String subCommand = oscParts.get (0);
+                final IProject project = this.model.getProject ();
                 switch (subCommand)
                 {
                     case "+":
-                        this.model.getProject ().next ();
+                        project.next ();
                         break;
                     case "-":
-                        this.model.getProject ().previous ();
+                        project.previous ();
                         break;
                     case "engine":
                         if (numValue >= 0)
                             this.model.getApplication ().setEngineActive (numValue > 0);
                         else
                             this.model.getApplication ().toggleEngineActive ();
+                        break;
+                    case "save":
+                        project.save ();
                         break;
                     default:
                         this.host.error ("Unknown Project subcommand: " + subCommand);
@@ -280,27 +285,6 @@ public class OSCParser extends AbstractOpenSoundControlParser
 
             case "vkb_midi":
                 this.parseMidi (oscParts, value);
-                break;
-
-            //
-            // Actions
-            //
-
-            case "action":
-                if (oscParts.isEmpty ())
-                {
-                    this.host.error ("Missing Action command ID.");
-                    return;
-                }
-                final String cmd = oscParts.get (0).replace ('-', ' ');
-                try
-                {
-                    this.model.getApplication ().invokeAction (cmd);
-                }
-                catch (final RuntimeException ex)
-                {
-                    this.host.error ("Could not execute action: " + cmd);
-                }
                 break;
 
             default:

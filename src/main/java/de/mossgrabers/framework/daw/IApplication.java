@@ -154,14 +154,6 @@ public interface IApplication extends ObserverManagement
 
 
     /**
-     * Invokes the action for the given action identifier.
-     *
-     * @param id the action identifier string, must not be `null`
-     */
-    void invokeAction (final String id);
-
-
-    /**
      * Toggles the visibility of the note editor panel.
      */
     void toggleNoteEditor ();
