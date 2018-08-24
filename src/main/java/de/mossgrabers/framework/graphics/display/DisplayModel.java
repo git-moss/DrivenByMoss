@@ -66,7 +66,7 @@ public class DisplayModel
     private final ScheduledExecutorService executor                        = Executors.newSingleThreadScheduledExecutor ();
 
     private final List<GridChangeListener> listeners                       = new ArrayList<> ();
-    private final List<IGridElement>        elements                        = new ArrayList<> (8);
+    private final List<IGridElement>       elements                        = new ArrayList<> (8);
     private final AtomicReference<String>  notificationMessage             = new AtomicReference<> ();
     private ModelInfo                      info                            = new ModelInfo (null, Collections.emptyList ());
 

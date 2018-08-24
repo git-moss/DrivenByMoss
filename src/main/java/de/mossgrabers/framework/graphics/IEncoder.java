@@ -16,7 +16,7 @@ public interface IEncoder
 {
     /**
      * Encode the image data.
-     * 
+     *
      * @param imageBuffer The image data (red, green, blue, alpha, ...)
      * @param width The width of the image
      * @param height The height of the image

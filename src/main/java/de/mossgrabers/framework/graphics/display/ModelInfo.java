@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class ModelInfo
 {
-    private String                  notification;
+    private String                   notification;
     private final List<IGridElement> elements;
 
 

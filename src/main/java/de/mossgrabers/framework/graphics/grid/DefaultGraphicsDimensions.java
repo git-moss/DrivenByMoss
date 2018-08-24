@@ -9,7 +9,7 @@ import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 
 /**
  * Default implementation of pre-calculated grid dimensions.
- * 
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class DefaultGraphicsDimensions implements IGraphicsDimensions
@@ -41,7 +41,7 @@ public class DefaultGraphicsDimensions implements IGraphicsDimensions
 
     /**
      * Constructor.
-     * 
+     *
      * @param width The full width of the drawing area
      * @param height The full height of the drawing area
      */

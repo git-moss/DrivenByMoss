@@ -56,7 +56,7 @@ public class Kontrol2Display extends GraphicDisplay
 
     // One pixel is 16 bit
     private static final int            NUM_OF_BYTES       = 2 * DISPLAY_WIDTH * DISPLAY_HEIGHT;
-    private static final int            DATA_SZ            = FOOTER0.length + NUM_OF_BYTES + (NUM_OF_BYTES / 24) * (BLOCK_HEADER.length + 1);
+    private static final int            DATA_SZ            = FOOTER0.length + NUM_OF_BYTES + NUM_OF_BYTES / 24 * (BLOCK_HEADER.length + 1);
 
     private final Kontrol2UsbDevice     usbDevice;
     private final Kontrol2DisplayHeader header0;
@@ -98,7 +98,7 @@ public class Kontrol2Display extends GraphicDisplay
 
         this.isSending.set (true);
 
-        ByteBuffer img = ByteBuffer.allocate (10 * 10 * 4);
+        final ByteBuffer img = ByteBuffer.allocate (10 * 10 * 4);
         for (int i = 0; i < 100; i++)
         {
             img.put ((byte) i);

@@ -77,7 +77,7 @@ public class SelectionGridElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final IGraphicsContext gc, final IGraphicsConfiguration configuration, IGraphicsDimensions dimensions, final double left, final double width, final double height)
+    public void draw (final IGraphicsContext gc, final IGraphicsConfiguration configuration, final IGraphicsDimensions dimensions, final double left, final double width, final double height)
     {
         final double separatorSize = dimensions.getSeparatorSize ();
         final double unit = dimensions.getUnit ();
@@ -107,7 +107,7 @@ public class SelectionGridElement extends AbstractGridElement
      * @param trackRowTop The top of the drawing area
      * @param name The name of the track
      */
-    protected void drawTrackInfo (final IGraphicsContext gc, final IGraphicsConfiguration configuration, IGraphicsDimensions dimensions, final double left, final double width, final double height, final double trackRowTop, final String name)
+    protected void drawTrackInfo (final IGraphicsContext gc, final IGraphicsConfiguration configuration, final IGraphicsDimensions dimensions, final double left, final double width, final double height, final double trackRowTop, final String name)
     {
         final double unit = dimensions.getUnit ();
         final double doubleUnit = dimensions.getDoubleUnit ();

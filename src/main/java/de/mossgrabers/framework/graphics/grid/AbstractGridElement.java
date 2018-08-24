@@ -104,7 +104,7 @@ public abstract class AbstractGridElement implements IGridElement
      * @param left The left bound of the menus drawing area
      * @param width The width of the menu
      */
-    protected void drawMenu (final IGraphicsContext gc, final IGraphicsConfiguration configuration, IGraphicsDimensions dimensions, final double left, final double width)
+    protected void drawMenu (final IGraphicsContext gc, final IGraphicsConfiguration configuration, final IGraphicsDimensions dimensions, final double left, final double width)
     {
         final double separatorSize = dimensions.getSeparatorSize ();
         final double menuHeight = dimensions.getMenuHeight ();

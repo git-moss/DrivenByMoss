@@ -58,7 +58,7 @@ public class OptionsGridElement extends AbstractGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final IGraphicsContext gc, final IGraphicsConfiguration configuration, IGraphicsDimensions dimensions, final double left, final double width, final double height)
+    public void draw (final IGraphicsContext gc, final IGraphicsConfiguration configuration, final IGraphicsDimensions dimensions, final double left, final double width, final double height)
     {
         final double menuHeight = 2 * dimensions.getMenuHeight ();
 

@@ -6,7 +6,7 @@ package de.mossgrabers.framework.graphics;
 
 /**
  * Interface to pre-calculated grid dimensions.
- * 
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public interface IGraphicsDimensions
