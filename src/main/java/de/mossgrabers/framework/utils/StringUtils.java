@@ -195,6 +195,43 @@ public class StringUtils
 
 
     /**
+     * Parse a byte from an hex encoded string. A byte has 2 digits in the string.
+     *
+     * @param data The data in hex
+     * @param index The index of the byte
+     * @return The parsed byte as integer
+     */
+    public static int fromHexStr (final String data, final int index)
+    {
+        final int pos = index * 2;
+        return Integer.parseInt (data.substring (pos, pos + 2), 16);
+    }
+
+
+    /**
+     * Convert a string with hex encoded bytes. One byte is 2 characters without any spaces.
+     *
+     * @param data The data to convert
+     * @return The parsed byte array
+     */
+    public static byte [] fromHexStr (final String data)
+    {
+        final int length = data.length ();
+        if (length % 2 != 0)
+            throw new IllegalArgumentException ("Length of hex data must be a multiple of 2!");
+
+        final int size = length / 2;
+        final byte [] result = new byte [size];
+        for (int i = 0; i < size; i++)
+        {
+            final int pos = i * 2;
+            result[i] = Byte.parseByte (data.substring (pos, pos + 2), 16);
+        }
+        return result;
+    }
+
+
+    /**
      * Format the given time as measure.quarters.eights.
      *
      * @param quartersPerMeasure The number of quarters of a measure

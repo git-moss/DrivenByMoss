@@ -938,7 +938,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
             for (int i = 0; i < PUSH2_ID.length; i++)
             {
-                final int value = hexByteAt (data, i);
+                final int value = StringUtils.fromHexStr (data, i);
                 if (value != PUSH2_ID[i])
                 {
                     this.errorln ("Wrong identifier value at index " + i + ": " + value + " : " + PUSH2_ID[i]);
@@ -946,11 +946,11 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
                 }
             }
 
-            this.majorVersion = hexByteAt (data, 12);
-            this.minorVersion = hexByteAt (data, 13);
-            this.buildNumber = hexByteAt (data, 14) + (hexByteAt (data, 15) << 7);
-            this.serialNumber = hexByteAt (data, 16) + (hexByteAt (data, 17) << 7) + (hexByteAt (data, 18) << 14) + (hexByteAt (data, 19) << 21) + (hexByteAt (data, 20) << 28);
-            this.boardRevision = byteLength > 21 ? hexByteAt (data, 21) : 0;
+            this.majorVersion = StringUtils.fromHexStr (data, 12);
+            this.minorVersion = StringUtils.fromHexStr (data, 13);
+            this.buildNumber = StringUtils.fromHexStr (data, 14) + (StringUtils.fromHexStr (data, 15) << 7);
+            this.serialNumber = StringUtils.fromHexStr (data, 16) + (StringUtils.fromHexStr (data, 17) << 7) + (StringUtils.fromHexStr (data, 18) << 14) + (StringUtils.fromHexStr (data, 19) << 21) + (StringUtils.fromHexStr (data, 20) << 28);
+            this.boardRevision = byteLength > 21 ? StringUtils.fromHexStr (data, 21) : 0;
         }
         else
         {
@@ -963,7 +963,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
             for (int i = 0; i < PUSH1_ID.length; i++)
             {
-                final int value = hexByteAt (data, i);
+                final int value = StringUtils.fromHexStr (data, i);
                 if (value != PUSH1_ID[i])
                 {
                     this.errorln ("Wrong identifier value at index " + i + ": " + value + " : " + PUSH1_ID[i]);
@@ -971,19 +971,12 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
                 }
             }
 
-            this.majorVersion = hexByteAt (data, 10);
-            this.minorVersion = hexByteAt (data, 12) + hexByteAt (data, 11) * 10;
+            this.majorVersion = StringUtils.fromHexStr (data, 10);
+            this.minorVersion = StringUtils.fromHexStr (data, 12) + StringUtils.fromHexStr (data, 11) * 10;
             this.buildNumber = 0;
             this.serialNumber = 0;
             this.boardRevision = 0;
         }
-    }
-
-
-    private static int hexByteAt (final String data, final int index)
-    {
-        final int pos = index * 2;
-        return Integer.parseInt (data.substring (pos, pos + 2), 16);
     }
 
 
