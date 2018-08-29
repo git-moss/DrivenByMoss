@@ -59,8 +59,6 @@ public class Kontrol2Display extends GraphicDisplay
     private static final int            DATA_SZ            = FOOTER0.length + NUM_OF_BYTES + NUM_OF_BYTES / 24 * (BLOCK_HEADER.length + 1);
 
     private final Kontrol2UsbDevice     usbDevice;
-    private final Kontrol2DisplayHeader header0;
-    private final Kontrol2DisplayHeader header1;
     private final IMemoryBlock          imageBlock0;
     private final IMemoryBlock          imageBlock1;
     private final AtomicBoolean         isSending          = new AtomicBoolean (false);
@@ -77,9 +75,6 @@ public class Kontrol2Display extends GraphicDisplay
     {
         super (host);
         this.usbDevice = usbDevice;
-
-        this.header0 = new Kontrol2DisplayHeader (host, true);
-        this.header1 = new Kontrol2DisplayHeader (host, false);
 
         final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (2 * DISPLAY_WIDTH, DISPLAY_HEIGHT);
         this.virtualDisplay = new VirtualDisplay (host, this.model, configuration, dimensions, "Kontrol mkII Display");
@@ -108,16 +103,17 @@ public class Kontrol2Display extends GraphicDisplay
         }
         img.rewind ();
 
-        final ByteBuffer data = Kontrol2DisplayProtocol.encodeImage (img, 1, 0, 0, 10, 10);
-
-        final ByteBuffer buffer0 = this.imageBlock0.createByteBuffer ();
-        buffer0.clear ();
-
-        data.rewind ();
-        for (int i = 0; i < data.limit (); i++)
-            buffer0.put (data.get ());
-
-        this.usbDevice.sendToDisplay (this.imageBlock0);
+        // TODO
+//        final ByteBuffer data = Kontrol2DisplayProtocol.encodeImage (img, 1, 0, 0, 10, 10);
+//
+//        final ByteBuffer buffer0 = this.imageBlock0.createByteBuffer ();
+//        buffer0.clear ();
+//
+//        data.rewind ();
+//        for (int i = 0; i < data.limit (); i++)
+//            buffer0.put (data.get ());
+//
+//        this.usbDevice.sendToDisplay (this.imageBlock0);
 
         // final ByteBuffer buffer1 = this.imageBlock1.createByteBuffer ();
         //

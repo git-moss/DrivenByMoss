@@ -235,7 +235,9 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     {
         this.offsetY = value;
         this.updateScale ();
-        final String text = Scales.getSequencerRangeText (this.keyManager.map (0), this.keyManager.map (this.numSequencerRows - 1));
-        this.surface.getDisplay ().notify (text);
+        this.surface.scheduleTask ( () -> {
+            final String text = Scales.getSequencerRangeText (this.keyManager.map (0), this.keyManager.map (this.numSequencerRows - 1));
+            this.surface.getDisplay ().notify (text);
+        }, 10);
     }
 }

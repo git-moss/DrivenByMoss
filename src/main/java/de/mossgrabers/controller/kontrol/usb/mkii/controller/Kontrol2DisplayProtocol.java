@@ -7,107 +7,142 @@ import java.nio.ByteBuffer;
 
 public class Kontrol2DisplayProtocol
 {
-    public static void main (final String [] args)
+    private static final byte COMMAND_TRANSMIT_PIXEL = (byte) 0x00;
+    private static final byte COMMAND_REPEAT_PIXEL   = (byte) 0x01;
+
+    private static final byte COMMAND_SKIP_PIXEL     = (byte) 0x02;
+    private static final byte COMMAND_BLIT           = (byte) 0x03;
+    private static final byte COMMAND_START_OF_DATA  = (byte) 0x84;
+    private static final byte COMMAND_END_OF_DATA    = (byte) 0x40;
+
+    private static final int  LENGTH_HEADER          = 16;
+    private static final int  LENGTH_FOOTER          = 4;
+    private static final int  LENGTH_BLIT            = 4;
+    private static final int  LENGTH_SKIP_PIXELS     = 7;
+
+
+    public static void encodeImage (final ByteBuffer buffer, final ByteBuffer data, final int display, final int x, final int y, final int width, final int height)
     {
-        final ByteBuffer img = ByteBuffer.allocate (10 * 10 * 4);
-        for (int i = 0; i < 100; i++)
+        writeHeader (buffer, (byte) display, (short) x, (short) y, (short) width, (short) height);
+        writeImage (buffer, data);
+        blit (buffer);
+        writeFooter (buffer, (byte) display);
+        buffer.rewind ();
+    }
+
+
+    public static void fill (final ByteBuffer buffer, final ByteBuffer data, final int display, final int x, final int y, final int width, final int height)
+    {
+        writeHeader (buffer, (byte) display, (short) x, (short) y, (short) width, (short) height);
+        
+        buffer.put (COMMAND_REPEAT_PIXEL);
+        buffer.put ((byte) 0x80);
+        buffer.put ((byte) 0x00);
+        buffer.put ((byte) 0x20);
+        buffer.put ((byte) 0x20);
+        
+        
+        blit (buffer);
+        writeFooter (buffer, (byte) display);
+        buffer.rewind ();
+    }
+
+
+    public static void writeHeader (final ByteBuffer buffer, final byte display, final short x, final short y, final short width, final short height)
+    {
+        buffer.put (COMMAND_START_OF_DATA);
+        buffer.put ((byte) 0x00);
+        buffer.put (display);
+        buffer.put ((byte) 0x60);
+        buffer.putShort ((short) 0);
+        buffer.putShort ((short) 0);
+        // Offset X-Axis (16-bit)
+        buffer.putShort ((short) x);
+        // Offset Y-Axis (16-bit)
+        buffer.putShort ((short) y);
+        // Width (16 bit) - max 480 Pixel (= "01 E0")
+        buffer.putShort ((short) width);
+        // Height (16 bit) - max 270 Pixel
+        buffer.putShort ((short) height);
+    }
+
+
+    public static void writeImage (final ByteBuffer buffer, final ByteBuffer data)
+    {
+        final int length = data.limit () / 3;
+        int i = 0;
+        int rest = length;
+        while (rest > 0)
         {
-            img.put ((byte) i);
-            img.put ((byte) i);
-            img.put ((byte) i);
-            img.put ((byte) 0);
+            skipPixel (buffer);
+            i += addPixels (buffer, data, rest);
+            rest = length - i;
         }
-        img.rewind ();
-
-        final ByteBuffer data = Kontrol2DisplayProtocol.encodeImage (img, 1, 0, 0, 10, 10);
-        System.out.println (StringUtils.toHexStr (data));
-    }
-
-    private static final int COMMAND_TRANSMIT_PIXEL = 0x0000;
-    private static final int COMMAND_REPEAT_PIXEL   = 0x0100;
-    private static final int COMMAND_SKIP_PIXEL     = 0x0200;
-    private static final int COMMAND_BLIT           = 0x0300;
-    private static final int COMMAND_START_OF_DATA  = 0x8400;
-    private static final int COMMAND_END_OF_DATA    = 0x4000;
-
-    ByteBuffer               buffer                 = ByteBuffer.allocate (1000);
-
-
-    public static ByteBuffer encodeImage (final ByteBuffer image, final int display, final int x, final int y, final int width, final int height)
-    {
-        final Kontrol2DisplayProtocol protocol = new Kontrol2DisplayProtocol ();
-        protocol.startOfData ((byte) display, (byte) x, (byte) y, (short) width, (short) height);
-        protocol.writeImage (image);
-        protocol.blit ();
-        protocol.endOfData ((byte) display);
-        final ByteBuffer b = protocol.getBuffer ();
-        b.rewind ();
-        return b;
     }
 
 
-    public ByteBuffer getBuffer ()
+    public static void writeImage2 (final ByteBuffer buffer, final ByteBuffer data)
     {
-        return this.buffer;
-    }
-
-
-    void startOfData (final byte display, final byte x, final byte y, final short width, final short height)
-    {
-        this.buffer.putShort ((short) COMMAND_START_OF_DATA); // TODO
-        this.buffer.put (display);
-        this.buffer.put ((byte) 0x60);
-        this.buffer.putShort ((short) 0);
-        this.buffer.putShort ((short) 0);
-        this.buffer.putShort ((short) 0);
-        this.buffer.put (x);
-        this.buffer.put (y);
-        this.buffer.putShort (width);
-        this.buffer.putShort (height);
-    }
-
-
-    void writeImage (final ByteBuffer image)
-    {
-        this.buffer.putShort ((short) COMMAND_TRANSMIT_PIXEL); // TODO
-
-        final int length = image.capacity () / 4;
-
-        this.buffer.putShort ((short) (length / 4));
-
-        for (int i = 0; i < length; i++)
+        final int length = data.limit () / 3;
+        int i = 0;
+        int rest = length;
+        buffer.put (COMMAND_TRANSMIT_PIXEL);
+        while (rest > 0)
         {
-            final byte red = image.get ();
-            final byte green = image.get ();
-            final byte blue = image.get ();
-            image.get (); // Drop transparency
-
-            final int color = red / 7 | green / 3 * 64 | blue / 7 * 2048;
-            this.buffer.putShort ((short) color);
+            // skipPixel (buffer);
+            i += addPixels (buffer, data, rest);
+            rest = length - i;
         }
-
-        // buffer.putInt ((int)(image.byteCount()/4);
-        // ushort *swappedData = reinterpret_cast<ushort *>(image.bits());
-        // for (int i = 0; i < image.byteCount() / 2; i++)
-        // {
-        // swappedData[i] = _byteswap_ushort(swappedData[i]);
-        // }
-        // buffer.write(reinterpret_cast<const char*>(swappedData), image.byteCount());
     }
 
 
-    void blit ()
+    public static void blit (final ByteBuffer buffer)
     {
-        this.buffer.putShort ((short) COMMAND_BLIT);
-        this.buffer.putShort ((short) 0);
-
+        buffer.put (COMMAND_BLIT);
+        buffer.put ((byte) 0x00);
+        buffer.putShort ((short) 0x00);
     }
 
 
-    void endOfData (final byte display)
+    public static void writeFooter (final ByteBuffer buffer, final byte display)
     {
-        this.buffer.putShort ((short) COMMAND_END_OF_DATA);
-        this.buffer.put (display);
-        this.buffer.put ((byte) 0);
+        buffer.put (COMMAND_END_OF_DATA);
+        buffer.put ((byte) 0x00);
+        buffer.put (display);
+        buffer.put ((byte) 0x00);
+    }
+
+
+    public static void skipPixel (final ByteBuffer buffer)
+    {
+        buffer.put (COMMAND_SKIP_PIXEL);
+        buffer.putShort ((short) 0x00);
+        // TODO numbers of pixels to skip
+        buffer.putShort ((short) 0x00);
+        buffer.putShort ((short) 0x00);
+    }
+
+
+    private static void convertPixel (ByteBuffer buffer, ByteBuffer data)
+    {
+        int red = Byte.toUnsignedInt (data.get ());
+        int green = Byte.toUnsignedInt (data.get ());
+        int blue = Byte.toUnsignedInt (data.get ());
+        int pixel = ((red * 0x1F / 0xFF) << 11) + ((green * 0x3F / 0xFF) << 5) + (blue * 0x1F / 0xFF);
+
+        // Bytes need to be swapped
+        buffer.put ((byte) ((pixel & 0xFF00) >> 8));
+        buffer.put ((byte) (pixel & 0x00FF));
+    }
+
+
+    private static int addPixels (final ByteBuffer buffer, final ByteBuffer data, final int rest)
+    {
+        final int bytesToAdd = Math.min (rest, 22);
+
+        buffer.put ((byte) (bytesToAdd / 2));
+        for (int j = 0; j < bytesToAdd; j++)
+            convertPixel (buffer, data);
+        return bytesToAdd;
     }
 }
