@@ -24,44 +24,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class Kontrol2Display extends GraphicDisplay
 {
-    private static final int            DISPLAY_WIDTH      = 480;
-    private static final int            DISPLAY_HEIGHT     = 360;
-    private static final int            DISPLAY_WIDTH_LINE = DISPLAY_WIDTH * 4;
-
-    private static final byte []        BLOCK_HEADER       =
-    {
-        (byte) 0x02,
-        (byte) 0x00,
-        (byte) 0x00,
-        (byte) 0x00,
-        (byte) 0x00,
-        (byte) 0x00,
-        (byte) 0x00
-    };
-
-    private static final byte []        FOOTER0            =
-    {
-        (byte) 0x40,
-        (byte) 0x00,
-        (byte) 0x00,
-        (byte) 0x00
-    };
-    private static final byte []        FOOTER1            =
-    {
-        (byte) 0x40,
-        (byte) 0x00,
-        (byte) 0x00,
-        (byte) 0x00
-    };
+    private static final int        DISPLAY_WIDTH      = 480;
+    private static final int        DISPLAY_HEIGHT     = 272;
+    private static final int        DISPLAY_WIDTH_LINE = DISPLAY_WIDTH * 2;
 
     // One pixel is 16 bit
-    private static final int            NUM_OF_BYTES       = 2 * DISPLAY_WIDTH * DISPLAY_HEIGHT;
-    private static final int            DATA_SZ            = FOOTER0.length + NUM_OF_BYTES + NUM_OF_BYTES / 24 * (BLOCK_HEADER.length + 1);
+    private static final int        NUM_OF_PIXELS      = DISPLAY_WIDTH * DISPLAY_HEIGHT;
+    private static final int        DATA_SZ            = 28 + 2 * NUM_OF_PIXELS;
 
-    private final Kontrol2UsbDevice     usbDevice;
-    private final IMemoryBlock          imageBlock0;
-    private final IMemoryBlock          imageBlock1;
-    private final AtomicBoolean         isSending          = new AtomicBoolean (false);
+    private final Kontrol2UsbDevice usbDevice;
+    private final IMemoryBlock      imageBlock0;
+    private final IMemoryBlock      imageBlock1;
+    private final ByteBuffer        data0              = ByteBuffer.allocateDirect (3 * NUM_OF_PIXELS);
+    private final ByteBuffer        data1              = ByteBuffer.allocateDirect (3 * NUM_OF_PIXELS);
+    private final AtomicBoolean     isSending          = new AtomicBoolean (false);
 
 
     /**
@@ -79,7 +55,7 @@ public class Kontrol2Display extends GraphicDisplay
         final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (2 * DISPLAY_WIDTH, DISPLAY_HEIGHT);
         this.virtualDisplay = new VirtualDisplay (host, this.model, configuration, dimensions, "Kontrol mkII Display");
 
-        this.imageBlock0 = host.createMemoryBlock (228); // DATA_SZ);
+        this.imageBlock0 = host.createMemoryBlock (DATA_SZ);
         this.imageBlock1 = host.createMemoryBlock (DATA_SZ);
     }
 
@@ -93,64 +69,43 @@ public class Kontrol2Display extends GraphicDisplay
 
         this.isSending.set (true);
 
-        final ByteBuffer img = ByteBuffer.allocate (10 * 10 * 4);
-        for (int i = 0; i < 100; i++)
-        {
-            img.put ((byte) i);
-            img.put ((byte) i);
-            img.put ((byte) i);
-            img.put ((byte) 0);
-        }
-        img.rewind ();
+        image.encode ( (imageBuffer, width, height) -> {
+            this.data0.clear ();
+            this.data1.clear ();
 
-        // TODO
-//        final ByteBuffer data = Kontrol2DisplayProtocol.encodeImage (img, 1, 0, 0, 10, 10);
-//
-//        final ByteBuffer buffer0 = this.imageBlock0.createByteBuffer ();
-//        buffer0.clear ();
-//
-//        data.rewind ();
-//        for (int i = 0; i < data.limit (); i++)
-//            buffer0.put (data.get ());
-//
-//        this.usbDevice.sendToDisplay (this.imageBlock0);
+            final int pixels = imageBuffer.capacity () / 4;
+            for (int i = 0; i < pixels; i++)
+            {
+                final ByteBuffer b = i % DISPLAY_WIDTH_LINE < DISPLAY_WIDTH ? this.data0 : this.data1;
 
-        // final ByteBuffer buffer1 = this.imageBlock1.createByteBuffer ();
-        //
-        // image.encode ( (imageBuffer, width, height) -> {
-        // buffer0.clear ();
-        // buffer1.clear ();
-        //
-        // final int capacity = imageBuffer.capacity ();
-        // for (int i = 0; i < capacity; i += 4)
-        // {
-        // final ByteBuffer b = i % (2 * DISPLAY_WIDTH_LINE) < DISPLAY_WIDTH_LINE ? buffer0 :
-        // buffer1;
-        // if (i % 48 == 0)
-        // {
-        // b.put (BLOCK_HEADER);
-        // b.put ((byte) 0x06);
-        // }
-        // final byte red = imageBuffer.get ();
-        // final byte green = imageBuffer.get ();
-        // final byte blue = imageBuffer.get ();
-        // imageBuffer.get (); // Drop transparency
-        //
-        // int color = (red / 7) | ((green / 3) * 64) | ((blue / 7) * 2048);
-        // b.putShort ((short) color);
-        //
-        // // host.println (i + " - 0:" + buffer0.position () +" - 1:" + buffer1.position ());
-        // }
-        // buffer0.put (FOOTER0);
-        // buffer1.put (FOOTER1);
-        //
-        // imageBuffer.rewind ();
-        // });
-        //
-        // this.usbDevice.sendToDisplay (this.header0.getMemoryBlock ());
-        // this.usbDevice.sendToDisplay (this.imageBlock0);
-        // this.usbDevice.sendToDisplay (this.header1.getMemoryBlock ());
-        // this.usbDevice.sendToDisplay (this.imageBlock1);
+                final byte red = imageBuffer.get ();
+                final byte green = imageBuffer.get ();
+                final byte blue = imageBuffer.get ();
+                imageBuffer.get (); // Drop transparency
+
+                b.put (red);
+                b.put (green);
+                b.put (blue);
+
+                // TODO
+                // this.host.error (this.data0.position () + ":" + this.data1.position ());
+            }
+
+            imageBuffer.rewind ();
+        });
+
+        this.data0.rewind ();
+        this.data1.rewind ();
+
+        final ByteBuffer buffer0 = this.imageBlock0.createByteBuffer ();
+        buffer0.clear ();
+        Kontrol2DisplayProtocol.encodeImage (buffer0, this.data0, 0, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+        final ByteBuffer buffer1 = this.imageBlock1.createByteBuffer ();
+        buffer1.clear ();
+        Kontrol2DisplayProtocol.encodeImage (buffer1, this.data1, 1, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+
+        this.usbDevice.sendToDisplay (this.imageBlock0);
+        this.usbDevice.sendToDisplay (this.imageBlock1);
 
         this.isSending.set (false);
     }
