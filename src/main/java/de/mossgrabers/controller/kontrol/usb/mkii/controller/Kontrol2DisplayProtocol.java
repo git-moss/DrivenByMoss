@@ -14,6 +14,15 @@ import java.nio.ByteBuffer;
  */
 public class Kontrol2DisplayProtocol
 {
+    /** The size of the header in bytes. */
+    public static final int   LENGTH_HEADER          = 16;
+    /** The size of the footer in bytes. */
+    public static final int   LENGTH_FOOTER          = 4;
+    /** The size of the blit command in bytes. */
+    public static final int   LENGTH_BLIT            = 4;
+    /** The size of the skip pixels command in bytes. */
+    public static final int   LENGTH_SKIP_PIXELS     = 7;
+
     private static final byte COMMAND_TRANSMIT_PIXEL = (byte) 0x00;
     private static final byte COMMAND_REPEAT_PIXEL   = (byte) 0x01;
     private static final byte COMMAND_SKIP_PIXEL     = (byte) 0x02;
@@ -21,14 +30,20 @@ public class Kontrol2DisplayProtocol
     private static final byte COMMAND_START_OF_DATA  = (byte) 0x84;
     private static final byte COMMAND_END_OF_DATA    = (byte) 0x40;
 
-    private static final int  LENGTH_HEADER          = 16;
-    private static final int  LENGTH_FOOTER          = 4;
-    private static final int  LENGTH_BLIT            = 4;
-    private static final int  LENGTH_SKIP_PIXELS     = 7;
 
-
-    // TODO Improve implementation
-    public static void encodeImage (final ByteBuffer buffer, final ByteBuffer data, final int display, final int x, final int y, final int width, final int height)
+    /**
+     * Fill a rectangle with pixels.
+     *
+     * @param buffer Where to add the data bytes of the command and data codes
+     * @param data The pixel data. Each pixel is 3 bytes: the red component of the color (0-255),
+     *            the green component of the color (0-255), the blue component of the color (0-255)
+     * @param display The display (0 or 1)
+     * @param x The X offset of the rectangle (max. 479)
+     * @param y The Y offset of the rectangle (max. 271)
+     * @param width The width of the rectangle (max. 480)
+     * @param height The height of the rectangle (max. 272)
+     */
+    public static void pixelRectangle (final ByteBuffer buffer, final ByteBuffer data, final int display, final int x, final int y, final int width, final int height)
     {
         writeHeader (buffer, (byte) display, (short) x, (short) y, (short) width, (short) height);
         transmitPixel (buffer, data);
@@ -50,7 +65,7 @@ public class Kontrol2DisplayProtocol
      * @param green The green component of the fill color (0-255)
      * @param blue The blue component of the fill color (0-255)
      */
-    public static void fill (final ByteBuffer buffer, final int display, final int x, final int y, final int width, final int height, final int red, final int green, final int blue)
+    public static void fillRectangle (final ByteBuffer buffer, final int display, final int x, final int y, final int width, final int height, final int red, final int green, final int blue)
     {
         writeHeader (buffer, (byte) display, (short) x, (short) y, (short) width, (short) height);
         repeatPixel (buffer, (short) (width * height / 2), red, green, blue, red, green, blue);
@@ -70,7 +85,7 @@ public class Kontrol2DisplayProtocol
      * @param width The width of the rectangle (max. 480)
      * @param height The height of the rectangle (max. 272)
      */
-    public static void clear (final ByteBuffer buffer, final int display, final int x, final int y, final int width, final int height)
+    public static void clearRectangle (final ByteBuffer buffer, final int display, final int x, final int y, final int width, final int height)
     {
         writeHeader (buffer, (byte) display, (short) x, (short) y, (short) width, (short) height);
         repeatPixel (buffer, (short) (width * height / 2), 0, 0, 0, 0, 0, 0);
@@ -109,21 +124,6 @@ public class Kontrol2DisplayProtocol
         buffer.putShort (width);
         // Height (16 bit) - max 270 Pixel
         buffer.putShort (height);
-    }
-
-
-    // TODO Remove when transmitPixel works
-    public static void writeImage (final ByteBuffer buffer, final ByteBuffer data)
-    {
-        final int length = data.limit () / 3;
-        int i = 0;
-        int rest = length;
-        while (rest > 0)
-        {
-            skipPixel (buffer, 0, 0);
-            i += addPixels (buffer, data, rest);
-            rest = length - i;
-        }
     }
 
 
@@ -171,8 +171,7 @@ public class Kontrol2DisplayProtocol
     {
         buffer.put (COMMAND_END_OF_DATA);
         buffer.put ((byte) 0x00);
-        buffer.put (display); // TODO 0x00 ???
-        buffer.put ((byte) 0x00);
+        buffer.putShort ((short) 0x00);
     }
 
 
@@ -187,11 +186,8 @@ public class Kontrol2DisplayProtocol
     {
         buffer.put (COMMAND_SKIP_PIXEL);
 
-        // TODO Correct?
         buffer.put ((byte) (skipX >> 16));
         buffer.putShort ((short) (skipX & 0x0000FFFF));
-
-        // TODO Correct? Can we skip in Y direction or are these 3 bytes always 0x00 ?
         buffer.put ((byte) (skipY >> 16));
         buffer.putShort ((short) (skipY & 0x0000FFFF));
     }
@@ -233,7 +229,7 @@ public class Kontrol2DisplayProtocol
      * @param rest The number of pixels left to encode
      * @return The number of pixels left to encode
      */
-    private static int addPixels (final ByteBuffer buffer, final ByteBuffer data, final int rest)
+    public static int addPixels (final ByteBuffer buffer, final ByteBuffer data, final int rest)
     {
         final int bytesToAdd = Math.min (rest, 22);
 

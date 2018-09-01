@@ -52,11 +52,11 @@ public class Kontrol2Display extends GraphicDisplay
         super (host);
         this.usbDevice = usbDevice;
 
-        final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (2 * DISPLAY_WIDTH, DISPLAY_HEIGHT);
+        final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (DISPLAY_WIDTH_LINE, DISPLAY_HEIGHT);
         this.virtualDisplay = new VirtualDisplay (host, this.model, configuration, dimensions, "Kontrol mkII Display");
 
-        this.imageBlock0 = host.createMemoryBlock (DATA_SZ);
-        this.imageBlock1 = host.createMemoryBlock (DATA_SZ);
+        this.imageBlock0 = host.createMemoryBlock (32); // DATA_SZ);
+        this.imageBlock1 = host.createMemoryBlock (32); // DATA_SZ);
     }
 
 
@@ -69,44 +69,78 @@ public class Kontrol2Display extends GraphicDisplay
 
         this.isSending.set (true);
 
-        image.encode ( (imageBuffer, width, height) -> {
-            this.data0.clear ();
-            this.data1.clear ();
+        // host.println ("Lock set");
+        //
+        // image.encode ( (imageBuffer, width, height) -> {
+        //
+        // host.println ("Draw start");
+        //
+        // this.data0.clear ();
+        // this.data1.clear ();
+        //
+        // final int pixels = imageBuffer.capacity () / 4;
+        // for (int i = 0; i < pixels; i++)
+        // {
+        // final ByteBuffer b = i % DISPLAY_WIDTH_LINE < DISPLAY_WIDTH ? this.data0 : this.data1;
+        //
+        // final byte red = imageBuffer.get ();
+        // final byte green = imageBuffer.get ();
+        // final byte blue = imageBuffer.get ();
+        // imageBuffer.get (); // Drop transparency
+        //
+        // b.put (red);
+        // b.put (green);
+        // b.put (blue);
+        //
+        // // TODO
+        // // this.host.error (this.data0.position () + ":" + this.data1.position ());
+        // }
+        //
+        // host.println ("Draw stop");
+        //
+        // imageBuffer.rewind ();
+        //
+        // host.println ("Image reset");
+        //
+        // });
+        //
+        // host.println ("start send");
+        //
+        // this.data0.rewind ();
+        // this.data1.rewind ();
 
-            final int pixels = imageBuffer.capacity () / 4;
-            for (int i = 0; i < pixels; i++)
-            {
-                final ByteBuffer b = i % DISPLAY_WIDTH_LINE < DISPLAY_WIDTH ? this.data0 : this.data1;
+        // ByteBuffer data = ByteBuffer.allocateDirect (DISPLAY_WIDTH * DISPLAY_HEIGHT * 3 * 2);
+        // for (int i = 0; i < 2 * DISPLAY_WIDTH * DISPLAY_HEIGHT; i++)
+        // {
+        // data.put ((byte) 255);
+        // data.put ((byte) 0);
+        // data.put ((byte) 0);
+        // }
+        // data.rewind ();
+        //
 
-                final byte red = imageBuffer.get ();
-                final byte green = imageBuffer.get ();
-                final byte blue = imageBuffer.get ();
-                imageBuffer.get (); // Drop transparency
+        for (int i = 0; i < 10; i++)
+        {
+            final ByteBuffer buffer0 = this.imageBlock0.createByteBuffer ();
+            buffer0.clear ();
+            // Kontrol2DisplayProtocol.pixelRectangle (buffer0, data, 0, 0, 0, DISPLAY_WIDTH,
+            // DISPLAY_HEIGHT);
 
-                b.put (red);
-                b.put (green);
-                b.put (blue);
+            Kontrol2DisplayProtocol.fillRectangle (buffer0, 0, 0, i, DISPLAY_WIDTH, 1, 255, 0, 255);
+            this.usbDevice.sendToDisplay (this.imageBlock0);
+        }
 
-                // TODO
-                // this.host.error (this.data0.position () + ":" + this.data1.position ());
-            }
-
-            imageBuffer.rewind ();
-        });
-
-        this.data0.rewind ();
-        this.data1.rewind ();
-
-        final ByteBuffer buffer0 = this.imageBlock0.createByteBuffer ();
-        buffer0.clear ();
-        Kontrol2DisplayProtocol.encodeImage (buffer0, this.data0, 0, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
         final ByteBuffer buffer1 = this.imageBlock1.createByteBuffer ();
         buffer1.clear ();
-        Kontrol2DisplayProtocol.encodeImage (buffer1, this.data1, 1, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-
-        this.usbDevice.sendToDisplay (this.imageBlock0);
+        Kontrol2DisplayProtocol.fillRectangle (buffer1, 1, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, 255, 255, 0);
         this.usbDevice.sendToDisplay (this.imageBlock1);
 
+        // Kontrol2DisplayProtocol.pixelRectangle (buffer1, this.data1, 1, 0, 0, DISPLAY_WIDTH,
+        // DISPLAY_HEIGHT);
+
+        host.println ("Send done");
+
         this.isSending.set (false);
+        host.println ("Lock released");
     }
 }
