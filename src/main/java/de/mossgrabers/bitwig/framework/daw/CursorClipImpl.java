@@ -46,8 +46,8 @@ public class CursorClipImpl implements ICursorClip
         this.numSteps = numSteps;
         this.numRows = numRows;
         this.stepLength = 1.0 / 4.0; // 16th
-        this.data = new int [this.numSteps] [];
 
+        this.data = new int [this.numSteps] [];
         for (int step = 0; step < this.numSteps; step++)
         {
             this.data[step] = new int [this.numRows];
@@ -322,9 +322,7 @@ public class CursorClipImpl implements ICursorClip
     @Override
     public int getStep (final int step, final int row)
     {
-        if (row < 0)
-            return 0;
-        return this.data[step][row];
+        return row < 0 ? 0 : this.data[step][row];
     }
 
 
