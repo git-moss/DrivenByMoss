@@ -73,8 +73,9 @@ public abstract class AbstractBank<T extends IItem> implements IBank<T>
     {
         for (int i = 0; i < this.getPageSize (); i++)
         {
-            if (this.items.get (i).isSelected ())
-                return this.items.get (i);
+            T item = this.getItem (i);
+            if (item.isSelected ())
+                return item;
         }
         return null;
     }
@@ -85,8 +86,9 @@ public abstract class AbstractBank<T extends IItem> implements IBank<T>
     public List<T> getSelectedItems ()
     {
         final List<T> selection = new ArrayList<> ();
-        for (final T item: this.items)
+        for (int i = 0; i < this.getPageSize (); i++)
         {
+            T item = this.getItem (i);
             if (item.isSelected ())
                 selection.add (item);
         }
