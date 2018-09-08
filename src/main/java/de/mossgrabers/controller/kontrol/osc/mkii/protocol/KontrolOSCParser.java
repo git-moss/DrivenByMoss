@@ -337,7 +337,7 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
 
             case "clip": // 1.x
                 if (!oscParts.isEmpty () && oscParts.poll ().equals ("quantize"))
-                    this.model.getCursorClip (8, 8).quantize (1);
+                    this.clip.quantize (1);
                 return true;
 
             case "scrub": // 1.6

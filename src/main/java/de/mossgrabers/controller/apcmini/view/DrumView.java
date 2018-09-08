@@ -6,8 +6,8 @@ package de.mossgrabers.controller.apcmini.view;
 
 import de.mossgrabers.controller.apcmini.APCminiConfiguration;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -78,7 +78,7 @@ public class DrumView extends AbstractDrumView<APCminiControlSurface, APCminiCon
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1, octave < Scales.DRUM_OCTAVE_UPPER ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON2, octave > Scales.DRUM_OCTAVE_LOWER ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
-        final ICursorClip clip = this.getClip ();
+        final INoteClip clip = this.getClip ();
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3, clip != null && clip.canScrollStepsBackwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON4, clip != null && clip.canScrollStepsForwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         for (int i = 0; i < 4; i++)

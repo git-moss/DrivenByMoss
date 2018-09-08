@@ -211,22 +211,29 @@ public interface IModel
     ITrackBank createSceneViewTrackBank (final int numTracks, final int numScenes);
 
 
-    /***
+    /**
      * Create or get a new cursor clip.
      *
      * @param cols The columns of the clip
      * @param rows The rows of the clip
      * @return The cursor clip
      */
-    ICursorClip getCursorClip (int cols, int rows);
+    INoteClip getNoteClip (int cols, int rows);
 
 
     /***
-     * Create or get the default cursor clip of size numTracks x numScenes.
+     * Create or get the default cursor clip.
      *
      * @return The cursor clip
      */
-    ICursorClip getCursorClip ();
+    IClip getClip ();
+
+
+    /**
+     * If there was no clip for a sequencer created, ensure that there is at least one cursor clip
+     * e.g. for quantization and clip modifications.
+     */
+    void ensureClip ();
 
 
     /**

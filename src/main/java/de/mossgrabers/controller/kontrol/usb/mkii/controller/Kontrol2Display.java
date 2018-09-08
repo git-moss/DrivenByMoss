@@ -138,9 +138,9 @@ public class Kontrol2Display extends GraphicDisplay
         // Kontrol2DisplayProtocol.pixelRectangle (buffer1, this.data1, 1, 0, 0, DISPLAY_WIDTH,
         // DISPLAY_HEIGHT);
 
-        host.println ("Send done");
+        this.host.println ("Send done");
 
         this.isSending.set (false);
-        host.println ("Lock released");
+        this.host.println ("Lock released");
     }
 }

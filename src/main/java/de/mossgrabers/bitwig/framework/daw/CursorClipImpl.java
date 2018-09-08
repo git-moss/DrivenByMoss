@@ -5,7 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.INoteClip;
 
 import com.bitwig.extension.controller.api.Clip;
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -19,7 +19,7 @@ import java.util.Arrays;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class CursorClipImpl implements ICursorClip
+public class CursorClipImpl implements INoteClip
 {
     private int             numSteps;
     private int             numRows;
@@ -405,15 +405,6 @@ public class CursorClipImpl implements ICursorClip
     public double getStepLength ()
     {
         return this.stepLength;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollTo (final int step, final int row)
-    {
-        this.clip.scrollToKey (row);
-        this.clip.scrollToStep (step);
     }
 
 

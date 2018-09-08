@@ -8,8 +8,9 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 
@@ -78,9 +79,11 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
 
         // Clip length/loop area
         final int pad = (7 - y) * 8 + x;
-        if (velocity > 0) // Button pressed
+        // Button pressed?
+        if (velocity > 0)
         {
-            if (this.loopPadPressed == -1) // Not yet a button pressed, store it
+            // Not yet a button pressed, store it
+            if (this.loopPadPressed == -1)
                 this.loopPadPressed = pad;
         }
         else if (this.loopPadPressed != -1)
@@ -91,7 +94,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
 
             // Set a new loop between the 2 selected pads
             final double newStart = start * quartersPerPad;
-            final ICursorClip clip = this.model.getCursorClip ();
+            final IClip clip = this.getClip ();
             clip.setLoopStart (newStart);
             clip.setLoopLength ((int) ((end - start) * quartersPerPad));
             clip.setPlayRange (newStart, end * quartersPerPad);
@@ -105,7 +108,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     @Override
     public void drawGrid ()
     {
-        final ICursorClip clip = this.model.getCursorClip ();
+        final INoteClip clip = this.getClip ();
         // Clip length/loop area
         final int step = clip.getCurrentStep ();
         final double quartersPerPad = this.getQuartersPerPad ();

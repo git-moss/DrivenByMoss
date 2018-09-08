@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.graphics.display;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -127,7 +127,7 @@ public class DisplayModel
      * @param clip The clip to display
      * @param quartersPerMeasure The quarters of a measure
      */
-    public void setMidiClipElement (final ICursorClip clip, final int quartersPerMeasure)
+    public void setMidiClipElement (final INoteClip clip, final int quartersPerMeasure)
     {
         this.elements.add (new MidiClipElement (clip, quartersPerMeasure));
     }

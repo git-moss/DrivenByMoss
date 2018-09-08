@@ -7,8 +7,8 @@ package de.mossgrabers.framework.view;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -71,7 +71,6 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     {
         this.updateScale ();
         super.onActivate ();
-        this.getClip ().scrollTo (0, this.offsetY);
     }
 
 
@@ -94,7 +93,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final int x = index % 8;
         final int y = index / 8;
 
-        final ICursorClip clip = this.getClip ();
+        final INoteClip clip = this.getClip ();
         if (y < this.numSequencerRows)
         {
             if (velocity != 0)
@@ -152,7 +151,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final ITrack selectedTrack = this.model.getSelectedTrack ();
 
         // Steps with notes
-        final ICursorClip clip = this.getClip ();
+        final INoteClip clip = this.getClip ();
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % this.numDisplayCols : -1;
         for (int x = 0; x < this.numDisplayCols; x++)

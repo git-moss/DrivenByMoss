@@ -156,7 +156,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     public void flush ()
     {
         this.flushSurfaces ();
-        this.updateIndication ();
+        this.updateIndication (this.getSurface ().getModeManager ().getActiveOrTempModeId ());
     }
 
 
@@ -301,10 +301,13 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     }
 
 
-    private void updateIndication ()
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
     {
-        final SLControlSurface surface = this.getSurface ();
-        final Integer mode = surface.getModeManager ().getActiveOrTempModeId ();
+        if (mode == this.currentMode)
+            return;
+        this.currentMode = mode;
 
         final IMasterTrack mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (Modes.MODE_MASTER.equals (mode));

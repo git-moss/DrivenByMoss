@@ -262,8 +262,14 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     }
 
 
-    private void updateIndication (final Integer mode)
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
     {
+        if (mode == this.currentMode)
+            return;
+        this.currentMode = mode;
+
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final APCminiControlSurface surface = this.getSurface ();

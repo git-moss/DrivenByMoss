@@ -153,7 +153,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
 
             case AbstractConfiguration.FOOTSWITCH_2_QUANTIZE:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getCursorClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+                    this.model.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
                 break;
         }
     }

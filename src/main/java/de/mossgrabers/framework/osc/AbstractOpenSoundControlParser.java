@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.osc;
 
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
@@ -24,7 +24,7 @@ public abstract class AbstractOpenSoundControlParser implements IOpenSoundContro
     protected final IModel                         model;
     protected final ITransport                     transport;
     protected final IMasterTrack                   masterTrack;
-    protected final ICursorClip                    clip;
+    protected final IClip                          clip;
 
     protected final Scales                         scales;
     protected final IMidiInput                     midiInput;
@@ -39,7 +39,7 @@ public abstract class AbstractOpenSoundControlParser implements IOpenSoundContro
         this.transport = model.getTransport ();
         this.masterTrack = model.getMasterTrack ();
         this.scales = model.getScales ();
-        this.clip = model.getCursorClip (8, 8);
+        this.clip = model.getNoteClip (8, 128);
 
         this.midiInput = midiInput;
         this.configuration = configuration;

@@ -120,4 +120,12 @@ public class KontrolOSCControllerSetup extends AbstractControllerSetup<IControlS
 
         super.exit ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
+    {
+        // Unused
+    }
 }

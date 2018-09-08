@@ -15,9 +15,9 @@ import de.mossgrabers.controller.launchpad.view.SequencerView;
 import de.mossgrabers.controller.launchpad.view.Views;
 import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -81,14 +81,14 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        final ICursorClip cursorClip = this.model.getCursorClip ();
         if (viewManager.isActiveView (Views.VIEW_DRUM))
         {
+            final INoteClip clip = ((DrumView) viewManager.getView (Views.VIEW_DRUM)).getClip ();
             final int octave = this.model.getScales ().getDrumOctave ();
             this.canScrollUp = octave < 5;
             this.canScrollDown = octave > -3;
-            this.canScrollLeft = cursorClip.canScrollStepsBackwards ();
-            this.canScrollRight = cursorClip.canScrollStepsForwards ();
+            this.canScrollLeft = clip.canScrollStepsBackwards ();
+            this.canScrollRight = clip.canScrollStepsForwards ();
             return;
         }
 
@@ -105,11 +105,12 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         if (viewManager.isActiveView (Views.VIEW_SEQUENCER) || viewManager.isActiveView (Views.VIEW_RAINDROPS))
         {
+            final INoteClip clip = ((AbstractSequencerView<?, ?>) viewManager.getView (Views.VIEW_DRUM)).getClip ();
             final int octave = this.model.getScales ().getOctave ();
             this.canScrollUp = octave < Scales.OCTAVE_RANGE;
             this.canScrollDown = octave > -Scales.OCTAVE_RANGE;
-            this.canScrollLeft = cursorClip.canScrollStepsBackwards ();
-            this.canScrollRight = cursorClip.canScrollStepsForwards ();
+            this.canScrollLeft = clip.canScrollStepsBackwards ();
+            this.canScrollRight = clip.canScrollStepsForwards ();
             return;
         }
 

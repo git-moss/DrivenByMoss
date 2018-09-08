@@ -207,7 +207,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     @Override
     protected void createObservers ()
     {
-        this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication ());
+        this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
     }
 
@@ -275,7 +275,9 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     }
 
 
-    private void updateIndication ()
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
     {
         final BeatstepControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();

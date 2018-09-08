@@ -8,10 +8,10 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -125,7 +125,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final int y = index / GRID_COLUMNS;
 
         // Sequencer steps
-        final ICursorClip clip = this.getClip ();
+        final INoteClip clip = this.getClip ();
         if (y >= this.playLines)
         {
             if (velocity != 0)
@@ -421,7 +421,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      */
     private void drawSequencer ()
     {
-        final ICursorClip clip = this.getClip ();
+        final INoteClip clip = this.getClip ();
 
         // Clip length/loop area
         final int step = clip.getCurrentStep ();

@@ -194,7 +194,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 this.surface.getDisplay ().notify ("Toggle Launcher Overdub");
                 break;
             case 46:
-                this.model.getCursorClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+                this.model.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
                 this.surface.getDisplay ().notify ("Quantize");
                 break;
             case 38:

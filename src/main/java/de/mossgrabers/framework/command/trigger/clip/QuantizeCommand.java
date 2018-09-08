@@ -44,6 +44,6 @@ public class QuantizeCommand<S extends IControlSurface<C>, C extends Configurati
 
     protected void quantize ()
     {
-        this.model.getCursorClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+        this.model.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
     }
 }

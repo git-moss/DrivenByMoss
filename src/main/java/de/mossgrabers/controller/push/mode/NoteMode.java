@@ -7,8 +7,8 @@ package de.mossgrabers.controller.push.mode;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 
 
@@ -19,11 +19,11 @@ import de.mossgrabers.framework.graphics.display.DisplayModel;
  */
 public class NoteMode extends BaseMode
 {
-    ICursorClip clip         = null;
-    double      noteLength   = 1.0;
-    int         noteVelocity = 127;
-    int         step         = 0;
-    int         note         = 60;
+    INoteClip clip         = null;
+    double    noteLength   = 1.0;
+    int       noteVelocity = 127;
+    int       step         = 0;
+    int       note         = 60;
 
 
     /**
@@ -47,7 +47,7 @@ public class NoteMode extends BaseMode
      * @param noteLength The note length to edit
      * @param noteVelocity The note velocity to edit
      */
-    public void setValues (final ICursorClip clip, final int step, final int note, final double noteLength, final int noteVelocity)
+    public void setValues (final INoteClip clip, final int step, final int note, final double noteLength, final int noteVelocity)
     {
         this.clip = clip;
         this.step = step;

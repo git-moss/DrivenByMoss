@@ -38,6 +38,6 @@ public class DoubleCommand<S extends IControlSurface<C>, C extends Configuration
     public void execute (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCursorClip ().duplicateContent ();
+            this.model.getClip ().duplicateContent ();
     }
 }

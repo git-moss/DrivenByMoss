@@ -116,4 +116,12 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         // Initial flush of the whole DAW state
         this.host.scheduleTask ( () -> this.writer.flush (true), 1000);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
+    {
+        // Not used
+    }
 }

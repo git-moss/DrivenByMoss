@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.graphics.grid;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.graphics.Align;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
@@ -23,8 +23,8 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MidiClipElement extends AbstractGridElement
 {
-    private final ICursorClip clip;
-    private int               quartersPerMeasure;
+    private final INoteClip clip;
+    private int             quartersPerMeasure;
 
 
     /**
@@ -33,7 +33,7 @@ public class MidiClipElement extends AbstractGridElement
      * @param clip The clip to display
      * @param quartersPerMeasure The quarters of a measure
      */
-    public MidiClipElement (final ICursorClip clip, final int quartersPerMeasure)
+    public MidiClipElement (final INoteClip clip, final int quartersPerMeasure)
     {
         super (null, false, null, null, null, false);
         this.clip = clip;

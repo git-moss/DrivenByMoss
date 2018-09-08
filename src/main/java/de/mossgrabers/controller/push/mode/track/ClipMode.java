@@ -10,8 +10,9 @@ import de.mossgrabers.controller.push.view.ColorView;
 import de.mossgrabers.controller.push.view.ColorView.SelectMode;
 import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
@@ -52,7 +53,7 @@ public class ClipMode extends AbstractTrackMode
         if (index == 7 && isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-            this.model.getCursorClip ().resetAccent ();
+            this.model.getClip ().resetAccent ();
         }
     }
 
@@ -64,7 +65,7 @@ public class ClipMode extends AbstractTrackMode
         if (!this.increaseKnobMovement ())
             return;
 
-        final ICursorClip clip = this.model.getCursorClip ();
+        final IClip clip = this.model.getClip ();
         switch (index)
         {
             case 0:
@@ -100,7 +101,7 @@ public class ClipMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final ICursorClip clip = this.model.getCursorClip ();
+        final IClip clip = this.model.getClip ();
         d.setCell (0, 0, "PlayStrt").setCell (1, 0, this.formatMeasures (clip.getPlayStart (), 1));
         d.setCell (0, 1, "Play End").setCell (1, 1, this.formatMeasures (clip.getPlayEnd (), 1));
         d.setCell (0, 2, "LoopStrt").setCell (1, 2, this.formatMeasures (clip.getLoopStart (), 1));
@@ -116,11 +117,11 @@ public class ClipMode extends AbstractTrackMode
     @Override
     public void updateDisplay2 ()
     {
-        final ICursorClip clip = this.model.getCursorClip ();
         final DisplayModel message = this.surface.getDisplay ().getModel ();
 
         if (this.displayMidiNotes)
         {
+            final INoteClip clip = this.model.getNoteClip (8, 128);
             message.setMidiClipElement (clip, this.model.getTransport ().getQuartersPerMeasure ());
             message.send ();
             return;
@@ -136,6 +137,7 @@ public class ClipMode extends AbstractTrackMode
         final ITrack t6 = tb.getItem (6);
         final ITrack t7 = tb.getItem (7);
 
+        final IClip clip = this.model.getClip ();
         if (this.disableMidiEditor)
             message.addParameterElement ("", false, t0.getName (), t0.getType (), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
         else
@@ -167,11 +169,8 @@ public class ClipMode extends AbstractTrackMode
         switch (index)
         {
             case 0:
-                if (!this.disableMidiEditor)
-                {
-                    if (this.isPush2)
-                        this.displayMidiNotes = !this.displayMidiNotes;
-                }
+                if (this.isPush2 && !this.disableMidiEditor)
+                    this.displayMidiNotes = !this.displayMidiNotes;
                 break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();

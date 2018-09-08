@@ -10,10 +10,10 @@ import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.mode.Modes;
 import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -351,7 +351,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         }
         else
         {
-            final ICursorClip clip = this.getClip ();
+            final INoteClip clip = this.getClip ();
             // Paint the sequencer steps
             final int step = clip.getCurrentStep ();
             final int hiStep = this.isInXRange (step) ? step % PlayView.NUM_DISPLAY_COLS : -1;

@@ -468,8 +468,14 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     }
 
 
-    private void updateIndication (final Integer mode)
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
     {
+        if (mode == this.currentMode)
+            return;
+        this.currentMode = mode;
+
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final APCControlSurface surface = this.getSurface ();

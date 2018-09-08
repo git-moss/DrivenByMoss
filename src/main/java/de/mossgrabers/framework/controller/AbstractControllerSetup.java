@@ -29,7 +29,7 @@ import java.util.List;
  */
 public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C extends Configuration> implements IControllerSetup
 {
-    protected final List<S>       surfaces = new ArrayList<> ();
+    protected final List<S>       surfaces    = new ArrayList<> ();
     protected final IHost         host;
     protected final ISettingsUI   settings;
     protected final ISetupFactory factory;
@@ -39,6 +39,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     protected C                   configuration;
     protected ColorManager        colorManager;
     protected IValueChanger       valueChanger;
+    protected Integer             currentMode = null;
 
 
     /**
@@ -109,6 +110,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         this.createViews ();
         this.registerTriggerCommands ();
         this.registerContinuousCommands ();
+        this.model.ensureClip ();
 
         this.host.println ("Initialized.");
     }
@@ -259,6 +261,14 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         surface.getViewManager ().registerNoteCommand (commandID, command);
         surface.assignNoteCommand (midiCC, commandID);
     }
+
+
+    /**
+     * Update the DAW indications for the given mode.
+     *
+     * @param mode The new mode
+     */
+    protected abstract void updateIndication (final Integer mode);
 
 
     /**

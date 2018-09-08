@@ -105,7 +105,40 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
     /** {@inheritDoc} */
     @Override
+    protected void createObservers ()
+    {
+        final ITrackBank trackBank = this.model.getTrackBank ();
+        trackBank.addSelectionObserver (this::handleTrackChange);
+        final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+        if (effectTrackBank != null)
+            effectTrackBank.addSelectionObserver (this::handleTrackChange);
+    }
+
+
+    /**
+     * Handle a track selection change.
+     *
+     * @param index The index of the track
+     * @param isSelected Has the track been selected?
+     */
+    private void handleTrackChange (final int index, final boolean isSelected)
+    {
+        if (isSelected)
+            this.update (null);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void update (final FlexiCommand value)
+    {
+        this.updateIndication (null);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
     {
         final Set<FlexiCommand> commands = this.configuration.getMappedCommands ();
         final FlexiCommand [] allCommands = FlexiCommand.values ();
@@ -138,30 +171,5 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
             final IParameter parameter = parameterBank.getItem (i);
             parameter.setIndication (commands.contains (allCommands[FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal () + i]));
         }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void createObservers ()
-    {
-        final ITrackBank trackBank = this.model.getTrackBank ();
-        trackBank.addSelectionObserver (this::handleTrackChange);
-        final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
-        if (effectTrackBank != null)
-            effectTrackBank.addSelectionObserver (this::handleTrackChange);
-    }
-
-
-    /**
-     * Handle a track selection change.
-     *
-     * @param index The index of the track
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final int index, final boolean isSelected)
-    {
-        if (isSelected)
-            this.update (null);
     }
 }

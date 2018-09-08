@@ -162,7 +162,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     @Override
     protected void createObservers ()
     {
-        this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication ());
+        this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
     }
 
@@ -353,7 +353,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     }
 
 
-    private void updateIndication ()
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
     {
         final ViewManager viewManager = this.getSurface ().getViewManager ();
         final boolean isVolume = viewManager.isActiveView (Views.VIEW_VOLUME);

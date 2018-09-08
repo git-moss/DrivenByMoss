@@ -8,7 +8,7 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -119,7 +119,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
                     break;
 
                 case MODE_CLIP:
-                    final ICursorClip clip = this.model.getCursorClip ();
+                    final IClip clip = this.model.getClip ();
                     if (clip != null)
                         clip.setColor (entry[0], entry[1], entry[2]);
                     break;

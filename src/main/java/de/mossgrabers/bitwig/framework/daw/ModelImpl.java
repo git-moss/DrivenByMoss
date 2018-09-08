@@ -8,7 +8,8 @@ import de.mossgrabers.bitwig.framework.daw.data.MasterTrackImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.AbstractModel;
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IClip;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.scale.Scales;
@@ -107,10 +108,6 @@ public class ModelImpl extends AbstractModel
         this.masterTrackEqualsValue.markInterested ();
 
         this.currentTrackBank = this.trackBank;
-
-        // Make sure there is at least 1 cursor clip for quantization, even if there are no
-        // sequencers
-        this.getCursorClip ();
     }
 
 
@@ -126,9 +123,19 @@ public class ModelImpl extends AbstractModel
 
     /** {@inheritDoc} */
     @Override
-    public ICursorClip getCursorClip (final int cols, final int rows)
+    public INoteClip getNoteClip (final int cols, final int rows)
     {
-        return this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipImpl (this.controllerHost, this.valueChanger, cols, rows));
+        return (INoteClip) this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipImpl (this.controllerHost, this.valueChanger, cols, rows));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IClip getClip ()
+    {
+        if (this.cursorClips.isEmpty ())
+            throw new RuntimeException ("No cursor clip created!");
+        return this.cursorClips.values ().iterator ().next ();
     }
 
 
@@ -153,5 +160,13 @@ public class ModelImpl extends AbstractModel
     public boolean isCursorDeviceOnMasterTrack ()
     {
         return this.masterTrackEqualsValue.get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void ensureClip ()
+    {
+        this.getNoteClip (0, 0);
     }
 }

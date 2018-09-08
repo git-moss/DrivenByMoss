@@ -134,7 +134,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
         if (this.surface.isDeletePressed ())
         {
             this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-            this.model.getCursorClip ().clearRow (this.keyManager.map (note));
+            this.model.getNoteClip (8, 128).clearRow (this.keyManager.map (note));
             return;
         }
         super.onGridNote (note, velocity);

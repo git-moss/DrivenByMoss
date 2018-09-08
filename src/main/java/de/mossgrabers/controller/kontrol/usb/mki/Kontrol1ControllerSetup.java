@@ -255,8 +255,14 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     }
 
 
-    private void updateIndication (final Integer mode)
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
     {
+        if (mode == this.currentMode)
+            return;
+        this.currentMode = mode;
+
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();

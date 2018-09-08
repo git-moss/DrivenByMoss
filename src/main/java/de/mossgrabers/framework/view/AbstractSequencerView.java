@@ -6,8 +6,8 @@ package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -121,7 +121,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 
         this.numSequencerRows = numSequencerRows;
 
-        this.model.getCursorClip (clipCols, clipRows);
+        this.getClip ();
     }
 
 
@@ -130,7 +130,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     public void onActivate ()
     {
         super.onActivate ();
-        final ICursorClip clip = this.getClip ();
+        final INoteClip clip = this.getClip ();
         clip.enableObservers (true);
         clip.setStepLength (RESOLUTIONS[this.selectedIndex]);
     }
@@ -186,9 +186,9 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      *
      * @return The clip
      */
-    public ICursorClip getClip ()
+    public final INoteClip getClip ()
     {
-        return this.model.getCursorClip (this.clipCols, this.clipRows);
+        return this.model.getNoteClip (this.clipCols, this.clipRows);
     }
 
 
@@ -200,7 +200,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     protected boolean isInXRange (final int x)
     {
-        final ICursorClip clip = this.getClip ();
+        final INoteClip clip = this.getClip ();
         final int stepSize = clip.getNumSteps ();
         final int start = clip.getEditPage () * stepSize;
         return x >= start && x < start + stepSize;

@@ -191,4 +191,12 @@ public class Kontrol2ControllerSetup extends AbstractControllerSetup<Kontrol2Con
     {
         this.flushSurfaces ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
+    {
+        // TODO Auto-generated method stub
+    }
 }
