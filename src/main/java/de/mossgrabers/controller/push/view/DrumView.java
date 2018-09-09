@@ -10,6 +10,7 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IDrumPad;
+import de.mossgrabers.framework.mode.ModeManager;
 
 
 /**
@@ -63,22 +64,35 @@ public class DrumView extends DrumViewBase
 
     /** {@inheritDoc} */
     @Override
-    public void handleSelectButton (final int playedPad)
+    public synchronized void handleSelectButton (final int playedPad)
     {
+        // Do we have drum pads?
         final ICursorDevice primary = this.model.getPrimaryDevice ();
         if (!primary.hasDrumPads ())
             return;
-
-        final IDrumPad drumPad = primary.getDrumPadBank ().getItem (playedPad);
-        // Do not reselect
-        if (drumPad.isSelected ())
-            return;
-
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (cd.isNested ())
             cd.selectParent ();
 
-        this.surface.getModeManager ().setActiveMode (Modes.MODE_DEVICE_LAYER);
+        if (primary.getPosition () != cd.getPosition ())
+            return;
+
+        // Align the primary and cursor device drum bank view
+        final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
+        final int scrollPos = drumPadBank.getScrollPosition ();
+        final IDrumPadBank cdDrumPadBank = cd.getDrumPadBank ();
+        cdDrumPadBank.scrollTo (scrollPos);
+
+        // Do not reselect
+        final IDrumPad drumPad = drumPadBank.getItem (playedPad);
+        if (drumPad.isSelected ())
+            return;
+
+        // Only activate layer mode if not one of the layer modes is already active
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (!Modes.isLayerMode (modeManager.getActiveModeId ()))
+            modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
+
         drumPad.select ();
 
         this.updateNoteMapping ();

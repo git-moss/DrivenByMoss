@@ -134,6 +134,15 @@ public interface IBank<T> extends ObserverManagement
 
 
     /**
+     * Select the item at the given position. If the position is negative or larger than the bank
+     * size nothing happens.
+     * 
+     * @param position The position of the item to select
+     */
+    void selectItemAtPosition (final int position);
+
+
+    /**
      * Select the next item after the currently selected, if any. Scrolls the page, if necessary.
      */
     void selectNextItem ();

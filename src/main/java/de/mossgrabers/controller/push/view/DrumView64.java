@@ -12,9 +12,9 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView64;
@@ -102,20 +102,34 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     @Override
     protected void handleSelectButton (final int playedPad)
     {
-        final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
-        if (!drumDevice64.hasDrumPads ())
+        // Do we have drum pads?
+        final ICursorDevice primary = this.model.getDrumDevice64 ();
+        if (!primary.hasDrumPads ())
             return;
-
-        // Do not reselect
-        final IChannel drumPad = drumDevice64.getDrumPadBank ().getItem (playedPad);
-        if (drumPad.isSelected ())
-            return;
-
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (cd.isNested ())
             cd.selectParent ();
 
-        this.surface.getModeManager ().setActiveMode (Modes.MODE_DEVICE_LAYER);
+        if (primary.getPosition () != cd.getPosition ())
+            return;
+
+        // Align the primary and cursor device drum bank view
+        final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
+        final int scrollPos = drumPadBank.getScrollPosition ();
+        final IDrumPadBank cdDrumPadBank = cd.getDrumPadBank ();
+        final int pageSize = cdDrumPadBank.getPageSize ();
+        cdDrumPadBank.scrollTo (scrollPos + playedPad / pageSize * pageSize);
+
+        // Do not reselect
+        final IDrumPad drumPad = drumPadBank.getItem (playedPad);
+        if (drumPad.isSelected ())
+            return;
+
+        // Only activate layer mode if not one of the layer modes is already active
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (!Modes.isLayerMode (modeManager.getActiveModeId ()))
+            modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
+
         drumPad.select ();
     }
 

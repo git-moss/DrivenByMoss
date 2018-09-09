@@ -98,6 +98,17 @@ public abstract class AbstractBank<T extends IItem> implements IBank<T>
 
     /** {@inheritDoc} */
     @Override
+    public void selectItemAtPosition (final int position)
+    {
+        if (position < 0 || position >= this.getItemCount ())
+            return;
+        this.scrollTo (position);
+        this.getItem (position % this.getPageSize ()).setSelected (true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getPageSize ()
     {
         return this.pageSize;

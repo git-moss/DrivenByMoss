@@ -117,6 +117,20 @@ public interface IGraphicsContext
 
 
     /**
+     * Draws a text centered into a height (horizontally). The text is not clipped.
+     *
+     * @param text The text to draw
+     * @param x The x position of the boundary
+     * @param y The y position of the boundary
+     * @param height The height position of the boundary
+     * @param color The color of the text
+     * @param backgroundColor Draws a background behind the text with this color
+     * @param fontSize The size of the font
+     */
+    void drawTextInHeight (String text, double x, double y, double height, ColorEx color, ColorEx backgroundColor, double fontSize);
+
+
+    /**
      * Draws a text into a boundary. The text is clipped on the right border of the bounds.
      * Calculates the text descent.
      *

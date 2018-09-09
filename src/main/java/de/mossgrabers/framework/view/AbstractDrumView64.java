@@ -94,7 +94,6 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         super.onActivate ();
 
         final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
-        drumDevice64.enableObservers (true);
         drumDevice64.getDrumPadBank ().setIndication (true);
     }
 
@@ -106,7 +105,6 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         super.onDeactivate ();
 
         final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
-        drumDevice64.enableObservers (false);
         drumDevice64.getDrumPadBank ().setIndication (false);
     }
 

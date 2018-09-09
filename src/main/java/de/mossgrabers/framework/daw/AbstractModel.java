@@ -46,6 +46,8 @@ public abstract class AbstractModel implements IModel
     protected IValueChanger      valueChanger;
     protected ModelSetup         modelSetup;
 
+    private int                  lastSelection;
+
 
     /**
      * Constructor.
@@ -180,7 +182,14 @@ public abstract class AbstractModel implements IModel
     @Override
     public void toggleCurrentTrackBank ()
     {
-        this.currentTrackBank = this.currentTrackBank == this.trackBank && this.effectTrackBank != null ? this.effectTrackBank : this.trackBank;
+        if (this.effectTrackBank == null)
+            return;
+
+        final ITrack selectedItem = this.getCurrentTrackBank ().getSelectedItem ();
+        final int selPosition = selectedItem == null ? -1 : selectedItem.getPosition ();
+        this.currentTrackBank = this.currentTrackBank == this.trackBank ? this.effectTrackBank : this.trackBank;
+        this.currentTrackBank.selectItemAtPosition (this.lastSelection);
+        this.lastSelection = selPosition;
     }
 
 

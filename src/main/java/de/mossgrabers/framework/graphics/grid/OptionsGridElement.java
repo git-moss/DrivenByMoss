@@ -27,6 +27,7 @@ public class OptionsGridElement extends AbstractGridElement
     private final boolean useSmallTopMenu;
     private ColorEx       menuTopColor;
     private ColorEx       menuBottomColor;
+    private boolean       isBottomHeaderSelected;
 
 
     /**
@@ -42,8 +43,9 @@ public class OptionsGridElement extends AbstractGridElement
      * @param isMenuBottomSelected Is the bottom menu selected?
      * @param menuBottomColor The color to use for the background bottom menu, may be null
      * @param useSmallTopMenu Draw the small version of the top menu if true
+     * @param isBottomHeaderSelected True to draw the lower header selected
      */
-    public OptionsGridElement (final String headerTop, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottom, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu)
+    public OptionsGridElement (final String headerTop, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottom, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu, final boolean isBottomHeaderSelected)
     {
         super (menuTopName, isMenuTopSelected, null, null, null, false);
         this.headerTop = headerTop;
@@ -53,6 +55,7 @@ public class OptionsGridElement extends AbstractGridElement
         this.isMenuBottomSelected = isMenuBottomSelected;
         this.menuTopColor = menuTopColor == null ? null : new ColorEx (menuTopColor[0], menuTopColor[1], menuTopColor[2]);
         this.useSmallTopMenu = useSmallTopMenu;
+        this.isBottomHeaderSelected = isBottomHeaderSelected;
     }
 
 
@@ -80,7 +83,12 @@ public class OptionsGridElement extends AbstractGridElement
         if (hasTopHeader)
             gc.drawTextInHeight (this.headerTop, left, menuHeight, headerHeight, textColor, headerHeight / 2.0);
         if (hasBottomHeader)
-            gc.drawTextInHeight (this.headerBottom, left, menuHeight + headerHeight, headerHeight, textColor, headerHeight / 2.0);
+        {
+            if (this.isBottomHeaderSelected)
+                gc.drawTextInHeight (this.headerBottom, left, menuHeight + headerHeight, headerHeight, ColorEx.calcContrastColor (textColor), textColor, headerHeight / 2.0);
+            else
+                gc.drawTextInHeight (this.headerBottom, left, menuHeight + headerHeight, headerHeight, textColor, headerHeight / 2.0);
+        }
     }
 
 

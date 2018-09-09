@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to Browse presets.
+ * Command to edit track parameters.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

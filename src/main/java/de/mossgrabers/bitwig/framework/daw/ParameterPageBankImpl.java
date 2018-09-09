@@ -234,6 +234,14 @@ public class ParameterPageBankImpl implements IParameterPageBank
 
     /** {@inheritDoc} */
     @Override
+    public void selectItemAtPosition (int position)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getPositionOfLastItem ()
     {
         return Math.min (this.getScrollPosition () + this.pageSize, this.pageNames.size ()) - 1;

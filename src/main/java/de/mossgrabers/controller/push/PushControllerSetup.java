@@ -515,8 +515,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addNoteCommand (Commands.CONT_COMMAND_KNOB6_TOUCH, PushControlSurface.PUSH_KNOB6_TOUCH, new KnobRowTouchModeCommand<> (5, this.model, surface));
         this.addNoteCommand (Commands.CONT_COMMAND_KNOB7_TOUCH, PushControlSurface.PUSH_KNOB7_TOUCH, new KnobRowTouchModeCommand<> (6, this.model, surface));
         this.addNoteCommand (Commands.CONT_COMMAND_KNOB8_TOUCH, PushControlSurface.PUSH_KNOB8_TOUCH, new KnobRowTouchModeCommand<> (7, this.model, surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, PushControlSurface.PUSH_SMALL_KNOB1_TOUCH, new SmallKnobTouchCommand (this.model, surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_PLAYCURSOR_TOUCH, PushControlSurface.PUSH_SMALL_KNOB2_TOUCH, new SmallKnobTouchCommand (this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, PushControlSurface.PUSH_SMALL_KNOB1_TOUCH, new SmallKnobTouchCommand (this.model, surface, true));
+        this.addNoteCommand (Commands.CONT_COMMAND_PLAYCURSOR_TOUCH, PushControlSurface.PUSH_SMALL_KNOB2_TOUCH, new SmallKnobTouchCommand (this.model, surface, false));
         this.addNoteCommand (Commands.CONT_COMMAND_CONFIGURE_PITCHBEND, PushControlSurface.PUSH_RIBBON_TOUCH, new ConfigurePitchbendCommand (this.model, surface));
         this.addNoteCommand (Commands.CONT_COMMAND_MASTERTRACK_TOUCH, PushControlSurface.PUSH_KNOB9_TOUCH, new MastertrackTouchCommand (this.model, surface));
 

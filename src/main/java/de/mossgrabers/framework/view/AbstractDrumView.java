@@ -96,7 +96,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         super.onActivate ();
 
         final ICursorDevice primary = this.model.getPrimaryDevice ();
-        primary.enableObservers (true);
         primary.getDrumPadBank ().setIndication (true);
     }
 
@@ -108,7 +107,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         super.onDeactivate ();
 
         final ICursorDevice primary = this.model.getPrimaryDevice ();
-        primary.enableObservers (false);
         primary.getDrumPadBank ().setIndication (false);
     }
 

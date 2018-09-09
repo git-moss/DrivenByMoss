@@ -258,7 +258,10 @@ public abstract class AbstractTrackMode extends BaseMode
             this.surface.updateButton (106, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND5 : Modes.MODE_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             this.surface.updateButton (107, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND6 : Modes.MODE_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             this.surface.updateButton (108, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND7 : Modes.MODE_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (109, tb.hasParent () ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            if (this.surface.isShiftPressed ())
+                this.surface.updateButton (109, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND8 : Modes.MODE_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            else
+                this.surface.updateButton (109, tb.hasParent () ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             return;
         }
 

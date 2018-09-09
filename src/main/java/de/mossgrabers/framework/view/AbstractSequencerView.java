@@ -131,17 +131,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     {
         super.onActivate ();
         final INoteClip clip = this.getClip ();
-        clip.enableObservers (true);
         clip.setStepLength (RESOLUTIONS[this.selectedIndex]);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onDeactivate ()
-    {
-        super.onDeactivate ();
-        this.getClip ().enableObservers (false);
     }
 
 

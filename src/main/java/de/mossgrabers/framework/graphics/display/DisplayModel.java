@@ -375,7 +375,27 @@ public class DisplayModel
      */
     public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu)
     {
-        this.elements.add (new OptionsGridElement (headerTopName, menuTopName, isMenuTopSelected, menuTopColor, headerBottomName, menuBottomName, isMenuBottomSelected, menuBottomColor, useSmallTopMenu));
+        this.addOptionElement (headerTopName, menuTopName, isMenuTopSelected, menuTopColor, headerBottomName, menuBottomName, isMenuBottomSelected, menuBottomColor, useSmallTopMenu, false);
+    }
+
+
+    /**
+     * Add an options element to the message.
+     *
+     * @param headerTopName A text on the top
+     * @param menuTopName The text for the top menu
+     * @param isMenuTopSelected True if the top menu is selected (on)
+     * @param menuTopColor The color to use for the background top menu, may be null
+     * @param headerBottomName A text on the bottom
+     * @param menuBottomName The text for the bottom menu
+     * @param isMenuBottomSelected True if the bottom menu is selected (on)
+     * @param menuBottomColor The color to use for the background bottom menu, may be null
+     * @param useSmallTopMenu If true use small menus
+     * @param isBottomHeaderSelected True to draw the lower header selected
+     */
+    public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu, final boolean isBottomHeaderSelected)
+    {
+        this.elements.add (new OptionsGridElement (headerTopName, menuTopName, isMenuTopSelected, menuTopColor, headerBottomName, menuBottomName, isMenuBottomSelected, menuBottomColor, useSmallTopMenu, isBottomHeaderSelected));
     }
 
 

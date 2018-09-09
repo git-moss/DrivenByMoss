@@ -182,6 +182,14 @@ public class GraphicsContextImpl implements IGraphicsContext
     @Override
     public void drawTextInHeight (final String text, final double x, final double y, final double height, final ColorEx color, final double fontSize)
     {
+        this.drawTextInHeight (text, x, y, height, color, null, fontSize);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void drawTextInHeight (String text, double x, double y, double height, ColorEx color, ColorEx backgroundColor, double fontSize)
+    {
         if (text == null || text.length () == 0)
             return;
 
@@ -191,9 +199,17 @@ public class GraphicsContextImpl implements IGraphicsContext
         // We need to calculate the text height from a character which has no ascent, since showText
         // always draws the text on the baseline of the font!
         final double h = this.gc.getTextExtents ("T").getHeight ();
+        final double posY = y + (height + h) / 2;
+
+        if (backgroundColor != null)
+        {
+            final double w = this.gc.getTextExtents (text).getWidth ();
+            final double inset = 12.0;
+            this.fillRoundedRectangle (x + inset, posY - h - inset, w + 2 * inset, h + 2 * inset, inset, backgroundColor);
+        }
 
         this.setColor (color);
-        this.gc.moveTo (x, y + (height + h) / 2);
+        this.gc.moveTo (x, posY);
         this.gc.showText (text);
         this.gc.restore ();
     }

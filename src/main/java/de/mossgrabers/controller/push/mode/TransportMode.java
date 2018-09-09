@@ -149,9 +149,9 @@ public class TransportMode extends BaseMode
         message.addOptionElement ("", "", false, "", "1 Bar", preroll == ITransport.PREROLL_1_BAR, false);
         message.addOptionElement ("", "", false, "", "2 Bars", preroll == ITransport.PREROLL_2_BARS, false);
         message.addOptionElement ("", "", false, "", "4 Bars", preroll == ITransport.PREROLL_4_BARS, false);
-        message.addParameterElement ("Tempo", (int) this.convertTempo (tempo), transport.formatTempo (tempo), this.isKnobTouched[0], -1);
+        message.addParameterElement ("Tempo", (int) this.convertTempo (tempo), transport.formatTempo (tempo), this.isKnobTouched[4], -1);
         message.addOptionElement ("  Time Sig.", "", false, "       " + transport.getNumerator () + " / " + transport.getDenominator (), "", false, false);
-        message.addOptionElement ("        Play Position", "", false, "        " + transport.getPositionText (), "", false, false);
+        message.addOptionElement ("        Play Position", "", false, null, "        " + transport.getPositionText (), "", false, null, false, this.isKnobTouched[6]);
         message.addOptionElement ("", "", false, "", "", false, false);
         message.send ();
     }
