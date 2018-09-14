@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.utils;
 
+import java.nio.ByteBuffer;
+
+
 /**
  * Helper class for string methods.
  *
@@ -133,7 +136,7 @@ public class StringUtils
 
 
     /**
-     * Convert the bytes to a hex string
+     * Convert the bytes to a hex string.
      *
      * @param data The data to convert
      * @return The hex string
@@ -143,6 +146,22 @@ public class StringUtils
         final StringBuilder sysex = new StringBuilder ();
         for (final int d: data)
             sysex.append (toHexStr (d)).append (' ');
+        return sysex.toString ();
+    }
+
+
+    /**
+     * Convert the bytes to a hex string. Rewinds the buffer and adds the bytes from the beginning
+     * till the capacity.
+     *
+     * @param data The data to convert
+     * @return The hex string
+     */
+    public static String toHexStr (final ByteBuffer data)
+    {
+        final StringBuilder sysex = new StringBuilder ();
+        while (data.position () < data.limit ())
+            sysex.append (toHexStr (Byte.toUnsignedInt (data.get ()))).append (' ');
         return sysex.toString ();
     }
 
@@ -172,6 +191,43 @@ public class StringUtils
     {
         final String v = Integer.toHexString (number).toUpperCase ();
         return v.length () < 2 ? '0' + v : v;
+    }
+
+
+    /**
+     * Parse a byte from an hex encoded string. A byte has 2 digits in the string.
+     *
+     * @param data The data in hex
+     * @param index The index of the byte
+     * @return The parsed byte as integer
+     */
+    public static int fromHexStr (final String data, final int index)
+    {
+        final int pos = index * 2;
+        return Integer.parseInt (data.substring (pos, pos + 2), 16);
+    }
+
+
+    /**
+     * Convert a string with hex encoded bytes. One byte is 2 characters without any spaces.
+     *
+     * @param data The data to convert
+     * @return The parsed byte array
+     */
+    public static byte [] fromHexStr (final String data)
+    {
+        final int length = data.length ();
+        if (length % 2 != 0)
+            throw new IllegalArgumentException ("Length of hex data must be a multiple of 2!");
+
+        final int size = length / 2;
+        final byte [] result = new byte [size];
+        for (int i = 0; i < size; i++)
+        {
+            final int pos = i * 2;
+            result[i] = Byte.parseByte (data.substring (pos, pos + 2), 16);
+        }
+        return result;
     }
 
 

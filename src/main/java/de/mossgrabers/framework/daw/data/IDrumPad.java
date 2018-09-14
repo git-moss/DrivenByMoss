@@ -9,7 +9,7 @@ package de.mossgrabers.framework.daw.data;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IDrumPad extends IChannel
+public interface IDrumPad extends ILayer
 {
     /**
      * Start the browser to insert a new device and create a device chain.

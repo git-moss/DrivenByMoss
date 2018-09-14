@@ -2,15 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.command.trigger;
+package de.mossgrabers.controller.apc.command.trigger;
 
-import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.apc.APCConfiguration;
+import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -40,11 +41,12 @@ public class DeviceLeftCommand extends AbstractTriggerCommand<APCControlSurface,
             return;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final IChannel layer = cd.getSelectedLayerOrDrumPad ();
+        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+        final IChannel layer = bank.getSelectedItem ();
         if (!cd.hasLayers () || layer == null)
             cd.selectPrevious ();
         else
-            cd.selectLayer (layer.getIndex () == 0 ? 0 : layer.getIndex () - 1);
+            bank.getItem (layer.getIndex () == 0 ? 0 : layer.getIndex () - 1).select ();
     }
 
 
@@ -57,7 +59,8 @@ public class DeviceLeftCommand extends AbstractTriggerCommand<APCControlSurface,
 
         // Exit layer
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final IChannel layer = cd.getSelectedLayerOrDrumPad ();
+        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+        final IChannel layer = bank.getSelectedItem ();
         if (!cd.hasLayers () || layer == null)
         {
             if (cd.isNested ())

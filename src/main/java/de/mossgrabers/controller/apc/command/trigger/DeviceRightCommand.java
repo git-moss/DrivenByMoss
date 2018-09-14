@@ -2,15 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.command.trigger;
+package de.mossgrabers.controller.apc.command.trigger;
 
-import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.apc.APCConfiguration;
+import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -40,13 +41,14 @@ public class DeviceRightCommand extends AbstractTriggerCommand<APCControlSurface
             return;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final IChannel sel = cd.getSelectedLayer ();
+        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+        final IChannel sel = bank.getSelectedItem ();
         if (!cd.hasLayers () || sel == null)
             cd.selectNext ();
         else
         {
             final int index = sel.getIndex () + 1;
-            cd.selectLayer (index > 7 ? 7 : index);
+            bank.getItem (index > 7 ? 7 : index).select ();
         }
     }
 
@@ -63,18 +65,11 @@ public class DeviceRightCommand extends AbstractTriggerCommand<APCControlSurface
         if (!cd.hasLayers ())
             return;
 
-        final IChannel layer = cd.getSelectedLayerOrDrumPad ();
+        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+        final IChannel layer = bank.getSelectedItem ();
         if (layer == null)
-            cd.selectLayerOrDrumPad (0);
+            bank.getItem (0).select ();
         else
-        {
-            final IChannel dl = cd.getSelectedLayer ();
-            if (dl != null)
-            {
-                final int index = dl.getIndex ();
-                cd.enterLayer (index);
-                cd.selectFirstDeviceInLayer (index);
-            }
-        }
+            layer.enter ();
     }
 }

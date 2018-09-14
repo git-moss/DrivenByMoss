@@ -14,6 +14,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -69,7 +70,18 @@ public class KontrolOSCControllerSetup extends AbstractControllerSetup<IControlS
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 128, 128, 0, 0, 0, true, 0, 0, 0, 0);
+        final ModelSetup ms = new ModelSetup ();
+        ms.setNumTracks (128);
+        ms.setNumScenes (128);
+        ms.setNumSends (0);
+        ms.setNumFilterColumnEntries (0);
+        ms.setNumResults (0);
+        ms.setNumDeviceLayers (0);
+        ms.setNumDevicesInBank (0);
+        ms.setNumDrumPadLayers (0);
+        ms.setNumParams (0);
+        ms.setNumMarkers (0);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 
@@ -107,5 +119,13 @@ public class KontrolOSCControllerSetup extends AbstractControllerSetup<IControlS
         this.writer.shutdown ();
 
         super.exit ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
+    {
+        // Unused
     }
 }

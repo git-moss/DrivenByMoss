@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
+import de.mossgrabers.framework.configuration.IValueObserver;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -21,7 +22,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 
 /**
@@ -39,7 +42,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     /** The number of command slots. */
     public static final int     NUM_SLOTS     = 200;
 
-    private IStringSetting      fileSetting;
     private IEnumSetting        addTypeSetting;
     private IEnumSetting        addNumberSetting;
     private IEnumSetting        addMidiChannelSetting;
@@ -73,8 +75,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         String category = "Ex-/Import";
 
         // The Setlist file to auto-load
-        this.fileSetting = settingsUI.getStringSetting ("Filename to ex-/import:", category, -1, "");
-        this.fileSetting.addValueObserver (value -> this.filename = value);
+        final IStringSetting fileSetting = settingsUI.getStringSetting ("Filename to ex-/import:", category, -1, "");
+        fileSetting.addValueObserver (value -> this.filename = value);
 
         if (!GraphicsEnvironment.isHeadless ())
         {
@@ -85,7 +87,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
                 if (fn == null)
                     return;
                 final File file = new File (fileDialog.getDirectory (), fn);
-                this.fileSetting.set (file.getAbsolutePath ());
+                fileSetting.set (file.getAbsolutePath ());
             });
         }
 
@@ -205,6 +207,26 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
 
     /**
+     * Get all commands which are used in a slot.
+     *
+     * @return The commands
+     */
+    public Set<FlexiCommand> getMappedCommands ()
+    {
+
+        // Collect all command slot commands
+        final Set<FlexiCommand> commands = new HashSet<> ();
+        for (final CommandSlot commandSlot: this.commandSlots)
+        {
+            final FlexiCommand cmd = commandSlot.getCommand ();
+            if (cmd != null)
+                commands.add (cmd);
+        }
+        return commands;
+    }
+
+
+    /**
      * Get the file name.
      *
      * @return The file name
@@ -267,5 +289,17 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             slot.setCommand (props.getProperty (slotName + "COMMAND"));
             slot.setSendValue (props.getProperty (slotName + "SEND_VALUE"));
         }
+    }
+
+
+    /**
+     * Sets the command observer.
+     *
+     * @param observer The observer
+     */
+    public void setCommandObserver (final IValueObserver<FlexiCommand> observer)
+    {
+        for (final CommandSlot commandSlot: this.commandSlots)
+            commandSlot.setCommandObserver (observer);
     }
 }

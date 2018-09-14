@@ -7,6 +7,7 @@ package de.mossgrabers.framework.controller;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.ViewManager;
@@ -19,7 +20,7 @@ import de.mossgrabers.framework.view.ViewManager;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface ControlSurface<C extends Configuration>
+public interface IControlSurface<C extends Configuration>
 {
     /**
      * Get the view manager.
@@ -75,6 +76,14 @@ public interface ControlSurface<C extends Configuration>
      * @return The output
      */
     IMidiOutput getOutput ();
+
+
+    /**
+     * Get the midi input.
+     *
+     * @return The input
+     */
+    IMidiInput getInput ();
 
 
     /**
@@ -184,12 +193,21 @@ public interface ControlSurface<C extends Configuration>
 
 
     /**
-     * Sets the mapping of midi notes to the midi notes sent to the DAW
+     * Set the mapping of midi notes to the midi notes sent to the DAW.
      *
      * @param table The table has 128 items. The index is the incoming note, the value at the index
      *            the outgoing note.
      */
     void setKeyTranslationTable (int [] table);
+
+
+    /**
+     * Get the mapping of midi notes to the midi notes sent to the DAW.
+     *
+     * @return The table has 128 items. The index is the incoming note, the value at the index the
+     *         outgoing note.
+     */
+    int [] getKeyTranslationTable ();
 
 
     /**

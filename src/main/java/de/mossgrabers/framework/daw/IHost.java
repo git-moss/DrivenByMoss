@@ -4,11 +4,15 @@
 
 package de.mossgrabers.framework.daw;
 
-import com.bitwig.extension.api.graphics.Bitmap;
-import com.bitwig.extension.api.graphics.Image;
-import com.bitwig.extension.controller.api.UsbDevice;
+import de.mossgrabers.framework.graphics.IBitmap;
+import de.mossgrabers.framework.graphics.IImage;
+import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
+import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
+import de.mossgrabers.framework.osc.IOpenSoundControlServer;
+import de.mossgrabers.framework.usb.IUsbDevice;
+import de.mossgrabers.framework.usb.UsbException;
 
-import java.nio.ByteBuffer;
+import java.util.List;
 
 
 /**
@@ -43,11 +47,35 @@ public interface IHost
 
 
     /**
-     * Returns true if the DAW supports Groove options.
+     * Returns true if the DAW supports a crossfader.
      *
-     * @return True if the DAW supports Groove options
+     * @return True if the DAW supports a crossfader
      */
-    boolean hasGroove ();
+    boolean hasCrossfader ();
+
+
+    /**
+     * Returns true if the DAW supports Drum Device options.
+     *
+     * @return True if the DAW supports Drum Device options
+     */
+    boolean hasDrumDevice ();
+
+
+    /**
+     * Returns true if the DAW supports note repeat.
+     *
+     * @return True if the DAW supports note repeat
+     */
+    boolean hasRepeat ();
+
+
+    /**
+     * Returns true if the DAW supports editing markers.
+     *
+     * @return True if the DAW supports editing markerst
+     */
+    boolean canEditMarkers ();
 
 
     /**
@@ -73,7 +101,7 @@ public interface IHost
      * @param text The description text
      * @param ex The exception
      */
-    void error (String text, Exception ex);
+    void error (String text, Throwable ex);
 
 
     /**
@@ -93,13 +121,38 @@ public interface IHost
 
 
     /**
-     * Send a datagram package to the given server. TODO: Remove when USB API is available
+     * Connect to an OSC server.
      *
-     * @param hostAddress The IP address of the server
-     * @param port The port
-     * @param data The data to send
+     * @param serverAddress The address of the server
+     * @param serverPort The port of the server
+     * @return Interface for interacting with the server
      */
-    void sendDatagramPacket (String hostAddress, int port, byte [] data);
+    IOpenSoundControlServer connectToOSCServer (String serverAddress, int serverPort);
+
+
+    /**
+     * Create an OSC server.
+     *
+     * @param callback The callback method to handle received messages
+     * @param port The port to listen on
+     */
+    void createOSCServer (IOpenSoundControlCallback callback, int port);
+
+
+    /**
+     * Create an OSC message.
+     *
+     * @param address The OSC address
+     * @param values The values for the message
+     * @return The created message
+     */
+    IOpenSoundControlMessage createOSCMessage (String address, List<Object> values);
+
+
+    /**
+     * Call on shutdown to release all OSC resources.
+     */
+    void releaseOSC ();
 
 
     /**
@@ -110,7 +163,7 @@ public interface IHost
      * @param scale The scaling factor
      * @return The loaded SVG image
      */
-    Image loadSVG (String imageName, int scale);
+    IImage loadSVG (String imageName, int scale);
 
 
     /**
@@ -121,17 +174,16 @@ public interface IHost
      * @param height The height of the bitmap
      * @return The created bitmap
      */
-    Bitmap createBitmap (int width, int height);
+    IBitmap createBitmap (int width, int height);
 
 
     /**
-     * Creates a direct byte buffer of the supplied size that is guaranteed to be freed once this
-     * extension exits.
+     * Allocates some memory that will be automatically freed once the extension exits.
      *
-     * @param size The size of the buffer
-     * @return The created buffer
+     * @param size The size of the memory block in bytes
+     * @return The created memory block
      */
-    ByteBuffer createByteBuffer (int size);
+    IMemoryBlock createMemoryBlock (int size);
 
 
     /**
@@ -139,6 +191,13 @@ public interface IHost
      *
      * @param index The index
      * @return The USB device
+     * @throws UsbException Could not lookup or open the device
      */
-    UsbDevice getUsbDevice (int index);
+    IUsbDevice getUsbDevice (int index) throws UsbException;
+
+
+    /**
+     * Call on shutdown to release all USB devices.
+     */
+    void releaseUsbDevices ();
 }

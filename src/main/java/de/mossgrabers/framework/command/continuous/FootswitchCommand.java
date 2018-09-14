@@ -4,18 +4,18 @@
 
 package de.mossgrabers.framework.command.continuous;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -26,7 +26,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FootswitchCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C> implements TriggerCommand
+public class FootswitchCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C> implements TriggerCommand
 {
     /**
      * Constructor.
@@ -85,16 +85,16 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
-                final IChannelBank tb = this.model.getCurrentTrackBank ();
-                final ITrack track = tb.getSelectedTrack ();
+                final ITrack track = this.model.getSelectedTrack ();
                 if (track == null)
                 {
-                    this.surface.getDisplay ().notify ("Please select an Instrument track first.", true, true);
+                    this.surface.getDisplay ().notify ("Please select an Instrument track first.");
                     return;
                 }
 
-                final ISlot selectedSlot = track.getSelectedSlot ();
-                final ISlot slot = selectedSlot == null ? track.getSlot (0) : selectedSlot;
+                final ISlotBank slotBank = track.getSlotBank ();
+                final ISlot selectedSlot = slotBank.getSelectedItem ();
+                final ISlot slot = selectedSlot == null ? slotBank.getItem (0) : selectedSlot;
                 if (event == ButtonEvent.DOWN)
                 {
                     if (slot.hasContent ())
@@ -153,7 +153,7 @@ public class FootswitchCommand<S extends ControlSurface<C>, C extends Configurat
 
             case AbstractConfiguration.FOOTSWITCH_2_QUANTIZE:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getCursorClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+                    this.model.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
                 break;
         }
     }

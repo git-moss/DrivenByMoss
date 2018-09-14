@@ -2,20 +2,21 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.view;
+package de.mossgrabers.controller.push.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SceneView;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.PushColors;
-import de.mossgrabers.push.controller.PushControlSurface;
 
 import java.util.Arrays;
 
@@ -97,10 +98,13 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
+    public void onScene (final int sceneIndex, final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().launchScene (scene);
+        if (event != ButtonEvent.DOWN)
+            return;
+        final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (sceneIndex);
+        scene.select ();
+        scene.launch ();
     }
 
 
@@ -108,14 +112,18 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
     @Override
     public void updateSceneButtons ()
     {
+        final ColorManager colorManager = this.model.getColorManager ();
+        final int colorScene = colorManager.getColor (AbstractSessionView.COLOR_SCENE);
+        final int colorSceneSelected = colorManager.getColor (AbstractSessionView.COLOR_SELECTED_SCENE);
+        final int colorSceneOff = colorManager.getColor (AbstractSessionView.COLOR_SCENE_OFF);
+
         final ISceneBank sceneBank = this.model.getSceneBank ();
-        if (sceneBank == null)
-            return;
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
-        final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, sceneBank.sceneExists (7 - i) ? green : off);
+        {
+            final IScene scene = sceneBank.getItem (7 - i);
+            final int color = scene.doesExist () ? scene.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
+            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
+        }
     }
 
 
@@ -126,10 +134,9 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
         if (this.surface.isDeletePressed ())
         {
             this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-            this.model.getCursorClip ().clearRow (this.noteMap[note]);
+            this.model.getNoteClip (8, 128).clearRow (this.keyManager.map (note));
             return;
         }
-
         super.onGridNote (note, velocity);
     }
 }

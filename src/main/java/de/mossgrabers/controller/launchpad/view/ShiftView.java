@@ -2,19 +2,19 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad.view;
+package de.mossgrabers.controller.launchpad.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
-import de.mossgrabers.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
 /**
@@ -181,7 +181,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 return false;
         }
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.getPreviousModeId () == modeManager.getActiveModeId ())
+        if (modeManager.getPreviousModeId () == modeManager.getActiveOrTempModeId ())
             modeManager.setActiveMode (null);
         return true;
     }

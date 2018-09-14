@@ -2,17 +2,17 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.mcu.mode.device;
+package de.mossgrabers.controller.mcu.mode.device;
 
-import de.mossgrabers.framework.StringUtils;
+import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
+import de.mossgrabers.controller.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
-import de.mossgrabers.mcu.controller.MCUControlSurface;
-import de.mossgrabers.mcu.mode.BaseMode;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -80,7 +80,7 @@ public class DeviceBrowserMode extends BaseMode
         final Display d = this.surface.getDisplay ();
         final boolean isPresetSession = browser.isPresetContentType ();
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (isPresetSession && !(browser.isActive () && cd.hasSelectedDevice ()))
+        if (isPresetSession && !(browser.isActive () && cd.doesExist ()))
         {
             d.notify ("No active Browsing Session. Select device and press Browser...");
             return;

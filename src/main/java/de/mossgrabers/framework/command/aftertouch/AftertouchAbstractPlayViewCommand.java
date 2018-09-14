@@ -6,7 +6,7 @@ package de.mossgrabers.framework.command.aftertouch;
 
 import de.mossgrabers.framework.command.core.AbstractAftertouchCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractPlayView;
 
@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class AftertouchAbstractPlayViewCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractAftertouchCommand<S, C>
+public class AftertouchAbstractPlayViewCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractAftertouchCommand<S, C>
 {
     private AbstractPlayView<S, C> view;
 
@@ -53,7 +53,7 @@ public class AftertouchAbstractPlayViewCommand<S extends ControlSurface<C>, C ex
 
             case -2:
                 // Translate notes of Poly aftertouch to current note mapping
-                final int n = this.view.getMidiNoteFromGrid (note);
+                final int n = this.view.getKeyManager ().getMidiNoteFromGrid (note);
                 if (n != -1)
                     this.surface.sendMidiEvent (0xA0, n, value);
                 break;

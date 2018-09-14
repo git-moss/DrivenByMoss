@@ -2,16 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode.track;
+package de.mossgrabers.controller.push.mode.track;
 
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.DisplayMessage;
-import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 
 
 /**
@@ -37,7 +37,7 @@ public class VolumeMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).changeVolume (value);
+        this.model.getCurrentTrackBank ().getItem (index).changeVolume (value);
     }
 
 
@@ -47,17 +47,18 @@ public class VolumeMode extends AbstractTrackMode
     {
         this.isKnobTouched[index] = isTouched;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getTrack (index);
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getItem (index);
         if (!t.doesExist ())
             return;
 
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
+            {
+                this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
                 t.resetVolume ();
-            else
-                this.surface.getDisplay ().notify ("Volume: " + t.getVolumeStr (8));
+            }
         }
 
         t.touchVolume (isTouched);
@@ -70,11 +71,11 @@ public class VolumeMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack t = tb.getTrack (i);
+            final ITrack t = tb.getItem (i);
             d.setCell (0, i, t.doesExist () ? "Volume" : "").setCell (1, i, t.getVolumeStr (8));
             if (t.doesExist ())
                 d.setCell (2, i, config.isEnableVUMeters () ? t.getVu () : t.getVolume (), Format.FORMAT_VALUE);
@@ -91,6 +92,6 @@ public class VolumeMode extends AbstractTrackMode
     @Override
     public void updateDisplay2 ()
     {
-        this.updateChannelDisplay (DisplayMessage.GRID_ELEMENT_CHANNEL_VOLUME, true, false);
+        this.updateChannelDisplay (DisplayModel.GRID_ELEMENT_CHANNEL_VOLUME, true, false);
     }
 }

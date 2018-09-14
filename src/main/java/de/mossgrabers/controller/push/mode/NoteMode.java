@@ -4,13 +4,12 @@
 
 package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 
 
 /**
@@ -20,11 +19,11 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public class NoteMode extends BaseMode
 {
-    ICursorClip clip         = null;
-    double      noteLength   = 1.0;
-    int         noteVelocity = 127;
-    int         step         = 0;
-    int         note         = 60;
+    INoteClip clip         = null;
+    double    noteLength   = 1.0;
+    int       noteVelocity = 127;
+    int       step         = 0;
+    int       note         = 60;
 
 
     /**
@@ -48,7 +47,7 @@ public class NoteMode extends BaseMode
      * @param noteLength The note length to edit
      * @param noteVelocity The note velocity to edit
      */
-    public void setValues (final ICursorClip clip, final int step, final int note, final double noteLength, final int noteVelocity)
+    public void setValues (final INoteClip clip, final int step, final int note, final double noteLength, final int noteVelocity)
     {
         this.clip = clip;
         this.step = step;
@@ -110,14 +109,13 @@ public class NoteMode extends BaseMode
         final int quarters = (int) Math.floor (this.noteLength);
         final int fine = (int) Math.floor (this.noteLength * 100) % 100;
 
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         message.addParameterElement ("Quarters", quarters, Integer.toString (quarters), this.isKnobTouched[0], -1);
         message.addParameterElement ("Fine", fine, Integer.toString (fine), this.isKnobTouched[1], -1);
         final int parameterValue = this.noteVelocity * 1023 / 127;
         message.addParameterElement ("Velocity", parameterValue, Integer.toString (this.noteVelocity * 100 / 127) + "%", this.isKnobTouched[2], parameterValue);
         for (int i = 3; i < 8; i++)
             message.addOptionElement ("", "", false, "", "", false, false);
-        display.send (message);
+        message.send ();
     }
 }

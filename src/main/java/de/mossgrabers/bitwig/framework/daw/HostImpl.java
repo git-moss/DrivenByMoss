@@ -4,17 +4,31 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.bitwig.framework.graphics.BitmapImpl;
+import de.mossgrabers.bitwig.framework.graphics.ImageImpl;
 import de.mossgrabers.bitwig.framework.osc.OpenSoundControlMessageImpl;
 import de.mossgrabers.bitwig.framework.osc.OpenSoundControlServerImpl;
+import de.mossgrabers.bitwig.framework.usb.UsbDeviceImpl;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IMemoryBlock;
+import de.mossgrabers.framework.graphics.IBitmap;
+import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
+import de.mossgrabers.framework.usb.IUsbDevice;
+import de.mossgrabers.framework.usb.UsbException;
 
+import com.bitwig.extension.api.graphics.BitmapFormat;
 import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
 import com.bitwig.extension.api.opensoundcontrol.OscModule;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.HardwareDevice;
+import com.bitwig.extension.controller.api.UsbDevice;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,7 +39,8 @@ import java.util.List;
  */
 public class HostImpl implements IHost
 {
-    private ControllerHost host;
+    private ControllerHost   host;
+    private List<IUsbDevice> usbDevices = new ArrayList<> ();
 
 
     /**
@@ -89,6 +104,14 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
+    public boolean canEditMarkers ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void scheduleTask (final Runnable task, final long delay)
     {
         this.host.scheduleTask (task, delay);
@@ -108,7 +131,11 @@ public class HostImpl implements IHost
     public void error (final String text, final Throwable ex)
     {
         this.host.errorln (text);
-        this.host.errorln (ex.getClass () + ":" + ex.getMessage ());
+
+        final StringWriter sw = new StringWriter ();
+        final PrintWriter writer = new PrintWriter (sw);
+        ex.printStackTrace (writer);
+        this.host.errorln (sw.toString ());
     }
 
 
@@ -133,7 +160,7 @@ public class HostImpl implements IHost
     public IOpenSoundControlServer connectToOSCServer (final String serverAddress, final int serverPort)
     {
         // TODO Bugfix required: Can only be called in init but needs to listen to host and port
-        // changes
+        // changes - https://github.com/teotigraphix/Framework4Bitwig/issues/208
         final OscModule oscModule = this.host.getOscModule ();
         return new OpenSoundControlServerImpl (oscModule.connectToUdpServer (serverAddress, serverPort, oscModule.createAddressSpace ()));
     }
@@ -168,8 +195,51 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public void sendDatagramPacket (final String string, final int port, final byte [] data)
+    public IImage loadSVG (final String path, final int scale)
     {
-        this.host.sendDatagramPacket (string, port, data);
+        return new ImageImpl (this.host.loadSVG (path, scale));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IBitmap createBitmap (final int width, final int height)
+    {
+        return new BitmapImpl (this.host.createBitmap (width, height, BitmapFormat.ARGB32));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IMemoryBlock createMemoryBlock (final int size)
+    {
+        return new MemoryBlockImpl (this.host.allocateMemoryBlock (size));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IUsbDevice getUsbDevice (final int index) throws UsbException
+    {
+        try
+        {
+            final HardwareDevice hardwareDevice = this.host.hardwareDevice (index);
+            final UsbDeviceImpl usbDevice = new UsbDeviceImpl (this, (UsbDevice) hardwareDevice);
+            this.usbDevices.add (usbDevice);
+            return usbDevice;
+        }
+        catch (final RuntimeException ex)
+        {
+            throw new UsbException ("Could not lookup or open the device.", ex);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void releaseUsbDevices ()
+    {
+        for (final IUsbDevice usbDevice: this.usbDevices)
+            usbDevice.release ();
     }
 }

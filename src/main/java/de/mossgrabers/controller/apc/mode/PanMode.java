@@ -2,9 +2,9 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.mode;
+package de.mossgrabers.controller.apc.mode;
 
-import de.mossgrabers.apc.controller.APCControlSurface;
+import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 
@@ -32,7 +32,7 @@ public class PanMode extends BaseMode
     @Override
     public void setValue (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).setPan (value);
+        this.model.getCurrentTrackBank ().getItem (index).setPan (value);
     }
 
 
@@ -40,7 +40,7 @@ public class PanMode extends BaseMode
     @Override
     public Integer getValue (final int index)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
         return track.doesExist () ? Integer.valueOf (track.getPan ()) : null;
     }
 }

@@ -2,16 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.mcu.mode.track;
+package de.mossgrabers.controller.mcu.mode.track;
 
-import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.StringUtils;
+import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
+import de.mossgrabers.controller.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
-import de.mossgrabers.mcu.controller.MCUControlSurface;
-import de.mossgrabers.mcu.mode.BaseMode;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -66,8 +66,15 @@ public class MasterMode extends BaseMode
     @Override
     public void onRowButton (final int row, final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.UP)
+        if (event == ButtonEvent.DOWN && row > 0)
+        {
+            this.surface.getModeManager ().restoreMode ();
             return;
+        }
+
+        if (event != ButtonEvent.UP || row > 0)
+            return;
+
         switch (index)
         {
             case 0:
@@ -90,6 +97,10 @@ public class MasterMode extends BaseMode
 
             case 7:
                 this.model.getProject ().next ();
+                break;
+
+            default:
+                // Unused
                 break;
         }
     }

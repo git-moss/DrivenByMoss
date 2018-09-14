@@ -2,16 +2,17 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.controller;
+package de.mossgrabers.controller.push.controller;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.AbstractSessionView;
 
 
 /**
@@ -143,16 +144,16 @@ public class PushColors
     public static final int    PUSH2_COLOR_GREEN_HI_FBLINK            = 24;
 
     // Scene button colors
-    public static final int    PUSH2_COLOR_SCENE_RED                  = PUSH2_COLOR2_RED;
+    public static final int    PUSH2_COLOR_SCENE_RED                  = 65;
     public static final int    PUSH2_COLOR_SCENE_RED_BLINK            = 2;
     public static final int    PUSH2_COLOR_SCENE_RED_BLINK_FAST       = 3;
     public static final int    PUSH2_COLOR_SCENE_RED_HI               = PUSH2_COLOR2_RED_HI;
     public static final int    PUSH2_COLOR_SCENE_RED_HI_BLINK         = 5;
     public static final int    PUSH2_COLOR_SCENE_RED_HI_BLINK_FAST    = 6;
-    public static final int    PUSH2_COLOR_SCENE_ORANGE               = 7;
+    public static final int    PUSH2_COLOR_SCENE_ORANGE               = 70;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_BLINK         = 8;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_BLINK_FAST    = 9;
-    public static final int    PUSH2_COLOR_SCENE_ORANGE_HI            = 10;
+    public static final int    PUSH2_COLOR_SCENE_ORANGE_HI            = 69;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_HI_BLINK      = 11;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_HI_BLINK_FAST = 12;
     public static final int    PUSH2_COLOR_SCENE_YELLOW               = PUSH2_COLOR2_YELLOW;
@@ -167,6 +168,7 @@ public class PushColors
     public static final int    PUSH2_COLOR_SCENE_GREEN_HI             = PUSH2_COLOR2_GREEN_HI;
     public static final int    PUSH2_COLOR_SCENE_GREEN_HI_BLINK       = 23;
     public static final int    PUSH2_COLOR_SCENE_GREEN_HI_BLINK_FAST  = 24;
+    public static final int    PUSH2_COLOR_SCENE_WHITE                = 60;
 
     // First row colors
     public static final int    PUSH1_COLOR_BLACK                      = 0;
@@ -325,6 +327,11 @@ public class PushColors
         colorManager.registerColor (AbstractSequencerView.COLOR_PAGE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
         colorManager.registerColor (AbstractSequencerView.COLOR_ACTIVE_PAGE, isPush2 ? PUSH2_COLOR2_GREEN : PUSH1_COLOR2_GREEN);
         colorManager.registerColor (AbstractSequencerView.COLOR_SELECTED_PAGE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
+        colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION, isPush2 ? PushColors.PUSH2_COLOR_SCENE_ORANGE : PushColors.PUSH1_COLOR_SCENE_ORANGE);
+        colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, isPush2 ? PushColors.PUSH2_COLOR_SCENE_ORANGE_HI : PushColors.PUSH1_COLOR_SCENE_ORANGE_HI);
+        colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        colorManager.registerColor (AbstractSequencerView.COLOR_TRANSPOSE, isPush2 ? PushColors.PUSH2_COLOR_SCENE_WHITE : PushColors.PUSH1_COLOR_SCENE_YELLOW);
+        colorManager.registerColor (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED, isPush2 ? PushColors.PUSH2_COLOR_SCENE_YELLOW_HI : PushColors.PUSH1_COLOR_SCENE_YELLOW_HI);
 
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_OFF, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_RECORD, isPush2 ? PUSH2_COLOR2_RED_HI : PUSH1_COLOR2_RED_HI);
@@ -338,35 +345,39 @@ public class PushColors
         colorManager.registerColor (AbstractPlayView.COLOR_RECORD, isPush2 ? PUSH2_COLOR2_RED_HI : PUSH1_COLOR2_RED_HI);
         colorManager.registerColor (AbstractPlayView.COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
 
+        colorManager.registerColor (AbstractSessionView.COLOR_SCENE, isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN);
+        colorManager.registerColor (AbstractSessionView.COLOR_SELECTED_SCENE, isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN_HI : PushColors.PUSH1_COLOR_SCENE_GREEN_HI);
+        colorManager.registerColor (AbstractSessionView.COLOR_SCENE_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+
         colorManager.registerColor (PadGrid.GRID_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
 
-        colorManager.registerColor (BitwigColors.COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_DARK_GRAY, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_GRAY, isPush2 ? PUSH2_COLOR2_GREY_MD : PUSH1_COLOR2_GREY_MD);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_GRAY, isPush2 ? PUSH2_COLOR2_GREY_LT : PUSH1_COLOR2_GREY_LT);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_SILVER, isPush2 ? PUSH2_COLOR2_SKY_OCEAN : 40);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_DARK_BROWN, isPush2 ? PUSH2_COLOR2_AMBER_LO : 11);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_BROWN, isPush2 ? PUSH2_COLOR2_AMBER_YELLOW : 12);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_DARK_BLUE, isPush2 ? PUSH2_COLOR2_OCEAN : 42);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_PURPLE_BLUE, isPush2 ? PUSH2_COLOR2_OCEAN_BLUE : 44);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_PURPLE, isPush2 ? PUSH2_COLOR2_PINK : 81);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_PINK, isPush2 ? PUSH2_COLOR2_PINK_HI : 57);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_RED, isPush2 ? PUSH2_COLOR2_RED : 6);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_ORANGE, isPush2 ? PUSH2_COLOR2_ORANGE : 60);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_ORANGE, isPush2 ? PUSH2_COLOR2_ORANGE_LIGHT : 62);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_MOSS_GREEN, isPush2 ? PUSH2_COLOR2_LIME_LO : 19);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_GREEN, isPush2 ? PUSH2_COLOR2_SPRING : 26);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_COLD_GREEN, isPush2 ? PUSH2_COLOR2_TURQUOISE : 30);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_BLUE, isPush2 ? PUSH2_COLOR2_SKY_HI : 37);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PURPLE, isPush2 ? PUSH2_COLOR2_BLUE_ORCHID : 48);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PINK, isPush2 ? PUSH2_COLOR2_MAGENTA_PINK : 56);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_SKIN, isPush2 ? PUSH2_COLOR2_ROSE : 4);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_REDDISH_BROWN, isPush2 ? PUSH2_COLOR2_AMBER : 10);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_BROWN, isPush2 ? PUSH2_COLOR2_LIGHT_BROWN : 61);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_GREEN, isPush2 ? PUSH2_COLOR2_LIME : 18);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_BLUISH_GREEN, isPush2 ? PUSH2_COLOR2_SPRING_HI : 25);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_GREEN_BLUE, isPush2 ? PUSH2_COLOR2_TURQUOISE_CYAN : 32);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_BLUE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : 41);
+        colorManager.registerColor (DAWColors.COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        colorManager.registerColor (DAWColors.DAW_COLOR_DARK_GRAY, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
+        colorManager.registerColor (DAWColors.DAW_COLOR_GRAY, isPush2 ? PUSH2_COLOR2_GREY_MD : PUSH1_COLOR2_GREY_MD);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_GRAY, isPush2 ? PUSH2_COLOR2_GREY_LT : PUSH1_COLOR2_GREY_LT);
+        colorManager.registerColor (DAWColors.DAW_COLOR_SILVER, isPush2 ? PUSH2_COLOR2_SKY_OCEAN : 40);
+        colorManager.registerColor (DAWColors.DAW_COLOR_DARK_BROWN, isPush2 ? PUSH2_COLOR2_AMBER_LO : 11);
+        colorManager.registerColor (DAWColors.DAW_COLOR_BROWN, isPush2 ? PUSH2_COLOR2_AMBER_YELLOW : 12);
+        colorManager.registerColor (DAWColors.DAW_COLOR_DARK_BLUE, isPush2 ? PUSH2_COLOR2_OCEAN : 42);
+        colorManager.registerColor (DAWColors.DAW_COLOR_PURPLE_BLUE, isPush2 ? PUSH2_COLOR2_OCEAN_BLUE : 44);
+        colorManager.registerColor (DAWColors.DAW_COLOR_PURPLE, isPush2 ? PUSH2_COLOR2_PINK : 81);
+        colorManager.registerColor (DAWColors.DAW_COLOR_PINK, isPush2 ? PUSH2_COLOR2_PINK_HI : 57);
+        colorManager.registerColor (DAWColors.DAW_COLOR_RED, isPush2 ? PUSH2_COLOR2_RED : 6);
+        colorManager.registerColor (DAWColors.DAW_COLOR_ORANGE, isPush2 ? PUSH2_COLOR2_ORANGE : 60);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_ORANGE, isPush2 ? PUSH2_COLOR2_ORANGE_LIGHT : 62);
+        colorManager.registerColor (DAWColors.DAW_COLOR_MOSS_GREEN, isPush2 ? PUSH2_COLOR2_LIME_LO : 19);
+        colorManager.registerColor (DAWColors.DAW_COLOR_GREEN, isPush2 ? PUSH2_COLOR2_SPRING : 26);
+        colorManager.registerColor (DAWColors.DAW_COLOR_COLD_GREEN, isPush2 ? PUSH2_COLOR2_TURQUOISE : 30);
+        colorManager.registerColor (DAWColors.DAW_COLOR_BLUE, isPush2 ? PUSH2_COLOR2_SKY_HI : 37);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_PURPLE, isPush2 ? PUSH2_COLOR2_BLUE_ORCHID : 48);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_PINK, isPush2 ? PUSH2_COLOR2_MAGENTA_PINK : 56);
+        colorManager.registerColor (DAWColors.DAW_COLOR_SKIN, isPush2 ? PUSH2_COLOR2_ROSE : 4);
+        colorManager.registerColor (DAWColors.DAW_COLOR_REDDISH_BROWN, isPush2 ? PUSH2_COLOR2_AMBER : 10);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_BROWN, isPush2 ? PUSH2_COLOR2_LIGHT_BROWN : 61);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_GREEN, isPush2 ? PUSH2_COLOR2_LIME : 18);
+        colorManager.registerColor (DAWColors.DAW_COLOR_BLUISH_GREEN, isPush2 ? PUSH2_COLOR2_SPRING_HI : 25);
+        colorManager.registerColor (DAWColors.DAW_COLOR_GREEN_BLUE, isPush2 ? PUSH2_COLOR2_TURQUOISE_CYAN : 32);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_BLUE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : 41);
 
         colorManager.registerColor (ColorManager.BUTTON_STATE_OFF, 0);
         colorManager.registerColor (ColorManager.BUTTON_STATE_ON, isPush2 ? 8 : 1);

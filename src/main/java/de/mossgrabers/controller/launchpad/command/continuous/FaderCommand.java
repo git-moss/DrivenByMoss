@@ -2,14 +2,14 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad.command.continuous;
+package de.mossgrabers.controller.launchpad.command.continuous;
 
+import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.controller.launchpad.view.AbstractFaderView;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.View;
-import de.mossgrabers.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.launchpad.view.AbstractFaderView;
 
 
 /**

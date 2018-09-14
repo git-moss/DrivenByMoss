@@ -63,11 +63,13 @@ import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -143,10 +145,12 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 5, 8, 16, 16, true, -1, -1, -1, -1);
+        final ModelSetup ms = new ModelSetup ();
+        ms.setNumScenes (5);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
-        trackBank.addTrackSelectionObserver (this::handleTrackChange);
+        trackBank.addSelectionObserver (this::handleTrackChange);
     }
 
 
@@ -358,19 +362,19 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         surface.updateButton (APCControlSurface.APC_BUTTON_RECORD, t.isRecording () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
 
         // Activator, Solo, Record Arm
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selTrack = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selTrack = tb.getSelectedItem ();
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
         final int clipLength = surface.getConfiguration ().getNewClipLength ();
         final ModeManager modeManager = surface.getModeManager ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = tb.getTrack (i);
+            final ITrack track = tb.getItem (i);
             boolean isOn;
             if (isShift)
                 isOn = i == clipLength;
             else
-                isOn = isSendA ? modeManager.isActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i)) : i == selIndex;
+                isOn = isSendA ? modeManager.isActiveOrTempMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i)) : i == selIndex;
             surface.updateButtonEx (APCControlSurface.APC_BUTTON_TRACK_SELECTION, i, isOn ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             surface.updateButtonEx (APCControlSurface.APC_BUTTON_SOLO, i, track.doesExist () && (isShift ? track.isAutoMonitor () : track.isSolo ()) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             surface.updateButtonEx (APCControlSurface.APC_BUTTON_ACTIVATOR, i, track.doesExist () && (isShift ? track.isMonitor () : !track.isMute ()) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
@@ -429,7 +433,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     private void updateMode (final Integer mode)
     {
         final APCControlSurface surface = this.getSurface ();
-        final Integer m = mode == null ? surface.getModeManager ().getActiveModeId () : mode;
+        final Integer m = mode == null ? surface.getModeManager ().getActiveOrTempModeId () : mode;
         this.updateIndication (m);
         surface.updateButton (APCControlSurface.APC_BUTTON_PAN, m == Modes.MODE_PAN ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         if (surface.isMkII ())
@@ -453,47 +457,55 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         if (view == null)
             return;
 
-        final ICursorDevice cd = this.model.getCursorDevice ();
+        final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
 
             final Integer deviceKnobCommand = Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i);
             if (!((DeviceKnobRowCommand) view.getContinuousCommand (deviceKnobCommand)).isKnobMoving ())
-                surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, cd.getFXParam (i).getValue ());
+                surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, parameterBank.getItem (i).getValue ());
         }
     }
 
 
-    private void updateIndication (final Integer mode)
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
     {
+        if (mode == this.currentMode)
+            return;
+        this.currentMode = mode;
+
         final ITrackBank tb = this.model.getTrackBank ();
-        final IChannelBank tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tbe = this.model.getEffectTrackBank ();
         final APCControlSurface surface = this.getSurface ();
         final boolean isSession = surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isPan = mode == Modes.MODE_PAN;
+        final boolean isPan = Modes.MODE_PAN.equals (mode);
 
         tb.setIndication (!isEffect && isSession);
         if (tbe != null)
             tbe.setIndication (isEffect && isSession);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = tb.getTrack (i);
+            final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect);
             track.setPanIndication (!isEffect && isPan);
+            final ISendBank sendBank = track.getSendBank ();
             for (int j = 0; j < 8; j++)
-                track.getSend (j).setIndication (!isEffect && (mode == Modes.MODE_SEND1 && j == 0 || mode == Modes.MODE_SEND2 && j == 1 || mode == Modes.MODE_SEND3 && j == 2 || mode == Modes.MODE_SEND4 && j == 3 || mode == Modes.MODE_SEND5 && j == 4 || mode == Modes.MODE_SEND6 && j == 5 || mode == Modes.MODE_SEND7 && j == 6 || mode == Modes.MODE_SEND8 && j == 7));
+                sendBank.getItem (j).setIndication (!isEffect && (mode == Modes.MODE_SEND1 && j == 0 || mode == Modes.MODE_SEND2 && j == 1 || mode == Modes.MODE_SEND3 && j == 2 || mode == Modes.MODE_SEND4 && j == 3 || mode == Modes.MODE_SEND5 && j == 4 || mode == Modes.MODE_SEND6 && j == 5 || mode == Modes.MODE_SEND7 && j == 6 || mode == Modes.MODE_SEND8 && j == 7));
 
             if (tbe != null)
             {
-                final ITrack fxTrack = tbe.getTrack (i);
+                final ITrack fxTrack = tbe.getItem (i);
                 fxTrack.setVolumeIndication (isEffect);
                 fxTrack.setPanIndication (isEffect && isPan);
             }
 
-            cursorDevice.indicateParameter (i, true);
+            parameterBank.getItem (i).setIndication (true);
         }
     }
 

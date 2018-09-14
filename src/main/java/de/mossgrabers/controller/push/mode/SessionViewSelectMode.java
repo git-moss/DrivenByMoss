@@ -2,18 +2,19 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode;
+package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.push.controller.DisplayMessage;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.controller.PushDisplay;
-import de.mossgrabers.push.view.Views;
 
 
 /**
@@ -30,9 +31,6 @@ public class SessionViewSelectMode extends BaseMode
         Views.VIEW_SESSION,
         Views.VIEW_SCENE_PLAY,
         null,
-        null,
-        null,
-        null,
         null
     };
 
@@ -42,9 +40,6 @@ public class SessionViewSelectMode extends BaseMode
         "Session",
         "Flipped",
         "Scenes",
-        "",
-        "",
-        "",
         "",
         ""
     };
@@ -69,10 +64,34 @@ public class SessionViewSelectMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        if (index < 2)
-            this.surface.getConfiguration ().setFlipSession (index == 1);
+        final PushConfiguration configuration = this.surface.getConfiguration ();
 
-        this.activateView (VIEWS[index]);
+        switch (index)
+        {
+            case 0:
+            case 1:
+                configuration.setFlipSession (index == 1);
+                this.activateView (VIEWS[index]);
+                break;
+
+            case 2:
+                configuration.setSceneView ();
+                this.surface.getModeManager ().restoreMode ();
+                break;
+
+            case 6:
+                this.surface.getModeManager ().setActiveMode (Modes.MODE_MARKERS);
+                break;
+
+            case 7:
+                configuration.toggleScenesClipMode ();
+                this.surface.getModeManager ().restoreMode ();
+                break;
+
+            default:
+                // Not used
+                break;
+        }
     }
 
 
@@ -86,8 +105,12 @@ public class SessionViewSelectMode extends BaseMode
         for (int i = 0; i < VIEWS.length; i++)
         {
             if (VIEWS[i] != null)
-                d.setCell (3, i, (this.isSelected (viewManager, i) ? PushDisplay.RIGHT_ARROW : "") + VIEW_NAMES[i]);
+                d.setCell (3, i, (this.isSelected (viewManager, i) ? PushDisplay.SELECT_ARROW : "") + VIEW_NAMES[i]);
         }
+        d.setBlock (1, 3, "Session mode:");
+        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
+        d.setCell (3, 6, "Markers");
+        d.setCell (3, 7, (isOn ? PushDisplay.SELECT_ARROW : "") + " Clips");
         d.allDone ();
     }
 
@@ -97,14 +120,17 @@ public class SessionViewSelectMode extends BaseMode
     public void updateDisplay2 ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int i = 0; i < VIEWS.length; i++)
         {
             final boolean isMenuBottomSelected = VIEWS[i] != null && this.isSelected (viewManager, i);
             message.addOptionElement ("", "", false, i == 0 ? "Session view" : "", VIEW_NAMES[i], isMenuBottomSelected, false);
         }
-        display.send (message);
+        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
+        message.addOptionElement ("", "", false, "", "", false, false);
+        message.addOptionElement ("", "", false, "Session mode", "Markers", false, false);
+        message.addOptionElement ("", "", false, "", "Clips", isOn, false);
+        message.send ();
     }
 
 
@@ -114,8 +140,13 @@ public class SessionViewSelectMode extends BaseMode
     {
         final ColorManager colorManager = this.model.getColorManager ();
         final ViewManager viewManager = this.surface.getViewManager ();
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < VIEWS.length; i++)
             this.surface.updateButton (20 + i, colorManager.getColor (VIEWS[i] == null ? AbstractMode.BUTTON_COLOR_OFF : this.isSelected (viewManager, i) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+
+        this.surface.updateButton (25, AbstractMode.BUTTON_COLOR_OFF);
+        this.surface.updateButton (26, AbstractMode.BUTTON_COLOR_ON);
+        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
+        this.surface.updateButton (27, isOn ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
     }
 
 
@@ -123,10 +154,7 @@ public class SessionViewSelectMode extends BaseMode
     {
         if (viewID == null)
             return;
-
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.setActiveView (viewID);
-
+        this.surface.getViewManager ().setActiveView (viewID);
         this.surface.getModeManager ().restoreMode ();
     }
 

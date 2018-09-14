@@ -41,7 +41,7 @@ public class FaderTouchCommand extends SelectCommand
         {
             if (configuration.useFadersAsKnobs ())
             {
-                this.surface.getModeManager ().getActiveMode ().onValueKnobTouch (this.index, event == ButtonEvent.DOWN);
+                this.surface.getModeManager ().getActiveOrTempMode ().onValueKnobTouch (this.index, event == ButtonEvent.DOWN);
                 return;
             }
 

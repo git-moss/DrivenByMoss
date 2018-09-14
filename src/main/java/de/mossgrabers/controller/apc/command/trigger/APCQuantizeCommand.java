@@ -38,7 +38,7 @@ public class APCQuantizeCommand extends QuantizeCommand<APCControlSurface, APCCo
         if (event != ButtonEvent.DOWN)
             return;
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (cursorDevice.hasSelectedDevice ())
+        if (cursorDevice.doesExist ())
         {
             final boolean pinned = cursorDevice.isPinned ();
             cursorDevice.togglePinned ();

@@ -2,11 +2,11 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad.view;
+package de.mossgrabers.controller.launchpad.view;
 
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
 /**
@@ -40,7 +40,8 @@ public class DrumView extends DrumViewBase
 
     private void delayedUpdateArrowButtons ()
     {
-        this.surface.setButton (this.surface.getSessionButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        final boolean hasClips = this.model.getHost ().hasClips ();
+        this.surface.setButton (this.surface.getSessionButton (), hasClips ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
         this.surface.setButton (this.surface.getNoteButton (), LaunchpadColors.LAUNCHPAD_COLOR_YELLOW);
         this.surface.setButton (this.surface.getDeviceButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
         this.surface.setButton (this.surface.getUserButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);

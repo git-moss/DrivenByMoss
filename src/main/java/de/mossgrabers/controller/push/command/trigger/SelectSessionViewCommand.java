@@ -2,17 +2,17 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.command.trigger;
+package de.mossgrabers.controller.push.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.Modes;
+import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.mode.Modes;
-import de.mossgrabers.push.view.Views;
 
 
 /**
@@ -55,17 +55,21 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<PushControl
             this.isTemporary = false;
 
             final ViewManager viewManager = this.surface.getViewManager ();
+            final ModeManager modeManager = this.surface.getModeManager ();
             if (Views.isSessionView (viewManager.getActiveViewId ()))
             {
-                final ModeManager modeManager = this.surface.getModeManager ();
-                if (modeManager.isActiveMode (Modes.MODE_SESSION_VIEW_SELECT))
+                if (modeManager.isActiveOrTempMode (Modes.MODE_SESSION_VIEW_SELECT))
                     modeManager.restoreMode ();
                 else
                     modeManager.setActiveMode (Modes.MODE_SESSION_VIEW_SELECT);
+                return;
             }
-            else
-                viewManager.setActiveView (Views.VIEW_SESSION);
 
+            // Switch to the preferred session view and display scene/clip mode if enabled
+            final PushConfiguration configuration = this.surface.getConfiguration ();
+            viewManager.setActiveView (configuration.isScenesClipViewSelected () ? Views.VIEW_SCENE_PLAY : Views.VIEW_SESSION);
+            if (configuration.shouldDisplayScenesOrClips ())
+                modeManager.setActiveMode (Modes.MODE_SESSION);
             return;
         }
 

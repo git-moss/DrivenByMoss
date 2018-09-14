@@ -2,17 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.sl.command.continuous;
+package de.mossgrabers.controller.sl.command.continuous;
 
+import de.mossgrabers.controller.sl.SLConfiguration;
+import de.mossgrabers.controller.sl.controller.SLControlSurface;
+import de.mossgrabers.controller.sl.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.sl.SLConfiguration;
-import de.mossgrabers.sl.controller.SLControlSurface;
-import de.mossgrabers.sl.mode.Modes;
 
 
 /**
@@ -44,7 +43,7 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
     public void execute (final int value)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        Integer cm = modeManager.getActiveModeId ();
+        Integer cm = modeManager.getActiveOrTempModeId ();
         if (cm != Modes.MODE_TRACK && cm != Modes.MODE_MASTER)
         {
             modeManager.setActiveMode (Modes.MODE_TRACK);
@@ -60,8 +59,8 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
             return;
         }
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getSelectedItem ();
         if (track == null)
             return;
 
@@ -80,14 +79,14 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
             case 2:
                 if (this.surface.getConfiguration ().isDisplayCrossfader ())
                     track.setCrossfadeModeAsNumber (value == 0 ? 0 : value == 127 ? 2 : 1);
-                else if (tb instanceof ITrackBank)
-                    track.getSend (0).setValue (value);
+                else if (!this.model.isEffectTrackBankActive ())
+                    track.getSendBank ().getItem (0).setValue (value);
                 break;
 
             // Send 1 - 5
             default:
-                if (tb instanceof ITrackBank)
-                    track.getSend (this.index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).setValue (value);
+                if (!this.model.isEffectTrackBankActive ())
+                    track.getSendBank ().getItem (this.index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).setValue (value);
                 break;
         }
     }

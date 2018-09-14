@@ -4,16 +4,20 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import de.mossgrabers.bitwig.framework.daw.SlotBankImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.NoteObserver;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 
-import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
+import com.bitwig.extension.controller.api.PlayingNote;
 import com.bitwig.extension.controller.api.Track;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -23,27 +27,31 @@ import java.util.List;
  */
 public class TrackImpl extends ChannelImpl implements ITrack
 {
-    protected Track  track;
-    private ISlot [] slots;
+    protected static final int        NOTE_OFF      = 0;
+    protected static final int        NOTE_ON       = 1;
+    protected static final int        NOTE_ON_NEW   = 2;
+
+    protected final Track             track;
+    protected final ISlotBank         slotBank;
+    protected final int []            noteCache     = new int [128];
+    protected final Set<NoteObserver> noteObservers = new HashSet<> ();
 
 
     /**
      * Constructor.
      *
-     * @param track The track
+     * @param host The DAW host
      * @param valueChanger The valueChanger
+     * @param track The track
      * @param index The index of the track in the page
      * @param numSends The number of sends of a bank
      * @param numScenes The number of scenes of a bank
      */
-    public TrackImpl (final Track track, final IValueChanger valueChanger, final int index, final int numSends, final int numScenes)
+    public TrackImpl (final IHost host, final IValueChanger valueChanger, final Track track, final int index, final int numSends, final int numScenes)
     {
-        super (track, valueChanger, index, numSends);
+        super (host, valueChanger, track, index, numSends);
 
         this.track = track;
-
-        if (track == null)
-            return;
 
         track.trackType ().markInterested ();
         track.position ().markInterested ();
@@ -55,11 +63,11 @@ public class TrackImpl extends ChannelImpl implements ITrack
         track.canHoldNoteData ().markInterested ();
         track.canHoldAudioData ().markInterested ();
         track.isStopped ().markInterested ();
+        track.playingNotes ().addValueObserver (this::handleNotes);
 
-        this.slots = new SlotImpl [numScenes];
-        final ClipLauncherSlotBank cs = track.clipLauncherSlotBank ();
-        for (int i = 0; i < numScenes; i++)
-            this.slots[i] = new SlotImpl (cs, cs.getItemAt (i), i);
+        this.slotBank = new SlotBankImpl (host, valueChanger, this, track.clipLauncherSlotBank (), numScenes);
+
+        Arrays.fill (this.noteCache, NOTE_OFF);
     }
 
 
@@ -79,9 +87,9 @@ public class TrackImpl extends ChannelImpl implements ITrack
         this.track.canHoldNoteData ().setIsSubscribed (enable);
         this.track.canHoldAudioData ().setIsSubscribed (enable);
         this.track.isStopped ().setIsSubscribed (enable);
+        this.track.playingNotes ().setIsSubscribed (enable);
 
-        for (final ISlot slot: this.slots)
-            slot.enableObservers (enable);
+        this.slotBank.enableObservers (enable);
     }
 
 
@@ -274,64 +282,6 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public int getNumSlots ()
-    {
-        return this.slots.length;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISlot getSlot (final int slotIndex)
-    {
-        return this.slots[slotIndex];
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISlot [] getSelectedSlots ()
-    {
-        final List<ISlot> selection = new ArrayList<> ();
-        for (final ISlot slot: this.slots)
-        {
-            if (slot.isSelected ())
-                selection.add (slot);
-        }
-        return selection.toArray (new SlotImpl [selection.size ()]);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISlot getSelectedSlot ()
-    {
-        for (final ISlot slot: this.slots)
-        {
-            if (slot.isSelected ())
-                return slot;
-        }
-        return null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISlot getEmptySlot (final int startFrom)
-    {
-        final int start = startFrom >= 0 ? startFrom : 0;
-        for (int i = 0; i < this.slots.length; i++)
-        {
-            final int pos = (start + i) % this.slots.length;
-            if (!this.slots[pos].hasContent ())
-                return this.slots[pos];
-        }
-        return null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean isPlaying ()
     {
         return !this.track.isStopped ().get ();
@@ -356,16 +306,61 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void scrollClipPageBackwards ()
+    public ISlotBank getSlotBank ()
     {
-        this.track.clipLauncherSlotBank ().scrollPageBackwards ();
+        return this.slotBank;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void scrollClipPageForwards ()
+    public void addNoteObserver (final NoteObserver observer)
     {
-        this.track.clipLauncherSlotBank ().scrollPageForwards ();
+        this.noteObservers.add (observer);
+    }
+
+
+    /**
+     * Notify all registered note observers.
+     *
+     * @param note The note which is playing or stopped
+     * @param velocity The velocity of the note, note is stopped if 0
+     */
+    protected void notifyNoteObservers (final int note, final int velocity)
+    {
+        for (final NoteObserver noteObserver: this.noteObservers)
+            noteObserver.call (this.index, note, velocity);
+    }
+
+
+    /**
+     * Handles the updates on all playing notes. Translates the note array into individual note
+     * observer updates of start and stopped notes.
+     *
+     * @param notes The currently playing notes
+     */
+    private void handleNotes (final PlayingNote [] notes)
+    {
+        synchronized (this.noteCache)
+        {
+            // Send the new notes
+            for (final PlayingNote note: notes)
+            {
+                final int pitch = note.pitch ();
+                this.noteCache[pitch] = NOTE_ON_NEW;
+                this.notifyNoteObservers (pitch, note.velocity ());
+            }
+            // Send note offs
+            for (int i = 0; i < this.noteCache.length; i++)
+            {
+                if (this.noteCache[i] == NOTE_ON_NEW)
+                    this.noteCache[i] = NOTE_ON;
+                else if (this.noteCache[i] == NOTE_ON)
+                {
+                    this.noteCache[i] = NOTE_OFF;
+                    this.notifyNoteObservers (i, 0);
+                }
+            }
+        }
     }
 }

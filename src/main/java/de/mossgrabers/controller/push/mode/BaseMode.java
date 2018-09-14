@@ -2,15 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode;
+package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Arrays;
 
@@ -106,7 +106,7 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
     public void onFirstRow (final int index, final ButtonEvent event)
     {
         if (event == ButtonEvent.UP)
-            this.model.getCurrentTrackBank ().getTrack (index).select ();
+            this.model.getCurrentTrackBank ().getItem (index).select ();
     }
 
 

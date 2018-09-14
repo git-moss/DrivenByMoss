@@ -2,15 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.mcu.command.trigger;
+package de.mossgrabers.controller.mcu.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.mcu.MCUConfiguration;
+import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
+import de.mossgrabers.controller.mcu.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.mcu.MCUConfiguration;
-import de.mossgrabers.mcu.controller.MCUControlSurface;
-import de.mossgrabers.mcu.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,15 +52,16 @@ public class SendSelectCommand extends AbstractTriggerCommand<MCUControlSurface,
         if (this.model.isEffectTrackBankActive ())
             return;
 
-        final Integer activeModeId = this.surface.getModeManager ().getActiveModeId ();
+        final Integer activeModeId = this.surface.getModeManager ().getActiveOrTempModeId ();
         int index = this.modeIds.indexOf (activeModeId) + 1;
         if (index < 0 || index >= this.modeIds.size ())
             index = 0;
 
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (0);
-        if (track.getSend (index).doesExist ())
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getItem (0);
+        if (tb.canEditSend (index))
             this.surface.getModeManager ().setActiveMode (this.modeIds.get (index));
-        else if (track.getSend (0).doesExist ())
+        else if (track.getSendBank ().getItem (0).doesExist ())
             this.surface.getModeManager ().setActiveMode (this.modeIds.get (0));
     }
 }

@@ -7,7 +7,6 @@ package de.mossgrabers.controller.kontrol.osc.mkii.protocol;
 import de.mossgrabers.controller.kontrol.osc.mkii.KontrolOSCConfiguration;
 import de.mossgrabers.controller.kontrol.osc.mkii.TrackType;
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
@@ -70,7 +69,7 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
 
         final ITransport trans = this.model.getTransport ();
         final ITrackBank tb = this.model.getTrackBank ();
-        final IChannelBank tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tbe = this.model.getEffectTrackBank ();
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
         final ISceneBank sceneBank = this.model.getSceneBank ();
 
@@ -112,13 +111,13 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         //
 
         // 1.x
-        final int trackCount = tb.getTrackCount ();
+        final int trackCount = tb.getItemCount ();
         final List<Object> params = new ArrayList<> ();
-        Collections.addAll (params, Integer.valueOf (trackCount), Integer.valueOf (sceneBank == null ? 0 : sceneBank.getSceneCount ()), Integer.valueOf (tbe == null ? 0 : tbe.getTrackCount ()));
+        Collections.addAll (params, Integer.valueOf (trackCount), Integer.valueOf (sceneBank.getItemCount ()), Integer.valueOf (tbe == null ? 0 : tbe.getItemCount ()));
         this.sendOSC (this.daw + "size", params, dump);
 
         // 1.x
-        ITrack selTrack = tb.getSelectedTrack ();
+        ITrack selTrack = tb.getSelectedItem ();
         if (selTrack != null)
         {
             final int trackType = TrackType.toTrackType (selTrack.getType ());
@@ -137,7 +136,7 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         }
         if (tbe != null)
         {
-            selTrack = tbe.getSelectedTrack ();
+            selTrack = tbe.getSelectedItem ();
             if (selTrack != null)
             {
                 final int trackType = TrackType.toTrackType (selTrack.getType ());
@@ -194,10 +193,10 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
     }
 
 
-    private void sendTrackBank (final boolean is16, final IChannelBank bank, final int trackCount, final boolean dump)
+    private void sendTrackBank (final boolean is16, final ITrackBank bank, final int trackCount, final boolean dump)
     {
-        for (int i = 0; i < Math.min (trackCount, bank.getNumTracks ()); i++)
-            this.sendTrack (is16, i, bank.getTrack (i), dump);
+        for (int i = 0; i < Math.min (trackCount, bank.getPageSize ()); i++)
+            this.sendTrack (is16, i, bank.getItem (i), dump);
     }
 
 
@@ -206,10 +205,12 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         final int trackType = TrackType.toTrackType (track.getType ());
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
+        final double normalizedVolume = valueChanger.toNormalizedValue (track.getVolume ());
+
         if (is16)
         {
             // 1.6
-            this.sendTrackOSC (this.daw + "track/volume", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVolume ()))), dump);
+            this.sendTrackOSC (this.daw + "track/volume", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) normalizedVolume)), dump);
             this.sendTrackOSC (this.daw + "track/pan", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) (valueChanger.toNormalizedValue (track.getPan ()) * 2.0 - 1.0))), dump);
             this.sendTrackVuOSC (this.daw + "track/meter", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (0), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuLeft ()))), dump);
             this.sendTrackVuOSC (this.daw + "track/meter", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (1), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuRight ()))), dump);
@@ -220,7 +221,7 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         else
         {
             // 1.5
-            this.sendTrackOSC (this.daw + "volume", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVolume ()))), dump);
+            this.sendTrackOSC (this.daw + "volume", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) normalizedVolume)), dump);
             this.sendTrackOSC (this.daw + "pan", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) (valueChanger.toNormalizedValue (track.getPan ()) * 2.0 - 1.0))), dump);
             // type and index are switched with these 2 messages...
             this.sendTrackVuOSC (this.daw + "meter", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (0), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuLeft ()))), dump);
@@ -291,14 +292,14 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
                 break;
 
             case TrackType.RETURN_BUS:
-                final IChannelBank effectTrackBank = this.model.getEffectTrackBank ();
+                final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
                 if (effectTrackBank != null)
                 {
-                    final int numTracks = effectTrackBank.getNumTracks ();
+                    final int numTracks = effectTrackBank.getPageSize ();
                     if (trackIndex >= numTracks)
                         this.model.getHost ().error ("Track is outside of supported number of tracks (" + numTracks + "): " + trackIndex);
                     else
-                        return effectTrackBank.getTrack (trackIndex);
+                        return effectTrackBank.getItem (trackIndex);
                 }
                 break;
 
@@ -306,11 +307,11 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
                 final ITrackBank trackBank = this.model.getTrackBank ();
                 if (trackBank != null)
                 {
-                    final int numTracks = trackBank.getNumTracks ();
+                    final int numTracks = trackBank.getPageSize ();
                     if (trackIndex >= numTracks)
                         this.model.getHost ().error ("Track is outside of supported number of tracks (" + numTracks + "): " + trackIndex);
                     else
-                        return trackBank.getTrack (trackIndex);
+                        return trackBank.getItem (trackIndex);
                 }
                 break;
         }
@@ -348,8 +349,7 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         final ICursorDevice instrumentDevice = this.model.getPrimaryDevice ();
         if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
         {
-            // TODO The parameter seems to be only empty (also does not work with Live
-            // Therefore, lets send always the first one
+            // TODO Spec missing: The parameter is currently not sent to Bitwig!
             return "NIKB00";
         }
         return "";
@@ -363,7 +363,8 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         parameters.add (Integer.valueOf (TrackType.toTrackType (track.getType ())));
         parameters.add (Integer.valueOf (trackIndex));
         parameters.add (track.getName ());
-        parameters.add (Integer.valueOf (1)); // TODO How to convert? track.getColor ()
+        parameters.add (Integer.valueOf (1)); // TODO Spec missing: How to convert? track.getColor
+                                              // ()
         parameters.add (Integer.valueOf (track.isRecArm () ? 1 : 0));
         parameters.add (Integer.valueOf (track.isSolo () ? 1 : 0));
         parameters.add (Integer.valueOf (track.isMute () ? 1 : 0));

@@ -4,12 +4,12 @@
 
 package de.mossgrabers.framework.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -20,7 +20,7 @@ import de.mossgrabers.framework.mode.Mode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ButtonRowModeCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class ButtonRowModeCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     private int index;
     private int row;
@@ -46,7 +46,7 @@ public class ButtonRowModeCommand<S extends ControlSurface<C>, C extends Configu
     @Override
     public void execute (final ButtonEvent event)
     {
-        final Mode m = this.surface.getModeManager ().getActiveMode ();
+        final Mode m = this.surface.getModeManager ().getActiveOrTempMode ();
         if (m != null)
             m.onRowButton (this.row, this.index, event);
     }

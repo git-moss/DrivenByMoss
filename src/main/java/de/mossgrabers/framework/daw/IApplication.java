@@ -88,77 +88,69 @@ public interface IApplication extends ObserverManagement
 
 
     /**
-     * Sends a redo command to Bitwig Studio.
+     * Sends a redo command to the DAW.
      */
     void redo ();
 
 
     /**
-     * Sends an undo command to Bitwig Studio.
+     * Sends an undo command to the DAW.
      */
     void undo ();
 
 
     /**
-     * Duplicates the active selection in Bitwig Studio if applicable.
+     * Duplicates the active selection in the DAW if applicable.
      */
     public void duplicate ();
 
 
     /**
-     * Deletes the selected items in Bitwig Studio if applicable.
+     * Deletes the selected items in the DAW if applicable.
      */
     public void deleteSelection ();
 
 
     /**
      * Equivalent to an Arrow-Left key stroke on the computer keyboard. The concrete functionality
-     * depends on the current keyboard focus in Bitwig Studio.
+     * depends on the current keyboard focus in the DAW.
      */
     void arrowKeyLeft ();
 
 
     /**
      * Equivalent to an Arrow-Up key stroke on the computer keyboard. The concrete functionality
-     * depends on the current keyboard focus in Bitwig Studio.
+     * depends on the current keyboard focus in the DAW.
      */
     void arrowKeyUp ();
 
 
     /**
      * Equivalent to an Arrow-Right key stroke on the computer keyboard. The concrete functionality
-     * depends on the current keyboard focus in Bitwig Studio.
+     * depends on the current keyboard focus in the DAW.
      */
     void arrowKeyRight ();
 
 
     /**
      * Equivalent to an Arrow-Down key stroke on the computer keyboard. The concrete functionality
-     * depends on the current keyboard focus in Bitwig Studio.
+     * depends on the current keyboard focus in the DAW.
      */
     void arrowKeyDown ();
 
 
     /**
      * Equivalent to an Enter key stroke on the computer keyboard. The concrete functionality
-     * depends on the current keyboard focus in Bitwig Studio.
+     * depends on the current keyboard focus in the DAW.
      */
     void enter ();
 
 
     /**
      * Equivalent to an Escape key stroke on the computer keyboard. The concrete functionality
-     * depends on the current keyboard focus in Bitwig Studio.
+     * depends on the current keyboard focus in the DAW.
      */
     void escape ();
-
-
-    /**
-     * Invokes the action for the given action identifier.
-     *
-     * @param id the action identifier string, must not be `null`
-     */
-    void invokeAction (final String id);
 
 
     /**
@@ -223,4 +215,40 @@ public interface IApplication extends ObserverManagement
      * @param active Current project's engine active.
      */
     void setEngineActive (final boolean active);
+
+
+    /**
+     * Zoom out in the arranger.
+     */
+    void zoomOut ();
+
+
+    /**
+     * Zoom in in the arranger.
+     */
+    void zoomIn ();
+
+
+    /**
+     * Decrease the track height.
+     */
+    void decTrackHeight ();
+
+
+    /**
+     * Increase the track height.
+     */
+    void incTrackHeight ();
+
+
+    /**
+     * Slices the currently selected audio clip to a new sampler instance.
+     */
+    void sliceToSampler ();
+
+
+    /**
+     * Slices the currently selected audio clip to a new drum machine instance.
+     */
+    void sliceToDrumMachine ();
 }

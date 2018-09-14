@@ -36,11 +36,11 @@ public class CommandSlot
     };
 
     /** The CC type. */
-    public static int              TYPE_CC              = 0;
+    public static final int        TYPE_CC              = 0;
     /** The note type. */
-    public static int              TYPE_NOTE            = 1;
+    public static final int        TYPE_NOTE            = 1;
     /** The program change type. */
-    public static int              TYPE_PROGRAM_CHANGE  = 2;
+    public static final int        TYPE_PROGRAM_CHANGE  = 2;
 
     /** The (CC, note or PC) number options. */
     public static final String []  OPTIONS_NUMBER       = new String [128];
@@ -55,21 +55,23 @@ public class CommandSlot
             OPTIONS_MIDI_CHANNEL[i] = Integer.toString (i + 1);
     }
 
-    private static final String [] NAMES       = FlexiCommand.getNames ();
+    private static final String []       NAMES       = FlexiCommand.getNames ();
 
-    private final IEnumSetting     typeSetting;
-    private final IEnumSetting     numberSetting;
-    private final IEnumSetting     midiChannelSetting;
-    private final IEnumSetting     functionSetting;
-    private final IEnumSetting     knobModeSetting;
-    private final IEnumSetting     sendValueSetting;
+    private final IEnumSetting           typeSetting;
+    private final IEnumSetting           numberSetting;
+    private final IEnumSetting           midiChannelSetting;
+    private final IEnumSetting           functionSetting;
+    private final IEnumSetting           knobModeSetting;
+    private final IEnumSetting           sendValueSetting;
 
-    private int                    type        = 0;
-    private int                    number      = 0;
-    private int                    midiChannel = 0;
-    private int                    knobMode    = 0;
-    private FlexiCommand           command     = FlexiCommand.OFF;
-    private boolean                sendValue;
+    private int                          type        = 0;
+    private int                          number      = 0;
+    private int                          midiChannel = 0;
+    private int                          knobMode    = 0;
+    private FlexiCommand                 command     = FlexiCommand.OFF;
+    private boolean                      sendValue;
+
+    private IValueObserver<FlexiCommand> commandObserver;
 
 
     /**
@@ -91,13 +93,8 @@ public class CommandSlot
         this.midiChannelSetting.addValueObserver (value -> this.midiChannel = AbstractConfiguration.lookupIndex (OPTIONS_MIDI_CHANNEL, value));
 
         this.knobModeSetting.addValueObserver (value -> {
-            final int km = AbstractConfiguration.lookupIndex (OPTIONS_KNOBMODE, value);
-            this.knobMode = km;
-            if (this.command.isTrigger () && km > 0)
-            {
-                this.knobMode = 0;
-                this.knobModeSetting.set (OPTIONS_KNOBMODE[0]);
-            }
+            this.knobMode = AbstractConfiguration.lookupIndex (OPTIONS_KNOBMODE, value);
+            this.fixKnobMode ();
         });
 
         this.typeSetting.addValueObserver (value -> {
@@ -108,14 +105,25 @@ public class CommandSlot
         this.functionSetting.addValueObserver (value -> {
             this.setVisibility (!NAMES[0].equals (value));
             this.command = FlexiCommand.lookupByName (value);
-            if (this.command.isTrigger () && this.knobMode > 0)
-            {
-                this.knobMode = 0;
-                this.knobModeSetting.set (OPTIONS_KNOBMODE[0]);
-            }
+            this.fixKnobMode ();
+            if (this.commandObserver != null)
+                this.commandObserver.update (this.command);
         });
 
         this.sendValueSetting.addValueObserver (value -> this.sendValue = AbstractConfiguration.lookupIndex (AbstractConfiguration.ON_OFF_OPTIONS, value) > 0);
+    }
+
+
+    /**
+     * Always set the knob mode to absolute for trigger commands.
+     */
+    protected void fixKnobMode ()
+    {
+        if (this.command.isTrigger () && this.knobMode > 0)
+        {
+            this.knobMode = 0;
+            this.knobModeSetting.set (OPTIONS_KNOBMODE[0]);
+        }
     }
 
 
@@ -198,6 +206,17 @@ public class CommandSlot
     public void addTypeValueObserver (final IValueObserver<String> observer)
     {
         this.typeSetting.addValueObserver (observer);
+    }
+
+
+    /**
+     * Sets the command observer.
+     *
+     * @param observer The observer
+     */
+    public void setCommandObserver (final IValueObserver<FlexiCommand> observer)
+    {
+        this.commandObserver = observer;
     }
 
 

@@ -2,15 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.mcu.command.trigger;
+package de.mossgrabers.controller.mcu.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.mcu.MCUConfiguration;
+import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
+import de.mossgrabers.controller.mcu.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.mcu.MCUConfiguration;
-import de.mossgrabers.mcu.controller.MCUControlSurface;
-import de.mossgrabers.mcu.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -23,10 +23,10 @@ public class KeyCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCon
     /** The direction of the cursor. */
     public enum Key
     {
-        /** The enter key. */
-        ENTER,
-        /** The escape key. */
-        ESCAPE
+    /** The enter key. */
+    ENTER,
+    /** The escape key. */
+    ESCAPE
     }
 
     protected Key key;
@@ -57,7 +57,7 @@ public class KeyCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCon
         switch (this.key)
         {
             case ENTER:
-                if (modeManager.isActiveMode (Modes.MODE_BROWSER))
+                if (modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
                 {
                     this.model.getBrowser ().stopBrowsing (true);
                     modeManager.restoreMode ();
@@ -67,7 +67,7 @@ public class KeyCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCon
                 break;
 
             case ESCAPE:
-                if (modeManager.isActiveMode (Modes.MODE_BROWSER))
+                if (modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
                 {
                     this.model.getBrowser ().stopBrowsing (false);
                     modeManager.restoreMode ();

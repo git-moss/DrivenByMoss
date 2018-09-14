@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.osc;
 
-import de.mossgrabers.controller.osc.protocol.KeyManager;
 import de.mossgrabers.controller.osc.protocol.OSCParser;
 import de.mossgrabers.controller.osc.protocol.OSCWriter;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -15,10 +14,12 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.KeyManager;
 
 
 /**
@@ -70,11 +71,21 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, false, 8, 8, 8, 16);
-        this.keyManager = new KeyManager (this.model);
+        final ModelSetup ms = new ModelSetup ();
+        ms.setHasFlatTrackList (false);
+        ms.setNumMarkers (8);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createObservers ()
+    {
         final ITrackBank tb = this.model.getTrackBank ();
-        tb.addNoteObserver (this.keyManager);
-        tb.addTrackSelectionObserver ( (final int index, final boolean isSelected) -> this.keyManager.clearPressedKeys ());
+        for (int i = 0; i < tb.getPageSize (); i++)
+            tb.getItem (i).addNoteObserver (this.keyManager);
+        tb.addSelectionObserver ( (final int index, final boolean isSelected) -> this.keyManager.clearPressedKeys ());
     }
 
 
@@ -83,14 +94,18 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     protected void createSurface ()
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
-        final IMidiInput midiInput = midiAccess.createInput ("OSC");
+        final IMidiInput input = midiAccess.createInput ("OSC");
+
+        final OSCControlSurface surface = new OSCControlSurface (this.model.getHost (), this.configuration, this.colorManager, input);
+        this.surfaces.add (surface);
+        this.keyManager = new KeyManager (this.model, surface.getPadGrid ());
 
         // Send OSC messages
         final IOpenSoundControlServer oscServer = this.host.connectToOSCServer (this.configuration.getSendHost (), this.configuration.getSendPort ());
         this.writer = new OSCWriter (this.host, this.model, oscServer, this.keyManager, this.configuration);
 
         // Receive OSC messages
-        this.host.createOSCServer (new OSCParser (this.host, this.model, this.configuration, this.writer, midiInput, this.keyManager), this.configuration.getReceivePort ());
+        this.host.createOSCServer (new OSCParser (this.host, surface, this.model, this.configuration, this.writer, input, this.keyManager), this.configuration.getReceivePort ());
     }
 
 
@@ -100,5 +115,13 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     {
         // Initial flush of the whole DAW state
         this.host.scheduleTask ( () -> this.writer.flush (true), 1000);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
+    {
+        // Not used
     }
 }

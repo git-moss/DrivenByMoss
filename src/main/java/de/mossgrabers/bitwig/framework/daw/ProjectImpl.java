@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.framework.daw.IProject;
 
+import com.bitwig.extension.controller.api.Action;
 import com.bitwig.extension.controller.api.Application;
 import com.bitwig.extension.controller.api.Project;
 
@@ -73,5 +74,15 @@ public class ProjectImpl implements IProject
     public void createSceneFromPlayingLauncherClips ()
     {
         this.project.createSceneFromPlayingLauncherClips ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void save ()
+    {
+        final Action action = this.application.getAction ("Save");
+        if (action != null)
+            action.invoke ();
     }
 }

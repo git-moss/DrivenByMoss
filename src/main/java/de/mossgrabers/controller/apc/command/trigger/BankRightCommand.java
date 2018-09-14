@@ -2,13 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.command.trigger;
+package de.mossgrabers.controller.apc.command.trigger;
 
-import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.apc.APCConfiguration;
+import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -35,7 +35,7 @@ public class BankRightCommand extends AbstractTriggerCommand<APCControlSurface, 
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCursorDevice ().nextParameterPage ();
+            this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
     }
 
 

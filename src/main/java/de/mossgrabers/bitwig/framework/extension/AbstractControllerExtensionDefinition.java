@@ -6,15 +6,24 @@ package de.mossgrabers.bitwig.framework.extension;
 
 import de.mossgrabers.framework.controller.IControllerDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.framework.usb.UsbMatcher;
+import de.mossgrabers.framework.usb.UsbMatcher.EndpointMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.ControllerExtension;
 import com.bitwig.extension.controller.ControllerExtensionDefinition;
+import com.bitwig.extension.controller.HardwareDeviceMatcherList;
+import com.bitwig.extension.controller.UsbDeviceMatcher;
+import com.bitwig.extension.controller.UsbEndpointMatcher;
+import com.bitwig.extension.controller.UsbInterfaceMatcher;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.UsbTransferType;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -92,7 +101,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public int getRequiredAPIVersion ()
     {
-        return 6;
+        return 7;
     }
 
 
@@ -124,6 +133,34 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
 
     /** {@inheritDoc} */
     @Override
+    public void listHardwareDevices (final HardwareDeviceMatcherList matchers)
+    {
+        // Are there any USB devices configured?
+        final UsbMatcher matcher = this.definition.claimUSBDevice ();
+        if (matcher == null)
+            return;
+
+        final List<EndpointMatcher> endpoints = matcher.getEndpoints ();
+        final int size = endpoints.size ();
+        final UsbInterfaceMatcher [] interfaceMatchers = new UsbInterfaceMatcher [size];
+        for (int i = 0; i < size; i++)
+        {
+            final EndpointMatcher endpoint = endpoints.get (i);
+            final byte [] addresses = endpoint.getEndpointAddresses ();
+            final boolean [] isBulk = endpoint.getEndpointIsBulk ();
+            final UsbEndpointMatcher [] endpointMatchers = new UsbEndpointMatcher [addresses.length];
+            for (int j = 0; j < addresses.length; j++)
+                endpointMatchers[j] = createEndpointMatcher (addresses[j], isBulk[j]);
+
+            interfaceMatchers[i] = createInterfaceMatcher (endpoint.getInterfaceNumber (), endpointMatchers);
+        }
+        final String name = this.getHardwareVendor () + " " + this.getHardwareModel ();
+        matchers.add (createDeviceMatcher (name, matcher.getVendor (), matcher.getProductID (), interfaceMatchers));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public ControllerExtension createInstance (final ControllerHost host)
     {
         return new GenericControllerExtension (this.getControllerSetup (host), this, host);
@@ -137,4 +174,24 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
      * @return The controller setup
      */
     protected abstract IControllerSetup getControllerSetup (final ControllerHost host);
+
+
+    private static UsbDeviceMatcher createDeviceMatcher (final String name, final short vendor, final short productID, final UsbInterfaceMatcher... interfaceMatchers)
+    {
+        final String expression = "idVendor == 0x" + StringUtils.toHexStr (vendor) + " && idProduct == 0x" + StringUtils.toHexStr (productID);
+        return new UsbDeviceMatcher (name, expression, interfaceMatchers);
+    }
+
+
+    private static UsbInterfaceMatcher createInterfaceMatcher (final byte interfaceNumber, final UsbEndpointMatcher... endpointMatcher)
+    {
+        final String interfaceExpression = "bInterfaceNumber == 0x" + StringUtils.toHexStr (Byte.toUnsignedInt (interfaceNumber));
+        return new UsbInterfaceMatcher (interfaceExpression, endpointMatcher);
+    }
+
+
+    private static UsbEndpointMatcher createEndpointMatcher (final byte endpoint, final boolean isBulk)
+    {
+        return new UsbEndpointMatcher (isBulk ? UsbTransferType.BULK : UsbTransferType.INTERRUPT, endpoint);
+    }
 }

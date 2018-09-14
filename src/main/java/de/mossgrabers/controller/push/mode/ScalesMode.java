@@ -2,20 +2,20 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode;
+package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.DisplayMessage;
-import de.mossgrabers.push.controller.PushColors;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.controller.PushDisplay;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -134,7 +134,7 @@ public class ScalesMode extends BaseMode
         final int offset = this.scales.getScaleOffset ();
         final Scale [] scaleValues = Scale.values ();
         final String rangeText = this.scales.getRangeText ();
-        d.setBlock (0, 0, PushDisplay.RIGHT_ARROW + scale.getName ()).clearBlock (0, 1).clearBlock (0, 2).setBlock (0, 3, rangeText).done (0);
+        d.setBlock (0, 0, PushDisplay.SELECT_ARROW + scale.getName ()).clearBlock (0, 1).clearBlock (0, 2).setBlock (0, 3, rangeText).done (0);
         int pos = scale.ordinal () + 1;
         final String name1 = pos < scaleValues.length ? scaleValues[pos].getName () : "";
         d.setBlock (1, 0, " " + name1).clearBlock (1, 1).clearBlock (1, 2).clearBlock (1, 3).done (1);
@@ -142,13 +142,13 @@ public class ScalesMode extends BaseMode
         final String name2 = pos < scaleValues.length ? scaleValues[pos].getName () : "";
         d.setCell (2, 0, " " + name2);
         for (int i = 0; i < 6; i++)
-            d.setCell (2, i + 1, "  " + (offset == i ? PushDisplay.RIGHT_ARROW : " ") + Scales.BASES[i]);
+            d.setCell (2, i + 1, "  " + (offset == i ? PushDisplay.SELECT_ARROW : " ") + Scales.BASES[i]);
         d.clearCell (2, 7).done (2);
         pos++;
         final String name3 = pos < scaleValues.length ? scaleValues[pos].getName () : "";
         d.setCell (3, 0, " " + name3);
         for (int i = 6; i < 12; i++)
-            d.setCell (3, i - 5, "  " + (offset == i ? PushDisplay.RIGHT_ARROW : " ") + Scales.BASES[i]);
+            d.setCell (3, i - 5, "  " + (offset == i ? PushDisplay.SELECT_ARROW : " ") + Scales.BASES[i]);
         d.setCell (3, 7, this.scales.isChromatic () ? "Chromatc" : "In Key").done (3);
     }
 
@@ -161,8 +161,7 @@ public class ScalesMode extends BaseMode
         final int offset = this.scales.getScaleOffset ();
         final Scale [] scaleValues = Scale.values ();
         final String rangeText = this.scales.getRangeText ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         final String [] items = new String [6];
         final boolean [] selected = new boolean [6];
         for (int i = 0; i < 6; i++)
@@ -175,7 +174,7 @@ public class ScalesMode extends BaseMode
         for (int i = 0; i < 6; i++)
             message.addOptionElement (i == 3 ? "Note range: " + rangeText : "", Scales.BASES[6 + i], offset == 6 + i, "", Scales.BASES[i], offset == i, false);
         message.addOptionElement ("", this.scales.isChromatic () ? "Chromatc" : "In Key", this.scales.isChromatic (), "", "", false, false);
-        display.send (message);
+        message.send ();
     }
 
 

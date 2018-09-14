@@ -23,6 +23,7 @@ import de.mossgrabers.controller.push.command.trigger.OctaveCommand;
 import de.mossgrabers.controller.push.command.trigger.PageLeftCommand;
 import de.mossgrabers.controller.push.command.trigger.PageRightCommand;
 import de.mossgrabers.controller.push.command.trigger.PanSendCommand;
+import de.mossgrabers.controller.push.command.trigger.PushBrowserCommand;
 import de.mossgrabers.controller.push.command.trigger.PushCursorCommand;
 import de.mossgrabers.controller.push.command.trigger.PushQuantizeCommand;
 import de.mossgrabers.controller.push.command.trigger.RasteredKnobCommand;
@@ -45,12 +46,14 @@ import de.mossgrabers.controller.push.mode.FixedMode;
 import de.mossgrabers.controller.push.mode.FrameMode;
 import de.mossgrabers.controller.push.mode.GrooveMode;
 import de.mossgrabers.controller.push.mode.InfoMode;
+import de.mossgrabers.controller.push.mode.MarkersMode;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.controller.push.mode.NoteViewSelectMode;
 import de.mossgrabers.controller.push.mode.RibbonMode;
 import de.mossgrabers.controller.push.mode.ScaleLayoutMode;
 import de.mossgrabers.controller.push.mode.ScalesMode;
+import de.mossgrabers.controller.push.mode.SessionMode;
 import de.mossgrabers.controller.push.mode.SessionViewSelectMode;
 import de.mossgrabers.controller.push.mode.SetupMode;
 import de.mossgrabers.controller.push.mode.TransportMode;
@@ -91,7 +94,6 @@ import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
-import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.DuplicateCommand;
@@ -113,12 +115,14 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.IChannelBank;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
@@ -168,7 +172,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.updateButtons ();
         final PushControlSurface surface = this.getSurface ();
-        this.updateMode (surface.getModeManager ().getActiveModeId ());
+        this.updateMode (surface.getModeManager ().getActiveOrTempModeId ());
 
         final View activeView = surface.getViewManager ().getActiveView ();
         if (activeView == null)
@@ -183,20 +187,28 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, this.isPush2 ? 48 : 16, this.isPush2 ? 48 : 16, false, -1, -1, -1, -1);
+        final ModelSetup ms = new ModelSetup ();
+        if (this.isPush2)
+        {
+            ms.setNumFilterColumnEntries (48);
+            ms.setNumResults (48);
+        }
+        ms.setNumMarkers (8);
+        ms.setHasFlatTrackList (false);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
-        trackBank.addTrackSelectionObserver (this::handleTrackChange);
-        final IChannelBank effectTrackBank = this.model.getEffectTrackBank ();
+        trackBank.addSelectionObserver (this::handleTrackChange);
+        final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
         if (effectTrackBank != null)
-            effectTrackBank.addTrackSelectionObserver (this::handleTrackChange);
-        this.model.getMasterTrack ().addTrackSelectionObserver ( (index, isSelected) -> {
+            effectTrackBank.addSelectionObserver (this::handleTrackChange);
+        this.model.getMasterTrack ().addSelectionObserver ( (index, isSelected) -> {
             final PushControlSurface surface = this.getSurface ();
             final ModeManager modeManager = surface.getModeManager ();
             if (isSelected)
                 modeManager.setActiveMode (Modes.MODE_MASTER);
-            else if (modeManager.isActiveMode (Modes.MODE_MASTER))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_MASTER))
                 modeManager.restoreMode ();
         });
     }
@@ -219,9 +231,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
     protected PushDisplay createDisplay (final IMidiOutput output)
     {
-        final PushDisplay display = new PushDisplay (this.model.getHost (), this.isPush2, this.valueChanger.getUpperBound (), output);
-        display.setCommunicationPort (this.configuration.getSendPort ());
-        return display;
+        return new PushDisplay (this.model.getHost (), this.isPush2, this.valueChanger.getUpperBound (), output, this.configuration);
     }
 
 
@@ -262,6 +272,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.MODE_RIBBON, new RibbonMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_GROOVE, new GrooveMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_VIEW_SELECT, new NoteViewSelectMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_MARKERS, new MarkersMode (surface, this.model));
 
         modeManager.registerMode (Modes.MODE_AUTOMATION, new AutomationMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_TRANSPORT, new TransportMode (surface, this.model));
@@ -292,7 +303,10 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             modeManager.registerMode (Modes.MODE_CONFIGURATION, new ConfigurationMode (surface, this.model));
 
         if (this.host.hasClips ())
+        {
+            modeManager.registerMode (Modes.MODE_SESSION, new SessionMode (surface, this.model));
             modeManager.registerMode (Modes.MODE_SESSION_VIEW_SELECT, new SessionViewSelectMode (surface, this.model));
+        }
     }
 
 
@@ -324,10 +338,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             this.configuration.addSettingObserver (PushConfiguration.PAD_THRESHOLD, surface::sendPadSensitivity);
         }
 
-        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> {
-            this.updateMode (null);
-            this.updateMode (newMode);
-        });
+        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateMode (newMode));
 
         surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> {
             // Update button states
@@ -345,7 +356,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         });
 
         this.configuration.addSettingObserver (PushConfiguration.RIBBON_MODE, this::updateRibbonMode);
-        this.configuration.addSettingObserver (PushConfiguration.SEND_PORT, () -> ((PushDisplay) surface.getDisplay ()).setCommunicationPort (this.configuration.getSendPort ()));
         this.configuration.addSettingObserver (PushConfiguration.DEBUG_MODE, () -> {
             final ModeManager modeManager = surface.getModeManager ();
             final Integer debugMode = this.configuration.getDebugMode ();
@@ -353,6 +363,30 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 modeManager.setActiveMode (debugMode);
             else
                 this.host.error ("Mode " + debugMode + " not registered.");
+        });
+        this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, () -> {
+            this.getSurface ().getDisplay ().showDebugWindow ();
+        });
+
+        this.configuration.addSettingObserver (PushConfiguration.DISPLAY_SCENES_CLIPS, () -> {
+            if (Views.isSessionView (this.getSurface ().getViewManager ().getActiveViewId ()))
+            {
+                final ModeManager modeManager = this.getSurface ().getModeManager ();
+                if (modeManager.isActiveMode (Modes.MODE_SESSION))
+                    modeManager.restoreMode ();
+                else
+                    modeManager.setActiveMode (Modes.MODE_SESSION);
+            }
+        });
+
+        this.configuration.addSettingObserver (PushConfiguration.SESSION_VIEW, () -> {
+            final ViewManager viewManager = this.getSurface ().getViewManager ();
+            if (!Views.isSessionView (viewManager.getActiveViewId ()))
+                return;
+            if (this.configuration.isScenesClipViewSelected ())
+                viewManager.setActiveView (Views.VIEW_SCENE_PLAY);
+            else
+                viewManager.setActiveView (Views.VIEW_SESSION);
         });
 
         this.createScaleObservers (this.configuration);
@@ -403,7 +437,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addTriggerCommand (Commands.COMMAND_DOUBLE, PushControlSurface.PUSH_BUTTON_DOUBLE, new DoubleCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_UNDO, PushControlSurface.PUSH_BUTTON_UNDO, new UndoCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_DEVICE, PushControlSurface.PUSH_BUTTON_DEVICE, new DeviceCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_BROWSE, PushControlSurface.PUSH_BUTTON_BROWSE, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_BROWSE, PushControlSurface.PUSH_BUTTON_BROWSE, new PushBrowserCommand (Modes.MODE_BROWSER, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_TRACK, PushControlSurface.PUSH_BUTTON_TRACK, new TrackCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_CLIP, PushControlSurface.PUSH_BUTTON_CLIP, new ClipCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_VOLUME, PushControlSurface.PUSH_BUTTON_VOLUME, new VolumeCommand (this.model, surface));
@@ -481,8 +515,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addNoteCommand (Commands.CONT_COMMAND_KNOB6_TOUCH, PushControlSurface.PUSH_KNOB6_TOUCH, new KnobRowTouchModeCommand<> (5, this.model, surface));
         this.addNoteCommand (Commands.CONT_COMMAND_KNOB7_TOUCH, PushControlSurface.PUSH_KNOB7_TOUCH, new KnobRowTouchModeCommand<> (6, this.model, surface));
         this.addNoteCommand (Commands.CONT_COMMAND_KNOB8_TOUCH, PushControlSurface.PUSH_KNOB8_TOUCH, new KnobRowTouchModeCommand<> (7, this.model, surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, PushControlSurface.PUSH_SMALL_KNOB1_TOUCH, new SmallKnobTouchCommand (this.model, surface));
-        this.addNoteCommand (Commands.CONT_COMMAND_PLAYCURSOR_TOUCH, PushControlSurface.PUSH_SMALL_KNOB2_TOUCH, new SmallKnobTouchCommand (this.model, surface));
+        this.addNoteCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, PushControlSurface.PUSH_SMALL_KNOB1_TOUCH, new SmallKnobTouchCommand (this.model, surface, true));
+        this.addNoteCommand (Commands.CONT_COMMAND_PLAYCURSOR_TOUCH, PushControlSurface.PUSH_SMALL_KNOB2_TOUCH, new SmallKnobTouchCommand (this.model, surface, false));
         this.addNoteCommand (Commands.CONT_COMMAND_CONFIGURE_PITCHBEND, PushControlSurface.PUSH_RIBBON_TOUCH, new ConfigurePitchbendCommand (this.model, surface));
         this.addNoteCommand (Commands.CONT_COMMAND_MASTERTRACK_TOUCH, PushControlSurface.PUSH_KNOB9_TOUCH, new MastertrackTouchCommand (this.model, surface));
 
@@ -535,16 +569,16 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         if (this.isPush2)
         {
             final ModeManager modeManager = surface.getModeManager ();
-            if (modeManager.isActiveMode (Modes.MODE_DEVICE_LAYER))
+            if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER))
             {
                 final ICursorDevice cd = this.model.getCursorDevice ();
-                final IChannel layer = cd.getSelectedLayerOrDrumPad ();
+                final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, layer != null && layer.isMute () ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, layer != null && layer.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
             }
             else
             {
-                final ITrack selTrack = modeManager.isActiveMode (Modes.MODE_MASTER) ? this.model.getMasterTrack () : this.model.getSelectedTrack ();
+                final ITrack selTrack = modeManager.isActiveOrTempMode (Modes.MODE_MASTER) ? this.model.getMasterTrack () : this.model.getSelectedTrack ();
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_MUTE, selTrack != null && selTrack.isMute () ? PushColors.PUSH_BUTTON_STATE_MUTE_HI : PushColors.PUSH_BUTTON_STATE_MUTE_ON);
                 surface.updateButton (PushControlSurface.PUSH_BUTTON_SOLO, selTrack != null && selTrack.isSolo () ? PushColors.PUSH_BUTTON_STATE_SOLO_HI : PushColors.PUSH_BUTTON_STATE_SOLO_ON);
             }
@@ -581,7 +615,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             ((SceneView) activeView).updateSceneButtons ();
         }
 
-        final ICursorClip clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
+        final INoteClip clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
         surface.updateButton (PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, clip != null && clip.canScrollStepsBackwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         surface.updateButton (PushControlSurface.PUSH_BUTTON_DEVICE_RIGHT, clip != null && clip.canScrollStepsForwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
     }
@@ -618,40 +652,49 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     }
 
 
-    private void updateIndication (final Integer mode)
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
     {
+        if (mode == this.currentMode)
+            return;
+        this.currentMode = mode;
+
         final ITrackBank tb = this.model.getTrackBank ();
-        final IChannelBank tbe = this.model.getEffectTrackBank ();
+        final ITrackBank tbe = this.model.getEffectTrackBank ();
         final PushControlSurface surface = this.getSurface ();
         final boolean isSession = surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isPan = Modes.MODE_PAN.equals (mode);
         final boolean isVolume = Modes.MODE_VOLUME.equals (mode);
+        final boolean isDevice = Modes.isDeviceMode (mode) || Modes.isLayerMode (mode);
 
         tb.setIndication (!isEffect && isSession);
         if (tbe != null)
             tbe.setIndication (isEffect && isSession);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
-        for (int i = 0; i < tb.getNumTracks (); i++)
+        final ITrack selectedTrack = tb.getSelectedItem ();
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+        for (int i = 0; i < tb.getPageSize (); i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
-            final ITrack track = tb.getTrack (i);
+            final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
             track.setPanIndication (!isEffect && (isPan || hasTrackSel));
 
-            for (int j = 0; j < tb.getNumSends (); j++)
-                track.getSend (j).setIndication (!isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
+            final ISendBank sendBank = track.getSendBank ();
+            for (int j = 0; j < sendBank.getPageSize (); j++)
+                sendBank.getItem (j).setIndication (!isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
 
             if (tbe != null)
             {
-                final ITrack fxTrack = tbe.getTrack (i);
+                final ITrack fxTrack = tbe.getItem (i);
                 fxTrack.setVolumeIndication (isEffect);
                 fxTrack.setPanIndication (isEffect && isPan);
             }
 
-            cursorDevice.indicateParameter (i, true);
+            parameterBank.getItem (i).setIndication (isDevice);
         }
     }
 
@@ -682,7 +725,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             }
         }
 
-        if (modeManager.isActiveMode (Modes.MODE_MASTER))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_MASTER))
             modeManager.setActiveMode (Modes.MODE_TRACK);
 
         if (viewManager.isActiveView (Views.VIEW_PLAY))

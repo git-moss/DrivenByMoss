@@ -34,13 +34,12 @@ public class GrooveImpl implements IGroove
     {
         this.groove = host.createGroove ();
 
-        final int maxParameterValue = valueChanger.getUpperBound ();
-        this.parameters[0] = new ParameterImpl (valueChanger, this.groove.getEnabled (), maxParameterValue);
-        this.parameters[1] = new ParameterImpl (valueChanger, this.groove.getShuffleAmount (), maxParameterValue);
-        this.parameters[2] = new ParameterImpl (valueChanger, this.groove.getShuffleRate (), maxParameterValue);
-        this.parameters[3] = new ParameterImpl (valueChanger, this.groove.getAccentAmount (), maxParameterValue);
-        this.parameters[4] = new ParameterImpl (valueChanger, this.groove.getAccentRate (), maxParameterValue);
-        this.parameters[5] = new ParameterImpl (valueChanger, this.groove.getAccentPhase (), maxParameterValue);
+        this.parameters[0] = new ParameterImpl (valueChanger, this.groove.getEnabled (), 0);
+        this.parameters[1] = new ParameterImpl (valueChanger, this.groove.getShuffleAmount (), 1);
+        this.parameters[2] = new ParameterImpl (valueChanger, this.groove.getShuffleRate (), 2);
+        this.parameters[3] = new ParameterImpl (valueChanger, this.groove.getAccentAmount (), 3);
+        this.parameters[4] = new ParameterImpl (valueChanger, this.groove.getAccentRate (), 4);
+        this.parameters[5] = new ParameterImpl (valueChanger, this.groove.getAccentPhase (), 5);
     }
 
 

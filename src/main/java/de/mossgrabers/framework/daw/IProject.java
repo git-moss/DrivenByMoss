@@ -36,4 +36,10 @@ public interface IProject extends ObserverManagement
      * currently playing in the clip launcher.
      */
     void createSceneFromPlayingLauncherClips ();
+
+
+    /**
+     * Save the current project.
+     */
+    void save ();
 }

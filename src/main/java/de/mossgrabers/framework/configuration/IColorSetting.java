@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.configuration;
 
-import de.mossgrabers.framework.ColorEx;
+import de.mossgrabers.framework.controller.color.ColorEx;
 
 
 /**
@@ -12,7 +12,7 @@ import de.mossgrabers.framework.ColorEx;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IColorSetting
+public interface IColorSetting extends ISetting<double []>
 {
     /**
      * Set the RGB color value.
@@ -30,12 +30,4 @@ public interface IColorSetting
      * @param color The color
      */
     void set (ColorEx color);
-
-
-    /**
-     * Add an observer for a change of the value.
-     *
-     * @param observer The observer
-     */
-    void addValueObserver (IValueObserver<double []> observer);
 }

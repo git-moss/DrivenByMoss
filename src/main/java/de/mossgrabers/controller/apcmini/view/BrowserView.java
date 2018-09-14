@@ -2,15 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apcmini.view;
+package de.mossgrabers.controller.apcmini.view;
 
-import de.mossgrabers.apcmini.APCminiConfiguration;
-import de.mossgrabers.apcmini.controller.APCminiColors;
-import de.mossgrabers.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.apcmini.APCminiConfiguration;
+import de.mossgrabers.controller.apcmini.controller.APCminiColors;
+import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.ViewManager;
@@ -89,7 +89,8 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
             return;
         }
 
-        switch (note)
+        int n = this.surface.getPadGrid ().translateToController (note);
+        switch (n)
         {
             // Cancel
             case 0:
@@ -124,9 +125,9 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
         if (velocity == 0)
             return;
 
-        if (note >= 16 && note < 48)
+        if (n >= 16 && n < 48)
         {
-            final int n = note - 16;
+            n -= 16;
             final int row = n / 8;
             final int col = n % 8;
 

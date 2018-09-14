@@ -2,16 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad.command.trigger;
+package de.mossgrabers.controller.launchpad.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.View;
-import de.mossgrabers.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
 /**
@@ -37,15 +37,15 @@ public class LeftCommand extends MetronomeCommand<LaunchpadControlSurface, Launc
     @Override
     public void execute (final ButtonEvent event)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack sel = tb.getSelectedItem ();
         final int index = sel == null ? 0 : sel.getIndex () - 1;
         final View view = this.surface.getViewManager ().getActiveView ();
         if (index == -1 || this.surface.isShiftPressed ())
         {
-            if (!tb.canScrollTracksUp ())
+            if (!tb.canScrollBackwards ())
                 return;
-            tb.scrollTracksPageUp ();
+            tb.scrollPageBackwards ();
             final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
             this.surface.scheduleTask ( () -> view.selectTrack (newSel), 75);
             return;

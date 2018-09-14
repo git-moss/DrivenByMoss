@@ -1,7 +1,15 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.framework.daw.data;
+
+import de.mossgrabers.framework.daw.EmptyBank;
+import de.mossgrabers.framework.daw.ISendBank;
+import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.NoteObserver;
+import de.mossgrabers.framework.daw.resource.ChannelType;
+
 
 /**
  * Default data for an empty track.
@@ -10,6 +18,13 @@ package de.mossgrabers.framework.daw.data;
  */
 public class EmptyTrackData implements ITrack
 {
+    /** The singleton. */
+    public static final ITrack INSTANCE = new EmptyTrackData ();
+
+    private final ISlotBank    slotBank = new EmptySlotBank ();
+    private final ISendBank    sendBank = new EmptySendBank ();
+
+
     /** {@inheritDoc} */
     @Override
     public boolean doesExist ()
@@ -20,9 +35,9 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public String getType ()
+    public ChannelType getType ()
     {
-        return "";
+        return ChannelType.UNKNOWN;
     }
 
 
@@ -116,6 +131,14 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
+    public String getName (final int limit)
+    {
+        return "";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getVolumeStr ()
     {
         return "";
@@ -201,7 +224,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public int getNumSends ()
+    public int getVuLeft ()
     {
         return 0;
     }
@@ -209,25 +232,9 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public ISend getSend (final int sendIndex)
-    {
-        return null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getNumSlots ()
+    public int getVuRight ()
     {
         return 0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISlot getSlot (final int slotIndex)
-    {
-        return null;
     }
 
 
@@ -473,7 +480,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void makeVisible ()
+    public void remove ()
     {
         // Intentionally empty
     }
@@ -482,14 +489,6 @@ public class EmptyTrackData implements ITrack
     /** {@inheritDoc} */
     @Override
     public void duplicate ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectAndMakeVisible ()
     {
         // Intentionally empty
     }
@@ -538,33 +537,6 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public ISlot [] getSelectedSlots ()
-    {
-        // Intentionally empty
-        return null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISlot getSelectedSlot ()
-    {
-        // Intentionally empty
-        return null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISlot getEmptySlot (final int startFrom)
-    {
-        // Intentionally empty
-        return null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void stop ()
     {
         // Intentionally empty
@@ -581,7 +553,47 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void scrollClipPageForwards ()
+    public ISlotBank getSlotBank ()
+    {
+        // Intentionally empty
+        return this.slotBank;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISendBank getSendBank ()
+    {
+        // Intentionally empty
+        return this.sendBank;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void enter ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addNoteObserver (final NoteObserver observer)
+    {
+        // Intentionally empty
+    }
+
+    class EmptySlotBank extends EmptyBank<ISlot> implements ISlotBank
+    {
+        @Override
+        public ISlot getEmptySlot (final int startFrom)
+        {
+            return null;
+        }
+    }
+
+    class EmptySendBank extends EmptyBank<ISend> implements ISendBank
     {
         // Intentionally empty
     }

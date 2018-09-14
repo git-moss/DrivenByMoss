@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.resource;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 
 /**
- * Stores information about the Bitwig devices.
+ * Stores information about the device types.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -42,6 +42,8 @@ public class DeviceTypes
         DEVICES.put ("Bit-8", TypeIcon.ICON_WAVE);
         DEVICES.put ("Blur", TypeIcon.ICON_WAVE);
         DEVICES.put ("Chain", TypeIcon.ICON_FOLDER);
+        DEVICES.put ("Channel Filter", TypeIcon.ICON_NOTE);
+        DEVICES.put ("Channel Map", TypeIcon.ICON_NOTE);
         DEVICES.put ("Chorus", TypeIcon.ICON_WAVE);
         DEVICES.put ("Comb", TypeIcon.ICON_WAVE);
         DEVICES.put ("Compressor", TypeIcon.ICON_WAVE);
@@ -69,6 +71,7 @@ public class DeviceTypes
         DEVICES.put ("FM-4", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Freq Shifter", TypeIcon.ICON_WAVE);
         DEVICES.put ("FX Layer", TypeIcon.ICON_FOLDER);
+        DEVICES.put ("FX Selector", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Gate", TypeIcon.ICON_WAVE);
         DEVICES.put ("HW Clock Out", TypeIcon.ICON_IO);
         DEVICES.put ("HW CV Instrument", TypeIcon.ICON_IO);
@@ -76,6 +79,7 @@ public class DeviceTypes
         DEVICES.put ("HW FX", TypeIcon.ICON_IO);
         DEVICES.put ("HW Instrument", TypeIcon.ICON_IO);
         DEVICES.put ("Instrument Layer", TypeIcon.ICON_FOLDER);
+        DEVICES.put ("Instrument Selector", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Ladder", TypeIcon.ICON_WAVE);
         DEVICES.put ("LFO MOD", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Mid-Side Split", TypeIcon.ICON_FOLDER);
@@ -87,6 +91,7 @@ public class DeviceTypes
         DEVICES.put ("Multiband FX-3", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Note Echo", TypeIcon.ICON_NOTE);
         DEVICES.put ("Note Filter", TypeIcon.ICON_NOTE);
+        DEVICES.put ("Note FX Layer", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Note Harmonizer", TypeIcon.ICON_NOTE);
         DEVICES.put ("Note Latch", TypeIcon.ICON_NOTE);
         DEVICES.put ("Note Length", TypeIcon.ICON_NOTE);
@@ -97,6 +102,7 @@ public class DeviceTypes
         DEVICES.put ("Organ", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Oscilloscope", TypeIcon.ICON_ANALYSIS);
         DEVICES.put ("Peak Limiter", TypeIcon.ICON_WAVE);
+        DEVICES.put ("Phase-4", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Phaser", TypeIcon.ICON_WAVE);
         DEVICES.put ("Pitch Shifter", TypeIcon.ICON_WAVE);
         DEVICES.put ("Polysynth", TypeIcon.ICON_INSTRUMENT);

@@ -2,21 +2,20 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.view;
+package de.mossgrabers.controller.push.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.push.controller.PushColors;
-import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractPlayView;
 
 
 /**
- * The play view.
+ * The Piano view.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -45,17 +44,14 @@ public class PianoView extends PlayView
             return;
         }
 
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int red = isPush2 ? PushColors.PUSH2_COLOR2_RED_HI : PushColors.PUSH1_COLOR2_RED_HI;
-        final int green = isPush2 ? PushColors.PUSH2_COLOR2_GREEN_HI : PushColors.PUSH1_COLOR2_GREEN_HI;
-        final int white = isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE;
-        final int off = isPush2 ? PushColors.PUSH2_COLOR2_BLACK : PushColors.PUSH1_COLOR2_BLACK;
-
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
-        final double [] color = selectedTrack.getColor ();
-        final int trackColor = this.model.getColorManager ().getColor (BitwigColors.getColorIndex (color[0], color[1], color[2]));
-
+        final ColorManager colorManager = this.model.getColorManager ();
         final boolean isRecording = this.model.hasRecordingState ();
+        final ITrack track = this.model.getSelectedTrack ();
+        final int playKeyColor = colorManager.getColor (isRecording ? AbstractPlayView.COLOR_RECORD : AbstractPlayView.COLOR_PLAY);
+        final int whiteKeyColor = colorManager.getColor (Scales.SCALE_COLOR_NOTE);
+        final int blackKeyColor = colorManager.getColor (replaceOctaveColorWithTrackColor (track, Scales.SCALE_COLOR_OCTAVE));
+        final int offKeyColor = colorManager.getColor (Scales.SCALE_COLOR_OFF);
+
         for (int i = 0; i < 8; i++)
         {
             if (i % 2 == 0)
@@ -63,7 +59,7 @@ public class PianoView extends PlayView
                 for (int j = 0; j < 8; j++)
                 {
                     final int n = 36 + 8 * i + j;
-                    gridPad.light (n, this.pressedKeys[n] > 0 ? isRecording ? red : green : white, -1, false);
+                    gridPad.light (n, this.keyManager.isKeyPressed (n) ? playKeyColor : whiteKeyColor, -1, false);
                 }
             }
             else
@@ -72,27 +68,11 @@ public class PianoView extends PlayView
                 {
                     final int n = 36 + 8 * i + j;
                     if (j == 0 || j == 3 || j == 7)
-                        gridPad.light (n, off, -1, false);
+                        gridPad.light (n, offKeyColor, -1, false);
                     else
-                        gridPad.light (n, this.pressedKeys[n] > 0 ? isRecording ? red : green : trackColor, -1, false);
+                        gridPad.light (n, this.keyManager.isKeyPressed (n) ? playKeyColor : blackKeyColor, -1, false);
                 }
             }
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onGridNote (final int note, final int velocity)
-    {
-        if (!this.model.canSelectedTrackHoldNotes () || this.noteMap[note] == -1)
-            return;
-
-        // Mark selected notes
-        for (int i = 0; i < 128; i++)
-        {
-            if (this.noteMap[note] == this.noteMap[i])
-                this.pressedKeys[i] = velocity;
         }
     }
 
@@ -103,10 +83,10 @@ public class PianoView extends PlayView
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.clearPressedKeys ();
+        this.keyManager.clearPressedKeys ();
         this.scales.decPianoOctave ();
         this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.scales.getPianoRangeText (), true, true);
+        this.surface.getDisplay ().notify (this.scales.getPianoRangeText ());
     }
 
 
@@ -116,10 +96,10 @@ public class PianoView extends PlayView
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.clearPressedKeys ();
+        this.keyManager.clearPressedKeys ();
         this.scales.incPianoOctave ();
         this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.scales.getPianoRangeText (), true, true);
+        this.surface.getDisplay ().notify (this.scales.getPianoRangeText ());
     }
 
 
@@ -127,8 +107,7 @@ public class PianoView extends PlayView
     @Override
     public void updateNoteMapping ()
     {
-        // Workaround: https://github.com/git-moss/Push4Bitwig/issues/7
-        this.surface.scheduleTask (this::delayedUpdateNoteMapping, 100);
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getPianoMatrix () : EMPTY_TABLE);
     }
 
 
@@ -140,12 +119,5 @@ public class PianoView extends PlayView
         final int octave = this.scales.getPianoOctave ();
         this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, octave < Scales.PIANO_OCTAVE_RANGE ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, octave > -Scales.PIANO_OCTAVE_RANGE ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-    }
-
-
-    private void delayedUpdateNoteMapping ()
-    {
-        this.noteMap = this.model.canSelectedTrackHoldNotes () ? this.scales.getPianoMatrix () : Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.noteMap);
     }
 }

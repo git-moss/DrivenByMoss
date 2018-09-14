@@ -2,24 +2,26 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.sl.view;
+package de.mossgrabers.controller.sl.view;
 
-import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.controller.sl.SLConfiguration;
+import de.mossgrabers.controller.sl.command.trigger.ButtonRowSelectCommand;
+import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
+import de.mossgrabers.controller.sl.controller.SLControlSurface;
+import de.mossgrabers.controller.sl.mode.Modes;
+import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
-import de.mossgrabers.sl.SLConfiguration;
-import de.mossgrabers.sl.command.trigger.ButtonRowSelectCommand;
-import de.mossgrabers.sl.command.trigger.P2ButtonCommand;
-import de.mossgrabers.sl.controller.SLControlSurface;
-import de.mossgrabers.sl.mode.Modes;
-import de.mossgrabers.sl.mode.device.DeviceParamsMode;
 
 import java.util.Arrays;
 
@@ -58,14 +60,13 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         this.pressedKeys = new int [128];
         Arrays.fill (this.pressedKeys, 0);
 
-        this.noteMap = Scales.getEmptyMatrix ();
-
         this.isPlayMode = true;
 
         final ITrackBank tb = model.getTrackBank ();
         // Light notes send from the sequencer
-        tb.addNoteObserver ( (note, velocity) -> this.pressedKeys[note] = velocity);
-        tb.addTrackSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
+        for (int i = 0; i < tb.getPageSize (); i++)
+            tb.getItem (i).addNoteObserver (this::updateNote);
+        tb.addSelectionObserver ( (index, isSelected) -> this.clearPressedKeys ());
     }
 
 
@@ -77,7 +78,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveModeId ();
+        final Integer activeModeId = modeManager.getActiveOrTempModeId ();
         if (activeModeId == Modes.MODE_VIEW_SELECT)
         {
             if (index == 0)
@@ -97,7 +98,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (activeModeId != Modes.MODE_SESSION)
             modeManager.setActiveMode (Modes.MODE_SESSION);
 
-        this.model.getSceneBank ().launchScene (index);
+        this.model.getSceneBank ().getItem (index).launch ();
     }
 
 
@@ -109,7 +110,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer cm = modeManager.getActiveModeId ();
+        final Integer cm = modeManager.getActiveOrTempModeId ();
         if (cm != Modes.MODE_PLAY_OPTIONS)
             modeManager.setActiveMode (Modes.MODE_PLAY_OPTIONS);
 
@@ -119,7 +120,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             case 0:
                 this.clearPressedKeys ();
                 this.scales.decDrumOctave ();
-                this.model.getPrimaryDevice ().scrollDrumPadsPageUp ();
+                this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageBackwards ();
                 this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
@@ -129,7 +130,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             case 1:
                 this.clearPressedKeys ();
                 this.scales.incDrumOctave ();
-                this.model.getPrimaryDevice ().scrollDrumPadsPageDown ();
+                this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageForwards ();
                 this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
@@ -223,13 +224,13 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (event != ButtonEvent.DOWN)
             return;
 
-        final Integer activeModeId = this.surface.getModeManager ().getActiveModeId ();
+        final Integer activeModeId = this.surface.getModeManager ().getActiveOrTempModeId ();
         if (activeModeId == Modes.MODE_SESSION)
         {
             if (isUp)
-                this.model.getSceneBank ().scrollScenesPageDown ();
+                this.model.getSceneBank ().scrollPageForwards ();
             else
-                this.model.getSceneBank ().scrollScenesPageUp ();
+                this.model.getSceneBank ().scrollPageBackwards ();
             return;
         }
 
@@ -288,7 +289,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             this.drawDrumGrid ();
         }
 
-        final Integer mode = this.surface.getModeManager ().getActiveModeId ();
+        final Integer mode = this.surface.getModeManager ().getActiveOrTempModeId ();
         final boolean isSession = mode == Modes.MODE_SESSION;
         final boolean isDevice = mode == Modes.MODE_PARAMS;
         final boolean isPlayOptions = mode == Modes.MODE_PLAY_OPTIONS;
@@ -325,9 +326,10 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             boolean isSoloed = false;
             if (hasDrumPads)
             {
+                final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
                 for (int i = 0; i < 16; i++)
                 {
-                    if (primary.getDrumPad (i).isSolo ())
+                    if (drumPadBank.getItem (i).isSolo ())
                     {
                         isSoloed = true;
                         break;
@@ -349,7 +351,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         }
         else
         {
-            final ICursorClip clip = this.getClip ();
+            final INoteClip clip = this.getClip ();
             // Paint the sequencer steps
             final int step = clip.getCurrentStep ();
             final int hiStep = this.isInXRange (step) ? step % PlayView.NUM_DISPLAY_COLS : -1;
@@ -399,7 +401,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             // Mark selected note
             this.pressedKeys[this.offsetY + this.selectedPad] = velocity;
 
-            this.surface.sendMidiEvent (0x90, this.noteMap[note], velocity);
+            this.surface.sendMidiEvent (0x90, this.keyManager.map (note), velocity);
         }
         else
         {
@@ -413,8 +415,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     @Override
     public void updateNoteMapping ()
     {
-        this.noteMap = this.model.canSelectedTrackHoldNotes () && this.isPlayMode ? this.scales.getDrumMatrix () : Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.noteMap);
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () && this.isPlayMode ? this.scales.getDrumMatrix () : EMPTY_TABLE);
     }
 
 
@@ -427,7 +428,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (this.selectedPad == index)
             return SLControlSurface.MKII_BUTTON_STATE_ON;
         // Exists and active?
-        final IChannel drumPad = primary.getDrumPad (index);
+        final IChannel drumPad = primary.getDrumPadBank ().getItem (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
         // Muted or soloed?
@@ -476,5 +477,20 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     public void updateSceneButtons ()
     {
         // Intentionally empty
+    }
+
+
+    /**
+     * The callback function for playing note changes.
+     *
+     * @param trackIndex The index of the track on which the note is playing
+     * @param note The played note
+     * @param velocity The played velocity
+     */
+    private void updateNote (final int trackIndex, final int note, final int velocity)
+    {
+        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel != null && sel.getIndex () == trackIndex)
+            this.pressedKeys[note] = velocity;
     }
 }

@@ -4,15 +4,12 @@
 
 package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.framework.daw.ObserverManagement;
-
-
 /**
  * Interface to a parameter.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IParameter extends ObserverManagement
+public interface IParameter extends IItem
 {
     /**
      * De-/Increase the value by the given amount. Scaled by the range given in the constructor.
@@ -20,31 +17,6 @@ public interface IParameter extends ObserverManagement
      * @param increment The amount of the increment (negative to decrease)
      */
     void inc (double increment);
-
-
-    /**
-     * True if the parameter does exist.
-     *
-     * @return True if the parameter does exist.
-     */
-    boolean doesExist ();
-
-
-    /**
-     * Get the name of the parameter.
-     *
-     * @return The name
-     */
-    String getName ();
-
-
-    /**
-     * Get the name of the parameter.
-     *
-     * @param limit Limit the text to this length
-     * @return The name
-     */
-    String getName (int limit);
 
 
     /**
@@ -112,10 +84,10 @@ public interface IParameter extends ObserverManagement
 
 
     /**
-     * Specifies if this value should be indicated as mapped in Bitwig Studio, which is visually
-     * shown as colored dots or tinting on the parameter controls.
+     * Specifies if this value should be indicated as mapped in the DAW, which is visually shown as
+     * colored dots or tinting on the parameter controls.
      *
-     * @param enable True in case visual indications should be shown in Bitwig Studio
+     * @param enable True in case visual indications should be shown
      */
     void setIndication (boolean enable);
 }

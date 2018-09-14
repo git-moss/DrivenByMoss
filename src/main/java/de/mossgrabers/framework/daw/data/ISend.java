@@ -11,10 +11,5 @@ package de.mossgrabers.framework.daw.data;
  */
 public interface ISend extends IParameter
 {
-    /**
-     * Get the index.
-     *
-     * @return The index
-     */
-    int getIndex ();
+    // Intentionally empty
 }

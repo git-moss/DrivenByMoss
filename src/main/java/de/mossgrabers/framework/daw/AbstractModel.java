@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -22,35 +23,30 @@ import java.util.Map;
  */
 public abstract class AbstractModel implements IModel
 {
-    protected IHost                    host;
-    protected IApplication             application;
-    protected IArranger                arranger;
-    protected IMixer                   mixer;
-    protected ITransport               transport;
-    protected IGroove                  groove;
-    protected IProject                 project;
-    protected IBrowser                 browser;
+    protected IHost              host;
+    protected IApplication       application;
+    protected IMixer             mixer;
+    protected ITransport         transport;
+    protected IGroove            groove;
+    protected IProject           project;
+    protected IBrowser           browser;
+    protected IArranger          arranger;
+    protected IMarkerBank        markerBank;
+    protected ITrackBank         currentTrackBank;
+    protected ITrackBank         trackBank;
+    protected ITrackBank         effectTrackBank;
+    protected IMasterTrack       masterTrack;
+    protected ICursorDevice      primaryDevice;
+    protected ICursorDevice      cursorDevice;
+    protected ICursorDevice      drumDevice64;
+    protected Map<String, IClip> cursorClips = new HashMap<> ();
 
-    protected IChannelBank             currentTrackBank;
-    protected ITrackBank               trackBank;
-    protected IChannelBank             effectTrackBank;
-    protected IMasterTrack             masterTrack;
+    protected Scales             scales;
+    protected ColorManager       colorManager;
+    protected IValueChanger      valueChanger;
+    protected ModelSetup         modelSetup;
 
-    protected ICursorDevice            primaryDevice;
-    protected ICursorDevice            cursorDevice;
-    protected ICursorDevice            drumDevice64;
-    protected Map<String, ICursorClip> cursorClips = new HashMap<> ();
-
-    protected Scales                   scales;
-    protected ColorManager             colorManager;
-    protected ValueChanger             valueChanger;
-
-    protected int                      numTracks;
-    protected int                      numScenes;
-    protected int                      numSends;
-    protected int                      numFilterColumnEntries;
-    protected int                      numResults;
-    protected boolean                  hasFlatTrackList;
+    private int                  lastSelection;
 
 
     /**
@@ -59,29 +55,14 @@ public abstract class AbstractModel implements IModel
      * @param colorManager The color manager
      * @param valueChanger The value changer
      * @param scales The scales object
-     * @param numTracks The number of track to monitor (per track bank)
-     * @param numScenes The number of scenes to monitor (per scene bank)
-     * @param numSends The number of sends to monitor
-     * @param numFilterColumnEntries The number of entries in one filter column to monitor
-     * @param numResults The number of search results in the browser to monitor
-     * @param hasFlatTrackList Don't navigate groups, all tracks are flat
-     * @param numParams The number of parameter of a device to monitor
-     * @param numDevicesInBank The number of devices to monitor
-     * @param numDeviceLayers The number of device layers to monitor
-     * @param numDrumPadLayers The number of drum pad layers to monitor
+     * @param modelSetup The configuration parameters for the model
      */
-    public AbstractModel (final ColorManager colorManager, final ValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public AbstractModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
     {
         this.colorManager = colorManager;
         this.valueChanger = valueChanger;
         this.scales = scales;
-
-        this.numTracks = numTracks < 0 ? 8 : numTracks;
-        this.numScenes = numScenes < 0 ? 8 : numScenes;
-        this.numSends = numSends < 0 ? 6 : numSends;
-        this.numFilterColumnEntries = numFilterColumnEntries < 0 ? 16 : numFilterColumnEntries;
-        this.numResults = numResults < 0 ? 16 : numResults;
-        this.hasFlatTrackList = hasFlatTrackList ? true : false;
+        this.modelSetup = modelSetup;
     }
 
 
@@ -95,7 +76,7 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public ValueChanger getValueChanger ()
+    public IValueChanger getValueChanger ()
     {
         return this.valueChanger;
     }
@@ -106,6 +87,14 @@ public abstract class AbstractModel implements IModel
     public IArranger getArranger ()
     {
         return this.arranger;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IMarkerBank getMarkerBank ()
+    {
+        return this.markerBank;
     }
 
 
@@ -191,17 +180,16 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public ICursorClip getCursorClip ()
-    {
-        return this.getCursorClip (this.numTracks, this.numScenes);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void toggleCurrentTrackBank ()
     {
-        this.currentTrackBank = this.currentTrackBank == this.trackBank && this.effectTrackBank != null ? this.effectTrackBank : this.trackBank;
+        if (this.effectTrackBank == null)
+            return;
+
+        final ITrack selectedItem = this.getCurrentTrackBank ().getSelectedItem ();
+        final int selPosition = selectedItem == null ? -1 : selectedItem.getPosition ();
+        this.currentTrackBank = this.currentTrackBank == this.trackBank ? this.effectTrackBank : this.trackBank;
+        this.currentTrackBank.selectItemAtPosition (this.lastSelection);
+        this.lastSelection = selPosition;
     }
 
 
@@ -215,7 +203,7 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public IChannelBank getCurrentTrackBank ()
+    public ITrackBank getCurrentTrackBank ()
     {
         return this.currentTrackBank;
     }
@@ -231,7 +219,7 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public IChannelBank getEffectTrackBank ()
+    public ITrackBank getEffectTrackBank ()
     {
         return this.effectTrackBank;
     }
@@ -289,7 +277,44 @@ public abstract class AbstractModel implements IModel
     @Override
     public boolean canSelectedTrackHoldNotes ()
     {
-        final ITrack t = this.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack t = this.getCurrentTrackBank ().getSelectedItem ();
         return t != null && t.canHoldNotes ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ITrack getSelectedTrack ()
+    {
+        final ITrackBank tb = this.getCurrentTrackBank ();
+        return tb == null ? null : tb.getSelectedItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISlot getSelectedSlot ()
+    {
+        final ITrack track = this.getSelectedTrack ();
+        return track == null ? null : track.getSlotBank ().getSelectedItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canConvertClip ()
+    {
+        final ITrack selectedTrack = this.getSelectedTrack ();
+        if (selectedTrack == null)
+            return false;
+        final List<ISlot> slots = selectedTrack.getSlotBank ().getSelectedItems ();
+        if (slots.isEmpty ())
+            return false;
+        for (final ISlot slot: slots)
+        {
+            if (slot.hasContent ())
+                return true;
+        }
+        return false;
     }
 }

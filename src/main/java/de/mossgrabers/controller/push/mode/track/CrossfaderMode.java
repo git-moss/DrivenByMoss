@@ -2,15 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode.track;
+package de.mossgrabers.controller.push.mode.track;
 
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.push.controller.DisplayMessage;
-import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 
 
 /**
@@ -40,11 +40,12 @@ public class CrossfaderMode extends AbstractTrackMode
 
         if (isTouched)
         {
-            final ITrack t = this.model.getCurrentTrackBank ().getTrack (index);
+            final ITrack t = this.model.getCurrentTrackBank ().getItem (index);
             if (t.doesExist ())
             {
                 if (this.surface.isDeletePressed ())
                 {
+                    this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
                     t.setCrossfadeMode ("AB");
                     return;
                 }
@@ -61,7 +62,7 @@ public class CrossfaderMode extends AbstractTrackMode
     public void onValueKnob (final int index, final int value)
     {
         if (this.increaseKnobMovement ())
-            this.model.getCurrentTrackBank ().getTrack (index).changeCrossfadeModeAsNumber (value);
+            this.model.getCurrentTrackBank ().getItem (index).changeCrossfadeModeAsNumber (value);
     }
 
 
@@ -70,11 +71,11 @@ public class CrossfaderMode extends AbstractTrackMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack t = tb.getTrack (i);
+            final ITrack t = tb.getItem (i);
             d.setCell (0, i, t.doesExist () ? "Crossfdr" : "");
             if (t.doesExist ())
             {
@@ -98,7 +99,7 @@ public class CrossfaderMode extends AbstractTrackMode
     @Override
     public void updateDisplay2 ()
     {
-        this.updateChannelDisplay (DisplayMessage.GRID_ELEMENT_CHANNEL_CROSSFADER, false, false);
+        this.updateChannelDisplay (DisplayModel.GRID_ELEMENT_CHANNEL_CROSSFADER, false, false);
     }
 
 }

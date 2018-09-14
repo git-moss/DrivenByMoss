@@ -2,12 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.mcu;
+package de.mossgrabers.controller.mcu;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.ValueChanger;
+import de.mossgrabers.framework.controller.IValueChanger;
 
 import java.util.Arrays;
 
@@ -46,6 +46,8 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final int        FOOTSWITCH_2_PREV_MODE      = 15;
     /** Use a Function button to switch to next mode. */
     public static final int        FOOTSWITCH_2_NEXT_MODE      = 16;
+    /** Use a Function button to switch to Marker mode. */
+    public static final int        SHOW_MARKER_MODE            = 17;
 
     private static final String    DEVICE_SELECT               = "<Select a profile>";
     private static final String    DEVICE_ICON_PLATFORM_M      = "icon Platform M / M+";
@@ -80,7 +82,8 @@ public class MCUConfiguration extends AbstractConfiguration
         "Add effect track",
         "Quantize",
         "Previous mode",
-        "Next mode"
+        "Next mode",
+        "Marker mode"
     };
 
     private static final String [] ASSIGNABLE_BUTTON_NAMES     = new String []
@@ -130,7 +133,7 @@ public class MCUConfiguration extends AbstractConfiguration
      *
      * @param valueChanger The value changer
      */
-    public MCUConfiguration (final ValueChanger valueChanger)
+    public MCUConfiguration (final IValueChanger valueChanger)
     {
         super (valueChanger);
         Arrays.fill (this.assignableFunctions, 0);
@@ -232,6 +235,9 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[1]);
                     this.setVUMetersEnabled (false);
                     break;
+
+                default:
+                    return;
             }
 
             profileSetting.set (DEVICE_SELECT);
@@ -293,13 +299,7 @@ public class MCUConfiguration extends AbstractConfiguration
         {
             final int pos = i;
             final IEnumSetting setting = settingsUI.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], "Assignable buttons", ASSIGNABLE_VALUES, ASSIGNABLE_VALUES[6]);
-            setting.addValueObserver (value -> {
-                for (int f = 0; f < ASSIGNABLE_VALUES.length; f++)
-                {
-                    if (ASSIGNABLE_VALUES[f].equals (value))
-                        this.assignableFunctions[pos] = f;
-                }
-            });
+            setting.addValueObserver (value -> this.assignableFunctions[pos] = lookupIndex (ASSIGNABLE_VALUES, value));
         }
     }
 

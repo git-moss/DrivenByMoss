@@ -2,13 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.mcu.command.trigger;
+package de.mossgrabers.controller.mcu.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.mcu.MCUConfiguration;
+import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.mcu.MCUConfiguration;
-import de.mossgrabers.mcu.controller.MCUControlSurface;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -21,14 +21,14 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     /** The direction of the cursor. */
     public enum Direction
     {
-        /** Move left. */
-        LEFT,
-        /** Move right. */
-        RIGHT,
-        /** Move up. */
-        UP,
-        /** Move down. */
-        DOWN
+    /** Move left. */
+    LEFT,
+    /** Move right. */
+    RIGHT,
+    /** Move up. */
+    UP,
+    /** Move down. */
+    DOWN
     }
 
     protected Direction        direction;
@@ -79,7 +79,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     private void scrollLeft ()
     {
         if (this.surface.getConfiguration ().isZoomState ())
-            this.model.getApplication ().invokeAction ("Zoom Out");
+            this.model.getApplication ().zoomOut ();
         else
             this.model.getApplication ().arrowKeyLeft ();
     }
@@ -88,7 +88,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     private void scrollRight ()
     {
         if (this.surface.getConfiguration ().isZoomState ())
-            this.model.getApplication ().invokeAction ("Zoom In");
+            this.model.getApplication ().zoomIn ();
         else
             this.model.getApplication ().arrowKeyRight ();
     }
@@ -101,7 +101,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             if (this.surface.getConfiguration ().useVertZoomForModes ())
                 this.switcher.scrollUp ();
             else
-                this.model.getApplication ().invokeAction ("toggle_double_or_single_row_track_height");
+                this.model.getApplication ().decTrackHeight ();
         }
         else
             this.model.getApplication ().arrowKeyUp ();
@@ -115,7 +115,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             if (this.surface.getConfiguration ().useVertZoomForModes ())
                 this.switcher.scrollDown ();
             else
-                this.model.getApplication ().invokeAction ("toggle_double_or_single_row_track_height");
+                this.model.getApplication ().incTrackHeight ();
         }
         else
             this.model.getApplication ().arrowKeyDown ();

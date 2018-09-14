@@ -2,19 +2,19 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode;
+package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.push.controller.DisplayMessage;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.controller.PushDisplay;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -91,7 +91,7 @@ public class FixedMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             d.setCell (0, i, AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i]);
-            d.setCell (3, i, (newClipLength == i ? PushDisplay.RIGHT_ARROW : "") + AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i]);
+            d.setCell (3, i, (newClipLength == i ? PushDisplay.SELECT_ARROW : "") + AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i]);
         }
         d.allDone ();
     }
@@ -102,10 +102,9 @@ public class FixedMode extends BaseMode
     public void updateDisplay2 ()
     {
         final int newClipLength = this.surface.getConfiguration ().getNewClipLength ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int i = 0; i < 8; i++)
             message.addOptionElement (i == 0 ? "Create Clip (length not stored)" : "", AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i], false, i == 0 ? "New Clip Length" : "", AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i], newClipLength == i, false);
-        display.send (message);
+        message.send ();
     }
 }

@@ -7,8 +7,10 @@ package de.mossgrabers.controller.push.view;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IDrumPad;
+import de.mossgrabers.framework.mode.ModeManager;
 
 
 /**
@@ -20,7 +22,8 @@ public class DrumView extends DrumViewBase
 {
     private static final int NUMBER_OF_RETRIES = 20;
 
-    protected int            startRetries;
+    private int              startRetries;
+    private int              scrollPosition    = -1;
 
 
     /**
@@ -46,7 +49,10 @@ public class DrumView extends DrumViewBase
             final ICursorDevice primary = this.model.getPrimaryDevice ();
             if (!primary.hasDrumPads ())
                 return;
-            final IDrumPad drumPad = primary.getDrumPad (playedPad);
+
+            final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
+            this.scrollPosition = drumPadBank.getScrollPosition ();
+            final IDrumPad drumPad = drumPadBank.getItem (playedPad);
             drumPad.browseToInsert ();
             this.activateMode ();
             return;
@@ -58,22 +64,36 @@ public class DrumView extends DrumViewBase
 
     /** {@inheritDoc} */
     @Override
-    public void handleSelectButton (final int playedPad)
+    public synchronized void handleSelectButton (final int playedPad)
     {
+        // Do we have drum pads?
         final ICursorDevice primary = this.model.getPrimaryDevice ();
         if (!primary.hasDrumPads ())
             return;
-
-        // Do not reselect
-        if (primary.getDrumPad (playedPad).isSelected ())
-            return;
-
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (cd.isNested ())
             cd.selectParent ();
 
-        this.surface.getModeManager ().setActiveMode (Modes.MODE_DEVICE_LAYER);
-        primary.selectDrumPad (playedPad);
+        if (primary.getPosition () != cd.getPosition ())
+            return;
+
+        // Align the primary and cursor device drum bank view
+        final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
+        final int scrollPos = drumPadBank.getScrollPosition ();
+        final IDrumPadBank cdDrumPadBank = cd.getDrumPadBank ();
+        cdDrumPadBank.scrollTo (scrollPos);
+
+        // Do not reselect
+        final IDrumPad drumPad = drumPadBank.getItem (playedPad);
+        if (drumPad.isSelected ())
+            return;
+
+        // Only activate layer mode if not one of the layer modes is already active
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (!Modes.isLayerMode (modeManager.getActiveModeId ()))
+            modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
+
+        drumPad.select ();
 
         this.updateNoteMapping ();
     }
@@ -91,5 +111,16 @@ public class DrumView extends DrumViewBase
             this.startRetries++;
             this.surface.scheduleTask (this::activateMode, 200);
         }
+    }
+
+
+    /**
+     * Filling a slot from the browser moves the bank view to that slot. This function moves it back
+     * to the correct position.
+     */
+    public void repositionBankPage ()
+    {
+        if (this.scrollPosition >= 0)
+            this.model.getPrimaryDevice ().getDrumPadBank ().scrollTo (this.scrollPosition);
     }
 }

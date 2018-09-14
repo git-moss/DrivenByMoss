@@ -6,12 +6,10 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.TrackImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.daw.AbstractChannelBank;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 
-import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
-import com.bitwig.extension.controller.api.PlayingNote;
-import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 
 
@@ -20,54 +18,36 @@ import com.bitwig.extension.controller.api.TrackBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractTrackBankImpl extends AbstractChannelBank
+public abstract class AbstractTrackBankImpl extends AbstractChannelBank<TrackBank, ITrack> implements ITrackBank
 {
-    protected TrackBank trackBank;
-
-
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
+     * @param bank The bank to encapsulate
      * @param numTracks The number of tracks of a bank page
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractTrackBankImpl (final IValueChanger valueChanger, final int numTracks, final int numScenes, final int numSends)
+    public AbstractTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final int numTracks, final int numScenes, final int numSends)
     {
-        super (valueChanger, numTracks, numScenes, numSends);
-    }
+        super (host, valueChanger, bank, numTracks, numScenes, numSends);
 
+        this.initItems ();
 
-    /**
-     * Initialise all observers.
-     */
-    public void init ()
-    {
-        this.tracks = this.createTracks (this.numTracks);
+        final int pageSize = this.getPageSize ();
 
-        for (int i = 0; i < this.numTracks; i++)
-        {
-            final int index = i;
-            final Track t = this.trackBank.getItemAt (i);
-            t.playingNotes ().addValueObserver (value -> this.handleNotes (index, value));
-        }
-
-        this.trackBank.cursorIndex ().addValueObserver (index -> {
-            for (int i = 0; i < this.numTracks; i++)
+        this.bank.cursorIndex ().addValueObserver (index -> {
+            for (int i = 0; i < pageSize; i++)
             {
                 final boolean isSelected = index == i;
-                if (this.tracks[i].isSelected () != isSelected)
+                if (this.items.get (i).isSelected () != isSelected)
                     this.handleBankTrackSelection (i, isSelected);
             }
         });
 
-        this.trackBank.channelCount ().markInterested ();
-        this.trackBank.scrollPosition ().markInterested ();
-        this.trackBank.canScrollChannelsUp ().markInterested ();
-        this.trackBank.canScrollChannelsDown ().markInterested ();
-        if (this.numScenes > 0)
-            this.sceneBank = new SceneBankImpl (this.trackBank.sceneBank (), this.numScenes);
+        this.sceneBank = new SceneBankImpl (host, valueChanger, this.bank.sceneBank (), this.numScenes);
     }
 
 
@@ -75,16 +55,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBank
     @Override
     public void enableObservers (final boolean enable)
     {
-        for (final ITrack track: this.tracks)
-        {
-            track.enableObservers (enable);
-            this.trackBank.getItemAt (track.getIndex ()).playingNotes ().setIsSubscribed (enable);
-        }
-
-        this.trackBank.channelCount ().setIsSubscribed (enable);
-        this.trackBank.scrollPosition ().setIsSubscribed (enable);
-        this.trackBank.canScrollChannelsUp ().setIsSubscribed (enable);
-        this.trackBank.canScrollChannelsDown ().setIsSubscribed (enable);
+        super.enableObservers (enable);
 
         this.sceneBank.enableObservers (enable);
     }
@@ -92,170 +63,37 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBank
 
     /** {@inheritDoc} */
     @Override
-    public int getTrackCount ()
-    {
-        return this.trackBank.channelCount ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canScrollTracksUp ()
-    {
-        return this.trackBank.canScrollChannelsUp ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canScrollTracksDown ()
-    {
-        return this.trackBank.canScrollChannelsDown ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollTracksUp ()
-    {
-        this.trackBank.scrollBackwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollTracksDown ()
-    {
-        this.trackBank.scrollForwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollTracksPageUp ()
-    {
-        this.trackBank.scrollPageBackwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollTracksPageDown ()
-    {
-        this.trackBank.scrollPageForwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollToChannel (final int channel)
-    {
-        if (channel >= 0 && channel < this.getTrackCount ())
-            this.trackBank.scrollPosition ().set (channel / this.numTracks * this.numTracks);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollToScene (final int position)
-    {
-        this.sceneBank.scrollTo (position);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void setIndication (final boolean enable)
     {
-        for (int index = 0; index < this.numTracks; index++)
-            this.getClipLauncherSlots (index).setIndication (enable);
+        for (int index = 0; index < this.getPageSize (); index++)
+            this.bank.getItemAt (index).clipLauncherSlotBank ().setIndication (enable);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public int getTrackPositionFirst ()
+    public boolean isClipRecording ()
     {
-        return this.getTrack (0).getPosition ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getTrackPositionLast ()
-    {
-        for (int i = 7; i >= 0; i--)
+        for (int t = 0; t < this.getPageSize (); t++)
         {
-            final int pos = this.getTrack (i).getPosition ();
-            if (pos >= 0)
-                return pos;
+            for (int s = 0; s < this.numScenes; s++)
+            {
+                if (this.items.get (t).getSlotBank ().getItem (s).isRecording ())
+                    return true;
+            }
         }
-        return -1;
-    }
-
-
-    /**
-     * Get the clip launcher slots of a track.
-     *
-     * @param index The index of the track
-     * @return The clip launcher slots
-     */
-    private ClipLauncherSlotBank getClipLauncherSlots (final int index)
-    {
-        return this.trackBank.getItemAt (index).clipLauncherSlotBank ();
+        return false;
     }
 
 
     /**
      * Create all track data and setup observers.
-     *
-     * @param count The number of tracks of the track bank page
-     * @return The created data
      */
-    protected ITrack [] createTracks (final int count)
+    @Override
+    protected void initItems ()
     {
-        final ITrack [] trackData = new TrackImpl [count];
-        for (int i = 0; i < count; i++)
-            trackData[i] = new TrackImpl (this.trackBank.getItemAt (i), this.valueChanger, i, this.numSends, this.numScenes);
-        return trackData;
-    }
-
-
-    /**
-     * Handles the updates on all playing notes. Translates the note array into individual note
-     * observer updates of start and stopped notes.
-     *
-     * @param index The index of a track
-     * @param notes The currently playing notes
-     */
-    private void handleNotes (final int index, final PlayingNote [] notes)
-    {
-        final ITrack sel = this.getSelectedTrack ();
-        if (sel == null || sel.getIndex () != index)
-            return;
-
-        final int [] nc = this.noteCache[index];
-        synchronized (nc)
-        {
-            // Send the new notes
-            for (final PlayingNote note: notes)
-            {
-                final int pitch = note.pitch ();
-                nc[pitch] = NOTE_ON_NEW;
-                this.notifyNoteObservers (pitch, note.velocity ());
-            }
-            // Send note offs
-            for (int i = 0; i < nc.length; i++)
-            {
-                if (nc[i] == NOTE_ON_NEW)
-                    nc[i] = NOTE_ON;
-                else if (nc[i] == NOTE_ON)
-                {
-                    nc[i] = NOTE_OFF;
-                    this.notifyNoteObservers (i, 0);
-                }
-            }
-        }
+        for (int i = 0; i < this.pageSize; i++)
+            this.items.add (new TrackImpl (this.host, this.valueChanger, this.bank.getItemAt (i), i, this.numSends, this.numScenes));
     }
 
 
@@ -267,7 +105,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBank
      */
     private void handleBankTrackSelection (final int index, final boolean isSelected)
     {
-        this.getTrack (index).setSelected (isSelected);
-        this.notifyTrackSelectionObservers (index, isSelected);
+        this.getItem (index).setSelected (isSelected);
+        this.notifySelectionObservers (index, isSelected);
     }
 }

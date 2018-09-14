@@ -2,13 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.command.trigger;
+package de.mossgrabers.controller.apc.command.trigger;
 
-import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.apc.APCConfiguration;
+import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -40,6 +40,6 @@ public class RecArmCommand extends AbstractTriggerCommand<APCControlSurface, APC
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getTrack (this.index).toggleRecArm ();
+            this.model.getCurrentTrackBank ().getItem (this.index).toggleRecArm ();
     }
 }

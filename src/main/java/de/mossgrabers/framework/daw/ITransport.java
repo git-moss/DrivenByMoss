@@ -282,11 +282,19 @@ public interface ITransport extends ObserverManagement
 
 
     /**
-     * Get the default formatted play position.
+     * Get the default formatted play position (Minutes, Seconds, ...).
      *
      * @return The formatted text
      */
     String getPositionText ();
+
+
+    /**
+     * Get the play position formatted as measures and beats.
+     *
+     * @return The formatted text
+     */
+    String getBeatText ();
 
 
     /**
@@ -315,6 +323,14 @@ public interface ITransport extends ObserverManagement
 
 
     /**
+     * Set punch-in dis/enabled in the transport.
+     *
+     * @param enable True to enable
+     */
+    void setPunchIn (boolean enable);
+
+
+    /**
      * Toggle punch-in enabled in the transport.
      */
     void togglePunchIn ();
@@ -326,6 +342,14 @@ public interface ITransport extends ObserverManagement
      * @return True if punch-in is enabled in the transport
      */
     boolean isPunchInEnabled ();
+
+
+    /**
+     * Set punch-out dis/enabled in the transport.
+     *
+     * @param enable True to enable
+     */
+    void setPunchOut (boolean enable);
 
 
     /**
@@ -432,11 +456,27 @@ public interface ITransport extends ObserverManagement
 
 
     /**
+     * Get the value that reports the current pre-roll setting in bars: 0, 1, 2, 4.
+     *
+     * @return The number of preroll bars.
+     */
+    int getPrerollAsBars ();
+
+
+    /**
      * Set the value that reports the current pre-roll setting.
      *
      * @param preroll Possible values are `"none"`, `"one_bar"`, `"two_bars"`, or `"four_bars"`.
      */
     void setPreroll (final String preroll);
+
+
+    /**
+     * Set the value that reports the current pre-roll setting in bars.
+     *
+     * @param preroll Possible values are 0, 1, 2, 4.
+     */
+    void setPrerollAsBars (final int preroll);
 
 
     /**

@@ -2,18 +2,20 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push;
+package de.mossgrabers.controller.push;
 
-import de.mossgrabers.framework.ColorEx;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.Modes;
+import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IColorSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.ValueChanger;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.mode.Modes;
-import de.mossgrabers.push.view.Views;
+import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 
 import java.util.Set;
 
@@ -23,101 +25,92 @@ import java.util.Set;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PushConfiguration extends AbstractConfiguration
+public class PushConfiguration extends AbstractConfiguration implements IGraphicsConfiguration
 {
     /** Settings for different Mute and Solo behaviour. */
     public enum TrackState
     {
-        /** Use Mute, Solo for muting/soloing the current track. */
-        NONE,
-        /** Use all mode buttons for muting. */
-        MUTE,
-        /** Use all mode buttons for soloing. */
-        SOLO
+    /** Use Mute, Solo for muting/soloing the current track. */
+    NONE,
+    /** Use all mode buttons for muting. */
+    MUTE,
+    /** Use all mode buttons for soloing. */
+    SOLO
     }
 
     /** Setting for the ribbon mode. */
-    public static final Integer    RIBBON_MODE                      = Integer.valueOf (30);
+    public static final Integer    RIBBON_MODE                     = Integer.valueOf (30);
     /** Setting for the ribbon mode midi CC. */
-    public static final Integer    RIBBON_MODE_CC_VAL               = Integer.valueOf (31);
+    public static final Integer    RIBBON_MODE_CC_VAL              = Integer.valueOf (31);
     /** Setting for the velocity curve. */
-    public static final Integer    VELOCITY_CURVE                   = Integer.valueOf (32);
+    public static final Integer    VELOCITY_CURVE                  = Integer.valueOf (32);
     /** Setting for the pad threshold. */
-    public static final Integer    PAD_THRESHOLD                    = Integer.valueOf (33);
+    public static final Integer    PAD_THRESHOLD                   = Integer.valueOf (33);
 
     /** Setting for the display brightness. */
-    public static final Integer    DISPLAY_BRIGHTNESS               = Integer.valueOf (34);
+    public static final Integer    DISPLAY_BRIGHTNESS              = Integer.valueOf (34);
     /** Setting for the pad LED brightness. */
-    public static final Integer    LED_BRIGHTNESS                   = Integer.valueOf (35);
+    public static final Integer    LED_BRIGHTNESS                  = Integer.valueOf (35);
     /** Setting for the pad sensitivity. */
-    public static final Integer    PAD_SENSITIVITY                  = Integer.valueOf (36);
+    public static final Integer    PAD_SENSITIVITY                 = Integer.valueOf (36);
     /** Setting for the pad gain. */
-    public static final Integer    PAD_GAIN                         = Integer.valueOf (37);
+    public static final Integer    PAD_GAIN                        = Integer.valueOf (37);
     /** Setting for the pad dynamics. */
-    public static final Integer    PAD_DYNAMICS                     = Integer.valueOf (38);
+    public static final Integer    PAD_DYNAMICS                    = Integer.valueOf (38);
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE  = Integer.valueOf (39);
+    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (39);
     /** Setting for the default note view. */
-    public static final Integer    DEFAULT_NOTE_VIEW                = Integer.valueOf (40);
+    public static final Integer    DEFAULT_NOTE_VIEW               = Integer.valueOf (40);
     /** Mode debug. */
-    public static final Integer    DEBUG_MODE                       = Integer.valueOf (41);
+    public static final Integer    DEBUG_MODE                      = Integer.valueOf (41);
     /** Push 2 display debug window. */
-    public static final Integer    DEBUG_WINDOW                     = Integer.valueOf (42);
+    public static final Integer    DEBUG_WINDOW                    = Integer.valueOf (42);
     /** Background color of an element. */
-    public static final Integer    COLOR_BACKGROUND                 = Integer.valueOf (50);
+    public static final Integer    COLOR_BACKGROUND                = Integer.valueOf (50);
     /** Border color of an element. */
-    public static final Integer    COLOR_BORDER                     = Integer.valueOf (51);
+    public static final Integer    COLOR_BORDER                    = Integer.valueOf (51);
     /** Text color of an element. */
-    public static final Integer    COLOR_TEXT                       = Integer.valueOf (52);
+    public static final Integer    COLOR_TEXT                      = Integer.valueOf (52);
     /** Fader color of an element. */
-    public static final Integer    COLOR_FADER                      = Integer.valueOf (53);
+    public static final Integer    COLOR_FADER                     = Integer.valueOf (53);
     /** VU color of an element. */
-    public static final Integer    COLOR_VU                         = Integer.valueOf (54);
+    public static final Integer    COLOR_VU                        = Integer.valueOf (54);
     /** Edit color of an element. */
-    public static final Integer    COLOR_EDIT                       = Integer.valueOf (55);
+    public static final Integer    COLOR_EDIT                      = Integer.valueOf (55);
     /** Record color of an element. */
-    public static final Integer    COLOR_RECORD                     = Integer.valueOf (56);
+    public static final Integer    COLOR_RECORD                    = Integer.valueOf (56);
     /** Solo color of an element. */
-    public static final Integer    COLOR_SOLO                       = Integer.valueOf (57);
+    public static final Integer    COLOR_SOLO                      = Integer.valueOf (57);
     /** Mute color of an element. */
-    public static final Integer    COLOR_MUTE                       = Integer.valueOf (58);
+    public static final Integer    COLOR_MUTE                      = Integer.valueOf (58);
     /** Background color darker of an element. */
-    public static final Integer    COLOR_BACKGROUND_DARKER          = Integer.valueOf (59);
+    public static final Integer    COLOR_BACKGROUND_DARKER         = Integer.valueOf (59);
     /** Background color lighter of an element. */
-    public static final Integer    COLOR_BACKGROUND_LIGHTER         = Integer.valueOf (60);
-
-    private static final ColorEx   DEFAULT_COLOR_BACKGROUND         = ColorEx.fromRGB (83, 83, 83);
-    private static final ColorEx   DEFAULT_COLOR_BORDER             = ColorEx.BLACK;
-    private static final ColorEx   DEFAULT_COLOR_TEXT               = ColorEx.WHITE;
-    private static final ColorEx   DEFAULT_COLOR_FADER              = ColorEx.fromRGB (69, 44, 19);
-    private static final ColorEx   DEFAULT_COLOR_VU                 = ColorEx.GREEN;
-    private static final ColorEx   DEFAULT_COLOR_EDIT               = ColorEx.fromRGB (240, 127, 17);
-    private static final ColorEx   DEFAULT_COLOR_RECORD             = ColorEx.RED;
-    private static final ColorEx   DEFAULT_COLOR_SOLO               = ColorEx.YELLOW;
-    private static final ColorEx   DEFAULT_COLOR_MUTE               = ColorEx.fromRGB (245, 129, 17);
-    private static final ColorEx   DEFAULT_COLOR_BACKGROUND_DARKER  = ColorEx.fromRGB (58, 58, 58);
-    private static final ColorEx   DEFAULT_COLOR_BACKGROUND_LIGHTER = ColorEx.fromRGB (118, 118, 118);
+    public static final Integer    COLOR_BACKGROUND_LIGHTER        = Integer.valueOf (60);
+    /** Session view options. */
+    public static final Integer    SESSION_VIEW                    = Integer.valueOf (61);
+    /** Display scenes or clips. */
+    public static final Integer    DISPLAY_SCENES_CLIPS            = Integer.valueOf (62);
 
     /** Use ribbon for pitch bend. */
-    public static final int        RIBBON_MODE_PITCH                = 0;
+    public static final int        RIBBON_MODE_PITCH               = 0;
     /** Use ribbon for midi CC. */
-    public static final int        RIBBON_MODE_CC                   = 1;
+    public static final int        RIBBON_MODE_CC                  = 1;
     /** Use ribbon for midi CC and pitch bend. */
-    public static final int        RIBBON_MODE_CC_PB                = 2;
+    public static final int        RIBBON_MODE_CC_PB               = 2;
     /** Use ribbon for pitch bend and midi CC. */
-    public static final int        RIBBON_MODE_PB_CC                = 3;
+    public static final int        RIBBON_MODE_PB_CC               = 3;
     /** Use ribbon as volume fader. */
-    public static final int        RIBBON_MODE_FADER                = 4;
+    public static final int        RIBBON_MODE_FADER               = 4;
 
-    private boolean                isSoloLongPressed                = false;
-    private boolean                isMuteLongPressed                = false;
-    private boolean                isMuteSoloLocked                 = false;
+    private boolean                isSoloLongPressed               = false;
+    private boolean                isMuteLongPressed               = false;
+    private boolean                isMuteSoloLocked                = false;
 
-    private static final String    CATEGORY_RIBBON                  = "Ribbon";
-    private static final String    CATEGORY_COLORS                  = "Display Colors";
-    private static final String    CATEGORY_DEBUG                   = "Debug - keep your hands off";
+    private static final String    CATEGORY_RIBBON                 = "Ribbon";
+    private static final String    CATEGORY_COLORS                 = "Display Colors";
 
-    private static final String [] RIBBON_MODE_VALUES               =
+    private static final String [] RIBBON_MODE_VALUES              =
     {
         "Pitch",
         "CC",
@@ -126,40 +119,49 @@ public class PushConfiguration extends AbstractConfiguration
         "Fader"
     };
 
-    private Integer                defaultNoteView                  = Views.VIEW_PLAY;
+    private static final String [] SESSION_VIEW_OPTIONS            =
+    {
+        "Session",
+        "Flipped",
+        "Scenes"
+    };
+
+    private Integer                defaultNoteView                 = Views.VIEW_PLAY;
+    private boolean                displayScenesClips;
+    private boolean                isScenesClipView;
 
     /** What does the ribbon send? **/
-    private int                    ribbonMode                       = RIBBON_MODE_PITCH;
-    private int                    ribbonModeCCVal                  = 1;
-    private boolean                stopAutomationOnKnobRelease      = false;
-    private TrackState             trackState                       = TrackState.MUTE;
-    private Integer                debugMode                        = Modes.MODE_TRACK;
-    private boolean                isDisplayWindowVisible           = false;
+    private int                    ribbonMode                      = RIBBON_MODE_PITCH;
+    private int                    ribbonModeCCVal                 = 1;
+    private boolean                stopAutomationOnKnobRelease     = false;
+    private TrackState             trackState                      = TrackState.MUTE;
+    private Integer                debugMode                       = Modes.MODE_TRACK;
 
     // Only Push 1
-    private int                    velocityCurve                    = 1;
-    private int                    padThreshold                     = 20;
+    private int                    velocityCurve                   = 1;
+    private int                    padThreshold                    = 20;
 
     // Only Push 2
-    private boolean                sendsAreToggled                  = false;
-    private int                    displayBrightness                = 255;
-    private int                    ledBrightness                    = 127;
-    private int                    padSensitivity                   = 5;
-    private int                    padGain                          = 5;
-    private int                    padDynamics                      = 5;
-    private ColorEx                colorBackground                  = DEFAULT_COLOR_BACKGROUND;
-    private ColorEx                colorBorder                      = DEFAULT_COLOR_BORDER;
-    private ColorEx                colorText                        = DEFAULT_COLOR_TEXT;
-    private ColorEx                colorFader                       = DEFAULT_COLOR_FADER;
-    private ColorEx                colorVU                          = DEFAULT_COLOR_VU;
-    private ColorEx                colorEdit                        = DEFAULT_COLOR_EDIT;
-    private ColorEx                colorRecord                      = DEFAULT_COLOR_RECORD;
-    private ColorEx                colorSolo                        = DEFAULT_COLOR_SOLO;
-    private ColorEx                colorMute                        = DEFAULT_COLOR_MUTE;
-    private ColorEx                colorBackgroundDarker            = DEFAULT_COLOR_BACKGROUND_DARKER;
-    private ColorEx                colorBackgroundLighter           = DEFAULT_COLOR_BACKGROUND_LIGHTER;
+    private boolean                sendsAreToggled                 = false;
+    private int                    displayBrightness               = 255;
+    private int                    ledBrightness                   = 127;
+    private int                    padSensitivity                  = 5;
+    private int                    padGain                         = 5;
+    private int                    padDynamics                     = 5;
+    private ColorEx                colorBackground                 = DEFAULT_COLOR_BACKGROUND;
+    private ColorEx                colorBorder                     = DEFAULT_COLOR_BORDER;
+    private ColorEx                colorText                       = DEFAULT_COLOR_TEXT;
+    private ColorEx                colorFader                      = DEFAULT_COLOR_FADER;
+    private ColorEx                colorVU                         = DEFAULT_COLOR_VU;
+    private ColorEx                colorEdit                       = DEFAULT_COLOR_EDIT;
+    private ColorEx                colorRecord                     = DEFAULT_COLOR_RECORD;
+    private ColorEx                colorSolo                       = DEFAULT_COLOR_SOLO;
+    private ColorEx                colorMute                       = DEFAULT_COLOR_MUTE;
+    private ColorEx                colorBackgroundDarker           = DEFAULT_COLOR_BACKGROUND_DARKER;
+    private ColorEx                colorBackgroundLighter          = DEFAULT_COLOR_BACKGROUND_LIGHTER;
 
-    private boolean                isPush2;
+    private final IHost            host;
+    private final boolean          isPush2;
 
     private IIntegerSetting        displayBrightnessSetting;
     private IIntegerSetting        ledBrightnessSetting;
@@ -182,18 +184,24 @@ public class PushConfiguration extends AbstractConfiguration
     private IColorSetting          colorRecordSetting;
     private IColorSetting          colorSoloSetting;
     private IColorSetting          colorMuteSetting;
+    private IEnumSetting           sessionViewSetting;
+    private IEnumSetting           displayScenesClipsSetting;
 
 
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
      * @param isPush2 Use Push 1 or Push 2 controller?
      */
-    public PushConfiguration (final ValueChanger valueChanger, final boolean isPush2)
+    public PushConfiguration (final IHost host, final IValueChanger valueChanger, final boolean isPush2)
     {
         super (valueChanger);
+        this.host = host;
         this.isPush2 = isPush2;
+
+        Views.init (host);
     }
 
 
@@ -211,18 +219,21 @@ public class PushConfiguration extends AbstractConfiguration
 
         ///////////////////////////
         // Session
-
-        this.activateFlipSessionSetting (settingsUI);
-        this.activateLockFlipSessionSetting (settingsUI);
-        this.activateSelectClipOnLaunchSetting (settingsUI);
-        this.activateDrawRecordStripeSetting (settingsUI);
-        this.activateActionForRecArmedPad (settingsUI);
+        if (this.host.hasClips ())
+        {
+            this.activateSessionView (settingsUI);
+            this.activateLockFlipSessionSetting (settingsUI);
+            this.activateSelectClipOnLaunchSetting (settingsUI);
+            this.activateDrawRecordStripeSetting (settingsUI);
+            this.activateActionForRecArmedPad (settingsUI);
+        }
 
         ///////////////////////////
         // Transport
 
         this.activateBehaviourOnStopSetting (settingsUI);
-        this.activateFlipRecordSetting (settingsUI);
+        if (this.host.hasClips ())
+            this.activateFlipRecordSetting (settingsUI);
 
         ///////////////////////////
         // Play and Sequence
@@ -234,15 +245,21 @@ public class PushConfiguration extends AbstractConfiguration
 
         ///////////////////////////
         // Drum Sequencer
-
-        this.activateAutoSelectDrumSetting (settingsUI);
-        this.activateTurnOffEmptyDrumPadsSetting (settingsUI);
+        if (this.host.hasDrumDevice ())
+        {
+            this.activateAutoSelectDrumSetting (settingsUI);
+            this.activateTurnOffEmptyDrumPadsSetting (settingsUI);
+        }
 
         ///////////////////////////
         // Workflow
 
         this.activateEnableVUMetersSetting (settingsUI);
-        this.activateDisplayCrossfaderSetting (settingsUI);
+        if (this.host.hasCrossfader ())
+            this.activateDisplayCrossfaderSetting (settingsUI);
+        else
+            this.displayCrossfader = false;
+
         this.activateFootswitchSetting (settingsUI);
         this.activateStopAutomationOnKnobReleaseSetting (settingsUI);
         this.activateNewClipLengthSetting (settingsUI);
@@ -724,121 +741,88 @@ public class PushConfiguration extends AbstractConfiguration
     }
 
 
-    /**
-     * Get the background color of an element.
-     *
-     * @return The background color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorBackground ()
     {
         return this.colorBackground;
     }
 
 
-    /**
-     * Get the background darker color of an element.
-     *
-     * @return The background color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorBackgroundDarker ()
     {
         return this.colorBackgroundDarker;
     }
 
 
-    /**
-     * Get the background lighter color of an element.
-     *
-     * @return The background color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorBackgroundLighter ()
     {
         return this.colorBackgroundLighter;
     }
 
 
-    /**
-     * Get the border color of an element.
-     *
-     * @return The border color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorBorder ()
     {
         return this.colorBorder;
     }
 
 
-    /**
-     * Get the text color of an element.
-     *
-     * @return The text color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorText ()
     {
         return this.colorText;
     }
 
 
-    /**
-     * Get the edit color of an element.
-     *
-     * @return The edit color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorEdit ()
     {
         return this.colorEdit;
     }
 
 
-    /**
-     * Get the fader color of an element.
-     *
-     * @return The fader color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorFader ()
     {
         return this.colorFader;
     }
 
 
-    /**
-     * Get the VU color of an element.
-     *
-     * @return The VU color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorVu ()
     {
         return this.colorVU;
     }
 
 
-    /**
-     * Get the record color of an element.
-     *
-     * @return The record color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorRecord ()
     {
         return this.colorRecord;
     }
 
 
-    /**
-     * Get the solo color of an element.
-     *
-     * @return The solo color of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorSolo ()
     {
         return this.colorSolo;
     }
 
 
-    /**
-     * Get the mute color of an element.
-     *
-     * @return The border mute of an element.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColorMute ()
     {
         return this.colorMute;
@@ -868,13 +852,73 @@ public class PushConfiguration extends AbstractConfiguration
 
 
     /**
-     * Is the Push 2 display window visible?
+     * Activate the session view settings.
      *
-     * @return True if the window is visible
+     * @param settingsUI The settings
      */
-    public boolean isDisplayWindowVisible ()
+    private void activateSessionView (final ISettingsUI settingsUI)
     {
-        return this.isDisplayWindowVisible;
+        this.sessionViewSetting = settingsUI.getEnumSetting ("Session view", CATEGORY_SESSION, SESSION_VIEW_OPTIONS, SESSION_VIEW_OPTIONS[0]);
+        this.sessionViewSetting.addValueObserver (value -> {
+            this.flipSession = SESSION_VIEW_OPTIONS[1].equals (value);
+            this.isScenesClipView = SESSION_VIEW_OPTIONS[2].equals (value);
+            this.notifyObservers (AbstractConfiguration.FLIP_SESSION);
+            this.notifyObservers (PushConfiguration.SESSION_VIEW);
+        });
+
+        this.displayScenesClipsSetting = settingsUI.getEnumSetting ("Display scenes/clips", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.displayScenesClipsSetting.addValueObserver (value -> {
+            this.displayScenesClips = "On".equals (value);
+            this.notifyObservers (PushConfiguration.DISPLAY_SCENES_CLIPS);
+        });
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setFlipSession (final boolean enabled)
+    {
+        this.sessionViewSetting.set (enabled ? SESSION_VIEW_OPTIONS[1] : SESSION_VIEW_OPTIONS[0]);
+    }
+
+
+    /**
+     * Set the scene view.
+     */
+    public void setSceneView ()
+    {
+        this.sessionViewSetting.set (SESSION_VIEW_OPTIONS[2]);
+    }
+
+
+    /**
+     * Returns true if the session view should also switch to the scene/clip mode.
+     *
+     * @return True if the session view should also switch to the scene/clip mode.
+     */
+    public boolean shouldDisplayScenesOrClips ()
+    {
+        return this.displayScenesClips;
+    }
+
+
+    /**
+     * Returns true if the scene/clip view is enabled (otherwise the normal session view).
+     *
+     * @return True if the scene/clip view is enabled
+     */
+    public boolean isScenesClipViewSelected ()
+    {
+        return this.isScenesClipView;
+    }
+
+
+    /**
+     * Toggles the mode display for scenes/clips in session view.
+     */
+    public void toggleScenesClipMode ()
+    {
+        this.displayScenesClipsSetting.set (this.displayScenesClips ? ON_OFF_OPTIONS[0] : ON_OFF_OPTIONS[1]);
     }
 
 
@@ -911,11 +955,7 @@ public class PushConfiguration extends AbstractConfiguration
     {
         this.ribbonModeSetting = settingsUI.getEnumSetting ("Mode", CATEGORY_RIBBON, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES[0]);
         this.ribbonModeSetting.addValueObserver (value -> {
-            for (int i = 0; i < RIBBON_MODE_VALUES.length; i++)
-            {
-                if (RIBBON_MODE_VALUES[i].equals (value))
-                    this.ribbonMode = i;
-            }
+            this.ribbonMode = lookupIndex (RIBBON_MODE_VALUES, value);
             this.notifyObservers (RIBBON_MODE);
         });
 
@@ -950,27 +990,13 @@ public class PushConfiguration extends AbstractConfiguration
     {
         this.velocityCurveSetting = settingsUI.getEnumSetting ("Velocity Curve", CATEGORY_PADS, PushControlSurface.PUSH_PAD_CURVES_NAME, PushControlSurface.PUSH_PAD_CURVES_NAME[1]);
         this.velocityCurveSetting.addValueObserver (value -> {
-            for (int i = 0; i < PushControlSurface.PUSH_PAD_CURVES_NAME.length; i++)
-            {
-                if (PushControlSurface.PUSH_PAD_CURVES_NAME[i].equals (value))
-                {
-                    this.velocityCurve = i;
-                    break;
-                }
-            }
+            this.velocityCurve = lookupIndex (PushControlSurface.PUSH_PAD_CURVES_NAME, value);
             this.notifyObservers (VELOCITY_CURVE);
         });
 
         this.padThresholdSetting = settingsUI.getEnumSetting ("Pad Threshold", CATEGORY_PADS, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[20]);
         this.padThresholdSetting.addValueObserver (value -> {
-            for (int i = 0; i < PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length; i++)
-            {
-                if (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[i].equals (value))
-                {
-                    this.padThreshold = i;
-                    break;
-                }
-            }
+            this.padThreshold = lookupIndex (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, value);
             this.notifyObservers (PAD_THRESHOLD);
         });
     }
@@ -1091,7 +1117,7 @@ public class PushConfiguration extends AbstractConfiguration
 
         this.colorEditSetting = settingsUI.getColorSetting ("Edit", CATEGORY_COLORS, DEFAULT_COLOR_EDIT);
         this.colorEditSetting.addValueObserver (color -> {
-            this.colorVU = new ColorEx (color[0], color[1], color[2]);
+            this.colorEdit = new ColorEx (color[0], color[1], color[2]);
             this.notifyObservers (COLOR_EDIT);
         });
 
@@ -1140,9 +1166,6 @@ public class PushConfiguration extends AbstractConfiguration
         if (!this.isPush2)
             return;
 
-        settingsUI.getEnumSetting ("Display window", CATEGORY_DEBUG, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]).addValueObserver (value -> {
-            this.isDisplayWindowVisible = "On".equals (value);
-            this.notifyObservers (DEBUG_WINDOW);
-        });
+        settingsUI.getSignalSetting (" ", CATEGORY_DEBUG, "Display window").addValueObserver (value -> this.notifyObservers (DEBUG_WINDOW));
     }
 }

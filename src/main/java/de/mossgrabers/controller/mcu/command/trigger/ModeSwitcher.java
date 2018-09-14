@@ -36,7 +36,7 @@ public class ModeSwitcher
     public void scrollUp ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveModeId ();
+        final Integer activeModeId = modeManager.getActiveOrTempModeId ();
         if (Modes.MODE_PAN.equals (activeModeId))
         {
             modeManager.setActiveMode (Modes.MODE_VOLUME);
@@ -66,7 +66,7 @@ public class ModeSwitcher
     public void scrollDown ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveModeId ();
+        final Integer activeModeId = modeManager.getActiveOrTempModeId ();
         if (Modes.MODE_PAN.equals (activeModeId))
         {
             modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);

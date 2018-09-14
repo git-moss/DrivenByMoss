@@ -32,7 +32,7 @@ public class LaunchpadControllerDefinition extends DefaultControllerDefinition
      */
     public LaunchpadControllerDefinition (final boolean isMkII)
     {
-        super ("", "Jürgen Moßgraber", "3.4", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_PRO, isMkII ? "Launchpad MkII" : "Launchpad Pro", "Novation", 1, 1);
+        super ("", "Jürgen Moßgraber", "3.41", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_PRO, isMkII ? "Launchpad MkII" : "Launchpad Pro", "Novation", 1, 1);
         this.isMkII = isMkII;
     }
 

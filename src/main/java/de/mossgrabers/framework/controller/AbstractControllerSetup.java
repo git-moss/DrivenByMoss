@@ -27,9 +27,9 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C extends Configuration> implements IControllerSetup
+public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C extends Configuration> implements IControllerSetup
 {
-    protected final List<S>       surfaces = new ArrayList<> ();
+    protected final List<S>       surfaces    = new ArrayList<> ();
     protected final IHost         host;
     protected final ISettingsUI   settings;
     protected final ISetupFactory factory;
@@ -38,7 +38,8 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
     protected IModel              model;
     protected C                   configuration;
     protected ColorManager        colorManager;
-    protected ValueChanger        valueChanger;
+    protected IValueChanger       valueChanger;
+    protected Integer             currentMode = null;
 
 
     /**
@@ -89,6 +90,14 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
 
     /** {@inheritDoc} */
     @Override
+    public C getConfiguration ()
+    {
+        return this.configuration;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void init ()
     {
         this.configuration.init (this.settings);
@@ -101,7 +110,7 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
         this.createViews ();
         this.registerTriggerCommands ();
         this.registerContinuousCommands ();
-        this.startup ();
+        this.model.ensureClip ();
 
         this.host.println ("Initialized.");
     }
@@ -161,13 +170,19 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
     /**
      * Create the views.
      */
-    protected abstract void createViews ();
+    protected void createViews ()
+    {
+        // Intentionally empty
+    }
 
 
     /**
      * Create the listeners.
      */
-    protected abstract void createObservers ();
+    protected void createObservers ()
+    {
+        // Intentionally empty
+    }
 
 
     /**
@@ -186,12 +201,6 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
     {
         // Intentionally empty
     }
-
-
-    /**
-     * Startup the controller.
-     */
-    protected abstract void startup ();
 
 
     /**
@@ -252,6 +261,14 @@ public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C ext
         surface.getViewManager ().registerNoteCommand (commandID, command);
         surface.assignNoteCommand (midiCC, commandID);
     }
+
+
+    /**
+     * Update the DAW indications for the given mode.
+     *
+     * @param mode The new mode
+     */
+    protected abstract void updateIndication (final Integer mode);
 
 
     /**

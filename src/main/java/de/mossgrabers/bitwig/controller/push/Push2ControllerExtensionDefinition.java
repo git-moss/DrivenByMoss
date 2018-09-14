@@ -37,4 +37,12 @@ public class Push2ControllerExtensionDefinition extends AbstractControllerExtens
     {
         return new PushControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()), true);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isUsingBetaAPI ()
+    {
+        return true;
+    }
 }

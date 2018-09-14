@@ -157,10 +157,10 @@ public class BrowserImpl extends AbstractBrowser
     public void browseToInsertBeforeDevice ()
     {
         this.stopBrowsing (false);
-        if (this.cursorDevice.hasSelectedDevice ())
+        if (this.cursorDevice.doesExist ())
             this.cursorDevice.browseToInsertBeforeDevice ();
         else
-            this.cursorTrack.browseToInsertAtStartOfChain ();
+            this.cursorTrack.startOfDeviceChainInsertionPoint ().browse ();
     }
 
 
@@ -170,10 +170,10 @@ public class BrowserImpl extends AbstractBrowser
     {
         this.stopBrowsing (false);
 
-        if (this.cursorDevice.hasSelectedDevice ())
+        if (this.cursorDevice.doesExist ())
             this.cursorDevice.browseToInsertAfterDevice ();
         else
-            this.cursorTrack.browseToInsertAtEndOfChain ();
+            this.cursorTrack.endOfDeviceChainInsertionPoint ().browse ();
     }
 
 

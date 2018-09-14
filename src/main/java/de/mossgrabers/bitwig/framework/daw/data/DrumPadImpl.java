@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 
 import com.bitwig.extension.controller.api.DrumPad;
@@ -15,23 +16,21 @@ import com.bitwig.extension.controller.api.DrumPad;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumPadImpl extends ChannelImpl implements IDrumPad
+public class DrumPadImpl extends LayerImpl implements IDrumPad
 {
-    private DrumPad drumPad;
-
-
     /**
      * Constructor.
      *
-     * @param drumPad The drum pad
+     * @param host The DAW host
      * @param valueChanger The valueChanger
+     * @param drumPad The drum pad
      * @param index The index of the channel in the page
      * @param numSends The number of sends of a bank
+     * @param numDevices The number of devices of a bank
      */
-    public DrumPadImpl (final DrumPad drumPad, final IValueChanger valueChanger, final int index, final int numSends)
+    public DrumPadImpl (final IHost host, final IValueChanger valueChanger, final DrumPad drumPad, final int index, final int numSends, final int numDevices)
     {
-        super (drumPad, valueChanger, index, numSends);
-        this.drumPad = drumPad;
+        super (host, valueChanger, drumPad, index, numSends, numDevices);
     }
 
 
@@ -39,6 +38,6 @@ public class DrumPadImpl extends ChannelImpl implements IDrumPad
     @Override
     public void browseToInsert ()
     {
-        this.drumPad.browseToInsertAtEndOfChain ();
+        ((DrumPad) this.channel).insertionPoint ().browse ();
     }
 }

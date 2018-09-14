@@ -136,16 +136,6 @@ public interface Display
 
 
     /**
-     * Displays a notification message on the display for a configured time.
-     *
-     * @param message The message to display
-     * @param onDisplay If true displays the message on the screen (in the DAW)
-     * @param onScreen If true displays the message on the display
-     */
-    void notify (final String message, final boolean onDisplay, final boolean onScreen);
-
-
-    /**
      * Flushes (only) the changed texts of all rows.
      */
     void flush ();

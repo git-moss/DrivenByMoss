@@ -4,11 +4,10 @@
 
 package de.mossgrabers.framework.command.core;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.view.View;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -19,7 +18,7 @@ import de.mossgrabers.framework.view.View;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractTriggerCommand<S extends ControlSurface<C>, C extends Configuration> implements TriggerCommand
+public abstract class AbstractTriggerCommand<S extends IControlSurface<C>, C extends Configuration> implements TriggerCommand
 {
     protected final IModel model;
     protected final S      surface;
@@ -62,13 +61,5 @@ public abstract class AbstractTriggerCommand<S extends ControlSurface<C>, C exte
     public void executeShifted (final ButtonEvent event)
     {
         // Intentionally empty
-    }
-
-
-    protected void selectTrack (final int index)
-    {
-        final View activeView = this.surface.getViewManager ().getActiveView ();
-        if (activeView != null)
-            activeView.selectTrack (index);
     }
 }

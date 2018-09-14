@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode;
+package de.mossgrabers.controller.push.mode;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -116,6 +116,8 @@ public class Modes
     public static final Integer       MODE_SESSION_VIEW_SELECT  = Integer.valueOf (47);
     /** Session mode. */
     public static final Integer       MODE_SESSION              = Integer.valueOf (48);
+    /** Markers mode. */
+    public static final Integer       MODE_MARKERS              = Integer.valueOf (49);
 
     private static final Set<Integer> TRACK_MODES               = new HashSet<> ();
     private static final Set<Integer> LAYER_MODES               = new HashSet<> ();
@@ -201,6 +203,7 @@ public class Modes
         ALL_MODES.add (MODE_INFO);
         ALL_MODES.add (MODE_SESSION_VIEW_SELECT);
         ALL_MODES.add (MODE_SESSION);
+        ALL_MODES.add (MODE_MARKERS);
     }
 
 

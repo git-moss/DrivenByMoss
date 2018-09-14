@@ -4,14 +4,16 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import de.mossgrabers.bitwig.framework.daw.SendBankImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ISendBank;
+import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 
 import com.bitwig.extension.controller.api.Channel;
-import com.bitwig.extension.controller.api.SendBank;
 import com.bitwig.extension.controller.api.SettableColorValue;
 
 
@@ -20,34 +22,34 @@ import com.bitwig.extension.controller.api.SettableColorValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ChannelImpl implements IChannel
+public class ChannelImpl extends AbstractItemImpl implements IChannel
 {
-    protected IValueChanger valueChanger;
-    protected Channel       channel;
+    protected final IValueChanger valueChanger;
+    protected final Channel       channel;
 
-    private ISend []        sends;
-    private int             index;
-    private boolean         selected;
-    private int             vu;
-    private int             vuLeft;
-    private int             vuRight;
-    private IParameter      volumeParameter;
-    private IParameter      panParameter;
+    private int                   vu;
+    private int                   vuLeft;
+    private int                   vuRight;
+    private IParameter            volumeParameter;
+    private IParameter            panParameter;
+    private ISendBank             sendBank;
 
 
     /**
      * Constructor.
      *
-     * @param channel The channel
+     * @param host The DAW host
      * @param valueChanger The valueChanger
+     * @param channel The channel
      * @param index The index of the channel in the page
      * @param numSends The number of sends of a bank
      */
-    public ChannelImpl (final Channel channel, final IValueChanger valueChanger, final int index, final int numSends)
+    public ChannelImpl (final IHost host, final IValueChanger valueChanger, final Channel channel, final int index, final int numSends)
     {
+        super (index);
+
         this.channel = channel;
         this.valueChanger = valueChanger;
-        this.index = index;
 
         if (channel == null)
             return;
@@ -59,21 +61,15 @@ public class ChannelImpl implements IChannel
         channel.solo ().markInterested ();
         channel.color ().markInterested ();
 
+        this.volumeParameter = new ParameterImpl (valueChanger, channel.volume (), 0);
+        this.panParameter = new ParameterImpl (valueChanger, channel.pan (), 0);
+
         final int maxParameterValue = valueChanger.getUpperBound ();
-
-        this.volumeParameter = new ParameterImpl (valueChanger, channel.volume (), maxParameterValue);
-        this.panParameter = new ParameterImpl (valueChanger, channel.pan (), maxParameterValue);
-
         channel.addVuMeterObserver (maxParameterValue, -1, true, value -> this.handleVUMeters (maxParameterValue, value));
         channel.addVuMeterObserver (maxParameterValue, 0, true, value -> this.handleVULeftMeter (maxParameterValue, value));
         channel.addVuMeterObserver (maxParameterValue, 1, true, value -> this.handleVURightMeter (maxParameterValue, value));
 
-        this.sends = new SendImpl [numSends];
-        if (numSends == 0)
-            return;
-        final SendBank sendBank = channel.sendBank ();
-        for (int i = 0; i < numSends; i++)
-            this.sends[i] = new SendImpl (valueChanger, sendBank.getItemAt (i), maxParameterValue, i);
+        this.sendBank = new SendBankImpl (host, valueChanger, numSends == 0 ? null : channel.sendBank (), numSends);
     }
 
 
@@ -91,32 +87,7 @@ public class ChannelImpl implements IChannel
         this.volumeParameter.enableObservers (enable);
         this.panParameter.enableObservers (enable);
 
-        for (final ISend send: this.sends)
-            send.enableObservers (enable);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getIndex ()
-    {
-        return this.index;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isSelected ()
-    {
-        return this.selected;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setSelected (final boolean isSelected)
-    {
-        this.selected = isSelected;
+        this.sendBank.enableObservers (enable);
     }
 
 
@@ -416,17 +387,9 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
-    public int getNumSends ()
+    public void remove ()
     {
-        return this.sends.length;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISend getSend (final int sendIndex)
-    {
-        return sendIndex < this.sends.length ? this.sends[sendIndex] : null;
+        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/180
     }
 
 
@@ -444,13 +407,6 @@ public class ChannelImpl implements IChannel
     {
         this.channel.selectInEditor ();
         this.channel.selectInMixer ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void makeVisible ()
-    {
         this.channel.makeVisibleInArranger ();
         this.channel.makeVisibleInMixer ();
     }
@@ -458,10 +414,17 @@ public class ChannelImpl implements IChannel
 
     /** {@inheritDoc} */
     @Override
-    public void selectAndMakeVisible ()
+    public ISendBank getSendBank ()
     {
-        this.select ();
-        this.makeVisible ();
+        return this.sendBank;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void enter ()
+    {
+        // Intentionally empty
     }
 
 

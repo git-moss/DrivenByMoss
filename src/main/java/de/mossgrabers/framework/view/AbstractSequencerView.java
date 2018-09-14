@@ -4,11 +4,11 @@
 
 package de.mossgrabers.framework.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -19,7 +19,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractSequencerView<S extends ControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
+public abstract class AbstractSequencerView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
 {
     /** The color for highlighting a step with no content. */
     public static final String       COLOR_STEP_HILITE_NO_CONTENT = "COLOR_STEP_HILITE_NO_CONTENT";
@@ -37,6 +37,16 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     public static final String       COLOR_ACTIVE_PAGE            = "COLOR_ACTIVE_PAGE";
     /** The color for a selected page. */
     public static final String       COLOR_SELECTED_PAGE          = "COLOR_SELECTED_PAGE";
+    /** The color for resolution off. */
+    public static final String       COLOR_RESOLUTION_OFF         = "COLOR_RESOLUTION_OFF";
+    /** The color for resolution. */
+    public static final String       COLOR_RESOLUTION             = "COLOR_RESOLUTION";
+    /** The color for selected resolution. */
+    public static final String       COLOR_RESOLUTION_SELECTED    = "COLOR_RESOLUTION_SELECTED";
+    /** The color for transposition. */
+    public static final String       COLOR_TRANSPOSE              = "COLOR_TRANSPOSE";
+    /** The color for selected transposition. */
+    public static final String       COLOR_TRANSPOSE_SELECTED     = "COLOR_TRANSPOSE_SELECTED";
 
     protected static final double [] RESOLUTIONS                  =
     {
@@ -106,13 +116,12 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
         this.configuration = this.surface.getConfiguration ();
 
         this.selectedIndex = 4;
-        this.scales = this.model.getScales ();
 
         this.offsetY = 0;
 
         this.numSequencerRows = numSequencerRows;
 
-        this.model.getCursorClip (clipCols, clipRows);
+        this.getClip ();
     }
 
 
@@ -121,18 +130,8 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     public void onActivate ()
     {
         super.onActivate ();
-        final ICursorClip clip = this.getClip ();
-        clip.enableObservers (true);
+        final INoteClip clip = this.getClip ();
         clip.setStepLength (RESOLUTIONS[this.selectedIndex]);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onDeactivate ()
-    {
-        super.onDeactivate ();
-        this.getClip ().enableObservers (false);
     }
 
 
@@ -177,9 +176,9 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      *
      * @return The clip
      */
-    public ICursorClip getClip ()
+    public final INoteClip getClip ()
     {
-        return this.model.getCursorClip (this.clipCols, this.clipRows);
+        return this.model.getNoteClip (this.clipCols, this.clipRows);
     }
 
 
@@ -191,7 +190,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
      */
     protected boolean isInXRange (final int x)
     {
-        final ICursorClip clip = this.getClip ();
+        final INoteClip clip = this.getClip ();
         final int stepSize = clip.getNumSteps ();
         final int start = clip.getEditPage () * stepSize;
         return x >= start && x < start + stepSize;
@@ -206,7 +205,7 @@ public abstract class AbstractSequencerView<S extends ControlSurface<C>, C exten
     protected int getScrollOffset ()
     {
         final int pos = this.numSequencerRows;
-        return pos / 7 * 12 + this.noteMap[pos % 7] - this.noteMap[0];
+        return pos / 7 * 12 + this.keyManager.map (pos % 7) - this.keyManager.map (0);
     }
 
 

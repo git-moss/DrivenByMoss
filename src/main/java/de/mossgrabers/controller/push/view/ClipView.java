@@ -2,17 +2,17 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.view;
+package de.mossgrabers.controller.push.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.PushColors;
-import de.mossgrabers.push.controller.PushControlSurface;
 
 
 /**
@@ -48,8 +48,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     @Override
     public void updateNoteMapping ()
     {
-        this.noteMap = Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.noteMap);
+        this.delayedUpdateNoteMapping (EMPTY_TABLE);
     }
 
 
@@ -80,9 +79,11 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
 
         // Clip length/loop area
         final int pad = (7 - y) * 8 + x;
-        if (velocity > 0) // Button pressed
+        // Button pressed?
+        if (velocity > 0)
         {
-            if (this.loopPadPressed == -1) // Not yet a button pressed, store it
+            // Not yet a button pressed, store it
+            if (this.loopPadPressed == -1)
                 this.loopPadPressed = pad;
         }
         else if (this.loopPadPressed != -1)
@@ -93,7 +94,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
 
             // Set a new loop between the 2 selected pads
             final double newStart = start * quartersPerPad;
-            final ICursorClip clip = this.getClip ();
+            final IClip clip = this.getClip ();
             clip.setLoopStart (newStart);
             clip.setLoopLength ((int) ((end - start) * quartersPerPad));
             clip.setPlayRange (newStart, end * quartersPerPad);
@@ -107,15 +108,16 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     @Override
     public void drawGrid ()
     {
+        final INoteClip clip = this.getClip ();
         // Clip length/loop area
-        final int step = this.getClip ().getCurrentStep ();
+        final int step = clip.getCurrentStep ();
         final double quartersPerPad = this.getQuartersPerPad ();
         final int stepsPerMeasure = (int) Math.round (quartersPerPad / RESOLUTIONS[this.selectedIndex]);
         final int currentMeasure = step / stepsPerMeasure;
         final double maxQuarters = quartersPerPad * 64;
-        final double start = this.getClip ().getLoopStart ();
+        final double start = clip.getLoopStart ();
         final int loopStartPad = (int) Math.floor (Math.max (0, start) / quartersPerPad);
-        final int loopEndPad = (int) Math.ceil (Math.min (maxQuarters, start + this.getClip ().getLoopLength ()) / quartersPerPad);
+        final int loopEndPad = (int) Math.ceil (Math.min (maxQuarters, start + clip.getLoopLength ()) / quartersPerPad);
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int white = isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE;
         final int green = isPush2 ? PushColors.PUSH2_COLOR2_GREEN : PushColors.PUSH1_COLOR2_GREEN;
@@ -132,8 +134,11 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
         if (event != ButtonEvent.DOWN)
             return;
         final int res = 7 - index;
-        if (res <= 3)
-            this.padResolution = res;
+        if (res > 3)
+            return;
+
+        this.padResolution = res;
+        this.surface.getDisplay ().notify ("1/" + this.padResolutions[this.padResolution]);
     }
 
 
@@ -141,17 +146,14 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     @Override
     public void updateSceneButtons ()
     {
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int yellow = isPush2 ? PushColors.PUSH2_COLOR_SCENE_YELLOW : PushColors.PUSH1_COLOR_SCENE_YELLOW;
-        final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;
-        final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
-        for (int i = 0; i < 8; i++)
-        {
-            if (i < 3)
-                this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, i == this.padResolution ? yellow : green);
-            else
-                this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, off);
-        }
+        final ColorManager colorManager = this.model.getColorManager ();
+        final int colorResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION);
+        final int colorSelectedResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED);
+        final int colorOff = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
+        for (int i = 0; i < 3; i++)
+            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, i == this.padResolution ? colorSelectedResolution : colorResolution);
+        for (int i = 3; i < 8; i++)
+            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, colorOff);
     }
 
 

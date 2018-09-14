@@ -2,16 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.mcu.mode.track;
+package de.mossgrabers.controller.mcu.mode.track;
 
-import de.mossgrabers.framework.StringUtils;
+import de.mossgrabers.controller.mcu.MCUConfiguration;
+import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.mcu.MCUConfiguration;
-import de.mossgrabers.mcu.controller.MCUControlSurface;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -37,8 +36,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)
             return;
 
@@ -61,10 +59,10 @@ public class TrackMode extends AbstractTrackMode
             if (config.isDisplayCrossfader ())
                 selectedTrack.changeCrossfadeModeAsNumber (value);
             else if (!effectTrackBankActive)
-                selectedTrack.getSend (0).changeValue (value);
+                selectedTrack.getSendBank ().getItem (0).changeValue (value);
         }
         else if (!effectTrackBankActive)
-            selectedTrack.getSend (index - (config.isDisplayCrossfader () ? 3 : 2)).changeValue (value);
+            selectedTrack.getSendBank ().getItem (index - (config.isDisplayCrossfader () ? 3 : 2)).changeValue (value);
     }
 
 
@@ -81,11 +79,10 @@ public class TrackMode extends AbstractTrackMode
 
         final Display d = this.surface.getDisplay ().clear ();
 
-        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = currentTrackBank.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)
         {
-            d.notify ("Please select a track...", true, false);
+            d.notify ("Please select a track...");
             return;
         }
 
@@ -118,7 +115,7 @@ public class TrackMode extends AbstractTrackMode
             final int pos = sendStart + i;
             if (!isEffectTrackBankActive)
             {
-                final ISend send = selectedTrack.getSend (i);
+                final ISend send = selectedTrack.getSendBank ().getItem (i);
                 if (send.doesExist ())
                 {
                     if (!displayTrackNames)
@@ -138,10 +135,9 @@ public class TrackMode extends AbstractTrackMode
     @Override
     protected void updateKnobLEDs ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
 
-        final ITrack t = tb.getSelectedTrack ();
+        final ITrack t = this.model.getSelectedTrack ();
         if (t == null)
         {
             for (int i = 0; i < 8; i++)
@@ -163,7 +159,7 @@ public class TrackMode extends AbstractTrackMode
 
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
         for (int i = 0; i < end; i++)
-            this.surface.setKnobLED (start + i, MCUControlSurface.KNOB_LED_MODE_WRAP, isEffectTrackBankActive ? 0 : t.getSend (i).getValue (), upperBound);
+            this.surface.setKnobLED (start + i, MCUControlSurface.KNOB_LED_MODE_WRAP, isEffectTrackBankActive ? 0 : t.getSendBank ().getItem (i).getValue (), upperBound);
     }
 
 
@@ -171,8 +167,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)
             return;
         switch (index)
@@ -187,11 +182,11 @@ public class TrackMode extends AbstractTrackMode
                 if (this.surface.getConfiguration ().isDisplayCrossfader ())
                     selectedTrack.setCrossfadeMode ("AB");
                 else if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSend (0).resetValue ();
+                    selectedTrack.getSendBank ().getItem (0).resetValue ();
                 break;
             default:
                 if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSend (index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).resetValue ();
+                    selectedTrack.getSendBank ().getItem (index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).resetValue ();
                 break;
         }
     }

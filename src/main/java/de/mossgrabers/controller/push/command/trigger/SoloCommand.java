@@ -2,19 +2,18 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.command.trigger;
+package de.mossgrabers.controller.push.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.PushConfiguration.TrackState;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.PushConfiguration.TrackState;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -84,20 +83,19 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
             return;
         }
 
-        final Integer activeModeId = this.surface.getModeManager ().getActiveModeId ();
+        final Integer activeModeId = this.surface.getModeManager ().getActiveOrTempModeId ();
         if (Modes.isTrackMode (activeModeId))
         {
-            final IChannelBank tb = this.model.getCurrentTrackBank ();
-            final ITrack selTrack = tb.getSelectedTrack ();
+            final ITrack selTrack = this.model.getSelectedTrack ();
             if (selTrack != null)
                 selTrack.toggleSolo ();
         }
         else if (Modes.isLayerMode (activeModeId))
         {
             final ICursorDevice cd = this.model.getCursorDevice ();
-            final IChannel layer = cd.getSelectedLayerOrDrumPad ();
+            final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
             if (layer != null)
-                cd.toggleLayerOrDrumPadSolo (layer.getIndex ());
+                layer.toggleSolo ();
         }
         else if (activeModeId == Modes.MODE_MASTER)
             this.model.getMasterTrack ().toggleSolo ();

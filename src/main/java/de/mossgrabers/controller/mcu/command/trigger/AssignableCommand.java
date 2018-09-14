@@ -6,6 +6,7 @@ package de.mossgrabers.controller.mcu.command.trigger;
 
 import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
+import de.mossgrabers.controller.mcu.mode.Modes;
 import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -51,6 +52,11 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
             case MCUConfiguration.FOOTSWITCH_2_NEXT_MODE:
                 if (event == ButtonEvent.DOWN)
                     this.switcher.scrollUp ();
+                break;
+
+            case MCUConfiguration.SHOW_MARKER_MODE:
+                if (event == ButtonEvent.DOWN)
+                    this.surface.getModeManager ().setActiveMode (Modes.MODE_MARKER);
                 break;
 
             default:

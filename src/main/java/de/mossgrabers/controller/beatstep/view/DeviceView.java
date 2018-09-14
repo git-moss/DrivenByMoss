@@ -2,14 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.beatstep.view;
+package de.mossgrabers.controller.beatstep.view;
 
-import de.mossgrabers.beatstep.BeatstepConfiguration;
-import de.mossgrabers.beatstep.controller.BeatstepColors;
-import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
+import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
+import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
+import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.view.AbstractView;
 
@@ -50,7 +52,7 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             return;
         }
 
-        cd.changeParameter (index - 8, value);
+        cd.getParameterBank ().getItem (index - 8).changeValue (value);
     }
 
 
@@ -65,12 +67,9 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             return;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
+        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+        final IChannel sel = bank.getSelectedItem ();
 
-        IChannel sel;
-        int index;
-        IChannel dl;
-        int bank;
-        int offset;
         switch (note - 36)
         {
             // Toggle device on/off
@@ -82,9 +81,8 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             case 1:
                 if (this.isLayer)
                 {
-                    sel = cd.getSelectedLayer ();
-                    index = sel == null || sel.getIndex () == 0 ? 0 : sel.getIndex () - 1;
-                    cd.selectLayer (index);
+                    final int index = sel == null || sel.getIndex () == 0 ? 0 : sel.getIndex () - 1;
+                    bank.getItem (index).select ();
                 }
                 else
                     cd.selectPrevious ();
@@ -94,9 +92,8 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             case 2:
                 if (this.isLayer)
                 {
-                    sel = cd.getSelectedLayer ();
-                    index = sel == null ? 0 : sel.getIndex () + 1;
-                    cd.selectLayer (index > 7 ? 7 : index);
+                    final int index = sel == null ? 0 : sel.getIndex () + 1;
+                    bank.getItem (index > 7 ? 7 : index).select ();
                 }
                 else
                     cd.selectNext ();
@@ -106,17 +103,13 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             case 3:
                 if (!cd.hasLayers ())
                     return;
-                dl = cd.getSelectedLayerOrDrumPad ();
                 if (this.isLayer)
                 {
-                    if (dl != null)
-                    {
-                        cd.enterLayerOrDrumPad (dl.getIndex ());
-                        cd.selectFirstDeviceInLayerOrDrumPad (dl.getIndex ());
-                    }
+                    if (sel != null)
+                        sel.enter ();
                 }
-                else if (dl == null)
-                    cd.selectLayerOrDrumPad (0);
+                else if (sel == null)
+                    bank.getItem (0).select ();
 
                 this.isLayer = !this.isLayer;
                 break;
@@ -143,18 +136,16 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
 
             // Param bank down
             case 6:
-                cd.setSelectedParameterPage (Math.max (cd.getSelectedParameterPage () - 8, 0));
+                cd.getParameterBank ().scrollBackwards ();
                 break;
 
             // Param bank page up
             case 7:
-                cd.setSelectedParameterPage (Math.min (cd.getSelectedParameterPage () + 8, cd.getParameterPageNames ().length - 1));
+                cd.getParameterBank ().scrollForwards ();
                 break;
 
             default:
-                bank = note - 36 - 8;
-                offset = cd.getSelectedParameterPage () / 8 * 8;
-                cd.setSelectedParameterPage (offset + bank);
+                cd.getParameterPageBank ().selectPage (note - 36 - 8);
                 break;
         }
     }
@@ -165,10 +156,11 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
     public void drawGrid ()
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final int offset = cd.getSelectedParameterPage () / 8 * 8;
+        final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
+        final int selectedItemIndex = parameterPageBank.getSelectedItemIndex ();
         final PadGrid padGrid = this.surface.getPadGrid ();
-        for (int i = 0; i < 8; i++)
-            padGrid.light (44 + i, offset + i == cd.getSelectedParameterPage () ? BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
+        for (int i = 0; i < parameterPageBank.getPageSize (); i++)
+            padGrid.light (44 + i, i == selectedItemIndex ? BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
         padGrid.light (36, cd.isEnabled () ? BeatstepColors.BEATSTEP_BUTTON_STATE_RED : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
         padGrid.light (37, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
         padGrid.light (38, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);

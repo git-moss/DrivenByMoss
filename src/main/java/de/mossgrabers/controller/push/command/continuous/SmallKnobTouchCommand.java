@@ -2,17 +2,18 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.command.continuous;
+package de.mossgrabers.controller.push.command.continuous;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.BaseMode;
+import de.mossgrabers.controller.push.mode.Modes;
+import de.mossgrabers.controller.push.mode.TransportMode;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.mode.BaseMode;
-import de.mossgrabers.push.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -22,15 +23,20 @@ import de.mossgrabers.push.mode.Modes;
  */
 public class SmallKnobTouchCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {
+    private boolean isTempo;
+
+
     /**
      * Constructor.
      *
      * @param model The model
      * @param surface The surface
+     * @param isTempo True for tempo change otherwise play position change
      */
-    public SmallKnobTouchCommand (final IModel model, final PushControlSurface surface)
+    public SmallKnobTouchCommand (final IModel model, final PushControlSurface surface, final boolean isTempo)
     {
         super (model, surface);
+        this.isTempo = isTempo;
     }
 
 
@@ -42,18 +48,22 @@ public class SmallKnobTouchCommand extends AbstractTriggerCommand<PushControlSur
 
         // Avoid accidentally leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_BROWSER))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
             return;
 
         // Prevent flickering if a knob is touched accidentally while fiddling with other knobs
-        final Mode activeMode = modeManager.getActiveMode ();
-        if (activeMode instanceof BaseMode && ((BaseMode) activeMode).isAKnobTouched ())
+        final Mode activeMode = modeManager.getActiveOrTempMode ();
+        if (activeMode instanceof BaseMode && ((BaseMode) activeMode).isAKnobTouched () && !(activeMode instanceof TransportMode))
             return;
 
-        this.model.getTransport ().setTempoIndication (isTouched);
+        if (this.isTempo)
+            this.model.getTransport ().setTempoIndication (isTouched);
+
         if (isTouched)
             modeManager.setActiveMode (Modes.MODE_TRANSPORT);
         else
             modeManager.restoreMode ();
+
+        modeManager.getMode (Modes.MODE_TRANSPORT).onValueKnobTouch (this.isTempo ? 4 : 6, isTouched);
     }
 }

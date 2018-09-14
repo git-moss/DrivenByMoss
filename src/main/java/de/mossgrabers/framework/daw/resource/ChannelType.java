@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.resource;
@@ -11,18 +11,20 @@ package de.mossgrabers.framework.daw.resource;
  */
 public enum ChannelType
 {
-    /** Audio Track */
+    /** A Track of unknown type. */
+    UNKNOWN,
+    /** Audio Track. */
     AUDIO,
-    /** Instrument Track */
+    /** Instrument Track. */
     INSTRUMENT,
-    /** Hybrid Track (Audio + Midi) */
+    /** Hybrid Track (Audio + Midi). */
     HYBRID,
-    /** Group Track */
-    GROUP, // isGroup
-    /** Effect Track */
+    /** A group Track. */
+    GROUP,
+    /** An effect Track. */
     EFFECT,
-    /** Master Track */
+    /** The master Track. */
     MASTER,
-    /** A device layer */
+    /** A device layer. */
     LAYER
 }

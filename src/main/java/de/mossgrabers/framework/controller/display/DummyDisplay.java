@@ -134,15 +134,6 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public void notify (final String message, final boolean onDisplay, final boolean onScreen)
-    {
-        if (onScreen)
-            this.host.showNotification (message);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void flush ()
     {
         // Intentionally empty

@@ -2,23 +2,24 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.view;
+package de.mossgrabers.controller.push.view;
 
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.command.trigger.SelectSessionViewCommand;
+import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.command.trigger.SelectSessionViewCommand;
-import de.mossgrabers.push.controller.PushColors;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.mode.Modes;
 
 
 /**
@@ -28,6 +29,11 @@ import de.mossgrabers.push.mode.Modes;
  */
 public class SessionView extends AbstractSessionView<PushControlSurface, PushConfiguration>
 {
+    private static final int NUMBER_OF_RETRIES = 20;
+
+    protected int            startRetries;
+
+
     /**
      * Constructor.
      *
@@ -76,34 +82,36 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
             t = s;
             s = dummy;
         }
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
 
         // Birds-eye-view navigation
         if (this.surface.isShiftPressed ())
         {
+            final ISceneBank sceneBank = tb.getSceneBank ();
+
             // Calculate page offsets
-            final int numTracks = tb.getNumTracks ();
-            final int numScenes = tb.getNumScenes ();
-            final int trackPosition = tb.getTrack (0).getPosition () / numTracks;
-            final int scenePosition = tb.getScenePosition () / numScenes;
+            final int numTracks = tb.getPageSize ();
+            final int numScenes = sceneBank.getPageSize ();
+            final int trackPosition = tb.getItem (0).getPosition () / numTracks;
+            final int scenePosition = sceneBank.getScrollPosition () / numScenes;
             final int selX = flipSession ? scenePosition : trackPosition;
             final int selY = flipSession ? trackPosition : scenePosition;
             final int padsX = flipSession ? this.rows : this.columns;
             final int padsY = flipSession ? this.columns : this.rows;
             final int offsetX = selX / padsX * padsX;
             final int offsetY = selY / padsY * padsY;
-            tb.scrollToChannel (offsetX * numTracks + t * padsX);
-            tb.scrollToScene (offsetY * numScenes + s * padsY);
+            tb.scrollTo (offsetX * numTracks + t * padsX);
+            sceneBank.scrollTo (offsetY * numScenes + s * padsY);
             return;
         }
 
         // Duplicate a clip
-        final ITrack track = tb.getTrack (t);
+        final ITrack track = tb.getItem (t);
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
         {
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
             if (track.doesExist ())
-                track.getSlot (s).duplicate ();
+                track.getSlotBank ().getItem (s).duplicate ();
             return;
         }
 
@@ -121,14 +129,29 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
             if (!track.doesExist ())
                 return;
-            track.getSlot (s).browse ();
+            track.getSlotBank ().getItem (s).browse ();
             final ModeManager modeManager = this.surface.getModeManager ();
-            if (!modeManager.isActiveMode (Modes.MODE_BROWSER))
-                modeManager.setActiveMode (Modes.MODE_BROWSER);
+            if (!modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
+                this.activateMode ();
             return;
         }
 
         super.onGridNote (note, velocity);
+    }
+
+
+    /**
+     * Tries to activate the mode 20 times.
+     */
+    protected void activateMode ()
+    {
+        if (this.model.getBrowser ().isActive ())
+            this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
+        else if (this.startRetries < NUMBER_OF_RETRIES)
+        {
+            this.startRetries++;
+            this.surface.scheduleTask (this::activateMode, 200);
+        }
     }
 
 
@@ -145,12 +168,18 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     @Override
     public void updateSceneButtons ()
     {
+        final ColorManager colorManager = this.model.getColorManager ();
+        final int colorScene = colorManager.getColor (AbstractSessionView.COLOR_SCENE);
+        final int colorSceneSelected = colorManager.getColor (AbstractSessionView.COLOR_SELECTED_SCENE);
+        final int colorSceneOff = colorManager.getColor (AbstractSessionView.COLOR_SCENE_OFF);
+
         final ISceneBank sceneBank = this.model.getSceneBank ();
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
-        final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, sceneBank.sceneExists (7 - i) ? green : off);
+        {
+            final IScene scene = sceneBank.getItem (7 - i);
+            final int color = scene.doesExist () ? scene.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
+            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
+        }
     }
 
 

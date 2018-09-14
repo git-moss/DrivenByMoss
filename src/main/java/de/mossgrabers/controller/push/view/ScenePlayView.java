@@ -2,19 +2,21 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.view;
+package de.mossgrabers.controller.push.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.PushColors;
-import de.mossgrabers.push.controller.PushControlSurface;
 
 
 /**
@@ -62,11 +64,18 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     public void drawGrid ()
     {
         final ISceneBank sceneBank = this.trackBank.getSceneBank ();
+        final PadGrid padGrid = this.surface.getPadGrid ();
+        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         for (int i = 0; i < 64; i++)
         {
-            final IScene scene = sceneBank.getScene (i);
-            final String color = scene.doesExist () ? this.trackBank.getColorOfFirstClipInScene (i) : PadGrid.GRID_OFF;
-            this.surface.getPadGrid ().light (36 + i, color);
+            final IScene scene = sceneBank.getItem (i);
+            if (scene.isSelected ())
+                padGrid.light (36 + i, isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE);
+            else
+            {
+                final String color = scene.doesExist () ? DAWColors.getColorIndex (scene.getColor ()) : PadGrid.GRID_OFF;
+                padGrid.light (36 + i, color);
+            }
         }
     }
 
@@ -75,8 +84,20 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity != 0)
-            this.trackBank.launchScene (note - 36);
+        if (velocity == 0)
+            return;
+
+        final IScene scene = this.trackBank.getSceneBank ().getItem (note - 36);
+
+        if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
+        {
+            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
+            scene.duplicate ();
+            return;
+        }
+
+        scene.launch ();
+        scene.select ();
     }
 
 
@@ -92,8 +113,8 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     @Override
     public void updateSceneButtons ()
     {
-        final int black = this.surface.getConfiguration ().isPush2 () ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
+        final int colorOff = this.model.getColorManager ().getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, black);
+            this.surface.updateButton (this.surface.getSceneButton (i), colorOff);
     }
 }

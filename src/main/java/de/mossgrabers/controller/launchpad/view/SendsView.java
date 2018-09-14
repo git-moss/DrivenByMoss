@@ -2,18 +2,18 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad.view;
+package de.mossgrabers.controller.launchpad.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -43,7 +43,7 @@ public class SendsView extends AbstractFaderView
     public void onValueKnob (final int index, final int value)
     {
         if (!this.model.isEffectTrackBankActive ())
-            this.model.getTrackBank ().getTrack (index).getSend (this.selectedSend).setValue (value);
+            this.model.getTrackBank ().getItem (index).getSendBank ().getItem (this.selectedSend).setValue (value);
     }
 
 
@@ -61,16 +61,18 @@ public class SendsView extends AbstractFaderView
     public void drawGrid ()
     {
         final ColorManager cm = this.model.getColorManager ();
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final IMidiOutput output = this.surface.getOutput ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = tb.getTrack (i);
-            final ISend send = track.getSend (this.selectedSend);
-            final int color = cm.getColor (BitwigColors.getColorIndex (track.getColor ()));
-            if (this.trackColors[i] != color || !track.doesExist () || send.getName ().isEmpty ())
+            final ITrack track = tb.getItem (i);
+            final ISend send = track.getSendBank ().getItem (this.selectedSend);
+            final int color = cm.getColor (DAWColors.getColorIndex (track.getColor ()));
+            if (this.trackColors[i] != color)
+            {
+                this.trackColors[i] = color;
                 this.setupFader (i);
-            this.trackColors[i] = color;
+            }
             output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, send.getValue ());
         }
     }

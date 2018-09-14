@@ -4,11 +4,11 @@
 
 package de.mossgrabers.framework.command.trigger.track;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -19,7 +19,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class CrossfadeModeCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class CrossfadeModeCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     private int index;
 
@@ -43,6 +43,6 @@ public class CrossfadeModeCommand<S extends ControlSurface<C>, C extends Configu
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getTrack (this.index).toggleCrossfadeMode ();
+            this.model.getCurrentTrackBank ().getItem (this.index).toggleCrossfadeMode ();
     }
 }

@@ -2,13 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad.view;
+package de.mossgrabers.controller.launchpad.view;
 
+import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractDrumView64;
-import de.mossgrabers.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
 /**
@@ -35,7 +35,7 @@ public class DrumView64 extends AbstractDrumView64<LaunchpadControlSurface, Laun
     protected void handleDeleteButton (final int playedPad)
     {
         this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-        this.model.getCursorClip ().clearRow (this.offsetY + playedPad);
+        this.model.getNoteClip (8, 128).clearRow (this.offsetY + playedPad);
     }
 
 

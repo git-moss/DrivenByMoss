@@ -2,16 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode.device;
+package de.mossgrabers.controller.push.mode.device;
 
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.DisplayMessage;
-import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 
 
 /**
@@ -41,9 +41,9 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + index);
         if (layer.doesExist ())
-            cd.changeLayerOrDrumPadVolume (offset + index, value);
+            layer.changeVolume (value);
     }
 
 
@@ -57,7 +57,7 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final IChannel layer = cd.getLayerOrDrumPad (offset + index);
+        final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + index);
         if (!layer.doesExist ())
             return;
 
@@ -66,14 +66,12 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
             if (this.surface.isDeletePressed ())
             {
                 this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                cd.resetLayerOrDrumPadVolume (offset + index);
+                layer.resetVolume ();
                 return;
             }
-
-            this.surface.getDisplay ().notify ("Volume: " + layer.getVolumeStr ());
         }
 
-        cd.touchLayerOrDrumPadVolume (layer.getIndex (), isTouched);
+        layer.touchVolume (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
 
@@ -90,7 +88,7 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
         final PushConfiguration config = this.surface.getConfiguration ();
         for (int i = 0; i < 8; i++)
         {
-            final IChannel layer = cd.getLayerOrDrumPad (offset + i);
+            final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + i);
             d.setCell (0, i, layer.doesExist () ? "Volume" : "").setCell (1, i, layer.getVolumeStr (8));
             if (layer.doesExist ())
                 d.setCell (2, i, config.isEnableVUMeters () ? layer.getVu () : layer.getVolume (), Format.FORMAT_VALUE);
@@ -105,8 +103,8 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplayElements (final DisplayMessage message, final ICursorDevice cd, final IChannel l)
+    public void updateDisplayElements (final DisplayModel message, final ICursorDevice cd, final IChannel l)
     {
-        this.updateChannelDisplay (message, cd, DisplayMessage.GRID_ELEMENT_CHANNEL_VOLUME, true, false);
+        this.updateChannelDisplay (message, cd, DisplayModel.GRID_ELEMENT_CHANNEL_VOLUME, true, false);
     }
 }

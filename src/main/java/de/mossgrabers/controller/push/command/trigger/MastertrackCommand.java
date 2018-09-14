@@ -2,16 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.command.trigger;
+package de.mossgrabers.controller.push.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -43,7 +43,7 @@ public class MastertrackCommand extends AbstractTriggerCommand<PushControlSurfac
     {
         // Avoid accidentally leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_BROWSER))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
             return;
 
         switch (event)
@@ -72,16 +72,16 @@ public class MastertrackCommand extends AbstractTriggerCommand<PushControlSurfac
             return;
         }
 
-        if (modeManager.getActiveModeId () == Modes.MODE_MASTER)
+        if (modeManager.getActiveOrTempModeId () == Modes.MODE_MASTER)
         {
             if (this.selectedTrackBeforeMasterMode >= 0)
-                this.model.getCurrentTrackBank ().getTrack (this.selectedTrackBeforeMasterMode).select ();
+                this.model.getCurrentTrackBank ().getItem (this.selectedTrackBeforeMasterMode).select ();
             return;
         }
 
         modeManager.setActiveMode (Modes.MODE_MASTER);
         this.model.getMasterTrack ().select ();
-        final ITrack track = this.model.getCurrentTrackBank ().getSelectedTrack ();
+        final ITrack track = this.model.getSelectedTrack ();
         this.selectedTrackBeforeMasterMode = track == null ? -1 : track.getIndex ();
     }
 }

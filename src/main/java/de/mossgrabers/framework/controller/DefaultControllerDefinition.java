@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.controller;
 
+import de.mossgrabers.framework.usb.UsbMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -132,6 +133,14 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
     public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
     {
         return new ArrayList<> ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public UsbMatcher claimUSBDevice ()
+    {
+        return null;
     }
 
 

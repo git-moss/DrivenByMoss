@@ -2,9 +2,9 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.mode;
+package de.mossgrabers.controller.apc.mode;
 
-import de.mossgrabers.apc.controller.APCControlSurface;
+import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 
@@ -37,7 +37,7 @@ public class SendMode extends BaseMode
     @Override
     public void setValue (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).getSend (this.sendIndex).setValue (value);
+        this.model.getCurrentTrackBank ().getItem (index).getSendBank ().getItem (this.sendIndex).setValue (value);
     }
 
 
@@ -47,7 +47,7 @@ public class SendMode extends BaseMode
     {
         if (this.model.isEffectTrackBankActive ())
             return Integer.valueOf (0);
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
-        return track.doesExist () ? Integer.valueOf (track.getSend (this.sendIndex).getValue ()) : null;
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        return track.doesExist () ? Integer.valueOf (track.getSendBank ().getItem (this.sendIndex).getValue ()) : null;
     }
 }

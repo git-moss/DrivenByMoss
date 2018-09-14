@@ -2,22 +2,21 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode.track;
+package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.BaseMode;
+import de.mossgrabers.controller.push.view.ColorView;
+import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.push.controller.DisplayMessage;
-import de.mossgrabers.push.controller.PushColors;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.controller.PushDisplay;
-import de.mossgrabers.push.mode.BaseMode;
-import de.mossgrabers.push.view.ColorView;
-import de.mossgrabers.push.view.Views;
 
 
 /**
@@ -88,8 +87,8 @@ public class TrackDetailsMode extends BaseMode
 
     private void onFirstRowTrack (final int index)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getSelectedItem ();
         if (t == null)
             return;
 
@@ -169,7 +168,7 @@ public class TrackDetailsMode extends BaseMode
             d.setCell (3, 5, deviceChain.isAutoMonitor () ? "On" : "Off");
             final boolean hasPinning = this.model.getHost ().hasPinning ();
             d.setCell (2, 6, hasPinning ? "Pin Trck" : "");
-            d.setCell (3, 6, hasPinning ? (this.model.isCursorTrackPinned () ? "On" : "Off") : "");
+            d.setCell (3, 6, hasPinning ? this.model.isCursorTrackPinned () ? "On" : "Off" : "");
             d.setCell (2, 7, "Select").setCell (3, 7, "Color").done (0).done (1).done (2).done (3);
         }
     }
@@ -179,9 +178,7 @@ public class TrackDetailsMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
-
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         final ITrack deviceChain = this.getSelectedTrack ();
         if (deviceChain == null)
             message.setMessage (3, "Please select a track...");
@@ -197,14 +194,13 @@ public class TrackDetailsMode extends BaseMode
             message.addOptionElement ("", "", false, "", hasPinning ? "Pin Track" : "", hasPinning && this.model.isCursorTrackPinned (), false);
             message.addOptionElement ("", "", false, "", "Select Color", false, false);
         }
-        display.send (message);
+        message.send ();
     }
 
 
     private ITrack getSelectedTrack ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getSelectedTrack ();
+        final ITrack t = this.model.getSelectedTrack ();
         if (t != null)
             return t;
         final IMasterTrack master = this.model.getMasterTrack ();

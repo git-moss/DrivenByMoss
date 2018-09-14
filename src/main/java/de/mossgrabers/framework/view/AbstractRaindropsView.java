@@ -4,13 +4,14 @@
 
 package de.mossgrabers.framework.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -21,7 +22,7 @@ import de.mossgrabers.framework.scale.Scales;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
+public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
 {
     protected static final int NUM_DISPLAY_COLS = 8;
     protected static final int NUM_OCTAVE       = 12;
@@ -47,7 +48,6 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
         this.useTrackColor = useTrackColor;
 
         this.offsetY = AbstractRaindropsView.START_KEY;
-        this.getClip ().scrollTo (0, AbstractRaindropsView.START_KEY);
 
         this.canScrollUp = false;
         this.canScrollDown = false;
@@ -86,14 +86,15 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
         final int y = index / 8;
         final int stepSize = y == 0 ? 1 : 2 * y;
 
-        final int length = (int) Math.floor (this.getClip ().getLoopLength () / RESOLUTIONS[this.selectedIndex]);
-        final int distance = this.getNoteDistance (this.noteMap[x], length);
-        this.getClip ().clearRow (this.noteMap[x]);
+        final INoteClip clip = this.getClip ();
+        final int length = (int) Math.floor (clip.getLoopLength () / RESOLUTIONS[this.selectedIndex]);
+        final int distance = this.getNoteDistance (this.keyManager.map (x), length);
+        clip.clearRow (this.keyManager.map (x));
         if (distance == -1 || distance != (y == 0 ? 1 : y * 2))
         {
-            final int offset = this.getClip ().getCurrentStep () % stepSize;
+            final int offset = clip.getCurrentStep () % stepSize;
             for (int i = offset; i < length; i += stepSize)
-                this.getClip ().setStep (i, this.noteMap[x], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, RESOLUTIONS[this.selectedIndex]);
+                clip.setStep (i, this.keyManager.map (x), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, RESOLUTIONS[this.selectedIndex]);
         }
     }
 
@@ -102,24 +103,26 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
     @Override
     public void drawGrid ()
     {
+        final PadGrid padGrid = this.surface.getPadGrid ();
         if (!this.model.canSelectedTrackHoldNotes ())
         {
-            this.surface.getPadGrid ().turnOff ();
+            padGrid.turnOff ();
             return;
         }
 
         if (this.ongoingResolutionChange)
             return;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = this.useTrackColor ? tb.getSelectedTrack () : null;
+        final ITrack selectedTrack = this.useTrackColor ? this.model.getSelectedTrack () : null;
 
-        final int length = (int) Math.floor (this.getClip ().getLoopLength () / RESOLUTIONS[this.selectedIndex]);
-        final int step = this.getClip ().getCurrentStep ();
+        final INoteClip clip = this.getClip ();
+        final int length = (int) Math.floor (clip.getLoopLength () / RESOLUTIONS[this.selectedIndex]);
+        final int step = clip.getCurrentStep ();
         for (int x = 0; x < AbstractRaindropsView.NUM_DISPLAY_COLS; x++)
         {
-            final int left = this.getNoteDistanceToTheLeft (this.noteMap[x], step, length);
-            final int right = this.getNoteDistanceToTheRight (this.noteMap[x], step, length);
+            final int mappedKey = this.keyManager.map (x);
+            final int left = this.getNoteDistanceToTheLeft (mappedKey, step, length);
+            final int right = this.getNoteDistanceToTheRight (mappedKey, step, length);
             final boolean isOn = left >= 0 && right >= 0;
             final int sum = left + right;
             final int distance = sum == 0 ? 0 : (sum + 1) / 2;
@@ -134,7 +137,7 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
                     if (left <= distance && y == left || left > distance && y == sum - left)
                         colorID = AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT;
                 }
-                this.surface.getPadGrid ().lightEx (x, this.numDisplayRows - 1 - y, colorID);
+                padGrid.lightEx (x, this.numDisplayRows - 1 - y, colorID);
             }
         }
     }
@@ -160,7 +163,9 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
             return;
         this.offsetY = Math.max (0, this.offsetY - AbstractRaindropsView.NUM_OCTAVE);
         this.updateScale ();
-        this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.noteMap[0], this.noteMap[7]), true, true);
+        this.surface.scheduleTask ( () -> {
+            this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.keyManager.map (0), this.keyManager.map (7)));
+        }, 10);
     }
 
 
@@ -170,25 +175,29 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.offsetY = Math.min (this.getClip ().getNumRows () - AbstractRaindropsView.NUM_OCTAVE, this.offsetY + AbstractRaindropsView.NUM_OCTAVE);
+        final int numRows = this.getClip ().getNumRows ();
+        this.offsetY = Math.min (numRows - AbstractRaindropsView.NUM_OCTAVE, this.offsetY + AbstractRaindropsView.NUM_OCTAVE);
         this.updateScale ();
-        this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.noteMap[0], this.noteMap[7]), true, true);
+        this.surface.scheduleTask ( () -> {
+            this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.keyManager.map (0), this.keyManager.map (7)));
+        }, 10);
     }
 
 
     protected int getNoteDistance (final int row, final int length)
     {
         int step;
+        final INoteClip clip = this.getClip ();
         for (step = 0; step < length; step++)
         {
-            if (this.getClip ().getStep (step, row) > 0)
+            if (clip.getStep (step, row) > 0)
                 break;
         }
         if (step >= length)
             return -1;
         for (int step2 = step + 1; step2 < length; step2++)
         {
-            if (this.getClip ().getStep (step2, row) > 0)
+            if (clip.getStep (step2, row) > 0)
                 return step2 - step;
         }
         return -1;
@@ -201,9 +210,10 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
             return -1;
         int step = start;
         int counter = 0;
+        final INoteClip clip = this.getClip ();
         do
         {
-            if (this.getClip ().getStep (step, row) > 0)
+            if (clip.getStep (step, row) > 0)
                 return counter;
             step++;
             counter++;
@@ -221,9 +231,10 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
         final int s = start == 0 ? length - 1 : start - 1;
         int step = s;
         int counter = 0;
+        final INoteClip clip = this.getClip ();
         do
         {
-            if (this.getClip ().getStep (step, row) > 0)
+            if (clip.getStep (step, row) > 0)
                 return counter;
             step--;
             counter++;
@@ -236,6 +247,6 @@ public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C exten
 
     protected void updateScale ()
     {
-        this.noteMap = this.model.canSelectedTrackHoldNotes () ? this.scales.getSequencerMatrix (AbstractRaindropsView.NUM_DISPLAY_COLS, this.offsetY) : Scales.getEmptyMatrix ();
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getSequencerMatrix (AbstractRaindropsView.NUM_DISPLAY_COLS, this.offsetY) : EMPTY_TABLE);
     }
 }

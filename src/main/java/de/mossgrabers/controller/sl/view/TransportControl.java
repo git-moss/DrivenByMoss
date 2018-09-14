@@ -1,13 +1,17 @@
-package de.mossgrabers.sl.view;
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2018
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-import de.mossgrabers.framework.ButtonEvent;
+package de.mossgrabers.controller.sl.view;
+
+import de.mossgrabers.controller.sl.SLConfiguration;
+import de.mossgrabers.controller.sl.controller.SLControlSurface;
+import de.mossgrabers.controller.sl.mode.Modes;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.sl.SLConfiguration;
-import de.mossgrabers.sl.controller.SLControlSurface;
-import de.mossgrabers.sl.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -22,6 +26,7 @@ public class TransportControl
     private boolean                                              isRewinding;
     private boolean                                              isForwarding;
     private final PlayCommand<SLControlSurface, SLConfiguration> playCommand;
+    private final StopCommand<SLControlSurface, SLConfiguration> stopCommand;
 
 
     /**
@@ -35,6 +40,7 @@ public class TransportControl
         this.surface = surface;
         this.model = model;
         this.playCommand = new PlayCommand<> (model, surface);
+        this.stopCommand = new StopCommand<> (model, surface);
     }
 
 
@@ -125,13 +131,7 @@ public class TransportControl
 
     private void onStop (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        final ITransport transport = this.model.getTransport ();
-        if (transport.isPlaying ())
-            transport.play ();
-        else
-            transport.stopAndRewind ();
+        this.stopCommand.executeNormal (event);
         this.turnOffTransport ();
     }
 
@@ -159,7 +159,7 @@ public class TransportControl
     {
         this.surface.turnOffTransport ();
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_VIEW_SELECT))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_VIEW_SELECT))
             modeManager.restoreMode ();
     }
 }

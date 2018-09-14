@@ -2,20 +2,19 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode.track;
+package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.BaseMode;
+import de.mossgrabers.controller.push.view.ColorView;
+import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.push.controller.DisplayMessage;
-import de.mossgrabers.push.controller.PushColors;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.controller.PushDisplay;
-import de.mossgrabers.push.mode.BaseMode;
-import de.mossgrabers.push.view.ColorView;
-import de.mossgrabers.push.view.Views;
 
 
 /**
@@ -43,20 +42,20 @@ public class LayerDetailsMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
-        if (deviceChain == null)
+        final IChannel channel = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
+        if (channel == null)
             return;
 
         switch (index)
         {
             case 0:
-                this.model.getCursorDevice ().toggleLayerOrDrumPadIsActivated (deviceChain.getIndex ());
+                channel.toggleIsActivated ();
                 break;
             case 2:
-                this.model.getCursorDevice ().toggleLayerOrDrumPadMute (deviceChain.getIndex ());
+                channel.toggleMute ();
                 break;
             case 3:
-                this.model.getCursorDevice ().toggleLayerOrDrumPadSolo (deviceChain.getIndex ());
+                channel.toggleSolo ();
                 break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();
@@ -74,7 +73,7 @@ public class LayerDetailsMode extends BaseMode
     @Override
     public void updateFirstRow ()
     {
-        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
+        final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
         if (deviceChain == null)
         {
             this.disableFirstRow ();
@@ -98,7 +97,7 @@ public class LayerDetailsMode extends BaseMode
     public void updateDisplay1 ()
     {
         final Display d = this.surface.getDisplay ();
-        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
+        final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
         if (deviceChain == null)
             d.setRow (1, "                     Please selecta layer...                        ").clearRow (0).clearRow (2).done (0).done (2);
         else
@@ -123,10 +122,8 @@ public class LayerDetailsMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
-
-        final IChannel deviceChain = this.model.getCursorDevice ().getSelectedLayerOrDrumPad ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
         if (deviceChain == null)
             message.setMessage (3, "Please select a layer...");
         else
@@ -140,6 +137,6 @@ public class LayerDetailsMode extends BaseMode
             message.addEmptyElement ();
             message.addOptionElement ("", "", false, "", "Select Color", false, false);
         }
-        display.send (message);
+        message.send ();
     }
 }

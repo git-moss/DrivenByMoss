@@ -2,24 +2,20 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.view;
+package de.mossgrabers.controller.push.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.IChannelBank;
-import de.mossgrabers.framework.daw.ICursorClip;
-import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.PushColors;
-import de.mossgrabers.push.controller.PushControlSurface;
 
 
 /**
@@ -32,12 +28,12 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     /** What should the color be selected for? */
     public enum SelectMode
     {
-        /** Select a track color. */
-        MODE_TRACK,
-        /** Select a layer color. */
-        MODE_LAYER,
-        /** Select a clip color. */
-        MODE_CLIP
+    /** Select a track color. */
+    MODE_TRACK,
+    /** Select a layer color. */
+    MODE_LAYER,
+    /** Select a clip color. */
+    MODE_CLIP
     }
 
     private SelectMode mode;
@@ -69,16 +65,6 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
 
     /** {@inheritDoc} */
     @Override
-    public void onActivate ()
-    {
-        super.onActivate ();
-        this.noteMap = Scales.getEmptyMatrix ();
-        this.surface.setKeyTranslationTable (this.noteMap);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean usesButton (final int buttonID)
     {
         switch (buttonID)
@@ -99,7 +85,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     public void drawGrid ()
     {
         for (int i = 0; i < 64; i++)
-            this.surface.getPadGrid ().light (36 + i, i < BitwigColors.BITWIG_COLORS.length ? BitwigColors.BITWIG_COLORS[i] : PadGrid.GRID_OFF);
+            this.surface.getPadGrid ().light (36 + i, i < DAWColors.DAW_COLORS.length ? DAWColors.DAW_COLORS[i] : PadGrid.GRID_OFF);
     }
 
 
@@ -111,14 +97,13 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
             return;
 
         final int color = note - 36;
-        if (color < BitwigColors.BITWIG_COLORS.length)
+        if (color < DAWColors.DAW_COLORS.length)
         {
-            final double [] entry = BitwigColors.getColorEntry (BitwigColors.BITWIG_COLORS[color]);
+            final double [] entry = DAWColors.getColorEntry (DAWColors.DAW_COLORS[color]);
             switch (this.mode)
             {
                 case MODE_TRACK:
-                    final IChannelBank tb = this.model.getCurrentTrackBank ();
-                    final ITrack t = tb.getSelectedTrack ();
+                    final ITrack t = this.model.getSelectedTrack ();
                     if (t == null)
                     {
                         final IMasterTrack master = this.model.getMasterTrack ();
@@ -130,13 +115,11 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
                     break;
 
                 case MODE_LAYER:
-                    final ICursorDevice cd = this.model.getCursorDevice ();
-                    final IChannel deviceChain = cd.getSelectedLayerOrDrumPad ();
-                    cd.setLayerOrDrumPadColor (deviceChain.getIndex (), entry[0], entry[1], entry[2]);
+                    this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ().setColor (entry[0], entry[1], entry[2]);
                     break;
 
                 case MODE_CLIP:
-                    final ICursorClip clip = this.model.getCursorClip ();
+                    final IClip clip = this.model.getClip ();
                     if (clip != null)
                         clip.setColor (entry[0], entry[1], entry[2]);
                     break;
@@ -158,8 +141,8 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     @Override
     public void updateSceneButtons ()
     {
-        final int black = this.surface.getConfiguration ().isPush2 () ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
+        final int colorOff = this.model.getColorManager ().getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, black);
+            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, colorOff);
     }
 }

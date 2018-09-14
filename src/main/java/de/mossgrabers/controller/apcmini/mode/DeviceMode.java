@@ -2,9 +2,9 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apcmini.mode;
+package de.mossgrabers.controller.apcmini.mode;
 
-import de.mossgrabers.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 
 
@@ -31,6 +31,6 @@ public class DeviceMode extends BaseMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCursorDevice ().setParameter (index, value);
+        this.model.getCursorDevice ().getParameterBank ().getItem (index).setValue (value);
     }
 }

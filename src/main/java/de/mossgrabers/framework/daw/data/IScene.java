@@ -4,53 +4,45 @@
 
 package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.framework.daw.ObserverManagement;
-
-
 /**
- * Interfacxe to a scene.
+ * Interface to a scene.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IScene extends ObserverManagement
+public interface IScene extends IItem
 {
     /**
-     * Get the index.
+     * Get the color of the scene.
      *
-     * @return The index
+     * @return The color in RGB
      */
-    int getIndex ();
+    double [] getColor ();
 
 
     /**
-     * Does the slot exist?
+     * Set the color of the scene as a RGB value.
      *
-     * @return True if it exists
+     * @param red The red part of the color
+     * @param green The green part of the color
+     * @param blue The blue part of the color
      */
-    boolean doesExist ();
+    void setColor (double red, double green, double blue);
 
 
     /**
-     * Get the name of the scene.
-     *
-     * @return The name of the scene
+     * Launches the scene.
      */
-    String getName ();
+    void launch ();
 
 
     /**
-     * Get the name of the scene.
-     *
-     * @param limit Limit the text to this length
-     * @return The name of the scene
+     * Delete the scene.
      */
-    String getName (int limit);
+    void remove ();
 
 
     /**
-     * Is the slot selected?
-     *
-     * @return True if selected
+     * Duplicate the scene.
      */
-    boolean isSelected ();
+    void duplicate ();
 }

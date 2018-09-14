@@ -2,18 +2,19 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.sl.mode.device;
+package de.mossgrabers.controller.sl.mode.device;
 
-import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.StringUtils;
+import de.mossgrabers.controller.sl.SLConfiguration;
+import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.sl.SLConfiguration;
-import de.mossgrabers.sl.controller.SLControlSurface;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -43,11 +44,12 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
         final Display d = this.surface.getDisplay ().clearRow (0).clearRow (2);
 
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (cd.hasSelectedDevice ())
+        final IParameterBank parameterBank = cd.getParameterBank ();
+        if (cd.doesExist ())
         {
             for (int i = 0; i < 8; i++)
             {
-                final IParameter param = cd.getFXParam (i);
+                final IParameter param = parameterBank.getItem (i);
                 d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (), 8) : "").setCell (2, i, param.getDisplayedValue (8));
             }
         }
@@ -61,7 +63,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCursorDevice ().changeParameter (index, value);
+        this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
     }
 
 
@@ -72,9 +74,10 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
     {
         final boolean hasDevice = this.model.hasSelectedDevice ();
         final IMidiOutput output = this.surface.getOutput ();
+        final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
-            final int value = hasDevice ? this.model.getCursorDevice ().getFXParam (i).getValue () : 0;
+            final int value = hasDevice ? parameterBank.getItem (i).getValue () : 0;
             output.sendCC (0x70 + i, Math.min (value * 11 / 127, 11));
         }
     }
@@ -85,7 +88,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
      */
     public void previousPage ()
     {
-        this.model.getCursorDevice ().previousParameterPage ();
+        this.model.getCursorDevice ().getParameterBank ().scrollBackwards ();
     }
 
 
@@ -94,7 +97,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
      */
     public void nextPage ()
     {
-        this.model.getCursorDevice ().nextParameterPage ();
+        this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
     }
 
 

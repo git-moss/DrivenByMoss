@@ -2,17 +2,17 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode;
+package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.push.controller.DisplayMessage;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.controller.PushDisplay;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -82,7 +82,7 @@ public class ScaleLayoutMode extends BaseMode
         final String [] names = ScaleLayout.getNames ();
         d.clear ().setBlock (1, 0, "Scale layout:");
         for (int i = 0; i < names.length; i += 2)
-            d.setCell (3, i / 2, (pos == i / 2 ? PushDisplay.RIGHT_ARROW : " ") + names[i].replace (" ^", ""));
+            d.setCell (3, i / 2, (pos == i / 2 ? PushDisplay.SELECT_ARROW : " ") + names[i].replace (" ^", ""));
         d.setCell (3, 7, sl % 2 == 0 ? "Horizontal" : "Vertical");
         d.allDone ();
     }
@@ -96,14 +96,13 @@ public class ScaleLayoutMode extends BaseMode
         final int pos = sl / 2;
         final String [] names = ScaleLayout.getNames ();
 
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int i = 0; i < names.length; i += 2)
             message.addOptionElement ("", "", false, i == 0 ? "Scale layout" : "", names[i].replace (" ^", ""), pos == i / 2, false);
 
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("", "", false, "", sl % 2 == 0 ? "Horizontal" : "Vertical", false, false);
-        display.send (message);
+        message.send ();
     }
 }

@@ -8,8 +8,8 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.controller.SLDisplay;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -52,14 +52,14 @@ public class VolumeMode extends AbstractMode<SLControlSurface, SLConfiguration>
             return;
         }
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selTrack = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selTrack = tb.getSelectedItem ();
 
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
         for (int i = 0; i < 8; i++)
         {
             final boolean isSel = i == selIndex;
-            final ITrack t = tb.getTrack (i);
+            final ITrack t = tb.getItem (i);
             final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8);
             d.setCell (1, i, isSel ? SLDisplay.RIGHT_ARROW + n : n).setCell (3, i, t.getVolumeStr (8));
         }

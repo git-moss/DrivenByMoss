@@ -2,14 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad.view;
+package de.mossgrabers.controller.launchpad.view;
 
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.daw.INoteClip;
 
 
 /**
@@ -64,7 +63,7 @@ public class DrumView4 extends DrumViewBase
         }
 
         // Clip length/loop area
-        final ICursorClip clip = this.getClip ();
+        final INoteClip clip = this.getClip ();
         final int step = clip.getCurrentStep ();
 
         // Paint the sequencer steps
@@ -90,7 +89,7 @@ public class DrumView4 extends DrumViewBase
     @Override
     public void updateNoteMapping ()
     {
-        this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (Scales.getEmptyMatrix ()));
+        this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (EMPTY_TABLE));
     }
 
 

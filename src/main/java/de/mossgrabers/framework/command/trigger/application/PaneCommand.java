@@ -4,12 +4,12 @@
 
 package de.mossgrabers.framework.command.trigger.application;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -20,19 +20,19 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PaneCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /** The available panels. */
     public enum Panels
     {
-        /** Note editor. */
-        NOTE,
-        /** Automation editor. */
-        AUTOMATION,
-        /** Toggle device pane. */
-        DEVICE,
-        /** Mixer. */
-        MIXER
+    /** Note editor. */
+    NOTE,
+    /** Automation editor. */
+    AUTOMATION,
+    /** Toggle device pane. */
+    DEVICE,
+    /** Mixer. */
+    MIXER
     }
 
     private Panels panel;
@@ -69,7 +69,7 @@ public class PaneCommand<S extends ControlSurface<C>, C extends Configuration> e
                 application.toggleAutomationEditor ();
                 break;
             case DEVICE:
-                application.toggleDevices ();
+                this.model.getCursorDevice ().toggleWindowOpen ();
                 break;
             case MIXER:
                 application.toggleMixer ();
@@ -87,9 +87,8 @@ public class PaneCommand<S extends ControlSurface<C>, C extends Configuration> e
 
         switch (this.panel)
         {
-            // Toggle device
             case DEVICE:
-                this.model.getCursorDevice ().toggleWindowOpen ();
+                this.model.getApplication ().toggleDevices ();
                 break;
             default:
                 // Not used

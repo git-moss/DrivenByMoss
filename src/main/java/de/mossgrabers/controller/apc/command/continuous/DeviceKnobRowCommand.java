@@ -2,10 +2,10 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.command.continuous;
+package de.mossgrabers.controller.apc.command.continuous;
 
-import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.controller.APCControlSurface;
+import de.mossgrabers.controller.apc.APCConfiguration;
+import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -46,7 +46,7 @@ public class DeviceKnobRowCommand extends AbstractContinuousCommand<APCControlSu
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
             return;
-        cd.setParameter (this.index, value);
+        cd.getParameterBank ().getItem (this.index).setValue (value);
 
         this.moveStartTime = new Date ().getTime ();
         if (this.isKnobMoving)

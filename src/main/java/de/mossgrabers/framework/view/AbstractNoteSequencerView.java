@@ -4,15 +4,14 @@
 
 package de.mossgrabers.framework.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.IChannelBank;
-import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -23,7 +22,7 @@ import de.mossgrabers.framework.scale.Scales;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
+public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
 {
     protected int   numDisplayRows = 8;
     protected int   numDisplayCols;
@@ -72,7 +71,6 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
     {
         this.updateScale ();
         super.onActivate ();
-        this.getClip ().scrollTo (0, this.offsetY);
     }
 
 
@@ -95,11 +93,11 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
         final int x = index % 8;
         final int y = index / 8;
 
-        final ICursorClip clip = this.getClip ();
+        final INoteClip clip = this.getClip ();
         if (y < this.numSequencerRows)
         {
             if (velocity != 0)
-                clip.toggleStep (x, this.noteMap[y], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                clip.toggleStep (x, this.keyManager.map (y), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
             return;
         }
 
@@ -150,11 +148,10 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
             return;
         }
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
 
         // Steps with notes
-        final ICursorClip clip = this.getClip ();
+        final INoteClip clip = this.getClip ();
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % this.numDisplayCols : -1;
         for (int x = 0; x < this.numDisplayCols; x++)
@@ -162,7 +159,7 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
             for (int y = 0; y < this.numSequencerRows; y++)
             {
                 // 0: not set, 1: note continues playing, 2: start of note
-                final int isSet = clip.getStep (x, this.noteMap[y]);
+                final int isSet = clip.getStep (x, this.keyManager.map (y));
                 gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (isSet, x == hiStep, y, selectedTrack));
             }
         }
@@ -229,7 +226,7 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
 
     protected void updateScale ()
     {
-        this.noteMap = this.model.canSelectedTrackHoldNotes () ? this.scales.getSequencerMatrix (8, this.offsetY) : Scales.getEmptyMatrix ();
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getSequencerMatrix (8, this.offsetY) : EMPTY_TABLE);
     }
 
 
@@ -237,6 +234,9 @@ public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C e
     {
         this.offsetY = value;
         this.updateScale ();
-        this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.noteMap[0], this.noteMap[this.numSequencerRows - 1]), true, true);
+        this.surface.scheduleTask ( () -> {
+            final String text = Scales.getSequencerRangeText (this.keyManager.map (0), this.keyManager.map (this.numSequencerRows - 1));
+            this.surface.getDisplay ().notify (text);
+        }, 10);
     }
 }

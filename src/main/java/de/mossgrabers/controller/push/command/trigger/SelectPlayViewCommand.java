@@ -2,19 +2,18 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.command.trigger;
+package de.mossgrabers.controller.push.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.Modes;
+import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.mode.Modes;
-import de.mossgrabers.push.view.Views;
 
 
 /**
@@ -43,11 +42,11 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
         if (event != ButtonEvent.DOWN)
             return;
 
+        final ModeManager modeManager = this.surface.getModeManager ();
         final ViewManager viewManager = this.surface.getViewManager ();
         if (Views.isSessionView (viewManager.getActiveViewId ()))
         {
-            final IChannelBank tb = this.model.getCurrentTrackBank ();
-            final ITrack selectedTrack = tb.getSelectedTrack ();
+            final ITrack selectedTrack = this.model.getSelectedTrack ();
             if (selectedTrack == null)
             {
                 this.surface.getDisplay ().notify ("Please select a track first.");
@@ -56,11 +55,14 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
 
             final Integer preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
             viewManager.setActiveView (preferredView == null ? Views.VIEW_PLAY : preferredView);
+
+            if (modeManager.isActiveMode (Modes.MODE_SESSION) || modeManager.getActiveOrTempMode ().isTemporary ())
+                modeManager.restoreMode ();
+
             return;
         }
 
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.MODE_VIEW_SELECT))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_VIEW_SELECT))
             modeManager.restoreMode ();
         else
             modeManager.setActiveMode (Modes.MODE_VIEW_SELECT);

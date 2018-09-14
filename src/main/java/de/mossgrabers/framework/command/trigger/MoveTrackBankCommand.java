@@ -4,11 +4,16 @@
 
 package de.mossgrabers.framework.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.mcu.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IMarkerBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -19,7 +24,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MoveTrackBankCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     private boolean moveLeft;
     private boolean moveBy1;
@@ -51,38 +56,61 @@ public class MoveTrackBankCommand<S extends ControlSurface<C>, C extends Configu
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.surface.getModeManager ().isActiveMode (this.deviceMode))
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (modeManager.isActiveOrTempMode (this.deviceMode))
         {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             if (this.moveBy1)
             {
                 if (this.moveLeft)
-                    this.model.getCursorDevice ().previousParameterPage ();
+                    cursorDevice.getParameterBank ().scrollBackwards ();
                 else
-                    this.model.getCursorDevice ().nextParameterPage ();
+                    cursorDevice.getParameterBank ().scrollForwards ();
             }
             else
             {
                 if (this.moveLeft)
-                    this.model.getCursorDevice ().selectPrevious ();
+                    cursorDevice.selectPrevious ();
                 else
-                    this.model.getCursorDevice ().selectNext ();
+                    cursorDevice.selectNext ();
             }
             return;
         }
 
+        if (modeManager.isActiveOrTempMode (Modes.MODE_MARKER))
+        {
+            final IMarkerBank markerBank = this.model.getMarkerBank ();
+            if (this.moveBy1)
+            {
+                if (this.moveLeft)
+                    markerBank.scrollBackwards ();
+                else
+                    markerBank.scrollForwards ();
+            }
+            else
+            {
+                if (this.moveLeft)
+                    markerBank.scrollPageBackwards ();
+                else
+                    markerBank.scrollPageForwards ();
+            }
+            return;
+        }
+
+        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
         if (this.moveBy1)
         {
             if (this.moveLeft)
-                this.model.getCurrentTrackBank ().scrollTracksUp ();
+                currentTrackBank.scrollBackwards ();
             else
-                this.model.getCurrentTrackBank ().scrollTracksDown ();
+                currentTrackBank.scrollForwards ();
         }
         else
         {
             if (this.moveLeft)
-                this.model.getCurrentTrackBank ().scrollTracksPageUp ();
+                currentTrackBank.scrollPageBackwards ();
             else
-                this.model.getCurrentTrackBank ().scrollTracksPageDown ();
+                currentTrackBank.scrollPageForwards ();
         }
     }
 }

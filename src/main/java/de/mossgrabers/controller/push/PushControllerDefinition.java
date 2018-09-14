@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.push;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.usb.UsbMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -19,10 +20,19 @@ import java.util.UUID;
  */
 public class PushControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID EXTENSION_ID_MK_I  = UUID.fromString ("DBED9610-C474-11E6-9598-0800200C9A66");
-    private static final UUID EXTENSION_ID_MK_II = UUID.fromString ("15176AA0-C476-11E6-9598-0800200C9A66");
+    private static final UUID  EXTENSION_ID_MK_I  = UUID.fromString ("DBED9610-C474-11E6-9598-0800200C9A66");
+    private static final UUID  EXTENSION_ID_MK_II = UUID.fromString ("15176AA0-C476-11E6-9598-0800200C9A66");
 
-    private boolean           isMkII;
+    /** Push 2 USB Vendor ID. */
+    private static final short VENDOR_ID          = 0x2982;
+    /** Push 2 USB Product ID. */
+    private static final short PRODUCT_ID         = 0x1967;
+    /** Push 2 USB Interface for the display. */
+    private static final byte  INTERFACE_NUMBER   = 0;
+    /** Push 2 USB display endpoint. */
+    private static final byte  ENDPOINT_ADDRESS   = (byte) 0x01;
+
+    private boolean            isMkII;
 
 
     /**
@@ -32,7 +42,7 @@ public class PushControllerDefinition extends DefaultControllerDefinition
      */
     public PushControllerDefinition (final boolean isMkII)
     {
-        super ("", "Jürgen Moßgraber", "9.54", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "Push 2" : "Push 1", "Ableton", 1, 1);
+        super ("", "Jürgen Moßgraber", "10.00", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "Push 2" : "Push 1", "Ableton", 1, 1);
         this.isMkII = isMkII;
     }
 
@@ -64,5 +74,13 @@ public class PushControllerDefinition extends DefaultControllerDefinition
                 break;
         }
         return midiDiscoveryPairs;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public UsbMatcher claimUSBDevice ()
+    {
+        return this.isMkII ? new UsbMatcher (VENDOR_ID, PRODUCT_ID, INTERFACE_NUMBER, ENDPOINT_ADDRESS, true) : null;
     }
 }

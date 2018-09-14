@@ -67,7 +67,7 @@ public class DeviceView extends AbstractFaderView
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.cursorDevice.setParameter (index, value);
+        this.cursorDevice.getParameterBank ().getItem (index).setValue (value);
     }
 
 
@@ -77,7 +77,7 @@ public class DeviceView extends AbstractFaderView
     {
         for (int i = 0; i < 8; i++)
         {
-            final IParameter param = this.cursorDevice.getFXParam (i);
+            final IParameter param = this.cursorDevice.getParameterBank ().getItem (i);
             this.surface.getOutput ().sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, param.getValue ());
         }
     }

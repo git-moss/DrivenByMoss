@@ -38,6 +38,17 @@ public class ColorEx
     /**
      * Constructor.
      *
+     * @param color The red, gree and blue components
+     */
+    public ColorEx (final double [] color)
+    {
+        this (color[0], color[1], color[2]);
+    }
+
+
+    /**
+     * Constructor.
+     *
      * @param red The red component
      * @param green The green component
      * @param blue The blue component
@@ -108,6 +119,20 @@ public class ColorEx
     public static ColorEx darker (final ColorEx c)
     {
         return new ColorEx (Math.max (c.getRed () * FACTOR, 0), Math.max (c.getGreen () * FACTOR, 0), Math.max (c.getBlue () * FACTOR, 0));
+    }
+
+
+    /**
+     * Calculates if the color white or black has a higher contrast to the given color.
+     *
+     * @param c A color
+     * @return Black or white, depending on which one has the higher contrast
+     */
+    public static ColorEx calcContrastColor (final ColorEx c)
+    {
+        // The formula is based on the W3C Accessibility Guidelines - https://www.w3.org/TR/WCAG20/
+        final double l = 0.2126 * c.getRed () + 0.7152 * c.getGreen () + 0.0722 * c.getBlue ();
+        return l > 0.179 ? ColorEx.BLACK : ColorEx.WHITE;
     }
 
 

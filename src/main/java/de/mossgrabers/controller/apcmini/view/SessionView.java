@@ -2,16 +2,17 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apcmini.view;
+package de.mossgrabers.controller.apcmini.view;
 
-import de.mossgrabers.apcmini.APCminiConfiguration;
-import de.mossgrabers.apcmini.controller.APCminiColors;
-import de.mossgrabers.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
-import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.controller.apcmini.APCminiConfiguration;
+import de.mossgrabers.controller.apcmini.controller.APCminiColors;
+import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
 
@@ -40,28 +41,6 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
 
     /** {@inheritDoc} */
     @Override
-    public void onGridNote (final int note, final int velocity)
-    {
-        if (velocity == 0)
-            return;
-
-        final int channel = note % 8;
-        final int scene = 7 - note / 8;
-
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getTrack (channel);
-        final ISlot slot = track.getSlot (scene);
-
-        if (track.isRecArm () && !slot.isRecording ())
-            slot.record ();
-        slot.launch ();
-        if (this.doSelectClipOnLaunch ())
-            slot.select ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean doSelectClipOnLaunch ()
     {
         return this.surface.getConfiguration ().isSelectClipOnLaunch ();
@@ -72,12 +51,13 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
     @Override
     public void drawGrid ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int x = 0; x < 8; x++)
         {
-            final ITrack t = tb.getTrack (x);
+            final ITrack t = tb.getItem (x);
+            final ISlotBank slotBank = t.getSlotBank ();
             for (int y = 0; y < 8; y++)
-                this.drawPad (t.getSlot (y), x, y, t.isRecArm ());
+                this.drawPad (slotBank.getItem (y), x, y, t.isRecArm ());
         }
     }
 

@@ -2,9 +2,9 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apcmini.mode;
+package de.mossgrabers.controller.apcmini.mode;
 
-import de.mossgrabers.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 
 
@@ -36,6 +36,6 @@ public class SendMode extends BaseMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getTrack (index).getSend (this.sendIndex).setValue (value);
+        this.model.getCurrentTrackBank ().getItem (index).getSendBank ().getItem (this.sendIndex).setValue (value);
     }
 }

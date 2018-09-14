@@ -2,13 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apcmini.mode;
+package de.mossgrabers.controller.apcmini.mode;
 
-import de.mossgrabers.apcmini.APCminiConfiguration;
-import de.mossgrabers.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.apcmini.APCminiConfiguration;
+import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**

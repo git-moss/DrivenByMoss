@@ -2,17 +2,17 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.mode;
+package de.mossgrabers.controller.push.mode;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.push.controller.DisplayMessage;
-import de.mossgrabers.push.controller.PushControlSurface;
-import de.mossgrabers.push.controller.PushDisplay;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -42,7 +42,7 @@ public class AutomationMode extends BaseMode
         final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
         d.clear ().setBlock (1, 0, "Automation Mode:");
         for (int i = 0; i < ITransport.AUTOMATION_MODES.length; i++)
-            d.setCell (3, i, (ITransport.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? PushDisplay.RIGHT_ARROW : "") + ITransport.AUTOMATION_MODES[i]);
+            d.setCell (3, i, (ITransport.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? PushDisplay.SELECT_ARROW : "") + ITransport.AUTOMATION_MODES[i]);
         d.allDone ();
     }
 
@@ -52,11 +52,10 @@ public class AutomationMode extends BaseMode
     public void updateDisplay2 ()
     {
         final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
-        final PushDisplay display = (PushDisplay) this.surface.getDisplay ();
-        final DisplayMessage message = display.createMessage ();
+        final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int i = 0; i < 8; i++)
             message.addOptionElement ("", "", false, i == 0 ? "Automation Mode" : "", i < ITransport.AUTOMATION_MODES.length ? ITransport.AUTOMATION_MODES[i] : "", i < ITransport.AUTOMATION_MODES.length && ITransport.AUTOMATION_MODES_VALUES[i].equals (writeMode), false);
-        display.send (message);
+        message.send ();
     }
 
 

@@ -50,8 +50,7 @@ public class SettingsUI implements ISettingsUI
     @Override
     public IBooleanSetting getBooleanSetting (final String label, final String category, final boolean initialValue)
     {
-        // TODO API extension required
-        return null;
+        return new BooleanSettingImpl (this.preferences.getBooleanSetting (label, category, initialValue));
     }
 
 

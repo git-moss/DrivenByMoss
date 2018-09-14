@@ -2,14 +2,19 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.push.view;
+package de.mossgrabers.controller.push.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.Modes;
+import de.mossgrabers.controller.push.mode.NoteMode;
+import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
-import de.mossgrabers.push.PushConfiguration;
-import de.mossgrabers.push.controller.PushColors;
-import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.framework.view.AbstractSequencerView;
 
 
 /**
@@ -105,11 +110,13 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
 
         // TODO Bugfix required - setStep makes Bitwig hang
         // https://github.com/teotigraphix/Framework4Bitwig/issues/124
-        // x = index % 8;
-        // state = this.clip.getStep (x, this.noteMap[y]);
-        // noteMode = this.surface.getMode (MODE_NOTE);
-        // noteMode.setValues (this.clip, x, note, state == 2 ? 1.0 : 0, 127);
-        // this.surface.setPendingMode (MODE_NOTE);
+        final int x = index % 8;
+        final INoteClip cursorClip = this.getClip ();
+        final int state = cursorClip.getStep (x, this.keyManager.map (y));
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.MODE_NOTE);
+        noteMode.setValues (cursorClip, x, note, state == 2 ? 1.0 : 0, 127);
+        modeManager.setActiveMode (Modes.MODE_NOTE);
     }
 
 
@@ -127,7 +134,7 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
         {
             // Toggle the note on up, so we can intercept the long presses
             if (velocity == 0)
-                this.getClip ().toggleStep (x, this.noteMap[y], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getGridNoteVelocity (note));
+                this.getClip ().toggleStep (x, this.keyManager.map (y), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getGridNoteVelocity (note));
             return;
         }
 
@@ -139,10 +146,10 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
     @Override
     public void updateSceneButtons ()
     {
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int yellow = isPush2 ? PushColors.PUSH2_COLOR_SCENE_YELLOW : PushColors.PUSH1_COLOR_SCENE_YELLOW;
-        final int green = isPush2 ? PushColors.PUSH2_COLOR_SCENE_GREEN : PushColors.PUSH1_COLOR_SCENE_GREEN;
+        final ColorManager colorManager = this.model.getColorManager ();
+        final int colorResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION);
+        final int colorSelectedResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED);
         for (int i = PushControlSurface.PUSH_BUTTON_SCENE1; i <= PushControlSurface.PUSH_BUTTON_SCENE8; i++)
-            this.surface.updateButton (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedIndex ? yellow : green);
+            this.surface.updateButton (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedIndex ? colorSelectedResolution : colorResolution);
     }
 }

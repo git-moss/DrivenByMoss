@@ -60,10 +60,6 @@ public class MidiDeviceImpl implements IMidiAccess
     @Override
     public IMidiInput createInput (final int index, final String name, final String... filters)
     {
-        final MidiInputImpl midiInputImpl = new MidiInputImpl (index);
-        midiInputImpl.init (this.host);
-        if (name != null)
-            midiInputImpl.createNoteInputBase (name, filters);
-        return midiInputImpl;
+        return new MidiInputImpl (index, this.host, name, filters);
     }
 }

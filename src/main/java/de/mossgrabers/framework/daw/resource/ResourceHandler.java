@@ -1,12 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017
+// (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.resource;
 
 import de.mossgrabers.framework.daw.IHost;
-
-import com.bitwig.extension.api.graphics.Image;
+import de.mossgrabers.framework.graphics.IImage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +18,8 @@ import java.util.Map;
  */
 public final class ResourceHandler
 {
-    private static final Map<String, Image> CACHE = new HashMap<> ();
-    private static IHost                    theHost;
+    private static final Map<String, IImage> CACHE = new HashMap<> ();
+    private static IHost                     theHost;
 
 
     /**
@@ -67,7 +66,7 @@ public final class ResourceHandler
      * @param imageName The name of the image
      * @return The buffered image
      */
-    public static Image getSVGImage (final String imageName)
+    public static IImage getSVGImage (final String imageName)
     {
         return CACHE.get (imageName);
     }

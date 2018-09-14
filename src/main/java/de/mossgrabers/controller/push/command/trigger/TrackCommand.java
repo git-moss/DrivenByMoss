@@ -8,15 +8,15 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to Browse presets.
+ * Command to edit track parameters.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -50,7 +50,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         }
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer currentMode = modeManager.getActiveModeId ();
+        final Integer currentMode = modeManager.getActiveOrTempModeId ();
 
         if (currentMode != null)
         {
@@ -86,11 +86,11 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         else
             modeManager.setActiveMode (Modes.MODE_TRACK);
 
-        config.setDebugMode (modeManager.getActiveModeId ());
+        config.setDebugMode (modeManager.getActiveOrTempModeId ());
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getSelectedItem ();
         if (track == null)
-            tb.getTrack (0).select ();
+            tb.getItem (0).select ();
     }
 }

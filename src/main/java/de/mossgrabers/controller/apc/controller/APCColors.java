@@ -2,11 +2,11 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.controller;
+package de.mossgrabers.controller.apc.controller;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
@@ -155,36 +155,36 @@ public class APCColors
 
         colorManager.registerColor (PadGrid.GRID_OFF, isMkII ? APC_MKII_COLOR_BLACK : APC_COLOR_BLACK);
 
-        colorManager.registerColor (BitwigColors.COLOR_OFF, isMkII ? APC_MKII_COLOR_BLACK : APC_COLOR_BLACK);
+        colorManager.registerColor (DAWColors.COLOR_OFF, isMkII ? APC_MKII_COLOR_BLACK : APC_COLOR_BLACK);
 
         if (isMkII)
         {
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_DARK_GRAY, APC_MKII_COLOR_GREY_LO);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_GRAY, APC_MKII_COLOR_GREY_MD);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_GRAY, APC_MKII_COLOR_GREY_LO);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_SILVER, APC_MKII_COLOR_SKY_OCEAN);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_DARK_BROWN, APC_MKII_COLOR_AMBER_LO);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_BROWN, APC_MKII_COLOR_AMBER_YELLOW);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_DARK_BLUE, APC_MKII_COLOR_OCEAN);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_PURPLE_BLUE, APC_MKII_COLOR_OCEAN_BLUE);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_PURPLE, APC_MKII_COLOR_PINK);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_PINK, APC_MKII_COLOR_PINK_HI);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_RED, APC_MKII_COLOR_RED);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_ORANGE, APC_MKII_COLOR_AMBER);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_ORANGE, APC_MKII_COLOR_RED_LO);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_MOSS_GREEN, APC_MKII_COLOR_LIME_LO);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_GREEN, APC_MKII_COLOR_SPRING);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_COLD_GREEN, APC_MKII_COLOR_TURQUOISE);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_BLUE, APC_MKII_COLOR_SKY_HI);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PURPLE, APC_MKII_COLOR_BLUE_ORCHID);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PINK, APC_MKII_COLOR_MAGENTA_PINK);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_SKIN, APC_MKII_COLOR_ROSE);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_REDDISH_BROWN, APC_MKII_COLOR_AMBER);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_BROWN, APC_MKII_COLOR_AMBER_HI);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_GREEN, APC_MKII_COLOR_LIME);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_BLUISH_GREEN, APC_MKII_COLOR_SPRING_HI);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_GREEN_BLUE, APC_MKII_COLOR_TURQUOISE_CYAN);
-            colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_BLUE, APC_MKII_COLOR_OCEAN_HI);
+            colorManager.registerColor (DAWColors.DAW_COLOR_DARK_GRAY, APC_MKII_COLOR_GREY_LO);
+            colorManager.registerColor (DAWColors.DAW_COLOR_GRAY, APC_MKII_COLOR_GREY_MD);
+            colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_GRAY, APC_MKII_COLOR_GREY_LO);
+            colorManager.registerColor (DAWColors.DAW_COLOR_SILVER, APC_MKII_COLOR_SKY_OCEAN);
+            colorManager.registerColor (DAWColors.DAW_COLOR_DARK_BROWN, APC_MKII_COLOR_AMBER_LO);
+            colorManager.registerColor (DAWColors.DAW_COLOR_BROWN, APC_MKII_COLOR_AMBER_YELLOW);
+            colorManager.registerColor (DAWColors.DAW_COLOR_DARK_BLUE, APC_MKII_COLOR_OCEAN);
+            colorManager.registerColor (DAWColors.DAW_COLOR_PURPLE_BLUE, APC_MKII_COLOR_OCEAN_BLUE);
+            colorManager.registerColor (DAWColors.DAW_COLOR_PURPLE, APC_MKII_COLOR_PINK);
+            colorManager.registerColor (DAWColors.DAW_COLOR_PINK, APC_MKII_COLOR_PINK_HI);
+            colorManager.registerColor (DAWColors.DAW_COLOR_RED, APC_MKII_COLOR_RED);
+            colorManager.registerColor (DAWColors.DAW_COLOR_ORANGE, APC_MKII_COLOR_AMBER);
+            colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_ORANGE, APC_MKII_COLOR_RED_LO);
+            colorManager.registerColor (DAWColors.DAW_COLOR_MOSS_GREEN, APC_MKII_COLOR_LIME_LO);
+            colorManager.registerColor (DAWColors.DAW_COLOR_GREEN, APC_MKII_COLOR_SPRING);
+            colorManager.registerColor (DAWColors.DAW_COLOR_COLD_GREEN, APC_MKII_COLOR_TURQUOISE);
+            colorManager.registerColor (DAWColors.DAW_COLOR_BLUE, APC_MKII_COLOR_SKY_HI);
+            colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_PURPLE, APC_MKII_COLOR_BLUE_ORCHID);
+            colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_PINK, APC_MKII_COLOR_MAGENTA_PINK);
+            colorManager.registerColor (DAWColors.DAW_COLOR_SKIN, APC_MKII_COLOR_ROSE);
+            colorManager.registerColor (DAWColors.DAW_COLOR_REDDISH_BROWN, APC_MKII_COLOR_AMBER);
+            colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_BROWN, APC_MKII_COLOR_AMBER_HI);
+            colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_GREEN, APC_MKII_COLOR_LIME);
+            colorManager.registerColor (DAWColors.DAW_COLOR_BLUISH_GREEN, APC_MKII_COLOR_SPRING_HI);
+            colorManager.registerColor (DAWColors.DAW_COLOR_GREEN_BLUE, APC_MKII_COLOR_TURQUOISE_CYAN);
+            colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_BLUE, APC_MKII_COLOR_OCEAN_HI);
         }
 
         colorManager.registerColor (ColorManager.BUTTON_STATE_OFF, isMkII ? APC_MKII_COLOR_BLACK : APC_COLOR_BLACK);

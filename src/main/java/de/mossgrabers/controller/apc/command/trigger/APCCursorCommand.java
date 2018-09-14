@@ -2,12 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.apc.command.trigger;
+package de.mossgrabers.controller.apc.command.trigger;
 
-import de.mossgrabers.apc.APCConfiguration;
-import de.mossgrabers.apc.controller.APCControlSurface;
+import de.mossgrabers.controller.apc.APCConfiguration;
+import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Mode;
 
 
 /**
@@ -42,7 +43,9 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     @Override
     protected void scrollLeft ()
     {
-        this.scrollTracksLeft ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
+        if (activeMode != null)
+            activeMode.selectPreviousTrack ();
     }
 
 
@@ -50,6 +53,9 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     @Override
     protected void scrollRight ()
     {
-        this.scrollTracksRight ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
+        if (activeMode != null)
+            activeMode.selectNextTrack ();
+
     }
 }

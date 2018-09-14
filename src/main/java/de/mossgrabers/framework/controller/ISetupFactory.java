@@ -6,6 +6,7 @@ package de.mossgrabers.framework.controller;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -23,19 +24,10 @@ public interface ISetupFactory
      * @param colorManager The color manager
      * @param valueChanger The value changer
      * @param scales The scales object
-     * @param numTracks The number of track to monitor (per track bank)
-     * @param numScenes The number of scenes to monitor (per scene bank)
-     * @param numSends The number of sends to monitor
-     * @param numFilterColumnEntries The number of entries in one filter column to monitor
-     * @param numResults The number of search results in the browser to monitor
-     * @param hasFlatTrackList Don't navigate groups, all tracks are flat
-     * @param numParams The number of parameter of a device to monitor
-     * @param numDevicesInBank The number of devices to monitor
-     * @param numDeviceLayers The number of device layers to monitor
-     * @param numDrumPadLayers The number of drum pad layers to monitor
+     * @param modelSetup The configuration parameters for the model
      * @return The model
      */
-    IModel createModel (final ColorManager colorManager, final ValueChanger valueChanger, final Scales scales, final int numTracks, final int numScenes, final int numSends, final int numFilterColumnEntries, final int numResults, final boolean hasFlatTrackList, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers);
+    IModel createModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup);
 
 
     /**

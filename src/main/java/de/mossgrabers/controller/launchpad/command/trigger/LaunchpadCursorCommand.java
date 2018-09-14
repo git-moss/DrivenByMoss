@@ -2,29 +2,33 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad.command.trigger;
+package de.mossgrabers.controller.launchpad.command.trigger;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.controller.launchpad.view.DrumView;
+import de.mossgrabers.controller.launchpad.view.DrumView64;
+import de.mossgrabers.controller.launchpad.view.PlayView;
+import de.mossgrabers.controller.launchpad.view.RaindropsView;
+import de.mossgrabers.controller.launchpad.view.SequencerView;
+import de.mossgrabers.controller.launchpad.view.Views;
 import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.launchpad.view.DrumView;
-import de.mossgrabers.launchpad.view.DrumView64;
-import de.mossgrabers.launchpad.view.PlayView;
-import de.mossgrabers.launchpad.view.RaindropsView;
-import de.mossgrabers.launchpad.view.SequencerView;
-import de.mossgrabers.launchpad.view.Views;
 
 
 /**
@@ -51,7 +55,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     @Override
     protected void updateArrowStates ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ViewManager viewManager = this.surface.getViewManager ();
 
         if (viewManager.isActiveView (Views.VIEW_PLAY))
@@ -66,14 +70,25 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
+        if (viewManager.isActiveView (Views.VIEW_PIANO))
+        {
+            final Scales scales = this.model.getScales ();
+            final int octave = scales.getOctave ();
+            this.canScrollUp = octave < 3;
+            this.canScrollDown = octave > -3;
+            this.canScrollLeft = false;
+            this.canScrollRight = false;
+            return;
+        }
+
         if (viewManager.isActiveView (Views.VIEW_DRUM))
         {
+            final INoteClip clip = ((DrumView) viewManager.getView (Views.VIEW_DRUM)).getClip ();
             final int octave = this.model.getScales ().getDrumOctave ();
             this.canScrollUp = octave < 5;
             this.canScrollDown = octave > -3;
-            this.canScrollLeft = this.model.getCursorClip ().getEditPage () > 0;
-            // TODO API extension required - We do not know the number of steps
-            this.canScrollRight = true;
+            this.canScrollLeft = clip.canScrollStepsBackwards ();
+            this.canScrollRight = clip.canScrollStepsForwards ();
             return;
         }
 
@@ -90,12 +105,12 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         if (viewManager.isActiveView (Views.VIEW_SEQUENCER) || viewManager.isActiveView (Views.VIEW_RAINDROPS))
         {
+            final INoteClip clip = ((AbstractSequencerView<?, ?>) viewManager.getView (Views.VIEW_DRUM)).getClip ();
             final int octave = this.model.getScales ().getOctave ();
             this.canScrollUp = octave < Scales.OCTAVE_RANGE;
             this.canScrollDown = octave > -Scales.OCTAVE_RANGE;
-            this.canScrollLeft = this.model.getCursorClip ().getEditPage () > 0;
-            // TODO API extension required - We do not know the number of steps
-            this.canScrollRight = true;
+            this.canScrollLeft = clip.canScrollStepsBackwards ();
+            this.canScrollRight = clip.canScrollStepsForwards ();
             return;
         }
 
@@ -104,19 +119,19 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             this.canScrollUp = cursorDevice.canSelectNextFX ();
             this.canScrollDown = cursorDevice.canSelectPreviousFX ();
-            this.canScrollLeft = cursorDevice.hasPreviousParameterPage ();
-            this.canScrollRight = cursorDevice.hasNextParameterPage ();
+            final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+            this.canScrollLeft = parameterBank.canScrollBackwards ();
+            this.canScrollRight = parameterBank.canScrollForwards ();
             return;
         }
 
         if (viewManager.isActiveView (Views.VIEW_BROWSER))
         {
             final IBrowser browser = this.model.getBrowser ();
-            final int index = browser.getSelectedContentTypeIndex ();
             this.canScrollUp = false;
             this.canScrollDown = false;
-            this.canScrollLeft = index > 0;
-            this.canScrollRight = index < browser.getContentTypeNames ().length - 1;
+            this.canScrollLeft = browser.hasPreviousContentType ();
+            this.canScrollRight = browser.hasNextContentType ();
             return;
         }
 
@@ -131,12 +146,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
 
-        final ITrack sel = tb.getSelectedTrack ();
+        final ITrack sel = tb.getSelectedItem ();
         final int selIndex = sel != null ? sel.getIndex () : -1;
-        this.canScrollLeft = selIndex > 0 || tb.canScrollTracksUp ();
-        this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getTrack (selIndex + 1).doesExist () || tb.canScrollTracksDown ();
-        this.canScrollUp = tb.canScrollScenesUp ();
-        this.canScrollDown = tb.canScrollScenesDown ();
+        this.canScrollLeft = selIndex > 0 || tb.canScrollBackwards ();
+        this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollForwards ();
+        final ISceneBank sceneBank = tb.getSceneBank ();
+        this.canScrollUp = sceneBank.canScrollBackwards ();
+        this.canScrollDown = sceneBank.canScrollForwards ();
     }
 
 
@@ -164,7 +180,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.VIEW_BROWSER))
             return LaunchpadColors.LAUNCHPAD_COLOR_TURQUOISE;
 
-        // VIEW_PLAY, VIEW_SHIFT
+        // VIEW_PLAY, VIEW_PIANO, VIEW_SHIFT
         return LaunchpadColors.LAUNCHPAD_COLOR_OCEAN_HI;
     }
 
@@ -189,8 +205,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.VIEW_DEVICE))
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            cursorDevice.previousParameterPage ();
-            this.surface.getDisplay ().notify (cursorDevice.getSelectedParameterPageName ());
+            cursorDevice.getParameterBank ().scrollBackwards ();
+            this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
             return;
         }
 
@@ -212,7 +228,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         }
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
-        this.scrollTracksLeft ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
+        if (activeMode != null)
+            activeMode.selectNextTrack ();
     }
 
 
@@ -236,8 +254,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.VIEW_DEVICE))
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            cursorDevice.nextParameterPage ();
-            this.surface.getDisplay ().notify (cursorDevice.getSelectedParameterPageName ());
+            cursorDevice.getParameterBank ().scrollForwards ();
+            this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
             return;
         }
 
@@ -259,7 +277,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         }
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
-        this.scrollTracksRight ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
+        if (activeMode != null)
+            activeMode.selectPreviousTrack ();
     }
 
 
@@ -269,7 +289,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.VIEW_PLAY) || viewManager.isActiveView (Views.VIEW_PIANO))
         {
             ((PlayView) viewManager.getView (Views.VIEW_PLAY)).onOctaveUp (ButtonEvent.DOWN);
             return;
@@ -310,9 +330,6 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
         super.scrollUp ();
-
-        // TODO could be used for layer navigation
-        // VIEW_DEVICE
     }
 
 
@@ -322,7 +339,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.VIEW_PLAY) || viewManager.isActiveView (Views.VIEW_PIANO))
         {
             ((PlayView) viewManager.getView (Views.VIEW_PLAY)).onOctaveDown (ButtonEvent.DOWN);
             return;
@@ -363,9 +380,6 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
         super.scrollDown ();
-
-        // TODO could be used for layer navigation
-        // VIEW_DEVICE
     }
 
 

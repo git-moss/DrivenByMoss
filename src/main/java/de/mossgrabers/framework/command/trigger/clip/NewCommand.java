@@ -4,14 +4,14 @@
 
 package de.mossgrabers.framework.command.trigger.clip;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -22,7 +22,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class NewCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class NewCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -56,20 +56,20 @@ public class NewCommand<S extends ControlSurface<C>, C extends Configuration> ex
 
     private void handleExecute (final boolean enableOverdub)
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedTrack ();
+        final ITrack track = this.model.getSelectedTrack ();
         if (track == null)
         {
-            this.surface.getDisplay ().notify ("Please select an Instrument track first.", true, true);
+            this.surface.getDisplay ().notify ("Please select an Instrument track first.");
             return;
         }
 
-        final ISlot selectedSlot = track.getSelectedSlot ();
+        final ISlotBank slotBank = track.getSlotBank ();
+        final ISlot selectedSlot = slotBank.getSelectedItem ();
         final int slotIndex = selectedSlot == null ? 0 : selectedSlot.getIndex ();
-        final ISlot slot = track.getEmptySlot (slotIndex);
+        final ISlot slot = slotBank.getEmptySlot (slotIndex);
         if (slot == null)
         {
-            this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.", true, true);
+            this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.");
             return;
         }
 

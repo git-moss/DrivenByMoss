@@ -4,15 +4,18 @@
 
 package de.mossgrabers.framework.view;
 
-import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.BitwigColors;
-import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -23,20 +26,27 @@ import de.mossgrabers.framework.daw.data.ITrack;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
+public abstract class AbstractSessionView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
 {
-    // Needs to be overwritten with device specific colors
-    protected SessionColor clipColorIsRecording       = new SessionColor (0, -1, false);
-    protected SessionColor clipColorIsRecordingQueued = new SessionColor (1, -1, false);
-    protected SessionColor clipColorIsPlaying         = new SessionColor (2, -1, false);
-    protected SessionColor clipColorIsPlayingQueued   = new SessionColor (3, -1, false);
-    protected SessionColor clipColorHasContent        = new SessionColor (4, -1, false);
-    protected SessionColor clipColorHasNoContent      = new SessionColor (5, -1, false);
-    protected SessionColor clipColorIsRecArmed        = new SessionColor (6, -1, false);
+    /** The color for a scene. */
+    public static final String COLOR_SCENE                = "COLOR_SCENE";
+    /** The color for a selected scene. */
+    public static final String COLOR_SELECTED_SCENE       = "COLOR_SELECTED_SCENE";
+    /** The color for no scene. */
+    public static final String COLOR_SCENE_OFF            = "COLOR_SELECTED_OFF";
 
-    protected int          rows;
-    protected int          columns;
-    protected boolean      useClipColor;
+    // Needs to be overwritten with device specific colors
+    protected SessionColor     clipColorIsRecording       = new SessionColor (0, -1, false);
+    protected SessionColor     clipColorIsRecordingQueued = new SessionColor (1, -1, false);
+    protected SessionColor     clipColorIsPlaying         = new SessionColor (2, -1, false);
+    protected SessionColor     clipColorIsPlayingQueued   = new SessionColor (3, -1, false);
+    protected SessionColor     clipColorHasContent        = new SessionColor (4, -1, false);
+    protected SessionColor     clipColorHasNoContent      = new SessionColor (5, -1, false);
+    protected SessionColor     clipColorIsRecArmed        = new SessionColor (6, -1, false);
+
+    protected int              rows;
+    protected int              columns;
+    protected boolean          useClipColor;
 
 
     /**
@@ -62,10 +72,13 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
+    public void onScene (final int sceneIndex, final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().launchScene (scene);
+        if (event != ButtonEvent.DOWN)
+            return;
+        final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (sceneIndex);
+        scene.select ();
+        scene.launch ();
     }
 
 
@@ -88,14 +101,14 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
             s = dummy;
         }
 
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (t);
-        final ISlot slot = track.getSlot (s);
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (t);
+        final ISlot slot = track.getSlotBank ().getItem (s);
 
         // Delete selected clip
         if (this.surface.isDeletePressed ())
         {
             this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-            slot.delete ();
+            slot.remove ();
             return;
         }
 
@@ -160,13 +173,14 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
      */
     protected void drawSessionGrid ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
         for (int x = 0; x < this.columns; x++)
         {
-            final ITrack t = tb.getTrack (x);
+            final ITrack t = tb.getItem (x);
+            final ISlotBank slotBank = t.getSlotBank ();
             for (int y = 0; y < this.rows; y++)
-                this.drawPad (t.getSlot (y), flipSession ? y : x, flipSession ? x : y, t.isRecArm ());
+                this.drawPad (slotBank.getItem (y), flipSession ? y : x, flipSession ? x : y, t.isRecArm ());
         }
     }
 
@@ -176,15 +190,16 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
      */
     protected void drawBirdsEyeGrid ()
     {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final int numTracks = tb.getNumTracks ();
-        final int numScenes = tb.getNumScenes ();
-        final int sceneCount = this.model.getSceneBank ().getSceneCount ();
-        final int trackCount = tb.getTrackCount ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = this.model.getSceneBank ();
+        final int numTracks = tb.getPageSize ();
+        final int numScenes = sceneBank.getPageSize ();
+        final int sceneCount = sceneBank.getItemCount ();
+        final int trackCount = tb.getItemCount ();
         final int maxScenePads = sceneCount / numScenes + (sceneCount % numScenes > 0 ? 1 : 0);
         final int maxTrackPads = trackCount / numTracks + (trackCount % numTracks > 0 ? 1 : 0);
-        final int scenePosition = tb.getScenePosition ();
-        final int trackPosition = tb.getTrack (0).getPosition ();
+        final int scenePosition = sceneBank.getScrollPosition ();
+        final int trackPosition = tb.getItem (0).getPosition ();
         final int sceneSelection = scenePosition / numScenes + (scenePosition % numScenes > 0 ? 1 : 0);
         final int trackSelection = trackPosition / numTracks + (trackPosition % numTracks > 0 ? 1 : 0);
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
@@ -254,7 +269,7 @@ public abstract class AbstractSessionView<S extends ControlSurface<C>, C extends
     protected SessionColor getPadColor (final ISlot slot, final boolean isArmed)
     {
         final double [] slotColor = slot.getColor ();
-        final String colorIndex = BitwigColors.getColorIndex (slotColor[0], slotColor[1], slotColor[2]);
+        final String colorIndex = DAWColors.getColorIndex (slotColor[0], slotColor[1], slotColor[2]);
         final ColorManager cm = this.model.getColorManager ();
 
         if (slot.isRecordingQueued ())

@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.configuration;
 
-import de.mossgrabers.framework.ColorEx;
+import de.mossgrabers.framework.controller.color.ColorEx;
 
 
 /**
@@ -27,6 +27,18 @@ public interface ISettingsUI
      * @return The object that encapsulates the requested enum setting
      */
     IEnumSetting getEnumSetting (final String label, final String category, final String [] options, final String initialValue);
+
+
+    /**
+     * Returns a boolean setting on the number of provided options.
+     *
+     * @param label The name of the setting, must not be null
+     * @param category The name of the category, may not be null
+     * @param initialValue The initial boolean value, must be one of the items specified with the
+     *            option argument
+     * @return The object that encapsulates the requested boolean setting
+     */
+    IBooleanSetting getBooleanSetting (final String label, final String category, final boolean initialValue);
 
 
     /**

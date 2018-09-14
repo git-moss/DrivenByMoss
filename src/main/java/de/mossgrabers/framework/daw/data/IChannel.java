@@ -4,48 +4,17 @@
 
 package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.framework.daw.ObserverManagement;
+import de.mossgrabers.framework.daw.ISendBank;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 
 
 /**
- * The intrerface to a channel.
+ * The interface to a channel.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IChannel extends ObserverManagement
+public interface IChannel extends IItem
 {
-    /**
-     * Get the index of the channel in the current bank page.
-     *
-     * @return The index of the channel in the current bank page
-     */
-    int getIndex ();
-
-
-    /**
-     * True if the channel is selected.
-     *
-     * @return True if the channel is selected.
-     */
-    boolean isSelected ();
-
-
-    /**
-     * Set the selected state of the channel.
-     *
-     * @param isSelected True if the channel is selected
-     */
-    void setSelected (boolean isSelected);
-
-
-    /**
-     * Returns true if the channel exits.
-     *
-     * @return True if the channel exits.
-     */
-    boolean doesExist ();
-
-
     /**
      * Returns true if the channel is activated.
      *
@@ -55,11 +24,11 @@ public interface IChannel extends ObserverManagement
 
 
     /**
-     * Get the name of the channel.
+     * Get the type of the channel.
      *
-     * @return The name of the channel
+     * @return The type
      */
-    String getName ();
+    ChannelType getType ();
 
 
     /**
@@ -205,7 +174,7 @@ public interface IChannel extends ObserverManagement
 
 
     /**
-     * Sets the activated state of the track.
+     * Sets the activated state of the channel.
      *
      * @param value True to activate
      */
@@ -213,7 +182,7 @@ public interface IChannel extends ObserverManagement
 
 
     /**
-     * Toggle the activated state of the track.
+     * Toggle the activated state of the channel.
      */
     void toggleIsActivated ();
 
@@ -227,7 +196,7 @@ public interface IChannel extends ObserverManagement
 
 
     /**
-     * Set the color of the track as a RGB value.
+     * Set the color of the channel as a RGB value.
      *
      * @param red The red part of the color
      * @param green The green part of the color
@@ -281,31 +250,7 @@ public interface IChannel extends ObserverManagement
 
 
     /**
-     * Duplicate the track.
-     */
-    void duplicate ();
-
-
-    /**
-     * Select the master track.
-     */
-    void select ();
-
-
-    /**
-     * Make the master track visible (scrolls to the track in the DAW).
-     */
-    void makeVisible ();
-
-
-    /**
-     * Select the master track and make it visible.
-     */
-    void selectAndMakeVisible ();
-
-
-    /**
-     * Get the VU value.
+     * Get the Mono VU value.
      *
      * @return The VU value
      */
@@ -313,18 +258,43 @@ public interface IChannel extends ObserverManagement
 
 
     /**
-     * Get the number of sends (of a page).
+     * Get the left VU value.
      *
-     * @return The number of sends
+     * @return The left VU value
      */
-    int getNumSends ();
+    int getVuLeft ();
 
 
     /**
-     * Get the send of a channel.
+     * Get the right VU value.
      *
-     * @param sendIndex The index of the send
-     * @return The send
+     * @return The right VU value
      */
-    ISend getSend (int sendIndex);
+    int getVuRight ();
+
+
+    /**
+     * Delete the channel.
+     */
+    void remove ();
+
+
+    /**
+     * Duplicate the channel.
+     */
+    void duplicate ();
+
+
+    /**
+     * Get the send bank.
+     *
+     * @return The send bank
+     */
+    ISendBank getSendBank ();
+
+
+    /**
+     * Enter sub-channels of the channel, if any.
+     */
+    void enter ();
 }

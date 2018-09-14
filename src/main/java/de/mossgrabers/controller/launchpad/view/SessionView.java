@@ -2,22 +2,24 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad.view;
+package de.mossgrabers.controller.launchpad.view;
 
-import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.controller.launchpad.mode.Modes;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
 import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.launchpad.mode.Modes;
 
 
 /**
@@ -77,7 +79,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     public void onGridNote (final int note, final int velocity)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveModeId ();
+        final Integer activeModeId = modeManager.getActiveOrTempModeId ();
         // Block 1st row if mode is active
         final boolean isNotRow1 = note >= 44;
         if (activeModeId == null || isNotRow1)
@@ -96,12 +98,12 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
             {
                 this.surface.setButtonConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
-                final IChannelBank tb = this.model.getCurrentTrackBank ();
-                final ITrack track = tb.getTrack (t);
+                final ITrackBank tb = this.model.getCurrentTrackBank ();
+                final ITrack track = tb.getItem (t);
                 if (track.doesExist ())
                 {
                     final int s = this.rows - 1 - index / this.columns;
-                    track.getSlot (s).duplicate ();
+                    track.getSlotBank ().getItem (s).duplicate ();
                 }
                 return;
             }
@@ -119,7 +121,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void drawGrid ()
     {
-        final Integer controlMode = this.surface.getModeManager ().getActiveModeId ();
+        final Integer controlMode = this.surface.getModeManager ().getActiveOrTempModeId ();
         final boolean isOff = controlMode == null;
         final boolean flip = this.surface.getConfiguration ().isFlipSession ();
         this.rows = isOff || flip ? 8 : 7;
@@ -130,22 +132,22 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         if (isOff)
             return;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final PadGrid pads = this.surface.getPadGrid ();
         final ModeManager modeManager = this.surface.getModeManager ();
         for (int x = 0; x < this.columns; x++)
         {
-            final ITrack track = tb.getTrack (x);
+            final ITrack track = tb.getItem (x);
             final boolean exists = track.doesExist ();
-            if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
+            if (modeManager.isActiveOrTempMode (Modes.MODE_REC_ARM))
                 pads.lightEx (x, 7, exists ? track.isRecArm () ? LaunchpadColors.LAUNCHPAD_COLOR_RED_HI : LaunchpadColors.LAUNCHPAD_COLOR_RED_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActiveMode (Modes.MODE_TRACK_SELECT))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_TRACK_SELECT))
                 pads.lightEx (x, 7, exists ? track.isSelected () ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActiveMode (Modes.MODE_MUTE))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_MUTE))
                 pads.lightEx (x, 7, exists ? track.isMute () ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColors.LAUNCHPAD_COLOR_YELLOW_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActiveMode (Modes.MODE_SOLO))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SOLO))
                 pads.lightEx (x, 7, exists ? track.isSolo () ? LaunchpadColors.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColors.LAUNCHPAD_COLOR_BLUE_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActiveMode (Modes.MODE_STOP_CLIP))
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_STOP_CLIP))
                 pads.lightEx (x, 7, exists ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
         }
     }
@@ -165,14 +167,16 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void updateSceneButtons ()
     {
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = tb.getSceneBank ();
+        for (int i = 0; i < 8; i++)
+        {
+            final IScene scene = sceneBank.getItem (i);
+            if (scene.doesExist ())
+                this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1 - i * 10, DAWColors.getColorIndex (scene.getColor ()));
+            else
+                this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1 - i * 10, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        }
     }
 
 
@@ -195,8 +199,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
                 this.isTemporary = false;
 
                 final ViewManager viewManager = this.surface.getViewManager ();
-                final ITrackBank tb = this.model.getTrackBank ();
-                final ITrack selectedTrack = tb.getSelectedTrack ();
+                final ITrack selectedTrack = this.model.getSelectedTrack ();
                 if (selectedTrack == null)
                     return;
                 final Integer viewId = viewManager.getPreferredView (selectedTrack.getPosition ());
@@ -220,11 +223,12 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final int x = index % this.columns;
         final int y = this.rows - 1 - index / this.columns;
 
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = tb.getSceneBank ();
 
         // Calculate page offsets
-        final int trackPosition = tb.getTrack (0).getPosition () / tb.getNumTracks ();
-        final int scenePosition = tb.getScenePosition () / tb.getNumScenes ();
+        final int trackPosition = tb.getItem (0).getPosition () / tb.getPageSize ();
+        final int scenePosition = sceneBank.getScrollPosition () / sceneBank.getPageSize ();
         final boolean flip = this.surface.getConfiguration ().isFlipSession ();
         final int selX = flip ? scenePosition : trackPosition;
         final int selY = flip ? trackPosition : scenePosition;
@@ -232,8 +236,8 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final int padsY = flip ? this.columns : isOffset ? this.rows + 1 : this.rows;
         final int offsetX = selX / padsX * padsX;
         final int offsetY = selY / padsY * padsY;
-        tb.scrollToChannel (offsetX * tb.getNumTracks () + (flip ? y : x) * padsX);
-        tb.scrollToScene (offsetY * tb.getNumScenes () + (flip ? x : y) * padsY);
+        tb.scrollTo (offsetX * tb.getPageSize () + (flip ? y : x) * padsX);
+        sceneBank.scrollTo (offsetY * sceneBank.getPageSize () + (flip ? x : y) * padsY);
     }
 
 
@@ -241,7 +245,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     {
         // First row mode handling
         final int index = note - 36;
-        final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
 
         if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
         {
@@ -250,15 +254,15 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             return;
         }
 
-        if (modeManager.isActiveMode (Modes.MODE_REC_ARM))
+        if (modeManager.isActiveOrTempMode (Modes.MODE_REC_ARM))
             track.toggleRecArm ();
-        else if (modeManager.isActiveMode (Modes.MODE_TRACK_SELECT))
+        else if (modeManager.isActiveOrTempMode (Modes.MODE_TRACK_SELECT))
             this.selectTrack (index);
-        else if (modeManager.isActiveMode (Modes.MODE_MUTE))
+        else if (modeManager.isActiveOrTempMode (Modes.MODE_MUTE))
             track.toggleMute ();
-        else if (modeManager.isActiveMode (Modes.MODE_SOLO))
+        else if (modeManager.isActiveOrTempMode (Modes.MODE_SOLO))
             track.toggleSolo ();
-        else if (modeManager.isActiveMode (Modes.MODE_STOP_CLIP))
+        else if (modeManager.isActiveOrTempMode (Modes.MODE_STOP_CLIP))
             track.stop ();
     }
 }

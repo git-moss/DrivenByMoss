@@ -2,11 +2,11 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.launchpad.controller;
+package de.mossgrabers.controller.launchpad.controller;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
@@ -83,7 +83,7 @@ public class LaunchpadColors
     public static final int    LAUNCHPAD_COLOR_PINK_LO          = 59;
     public static final int    LAUNCHPAD_COLOR_ORANGE           = 60;
 
-    public static final int [] BITWIG_INDICATOR_COLORS          =
+    public static final int [] DAW_INDICATOR_COLORS             =
     {
         LAUNCHPAD_COLOR_RED,
         LAUNCHPAD_COLOR_AMBER,
@@ -140,33 +140,33 @@ public class LaunchpadColors
 
         colorManager.registerColor (PadGrid.GRID_OFF, LAUNCHPAD_COLOR_BLACK);
 
-        colorManager.registerColor (BitwigColors.COLOR_OFF, LAUNCHPAD_COLOR_BLACK);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_DARK_GRAY, LAUNCHPAD_COLOR_GREY_LO);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_GRAY, LAUNCHPAD_COLOR_GREY_MD);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_GRAY, LAUNCHPAD_COLOR_GREY_LO);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_SILVER, LAUNCHPAD_COLOR_SKY_OCEAN);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_DARK_BROWN, LAUNCHPAD_COLOR_AMBER_LO);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_BROWN, LAUNCHPAD_COLOR_AMBER_YELLOW);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_DARK_BLUE, LAUNCHPAD_COLOR_OCEAN);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_PURPLE_BLUE, LAUNCHPAD_COLOR_OCEAN_BLUE);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_PURPLE, LAUNCHPAD_COLOR_PINK);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_PINK, LAUNCHPAD_COLOR_PINK_HI);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_RED, LAUNCHPAD_COLOR_RED);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_ORANGE, LAUNCHPAD_COLOR_ORANGE);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_ORANGE, LAUNCHPAD_COLOR_RED_LO);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_MOSS_GREEN, LAUNCHPAD_COLOR_LIME_LO);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_GREEN, LAUNCHPAD_COLOR_SPRING);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_COLD_GREEN, LAUNCHPAD_COLOR_TURQUOISE);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_BLUE, LAUNCHPAD_COLOR_SKY_HI);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PURPLE, LAUNCHPAD_COLOR_BLUE_ORCHID);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_PINK, LAUNCHPAD_COLOR_MAGENTA_PINK);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_SKIN, LAUNCHPAD_COLOR_ROSE);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_REDDISH_BROWN, LAUNCHPAD_COLOR_AMBER);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_BROWN, LAUNCHPAD_COLOR_AMBER_HI);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_GREEN, LAUNCHPAD_COLOR_LIME);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_BLUISH_GREEN, LAUNCHPAD_COLOR_SPRING_HI);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_GREEN_BLUE, LAUNCHPAD_COLOR_TURQUOISE_CYAN);
-        colorManager.registerColor (BitwigColors.BITWIG_COLOR_LIGHT_BLUE, LAUNCHPAD_COLOR_OCEAN_HI);
+        colorManager.registerColor (DAWColors.COLOR_OFF, LAUNCHPAD_COLOR_BLACK);
+        colorManager.registerColor (DAWColors.DAW_COLOR_DARK_GRAY, LAUNCHPAD_COLOR_GREY_LO);
+        colorManager.registerColor (DAWColors.DAW_COLOR_GRAY, LAUNCHPAD_COLOR_GREY_MD);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_GRAY, LAUNCHPAD_COLOR_GREY_LO);
+        colorManager.registerColor (DAWColors.DAW_COLOR_SILVER, LAUNCHPAD_COLOR_SKY_OCEAN);
+        colorManager.registerColor (DAWColors.DAW_COLOR_DARK_BROWN, LAUNCHPAD_COLOR_AMBER_LO);
+        colorManager.registerColor (DAWColors.DAW_COLOR_BROWN, LAUNCHPAD_COLOR_AMBER_YELLOW);
+        colorManager.registerColor (DAWColors.DAW_COLOR_DARK_BLUE, LAUNCHPAD_COLOR_OCEAN);
+        colorManager.registerColor (DAWColors.DAW_COLOR_PURPLE_BLUE, LAUNCHPAD_COLOR_OCEAN_BLUE);
+        colorManager.registerColor (DAWColors.DAW_COLOR_PURPLE, LAUNCHPAD_COLOR_PINK);
+        colorManager.registerColor (DAWColors.DAW_COLOR_PINK, LAUNCHPAD_COLOR_PINK_HI);
+        colorManager.registerColor (DAWColors.DAW_COLOR_RED, LAUNCHPAD_COLOR_RED);
+        colorManager.registerColor (DAWColors.DAW_COLOR_ORANGE, LAUNCHPAD_COLOR_ORANGE);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_ORANGE, LAUNCHPAD_COLOR_RED_LO);
+        colorManager.registerColor (DAWColors.DAW_COLOR_MOSS_GREEN, LAUNCHPAD_COLOR_LIME_LO);
+        colorManager.registerColor (DAWColors.DAW_COLOR_GREEN, LAUNCHPAD_COLOR_SPRING);
+        colorManager.registerColor (DAWColors.DAW_COLOR_COLD_GREEN, LAUNCHPAD_COLOR_TURQUOISE);
+        colorManager.registerColor (DAWColors.DAW_COLOR_BLUE, LAUNCHPAD_COLOR_SKY_HI);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_PURPLE, LAUNCHPAD_COLOR_BLUE_ORCHID);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_PINK, LAUNCHPAD_COLOR_MAGENTA_PINK);
+        colorManager.registerColor (DAWColors.DAW_COLOR_SKIN, LAUNCHPAD_COLOR_ROSE);
+        colorManager.registerColor (DAWColors.DAW_COLOR_REDDISH_BROWN, LAUNCHPAD_COLOR_AMBER);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_BROWN, LAUNCHPAD_COLOR_AMBER_HI);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_GREEN, LAUNCHPAD_COLOR_LIME);
+        colorManager.registerColor (DAWColors.DAW_COLOR_BLUISH_GREEN, LAUNCHPAD_COLOR_SPRING_HI);
+        colorManager.registerColor (DAWColors.DAW_COLOR_GREEN_BLUE, LAUNCHPAD_COLOR_TURQUOISE_CYAN);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_BLUE, LAUNCHPAD_COLOR_OCEAN_HI);
 
         colorManager.registerColor (ColorManager.BUTTON_STATE_OFF, LAUNCHPAD_COLOR_BLACK);
         colorManager.registerColor (ColorManager.BUTTON_STATE_ON, LAUNCHPAD_COLOR_YELLOW_LO);

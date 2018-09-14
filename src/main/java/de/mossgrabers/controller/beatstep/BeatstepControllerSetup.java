@@ -26,15 +26,18 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.Relative3ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
-import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.ViewManager;
 
@@ -158,8 +161,9 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     @Override
     protected void createModel ()
     {
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, 8, 8, 8, 16, 16, true, -1, -1, -1, -1);
-        this.model.getTrackBank ().addTrackSelectionObserver (this::handleTrackChange);
+        final ModelSetup ms = new ModelSetup ();
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model.getTrackBank ().addSelectionObserver (this::handleTrackChange);
     }
 
 
@@ -172,7 +176,17 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         final IMidiInput input = midiAccess.createInput ("Control", "82????", "92????", "A2????", "B2????");
 
         // Sequencer 1 is on channel 1
-        input.createNoteInput ("Seq. 1", "90????", "80????");
+        final INoteInput seqNoteInput = input.createNoteInput ("Seq. 1", "90????", "80????");
+        if (!this.isPro)
+        {
+            final Integer [] table = new Integer [128];
+            for (int i = 0; i < 128; i++)
+            {
+                // Block the Shift key
+                table[i] = Integer.valueOf (i == 7 ? -1 : i);
+            }
+            seqNoteInput.setKeyTranslationTable (table);
+        }
 
         // Setup the 2 note sequencers and 1 drum sequencer
         if (this.isPro)
@@ -193,7 +207,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     @Override
     protected void createObservers ()
     {
-        this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication ());
+        this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
     }
 
@@ -261,7 +275,9 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     }
 
 
-    private void updateIndication ()
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
     {
         final BeatstepControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
@@ -273,8 +289,8 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         mt.setVolumeIndication (!isDevice);
 
         final ITrackBank tb = this.model.getTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedTrack ();
-        final IChannelBank tbe = this.model.getEffectTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedItem ();
+        final ITrackBank tbe = this.model.getEffectTrackBank ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
 
@@ -282,25 +298,27 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         if (tbe != null)
             tbe.setIndication (isEffect && isSession);
 
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i;
-            final ITrack track = tb.getTrack (i);
+            final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect && hasTrackSel && !isDevice);
             track.setPanIndication (!isEffect && hasTrackSel && !isDevice);
+            final ISendBank sendBank = track.getSendBank ();
             for (int j = 0; j < 6; j++)
-                track.getSend (j).setIndication (!isEffect && hasTrackSel && isTrack);
+                sendBank.getItem (j).setIndication (!isEffect && hasTrackSel && isTrack);
 
             if (tbe != null)
             {
-                final ITrack selectedFXTrack = tbe.getSelectedTrack ();
+                final ITrack selectedFXTrack = tbe.getSelectedItem ();
                 final boolean hasFXTrackSel = selectedFXTrack != null && selectedFXTrack.getIndex () == i;
-                final ITrack fxTrack = tbe.getTrack (i);
+                final ITrack fxTrack = tbe.getItem (i);
                 fxTrack.setVolumeIndication (isEffect && hasFXTrackSel && isTrack);
                 fxTrack.setPanIndication (isEffect && hasFXTrackSel && isTrack);
             }
 
-            cursorDevice.indicateParameter (i, isDevice);
+            parameterBank.getItem (i).setIndication (isDevice);
         }
     }
 
