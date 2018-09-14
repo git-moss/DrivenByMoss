@@ -93,6 +93,8 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         if (distance == -1 || distance != (y == 0 ? 1 : y * 2))
         {
             final int offset = clip.getCurrentStep () % stepSize;
+            if (offset < 0)
+                return;
             for (int i = offset; i < length; i += stepSize)
                 clip.setStep (i, this.keyManager.map (x), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, RESOLUTIONS[this.selectedIndex]);
         }

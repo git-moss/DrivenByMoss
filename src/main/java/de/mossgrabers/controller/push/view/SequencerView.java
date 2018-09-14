@@ -112,10 +112,11 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
         // https://github.com/teotigraphix/Framework4Bitwig/issues/124
         final int x = index % 8;
         final INoteClip cursorClip = this.getClip ();
-        final int state = cursorClip.getStep (x, this.keyManager.map (y));
+        final int mappedNote = this.keyManager.map (y);
+        final int state = cursorClip.getStep (x, mappedNote);
         final ModeManager modeManager = this.surface.getModeManager ();
         final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.MODE_NOTE);
-        noteMode.setValues (cursorClip, x, note, state == 2 ? 1.0 : 0, 127);
+        noteMode.setValues (cursorClip, x, mappedNote, state == 2 ? 1.0 : 0, 127);
         modeManager.setActiveMode (Modes.MODE_NOTE);
     }
 
