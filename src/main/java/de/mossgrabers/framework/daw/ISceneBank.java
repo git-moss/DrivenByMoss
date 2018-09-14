@@ -121,7 +121,7 @@ public interface ISceneBank extends ObserverManagement
 
 
     /**
-     * Selects the scene in the DAW.
+     * Selects the scene in Bitwig Studio.
      *
      * @param index scene bank index.
      */
@@ -129,7 +129,7 @@ public interface ISceneBank extends ObserverManagement
 
 
     /**
-     * Makes the scene visible in the the DAW user interface.
+     * Makes the scene visible in the Bitwig Studio user interface.
      *
      * @param index scene bank index.
      */

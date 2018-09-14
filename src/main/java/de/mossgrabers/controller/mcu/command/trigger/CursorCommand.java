@@ -2,13 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu.command.trigger;
+package de.mossgrabers.mcu.command.trigger;
 
-import de.mossgrabers.controller.mcu.MCUConfiguration;
-import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.mcu.MCUConfiguration;
+import de.mossgrabers.mcu.controller.MCUControlSurface;
 
 
 /**
@@ -79,7 +79,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     private void scrollLeft ()
     {
         if (this.surface.getConfiguration ().isZoomState ())
-            this.model.getApplication ().zoomOut ();
+            this.model.getApplication ().invokeAction ("Zoom Out");
         else
             this.model.getApplication ().arrowKeyLeft ();
     }
@@ -88,7 +88,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     private void scrollRight ()
     {
         if (this.surface.getConfiguration ().isZoomState ())
-            this.model.getApplication ().zoomIn ();
+            this.model.getApplication ().invokeAction ("Zoom In");
         else
             this.model.getApplication ().arrowKeyRight ();
     }
@@ -101,7 +101,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             if (this.surface.getConfiguration ().useVertZoomForModes ())
                 this.switcher.scrollUp ();
             else
-                this.model.getApplication ().decTrackHeight ();
+                this.model.getApplication ().invokeAction ("toggle_double_or_single_row_track_height");
         }
         else
             this.model.getApplication ().arrowKeyUp ();
@@ -115,7 +115,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             if (this.surface.getConfiguration ().useVertZoomForModes ())
                 this.switcher.scrollDown ();
             else
-                this.model.getApplication ().incTrackHeight ();
+                this.model.getApplication ().invokeAction ("toggle_double_or_single_row_track_height");
         }
         else
             this.model.getApplication ().arrowKeyDown ();

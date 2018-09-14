@@ -2,14 +2,9 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.sl.view;
+package de.mossgrabers.sl.view;
 
-import de.mossgrabers.controller.sl.SLConfiguration;
-import de.mossgrabers.controller.sl.command.trigger.ButtonRowSelectCommand;
-import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
-import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.controller.sl.mode.Modes;
-import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -18,8 +13,13 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.sl.SLConfiguration;
+import de.mossgrabers.sl.command.trigger.ButtonRowSelectCommand;
+import de.mossgrabers.sl.command.trigger.P2ButtonCommand;
+import de.mossgrabers.sl.controller.SLControlSurface;
+import de.mossgrabers.sl.mode.Modes;
+import de.mossgrabers.sl.mode.device.DeviceParamsMode;
 
 import java.util.Arrays;
 

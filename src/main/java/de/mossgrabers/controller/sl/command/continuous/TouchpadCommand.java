@@ -2,12 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.sl.command.continuous;
+package de.mossgrabers.sl.command.continuous;
 
-import de.mossgrabers.controller.sl.SLConfiguration;
-import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.sl.SLConfiguration;
+import de.mossgrabers.sl.controller.SLControlSurface;
 
 
 /**

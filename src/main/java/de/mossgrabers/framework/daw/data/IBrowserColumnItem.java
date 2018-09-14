@@ -39,15 +39,6 @@ public interface IBrowserColumnItem extends ObserverManagement
 
 
     /**
-     * Get the name of the item.
-     *
-     * @param limit Limit the text to this number
-     * @return The name of the item
-     */
-    String getName (int limit);
-
-
-    /**
      * Returns true if the item is selected.
      *
      * @return True if the item is selected.

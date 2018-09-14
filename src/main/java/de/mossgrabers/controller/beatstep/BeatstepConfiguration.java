@@ -2,11 +2,11 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.beatstep;
+package de.mossgrabers.beatstep;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.ValueChanger;
 
 
 /**
@@ -25,7 +25,7 @@ public class BeatstepConfiguration extends AbstractConfiguration
      * @param valueChanger The value changer
      * @param isPro Is Pro or MkII?
      */
-    public BeatstepConfiguration (final IValueChanger valueChanger, final boolean isPro)
+    public BeatstepConfiguration (final ValueChanger valueChanger, final boolean isPro)
     {
         super (valueChanger);
         this.isPro = isPro;

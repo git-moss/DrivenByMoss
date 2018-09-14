@@ -2,13 +2,13 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.launchpad.view;
+package de.mossgrabers.launchpad.view;
 
-import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractRaindropsView;
+import de.mossgrabers.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
 /**
@@ -42,8 +42,7 @@ public class RaindropsView extends AbstractRaindropsView<LaunchpadControlSurface
 
     private void delayedUpdateArrowButtons ()
     {
-        final boolean hasClips = this.model.getHost ().hasClips ();
-        this.surface.setButton (this.surface.getSessionButton (), hasClips ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setButton (this.surface.getSessionButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
         this.surface.setButton (this.surface.getNoteButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
         this.surface.setButton (this.surface.getDeviceButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
         this.surface.setButton (this.surface.getUserButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);

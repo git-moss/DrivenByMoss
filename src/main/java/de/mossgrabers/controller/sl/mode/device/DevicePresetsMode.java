@@ -2,20 +2,20 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.sl.mode.device;
+package de.mossgrabers.sl.mode.device;
 
-import de.mossgrabers.controller.sl.SLConfiguration;
-import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.controller.sl.controller.SLDisplay;
-import de.mossgrabers.controller.sl.mode.Modes;
+import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.sl.SLConfiguration;
+import de.mossgrabers.sl.controller.SLControlSurface;
+import de.mossgrabers.sl.controller.SLDisplay;
+import de.mossgrabers.sl.mode.Modes;
 
 
 /**
@@ -139,8 +139,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
                 for (int i = 0; i < 6; i++)
                 {
                     final IBrowserColumn column = browser.getFilterColumn (i);
-                    final String columnName = column.doesExist () ? StringUtils.shortenAndFixASCII (column.getName () + ":", 8) : "";
-                    d.setCell (0, 2 + i, columnName).setCell (2, 2 + i, column.doesCursorExist () ? column.getCursorName () : "");
+                    d.setCell (0, 2 + i, StringUtils.shortenAndFixASCII (column.getName () + ":", 8)).setCell (2, 2 + i, column.doesCursorExist () ? column.getCursorName () : "");
                 }
                 break;
 

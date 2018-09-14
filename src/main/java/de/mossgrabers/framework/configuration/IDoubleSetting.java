@@ -9,7 +9,7 @@ package de.mossgrabers.framework.configuration;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IDoubleSetting extends ISetting<Double>
+public interface IDoubleSetting
 {
     /**
      * Set the double value.
@@ -17,4 +17,12 @@ public interface IDoubleSetting extends ISetting<Double>
      * @param value The new value
      */
     void set (double value);
+
+
+    /**
+     * Add an observer for a change of the value.
+     *
+     * @param observer The observer
+     */
+    void addValueObserver (IValueObserver<Double> observer);
 }

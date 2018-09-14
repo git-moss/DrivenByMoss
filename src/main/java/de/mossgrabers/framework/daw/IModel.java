@@ -4,11 +4,10 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -32,7 +31,7 @@ public interface IModel
      *
      * @return The value changer.
      */
-    IValueChanger getValueChanger ();
+    ValueChanger getValueChanger ();
 
 
     /**
@@ -247,8 +246,8 @@ public interface IModel
 
 
     /**
-     * Returns true if the cursor track is pinned (aka does not follow the track selection in the
-     * DAW).
+     * Returns true if the cursor track is pinned (aka does not follow the track selection in
+     * Bitwig).
      *
      * @return True if the cursor track is pinned
      */
@@ -267,28 +266,4 @@ public interface IModel
      * @return True if the cursor device is pointing to a device on the master track
      */
     boolean isCursorDeviceOnMasterTrack ();
-
-
-    /**
-     * Returns true if there is a selected audio clip which can be split.
-     *
-     * @return True if can be split
-     */
-    boolean canConvertClip ();
-
-
-    /**
-     * Get the selected track from the current track bank, if any.
-     *
-     * @return The selected track or null
-     */
-    ITrack getSelectedTrack ();
-
-
-    /**
-     * Get the selected slot on the selected track, if any.
-     *
-     * @return The slot or null
-     */
-    ISlot getSelectedSlot ();
 }

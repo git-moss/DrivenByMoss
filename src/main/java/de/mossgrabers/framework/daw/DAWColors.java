@@ -5,14 +5,14 @@
 package de.mossgrabers.framework.daw;
 
 /**
- * Support for handling the colors used in the DAW.
+ * Support for handling the colors used in Bitwig.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DAWColors
+public class BitwigColors
 {
-    /** All track colors. */
-    private static final Object [] COLORS                  =
+    /** All Bitwig track colors. */
+    private static final Object [] COLORS                     =
     {
         // Gray - not assigned
         new double []
@@ -207,97 +207,97 @@ public class DAWColors
     };
 
     /** Color off. */
-    public static final String     COLOR_OFF               = "COLOR_OFF";
+    public static final String     COLOR_OFF                  = "COLOR_OFF";
     /** Color dark grey. */
-    public static final String     DAW_COLOR_DARK_GRAY     = "DAW_COLOR_DARK_GRAY";
+    public static final String     BITWIG_COLOR_DARK_GRAY     = "BITWIG_COLOR_DARK_GRAY";
     /** Color grey. */
-    public static final String     DAW_COLOR_GRAY          = "DAW_COLOR_GRAY";
+    public static final String     BITWIG_COLOR_GRAY          = "BITWIG_COLOR_GRAY";
     /** Color light grey. */
-    public static final String     DAW_COLOR_LIGHT_GRAY    = "DAW_COLOR_LIGHT_GRAY";
+    public static final String     BITWIG_COLOR_LIGHT_GRAY    = "BITWIG_COLOR_LIGHT_GRAY";
     /** Color silver. */
-    public static final String     DAW_COLOR_SILVER        = "DAW_COLOR_SILVER";
+    public static final String     BITWIG_COLOR_SILVER        = "BITWIG_COLOR_SILVER";
     /** Color dark brown. */
-    public static final String     DAW_COLOR_DARK_BROWN    = "DAW_COLOR_DARK_BROWN";
+    public static final String     BITWIG_COLOR_DARK_BROWN    = "BITWIG_COLOR_DARK_BROWN";
     /** Color brown. */
-    public static final String     DAW_COLOR_BROWN         = "DAW_COLOR_BROWN";
+    public static final String     BITWIG_COLOR_BROWN         = "BITWIG_COLOR_BROWN";
     /** Color dark blue. */
-    public static final String     DAW_COLOR_DARK_BLUE     = "DAW_COLOR_DARK_BLUE";
+    public static final String     BITWIG_COLOR_DARK_BLUE     = "BITWIG_COLOR_DARK_BLUE";
     /** Color purple blue. */
-    public static final String     DAW_COLOR_PURPLE_BLUE   = "DAW_COLOR_PURPLE_BLUE";
+    public static final String     BITWIG_COLOR_PURPLE_BLUE   = "BITWIG_COLOR_PURPLE_BLUE";
     /** Color purple. */
-    public static final String     DAW_COLOR_PURPLE        = "DAW_COLOR_PURPLE";
+    public static final String     BITWIG_COLOR_PURPLE        = "BITWIG_COLOR_PURPLE";
     /** Color pink. */
-    public static final String     DAW_COLOR_PINK          = "DAW_COLOR_PINK";
+    public static final String     BITWIG_COLOR_PINK          = "BITWIG_COLOR_PINK";
     /** Color red. */
-    public static final String     DAW_COLOR_RED           = "DAW_COLOR_RED";
+    public static final String     BITWIG_COLOR_RED           = "BITWIG_COLOR_RED";
     /** Color orange. */
-    public static final String     DAW_COLOR_ORANGE        = "DAW_COLOR_ORANGE";
+    public static final String     BITWIG_COLOR_ORANGE        = "BITWIG_COLOR_ORANGE";
     /** Color light orange. */
-    public static final String     DAW_COLOR_LIGHT_ORANGE  = "DAW_COLOR_LIGHT_ORANGE";
+    public static final String     BITWIG_COLOR_LIGHT_ORANGE  = "BITWIG_COLOR_LIGHT_ORANGE";
     /** Color moss green. */
-    public static final String     DAW_COLOR_MOSS_GREEN    = "DAW_COLOR_MOSS_GREEN";
+    public static final String     BITWIG_COLOR_MOSS_GREEN    = "BITWIG_COLOR_MOSS_GREEN";
     /** Color green. */
-    public static final String     DAW_COLOR_GREEN         = "DAW_COLOR_GREEN";
+    public static final String     BITWIG_COLOR_GREEN         = "BITWIG_COLOR_GREEN";
     /** Color cold green. */
-    public static final String     DAW_COLOR_COLD_GREEN    = "DAW_COLOR_COLD_GREEN";
+    public static final String     BITWIG_COLOR_COLD_GREEN    = "BITWIG_COLOR_COLD_GREEN";
     /** Color blue. */
-    public static final String     DAW_COLOR_BLUE          = "DAW_COLOR_BLUE";
+    public static final String     BITWIG_COLOR_BLUE          = "BITWIG_COLOR_BLUE";
     /** Color purple. */
-    public static final String     DAW_COLOR_LIGHT_PURPLE  = "DAW_COLOR_LIGHT_PURPLE";
+    public static final String     BITWIG_COLOR_LIGHT_PURPLE  = "BITWIG_COLOR_LIGHT_PURPLE";
     /** Color light pink. */
-    public static final String     DAW_COLOR_LIGHT_PINK    = "DAW_COLOR_LIGHT_PINK";
+    public static final String     BITWIG_COLOR_LIGHT_PINK    = "BITWIG_COLOR_LIGHT_PINK";
     /** Color skin. */
-    public static final String     DAW_COLOR_SKIN          = "DAW_COLOR_SKIN";
+    public static final String     BITWIG_COLOR_SKIN          = "BITWIG_COLOR_SKIN";
     /** Color reddish brown. */
-    public static final String     DAW_COLOR_REDDISH_BROWN = "DAW_COLOR_REDDISH_BROWN";
+    public static final String     BITWIG_COLOR_REDDISH_BROWN = "BITWIG_COLOR_REDDISH_BROWN";
     /** Color light brown. */
-    public static final String     DAW_COLOR_LIGHT_BROWN   = "DAW_COLOR_LIGHT_BROWN";
+    public static final String     BITWIG_COLOR_LIGHT_BROWN   = "BITWIG_COLOR_LIGHT_BROWN";
     /** Color light green. */
-    public static final String     DAW_COLOR_LIGHT_GREEN   = "DAW_COLOR_LIGHT_GREEN";
+    public static final String     BITWIG_COLOR_LIGHT_GREEN   = "BITWIG_COLOR_LIGHT_GREEN";
     /** Color bluish green. */
-    public static final String     DAW_COLOR_BLUISH_GREEN  = "DAW_COLOR_BLUISH_GREEN";
+    public static final String     BITWIG_COLOR_BLUISH_GREEN  = "BITWIG_COLOR_BLUISH_GREEN";
     /** Color green blue. */
-    public static final String     DAW_COLOR_GREEN_BLUE    = "DAW_COLOR_GREEN_BLUE";
+    public static final String     BITWIG_COLOR_GREEN_BLUE    = "BITWIG_COLOR_GREEN_BLUE";
     /** Color light blue. */
-    public static final String     DAW_COLOR_LIGHT_BLUE    = "DAW_COLOR_LIGHT_BLUE";
+    public static final String     BITWIG_COLOR_LIGHT_BLUE    = "BITWIG_COLOR_LIGHT_BLUE";
 
-    /** All IDs for the track colors. */
-    public static final String []  DAW_COLORS              = new String []
+    /** All IDs for the Bitwig track colors. */
+    public static final String []  BITWIG_COLORS              = new String []
     {
-        DAW_COLOR_GRAY,
-        DAW_COLOR_DARK_GRAY,
-        DAW_COLOR_GRAY,
-        DAW_COLOR_LIGHT_GRAY,
-        DAW_COLOR_SILVER,
-        DAW_COLOR_DARK_BROWN,
-        DAW_COLOR_BROWN,
-        DAW_COLOR_DARK_BLUE,
-        DAW_COLOR_PURPLE_BLUE,
-        DAW_COLOR_PURPLE,
-        DAW_COLOR_PINK,
-        DAW_COLOR_RED,
-        DAW_COLOR_ORANGE,
-        DAW_COLOR_LIGHT_ORANGE,
-        DAW_COLOR_MOSS_GREEN,
-        DAW_COLOR_GREEN,
-        DAW_COLOR_COLD_GREEN,
-        DAW_COLOR_BLUE,
-        DAW_COLOR_LIGHT_PURPLE,
-        DAW_COLOR_LIGHT_PINK,
-        DAW_COLOR_SKIN,
-        DAW_COLOR_REDDISH_BROWN,
-        DAW_COLOR_LIGHT_BROWN,
-        DAW_COLOR_LIGHT_GREEN,
-        DAW_COLOR_BLUISH_GREEN,
-        DAW_COLOR_GREEN_BLUE,
-        DAW_COLOR_LIGHT_BLUE
+        BITWIG_COLOR_GRAY,
+        BITWIG_COLOR_DARK_GRAY,
+        BITWIG_COLOR_GRAY,
+        BITWIG_COLOR_LIGHT_GRAY,
+        BITWIG_COLOR_SILVER,
+        BITWIG_COLOR_DARK_BROWN,
+        BITWIG_COLOR_BROWN,
+        BITWIG_COLOR_DARK_BLUE,
+        BITWIG_COLOR_PURPLE_BLUE,
+        BITWIG_COLOR_PURPLE,
+        BITWIG_COLOR_PINK,
+        BITWIG_COLOR_RED,
+        BITWIG_COLOR_ORANGE,
+        BITWIG_COLOR_LIGHT_ORANGE,
+        BITWIG_COLOR_MOSS_GREEN,
+        BITWIG_COLOR_GREEN,
+        BITWIG_COLOR_COLD_GREEN,
+        BITWIG_COLOR_BLUE,
+        BITWIG_COLOR_LIGHT_PURPLE,
+        BITWIG_COLOR_LIGHT_PINK,
+        BITWIG_COLOR_SKIN,
+        BITWIG_COLOR_REDDISH_BROWN,
+        BITWIG_COLOR_LIGHT_BROWN,
+        BITWIG_COLOR_LIGHT_GREEN,
+        BITWIG_COLOR_BLUISH_GREEN,
+        BITWIG_COLOR_GREEN_BLUE,
+        BITWIG_COLOR_LIGHT_BLUE
     };
 
 
     /**
      * Private due to utility class.
      */
-    private DAWColors ()
+    private BitwigColors ()
     {
         // Intentionally empty
     }
@@ -311,9 +311,9 @@ public class DAWColors
      */
     public static double [] getColorEntry (final String colorId)
     {
-        for (int i = 0; i < DAW_COLORS.length; i++)
+        for (int i = 0; i < BITWIG_COLORS.length; i++)
         {
-            if (DAW_COLORS[i] == colorId)
+            if (BITWIG_COLORS[i] == colorId)
                 return (double []) COLORS[i];
         }
         return (double []) COLORS[0];
@@ -350,7 +350,7 @@ public class DAWColors
             final double error = Math.pow (color[0] - red, 2.0) + Math.pow (color[1] - green, 2.0) + Math.pow (color[2] - blue, 2.0);
             if (error < minError)
             {
-                cid = DAW_COLORS[i];
+                cid = BITWIG_COLORS[i];
                 minError = error;
             }
         }

@@ -4,17 +4,18 @@
 
 package de.mossgrabers.framework.command.continuous;
 
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -25,7 +26,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FootswitchCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C> implements TriggerCommand
+public class FootswitchCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C> implements TriggerCommand
 {
     /**
      * Constructor.
@@ -84,7 +85,8 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
-                final ITrack track = this.model.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack track = tb.getSelectedTrack ();
                 if (track == null)
                 {
                     this.surface.getDisplay ().notify ("Please select an Instrument track first.", true, true);

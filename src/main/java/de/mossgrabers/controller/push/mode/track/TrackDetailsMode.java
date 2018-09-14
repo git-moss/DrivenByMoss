@@ -2,22 +2,22 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.mode.track;
+package de.mossgrabers.push.mode.track;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
-import de.mossgrabers.controller.push.controller.PushColors;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
-import de.mossgrabers.controller.push.mode.BaseMode;
-import de.mossgrabers.controller.push.view.ColorView;
-import de.mossgrabers.controller.push.view.Views;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.push.controller.DisplayMessage;
+import de.mossgrabers.push.controller.PushColors;
+import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.controller.PushDisplay;
+import de.mossgrabers.push.mode.BaseMode;
+import de.mossgrabers.push.view.ColorView;
+import de.mossgrabers.push.view.Views;
 
 
 /**
@@ -169,7 +169,7 @@ public class TrackDetailsMode extends BaseMode
             d.setCell (3, 5, deviceChain.isAutoMonitor () ? "On" : "Off");
             final boolean hasPinning = this.model.getHost ().hasPinning ();
             d.setCell (2, 6, hasPinning ? "Pin Trck" : "");
-            d.setCell (3, 6, hasPinning ? this.model.isCursorTrackPinned () ? "On" : "Off" : "");
+            d.setCell (3, 6, hasPinning ? (this.model.isCursorTrackPinned () ? "On" : "Off") : "");
             d.setCell (2, 7, "Select").setCell (3, 7, "Color").done (0).done (1).done (2).done (3);
         }
     }
@@ -203,7 +203,8 @@ public class TrackDetailsMode extends BaseMode
 
     private ITrack getSelectedTrack ()
     {
-        final ITrack t = this.model.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getSelectedTrack ();
         if (t != null)
             return t;
         final IMasterTrack master = this.model.getMasterTrack ();

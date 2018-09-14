@@ -2,13 +2,8 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.view;
+package de.mossgrabers.push.view;
 
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.command.trigger.SelectSessionViewCommand;
-import de.mossgrabers.controller.push.controller.PushColors;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -19,6 +14,11 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
+import de.mossgrabers.push.PushConfiguration;
+import de.mossgrabers.push.command.trigger.SelectSessionViewCommand;
+import de.mossgrabers.push.controller.PushColors;
+import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.mode.Modes;
 
 
 /**
@@ -28,11 +28,6 @@ import de.mossgrabers.framework.view.SessionColor;
  */
 public class SessionView extends AbstractSessionView<PushControlSurface, PushConfiguration>
 {
-    private static final int NUMBER_OF_RETRIES = 20;
-
-    protected int            startRetries;
-
-
     /**
      * Constructor.
      *
@@ -129,26 +124,11 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
             track.getSlot (s).browse ();
             final ModeManager modeManager = this.surface.getModeManager ();
             if (!modeManager.isActiveMode (Modes.MODE_BROWSER))
-                this.activateMode ();
+                modeManager.setActiveMode (Modes.MODE_BROWSER);
             return;
         }
 
         super.onGridNote (note, velocity);
-    }
-
-
-    /**
-     * Tries to activate the mode 20 times.
-     */
-    protected void activateMode ()
-    {
-        if (this.model.getBrowser ().isActive ())
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
-        else if (this.startRetries < NUMBER_OF_RETRIES)
-        {
-            this.startRetries++;
-            this.surface.scheduleTask (this::activateMode, 200);
-        }
     }
 
 

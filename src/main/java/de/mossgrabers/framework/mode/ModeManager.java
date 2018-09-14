@@ -160,7 +160,8 @@ public class ModeManager
                 this.activeModeId = this.defaultModeId;
                 mode = this.getMode (this.activeModeId);
             }
-            mode.onActivate ();
+            else
+                mode.onActivate ();
         }
         else if (this.previousModeId != null)
         {
@@ -173,7 +174,8 @@ public class ModeManager
                 this.activeModeId = this.defaultModeId;
                 mode = this.getMode (this.activeModeId);
             }
-            mode.onActivate ();
+            else
+                mode.onActivate ();
         }
 
         if (oldModeId != null)

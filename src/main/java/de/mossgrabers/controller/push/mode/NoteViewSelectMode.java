@@ -2,20 +2,20 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.mode;
+package de.mossgrabers.push.mode;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
-import de.mossgrabers.controller.push.view.Views;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.push.controller.DisplayMessage;
+import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.controller.PushDisplay;
+import de.mossgrabers.push.view.Views;
 
 
 /**
@@ -94,7 +94,7 @@ public class NoteViewSelectMode extends BaseMode
             if (VIEWS[i] != null)
             {
                 final View view = viewManager.getView (VIEWS[i]);
-                d.setCell (3, i, view == null ? "" : (viewManager.isActiveView (VIEWS[i]) ? PushDisplay.RIGHT_ARROW : "") + view.getName ());
+                d.setCell (3, i, view == null ? "" : ((viewManager.isActiveView (VIEWS[i]) ? PushDisplay.RIGHT_ARROW : "") + view.getName ()));
             }
             if (VIEWS_TOP[i] != null)
                 d.setCell (0, i, (viewManager.isActiveView (VIEWS_TOP[i]) ? PushDisplay.RIGHT_ARROW : "") + viewManager.getView (VIEWS_TOP[i]).getName ());
@@ -160,7 +160,7 @@ public class NoteViewSelectMode extends BaseMode
             return;
         viewManager.setActiveView (viewID);
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
         if (selectedTrack != null)
             viewManager.setPreferredView (selectedTrack.getPosition (), viewID);
         this.surface.getModeManager ().restoreMode ();

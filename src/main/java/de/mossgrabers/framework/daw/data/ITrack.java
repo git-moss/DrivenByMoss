@@ -12,6 +12,14 @@ package de.mossgrabers.framework.daw.data;
 public interface ITrack extends IChannel
 {
     /**
+     * Get the type of the track.
+     *
+     * @return The type
+     */
+    String getType ();
+
+
+    /**
      * Get the position of the track in all tracks.
      *
      * @return The position
@@ -217,12 +225,6 @@ public interface ITrack extends IChannel
      * Switch playback back to the arrangement.
      */
     void returnToArrangement ();
-
-
-    /**
-     * Scroll to the previous clip page.
-     */
-    void scrollClipPageBackwards ();
 
 
     /**

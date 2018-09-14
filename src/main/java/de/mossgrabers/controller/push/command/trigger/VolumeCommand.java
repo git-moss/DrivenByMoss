@@ -2,15 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.command.trigger;
+package de.mossgrabers.push.command.trigger;
 
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.mode.Modes;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.push.PushConfiguration;
+import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.mode.Modes;
 
 
 /**
@@ -51,10 +51,7 @@ public class VolumeCommand extends AbstractTriggerCommand<PushControlSurface, Pu
         }
 
         if (Modes.MODE_VOLUME.equals (currentMode))
-        {
-            if (this.model.getHost ().hasCrossfader ())
-                modeManager.setActiveMode (Modes.MODE_CROSSFADER);
-        }
+            modeManager.setActiveMode (Modes.MODE_CROSSFADER);
         else
             modeManager.setActiveMode (Modes.MODE_VOLUME);
     }

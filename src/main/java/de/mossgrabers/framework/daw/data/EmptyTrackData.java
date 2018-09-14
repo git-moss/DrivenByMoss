@@ -1,11 +1,7 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
-
 package de.mossgrabers.framework.daw.data;
-
-import de.mossgrabers.framework.daw.resource.ChannelType;
-
 
 /**
  * Default data for an empty track.
@@ -14,19 +10,6 @@ import de.mossgrabers.framework.daw.resource.ChannelType;
  */
 public class EmptyTrackData implements ITrack
 {
-    /** The singleton. */
-    public static final ITrack INSTANCE = new EmptyTrackData ();
-
-
-    /**
-     * Constructor.
-     */
-    private EmptyTrackData ()
-    {
-        // Intentionally empty
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public boolean doesExist ()
@@ -37,9 +20,9 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public ChannelType getType ()
+    public String getType ()
     {
-        return ChannelType.UNKNOWN;
+        return "";
     }
 
 
@@ -133,14 +116,6 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public String getName (final int limit)
-    {
-        return "";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public String getVolumeStr ()
     {
         return "";
@@ -219,22 +194,6 @@ public class EmptyTrackData implements ITrack
     /** {@inheritDoc} */
     @Override
     public int getVu ()
-    {
-        return 0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getVuLeft ()
-    {
-        return 0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getVuRight ()
     {
         return 0;
     }
@@ -615,14 +574,6 @@ public class EmptyTrackData implements ITrack
     /** {@inheritDoc} */
     @Override
     public void returnToArrangement ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollClipPageBackwards ()
     {
         // Intentionally empty
     }

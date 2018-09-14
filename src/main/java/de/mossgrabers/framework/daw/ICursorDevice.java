@@ -5,7 +5,6 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.IParameter;
 
 
@@ -68,15 +67,6 @@ public interface ICursorDevice extends ObserverManagement
      * @return The name
      */
     String getName ();
-
-
-    /**
-     * Get the name of the cursor device.
-     *
-     * @param limit Limit the text to this length
-     * @return The name
-     */
-    String getName (final int limit);
 
 
     /**
@@ -353,16 +343,6 @@ public interface ICursorDevice extends ObserverManagement
      * @return The name
      */
     String getSiblingDeviceName (int index);
-
-
-    /**
-     * Get the name of the sibling at the given index.
-     *
-     * @param index The index of a sibling
-     * @param limit Limit the text to this length
-     * @return The name
-     */
-    String getSiblingDeviceName (int index, final int limit);
 
 
     /**
@@ -955,7 +935,7 @@ public interface ICursorDevice extends ObserverManagement
      * @param index The index
      * @return The drum pad
      */
-    IDrumPad getDrumPad (int index);
+    IChannel getDrumPad (int index);
 
 
     /**
@@ -1217,27 +1197,11 @@ public interface ICursorDevice extends ObserverManagement
 
 
     /**
-     * Get the number of devices of a bank page.
+     * Get the number of a page in the device layers bank.
      *
      * @return The number
      */
-    int getNumDevices ();
-
-
-    /**
-     * Get the number of layers of a bank page.
-     *
-     * @return The number
-     */
-    int getNumLayers ();
-
-
-    /**
-     * Get the number of drum pads of a bank page.
-     *
-     * @return The number
-     */
-    int getNumDrumPads ();
+    int getNumDeviceLayers ();
 
 
     /**

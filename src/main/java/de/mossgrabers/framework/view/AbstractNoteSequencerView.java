@@ -4,14 +4,15 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -22,7 +23,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
+public abstract class AbstractNoteSequencerView<S extends ControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
 {
     protected int   numDisplayRows = 8;
     protected int   numDisplayCols;
@@ -149,7 +150,8 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             return;
         }
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
 
         // Steps with notes
         final ICursorClip clip = this.getClip ();

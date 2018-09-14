@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.command.core;
 
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 
 
@@ -17,7 +17,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractAftertouchCommand<S extends IControlSurface<C>, C extends Configuration> implements AftertouchCommand
+public abstract class AbstractAftertouchCommand<S extends ControlSurface<C>, C extends Configuration> implements AftertouchCommand
 {
     protected final IModel model;
     protected final S      surface;

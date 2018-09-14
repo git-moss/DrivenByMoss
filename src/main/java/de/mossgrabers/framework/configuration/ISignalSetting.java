@@ -9,7 +9,20 @@ package de.mossgrabers.framework.configuration;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface ISignalSetting extends ISetting<Void>
+public interface ISignalSetting
 {
-    // Intentionally empty
+    /**
+     * Set the string value.
+     *
+     * @param value The new value
+     */
+    void set (Void value);
+
+
+    /**
+     * Add an observer for a change of the value.
+     *
+     * @param observer The observer
+     */
+    void addValueObserver (IValueObserver<Void> observer);
 }

@@ -4,13 +4,13 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.ICursorClip;
+import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -21,7 +21,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
+public abstract class AbstractRaindropsView<S extends ControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
 {
     protected static final int NUM_DISPLAY_COLS = 8;
     protected static final int NUM_OCTAVE       = 12;
@@ -86,15 +86,14 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final int y = index / 8;
         final int stepSize = y == 0 ? 1 : 2 * y;
 
-        final ICursorClip clip = this.getClip ();
-        final int length = (int) Math.floor (clip.getLoopLength () / RESOLUTIONS[this.selectedIndex]);
+        final int length = (int) Math.floor (this.getClip ().getLoopLength () / RESOLUTIONS[this.selectedIndex]);
         final int distance = this.getNoteDistance (this.noteMap[x], length);
-        clip.clearRow (this.noteMap[x]);
+        this.getClip ().clearRow (this.noteMap[x]);
         if (distance == -1 || distance != (y == 0 ? 1 : y * 2))
         {
-            final int offset = clip.getCurrentStep () % stepSize;
+            final int offset = this.getClip ().getCurrentStep () % stepSize;
             for (int i = offset; i < length; i += stepSize)
-                clip.setStep (i, this.noteMap[x], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, RESOLUTIONS[this.selectedIndex]);
+                this.getClip ().setStep (i, this.noteMap[x], this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, RESOLUTIONS[this.selectedIndex]);
         }
     }
 
@@ -112,7 +111,8 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         if (this.ongoingResolutionChange)
             return;
 
-        final ITrack selectedTrack = this.useTrackColor ? this.model.getSelectedTrack () : null;
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = this.useTrackColor ? tb.getSelectedTrack () : null;
 
         final int length = (int) Math.floor (this.getClip ().getLoopLength () / RESOLUTIONS[this.selectedIndex]);
         final int step = this.getClip ().getCurrentStep ();

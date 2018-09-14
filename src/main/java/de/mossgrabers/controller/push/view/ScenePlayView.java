@@ -2,19 +2,19 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.view;
+package de.mossgrabers.push.view;
 
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushColors;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
+import de.mossgrabers.push.PushConfiguration;
+import de.mossgrabers.push.controller.PushColors;
+import de.mossgrabers.push.controller.PushControlSurface;
 
 
 /**

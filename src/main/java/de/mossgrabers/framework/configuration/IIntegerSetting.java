@@ -9,7 +9,7 @@ package de.mossgrabers.framework.configuration;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IIntegerSetting extends ISetting<Integer>
+public interface IIntegerSetting
 {
     /**
      * Set the integer value.
@@ -17,4 +17,12 @@ public interface IIntegerSetting extends ISetting<Integer>
      * @param value The new value
      */
     void set (int value);
+
+
+    /**
+     * Add an observer for a change of the value.
+     *
+     * @param observer The observer
+     */
+    void addValueObserver (IValueObserver<Integer> observer);
 }

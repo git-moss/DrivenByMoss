@@ -2,14 +2,14 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu.controller;
+package de.mossgrabers.mcu.controller;
 
-import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.mcu.MCUConfiguration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -322,7 +322,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     /**
      * Constructor.
-     *
+     * 
      * @param surfaces All surfaces to be able to check for status keys like Shift.
      * @param host The host
      * @param colorManager The color manager
@@ -559,7 +559,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public boolean isPressed (final int button)
+    public boolean isPressed (int button)
     {
         // Check on all MSU surfaces for state button presses
 
@@ -570,7 +570,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     }
 
 
-    private boolean isSinglePressed (final int button)
+    private boolean isSinglePressed (int button)
     {
         return super.isPressed (button);
     }

@@ -4,14 +4,15 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +27,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements TransposeView
+public abstract class AbstractPlayView<S extends ControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements TransposeView
 {
     /** ID of the color to use when a pad is played. */
     public static final String COLOR_PLAY   = "PLAY_VIEW_COLOR_PLAY";
@@ -89,7 +90,8 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
         final boolean isRecording = this.model.hasRecordingState ();
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         final PadGrid gridPad = this.surface.getPadGrid ();
         for (int i = this.scales.getStartNote (); i < this.scales.getEndNote (); i++)
             gridPad.light (i, this.getGridColor (isKeyboardEnabled, isRecording, selectedTrack, i));
@@ -209,6 +211,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     @Override
     public void updateNoteMapping ()
     {
+        // Workaround: https://github.com/git-moss/Push4Bitwig/issues/7
         this.surface.scheduleTask (this::delayedUpdateNoteMapping, 100);
     }
 

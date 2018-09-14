@@ -2,13 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.view;
+package de.mossgrabers.push.view;
 
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushColors;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.daw.BitwigColors;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -16,9 +15,11 @@ import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
+import de.mossgrabers.push.PushConfiguration;
+import de.mossgrabers.push.controller.PushColors;
+import de.mossgrabers.push.controller.PushControlSurface;
 
 
 /**
@@ -98,7 +99,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     public void drawGrid ()
     {
         for (int i = 0; i < 64; i++)
-            this.surface.getPadGrid ().light (36 + i, i < DAWColors.DAW_COLORS.length ? DAWColors.DAW_COLORS[i] : PadGrid.GRID_OFF);
+            this.surface.getPadGrid ().light (36 + i, i < BitwigColors.BITWIG_COLORS.length ? BitwigColors.BITWIG_COLORS[i] : PadGrid.GRID_OFF);
     }
 
 
@@ -110,13 +111,14 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
             return;
 
         final int color = note - 36;
-        if (color < DAWColors.DAW_COLORS.length)
+        if (color < BitwigColors.BITWIG_COLORS.length)
         {
-            final double [] entry = DAWColors.getColorEntry (DAWColors.DAW_COLORS[color]);
+            final double [] entry = BitwigColors.getColorEntry (BitwigColors.BITWIG_COLORS[color]);
             switch (this.mode)
             {
                 case MODE_TRACK:
-                    final ITrack t = this.model.getSelectedTrack ();
+                    final IChannelBank tb = this.model.getCurrentTrackBank ();
+                    final ITrack t = tb.getSelectedTrack ();
                     if (t == null)
                     {
                         final IMasterTrack master = this.model.getMasterTrack ();

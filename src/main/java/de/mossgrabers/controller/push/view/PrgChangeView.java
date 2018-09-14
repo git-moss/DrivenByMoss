@@ -2,18 +2,18 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.view;
+package de.mossgrabers.push.view;
 
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushColors;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
+import de.mossgrabers.push.PushConfiguration;
+import de.mossgrabers.push.controller.PushColors;
+import de.mossgrabers.push.controller.PushControlSurface;
 
 
 /**
@@ -159,8 +159,6 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity == 0)
-            return;
         this.programNumber = note - 36 + (this.isToggled ? 64 : 0);
         this.surface.sendMidiEvent (0xC0, this.programNumber, 0);
     }

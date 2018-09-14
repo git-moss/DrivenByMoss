@@ -2,18 +2,18 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.launchpad.view;
+package de.mossgrabers.launchpad.view;
 
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
 /**
@@ -67,12 +67,10 @@ public class SendsView extends AbstractFaderView
         {
             final ITrack track = tb.getTrack (i);
             final ISend send = track.getSend (this.selectedSend);
-            final int color = cm.getColor (DAWColors.getColorIndex (track.getColor ()));
-            if (this.trackColors[i] != color)
-            {
-                this.trackColors[i] = color;
+            final int color = cm.getColor (BitwigColors.getColorIndex (track.getColor ()));
+            if (this.trackColors[i] != color || !track.doesExist () || send.getName ().isEmpty ())
                 this.setupFader (i);
-            }
+            this.trackColors[i] = color;
             output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, send.getValue ());
         }
     }

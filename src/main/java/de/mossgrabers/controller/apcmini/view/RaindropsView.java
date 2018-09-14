@@ -2,12 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.apcmini.view;
+package de.mossgrabers.apcmini.view;
 
-import de.mossgrabers.controller.apcmini.APCminiConfiguration;
-import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.apcmini.APCminiConfiguration;
+import de.mossgrabers.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractRaindropsView;
 
 
@@ -68,5 +68,13 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
 
         for (int i = 0; i < 6; i++)
             this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3 + i, APCminiControlSurface.APC_BUTTON_STATE_OFF);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNote (final int note, final int velocity)
+    {
+        super.onGridNote (note + 36, velocity);
     }
 }

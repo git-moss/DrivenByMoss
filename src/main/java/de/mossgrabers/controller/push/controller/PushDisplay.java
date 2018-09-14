@@ -2,12 +2,17 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.controller;
+package de.mossgrabers.push.controller;
 
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.push.PushConfiguration;
+import de.mossgrabers.push.controller.display.USBDisplay;
+import de.mossgrabers.push.controller.display.model.DisplayModel;
+import de.mossgrabers.push.controller.display.model.VirtualDisplay;
+import de.mossgrabers.push.controller.display.model.grid.GridChangeListener;
 
 
 /**
@@ -15,7 +20,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PushDisplay extends AbstractDisplay
+public class PushDisplay extends AbstractDisplay implements GridChangeListener
 {
     /** Push character codes for value bars - a dash. */
     public static final String     BARS_NON      = Character.toString ((char) 6);
@@ -71,8 +76,11 @@ public class PushDisplay extends AbstractDisplay
     };
 
     private int                    maxParameterValue;
-    private int                    port;
     private boolean                isPush2;
+    private DisplayModel           model;
+
+    private final VirtualDisplay   virtualDisplay;
+    private final USBDisplay       usbDisplay;
 
 
     /**
@@ -82,24 +90,19 @@ public class PushDisplay extends AbstractDisplay
      * @param host The host
      * @param isPush2 True if Push 2
      * @param maxParameterValue
-     * @param output
+     * @param output The midi output
+     * @param configuration The Push configuration
      */
-    public PushDisplay (final IHost host, final boolean isPush2, final int maxParameterValue, final IMidiOutput output)
+    public PushDisplay (final IHost host, final boolean isPush2, final int maxParameterValue, final IMidiOutput output, final PushConfiguration configuration)
     {
         super (host, output, 4 /* No of rows */, 8 /* No of cells */, 68 /* No of characters */);
         this.maxParameterValue = maxParameterValue;
         this.isPush2 = isPush2;
-    }
+        this.model = new DisplayModel ();
+        this.model.addGridElementChangeListener (this);
 
-
-    /**
-     * Set the communication port.
-     *
-     * @param port The port
-     */
-    public void setCommunicationPort (final int port)
-    {
-        this.port = port;
+        this.virtualDisplay = this.isPush2 ? new VirtualDisplay (host, this.model, configuration) : null;
+        this.usbDisplay = this.isPush2 ? new USBDisplay (host) : null;
     }
 
 
@@ -110,7 +113,7 @@ public class PushDisplay extends AbstractDisplay
      */
     public DisplayMessage createMessage ()
     {
-        return new DisplayMessage ();
+        return new DisplayMessage (this.model);
     }
 
 
@@ -121,9 +124,7 @@ public class PushDisplay extends AbstractDisplay
      */
     public void send (final DisplayMessage message)
     {
-        if (this.port < 1)
-            return;
-        this.host.sendDatagramPacket ("127.0.0.1", this.port, message.getData ());
+        message.send ();
     }
 
 
@@ -132,7 +133,11 @@ public class PushDisplay extends AbstractDisplay
     public void shutdown ()
     {
         if (this.isPush2)
+        {
             this.send (this.createMessage ().setMessage (3, "Please start " + this.host.getName () + " to play..."));
+            if (this.usbDisplay != null)
+                this.usbDisplay.shutdown ();
+        }
         else
             this.clear ().setBlock (1, 1, "     Please start").setBlock (1, 2, this.host.getName () + " to play...").allDone ().flush ();
     }
@@ -280,5 +285,26 @@ public class PushDisplay extends AbstractDisplay
             sysex.append (v).append (' ');
         }
         return sysex.toString ();
+    }
+
+
+    /**
+     * Show or hide the display debug window.
+     *
+     * @param show True to show otherwise hide
+     */
+    public void showDebugWindow (final boolean show)
+    {
+        if (this.virtualDisplay != null && show)
+            this.virtualDisplay.getImage ().showDisplayWindow ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void gridHasChanged ()
+    {
+        if (this.usbDisplay != null)
+            this.usbDisplay.send (this.virtualDisplay.getImage ());
     }
 }

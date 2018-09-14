@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.configuration;
 
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
@@ -89,7 +89,6 @@ public abstract class AbstractConfiguration implements Configuration
     protected static final String CATEGORY_PADS                     = "Pads";
     protected static final String CATEGORY_PLAY_AND_SEQUENCE        = "Play and Sequence";
     protected static final String CATEGORY_HARDWARE_SETUP           = "Hardware Setup";
-    protected static final String CATEGORY_DEBUG                    = "Debug";
 
     private static final String   SCALE_IN_KEY                      = "In Key";
     private static final String   SCALE_CHROMATIC                   = "Chromatic";
@@ -210,8 +209,7 @@ public abstract class AbstractConfiguration implements Configuration
         "Show"
     };
 
-    /** The Off/On option. */
-    public static final String []                    ON_OFF_OPTIONS              =
+    protected static final String []                 ON_OFF_OPTIONS              =
     {
         "Off",
         "On"
@@ -231,7 +229,7 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                             newClipLengthSetting;
 
     private final Map<Integer, Set<SettingObserver>> observers                   = new HashMap<> ();
-    protected IValueChanger                          valueChanger;
+    protected ValueChanger                           valueChanger;
 
     private String                                   scale                       = "Major";
     private String                                   scaleBase                   = "C";
@@ -239,7 +237,7 @@ public abstract class AbstractConfiguration implements Configuration
     private String                                   scaleLayout                 = "4th ^";
     private boolean                                  enableVUMeters              = false;
     private BehaviourOnStop                          behaviourOnStop             = BehaviourOnStop.MOVE_PLAY_CURSOR;
-    protected boolean                                displayCrossfader           = true;
+    private boolean                                  displayCrossfader           = true;
     private boolean                                  flipSession                 = false;
     private boolean                                  lockFlipSession             = false;
     private boolean                                  selectClipOnLaunch          = true;
@@ -274,7 +272,7 @@ public abstract class AbstractConfiguration implements Configuration
      *
      * @param valueChanger The value changer
      */
-    public AbstractConfiguration (final IValueChanger valueChanger)
+    public AbstractConfiguration (final ValueChanger valueChanger)
     {
         this.valueChanger = valueChanger;
     }
@@ -429,30 +427,14 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Change the quantize amount.
+     *
+     * @param control The change value
+     */
     public void changeQuantizeAmount (final int control)
     {
-        if (this.quantizeAmountSetting != null)
-            this.quantizeAmountSetting.set (this.valueChanger.changeValue (control, this.quantizeAmount, 1, 101));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setQuantizeAmount (final int value)
-    {
-        if (this.quantizeAmountSetting != null)
-            this.quantizeAmountSetting.set (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void resetQuantizeAmount ()
-    {
-        if (this.quantizeAmountSetting != null)
-            this.quantizeAmountSetting.set (100);
+        this.quantizeAmountSetting.set (this.valueChanger.changeValue (control, this.quantizeAmount, 1, 101));
     }
 
 
@@ -717,7 +699,11 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final IEnumSetting behaviourOnStopSetting = settingsUI.getEnumSetting ("Behaviour on Stop", CATEGORY_TRANSPORT, BEHAVIOUR_ON_STOP_VALUES, BEHAVIOUR_ON_STOP_VALUES[0]);
         behaviourOnStopSetting.addValueObserver (value -> {
-            this.behaviourOnStop = BehaviourOnStop.values ()[lookupIndex (BEHAVIOUR_ON_STOP_VALUES, value)];
+            for (int i = 0; i < BEHAVIOUR_ON_STOP_VALUES.length; i++)
+            {
+                if (BEHAVIOUR_ON_STOP_VALUES[i].equals (value))
+                    this.behaviourOnStop = BehaviourOnStop.values ()[i];
+            }
             this.notifyObservers (BEHAVIOUR_ON_STOP);
         });
     }
@@ -807,7 +793,11 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final IEnumSetting actionForRecArmedPadSetting = settingsUI.getEnumSetting ("Action for pressing rec armed empty clip", CATEGORY_SESSION, ACTIONS_REC_ARMED_PADS, ACTIONS_REC_ARMED_PADS[0]);
         actionForRecArmedPadSetting.addValueObserver (value -> {
-            this.actionForRecArmedPad = lookupIndex (ACTIONS_REC_ARMED_PADS, value);
+            for (int i = 0; i < ACTIONS_REC_ARMED_PADS.length; i++)
+            {
+                if (ACTIONS_REC_ARMED_PADS[i].equals (value))
+                    this.actionForRecArmedPad = i;
+            }
             this.notifyObservers (AbstractConfiguration.ACTION_FOR_REC_ARMED_PAD);
         });
     }
@@ -822,7 +812,14 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final IEnumSetting convertAftertouchSetting = settingsUI.getEnumSetting ("Convert Poly Aftertouch to", CATEGORY_PADS, AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES, AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES[1]);
         convertAftertouchSetting.addValueObserver (value -> {
-            this.convertAftertouch = lookupIndex (AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES, value) - 3;
+            for (int i = 0; i < AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES.length; i++)
+            {
+                if (AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES[i].equals (value))
+                {
+                    this.convertAftertouch = i - 3;
+                    break;
+                }
+            }
             this.notifyObservers (AbstractConfiguration.CONVERT_AFTERTOUCH);
         });
     }
@@ -882,7 +879,11 @@ public abstract class AbstractConfiguration implements Configuration
     {
         this.newClipLengthSetting = settingsUI.getEnumSetting ("New Clip Length", CATEGORY_WORKFLOW, NEW_CLIP_LENGTH_VALUES, NEW_CLIP_LENGTH_VALUES[2]);
         this.newClipLengthSetting.addValueObserver (value -> {
-            this.newClipLength = lookupIndex (NEW_CLIP_LENGTH_VALUES, value);
+            for (int i = 0; i < NEW_CLIP_LENGTH_VALUES.length; i++)
+            {
+                if (NEW_CLIP_LENGTH_VALUES[i].equals (value))
+                    this.newClipLength = i;
+            }
             this.notifyObservers (NEW_CLIP_LENGTH);
         });
     }
@@ -946,7 +947,11 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final IEnumSetting footswitch2Setting = settingsUI.getEnumSetting ("Footswitch 2", CATEGORY_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
         footswitch2Setting.addValueObserver (value -> {
-            this.footswitch2 = lookupIndex (FOOTSWITCH_VALUES, value);
+            for (int i = 0; i < FOOTSWITCH_VALUES.length; i++)
+            {
+                if (FOOTSWITCH_VALUES[i].equals (value))
+                    this.footswitch2 = i;
+            }
             this.notifyObservers (FOOTSWITCH_2);
         });
     }
@@ -981,23 +986,5 @@ public abstract class AbstractConfiguration implements Configuration
         final Set<SettingObserver> set = this.observers.get (settingID);
         if (set != null)
             set.forEach (SettingObserver::call);
-    }
-
-
-    /**
-     * Lookup the index of the value in the given options array.
-     *
-     * @param options The options in which to search for the value
-     * @param value The value to search for
-     * @return The index or 0 if not found
-     */
-    public static int lookupIndex (final String [] options, final String value)
-    {
-        for (int i = 0; i < options.length; i++)
-        {
-            if (options[i].equals (value))
-                return i;
-        }
-        return 0;
     }
 }

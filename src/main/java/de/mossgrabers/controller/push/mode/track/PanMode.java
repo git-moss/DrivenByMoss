@@ -2,15 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.mode.track;
+package de.mossgrabers.push.mode.track;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.push.controller.DisplayMessage;
+import de.mossgrabers.push.controller.PushControlSurface;
 
 
 /**
@@ -51,7 +51,6 @@ public class PanMode extends AbstractTrackMode
         {
             if (this.surface.isDeletePressed ())
             {
-                this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
                 t.resetPan ();
                 return;
             }

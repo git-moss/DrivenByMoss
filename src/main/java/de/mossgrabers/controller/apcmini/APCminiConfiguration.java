@@ -2,12 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.apcmini;
+package de.mossgrabers.apcmini;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.ValueChanger;
 
 
 /**
@@ -59,7 +59,7 @@ public class APCminiConfiguration extends AbstractConfiguration
      *
      * @param valueChanger The value changer
      */
-    public APCminiConfiguration (final IValueChanger valueChanger)
+    public APCminiConfiguration (final ValueChanger valueChanger)
     {
         super (valueChanger);
     }

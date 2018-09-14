@@ -5,11 +5,10 @@
 package de.mossgrabers.framework.daw.data;
 
 import de.mossgrabers.framework.daw.ObserverManagement;
-import de.mossgrabers.framework.daw.resource.ChannelType;
 
 
 /**
- * The interface to a channel.
+ * The intrerface to a channel.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -61,23 +60,6 @@ public interface IChannel extends ObserverManagement
      * @return The name of the channel
      */
     String getName ();
-
-
-    /**
-     * Get the name of the channel.
-     *
-     * @param limit Limit the text to this length
-     * @return The name
-     */
-    String getName (int limit);
-
-
-    /**
-     * Get the type of the track.
-     *
-     * @return The type
-     */
-    ChannelType getType ();
 
 
     /**
@@ -323,27 +305,11 @@ public interface IChannel extends ObserverManagement
 
 
     /**
-     * Get the Mono VU value.
+     * Get the VU value.
      *
      * @return The VU value
      */
     int getVu ();
-
-
-    /**
-     * Get the left VU value.
-     *
-     * @return The left VU value
-     */
-    int getVuLeft ();
-
-
-    /**
-     * Get the right VU value.
-     *
-     * @return The right VU value
-     */
-    int getVuRight ();
 
 
     /**

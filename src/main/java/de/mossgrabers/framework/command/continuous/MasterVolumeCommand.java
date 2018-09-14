@@ -6,9 +6,8 @@ package de.mossgrabers.framework.command.continuous;
 
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITransport;
 
 
 /**
@@ -19,7 +18,7 @@ import de.mossgrabers.framework.daw.ITransport;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MasterVolumeCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
+public class MasterVolumeCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
 {
     /**
      * Constructor.
@@ -39,9 +38,8 @@ public class MasterVolumeCommand<S extends IControlSurface<C>, C extends Configu
     {
         if (this.surface.isSelectPressed ())
         {
-            final ITransport transport = this.model.getTransport ();
-            transport.changeMetronomeVolume (value);
-            this.surface.getDisplay ().notify ("Metronome Volume: " + transport.getMetronomeVolumeStr ());
+            this.model.getTransport ().changeMetronomeVolume (value);
+            this.surface.getDisplay ().notify ("Metronome Volume: " + this.model.getTransport ().getMetronomeVolumeStr ());
         }
         else
             this.model.getMasterTrack ().changeVolume (value);

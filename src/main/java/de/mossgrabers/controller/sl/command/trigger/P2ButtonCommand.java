@@ -2,15 +2,14 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.sl.command.trigger;
+package de.mossgrabers.sl.command.trigger;
 
-import de.mossgrabers.controller.sl.SLConfiguration;
-import de.mossgrabers.controller.sl.controller.SLControlSurface;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.Mode;
-import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.sl.SLConfiguration;
+import de.mossgrabers.sl.controller.SLControlSurface;
 
 
 /**
@@ -57,8 +56,6 @@ public class P2ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SL
                 return;
             tb.scrollTracksPageUp ();
         }
-        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
-        if (activeMode != null)
-            activeMode.selectTrack (0);
+        this.selectTrack (0);
     }
 }

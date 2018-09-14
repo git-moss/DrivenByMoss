@@ -4,11 +4,11 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
-import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
-import de.mossgrabers.framework.osc.IOpenSoundControlServer;
+import com.bitwig.extension.api.graphics.Bitmap;
+import com.bitwig.extension.api.graphics.Image;
+import com.bitwig.extension.controller.api.UsbDevice;
 
-import java.util.List;
+import java.nio.ByteBuffer;
 
 
 /**
@@ -43,27 +43,11 @@ public interface IHost
 
 
     /**
-     * Returns true if the DAW supports a crossfader.
+     * Returns true if the DAW supports Groove options.
      *
-     * @return True if the DAW supports a crossfader
+     * @return True if the DAW supports Groove options
      */
-    boolean hasCrossfader ();
-
-
-    /**
-     * Returns true if the DAW supports Drum Device options.
-     *
-     * @return True if the DAW supports Drum Device options
-     */
-    boolean hasDrumDevice ();
-
-
-    /**
-     * Returns true if the DAW supports note repeat.
-     *
-     * @return True if the DAW supports note repeat
-     */
-    boolean hasRepeat ();
+    boolean hasGroove ();
 
 
     /**
@@ -89,7 +73,7 @@ public interface IHost
      * @param text The description text
      * @param ex The exception
      */
-    void error (String text, Throwable ex);
+    void error (String text, Exception ex);
 
 
     /**
@@ -109,41 +93,6 @@ public interface IHost
 
 
     /**
-     * Connect to an OSC server.
-     *
-     * @param serverAddress The address of the server
-     * @param serverPort The port of the server
-     * @return Interface for interacting with the server
-     */
-    IOpenSoundControlServer connectToOSCServer (String serverAddress, int serverPort);
-
-
-    /**
-     * Create an OSC server.
-     *
-     * @param callback The callback method to handle received messages
-     * @param port The port to listen on
-     */
-    void createOSCServer (IOpenSoundControlCallback callback, int port);
-
-
-    /**
-     * Create an OSC message.
-     *
-     * @param address The OSC address
-     * @param values The values for the message
-     * @return The created message
-     */
-    IOpenSoundControlMessage createOSCMessage (String address, List<Object> values);
-
-
-    /**
-     * Call on shutdown to release all OSC resources.
-     */
-    void releaseOSC ();
-
-
-    /**
      * Send a datagram package to the given server. TODO: Remove when USB API is available
      *
      * @param hostAddress The IP address of the server
@@ -151,4 +100,45 @@ public interface IHost
      * @param data The data to send
      */
     void sendDatagramPacket (String hostAddress, int port, byte [] data);
+
+
+    /**
+     * Loads a SVG image. The memory used by this image is guaranteed to be freed once this
+     * extension exits.
+     *
+     * @param imageName The path to the image
+     * @param scale The scaling factor
+     * @return The loaded SVG image
+     */
+    Image loadSVG (String imageName, int scale);
+
+
+    /**
+     * Creates an offscreen bitmap that the extension can use to render into. The memory used by
+     * this bitmap is guaranteed to be freed once this extension exits.
+     *
+     * @param width The width of the bitmap
+     * @param height The height of the bitmap
+     * @return The created bitmap
+     */
+    Bitmap createBitmap (int width, int height);
+
+
+    /**
+     * Creates a direct byte buffer of the supplied size that is guaranteed to be freed once this
+     * extension exits.
+     *
+     * @param size The size of the buffer
+     * @return The created buffer
+     */
+    ByteBuffer createByteBuffer (int size);
+
+
+    /**
+     * Gets the USB Device at the specified index.
+     *
+     * @param index The index
+     * @return The USB device
+     */
+    UsbDevice getUsbDevice (int index);
 }

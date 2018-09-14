@@ -2,15 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.launchpad.view;
+package de.mossgrabers.launchpad.view;
 
-import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
 /**
@@ -58,13 +58,11 @@ public class PanView extends AbstractFaderView
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getTrack (i);
-            final int color = cm.getColor (DAWColors.getColorIndex (track.getColor ()));
-            if (this.trackColors[i] != color)
-            {
-                this.trackColors[i] = color;
+            final int color = cm.getColor (BitwigColors.getColorIndex (track.getColor ()));
+            if (this.trackColors[i] != color || !track.doesExist ())
                 this.setupFader (i);
-            }
-            output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, track.doesExist () ? track.getPan () : 64);
+            this.trackColors[i] = color;
+            output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, track.getPan ());
         }
     }
 
@@ -74,6 +72,6 @@ public class PanView extends AbstractFaderView
     public void setupFader (final int index)
     {
         final ITrack track = this.model.getCurrentTrackBank ().getTrack (index);
-        this.surface.setupPanFader (index, this.model.getColorManager ().getColor (DAWColors.getColorIndex (track.getColor ())));
+        this.surface.setupPanFader (index, this.model.getColorManager ().getColor (BitwigColors.getColorIndex (track.getColor ())));
     }
 }

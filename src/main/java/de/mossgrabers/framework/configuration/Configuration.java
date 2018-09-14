@@ -238,28 +238,6 @@ public interface Configuration
 
 
     /**
-     * Change the quantize amount.
-     *
-     * @param control The change value
-     */
-    void changeQuantizeAmount (int control);
-
-
-    /**
-     * Set the quantize amount (1-100).
-     *
-     * @param value The value
-     */
-    void setQuantizeAmount (int value);
-
-
-    /**
-     * Reset the quantize amount.
-     */
-    void resetQuantizeAmount ();
-
-
-    /**
      * Get the functionality of the footswitch 2.
      *
      * @return The functionality of the footswitch 2.

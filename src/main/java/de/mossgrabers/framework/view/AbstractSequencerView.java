@@ -4,11 +4,11 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.ICursorClip;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractSequencerView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
+public abstract class AbstractSequencerView<S extends ControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
 {
     /** The color for highlighting a step with no content. */
     public static final String       COLOR_STEP_HILITE_NO_CONTENT = "COLOR_STEP_HILITE_NO_CONTENT";

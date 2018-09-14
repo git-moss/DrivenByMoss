@@ -2,15 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu.controller;
+package de.mossgrabers.mcu.controller;
 
+import de.mossgrabers.framework.LatestTaskExecutor;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.utils.LatestTaskExecutor;
-import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -20,10 +20,10 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MCUDisplay extends AbstractDisplay
 {
-    private static final String         SYSEX_DISPLAY_HEADER1 = "F0 00 00 66 14 12 ";
-    private static final String         SYSEX_DISPLAY_HEADER2 = "F0 00 00 67 15 13 ";
+    private static final String    SYSEX_DISPLAY_HEADER1 = "F0 00 00 66 14 12 ";
+    private static final String    SYSEX_DISPLAY_HEADER2 = "F0 00 00 67 15 13 ";
 
-    private static final String []      SPACES                =
+    private static final String [] SPACES                =
     {
         "",
         " ",
@@ -37,11 +37,11 @@ public class MCUDisplay extends AbstractDisplay
         "         "
     };
 
-    private boolean                     isFirst;
-    private int                         charactersOfCell;
-    private boolean                     hasMaster;
+    private boolean                isFirst;
+    private int                    charactersOfCell;
+    private boolean                hasMaster;
 
-    private final LatestTaskExecutor [] executors             = new LatestTaskExecutor [4];
+    private LatestTaskExecutor []  executors             = new LatestTaskExecutor [4];
 
 
     /**
@@ -133,41 +133,30 @@ public class MCUDisplay extends AbstractDisplay
     @Override
     public void writeLine (final int row, final String text)
     {
-        final LatestTaskExecutor executor = this.executors[row + (this.isFirst ? 0 : 2)];
-        if (executor != null)
-            executor.execute ( () -> sendDisplayLine (row, text));
-    }
+        this.executors[row + (this.isFirst ? 0 : 2)].execute ( () -> {
+            String t = text;
+            if (!this.isFirst && this.hasMaster)
+            {
+                if (row == 0)
+                    t = t.substring (0, t.length () - 1) + 'r';
+                t = "  " + t;
 
-
-    /**
-     * Send a line to the display
-     * 
-     * @param row The row
-     * @param text The text to send
-     */
-    private void sendDisplayLine (final int row, final String text)
-    {
-        String t = text;
-        if (!this.isFirst && this.hasMaster)
-        {
+            }
+            final int length = t.length ();
+            final int [] array = new int [length];
+            for (int i = 0; i < length; i++)
+                array[i] = t.charAt (i);
+            final StringBuilder code = new StringBuilder ();
+            if (this.isFirst)
+                code.append (SYSEX_DISPLAY_HEADER1);
+            else
+                code.append (SYSEX_DISPLAY_HEADER2);
             if (row == 0)
-                t = t.substring (0, t.length () - 1) + 'r';
-            t = "  " + t;
-        }
-        final int length = t.length ();
-        final int [] array = new int [length];
-        for (int i = 0; i < length; i++)
-            array[i] = t.charAt (i);
-        final StringBuilder code = new StringBuilder ();
-        if (this.isFirst)
-            code.append (SYSEX_DISPLAY_HEADER1);
-        else
-            code.append (SYSEX_DISPLAY_HEADER2);
-        if (row == 0)
-            code.append ("00 ");
-        else
-            code.append ("38 ");
-        this.output.sendSysex (code.append (StringUtils.toHexStr (array)).append ("F7").toString ());
+                code.append ("00 ");
+            else
+                code.append ("38 ");
+            this.output.sendSysex (code.append (StringUtils.toHexStr (array)).append ("F7").toString ());
+        });
     }
 
 
@@ -175,11 +164,7 @@ public class MCUDisplay extends AbstractDisplay
     @Override
     public void shutdown ()
     {
-        this.notify ("Please start " + this.host.getName () + "...", true, false);
-
-        // Prevent further sends
-        for (int i = 0; i < 4; i++)
-            this.executors[i] = null;
+        this.notify ("Please start Bitwig Studio...", true, false);
     }
 
 

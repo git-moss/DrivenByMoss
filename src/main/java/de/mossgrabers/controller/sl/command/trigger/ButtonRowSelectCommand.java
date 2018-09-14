@@ -2,18 +2,17 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.sl.command.trigger;
+package de.mossgrabers.sl.command.trigger;
 
-import de.mossgrabers.controller.sl.mode.Modes;
-import de.mossgrabers.controller.sl.view.SLView;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.View;
+import de.mossgrabers.sl.mode.Modes;
+import de.mossgrabers.sl.view.SLView;
 
 
 /**
@@ -24,7 +23,7 @@ import de.mossgrabers.framework.view.View;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class ButtonRowSelectCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     private int row;
 
@@ -62,7 +61,6 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
 
             case 1:
                 this.surface.getModeManager ().setActiveMode (Modes.MODE_PARAMS);
-                this.surface.getDisplay ().notify ("Device Parameters");
                 break;
 
             case 2:
@@ -120,15 +118,11 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
         if (isEffect != isEffectTrackBankActive)
             this.model.toggleCurrentTrackBank ();
-        final ModeManager modeManager = this.surface.getModeManager ();
         if (activateMode)
-            modeManager.setActiveMode (Modes.MODE_TRACK);
+            this.surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
         this.surface.getDisplay ().notify (isEffect ? "Effects" : "Tracks");
-        if (this.model.getSelectedTrack () != null)
-            return;
-        final Mode activeMode = modeManager.getActiveMode ();
-        if (activeMode != null)
-            activeMode.selectTrack (0);
+        if (this.model.getCurrentTrackBank ().getSelectedTrack () == null)
+            this.selectTrack (0);
     }
 
 

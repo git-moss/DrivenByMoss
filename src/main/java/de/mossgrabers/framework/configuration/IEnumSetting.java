@@ -9,7 +9,20 @@ package de.mossgrabers.framework.configuration;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IEnumSetting extends ISetting<String>
+public interface IEnumSetting
 {
-    // Intentionally empty
+    /**
+     * Set the enum value.
+     *
+     * @param value The new value
+     */
+    void set (String value);
+
+
+    /**
+     * Add an observer for a change of the value.
+     *
+     * @param observer The observer
+     */
+    void addValueObserver (IValueObserver<String> observer);
 }

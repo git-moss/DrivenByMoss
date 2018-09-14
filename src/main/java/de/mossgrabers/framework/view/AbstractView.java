@@ -4,18 +4,18 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AftertouchCommand;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.controller.ControlSurface;
+import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractView<S extends IControlSurface<C>, C extends Configuration> implements View
+public abstract class AbstractView<S extends ControlSurface<C>, C extends Configuration> implements View
 {
     private static final int []                   EMPTY_TABLE        = Scales.getEmptyMatrix ();
 
@@ -269,28 +269,16 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
      *            the default color
      * @return The color ID
      */
-    protected String getColor (final int pad, final ITrack track)
+    public String getColor (final int pad, final ITrack track)
     {
-        return replaceOctaveColorWithTrackColor (track, this.scales.getColor (this.noteMap, pad));
-    }
-
-
-    /**
-     * If the given color ID is the octave color ID it will be replaced with the track color ID.
-     *
-     * @param track A track to use the track color for coloring the octave notes, set to null to use
-     *            the default color
-     * @param colorID
-     * @return The color ID
-     */
-    protected static String replaceOctaveColorWithTrackColor (final ITrack track, final String colorID)
-    {
+        final String colorID = this.scales.getColor (this.noteMap, pad);
+        // Replace the octave color with the track color
         if (Scales.SCALE_COLOR_OCTAVE.equals (colorID))
         {
             if (track == null)
                 return Scales.SCALE_COLOR_OCTAVE;
             final double [] color = track.getColor ();
-            final String c = DAWColors.getColorIndex (color[0], color[1], color[2]);
+            final String c = BitwigColors.getColorIndex (color[0], color[1], color[2]);
             return c == null ? Scales.SCALE_COLOR_OCTAVE : c;
         }
         return colorID;

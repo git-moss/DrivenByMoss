@@ -61,8 +61,8 @@ public interface IMidiInput
     /**
      * Create a note input.
      *
-     * @param name the name of the note input as it appears in the track input choosers in the DAW
-     *
+     * @param name the name of the note input as it appears in the track input choosers in Bitwig
+     *            Studio
      * @param filters a filter string formatted as hexadecimal value with `?` as wildcard. For
      *            example `80????` would match note-off on channel 1 (0). When this parameter is
      *            {@null}, a standard filter will be used to forward note-related messages on
@@ -79,10 +79,4 @@ public interface IMidiInput
      * @param data2 The MIDI data byte 2
      */
     void sendRawMidiEvent (int status, int data1, int data2);
-
-
-    /**
-     * Toggle note repeat on/off.
-     */
-    void toggleRepeat ();
 }

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.resource;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 
 /**
- * Stores information about the device types.
+ * Stores information about the Bitwig devices.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -69,7 +69,6 @@ public class DeviceTypes
         DEVICES.put ("FM-4", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Freq Shifter", TypeIcon.ICON_WAVE);
         DEVICES.put ("FX Layer", TypeIcon.ICON_FOLDER);
-        DEVICES.put ("FX Selector", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Gate", TypeIcon.ICON_WAVE);
         DEVICES.put ("HW Clock Out", TypeIcon.ICON_IO);
         DEVICES.put ("HW CV Instrument", TypeIcon.ICON_IO);
@@ -77,7 +76,6 @@ public class DeviceTypes
         DEVICES.put ("HW FX", TypeIcon.ICON_IO);
         DEVICES.put ("HW Instrument", TypeIcon.ICON_IO);
         DEVICES.put ("Instrument Layer", TypeIcon.ICON_FOLDER);
-        DEVICES.put ("Instrument Selector", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Ladder", TypeIcon.ICON_WAVE);
         DEVICES.put ("LFO MOD", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Mid-Side Split", TypeIcon.ICON_FOLDER);
@@ -99,7 +97,6 @@ public class DeviceTypes
         DEVICES.put ("Organ", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Oscilloscope", TypeIcon.ICON_ANALYSIS);
         DEVICES.put ("Peak Limiter", TypeIcon.ICON_WAVE);
-        DEVICES.put ("Phase-4", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Phaser", TypeIcon.ICON_WAVE);
         DEVICES.put ("Pitch Shifter", TypeIcon.ICON_WAVE);
         DEVICES.put ("Polysynth", TypeIcon.ICON_INSTRUMENT);

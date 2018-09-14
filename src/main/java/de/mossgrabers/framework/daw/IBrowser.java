@@ -32,22 +32,6 @@ public interface IBrowser extends ObserverManagement
 
 
     /**
-     * Returns true if there is a previous content type.
-     *
-     * @return True if there is a previous content type
-     */
-    boolean hasPreviousContentType ();
-
-
-    /**
-     * Returns true if there is a next content type.
-     *
-     * @return True if there is a next content type
-     */
-    boolean hasNextContentType ();
-
-
-    /**
      * Select the previous selection tab, if any.
      */
     void previousContentType ();

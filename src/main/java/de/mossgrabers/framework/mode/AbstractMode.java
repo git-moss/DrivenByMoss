@@ -5,11 +5,8 @@
 package de.mossgrabers.framework.mode;
 
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -20,20 +17,18 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractMode<S extends IControlSurface<C>, C extends Configuration> implements Mode
+public abstract class AbstractMode<S extends ControlSurface<C>, C extends Configuration> implements Mode
 {
     /** Color identifier for a mode button which is off. */
-    public static final String BUTTON_COLOR_OFF       = "BUTTON_COLOR_OFF";
+    public static final String BUTTON_COLOR_OFF = "BUTTON_COLOR_OFF";
     /** Color identifier for a mode button which is on. */
-    public static final String BUTTON_COLOR_ON        = "BUTTON_COLOR_ON";
+    public static final String BUTTON_COLOR_ON  = "BUTTON_COLOR_ON";
     /** Color identifier for a mode button which is hilighted. */
-    public static final String BUTTON_COLOR_HI        = "BUTTON_COLOR_HI";
+    public static final String BUTTON_COLOR_HI  = "BUTTON_COLOR_HI";
     /** Color identifier for a mode button which is on (second row). */
-    public static final String BUTTON_COLOR2_ON       = "BUTTON_COLOR2_ON";
+    public static final String BUTTON_COLOR2_ON = "BUTTON_COLOR2_ON";
     /** Color identifier for a mode button which is hilighted (second row). */
-    public static final String BUTTON_COLOR2_HI       = "BUTTON_COLOR2_HI";
-
-    private static final int   BUTTON_REPEAT_INTERVAL = 75;
+    public static final String BUTTON_COLOR2_HI = "BUTTON_COLOR2_HI";
 
     protected S                surface;
     protected IModel           model;
@@ -107,78 +102,5 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public boolean isTemporary ()
     {
         return this.isTemporary;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onRowButton (final int row, final int index, final ButtonEvent event)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectPreviousTrack ()
-    {
-        final ITrack sel = this.model.getSelectedTrack ();
-        final int index = sel == null ? 0 : sel.getIndex () - 1;
-        if (index == -1 || this.surface.isShiftPressed ())
-        {
-            this.selectPreviousTrackBankPage (sel, index);
-            return;
-        }
-        this.selectTrack (index);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectPreviousTrackBankPage (final ITrack sel, final int index)
-    {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollTracksUp ())
-            return;
-        tb.scrollTracksPageUp ();
-        final int newSel = index == -1 || sel == null ? tb.getNumTracks () - 1 : sel.getIndex ();
-        this.surface.scheduleTask ( () -> this.selectTrack (newSel), BUTTON_REPEAT_INTERVAL);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectNextTrack ()
-    {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedTrack ();
-        final int index = sel == null ? 0 : sel.getIndex () + 1;
-        if (index == tb.getNumTracks () || this.surface.isShiftPressed ())
-        {
-            this.selectNextTrackBankPage (sel, index);
-            return;
-        }
-        this.selectTrack (index);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectNextTrackBankPage (final ITrack sel, final int index)
-    {
-        final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollTracksDown ())
-            return;
-        tb.scrollTracksPageDown ();
-        final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
-        this.surface.scheduleTask ( () -> this.selectTrack (newSel), BUTTON_REPEAT_INTERVAL);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectTrack (final int index)
-    {
-        this.model.getCurrentTrackBank ().getTrack (index).selectAndMakeVisible ();
     }
 }

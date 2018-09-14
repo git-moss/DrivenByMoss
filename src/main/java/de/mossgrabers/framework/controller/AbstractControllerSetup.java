@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C extends Configuration> implements IControllerSetup
+public abstract class AbstractControllerSetup<S extends ControlSurface<C>, C extends Configuration> implements IControllerSetup
 {
     protected final List<S>       surfaces = new ArrayList<> ();
     protected final IHost         host;
@@ -38,7 +38,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     protected IModel              model;
     protected C                   configuration;
     protected ColorManager        colorManager;
-    protected IValueChanger       valueChanger;
+    protected ValueChanger        valueChanger;
 
 
     /**
@@ -89,14 +89,6 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
     /** {@inheritDoc} */
     @Override
-    public C getConfiguration ()
-    {
-        return this.configuration;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void init ()
     {
         this.configuration.init (this.settings);
@@ -109,6 +101,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         this.createViews ();
         this.registerTriggerCommands ();
         this.registerContinuousCommands ();
+        this.startup ();
 
         this.host.println ("Initialized.");
     }
@@ -168,19 +161,13 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     /**
      * Create the views.
      */
-    protected void createViews ()
-    {
-        // Intentionally empty
-    }
+    protected abstract void createViews ();
 
 
     /**
      * Create the listeners.
      */
-    protected void createObservers ()
-    {
-        // Intentionally empty
-    }
+    protected abstract void createObservers ();
 
 
     /**
@@ -199,6 +186,12 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     {
         // Intentionally empty
     }
+
+
+    /**
+     * Startup the controller.
+     */
+    protected abstract void startup ();
 
 
     /**

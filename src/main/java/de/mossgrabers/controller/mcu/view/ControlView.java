@@ -2,12 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu.view;
+package de.mossgrabers.mcu.view;
 
-import de.mossgrabers.controller.mcu.MCUConfiguration;
-import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractView;
+import de.mossgrabers.mcu.MCUConfiguration;
+import de.mossgrabers.mcu.controller.MCUControlSurface;
 
 
 /**

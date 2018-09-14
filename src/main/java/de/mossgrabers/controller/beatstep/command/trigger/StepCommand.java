@@ -2,14 +2,14 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.beatstep.command.trigger;
+package de.mossgrabers.beatstep.command.trigger;
 
-import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
-import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.controller.beatstep.view.Views;
+import de.mossgrabers.beatstep.BeatstepConfiguration;
+import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
+import de.mossgrabers.beatstep.view.Views;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**

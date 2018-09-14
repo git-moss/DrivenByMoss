@@ -2,16 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.mode.device;
+package de.mossgrabers.push.mode.device;
 
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.DisplayMessage;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.push.PushConfiguration;
+import de.mossgrabers.push.controller.DisplayMessage;
+import de.mossgrabers.push.controller.PushControlSurface;
 
 
 /**

@@ -2,16 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.launchpad.command.trigger;
+package de.mossgrabers.launchpad.command.trigger;
 
-import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.controller.launchpad.view.Views;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.launchpad.view.Views;
 
 
 /**
@@ -37,7 +37,7 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN || !this.model.getHost ().hasClips ())
+        if (event != ButtonEvent.DOWN)
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();

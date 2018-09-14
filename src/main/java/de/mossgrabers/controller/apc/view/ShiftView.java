@@ -2,18 +2,18 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.apc.view;
+package de.mossgrabers.apc.view;
 
-import de.mossgrabers.controller.apc.APCConfiguration;
-import de.mossgrabers.controller.apc.command.trigger.APCBrowserCommand;
-import de.mossgrabers.controller.apc.controller.APCColors;
-import de.mossgrabers.controller.apc.controller.APCControlSurface;
+import de.mossgrabers.apc.APCConfiguration;
+import de.mossgrabers.apc.command.trigger.APCBrowserCommand;
+import de.mossgrabers.apc.controller.APCColors;
+import de.mossgrabers.apc.controller.APCControlSurface;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.ViewManager;
@@ -147,9 +147,6 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (!this.model.getHost ().hasClips ())
-            return;
-
         final Integer viewID = Integer.valueOf (Views.VIEW_SESSION.intValue () + scene);
         final ViewManager viewManager = this.surface.getViewManager ();
         viewManager.setActiveView (viewID);
@@ -158,7 +155,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         if (Views.VIEW_SESSION.equals (viewID))
             return;
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedTrack ();
         if (selectedTrack != null)
             viewManager.setPreferredView (selectedTrack.getPosition (), viewID);
     }
@@ -168,16 +165,6 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
     @Override
     public void updateSceneButtons ()
     {
-        if (!this.model.getHost ().hasClips ())
-        {
-            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, APCColors.APC_COLOR_BLACK);
-            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, APCColors.APC_COLOR_BLACK);
-            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, APCColors.APC_COLOR_BLACK);
-            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, APCColors.APC_COLOR_BLACK);
-            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, APCColors.APC_COLOR_BLACK);
-            return;
-        }
-
         final Integer previousViewId = this.surface.getViewManager ().getPreviousViewId ();
         this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, previousViewId == Views.VIEW_SESSION ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
         this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, previousViewId == Views.VIEW_PLAY ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);

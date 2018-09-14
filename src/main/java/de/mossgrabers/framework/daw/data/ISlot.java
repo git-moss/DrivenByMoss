@@ -96,14 +96,6 @@ public interface ISlot extends ObserverManagement
 
 
     /**
-     * True if the slot is queued to be stopped.
-     *
-     * @return True if the slot is queued to be stopped.
-     */
-    boolean isStopQueued ();
-
-
-    /**
      * Get the color of the slot.
      *
      * @return The color

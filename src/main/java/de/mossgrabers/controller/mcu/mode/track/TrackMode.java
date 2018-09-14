@@ -2,15 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu.mode.track;
+package de.mossgrabers.mcu.mode.track;
 
-import de.mossgrabers.controller.mcu.MCUConfiguration;
-import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.mcu.MCUConfiguration;
+import de.mossgrabers.mcu.controller.MCUControlSurface;
 
 
 /**
@@ -36,7 +37,8 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         if (selectedTrack == null)
             return;
 
@@ -79,7 +81,8 @@ public class TrackMode extends AbstractTrackMode
 
         final Display d = this.surface.getDisplay ().clear ();
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final IChannelBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = currentTrackBank.getSelectedTrack ();
         if (selectedTrack == null)
         {
             d.notify ("Please select a track...", true, false);
@@ -135,9 +138,10 @@ public class TrackMode extends AbstractTrackMode
     @Override
     protected void updateKnobLEDs ()
     {
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
 
-        final ITrack t = this.model.getSelectedTrack ();
+        final ITrack t = tb.getSelectedTrack ();
         if (t == null)
         {
             for (int i = 0; i < 8; i++)
@@ -167,7 +171,8 @@ public class TrackMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = tb.getSelectedTrack ();
         if (selectedTrack == null)
             return;
         switch (index)

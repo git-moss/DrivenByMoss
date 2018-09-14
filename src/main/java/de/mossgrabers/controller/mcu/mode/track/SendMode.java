@@ -2,15 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu.mode.track;
+package de.mossgrabers.mcu.mode.track;
 
-import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
-import de.mossgrabers.controller.mcu.mode.Modes;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.mcu.controller.MCUControlSurface;
+import de.mossgrabers.mcu.mode.Modes;
 
 
 /**
@@ -61,7 +61,7 @@ public class SendMode extends AbstractTrackMode
         final Display d = this.surface.getDisplay ();
         final int sendIndex = this.getCurrentSendIndex ();
         final IChannelBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canEditSend (sendIndex))
+        if (!tb.getTrack (0).getSend (sendIndex).doesExist ())
         {
             d.notify ("Send channel " + (sendIndex + 1) + " does not exist.", true, false);
             return;

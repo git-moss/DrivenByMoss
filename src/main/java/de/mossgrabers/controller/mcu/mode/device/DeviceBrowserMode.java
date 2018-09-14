@@ -2,17 +2,17 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu.mode.device;
+package de.mossgrabers.mcu.mode.device;
 
-import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
-import de.mossgrabers.controller.mcu.mode.BaseMode;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
-import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.mcu.controller.MCUControlSurface;
+import de.mossgrabers.mcu.mode.BaseMode;
 
 
 /**

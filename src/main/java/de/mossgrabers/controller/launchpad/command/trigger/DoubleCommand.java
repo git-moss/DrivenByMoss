@@ -2,15 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.launchpad.command.trigger;
+package de.mossgrabers.launchpad.command.trigger;
 
-import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.launchpad.controller.LaunchpadControlSurface;
 
 
 /**
@@ -43,7 +43,7 @@ public class DoubleCommand extends AbstractTriggerCommand<LaunchpadControlSurfac
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        this.playCommand.executeNormal (event);
+        this.newCommand.executeNormal (event);
     }
 
 
@@ -51,6 +51,6 @@ public class DoubleCommand extends AbstractTriggerCommand<LaunchpadControlSurfac
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        this.newCommand.executeNormal (event);
+        this.playCommand.executeNormal (event);
     }
 }

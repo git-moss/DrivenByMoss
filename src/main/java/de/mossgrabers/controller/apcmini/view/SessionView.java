@@ -2,16 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.apcmini.view;
+package de.mossgrabers.apcmini.view;
 
-import de.mossgrabers.controller.apcmini.APCminiConfiguration;
-import de.mossgrabers.controller.apcmini.controller.APCminiColors;
-import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.apcmini.APCminiConfiguration;
+import de.mossgrabers.apcmini.controller.APCminiColors;
+import de.mossgrabers.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
 
@@ -35,6 +35,28 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
     {
         super ("Session", surface, model, 8, 8, false);
         this.extensions = new TrackButtons (surface, model);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNote (final int note, final int velocity)
+    {
+        if (velocity == 0)
+            return;
+
+        final int channel = note % 8;
+        final int scene = 7 - note / 8;
+
+        final IChannelBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getTrack (channel);
+        final ISlot slot = track.getSlot (scene);
+
+        if (track.isRecArm () && !slot.isRecording ())
+            slot.record ();
+        slot.launch ();
+        if (this.doSelectClipOnLaunch ())
+            slot.select ();
     }
 
 

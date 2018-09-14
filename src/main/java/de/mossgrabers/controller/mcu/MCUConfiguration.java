@@ -2,12 +2,12 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu;
+package de.mossgrabers.mcu;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.ValueChanger;
 
 import java.util.Arrays;
 
@@ -130,7 +130,7 @@ public class MCUConfiguration extends AbstractConfiguration
      *
      * @param valueChanger The value changer
      */
-    public MCUConfiguration (final IValueChanger valueChanger)
+    public MCUConfiguration (final ValueChanger valueChanger)
     {
         super (valueChanger);
         Arrays.fill (this.assignableFunctions, 0);
@@ -232,9 +232,6 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[1]);
                     this.setVUMetersEnabled (false);
                     break;
-
-                default:
-                    return;
             }
 
             profileSetting.set (DEVICE_SELECT);
@@ -296,7 +293,13 @@ public class MCUConfiguration extends AbstractConfiguration
         {
             final int pos = i;
             final IEnumSetting setting = settingsUI.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], "Assignable buttons", ASSIGNABLE_VALUES, ASSIGNABLE_VALUES[6]);
-            setting.addValueObserver (value -> this.assignableFunctions[pos] = lookupIndex (ASSIGNABLE_VALUES, value));
+            setting.addValueObserver (value -> {
+                for (int f = 0; f < ASSIGNABLE_VALUES.length; f++)
+                {
+                    if (ASSIGNABLE_VALUES[f].equals (value))
+                        this.assignableFunctions[pos] = f;
+                }
+            });
         }
     }
 

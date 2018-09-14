@@ -2,16 +2,16 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.beatstep.view;
+package de.mossgrabers.beatstep.view;
 
-import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
-import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
-import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
+import de.mossgrabers.beatstep.BeatstepConfiguration;
+import de.mossgrabers.beatstep.controller.BeatstepColors;
+import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
@@ -44,7 +44,6 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
     @Override
     public void drawGrid ()
     {
-        final boolean hasClips = this.model.getHost ().hasClips ();
         final ITransport t = this.model.getTransport ();
         final PadGrid padGrid = this.surface.getPadGrid ();
         padGrid.light (36, t.isPlaying () ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
@@ -58,9 +57,9 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
         padGrid.light (44, BeatstepColors.BEATSTEP_BUTTON_STATE_RED);
         padGrid.light (45, BeatstepColors.BEATSTEP_BUTTON_STATE_RED);
         padGrid.light (46, BeatstepColors.BEATSTEP_BUTTON_STATE_PINK);
-        padGrid.light (47, hasClips ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
-        padGrid.light (48, hasClips ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
-        padGrid.light (49, hasClips ? BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
+        padGrid.light (47, BeatstepColors.BEATSTEP_BUTTON_STATE_PINK);
+        padGrid.light (48, BeatstepColors.BEATSTEP_BUTTON_STATE_PINK);
+        padGrid.light (49, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
         padGrid.light (50, BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
         padGrid.light (51, BeatstepColors.BEATSTEP_BUTTON_STATE_PINK);
     }
@@ -127,15 +126,12 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
             default:
                 viewIndex = note - 44;
-                if (viewIndex < 0 || viewIndex >= (this.model.getHost ().hasClips () ? 6 : 3))
+                if (viewIndex < 0 || viewIndex >= 6)
                     return;
 
                 final ViewManager viewManager = this.surface.getViewManager ();
                 final Integer viewId = Integer.valueOf (viewIndex);
-                if (this.surface.isPro ())
-                    viewManager.setActiveView (viewId);
-                else
-                    viewManager.setPreviousView (viewId);
+                viewManager.setPreviousView (viewId);
                 view = viewManager.getView (viewId);
                 this.surface.getDisplay ().notify (view.getName ());
                 break;

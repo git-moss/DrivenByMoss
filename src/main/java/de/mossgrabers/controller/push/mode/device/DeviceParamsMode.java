@@ -2,27 +2,27 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.mode.device;
+package de.mossgrabers.push.mode.device;
 
-import de.mossgrabers.controller.push.controller.DisplayMessage;
-import de.mossgrabers.controller.push.controller.PushColors;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
-import de.mossgrabers.controller.push.mode.BaseMode;
-import de.mossgrabers.controller.push.mode.Modes;
+import de.mossgrabers.framework.ButtonEvent;
+import de.mossgrabers.framework.StringUtils;
 import de.mossgrabers.framework.command.Commands;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.daw.BitwigColors;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.View;
+import de.mossgrabers.push.controller.DisplayMessage;
+import de.mossgrabers.push.controller.PushColors;
+import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.controller.PushDisplay;
+import de.mossgrabers.push.mode.BaseMode;
+import de.mossgrabers.push.mode.Modes;
 
 
 /**
@@ -305,7 +305,7 @@ public class DeviceParamsMode extends BaseMode
         this.surface.updateButton (104, cd.isExpanded () ? orange : white);
         this.surface.updateButton (105, off);
         this.surface.updateButton (106, this.showDevices ? white : orange);
-        this.surface.updateButton (107, this.model.getHost ().hasPinning () ? cd.isPinned () ? turquoise : grey : off);
+        this.surface.updateButton (107, cd.isPinned () ? turquoise : grey);
         this.surface.updateButton (108, cd.isWindowOpen () ? turquoise : grey);
         this.surface.updateButton (109, white);
     }
@@ -375,13 +375,12 @@ public class DeviceParamsMode extends BaseMode
         final IChannelBank tb = this.model.getCurrentTrackBank ();
         final String color = tb.getSelectedTrackColorEntry ();
 
-        final IValueChanger valueChanger = this.model.getValueChanger ();
+        final ValueChanger valueChanger = this.model.getValueChanger ();
 
         final String [] pages = cd.getParameterPageNames ();
         final int page = Math.min (Math.max (0, cd.getSelectedParameterPage ()), pages.length - 1);
         final int start = page / 8 * 8;
 
-        final boolean hasPinning = this.model.getHost ().hasPinning ();
         for (int i = 0; i < 8; i++)
         {
             boolean isTopMenuOn;
@@ -400,7 +399,7 @@ public class DeviceParamsMode extends BaseMode
                     isTopMenuOn = !this.showDevices;
                     break;
                 case 5:
-                    isTopMenuOn = hasPinning && cd.isPinned ();
+                    isTopMenuOn = cd.isPinned ();
                     break;
                 case 6:
                     isTopMenuOn = cd.isWindowOpen ();
@@ -419,19 +418,17 @@ public class DeviceParamsMode extends BaseMode
             boolean isBottomMenuOn;
             if (this.showDevices)
             {
-                bottomMenu = cd.doesSiblingExist (i) ? cd.getSiblingDeviceName (i, 12) : "";
+                bottomMenu = cd.doesSiblingExist (i) ? cd.getSiblingDeviceName (i) : "";
                 isBottomMenuOn = i == cd.getPositionInBank ();
             }
             else
             {
                 final int index = start + i;
                 bottomMenu = index < pages.length ? pages[index] : "";
-                if (bottomMenu.length () > 12)
-                    bottomMenu = bottomMenu.substring (0, 12);
                 isBottomMenuOn = index == page;
             }
 
-            final double [] bottomMenuColor = DAWColors.getColorEntry (color);
+            final double [] bottomMenuColor = BitwigColors.getColorEntry (color);
             final IParameter param = cd.getFXParam (i);
             final boolean exists = param.doesExist ();
             final String parameterName = exists ? param.getName (9) : "";
@@ -440,7 +437,7 @@ public class DeviceParamsMode extends BaseMode
             final boolean parameterIsActive = this.isKnobTouched[i];
             final int parameterModulatedValue = valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1);
 
-            message.addParameterElement (i != 5 || hasPinning ? MENU[i] : "", isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+            message.addParameterElement (MENU[i], isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
 
         display.send (message);

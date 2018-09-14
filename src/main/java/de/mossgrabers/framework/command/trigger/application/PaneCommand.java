@@ -4,12 +4,12 @@
 
 package de.mossgrabers.framework.command.trigger.application;
 
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.ControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class PaneCommand<S extends ControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /** The available panels. */
     public enum Panels
@@ -69,7 +69,7 @@ public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> 
                 application.toggleAutomationEditor ();
                 break;
             case DEVICE:
-                this.model.getCursorDevice ().toggleWindowOpen ();
+                application.toggleDevices ();
                 break;
             case MIXER:
                 application.toggleMixer ();
@@ -87,8 +87,9 @@ public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> 
 
         switch (this.panel)
         {
+            // Toggle device
             case DEVICE:
-                this.model.getApplication ().toggleDevices ();
+                this.model.getCursorDevice ().toggleWindowOpen ();
                 break;
             default:
                 // Not used

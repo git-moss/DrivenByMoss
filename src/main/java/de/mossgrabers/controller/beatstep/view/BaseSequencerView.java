@@ -2,10 +2,10 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.beatstep.view;
+package de.mossgrabers.beatstep.view;
 
-import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
-import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
+import de.mossgrabers.beatstep.BeatstepConfiguration;
+import de.mossgrabers.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractSequencerView;

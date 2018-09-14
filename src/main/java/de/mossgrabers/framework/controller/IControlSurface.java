@@ -7,7 +7,6 @@ package de.mossgrabers.framework.controller;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.ViewManager;
@@ -20,7 +19,7 @@ import de.mossgrabers.framework.view.ViewManager;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IControlSurface<C extends Configuration>
+public interface ControlSurface<C extends Configuration>
 {
     /**
      * Get the view manager.
@@ -76,14 +75,6 @@ public interface IControlSurface<C extends Configuration>
      * @return The output
      */
     IMidiOutput getOutput ();
-
-
-    /**
-     * Get the midi input.
-     *
-     * @return The input
-     */
-    IMidiInput getInput ();
 
 
     /**

@@ -2,15 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.sl.command.trigger;
+package de.mossgrabers.sl.command.trigger;
 
-import de.mossgrabers.controller.sl.SLConfiguration;
-import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.controller.sl.mode.Modes;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.sl.SLConfiguration;
+import de.mossgrabers.sl.controller.SLControlSurface;
+import de.mossgrabers.sl.mode.Modes;
 
 
 /**
@@ -38,9 +38,6 @@ public class TransportButtonCommand extends AbstractTriggerCommand<SLControlSurf
     {
         // Note: The Transport button sends DOWN on first press and UP on the next press
         if (event == ButtonEvent.LONG)
-            return;
-
-        if (!this.model.getHost ().hasClips ())
             return;
 
         // Toggle transport

@@ -2,13 +2,14 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.command.pitchbend;
+package de.mossgrabers.push.command.pitchbend;
 
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.push.PushConfiguration;
+import de.mossgrabers.push.controller.PushControlSurface;
 
 
 /**
@@ -78,7 +79,8 @@ public class PitchbendCommand extends AbstractPitchbendCommand<PushControlSurfac
                 break;
 
             case PushConfiguration.RIBBON_MODE_FADER:
-                final ITrack selTrack = this.model.getSelectedTrack ();
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack selTrack = tb.getSelectedTrack ();
                 if (selTrack != null)
                     selTrack.setVolume (this.model.getValueChanger ().toDAWValue (data2));
                 return;
@@ -100,7 +102,7 @@ public class PitchbendCommand extends AbstractPitchbendCommand<PushControlSurfac
                 break;
 
             case PushConfiguration.RIBBON_MODE_FADER:
-                final ITrack t = this.model.getSelectedTrack ();
+                final ITrack t = this.model.getCurrentTrackBank ().getSelectedTrack ();
                 this.surface.setRibbonValue (t == null ? 0 : this.model.getValueChanger ().toMidiValue (t.getVolume ()));
                 break;
 

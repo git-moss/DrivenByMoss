@@ -2,15 +2,9 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.sl.view;
+package de.mossgrabers.sl.view;
 
-import de.mossgrabers.controller.sl.SLConfiguration;
-import de.mossgrabers.controller.sl.command.trigger.ButtonRowSelectCommand;
-import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
-import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.controller.sl.mode.Modes;
-import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
-import de.mossgrabers.controller.sl.mode.device.DevicePresetsMode;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -18,8 +12,14 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
+import de.mossgrabers.sl.SLConfiguration;
+import de.mossgrabers.sl.command.trigger.ButtonRowSelectCommand;
+import de.mossgrabers.sl.command.trigger.P2ButtonCommand;
+import de.mossgrabers.sl.controller.SLControlSurface;
+import de.mossgrabers.sl.mode.Modes;
+import de.mossgrabers.sl.mode.device.DeviceParamsMode;
+import de.mossgrabers.sl.mode.device.DevicePresetsMode;
 
 
 /**
@@ -108,23 +108,25 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
 
             // New
             case 4:
-                final ITrack t = this.model.getSelectedTrack ();
-                if (t == null)
-                    return;
-                final ISlot [] slotIndexes = t.getSelectedSlots ();
-                final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
-                for (int i = 0; i < 8; i++)
+                final IChannelBank tb = this.model.getCurrentTrackBank ();
+                final ITrack t = tb.getSelectedTrack ();
+                if (t != null)
                 {
-                    final int sIndex = (slotIndex + i) % 8;
-                    final ISlot s = t.getSlot (sIndex);
-                    if (!s.hasContent ())
+                    final ISlot [] slotIndexes = t.getSelectedSlots ();
+                    final int slotIndex = slotIndexes.length == 0 ? 0 : slotIndexes[0].getIndex ();
+                    for (int i = 0; i < 8; i++)
                     {
-                        this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());
-                        if (slotIndex != sIndex)
-                            s.select ();
-                        s.launch ();
-                        this.model.getTransport ().setLauncherOverdub (true);
-                        return;
+                        final int sIndex = (slotIndex + i) % 8;
+                        final ISlot s = t.getSlot (sIndex);
+                        if (!s.hasContent ())
+                        {
+                            this.model.createClip (s, this.surface.getConfiguration ().getNewClipLength ());
+                            if (slotIndex != sIndex)
+                                s.select ();
+                            s.launch ();
+                            this.model.getTransport ().setLauncherOverdub (true);
+                            return;
+                        }
                     }
                 }
                 this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.");
@@ -174,26 +176,30 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
             return;
         }
 
+        IChannelBank tb;
         ITrack track;
         switch (index)
         {
             // Mute
             case 0:
-                track = this.model.getSelectedTrack ();
+                tb = this.model.getCurrentTrackBank ();
+                track = tb.getSelectedTrack ();
                 if (track != null)
                     track.toggleMute ();
                 break;
 
             // Solo
             case 1:
-                track = this.model.getSelectedTrack ();
+                tb = this.model.getCurrentTrackBank ();
+                track = tb.getSelectedTrack ();
                 if (track != null)
                     track.toggleSolo ();
                 break;
 
             // Arm
             case 2:
-                track = this.model.getSelectedTrack ();
+                tb = this.model.getCurrentTrackBank ();
+                track = tb.getSelectedTrack ();
                 if (track != null)
                     track.toggleRecArm ();
                 break;
@@ -294,9 +300,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     public void onButtonRow1Select ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final boolean selectFixed = modeManager.getActiveModeId () == Modes.MODE_FUNCTIONS;
-        modeManager.setActiveMode (selectFixed ? Modes.MODE_FIXED : Modes.MODE_FUNCTIONS);
-        this.surface.getDisplay ().notify (selectFixed ? "Fixed Length" : "Functions");
+        modeManager.setActiveMode (modeManager.getActiveModeId () == Modes.MODE_FUNCTIONS ? Modes.MODE_FIXED : Modes.MODE_FUNCTIONS);
     }
 
 
@@ -305,9 +309,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     public void onButtonRow2Select ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final boolean selectFrame = modeManager.getActiveModeId () == Modes.MODE_TRACK_TOGGLES;
-        modeManager.setActiveMode (selectFrame ? Modes.MODE_FRAME : Modes.MODE_TRACK_TOGGLES);
-        this.surface.getDisplay ().notify (selectFrame ? "Layouts & Panels" : "Track & Device");
+        modeManager.setActiveMode (modeManager.getActiveModeId () == Modes.MODE_TRACK_TOGGLES ? Modes.MODE_FRAME : Modes.MODE_TRACK_TOGGLES);
     }
 
 
@@ -437,17 +439,6 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        // Use drum pads for mode selection to support Remote Zero MkII
-        if (this.surface.getConfiguration ().isDrumpadsAsModeSelection ())
-        {
-            if (velocity > 0)
-            {
-                final int index = note - 36;
-                new ButtonRowSelectCommand<> (index > 3 ? 5 : index, this.model, this.surface).execute (ButtonEvent.DOWN);
-            }
-            return;
-        }
-
-        this.surface.sendMidiEvent (0x90, note, velocity);
+        // Intentionally empty
     }
 }

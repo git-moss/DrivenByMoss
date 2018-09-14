@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.ValueChanger;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 
@@ -31,7 +31,7 @@ public abstract class AbstractChannelBank implements IChannelBank
     protected ITrack []                         tracks;
     protected ISceneBank                        sceneBank;
 
-    protected final IValueChanger               valueChanger;
+    protected final ValueChanger                valueChanger;
     protected final Set<NoteObserver>           noteObservers = new HashSet<> ();
     protected final Set<TrackSelectionObserver> observers     = new HashSet<> ();
     protected final int [] []                   noteCache;
@@ -45,7 +45,7 @@ public abstract class AbstractChannelBank implements IChannelBank
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractChannelBank (final IValueChanger valueChanger, final int numTracks, final int numScenes, final int numSends)
+    public AbstractChannelBank (final ValueChanger valueChanger, final int numTracks, final int numScenes, final int numSends)
     {
         this.valueChanger = valueChanger;
 
@@ -67,19 +67,6 @@ public abstract class AbstractChannelBank implements IChannelBank
     public void addTrackSelectionObserver (final TrackSelectionObserver observer)
     {
         this.observers.add (observer);
-    }
-
-
-    /**
-     * Notify all registered track selection observers.
-     *
-     * @param trackIndex The index of the track which selection state has changed
-     * @param isSelected True if selected otherwise false
-     */
-    protected void notifyTrackSelectionObservers (final int trackIndex, final boolean isSelected)
-    {
-        for (final TrackSelectionObserver observer: this.observers)
-            observer.call (trackIndex, isSelected);
     }
 
 
@@ -126,9 +113,9 @@ public abstract class AbstractChannelBank implements IChannelBank
     {
         final ITrack selectedTrack = this.getSelectedTrack ();
         if (selectedTrack == null)
-            return DAWColors.COLOR_OFF;
+            return BitwigColors.COLOR_OFF;
         final double [] color = selectedTrack.getColor ();
-        return DAWColors.getColorIndex (color[0], color[1], color[2]);
+        return BitwigColors.getColorIndex (color[0], color[1], color[2]);
     }
 
 
@@ -140,9 +127,9 @@ public abstract class AbstractChannelBank implements IChannelBank
         {
             final ISlot slot = this.getTrack (t).getSlot (scene);
             if (slot.doesExist () && slot.hasContent ())
-                return DAWColors.getColorIndex (slot.getColor ());
+                return BitwigColors.getColorIndex (slot.getColor ());
         }
-        return DAWColors.DAW_COLOR_GREEN;
+        return BitwigColors.BITWIG_COLOR_GREEN;
     }
 
 
@@ -150,8 +137,7 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void stop ()
     {
-        if (this.sceneBank != null)
-            this.sceneBank.stop ();
+        this.sceneBank.stop ();
     }
 
 
@@ -167,8 +153,7 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void launchScene (final int scene)
     {
-        if (this.sceneBank != null)
-            this.sceneBank.launchScene (scene);
+        this.sceneBank.launchScene (scene);
     }
 
 
@@ -192,8 +177,7 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void scrollScenesUp ()
     {
-        if (this.sceneBank != null)
-            this.sceneBank.scrollScenesUp ();
+        this.sceneBank.scrollScenesUp ();
     }
 
 
@@ -201,8 +185,7 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void scrollScenesDown ()
     {
-        if (this.sceneBank != null)
-            this.sceneBank.scrollScenesDown ();
+        this.sceneBank.scrollScenesDown ();
     }
 
 
@@ -210,8 +193,7 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void scrollScenesPageUp ()
     {
-        if (this.sceneBank != null)
-            this.sceneBank.scrollScenesPageUp ();
+        this.sceneBank.scrollScenesPageUp ();
     }
 
 
@@ -219,8 +201,7 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public void scrollScenesPageDown ()
     {
-        if (this.sceneBank != null)
-            this.sceneBank.scrollScenesPageDown ();
+        this.sceneBank.scrollScenesPageDown ();
     }
 
 
@@ -228,7 +209,7 @@ public abstract class AbstractChannelBank implements IChannelBank
     @Override
     public int getScenePosition ()
     {
-        return this.sceneBank == null ? -1 : this.sceneBank.getScrollPosition ();
+        return this.sceneBank.getScrollPosition ();
     }
 
 

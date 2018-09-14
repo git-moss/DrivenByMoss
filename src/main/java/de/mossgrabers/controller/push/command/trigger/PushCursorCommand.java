@@ -2,20 +2,19 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.command.trigger;
+package de.mossgrabers.push.command.trigger;
 
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.mode.Modes;
-import de.mossgrabers.controller.push.mode.device.DeviceBrowserMode;
-import de.mossgrabers.controller.push.mode.device.DeviceParamsMode;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.push.PushConfiguration;
+import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.mode.Modes;
+import de.mossgrabers.push.mode.device.DeviceBrowserMode;
+import de.mossgrabers.push.mode.device.DeviceParamsMode;
 
 
 /**
@@ -58,8 +57,9 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
         if (modeManager.isActiveMode (Modes.MODE_BROWSER))
         {
             final IBrowser browser = this.model.getBrowser ();
-            this.canScrollLeft = browser.hasPreviousContentType ();
-            this.canScrollRight = browser.hasNextContentType ();
+            final int index = browser.getSelectedContentTypeIndex ();
+            this.canScrollLeft = index > 0;
+            this.canScrollRight = index < browser.getContentTypeNames ().length - 1;
             return;
         }
 
@@ -109,9 +109,7 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
-        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
-        if (activeMode != null)
-            activeMode.selectPreviousTrack ();
+        this.scrollTracksLeft ();
     }
 
 
@@ -146,8 +144,6 @@ public class PushCursorCommand extends de.mossgrabers.framework.command.trigger.
             return;
         }
 
-        final Mode activeMode = this.surface.getModeManager ().getActiveMode ();
-        if (activeMode != null)
-            activeMode.selectNextTrack ();
+        this.scrollTracksRight ();
     }
 }

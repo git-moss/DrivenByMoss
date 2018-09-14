@@ -2,16 +2,15 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.command.continuous;
+package de.mossgrabers.push.command.continuous;
 
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.mode.Modes;
+import de.mossgrabers.framework.ButtonEvent;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.push.PushConfiguration;
+import de.mossgrabers.push.controller.PushControlSurface;
+import de.mossgrabers.push.mode.Modes;
 
 
 /**
@@ -44,13 +43,10 @@ public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlS
         if (modeManager.isActiveMode (Modes.MODE_BROWSER))
             return;
 
-        final IMasterTrack masterTrack = this.model.getMasterTrack ();
-        masterTrack.touchVolume (isTouched);
-
         if (this.surface.isDeletePressed ())
         {
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
-            masterTrack.resetVolume ();
+            this.model.getMasterTrack ().resetVolume ();
             return;
         }
 
