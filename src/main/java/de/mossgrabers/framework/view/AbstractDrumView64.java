@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -28,6 +29,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
 {
     protected static final int    DRUM_START_KEY = 36;
     protected static final int    GRID_COLUMNS   = 8;
+    protected static final int    BLOCK_SIZE     = 16;
 
     // @formatter:off
     protected static final int [] DRUM_MATRIX    =
@@ -222,14 +224,16 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         this.clearPressedKeys ();
         final int oldDrumOctave = this.drumOctave;
         this.drumOctave = Math.max (-2, this.drumOctave - 1);
-        this.offsetY = DRUM_START_KEY + this.drumOctave * 16;
+        this.offsetY = DRUM_START_KEY + this.drumOctave * BLOCK_SIZE;
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.getDrumRangeText ());
 
         if (oldDrumOctave != this.drumOctave)
         {
             final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
-            drumDevice64.getDrumPadBank ().scrollPageBackwards ();
+            final IDrumPadBank drumPadBank = drumDevice64.getDrumPadBank ();
+            for (int i = 0; i < BLOCK_SIZE; i++)
+                drumPadBank.scrollBackwards ();
         }
     }
 
@@ -244,13 +248,15 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         this.clearPressedKeys ();
         final int oldDrumOctave = this.drumOctave;
         this.drumOctave = Math.min (1, this.drumOctave + 1);
-        this.offsetY = DRUM_START_KEY + this.drumOctave * 16;
+        this.offsetY = DRUM_START_KEY + this.drumOctave * BLOCK_SIZE;
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.getDrumRangeText ());
         if (oldDrumOctave != this.drumOctave)
         {
             final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
-            drumDevice64.getDrumPadBank ().scrollPageForwards ();
+            final IDrumPadBank drumPadBank = drumDevice64.getDrumPadBank ();
+            for (int i = 0; i < BLOCK_SIZE; i++)
+                drumPadBank.scrollForwards ();
         }
     }
 
@@ -316,7 +322,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         final int [] noteMap = Scales.getEmptyMatrix ();
         for (int i = 0; i < 64; i++)
         {
-            final int n = matrix[i] == -1 ? -1 : matrix[i] + DRUM_START_KEY + this.drumOctave * 16;
+            final int n = matrix[i] == -1 ? -1 : matrix[i] + this.offsetY;
             noteMap[DRUM_START_KEY + i] = n < 0 || n > 127 ? -1 : n;
         }
         return noteMap;

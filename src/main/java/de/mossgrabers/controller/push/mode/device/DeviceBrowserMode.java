@@ -370,8 +370,12 @@ public class DeviceBrowserMode extends BaseMode
                 this.filterColumn = fc.getIndex ();
                 for (int i = 0; i < count; i++)
                     browser.selectNextFilterItem (this.filterColumn);
-                if (browser.getSelectedFilterItemIndex (this.filterColumn) == -1)
-                    browser.nextFilterItemPage (this.filterColumn);
+                // TODO Bugfix required - getSelectedFilterItemIndex gets -1
+                // https://github.com/teotigraphix/Framework4Bitwig/issues/220
+                this.model.getHost ().scheduleTask ( () -> {
+                    if (browser.getSelectedFilterItemIndex (this.filterColumn) == -1)
+                        browser.nextFilterItemPage (this.filterColumn);
+                }, 600);
             }
         }
         else
@@ -395,8 +399,12 @@ public class DeviceBrowserMode extends BaseMode
                     this.filterColumn = fc.getIndex ();
                     for (int j = 0; j < count; j++)
                         browser.selectPreviousFilterItem (this.filterColumn);
-                    if (browser.getSelectedFilterItemIndex (this.filterColumn) == -1)
-                        browser.previousFilterItemPage (this.filterColumn);
+                    // TODO Bugfix required - getSelectedFilterItemIndex gets -1
+                    // https://github.com/teotigraphix/Framework4Bitwig/issues/220
+                    this.model.getHost ().scheduleTask ( () -> {
+                        if (browser.getSelectedFilterItemIndex (this.filterColumn) == -1)
+                            browser.previousFilterItemPage (this.filterColumn);
+                    }, 600);
                 }
             }
             else
