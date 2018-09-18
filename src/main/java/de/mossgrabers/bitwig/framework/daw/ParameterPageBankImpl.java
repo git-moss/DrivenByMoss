@@ -127,6 +127,14 @@ public class ParameterPageBankImpl implements IParameterPageBank
 
     /** {@inheritDoc} */
     @Override
+    public void scrollTo (int position, boolean adjustPage)
+    {
+        // Not supported
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getPageSize ()
     {
         return this.pageSize;

@@ -138,11 +138,20 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
     @Override
     public void scrollTo (final int position)
     {
+        this.scrollTo (position, true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollTo (final int position, final boolean adjustPage)
+    {
         if (position < 0 || position >= this.getItemCount ())
             return;
         final int pageSize = this.getPageSize ();
-        this.bank.scrollPosition ().set (position / pageSize * pageSize);
+        final int pos = adjustPage ? position / pageSize * pageSize : position;
         this.bank.scrollIntoView (position);
+        this.bank.scrollPosition ().set (pos);
     }
 
 

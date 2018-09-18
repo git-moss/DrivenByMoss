@@ -137,4 +137,12 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
         final SettableIntegerValue index = this.remoteControls.selectedPageIndex ();
         index.set (Math.max (Math.min (position, this.pageBank.getItemCount () - 1), 0));
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollTo (int position, boolean adjustPage)
+    {
+        // Not supported
+    }
 }

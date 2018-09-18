@@ -107,9 +107,14 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
         if (!primary.hasDrumPads ())
             return;
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (cd.isNested ())
+        final boolean isNested = cd.isNested ();
+        if (isNested)
+        {
+            // We have to move up to compare the main drum devices
             cd.selectParent ();
+        }
 
+        // Can only scroll to the channel if the cursor device is the primary device
         if (primary.getPosition () != cd.getPosition ())
             return;
 
@@ -118,12 +123,22 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
         final int scrollPos = drumPadBank.getScrollPosition ();
         final IDrumPadBank cdDrumPadBank = cd.getDrumPadBank ();
         final int pageSize = cdDrumPadBank.getPageSize ();
-        cdDrumPadBank.scrollTo (scrollPos + playedPad / pageSize * pageSize);
+        final int adjustedPage = playedPad / pageSize * pageSize;
+        cdDrumPadBank.scrollTo (scrollPos + adjustedPage, false);
 
-        // Do not reselect
+        // Do not reselect, if pad is already selected
         final IDrumPad drumPad = drumPadBank.getItem (playedPad);
         if (drumPad.isSelected ())
+        {
+            // If the instrument of the pad was selected for editing, try to select it again
+            if (isNested)
+            {
+                IDrumPad selectedItem = cdDrumPadBank.getItem (playedPad % pageSize);
+                if (selectedItem != null)
+                    selectedItem.enter ();
+            }
             return;
+        }
 
         // Only activate layer mode if not one of the layer modes is already active
         final ModeManager modeManager = this.surface.getModeManager ();
@@ -180,6 +195,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     }
 
 
+    // TODO Not called anymore!
     /**
      * Filling a slot from the browser moves the bank view to that slot. This function moves it back
      * to the correct position.
