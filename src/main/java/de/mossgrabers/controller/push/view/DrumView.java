@@ -71,9 +71,14 @@ public class DrumView extends DrumViewBase
         if (!primary.hasDrumPads ())
             return;
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (cd.isNested ())
+        final boolean isNested = cd.isNested ();
+        if (isNested)
+        {
+            // We have to move up to compare the main drum devices
             cd.selectParent ();
+        }
 
+        // Can only scroll to the channel if the cursor device is the primary device
         if (primary.getPosition () != cd.getPosition ())
             return;
 
@@ -81,12 +86,23 @@ public class DrumView extends DrumViewBase
         final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
         final int scrollPos = drumPadBank.getScrollPosition ();
         final IDrumPadBank cdDrumPadBank = cd.getDrumPadBank ();
-        cdDrumPadBank.scrollTo (scrollPos);
+        final int pageSize = cdDrumPadBank.getPageSize ();
+        final int adjustedPage = playedPad / pageSize * pageSize;
+        cdDrumPadBank.scrollTo (scrollPos + adjustedPage, false);
 
         // Do not reselect
         final IDrumPad drumPad = drumPadBank.getItem (playedPad);
         if (drumPad.isSelected ())
+        {
+            // If the instrument of the pad was selected for editing, try to select it again
+            if (isNested)
+            {
+                IDrumPad selectedItem = cdDrumPadBank.getItem (playedPad % pageSize);
+                if (selectedItem != null)
+                    selectedItem.enter ();
+            }
             return;
+        }
 
         // Only activate layer mode if not one of the layer modes is already active
         final ModeManager modeManager = this.surface.getModeManager ();
