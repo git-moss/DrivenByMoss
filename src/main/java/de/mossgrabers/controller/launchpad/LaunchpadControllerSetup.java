@@ -213,10 +213,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     protected void registerTriggerCommands ()
     {
         final LaunchpadControlSurface surface = this.getSurface ();
-        final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerTriggerCommand (Commands.COMMAND_SHIFT, new ShiftCommand (this.model, surface));
-        surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SHIFT, Commands.COMMAND_SHIFT);
-        surface.assignTriggerCommand (LaunchpadControlSurface.LAUNCHPAD_MKII_BUTTON_USER, Commands.COMMAND_SHIFT);
+        this.addTriggerCommand (Commands.COMMAND_SHIFT, this.getSurface ().getShiftButtonId (), new ShiftCommand (this.model, surface));
 
         this.addTriggerCommand (Commands.COMMAND_METRONOME, LaunchpadControlSurface.LAUNCHPAD_BUTTON_CLICK, new ClickCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_UNDO, LaunchpadControlSurface.LAUNCHPAD_BUTTON_UNDO, new UndoCommand<> (this.model, surface));
@@ -226,6 +223,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.addTriggerCommand (Commands.COMMAND_DOUBLE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DOUBLE, new DoubleCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_RECORD, LaunchpadControlSurface.LAUNCHPAD_BUTTON_RECORD, new RecordCommand<> (this.model, surface));
 
+        final ViewManager viewManager = surface.getViewManager ();
         viewManager.registerTriggerCommand (Commands.COMMAND_PLAY, new PlayCommand<> (this.model, surface));
         viewManager.registerTriggerCommand (Commands.COMMAND_NEW, new NewCommand<> (this.model, surface));
 
@@ -310,7 +308,10 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         if (!this.isPro)
         {
-            surface.setButton (LaunchpadControlSurface.LAUNCHPAD_MKII_BUTTON_USER, surface.isUserPressed () ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+            // TODO
+            // surface.setButton (LaunchpadControlSurface.LAUNCHPAD_MKII_BUTTON_USER,
+            // surface.isUserPressed () ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE :
+            // LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
             return;
         }
 

@@ -261,6 +261,14 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
+     * Get the midi cc of the Shift button.
+     *
+     * @return The midi cc
+     */
+    int getShiftButtonId ();
+
+
+    /**
      * Get the midi cc of the Select button.
      *
      * @return The midi cc

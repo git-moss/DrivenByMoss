@@ -420,6 +420,14 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
+    public int getShiftButtonId ()
+    {
+        return this.shiftButtonId;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getSelectButtonId ()
     {
         return this.selectButtonId;

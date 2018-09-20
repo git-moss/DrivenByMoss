@@ -190,7 +190,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
 
         this.isPro = isPro;
 
-        this.shiftButtonId = LAUNCHPAD_BUTTON_SHIFT;
+        this.shiftButtonId = this.isPro ? LAUNCHPAD_BUTTON_SHIFT : LAUNCHPAD_MKII_BUTTON_USER;
         this.deleteButtonId = LAUNCHPAD_BUTTON_DELETE;
         this.soloButtonId = LAUNCHPAD_BUTTON_SOLO;
         this.muteButtonId = LAUNCHPAD_BUTTON_MUTE;
@@ -352,17 +352,6 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public int getDeviceButton ()
     {
         return this.isPro ? LAUNCHPAD_PRO_BUTTON_DEVICE : LAUNCHPAD_MKII_BUTTON_DEVICE;
-    }
-
-
-    /**
-     * Get the user button.
-     *
-     * @return The ID of the user button
-     */
-    public int getUserButton ()
-    {
-        return this.isPro ? LAUNCHPAD_PRO_BUTTON_USER : LAUNCHPAD_MKII_BUTTON_USER;
     }
 
 
