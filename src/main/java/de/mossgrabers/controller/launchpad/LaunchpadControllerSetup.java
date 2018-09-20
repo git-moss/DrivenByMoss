@@ -307,13 +307,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         }
 
         if (!this.isPro)
-        {
-            // TODO
-            // surface.setButton (LaunchpadControlSurface.LAUNCHPAD_MKII_BUTTON_USER,
-            // surface.isUserPressed () ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE :
-            // LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
             return;
-        }
 
         surface.setButton (LaunchpadControlSurface.LAUNCHPAD_PRO_BUTTON_USER, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
 

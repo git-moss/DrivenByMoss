@@ -31,7 +31,6 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     private static final int NUMBER_OF_RETRIES = 20;
 
     private int              startRetries;
-    private int              scrollPosition;
 
 
     /**
@@ -78,7 +77,6 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
                 return;
 
             final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
-            this.scrollPosition = drumPadBank.getScrollPosition ();
             final IDrumPad drumPad = drumPadBank.getItem (playedPad);
             drumPad.browseToInsert ();
             this.activateMode ();
@@ -192,17 +190,5 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
             this.startRetries++;
             this.surface.scheduleTask (this::activateMode, 200);
         }
-    }
-
-
-    // TODO Not called anymore!
-    /**
-     * Filling a slot from the browser moves the bank view to that slot. This function moves it back
-     * to the correct position.
-     */
-    public void repositionBankPage ()
-    {
-        if (this.scrollPosition >= 0)
-            this.model.getDrumDevice64 ().getDrumPadBank ().scrollTo (this.scrollPosition);
     }
 }
