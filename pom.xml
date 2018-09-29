@@ -42,13 +42,13 @@
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
-			<version>4.0.0</version>
+			<version>4.5.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>purejavahidapi</groupId>
 			<artifactId>purejavahidapi</artifactId>
-			<version>0.0.11</version>
+			<version>0.0.12</version>
 		</dependency>
 	</dependencies>
 
@@ -58,7 +58,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>3.8.0</version>
 				<configuration>
 					<optimize>true</optimize>
 					<fork>true</fork>
@@ -72,7 +72,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -93,7 +93,7 @@
 			<plugin>
 				<groupId>com.coderplus.maven.plugins</groupId>
 				<artifactId>copy-rename-maven-plugin</artifactId>
-				<version>1.0</version>
+				<version>1.0.1</version>
 				<executions>
 					<execution>
 						<id>rename-file</id>

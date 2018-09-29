@@ -79,7 +79,6 @@ public class KontrolOSCControllerSetup extends AbstractControllerSetup<IControlS
         ms.setNumDeviceLayers (0);
         ms.setNumDevicesInBank (0);
         ms.setNumDrumPadLayers (0);
-        ms.setNumParams (0);
         ms.setNumMarkers (0);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
     }

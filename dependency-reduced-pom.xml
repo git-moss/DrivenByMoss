@@ -9,7 +9,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
+        <version>3.8.0</version>
         <configuration>
           <optimize>true</optimize>
           <fork>true</fork>
@@ -21,7 +21,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -41,7 +41,7 @@
       <plugin>
         <groupId>com.coderplus.maven.plugins</groupId>
         <artifactId>copy-rename-maven-plugin</artifactId>
-        <version>1.0</version>
+        <version>1.0.1</version>
         <executions>
           <execution>
             <id>rename-file</id>

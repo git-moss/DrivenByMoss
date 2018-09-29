@@ -349,8 +349,9 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         final ICursorDevice instrumentDevice = this.model.getPrimaryDevice ();
         if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
         {
-            // TODO Spec missing: The parameter is currently not sent to Bitwig!
-            return "NIKB00";
+            // "NIKBxx";
+            final String kompleteID = instrumentDevice.getParameterBank ().getItem (0).getName ();
+            return kompleteID;
         }
         return "";
     }
