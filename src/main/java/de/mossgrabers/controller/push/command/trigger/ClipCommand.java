@@ -7,6 +7,7 @@ package de.mossgrabers.controller.push.command.trigger;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.Modes;
+import de.mossgrabers.controller.push.mode.track.ClipMode;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -41,7 +42,12 @@ public class ClipCommand extends AbstractTriggerCommand<PushControlSurface, Push
 
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActiveOrTempMode (Modes.MODE_CLIP))
-            modeManager.restoreMode ();
+        {
+            if (this.surface.getConfiguration ().isPush2 ())
+                ((ClipMode) modeManager.getMode (Modes.MODE_CLIP)).togglePianoRoll ();
+            else
+                modeManager.restoreMode ();
+        }
         else
             modeManager.setActiveMode (Modes.MODE_CLIP);
     }

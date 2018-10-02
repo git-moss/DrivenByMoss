@@ -80,6 +80,7 @@ import de.mossgrabers.controller.push.view.DrumView64;
 import de.mossgrabers.controller.push.view.DrumView8;
 import de.mossgrabers.controller.push.view.PianoView;
 import de.mossgrabers.controller.push.view.PlayView;
+import de.mossgrabers.controller.push.view.PolySequencerView;
 import de.mossgrabers.controller.push.view.PrgChangeView;
 import de.mossgrabers.controller.push.view.RaindropsView;
 import de.mossgrabers.controller.push.view.ScenePlayView;
@@ -409,6 +410,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         {
             viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
             viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
+            viewManager.registerView (Views.VIEW_POLY_SEQUENCER, new PolySequencerView (surface, this.model, true));
             viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
             viewManager.registerView (Views.VIEW_DRUM4, new DrumView4 (surface, this.model));
             viewManager.registerView (Views.VIEW_DRUM8, new DrumView8 (surface, this.model));

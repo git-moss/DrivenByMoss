@@ -18,6 +18,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
 
@@ -28,8 +30,7 @@ import de.mossgrabers.framework.view.ViewManager;
  */
 public class ClipMode extends AbstractTrackMode
 {
-    private boolean displayMidiNotes  = false;
-    private boolean disableMidiEditor = true;
+    private boolean displayMidiNotes = false;
 
 
     /**
@@ -121,7 +122,12 @@ public class ClipMode extends AbstractTrackMode
 
         if (this.displayMidiNotes)
         {
-            final INoteClip clip = this.model.getNoteClip (8, 128);
+            final View activeView = this.surface.getViewManager ().getActiveView ();
+            INoteClip clip;
+            if (activeView instanceof AbstractSequencerView)
+                clip = ((AbstractSequencerView<?, ?>) activeView).getClip ();
+            else
+                clip = this.model.getNoteClip (8, 128);
             message.setMidiClipElement (clip, this.model.getTransport ().getQuartersPerMeasure ());
             message.send ();
             return;
@@ -138,10 +144,7 @@ public class ClipMode extends AbstractTrackMode
         final ITrack t7 = tb.getItem (7);
 
         final IClip clip = this.model.getClip ();
-        if (this.disableMidiEditor)
-            message.addParameterElement ("", false, t0.getName (), t0.getType (), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
-        else
-            message.addParameterElement ("Piano Roll", this.displayMidiNotes, t0.getName (), t0.getType (), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
+        message.addParameterElement ("", false, t0.getName (), t0.getType (), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
         message.addParameterElement ("", false, t1.getName (), t1.getType (), t1.getColor (), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);
         message.addParameterElement ("", false, t2.getName (), t2.getType (), t2.getColor (), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart (), 1), this.isKnobTouched[2], -1);
         message.addParameterElement ("", false, t3.getName (), t3.getType (), t3.getColor (), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength (), 0), this.isKnobTouched[3], -1);
@@ -168,10 +171,6 @@ public class ClipMode extends AbstractTrackMode
 
         switch (index)
         {
-            case 0:
-                if (this.isPush2 && !this.disableMidiEditor)
-                    this.displayMidiNotes = !this.displayMidiNotes;
-                break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();
                 ((ColorView) viewManager.getView (Views.VIEW_COLOR)).setMode (SelectMode.MODE_CLIP);
@@ -184,14 +183,20 @@ public class ClipMode extends AbstractTrackMode
     }
 
 
+    /**
+     * Toggles the clip parameter with the piano roll display.
+     */
+    public void togglePianoRoll ()
+    {
+        this.displayMidiNotes = !this.displayMidiNotes;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void updateSecondRow ()
     {
-        if (this.disableMidiEditor)
-            this.surface.updateButton (102, PushColors.PUSH2_COLOR_BLACK);
-        else
-            this.surface.updateButton (102, this.isPush2 && !this.displayMidiNotes ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateButton (102, PushColors.PUSH2_COLOR_BLACK);
         this.surface.updateButton (103, PushColors.PUSH2_COLOR_BLACK);
         this.surface.updateButton (104, PushColors.PUSH2_COLOR_BLACK);
         this.surface.updateButton (105, PushColors.PUSH2_COLOR_BLACK);

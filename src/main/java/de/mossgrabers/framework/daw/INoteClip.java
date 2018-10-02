@@ -11,6 +11,14 @@ package de.mossgrabers.framework.daw;
  */
 public interface INoteClip extends IClip
 {
+    /** Constant for getStep result for note off. */
+    int NOTE_OFF      = 0;
+    /** Constant for getStep result for note continue. */
+    int NOTE_CONTINUE = 1;
+    /** Constant for getStep result for note start. */
+    int NOTE_START    = 2;
+
+
     /**
      * Get the row of notes.
      *
@@ -32,7 +40,7 @@ public interface INoteClip extends IClip
      *
      * @param step The step
      * @param row The row
-     * @return 0: not set, 1: note continues playing, 2: start of note
+     * @return 0: not set, 1: note continues playing, 2: start of note, see the defined constants
      */
     int getStep (int step, int row);
 

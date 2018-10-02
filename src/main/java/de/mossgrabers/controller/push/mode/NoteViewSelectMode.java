@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
@@ -30,25 +31,25 @@ public class NoteViewSelectMode extends BaseMode
     {
         Views.VIEW_PLAY,
         Views.VIEW_PIANO,
-        Views.VIEW_SEQUENCER,
-        Views.VIEW_RAINDROPS,
-        Views.VIEW_DRUM,
-        Views.VIEW_DRUM4,
-        Views.VIEW_DRUM8,
-        Views.VIEW_DRUM64
-    };
-
-    /** More views to choose from. */
-    private static final Integer [] VIEWS_TOP =
-    {
-        null,
-        null,
-        null,
+        Views.VIEW_DRUM64,
         null,
         null,
         null,
         Views.VIEW_CLIP,
         Views.VIEW_PRG_CHANGE
+    };
+
+    /** More views to choose from. */
+    private static final Integer [] VIEWS_TOP =
+    {
+        Views.VIEW_SEQUENCER,
+        Views.VIEW_POLY_SEQUENCER,
+        Views.VIEW_RAINDROPS,
+        Views.VIEW_DRUM,
+        Views.VIEW_DRUM4,
+        Views.VIEW_DRUM8,
+        null,
+        null
     };
 
 
@@ -88,16 +89,24 @@ public class NoteViewSelectMode extends BaseMode
     {
         final Display d = this.surface.getDisplay ();
         final ViewManager viewManager = this.surface.getViewManager ();
-        d.clear ().setBlock (1, 0, "Note view:");
+
+        d.clear ();
+        d.setBlock (1, 0, "Sequence:");
+        d.setBlock (2, 0, "Play:");
+        d.setBlock (2, 3, "Tools:");
+
         for (int i = 0; i < VIEWS.length; i++)
         {
             if (VIEWS[i] != null)
             {
                 final View view = viewManager.getView (VIEWS[i]);
-                d.setCell (3, i, view == null ? "" : (viewManager.isActiveView (VIEWS[i]) ? PushDisplay.SELECT_ARROW : "") + view.getName ());
+                d.setCell (3, i, view == null ? "" : (viewManager.isActiveView (VIEWS[i]) ? PushDisplay.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
             }
             if (VIEWS_TOP[i] != null)
-                d.setCell (0, i, (viewManager.isActiveView (VIEWS_TOP[i]) ? PushDisplay.SELECT_ARROW : "") + viewManager.getView (VIEWS_TOP[i]).getName ());
+            {
+                final View view = viewManager.getView (VIEWS_TOP[i]);
+                d.setCell (0, i, view == null ? "" : (viewManager.isActiveView (VIEWS_TOP[i]) ? PushDisplay.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
+            }
         }
         d.allDone ();
     }
@@ -121,7 +130,16 @@ public class NoteViewSelectMode extends BaseMode
             final String menuTopName = VIEWS_TOP[i] == null ? "" : viewManager.getView (VIEWS_TOP[i]).getName ();
             final boolean isMenuBottomSelected = VIEWS[i] != null && viewManager.isActiveView (VIEWS[i]);
             final boolean isMenuTopSelected = VIEWS_TOP[i] != null && viewManager.isActiveView (VIEWS_TOP[i]);
-            message.addOptionElement ("", menuTopName, isMenuTopSelected, i == 0 ? "Note view" : "", menuBottomName, isMenuBottomSelected, false);
+            String titleBottom = "";
+            String titleTop = "";
+            if (i == 0)
+            {
+                titleTop = "Sequence";
+                titleBottom = "Play";
+            }
+            else if (i == 6)
+                titleBottom = "Tools";
+            message.addOptionElement (titleTop, menuTopName, isMenuTopSelected, titleBottom, menuBottomName, isMenuBottomSelected, false);
         }
         message.send ();
     }

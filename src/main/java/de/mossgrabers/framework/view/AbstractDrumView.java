@@ -259,10 +259,10 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         switch (isSet)
         {
             // Note continues
-            case 1:
+            case INoteClip.NOTE_CONTINUE:
                 return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT_CONT;
             // Note starts
-            case 2:
+            case INoteClip.NOTE_START:
                 return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT;
             // Empty
             default:

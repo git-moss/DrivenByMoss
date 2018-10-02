@@ -23,8 +23,13 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MidiClipElement extends AbstractGridElement
 {
-    private final INoteClip clip;
-    private int             quartersPerMeasure;
+    private static final ColorEx DIVIDERS_COLOR    = ColorEx.fromRGB (50, 50, 50);
+    private static final ColorEx NOTE_BACKGROUND   = ColorEx.fromRGB (100, 100, 100);
+    private static final ColorEx LOOP_BACKGROUND   = ColorEx.fromRGB (84, 84, 84);
+    private static final ColorEx HEADER_BACKGROUND = ColorEx.fromRGB (140, 140, 140);
+
+    private final INoteClip      clip;
+    private int                  quartersPerMeasure;
 
 
     /**
@@ -49,7 +54,7 @@ public class MidiClipElement extends AbstractGridElement
         final double noteAreaHeight = height - top;
 
         // Draw the background
-        gc.fillRectangle (left, top, width, noteAreaHeight, ColorEx.fromRGB (168, 168, 168));
+        gc.fillRectangle (left, top, width, noteAreaHeight, HEADER_BACKGROUND);
 
         // Draw the loop, if any and ...
         final int numSteps = this.clip.getNumSteps ();
@@ -71,10 +76,10 @@ public class MidiClipElement extends AbstractGridElement
                 final double x = width * start / pageLength;
                 final double w = width * end / pageLength - x;
                 // The header loop
-                gc.fillRectangle (x + 1, 0, w, len, ColorEx.fromRGB (84, 84, 84));
+                gc.fillRectangle (x + 1, 0, w, len, LOOP_BACKGROUND);
 
                 // Background in note area
-                gc.fillRectangle (x + 1, top, w, noteAreaHeight, ColorEx.fromRGB (181, 181, 181));
+                gc.fillRectangle (x + 1, top, w, noteAreaHeight, NOTE_BACKGROUND);
             }
         }
         // Draw play start in header
@@ -101,7 +106,7 @@ public class MidiClipElement extends AbstractGridElement
         for (int step = 0; step <= numSteps; step++)
         {
             final double x = left + step * stepWidth;
-            gc.fillRectangle (x, top, 1, noteAreaHeight, ColorEx.fromRGB (130, 130, 130));
+            gc.fillRectangle (x, top, 1, noteAreaHeight, DIVIDERS_COLOR);
 
             // Draw measure texts
             if (step % 4 == 0)
@@ -124,7 +129,7 @@ public class MidiClipElement extends AbstractGridElement
 
         for (int row = 0; row < range; row++)
         {
-            gc.fillRectangle (left, top + (range - row - 1) * stepHeight, width, 1, ColorEx.fromRGB (130, 130, 130));
+            gc.fillRectangle (left, top + (range - row - 1) * stepHeight, width, 1, DIVIDERS_COLOR);
 
             for (int step = 0; step < numSteps; step++)
             {
@@ -158,6 +163,6 @@ public class MidiClipElement extends AbstractGridElement
         // Draw the play cursor
         final int playStep = this.clip.getCurrentStep ();
         if (playStep >= 0)
-            gc.fillRectangle (left + playStep * stepWidth, 0, 1, height, ColorEx.BLACK);
+            gc.fillRectangle (left + playStep * stepWidth - 1, 0, 3, height, ColorEx.WHITE);
     }
 }

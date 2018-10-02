@@ -119,6 +119,22 @@ public class KeyManager implements NoteObserver
 
 
     /**
+     * Check if there are pressed keys.
+     *
+     * @return True if there is at least one pressed key
+     */
+    public boolean hasPressedKeys ()
+    {
+        for (int i = 0; i < 128; i++)
+        {
+            if (this.pressedKeys[i] != 0)
+                return true;
+        }
+        return false;
+    }
+
+
+    /**
      * Get the midi note from the grid.
      *
      * @param note The note on the grid

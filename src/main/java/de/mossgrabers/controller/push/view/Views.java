@@ -20,55 +20,59 @@ import java.util.Set;
 public class Views
 {
     /** The name of the play view. */
-    public static final String         VIEW_NAME_PLAY      = "Play";
+    public static final String         VIEW_NAME_PLAY           = "Play";
     /** The name of the piano view. */
-    public static final String         VIEW_NAME_PIANO     = "Piano";
+    public static final String         VIEW_NAME_PIANO          = "Piano";
     /** The name of the drum view. */
-    public static final String         VIEW_NAME_DRUM      = "Drum";
+    public static final String         VIEW_NAME_DRUM           = "Drum";
     /** The name of the drum4 view. */
-    public static final String         VIEW_NAME_DRUM4     = "Drum 4";
+    public static final String         VIEW_NAME_DRUM4          = "Drum 4";
     /** The name of the drum 8 view. */
-    public static final String         VIEW_NAME_DRUM8     = "Drum 8";
+    public static final String         VIEW_NAME_DRUM8          = "Drum 8";
     /** The name of the drum 64 view. */
-    public static final String         VIEW_NAME_DRUM64    = "Drum 64";
+    public static final String         VIEW_NAME_DRUM64         = "Drum 64";
     /** The name of the sequencer view. */
-    public static final String         VIEW_NAME_SEQUENCER = "Sequencer";
+    public static final String         VIEW_NAME_SEQUENCER      = "Sequencer";
     /** The name of the raindrops view. */
-    public static final String         VIEW_NAME_RAINDROPS = "Raindrop";
+    public static final String         VIEW_NAME_RAINDROPS      = "Raindrop";
+    /** The name of the poly sequencer view. */
+    public static final String         VIEW_NAME_POLY_SEQUENCER = "Poly Seq.";
 
     /** View for playing notes. */
-    public static final Integer        VIEW_PLAY           = Integer.valueOf (0);
+    public static final Integer        VIEW_PLAY                = Integer.valueOf (0);
     /** View for a session grid with clips. */
-    public static final Integer        VIEW_SESSION        = Integer.valueOf (1);
+    public static final Integer        VIEW_SESSION             = Integer.valueOf (1);
     /** View for a sequencer. */
-    public static final Integer        VIEW_SEQUENCER      = Integer.valueOf (2);
+    public static final Integer        VIEW_SEQUENCER           = Integer.valueOf (2);
     /** View for playing drums and sequencing. */
-    public static final Integer        VIEW_DRUM           = Integer.valueOf (3);
+    public static final Integer        VIEW_DRUM                = Integer.valueOf (3);
     /** View for raindrops sequencer. */
-    public static final Integer        VIEW_RAINDROPS      = Integer.valueOf (4);
+    public static final Integer        VIEW_RAINDROPS           = Integer.valueOf (4);
     /** View for playing in piano keyboard style. */
-    public static final Integer        VIEW_PIANO          = Integer.valueOf (5);
+    public static final Integer        VIEW_PIANO               = Integer.valueOf (5);
     /** View sending program changes. */
-    public static final Integer        VIEW_PRG_CHANGE     = Integer.valueOf (6);
+    public static final Integer        VIEW_PRG_CHANGE          = Integer.valueOf (6);
     /** View for editing the clip length. */
-    public static final Integer        VIEW_CLIP           = Integer.valueOf (7);
+    public static final Integer        VIEW_CLIP                = Integer.valueOf (7);
     /** View for drum sequencing with 4 sounds. */
-    public static final Integer        VIEW_DRUM4          = Integer.valueOf (8);
+    public static final Integer        VIEW_DRUM4               = Integer.valueOf (8);
     /** View for drum sequencing with 8 sounds. */
-    public static final Integer        VIEW_DRUM8          = Integer.valueOf (9);
+    public static final Integer        VIEW_DRUM8               = Integer.valueOf (9);
     /** View for drum playing with 64 pads. */
-    public static final Integer        VIEW_DRUM64         = Integer.valueOf (10);
+    public static final Integer        VIEW_DRUM64              = Integer.valueOf (10);
     /** View for selecting a color. */
-    public static final Integer        VIEW_COLOR          = Integer.valueOf (11);
+    public static final Integer        VIEW_COLOR               = Integer.valueOf (11);
     /** View for playing scenes. */
-    public static final Integer        VIEW_SCENE_PLAY     = Integer.valueOf (12);
+    public static final Integer        VIEW_SCENE_PLAY          = Integer.valueOf (12);
+    /** View for the poly sequencer. */
+    public static final Integer        VIEW_POLY_SEQUENCER      = Integer.valueOf (13);
 
-    private static final List<String>  NOTE_VIEW_NAMES     = new ArrayList<> ();
-    private static final List<Integer> NOTE_VIEWS          = new ArrayList<> ();
-    private static final Set<Integer>  SEQUENCER_VIEWS     = new HashSet<> ();
-    private static final Set<Integer>  SESSION_VIEWS       = new HashSet<> ();
+    private static final List<String>  NOTE_VIEW_NAMES          = new ArrayList<> ();
+    private static final List<Integer> NOTE_VIEWS               = new ArrayList<> ();
+    private static final Set<Integer>  SEQUENCER_VIEWS          = new HashSet<> ();
+    private static final Set<Integer>  SESSION_VIEWS            = new HashSet<> ();
 
-    private static boolean             isInitialised       = false;
+    private static boolean             isInitialised            = false;
 
 
     /**
@@ -121,6 +125,7 @@ public class Views
 
             SEQUENCER_VIEWS.add (VIEW_SEQUENCER);
             SEQUENCER_VIEWS.add (VIEW_RAINDROPS);
+            SEQUENCER_VIEWS.add (VIEW_POLY_SEQUENCER);
 
             SESSION_VIEWS.add (VIEW_SESSION);
             SESSION_VIEWS.add (VIEW_SCENE_PLAY);
