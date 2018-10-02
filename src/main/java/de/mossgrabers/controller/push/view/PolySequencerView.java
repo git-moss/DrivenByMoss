@@ -156,14 +156,21 @@ public class PolySequencerView extends AbstractSequencerView<PushControlSurface,
         if (getStep (clip, col) > 0)
         {
             for (int row = 0; row < 128; row++)
-                clip.clearStep (col, row);
+            {
+                if (clip.getStep (col, row) > 0)
+                    clip.clearStep (col, row);
+            }
         }
         else
         {
             for (int row = 0; row < 128; row++)
             {
-                if (this.noteMemory.containsKey (Integer.valueOf (row)))
-                    clip.toggleStep (col, row, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                final Integer k = Integer.valueOf (row);
+                if (this.noteMemory.containsKey (k))
+                {
+                    final Integer vel = this.noteMemory.get (k);
+                    clip.toggleStep (col, row, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : vel.intValue ());
+                }
             }
         }
     }
