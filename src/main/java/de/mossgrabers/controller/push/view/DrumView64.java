@@ -59,7 +59,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     public boolean usesButton (final int buttonID)
     {
         if (buttonID == PushControlSurface.PUSH_BUTTON_REPEAT)
-            return false;
+            return this.model.getHost ().hasRepeat ();
         return !this.surface.getConfiguration ().isPush2 () || buttonID != PushControlSurface.PUSH_BUTTON_USER_MODE;
     }
 

@@ -22,33 +22,34 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 public abstract class AbstractSequencerView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
 {
     /** The color for highlighting a step with no content. */
-    public static final String       COLOR_STEP_HILITE_NO_CONTENT = "COLOR_STEP_HILITE_NO_CONTENT";
+    public static final String    COLOR_STEP_HILITE_NO_CONTENT = "COLOR_STEP_HILITE_NO_CONTENT";
     /** The color for highlighting a step with with content. */
-    public static final String       COLOR_STEP_HILITE_CONTENT    = "COLOR_STEP_HILITE_CONTENT";
+    public static final String    COLOR_STEP_HILITE_CONTENT    = "COLOR_STEP_HILITE_CONTENT";
     /** The color for a step with no content. */
-    public static final String       COLOR_NO_CONTENT             = "COLOR_NO_CONTENT";
+    public static final String    COLOR_NO_CONTENT             = "COLOR_NO_CONTENT";
     /** The color for a step with content. */
-    public static final String       COLOR_CONTENT                = "COLOR_CONTENT";
+    public static final String    COLOR_CONTENT                = "COLOR_CONTENT";
     /** The color for a step with content which is not the start of the note. */
-    public static final String       COLOR_CONTENT_CONT           = "COLOR_CONTENT_CONT";
+    public static final String    COLOR_CONTENT_CONT           = "COLOR_CONTENT_CONT";
     /** The color for a page. */
-    public static final String       COLOR_PAGE                   = "COLOR_PAGE";
+    public static final String    COLOR_PAGE                   = "COLOR_PAGE";
     /** The color for an active page. */
-    public static final String       COLOR_ACTIVE_PAGE            = "COLOR_ACTIVE_PAGE";
+    public static final String    COLOR_ACTIVE_PAGE            = "COLOR_ACTIVE_PAGE";
     /** The color for a selected page. */
-    public static final String       COLOR_SELECTED_PAGE          = "COLOR_SELECTED_PAGE";
+    public static final String    COLOR_SELECTED_PAGE          = "COLOR_SELECTED_PAGE";
     /** The color for resolution off. */
-    public static final String       COLOR_RESOLUTION_OFF         = "COLOR_RESOLUTION_OFF";
+    public static final String    COLOR_RESOLUTION_OFF         = "COLOR_RESOLUTION_OFF";
     /** The color for resolution. */
-    public static final String       COLOR_RESOLUTION             = "COLOR_RESOLUTION";
+    public static final String    COLOR_RESOLUTION             = "COLOR_RESOLUTION";
     /** The color for selected resolution. */
-    public static final String       COLOR_RESOLUTION_SELECTED    = "COLOR_RESOLUTION_SELECTED";
+    public static final String    COLOR_RESOLUTION_SELECTED    = "COLOR_RESOLUTION_SELECTED";
     /** The color for transposition. */
-    public static final String       COLOR_TRANSPOSE              = "COLOR_TRANSPOSE";
+    public static final String    COLOR_TRANSPOSE              = "COLOR_TRANSPOSE";
     /** The color for selected transposition. */
-    public static final String       COLOR_TRANSPOSE_SELECTED     = "COLOR_TRANSPOSE_SELECTED";
+    public static final String    COLOR_TRANSPOSE_SELECTED     = "COLOR_TRANSPOSE_SELECTED";
 
-    protected static final double [] RESOLUTIONS                  =
+    /** Resolution values. */
+    public static final double [] RESOLUTIONS                  =
     {
         1,
         2.0 / 3.0,
@@ -60,7 +61,8 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         1.0 / 12.0
     };
 
-    protected static final String [] RESOLUTION_TEXTS             =
+    /** Resolution texts. */
+    public static final String [] RESOLUTION_TEXTS             =
     {
         "1/4",
         "1/4t",
@@ -72,13 +74,13 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         "1/32t"
     };
 
-    protected int                    numSequencerRows;
-    protected int                    selectedIndex;
-    protected int                    offsetY;
-    protected final Configuration    configuration;
+    protected int                 numSequencerRows;
+    protected int                 selectedIndex;
+    protected int                 offsetY;
+    protected final Configuration configuration;
 
-    protected final int              clipRows;
-    protected final int              clipCols;
+    protected final int           clipRows;
+    protected final int           clipCols;
 
 
     /**

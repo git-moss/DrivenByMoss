@@ -368,7 +368,6 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         PUSH_BUTTON_UPDATE[PUSH_BUTTON_SHIFT] = true;
         PUSH_BUTTON_UPDATE[PUSH_BUTTON_ADD_EFFECT] = true;
         PUSH_BUTTON_UPDATE[PUSH_BUTTON_ADD_TRACK] = true;
-        PUSH_BUTTON_UPDATE[PUSH_BUTTON_REPEAT] = true;
         PUSH_BUTTON_UPDATE[PUSH_BUTTON_USER_MODE] = true;
         PUSH_BUTTON_UPDATE[PUSH_BUTTON_NEW] = true;
         PUSH_BUTTON_UPDATE[PUSH_BUTTON_DUPLICATE] = true;

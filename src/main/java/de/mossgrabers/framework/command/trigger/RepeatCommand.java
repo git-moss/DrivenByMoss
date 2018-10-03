@@ -4,10 +4,15 @@
 
 package de.mossgrabers.framework.command.trigger;
 
+import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -35,9 +40,27 @@ public class RepeatCommand<S extends IControlSurface<C>, C extends Configuration
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (final ButtonEvent event)
+    public void execute (final ButtonEvent event)
     {
-        if (event == ButtonEvent.UP)
-            this.surface.getInput ().toggleRepeat ();
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (event == ButtonEvent.LONG || event == ButtonEvent.DOWN && this.surface.isShiftPressed ())
+        {
+            modeManager.setActiveMode (Modes.MODE_REPEAT_NOTE);
+            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_REPEAT);
+            return;
+        }
+
+        if (event != ButtonEvent.UP)
+            return;
+
+        if (Modes.MODE_REPEAT_NOTE.equals (modeManager.getActiveOrTempModeId ()))
+            modeManager.restoreMode ();
+        else
+        {
+            final ITrackBank tb = this.model.getCurrentTrackBank ();
+            final ITrack selectedTrack = tb.getSelectedItem ();
+            if (selectedTrack != null)
+                selectedTrack.toggleNoteRepeat ();
+        }
     }
 }

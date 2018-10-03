@@ -679,7 +679,16 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void scheduleTask (final Runnable callback, final long delay)
     {
-        this.host.scheduleTask (callback, delay);
+        this.host.scheduleTask ( () -> {
+            try
+            {
+                callback.run ();
+            }
+            catch (final RuntimeException ex)
+            {
+                this.host.error ("Could not execute scheduled task.", ex);
+            }
+        }, delay);
     }
 
 

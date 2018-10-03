@@ -82,6 +82,8 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
         switch (buttonID)
         {
             case PushControlSurface.PUSH_BUTTON_REPEAT:
+                return this.model.getHost ().hasRepeat ();
+
             case PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN:
             case PushControlSurface.PUSH_BUTTON_OCTAVE_UP:
                 return false;

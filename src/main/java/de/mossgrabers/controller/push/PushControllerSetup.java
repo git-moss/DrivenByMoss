@@ -49,6 +49,7 @@ import de.mossgrabers.controller.push.mode.InfoMode;
 import de.mossgrabers.controller.push.mode.MarkersMode;
 import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.controller.push.mode.NoteMode;
+import de.mossgrabers.controller.push.mode.NoteRepeatMode;
 import de.mossgrabers.controller.push.mode.NoteViewSelectMode;
 import de.mossgrabers.controller.push.mode.RibbonMode;
 import de.mossgrabers.controller.push.mode.ScaleLayoutMode;
@@ -308,6 +309,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             modeManager.registerMode (Modes.MODE_SESSION, new SessionMode (surface, this.model));
             modeManager.registerMode (Modes.MODE_SESSION_VIEW_SELECT, new SessionViewSelectMode (surface, this.model));
         }
+
+        if (this.host.hasRepeat ())
+            modeManager.registerMode (Modes.MODE_REPEAT_NOTE, new NoteRepeatMode (surface, this.model));
     }
 
 
@@ -565,6 +569,14 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             surface.updateButton (PushControlSurface.PUSH_BUTTON_AUTOMATION, t.isWritingArrangerAutomation () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
         surface.updateButton (PushControlSurface.PUSH_BUTTON_RECORD, isRecordShifted ? t.isLauncherOverdub () ? PushColors.PUSH_BUTTON_STATE_OVR_HI : PushColors.PUSH_BUTTON_STATE_OVR_ON : t.isRecording () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
 
+        String repeatState = ColorManager.BUTTON_STATE_OFF;
+        if (this.host.hasRepeat ())
+        {
+            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+            if (selectedTrack != null)
+                repeatState = selectedTrack.isNoteRepeat () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
+        }
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_REPEAT, repeatState);
         surface.updateButton (PushControlSurface.PUSH_BUTTON_ACCENT, this.configuration.isAccentActive () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
 
         final PushConfiguration config = surface.getConfiguration ();

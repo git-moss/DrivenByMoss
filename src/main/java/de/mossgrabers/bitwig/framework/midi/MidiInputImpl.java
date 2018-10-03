@@ -98,12 +98,4 @@ class MidiInputImpl implements IMidiInput
         if (this.defaultNoteInput != null)
             this.defaultNoteInput.sendRawMidiEvent (status, data1, data2);
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleRepeat ()
-    {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/20
-    }
 }

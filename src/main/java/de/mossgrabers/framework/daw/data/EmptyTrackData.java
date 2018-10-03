@@ -472,6 +472,39 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
+    public void toggleNoteRepeat ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setNoteRepeatLength (double length)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public double getNoteRepeatLength ()
+    {
+        return 1.0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isNoteRepeat ()
+    {
+        // Intentionally empty
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void select ()
     {
         // Intentionally empty

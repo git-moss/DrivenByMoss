@@ -48,10 +48,4 @@ public interface IMidiInput extends INoteInput
      * @param data2 The MIDI data byte 2
      */
     void sendRawMidiEvent (int status, int data1, int data2);
-
-
-    /**
-     * Toggle note repeat on/off.
-     */
-    void toggleRepeat ();
 }

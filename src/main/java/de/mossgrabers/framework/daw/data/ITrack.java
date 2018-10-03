@@ -26,7 +26,7 @@ public interface ITrack extends IChannel
     /**
      * True if armed for recording.
      *
-     * @return True if armed for recording.
+     * @return True if armed for recording
      */
     boolean isRecArm ();
 
@@ -48,7 +48,7 @@ public interface ITrack extends IChannel
     /**
      * True if monitoring is on.
      *
-     * @return True if monitoring is on.
+     * @return True if monitoring is on
      */
     boolean isMonitor ();
 
@@ -70,7 +70,7 @@ public interface ITrack extends IChannel
     /**
      * True if auto monitoring is on.
      *
-     * @return True if auto monitoring is on.
+     * @return True if auto monitoring is on
      */
     boolean isAutoMonitor ();
 
@@ -87,6 +87,36 @@ public interface ITrack extends IChannel
      * Toggle auto monitor.
      */
     void toggleAutoMonitor ();
+
+
+    /**
+     * Toggle the note repeat state of the track (only applies to midi/note tracks).
+     */
+    void toggleNoteRepeat ();
+
+
+    /**
+     * Set the note repeat length.
+     *
+     * @param length The length
+     */
+    void setNoteRepeatLength (double length);
+
+
+    /**
+     * Get the note repeat length.
+     *
+     * @return The length
+     */
+    double getNoteRepeatLength ();
+
+
+    /**
+     * True if note repeat is enabled.
+     *
+     * @return True if note repeat is enabled
+     */
+    boolean isNoteRepeat ();
 
 
     /**

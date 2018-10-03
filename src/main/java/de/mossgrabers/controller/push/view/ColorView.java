@@ -70,6 +70,8 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
         switch (buttonID)
         {
             case PushControlSurface.PUSH_BUTTON_REPEAT:
+                return this.model.getHost ().hasRepeat ();
+
             case PushControlSurface.PUSH_BUTTON_OCTAVE_UP:
             case PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN:
                 return false;
