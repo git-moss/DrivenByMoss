@@ -85,7 +85,8 @@ public class MidiClipElement extends AbstractGridElement
         // Draw play start in header
         final double [] clipColor = this.clip.getColor ();
         final double playStart = this.clip.getPlayStart ();
-        final ColorEx lineColor = new ColorEx (clipColor[0], clipColor[1], clipColor[2]);
+        final ColorEx noteColor = new ColorEx (clipColor[0], clipColor[1], clipColor[2]);
+        final ColorEx lineColor = noteColor;
         if (playStart >= startPos && playStart <= endPos)
         {
             final double start = playStart - startPos;
@@ -150,12 +151,13 @@ public class MidiClipElement extends AbstractGridElement
                 }
 
                 gc.strokeRectangle (x, top + (range - row - 1) * stepHeight + 2, w, stepHeight - 2, ColorEx.BLACK);
-                gc.fillRectangle (x + (isStart ? 0 : -2), top + (range - row - 1) * stepHeight + 2, w - 1 + (isStart ? 0 : 2), stepHeight - 3, new ColorEx (clipColor[0], clipColor[1], clipColor[2]));
+                gc.fillRectangle (x + (isStart ? 0 : -2), top + (range - row - 1) * stepHeight + 2, w - 1 + (isStart ? 0 : 2), stepHeight - 3, noteColor);
 
                 if (isStart && fontSize > 0)
                 {
                     final String text = Scales.formatDrumNote (note);
-                    gc.drawTextInBounds (text, x, top + (range - row - 1) * stepHeight + 2, w - 1, stepHeight - 3, Align.CENTER, ColorEx.BLACK, fontSize);
+                    final ColorEx textColor = ColorEx.calcContrastColor (noteColor);
+                    gc.drawTextInBounds (text, x, top + (range - row - 1) * stepHeight + 2, w - 1, stepHeight - 3, Align.CENTER, textColor, fontSize);
                 }
             }
         }
