@@ -909,57 +909,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                     this.host.error ("Missing Clip subcommand.");
                     return;
                 }
-                final String cmd = parts.removeFirst ();
-                try
-                {
-                    final int clipNo = Integer.parseInt (cmd);
-                    if (parts.isEmpty ())
-                    {
-                        this.host.error ("Missing Clip subcommand.");
-                        return;
-                    }
-                    final String clipCommand = parts.removeFirst ();
-                    final ISlot slot = track.getSlotBank ().getItem (clipNo - 1);
-                    switch (clipCommand)
-                    {
-                        case "select":
-                            slot.select ();
-                            break;
-                        case "launch":
-                            slot.launch ();
-                            break;
-                        case "record":
-                            slot.record ();
-                            break;
-                        case "color":
-                            final Matcher matcher = RGB_COLOR_PATTERN.matcher (value.toString ());
-                            if (!matcher.matches ())
-                                return;
-                            final int count = matcher.groupCount ();
-                            if (count != 7)
-                                return;
-                            slot.setColor (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0);
-                            break;
-                        default:
-                            this.host.println ("Unknown Clip subcommand: " + clipCommand);
-                            break;
-                    }
-                }
-                catch (final NumberFormatException ex)
-                {
-                    switch (cmd)
-                    {
-                        case "stop":
-                            track.stop ();
-                            break;
-                        case "returntoarrangement":
-                            track.returnToArrangement ();
-                            break;
-                        default:
-                            this.host.println ("Unknown Clip command: " + cmd);
-                            break;
-                    }
-                }
+                this.parseClipValue (track, parts, value);
                 break;
 
             case "enter":
@@ -979,6 +929,65 @@ public class OSCParser extends AbstractOpenSoundControlParser
             default:
                 this.host.println ("Unknown Track Parameter: " + command);
                 break;
+        }
+    }
+
+
+    private void parseClipValue (final ITrack track, final LinkedList<String> parts, final Object value)
+    {
+        final String cmd = parts.removeFirst ();
+        try
+        {
+            final int clipNo = Integer.parseInt (cmd);
+            if (parts.isEmpty ())
+            {
+                this.host.error ("Missing Clip subcommand.");
+                return;
+            }
+            final String clipCommand = parts.removeFirst ();
+            final ISlot slot = track.getSlotBank ().getItem (clipNo - 1);
+            switch (clipCommand)
+            {
+                case "select":
+                    slot.select ();
+                    break;
+                case "launch":
+                    slot.launch ();
+                    break;
+                case "record":
+                    slot.record ();
+                    break;
+                case "remove":
+                    slot.remove ();
+                    break;
+                case "color":
+                    final Matcher matcher = RGB_COLOR_PATTERN.matcher (value.toString ());
+                    if (!matcher.matches ())
+                        return;
+                    final int count = matcher.groupCount ();
+                    if (count != 7)
+                        return;
+                    slot.setColor (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0);
+                    break;
+                default:
+                    this.host.println ("Unknown Clip subcommand: " + clipCommand);
+                    break;
+            }
+        }
+        catch (final NumberFormatException ex)
+        {
+            switch (cmd)
+            {
+                case "stop":
+                    track.stop ();
+                    break;
+                case "returntoarrangement":
+                    track.returnToArrangement ();
+                    break;
+                default:
+                    this.host.println ("Unknown Clip command: " + cmd);
+                    break;
+            }
         }
     }
 
