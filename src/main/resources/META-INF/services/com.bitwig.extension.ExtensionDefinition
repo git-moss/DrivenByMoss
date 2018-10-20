@@ -15,10 +15,8 @@ de.mossgrabers.bitwig.controller.push.Push2ControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.sl.SLMkIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.sl.SLMkIIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.osc.OSCControllerExtensionDefinition
-de.mossgrabers.bitwig.controller.kontrol.osc.mkii.KontrolOSCExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.usb.mki.Kontrol1S25ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.usb.mki.Kontrol1S49ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.usb.mki.Kontrol1S61ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.usb.mki.Kontrol1S88ExtensionDefinition
-#de.mossgrabers.bitwig.controller.kontrol.usb.mkii.Kontrol2S49ExtensionDefinition
-#de.mossgrabers.bitwig.controller.kontrol.usb.mkii.Kontrol2S61ExtensionDefinition
+de.mossgrabers.bitwig.controller.kontrol.osc.mkii.KontrolOSCExtensionDefinition
