@@ -2,7 +2,7 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.apcmini;
+package de.mossgrabers.controller.maschine.mikro.mk3;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
@@ -13,21 +13,21 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Akai APCmini controller extension.
+ * Definition class for the NI Maschine Mikro Mk3 controller extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class APCminiControllerDefinition extends DefaultControllerDefinition
+public class MaschineMikroMk3ControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("E7E02A80-3657-11E4-8C21-0800200C9A66");
+    private static final UUID EXTENSION_ID = UUID.fromString ("E87516A3-5401-44B1-9952-B4F821ED3DD5");
 
 
     /**
      * Constructor.
      */
-    public APCminiControllerDefinition ()
+    public MaschineMikroMk3ControllerDefinition ()
     {
-        super ("", "Jürgen Moßgraber", "5.02", EXTENSION_ID, "APCmini", "Akai", 1, 1);
+        super ("", "Jürgen Moßgraber", "1.00", EXTENSION_ID, "Maschine Mikro Mk3", "Native Instruments", 1, 1);
     }
 
 
@@ -35,6 +35,6 @@ public class APCminiControllerDefinition extends DefaultControllerDefinition
     @Override
     public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
     {
-        return this.createDeviceDiscoveryPairs ("APC MINI");
+        return this.createDeviceDiscoveryPairs ("Maschine Mikro MK3");
     }
 }

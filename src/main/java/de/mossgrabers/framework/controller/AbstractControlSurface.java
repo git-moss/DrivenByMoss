@@ -570,6 +570,14 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
+    public void clearButtonCache (final int button)
+    {
+        this.buttonCache.get (button)[0] = -1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isButton (final int cc)
     {
         return this.buttonStates[cc] != null;

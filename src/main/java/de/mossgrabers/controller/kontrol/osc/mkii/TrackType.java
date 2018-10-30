@@ -79,7 +79,9 @@ public class TrackType
         switch (channelType)
         {
             case HYBRID:
-                return GENERIC;
+                // GENERIC would be more accurate here but it seems that Mute and Solo are not
+                // working on generic tracks
+                return AUDIO;
             case AUDIO:
                 return AUDIO;
             case INSTRUMENT:

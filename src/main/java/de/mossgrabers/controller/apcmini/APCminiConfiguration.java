@@ -103,7 +103,6 @@ public class APCminiConfiguration extends AbstractConfiguration
             this.softKeys = value;
             this.notifyObservers (SOFT_KEYS);
         });
-
     }
 
 

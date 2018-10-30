@@ -111,9 +111,12 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         //
 
         // 1.x
-        final int trackCount = tb.getItemCount ();
         final List<Object> params = new ArrayList<> ();
-        Collections.addAll (params, Integer.valueOf (trackCount), Integer.valueOf (sceneBank.getItemCount ()), Integer.valueOf (tbe == null ? 0 : tbe.getItemCount ()));
+        // The three arguments will report the total number of tracks (excluding the master track
+        // and return tracks), the number of scenes and the number of return tracks.
+        final int trackCount = tb.getItemCount ();
+        final int sendTrackCount = tbe == null ? 0 : tbe.getItemCount ();
+        Collections.addAll (params, Integer.valueOf (trackCount), Integer.valueOf (sceneBank.getItemCount ()), Integer.valueOf (sendTrackCount));
         this.sendOSC (this.daw + "size", params, dump);
 
         // 1.x
@@ -174,7 +177,7 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
 
         this.sendTrackBank (this.is16, tb, trackCount, dump);
         if (tbe != null)
-            this.sendTrackBank (this.is16, tbe, trackCount, dump);
+            this.sendTrackBank (this.is16, tbe, sendTrackCount, dump);
         this.sendTrack (this.is16, 0, masterTrack, dump);
 
         if (this.is16)
@@ -195,7 +198,8 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
 
     private void sendTrackBank (final boolean is16, final ITrackBank bank, final int trackCount, final boolean dump)
     {
-        for (int i = 0; i < Math.min (trackCount, bank.getPageSize ()); i++)
+        final int amount = Math.min (trackCount, bank.getPageSize ());
+        for (int i = 0; i < amount; i++)
             this.sendTrack (is16, i, bank.getItem (i), dump);
     }
 
