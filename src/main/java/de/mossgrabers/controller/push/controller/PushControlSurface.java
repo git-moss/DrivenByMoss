@@ -569,7 +569,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      */
     public PushControlSurface (final IHost host, final ColorManager colorManager, final PushConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, PUSH_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output), PUSH_BUTTONS_ALL);
 
         this.selectButtonId = PUSH_BUTTON_SELECT;
         this.shiftButtonId = PUSH_BUTTON_SHIFT;
@@ -580,8 +580,6 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         this.rightButtonId = PUSH_BUTTON_RIGHT;
         this.upButtonId = PUSH_BUTTON_UP;
         this.downButtonId = PUSH_BUTTON_DOWN;
-
-        this.pads = new PadGridImpl (colorManager, output);
 
         this.input.setSysexCallback (this::handleSysEx);
     }

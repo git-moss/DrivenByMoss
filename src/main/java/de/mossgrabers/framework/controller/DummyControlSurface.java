@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IHost;
 
 
 /**
- * Dummy control surface for implementations who only implement a protocol.
+ * Dummy control surface for implementations, which only implement a protocol.
  *
  * @param <C> The type of the configuration
  *
@@ -28,7 +28,7 @@ public class DummyControlSurface<C extends Configuration> extends AbstractContro
      */
     public DummyControlSurface (final IHost host, final ColorManager colorManager, final C configuration)
     {
-        super (host, configuration, colorManager, null, null, new int [0]);
+        super (host, configuration, colorManager, null, null, null, new int [0]);
 
         this.setDisplay (new DummyDisplay (this.host));
     }

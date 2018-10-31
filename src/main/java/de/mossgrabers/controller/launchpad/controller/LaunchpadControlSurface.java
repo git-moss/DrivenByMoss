@@ -186,7 +186,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public LaunchpadControlSurface (final IHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isPro)
     {
-        super (host, configuration, colorManager, output, input, isPro ? LAUNCHPAD_PRO_BUTTONS_ALL : LAUNCHPAD_MKII_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, isPro ? LAUNCHPAD_PRO_SYSEX_HEADER : LAUNCHPAD_MKII_SYSEX_HEADER), isPro ? LAUNCHPAD_PRO_BUTTONS_ALL : LAUNCHPAD_MKII_BUTTONS_ALL);
 
         this.isPro = isPro;
 
@@ -198,8 +198,6 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
         this.rightButtonId = this.isPro ? LAUNCHPAD_PRO_BUTTON_RIGHT : LAUNCHPAD_MKII_BUTTON_RIGHT;
         this.upButtonId = this.isPro ? LAUNCHPAD_PRO_BUTTON_UP : LAUNCHPAD_MKII_BUTTON_UP;
         this.downButtonId = this.isPro ? LAUNCHPAD_PRO_BUTTON_DOWN : LAUNCHPAD_MKII_BUTTON_DOWN;
-
-        this.pads = new LaunchpadPadGrid (colorManager, this);
 
         this.output.sendIdentityRequest ();
     }

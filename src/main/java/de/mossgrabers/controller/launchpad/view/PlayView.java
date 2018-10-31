@@ -16,8 +16,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.SceneView;
 
-import java.util.Arrays;
-
 
 /**
  * The play view.
@@ -151,15 +149,5 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                 break;
         }
         this.updateNoteMapping ();
-    }
-
-
-    private void initMaxVelocity ()
-    {
-        final int [] maxVelocity = new int [128];
-        final LaunchpadConfiguration config = this.surface.getConfiguration ();
-        Arrays.fill (maxVelocity, config.getFixedAccentValue ());
-        maxVelocity[0] = 0;
-        this.surface.setVelocityTranslationTable (config.isAccentActive () ? maxVelocity : this.defaultVelocity);
     }
 }

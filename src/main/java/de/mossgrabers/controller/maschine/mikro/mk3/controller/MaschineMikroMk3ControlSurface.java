@@ -7,6 +7,7 @@ package de.mossgrabers.controller.maschine.mikro.mk3.controller;
 import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -39,6 +40,7 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
     public static final int    MIKRO_3_PLUGIN       = 45;
     public static final int    MIKRO_3_SWING        = 46;
     public static final int    MIKRO_3_SAMPLING     = 47;
+    public static final int    MIKRO_3_TEMPO        = 48;
 
     public static final int    MIKRO_3_PITCH        = 49;
     public static final int    MIKRO_3_MOD          = 50;
@@ -69,7 +71,6 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
 
     public static final int [] MIKRO_3_BUTTONS_ALL  =
     {
-        MIKRO_3_TOUCHSTRIP,
         MIKRO_3_ENCODER_PUSH,
         MIKRO_3_GROUP,
         MIKRO_3_AUTO,
@@ -82,6 +83,7 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
         MIKRO_3_PLUGIN,
         MIKRO_3_SWING,
         MIKRO_3_SAMPLING,
+        MIKRO_3_TEMPO,
         MIKRO_3_PITCH,
         MIKRO_3_MOD,
         MIKRO_3_PERFORM,
@@ -123,15 +125,10 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
      */
     public MaschineMikroMk3ControlSurface (final IHost host, final ColorManager colorManager, final MaschineMikroMk3Configuration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, MIKRO_3_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output), MIKRO_3_BUTTONS_ALL);
 
-        // Sadly the Shift button does not send a value
+        // Sadly, the Shift button does not send a value
         this.shiftButtonId = -1;
-
-        for (int i = 0; i < 64; i++)
-            this.gridNotes[i] = i;
-
-        // TODO this.pads = new PadGridImpl (colorManager, this);
     }
 
 
@@ -148,6 +145,12 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
             final int relativeValue = value - 63;
             super.handleCC (channel, cc, relativeValue);
 
+            return;
+        }
+
+        if (cc == MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP)
+        {
+            super.handleCC (channel, cc, value);
             return;
         }
 

@@ -1,0 +1,43 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2018
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.controller.maschine.mikro.mk3.command.trigger;
+
+import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
+import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
+import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
+
+
+/**
+ * Command for toggling the fixed velocity.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class ToggleFixedVelCommand extends AbstractTriggerCommand<MaschineMikroMk3ControlSurface, MaschineMikroMk3Configuration>
+{
+    /**
+     * Constructor.
+     * 
+     * @param model The model
+     * @param surface The surface
+     */
+    public ToggleFixedVelCommand (final IModel model, final MaschineMikroMk3ControlSurface surface)
+    {
+        super (model, surface);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final MaschineMikroMk3Configuration configuration = this.surface.getConfiguration ();
+        configuration.setAccentEnabled (!configuration.isAccentActive ());
+    }
+}

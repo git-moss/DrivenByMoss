@@ -23,6 +23,6 @@ public class OSCControlSurface extends AbstractControlSurface<OSCConfiguration>
      */
     public OSCControlSurface (final IHost host, final OSCConfiguration configuration, final ColorManager colorManager, final IMidiInput input)
     {
-        super (host, configuration, colorManager, null, null, new int [0]);
+        super (host, configuration, colorManager, null, null, null, new int [0]);
     }
 }

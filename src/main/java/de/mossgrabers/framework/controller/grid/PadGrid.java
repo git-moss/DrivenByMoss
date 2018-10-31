@@ -141,4 +141,28 @@ public interface PadGrid
      * @return The note scaled to the controller
      */
     int translateToController (int note);
+
+
+    /**
+     * Get the number the number of rows of the grid.
+     *
+     * @return The number of rows of the grid
+     */
+    int getRows ();
+
+
+    /**
+     * Get the number the number of columns of the grid.
+     *
+     * @return The number of columns of the grid
+     */
+    int getCols ();
+
+
+    /**
+     * Get the start note of the grid.
+     *
+     * @return The start note of the grid
+     */
+    int getStartNote ();
 }

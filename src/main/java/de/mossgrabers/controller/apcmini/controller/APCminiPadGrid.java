@@ -6,6 +6,7 @@ package de.mossgrabers.controller.apcmini.controller;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -19,11 +20,11 @@ public class APCminiPadGrid extends PadGridImpl
      * Constructor.
      *
      * @param colorManager The color manager for accessing specific colors to use
-     * @param surface The APCmini surface
+     * @param output The midi output which can address the pad states
      */
-    public APCminiPadGrid (final ColorManager colorManager, final APCminiControlSurface surface)
+    public APCminiPadGrid (final ColorManager colorManager, final IMidiOutput output)
     {
-        super (colorManager, surface.getOutput ());
+        super (colorManager, output);
     }
 
 

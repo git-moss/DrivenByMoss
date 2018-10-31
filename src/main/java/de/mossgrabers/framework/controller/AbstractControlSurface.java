@@ -8,7 +8,6 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -34,48 +33,49 @@ import java.util.Map;
  */
 public abstract class AbstractControlSurface<C extends Configuration> implements IControlSurface<C>
 {
-    protected static final int                    BUTTON_STATE_INTERVAL = 400;
+    protected static final int                          BUTTON_STATE_INTERVAL = 400;
+    protected static final int                          NUM_NOTES             = 128;
 
-    protected IHost                               host;
-    protected C                                   configuration;
-    protected ColorManager                        colorManager;
-    protected IMidiOutput                         output;
-    protected IMidiInput                          input;
+    protected final IHost                               host;
+    protected final C                                   configuration;
+    protected final ColorManager                        colorManager;
+    protected final IMidiOutput                         output;
+    protected final IMidiInput                          input;
 
-    protected ViewManager                         viewManager           = new ViewManager ();
-    protected ModeManager                         modeManager           = new ModeManager ();
+    protected final ViewManager                         viewManager           = new ViewManager ();
+    protected final ModeManager                         modeManager           = new ModeManager ();
 
-    protected int                                 selectButtonId        = -1;
-    protected int                                 shiftButtonId         = -1;
-    protected int                                 deleteButtonId        = -1;
-    protected int                                 soloButtonId          = -1;
-    protected int                                 muteButtonId          = -1;
-    protected int                                 leftButtonId          = -1;
-    protected int                                 rightButtonId         = -1;
-    protected int                                 upButtonId            = -1;
-    protected int                                 downButtonId          = -1;
+    protected int                                       selectButtonId        = -1;
+    protected int                                       shiftButtonId         = -1;
+    protected int                                       deleteButtonId        = -1;
+    protected int                                       soloButtonId          = -1;
+    protected int                                       muteButtonId          = -1;
+    protected int                                       leftButtonId          = -1;
+    protected int                                       rightButtonId         = -1;
+    protected int                                       upButtonId            = -1;
+    protected int                                       downButtonId          = -1;
 
-    private int []                                buttons;
-    protected ButtonEvent []                      buttonStates;
-    private int []                                noteVelocities;
-    protected boolean []                          buttonConsumed;
+    private final int []                                buttons;
+    protected final ButtonEvent []                      buttonStates;
+    private final int []                                noteVelocities;
+    protected final boolean []                          buttonConsumed;
 
-    private List<int []>                          buttonCache;
+    private final List<int []>                          buttonCache;
 
-    protected int []                              gridNotes;
+    protected final int []                              gridNotes;
 
-    protected Display                             display;
-    protected PadGridImpl                         pads;
-    protected Map<Integer, Map<Integer, Integer>> triggerCommands       = new HashMap<> ();
-    protected Map<Integer, Map<Integer, Integer>> continuousCommands    = new HashMap<> ();
-    protected Map<Integer, Integer>               noteCommands          = new HashMap<> ();
+    protected Display                                   display;
+    protected final PadGrid                             pads;
+    protected final Map<Integer, Map<Integer, Integer>> triggerCommands       = new HashMap<> ();
+    protected final Map<Integer, Map<Integer, Integer>> continuousCommands    = new HashMap<> ();
+    protected final Map<Integer, Integer>               noteCommands          = new HashMap<> ();
 
-    private boolean []                            gridNoteConsumed;
-    private ButtonEvent []                        gridNoteStates;
-    private int []                                gridNoteVelocities;
-    private int []                                keyTranslationTable;
+    private final boolean []                            gridNoteConsumed;
+    private final ButtonEvent []                        gridNoteStates;
+    private final int []                                gridNoteVelocities;
+    private int []                                      keyTranslationTable;
 
-    private final LatestTaskExecutor              flushExecutor         = new LatestTaskExecutor ();
+    private final LatestTaskExecutor                    flushExecutor         = new LatestTaskExecutor ();
 
 
     /**
@@ -86,25 +86,29 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      * @param colorManager
      * @param output The midi output
      * @param input The midi input
+     * @param padGrid The pads if any, may be null
      * @param buttons All midi CC which should be treated as a button
      */
-    public AbstractControlSurface (final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final int [] buttons)
+    public AbstractControlSurface (final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final PadGrid padGrid, final int [] buttons)
     {
         this.host = host;
         this.configuration = configuration;
         this.colorManager = colorManager;
+        this.pads = padGrid;
 
         this.output = output;
         this.input = input;
         if (this.input != null)
             this.input.setMidiCallback (this::handleMidi);
 
+        // TODO this.pads.g
+
         this.gridNotes = new int [64];
 
         // Button related
         this.buttons = buttons;
-        this.buttonStates = new ButtonEvent [128];
-        this.buttonConsumed = new boolean [128];
+        this.buttonStates = new ButtonEvent [NUM_NOTES];
+        this.buttonConsumed = new boolean [NUM_NOTES];
         if (this.buttons != null)
         {
             for (final int button: this.buttons)
@@ -116,8 +120,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
         // Optimisation for button LED updates, cache 128 possible note values on
         // all 16 midi channels
-        this.buttonCache = new ArrayList<> (128);
-        for (int i = 0; i < 128; i++)
+        this.buttonCache = new ArrayList<> (NUM_NOTES);
+        for (int i = 0; i < NUM_NOTES; i++)
         {
             final int [] channels = new int [16];
             Arrays.fill (channels, -1);
@@ -125,14 +129,14 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         }
 
         // Notes
-        this.noteVelocities = new int [128];
+        this.noteVelocities = new int [NUM_NOTES];
 
         // Grid notes
-        this.gridNoteConsumed = new boolean [128];
+        this.gridNoteConsumed = new boolean [NUM_NOTES];
         Arrays.fill (this.gridNoteConsumed, false);
         final int size = 8 * 8;
-        this.gridNoteStates = new ButtonEvent [128];
-        this.gridNoteVelocities = new int [128];
+        this.gridNoteStates = new ButtonEvent [NUM_NOTES];
+        this.gridNoteVelocities = new int [NUM_NOTES];
         for (int i = 0; i < size; i++)
         {
             this.gridNotes[i] = 36 + i;

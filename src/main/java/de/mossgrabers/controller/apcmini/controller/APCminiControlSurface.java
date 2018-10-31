@@ -95,14 +95,12 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
      */
     public APCminiControlSurface (final IHost host, final ColorManager colorManager, final APCminiConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, APC_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, new APCminiPadGrid (colorManager, output), APC_BUTTONS_ALL);
 
         this.shiftButtonId = APC_BUTTON_SHIFT;
 
         for (int i = 0; i < 64; i++)
             this.gridNotes[i] = i;
-
-        this.pads = new APCminiPadGrid (colorManager, this);
     }
 
 

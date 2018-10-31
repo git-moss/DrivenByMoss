@@ -26,7 +26,8 @@ import java.util.List;
  */
 public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private List<Integer> viewIds = new ArrayList<> ();
+    private final List<Integer> viewIds = new ArrayList<> ();
+    private final boolean       displayName;
 
 
     /**
@@ -34,12 +35,14 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
      *
      * @param model The model
      * @param surface The surface
+     * @param displayName Displays a popup with the views name if true
      * @param viewIds The list with IDs of the views to select
      */
-    public ViewMultiSelectCommand (final IModel model, final S surface, final Integer... viewIds)
+    public ViewMultiSelectCommand (final IModel model, final S surface, final boolean displayName, final Integer... viewIds)
     {
         super (model, surface);
 
+        this.displayName = displayName;
         this.viewIds.addAll (Arrays.asList (viewIds));
     }
 
@@ -56,6 +59,11 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         int index = this.viewIds.indexOf (activeViewId) + 1;
         if (index < 0 || index >= this.viewIds.size ())
             index = 0;
-        viewManager.setActiveView (this.viewIds.get (index));
+        final Integer viewId = this.viewIds.get (index);
+        if (viewManager.isActiveView (viewId))
+            return;
+        viewManager.setActiveView (viewId);
+        if (this.displayName)
+            this.surface.getDisplay ().notify (viewManager.getView (viewId).getName ());
     }
 }

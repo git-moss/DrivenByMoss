@@ -6,19 +6,17 @@ package de.mossgrabers.controller.maschine.mikro.mk3.view;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
-import de.mossgrabers.framework.configuration.AbstractConfiguration;
-import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.AbstractDrumView;
 
 
 /**
- * The Play view.
+ * The Drum view.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PlayView extends AbstractPlayView<MaschineMikroMk3ControlSurface, MaschineMikroMk3Configuration> implements PadButtons
+public class DrumView extends AbstractDrumView<MaschineMikroMk3ControlSurface, MaschineMikroMk3Configuration> implements PadButtons
 {
     /**
      * Constructor.
@@ -26,13 +24,9 @@ public class PlayView extends AbstractPlayView<MaschineMikroMk3ControlSurface, M
      * @param surface The controller
      * @param model The model
      */
-    public PlayView (final MaschineMikroMk3ControlSurface surface, final IModel model)
+    public DrumView (final MaschineMikroMk3ControlSurface surface, final IModel model)
     {
-        super (surface, model, false);
-
-        final Configuration configuration = this.surface.getConfiguration ();
-        configuration.addSettingObserver (AbstractConfiguration.ACTIVATE_FIXED_ACCENT, this::initMaxVelocity);
-        configuration.addSettingObserver (AbstractConfiguration.FIXED_ACCENT_VALUE, this::initMaxVelocity);
+        super ("Drum", surface, model, 0, 4);
     }
 
 
@@ -54,12 +48,10 @@ public class PlayView extends AbstractPlayView<MaschineMikroMk3ControlSurface, M
         switch (index)
         {
             case 0:
-                this.scales.prevScale ();
-                this.updateScale ();
+                this.onOctaveDown (event);
                 break;
             case 1:
-                this.scales.nextScale ();
-                this.updateScale ();
+                this.onOctaveUp (event);
                 break;
             case 2:
                 this.onOctaveDown (event);
@@ -68,6 +60,14 @@ public class PlayView extends AbstractPlayView<MaschineMikroMk3ControlSurface, M
                 this.onOctaveUp (event);
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateSceneButtons ()
+    {
+        // Not used
     }
 
 

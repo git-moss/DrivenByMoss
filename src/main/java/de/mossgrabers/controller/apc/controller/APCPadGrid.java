@@ -6,6 +6,7 @@ package de.mossgrabers.controller.apc.controller;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -15,19 +16,20 @@ import de.mossgrabers.framework.controller.grid.PadGridImpl;
  */
 public class APCPadGrid extends PadGridImpl
 {
-    private final APCControlSurface surface;
+    private final boolean isMkII;
 
 
     /**
      * Constructor.
      *
      * @param colorManager The color manager for accessing specific colors to use
-     * @param surface The APC surface
+     * @param output The midi output which can address the pad states
+     * @param isMkII True if it is the MkII
      */
-    public APCPadGrid (final ColorManager colorManager, final APCControlSurface surface)
+    public APCPadGrid (final ColorManager colorManager, final IMidiOutput output, final boolean isMkII)
     {
-        super (colorManager, surface.getOutput ());
-        this.surface = surface;
+        super (colorManager, output);
+        this.isMkII = isMkII;
     }
 
 
@@ -44,7 +46,7 @@ public class APCPadGrid extends PadGridImpl
     protected void sendNoteState (final int note, final int color)
     {
         final int i = note - 36;
-        if (this.surface.isMkII ())
+        if (this.isMkII)
         {
             this.output.sendNote (i, color);
         }
@@ -62,7 +64,7 @@ public class APCPadGrid extends PadGridImpl
     protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
     {
         final int i = note - 36;
-        if (this.surface.isMkII ())
+        if (this.isMkII)
         {
             this.output.sendNoteEx (fast ? 12 : 10, i, blinkColor);
         }

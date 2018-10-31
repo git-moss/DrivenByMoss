@@ -17,15 +17,22 @@ import java.util.Arrays;
  */
 public class PadGridImpl implements PadGrid
 {
-    protected IMidiOutput  output;
-    protected ColorManager colorManager;
+    protected final static int NUM_NOTES = 128;
 
-    protected int []       currentButtonColors;
-    protected int []       buttonColors;
-    protected int []       currentBlinkColors;
-    protected int []       blinkColors;
-    protected boolean []   currentBlinkFast;
-    protected boolean []   blinkFast;
+    protected IMidiOutput      output;
+    protected ColorManager     colorManager;
+
+    protected final int []     currentButtonColors;
+    protected final int []     buttonColors;
+    protected final int []     currentBlinkColors;
+    protected final int []     blinkColors;
+    protected final boolean [] currentBlinkFast;
+    protected final boolean [] blinkFast;
+
+    private final int          rows;
+    private final int          cols;
+    private final int          startNote;
+    private final int          endNote;
 
 
     /**
@@ -36,18 +43,37 @@ public class PadGridImpl implements PadGrid
      */
     public PadGridImpl (final ColorManager colorManager, final IMidiOutput output)
     {
+        this (colorManager, output, 8, 8, 36);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param colorManager The color manager for accessing specific colors to use
+     * @param output The midi output which can address the pad states
+     * @param rows The number of rows of the grid
+     * @param cols The number of columns of the grid
+     * @param startNote The start note of the grid
+     */
+    public PadGridImpl (final ColorManager colorManager, final IMidiOutput output, final int rows, final int cols, final int startNote)
+    {
         this.colorManager = colorManager;
         this.output = output;
+        this.rows = rows;
+        this.cols = cols;
+        this.startNote = startNote;
+        this.endNote = this.startNote + this.rows * this.cols;
 
         // Note: The grid contains only 64 pads but is more efficient to use
         // the 128 note values the pads understand
 
-        this.currentButtonColors = new int [128];
-        this.buttonColors = new int [128];
-        this.currentBlinkColors = new int [128];
-        this.blinkColors = new int [128];
-        this.currentBlinkFast = new boolean [128];
-        this.blinkFast = new boolean [128];
+        this.currentButtonColors = new int [NUM_NOTES];
+        this.buttonColors = new int [NUM_NOTES];
+        this.currentBlinkColors = new int [NUM_NOTES];
+        this.blinkColors = new int [NUM_NOTES];
+        this.currentBlinkFast = new boolean [NUM_NOTES];
+        this.blinkFast = new boolean [NUM_NOTES];
 
         final int color = colorManager.getColor (GRID_OFF);
         Arrays.fill (this.currentButtonColors, color);
@@ -87,7 +113,7 @@ public class PadGridImpl implements PadGrid
     @Override
     public void lightEx (final int x, final int y, final int color, final int blinkColor, final boolean fast)
     {
-        this.setLight (92 + x - 8 * y, color, blinkColor, fast);
+        this.setLight (92 + x - this.cols * y, color, blinkColor, fast);
     }
 
 
@@ -161,7 +187,7 @@ public class PadGridImpl implements PadGrid
     @Override
     public void forceFlush ()
     {
-        for (int i = 36; i < 100; i++)
+        for (int i = this.startNote; i < this.endNote; i++)
         {
             this.currentButtonColors[i] = -1;
             this.currentBlinkColors[i] = -1;
@@ -174,7 +200,7 @@ public class PadGridImpl implements PadGrid
     @Override
     public void flush ()
     {
-        for (int i = 36; i < 100; i++)
+        for (int i = this.startNote; i < this.endNote; i++)
         {
             final int note = this.translateToController (i);
 
@@ -229,7 +255,7 @@ public class PadGridImpl implements PadGrid
     public void turnOff ()
     {
         final int color = this.colorManager.getColor (GRID_OFF);
-        for (int i = 36; i < 100; i++)
+        for (int i = this.startNote; i < this.endNote; i++)
             this.light (i, color, -1, false);
         this.flush ();
     }
@@ -248,5 +274,29 @@ public class PadGridImpl implements PadGrid
     public int translateToController (final int note)
     {
         return note;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getRows ()
+    {
+        return this.rows;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getCols ()
+    {
+        return this.cols;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getStartNote ()
+    {
+        return this.startNote;
     }
 }

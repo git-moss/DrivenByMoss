@@ -148,6 +148,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         MODE_ACRONYMS.put (Modes.MODE_MASTER, "MT");
         MODE_ACRONYMS.put (Modes.MODE_DEVICE_PARAMS, "DC");
         MODE_ACRONYMS.put (Modes.MODE_BROWSER, "BR");
+        MODE_ACRONYMS.put (Modes.MODE_MARKER, "MK");
+
     }
 
     private final int [] masterVuValues   = new int [2];

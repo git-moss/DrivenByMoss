@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -166,5 +167,18 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     public void updateNoteMapping ()
     {
         this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getNoteMatrix () : EMPTY_TABLE);
+    }
+
+
+    /**
+     * Updates the velocity transition table based on the fixed accent value.
+     */
+    protected void initMaxVelocity ()
+    {
+        final int [] maxVelocity = new int [128];
+        final Configuration config = this.surface.getConfiguration ();
+        Arrays.fill (maxVelocity, config.getFixedAccentValue ());
+        maxVelocity[0] = 0;
+        this.surface.setVelocityTranslationTable (config.isAccentActive () ? maxVelocity : this.defaultVelocity);
     }
 }

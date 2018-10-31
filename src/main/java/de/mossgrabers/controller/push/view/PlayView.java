@@ -18,8 +18,6 @@ import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SceneView;
 
-import java.util.Arrays;
-
 
 /**
  * The play view.
@@ -83,16 +81,6 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
         final int octave = this.scales.getOctave ();
         this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, octave < Scales.OCTAVE_RANGE ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, octave > -Scales.OCTAVE_RANGE ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-    }
-
-
-    private void initMaxVelocity ()
-    {
-        final int [] maxVelocity = new int [128];
-        final PushConfiguration config = this.surface.getConfiguration ();
-        Arrays.fill (maxVelocity, config.getFixedAccentValue ());
-        maxVelocity[0] = 0;
-        this.surface.setVelocityTranslationTable (config.isAccentActive () ? maxVelocity : this.defaultVelocity);
     }
 
 

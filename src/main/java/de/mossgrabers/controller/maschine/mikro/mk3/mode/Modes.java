@@ -16,29 +16,33 @@ import java.util.Set;
 public class Modes
 {
     /** Edit volume of all tracks. */
-    public static final Integer       MODE_VOLUME = Integer.valueOf (0);
+    public static final Integer       MODE_VOLUME   = Integer.valueOf (0);
     /** Edit panorama of all tracks. */
-    public static final Integer       MODE_PAN    = Integer.valueOf (1);
+    public static final Integer       MODE_PAN      = Integer.valueOf (1);
     /** Edit Send 1 of all tracks. */
-    public static final Integer       MODE_SEND1  = Integer.valueOf (2);
+    public static final Integer       MODE_SEND1    = Integer.valueOf (2);
     /** Edit Send 2 of all tracks. */
-    public static final Integer       MODE_SEND2  = Integer.valueOf (3);
+    public static final Integer       MODE_SEND2    = Integer.valueOf (3);
     /** Edit Send 3 of all tracks. */
-    public static final Integer       MODE_SEND3  = Integer.valueOf (4);
+    public static final Integer       MODE_SEND3    = Integer.valueOf (4);
     /** Edit Send 4 of all tracks. */
-    public static final Integer       MODE_SEND4  = Integer.valueOf (5);
+    public static final Integer       MODE_SEND4    = Integer.valueOf (5);
     /** Edit Send 5 of all tracks. */
-    public static final Integer       MODE_SEND5  = Integer.valueOf (6);
+    public static final Integer       MODE_SEND5    = Integer.valueOf (6);
     /** Edit Send 6 of all tracks. */
-    public static final Integer       MODE_SEND6  = Integer.valueOf (7);
+    public static final Integer       MODE_SEND6    = Integer.valueOf (7);
     /** Edit Send 7 of all tracks. */
-    public static final Integer       MODE_SEND7  = Integer.valueOf (8);
+    public static final Integer       MODE_SEND7    = Integer.valueOf (8);
     /** Edit Send 8 of all tracks. */
-    public static final Integer       MODE_SEND8  = Integer.valueOf (9);
+    public static final Integer       MODE_SEND8    = Integer.valueOf (9);
     /** Device mode. */
-    public static final Integer       MODE_DEVICE = Integer.valueOf (10);
+    public static final Integer       MODE_DEVICE   = Integer.valueOf (10);
+    /** Play cursor position mode. */
+    public static final Integer       MODE_POSITION = Integer.valueOf (11);
+    /** Tempo mode. */
+    public static final Integer       MODE_TEMPO    = Integer.valueOf (12);
 
-    private static final Set<Integer> SEND_MODES  = new HashSet<> ();
+    private static final Set<Integer> SEND_MODES    = new HashSet<> ();
 
     static
     {

@@ -6,6 +6,7 @@ package de.mossgrabers.controller.launchpad.controller;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.HashMap;
@@ -95,19 +96,20 @@ public class LaunchpadPadGrid extends PadGridImpl
             INVERSE_TRANSLATE_MATRIX.put (Integer.valueOf (TRANSLATE_MATRIX[i]), Integer.valueOf (36 + i));
     }
 
-    private final LaunchpadControlSurface surface;
+    private final String sysexHeader;
 
 
     /**
      * Constructor.
      *
      * @param colorManager The color manager for accessing specific colors to use
-     * @param surface The launchpad surface
+     * @param output The midi output which can address the pad states
+     * @param sysexHeader The sysex header
      */
-    public LaunchpadPadGrid (final ColorManager colorManager, final LaunchpadControlSurface surface)
+    public LaunchpadPadGrid (final ColorManager colorManager, final IMidiOutput output, final String sysexHeader)
     {
-        super (colorManager, surface.getOutput ());
-        this.surface = surface;
+        super (colorManager, output);
+        this.sysexHeader = sysexHeader + "23 ";
     }
 
 
@@ -115,7 +117,7 @@ public class LaunchpadPadGrid extends PadGridImpl
     @Override
     protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
     {
-        this.surface.sendLaunchpadSysEx ("23 " + StringUtils.toHexStr (note) + " " + StringUtils.toHexStr (blinkColor));
+        this.output.sendSysex (this.sysexHeader + StringUtils.toHexStr (note) + " " + StringUtils.toHexStr (blinkColor) + " F7");
     }
 
 

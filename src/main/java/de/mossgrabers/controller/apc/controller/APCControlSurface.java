@@ -204,7 +204,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
      */
     public APCControlSurface (final IHost host, final ColorManager colorManager, final APCConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isMkII)
     {
-        super (host, configuration, colorManager, output, input, APC_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, new APCPadGrid (colorManager, output, isMkII), APC_BUTTONS_ALL);
 
         this.isMkII = isMkII;
 
@@ -213,8 +213,6 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
         this.rightButtonId = APC_BUTTON_RIGHT;
         this.upButtonId = APC_BUTTON_UP;
         this.downButtonId = APC_BUTTON_DOWN;
-
-        this.pads = new APCPadGrid (colorManager, this);
 
         // Set Mode 2
         this.output.sendSysex ("F0 47 7F " + (isMkII ? ID_APC_40_MKII : ID_APC_40) + " 60 00 04 41 08 02 01 F7");

@@ -185,7 +185,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
      */
     public SLControlSurface (final IHost host, final ColorManager colorManager, final SLConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isMkII)
     {
-        super (host, configuration, colorManager, output, input, SL_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, null, SL_BUTTONS_ALL);
 
         this.isMkII = isMkII;
 

@@ -173,7 +173,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
      */
     public Kontrol1ControlSurface (final IHost host, final ColorManager colorManager, final Kontrol1Configuration configuration, final IMidiInput input, final Kontrol1UsbDevice usbDevice)
     {
-        super (host, configuration, colorManager, null, input, KONTROL1_BUTTONS_ALL);
+        super (host, configuration, colorManager, null, input, null, KONTROL1_BUTTONS_ALL);
 
         this.usbDevice = usbDevice;
 

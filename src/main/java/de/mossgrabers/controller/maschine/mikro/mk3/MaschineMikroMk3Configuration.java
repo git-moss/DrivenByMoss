@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.maschine.mikro.mk3;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.IValueChanger;
 
@@ -16,6 +17,38 @@ import de.mossgrabers.framework.controller.IValueChanger;
  */
 public class MaschineMikroMk3Configuration extends AbstractConfiguration
 {
+    /** Setting for the ribbon mode. */
+    public static final Integer    RIBBON_MODE               = Integer.valueOf (30);
+
+    /** Use ribbon for pitch bend down. */
+    public static final int        RIBBON_MODE_PITCH_DOWN    = 0;
+    /** Use ribbon for pitch bend up. */
+    public static final int        RIBBON_MODE_PITCH_UP      = 1;
+    /** Use ribbon for pitch bend down/up. */
+    public static final int        RIBBON_MODE_PITCH_DOWN_UP = 2;
+    /** Use ribbon for midi CC 1. */
+    public static final int        RIBBON_MODE_CC_1          = 3;
+    /** Use ribbon for midi CC 11. */
+    public static final int        RIBBON_MODE_CC_11         = 4;
+    /** Use ribbon for master volume. */
+    public static final int        RIBBON_MODE_MASTER_VOLUME = 5;
+
+    private static final String [] RIBBON_MODE_VALUES        =
+    {
+        "Pitch Down",
+        "Pitch Up",
+        "Pitch Down/Up",
+        "Modulation (CC 1)",
+        "Expression (CC 11)",
+        "Master Volume"
+    };
+
+    /** What does the ribbon send? **/
+    private int                    ribbonMode                = RIBBON_MODE_PITCH_DOWN;
+
+    private IEnumSetting           ribbonModeSetting;
+
+
     /**
      * Constructor.
      *
@@ -31,12 +64,18 @@ public class MaschineMikroMk3Configuration extends AbstractConfiguration
     @Override
     public void init (final ISettingsUI settingsUI)
     {
-        // TODO add / remove items
-
         ///////////////////////////
         // Play and Sequence
 
+        this.activateAccentActiveSetting (settingsUI);
+        this.activateAccentValueSetting (settingsUI);
         this.activateQuantizeAmountSetting (settingsUI);
+
+        this.ribbonModeSetting = settingsUI.getEnumSetting ("Ribbon Mode", CATEGORY_PLAY_AND_SEQUENCE, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES[0]);
+        this.ribbonModeSetting.addValueObserver (value -> {
+            this.ribbonMode = lookupIndex (RIBBON_MODE_VALUES, value);
+            this.notifyObservers (RIBBON_MODE);
+        });
 
         ///////////////////////////
         // Scale
@@ -52,5 +91,27 @@ public class MaschineMikroMk3Configuration extends AbstractConfiguration
         this.activateBehaviourOnStopSetting (settingsUI);
         this.activateSelectClipOnLaunchSetting (settingsUI);
         this.activateNewClipLengthSetting (settingsUI);
+    }
+
+
+    /**
+     * Set the ribbon mode.
+     *
+     * @param mode The functionality for the ribbon
+     */
+    public void setRibbonMode (final int mode)
+    {
+        this.ribbonModeSetting.set (RIBBON_MODE_VALUES[mode]);
+    }
+
+
+    /**
+     * Get the ribbon mode.
+     *
+     * @return The functionality for the ribbon
+     */
+    public int getRibbonMode ()
+    {
+        return this.ribbonMode;
     }
 }
