@@ -101,8 +101,6 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         if (this.input != null)
             this.input.setMidiCallback (this::handleMidi);
 
-        // TODO this.pads.g
-
         this.gridNotes = new int [64];
 
         // Button related

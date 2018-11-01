@@ -17,9 +17,6 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public class PitchbendCommand extends AbstractContinuousCommand<MaschineMikroMk3ControlSurface, MaschineMikroMk3Configuration>
 {
-    private int pitchValue = 0;
-
-
     /**
      * Constructor.
      *
@@ -40,57 +37,28 @@ public class PitchbendCommand extends AbstractContinuousCommand<MaschineMikroMk3
         switch (config.getRibbonMode ())
         {
             case MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN:
-                // TODO
-                // this.surface.sendMidiEvent (0xE0, data1, data2);
+                this.surface.sendMidiEvent (0xE0, 0, value / 2);
                 break;
 
             case MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_UP:
-                // TODO
-                // this.surface.sendMidiEvent (0xE0, data1, data2);
+                this.surface.sendMidiEvent (0xE0, 0, 64 + value / 2);
                 break;
 
             case MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP:
-                // this.surface.sendMidiEvent (0xE0, data1, data2);
+                this.surface.sendMidiEvent (0xE0, 0, value);
                 break;
 
             case MaschineMikroMk3Configuration.RIBBON_MODE_CC_1:
                 this.surface.sendMidiEvent (0xB0, 1, value);
-                this.pitchValue = value;
                 break;
 
             case MaschineMikroMk3Configuration.RIBBON_MODE_CC_11:
                 this.surface.sendMidiEvent (0xB0, 11, value);
-                this.pitchValue = value;
                 break;
 
             case MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME:
                 this.model.getMasterTrack ().setVolume (this.model.getValueChanger ().toDAWValue (value));
                 return;
         }
-
-        // TODO this.surface.getOutput ().sendPitchbend (data1, data2);
     }
-
-    // /** {@inheritDoc} */
-    // @Override
-    // public void updateValue ()
-    // {
-    // final MaschineMikroMk3Configuration config = this.surface.getConfiguration ();
-    // switch (config.getRibbonMode ())
-    // {
-    // case MaschineMikroMk3Configuration.RIBBON_MODE_CC:
-    // this.surface.setRibbonValue (this.pitchValue);
-    // break;
-    //
-    // case MaschineMikroMk3Configuration.RIBBON_MODE_FADER:
-    // final ITrack t = this.model.getSelectedTrack ();
-    // this.surface.setRibbonValue (t == null ? 0 : this.model.getValueChanger ().toMidiValue
-    // (t.getVolume ()));
-    // break;
-    //
-    // default:
-    // this.surface.setRibbonValue (64);
-    // break;
-    // }
-    // }
 }

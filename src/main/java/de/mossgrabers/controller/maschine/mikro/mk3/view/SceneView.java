@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.maschine.mikro.mk3.view;
 
+import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
@@ -34,6 +35,15 @@ public class SceneView extends BaseView
     protected void executeFunction (final int padIndex)
     {
         final IScene scene = this.model.getSceneBank ().getItem (padIndex);
+
+        final MaschineMikroMk3Configuration configuration = this.surface.getConfiguration ();
+        if (configuration.isDuplicateEnabled ())
+        {
+            scene.duplicate ();
+            configuration.setDuplicateEnabled (false);
+            return;
+        }
+
         if (this.surface.getConfiguration ().isSelectClipOnLaunch ())
             scene.select ();
         scene.launch ();

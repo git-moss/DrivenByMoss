@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.maschine.mikro.mk3.view;
 
+import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISlotBank;
@@ -39,7 +40,16 @@ public class ClipView extends BaseView
         if (selectedTrack == null)
             return;
         final ISlot slot = selectedTrack.getSlotBank ().getItem (padIndex);
-        if (this.surface.getConfiguration ().isSelectClipOnLaunch ())
+
+        final MaschineMikroMk3Configuration configuration = this.surface.getConfiguration ();
+        if (configuration.isDuplicateEnabled ())
+        {
+            slot.duplicate ();
+            configuration.setDuplicateEnabled (false);
+            return;
+        }
+
+        if (configuration.isSelectClipOnLaunch ())
             slot.select ();
         slot.launch ();
     }

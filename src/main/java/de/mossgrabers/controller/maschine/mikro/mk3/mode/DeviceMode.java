@@ -58,4 +58,26 @@ public class DeviceMode extends BaseMode
         if (item.doesExist ())
             item.resetValue ();
     }
+
+
+    /**
+     * Set the selected parameter.
+     *
+     * @param index The index of the parameter (0-15)
+     */
+    public void selectParameter (final int index)
+    {
+        this.index = index;
+    }
+
+
+    /**
+     * Get the index of the selected parameter.
+     *
+     * @return The index 0-15
+     */
+    public int getSelectedParameter ()
+    {
+        return this.index;
+    }
 }

@@ -41,6 +41,8 @@ public class Modes
     public static final Integer       MODE_POSITION = Integer.valueOf (11);
     /** Tempo mode. */
     public static final Integer       MODE_TEMPO    = Integer.valueOf (12);
+    /** Browser mode. */
+    public static final Integer       MODE_BROWSE   = Integer.valueOf (13);
 
     private static final Set<Integer> SEND_MODES    = new HashSet<> ();
 

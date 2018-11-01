@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.controller;
 
+import de.mossgrabers.controller.maschine.mikro.mk3.mode.Modes;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
@@ -39,7 +40,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     protected C                   configuration;
     protected ColorManager        colorManager;
     protected IValueChanger       valueChanger;
-    protected Integer             currentMode = null;
+    protected Integer             currentMode = Modes.MODE_VOLUME;
 
 
     /**

@@ -2,12 +2,11 @@
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.command.trigger;
+package de.mossgrabers.framework.command.trigger.device;
 
-import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -15,19 +14,23 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to trigger the Add effect.
  *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class AddEffectCommand extends BrowserCommand<PushControlSurface, PushConfiguration>
+public class AddEffectCommand<S extends IControlSurface<C>, C extends Configuration> extends BrowserCommand<S, C>
 {
     /**
      * Constructor.
      *
+     * @param browserMode The ID of the mode to activate for browsing
      * @param model The model
      * @param surface The surface
      */
-    public AddEffectCommand (final IModel model, final PushControlSurface surface)
+    public AddEffectCommand (final Integer browserMode, final IModel model, final S surface)
     {
-        super (Modes.MODE_BROWSER, model, surface);
+        super (browserMode, model, surface);
     }
 
 

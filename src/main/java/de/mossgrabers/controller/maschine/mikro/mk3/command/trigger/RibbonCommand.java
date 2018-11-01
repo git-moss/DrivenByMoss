@@ -18,20 +18,20 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class RibbonCommand extends AbstractTriggerCommand<MaschineMikroMk3ControlSurface, MaschineMikroMk3Configuration>
 {
-    private final int mode;
+    private final int [] modes;
 
 
     /**
      * Constructor.
      * 
-     * @param mode The mode to set
      * @param model The model
      * @param surface The surface
+     * @param modes The modes to toggle
      */
-    public RibbonCommand (final int mode, final IModel model, final MaschineMikroMk3ControlSurface surface)
+    public RibbonCommand (final IModel model, final MaschineMikroMk3ControlSurface surface, final int... modes)
     {
         super (model, surface);
-        this.mode = mode;
+        this.modes = modes;
     }
 
 
@@ -43,6 +43,38 @@ public class RibbonCommand extends AbstractTriggerCommand<MaschineMikroMk3Contro
             return;
 
         final MaschineMikroMk3Configuration configuration = this.surface.getConfiguration ();
-        configuration.setRibbonMode (this.mode);
+        final int ribbonMode = configuration.getRibbonMode ();
+
+        int m = this.modes[0];
+
+        for (int i = 0; i < this.modes.length; i++)
+        {
+            if (this.modes[i] == ribbonMode)
+            {
+                if (i + 1 < this.modes.length)
+                    m = this.modes[i + 1];
+                break;
+            }
+        }
+
+        this.surface.getDisplay ().notify (MaschineMikroMk3Configuration.RIBBON_MODE_VALUES[m]);
+        configuration.setRibbonMode (m);
+
+        // Setting the LED strip does not work but keep it anyway...
+        switch (m)
+        {
+            case MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP:
+                this.surface.getOutput ().sendCC (MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP, 64);
+                break;
+
+            case MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME:
+                this.surface.getOutput ().sendCC (MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP, this.model.getValueChanger ().toMidiValue (this.model.getMasterTrack ().getVolume ()));
+                break;
+
+            default:
+                this.surface.getOutput ().sendCC (MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP, 0);
+                break;
+        }
+
     }
 }
