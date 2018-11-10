@@ -121,14 +121,13 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     public void drawGrid ()
     {
         final Integer controlMode = this.surface.getModeManager ().getActiveOrTempModeId ();
-        final boolean isOff = controlMode == null;
-        final boolean flip = this.surface.getConfiguration ().isFlipSession ();
-        this.rows = isOff || flip ? 8 : 7;
-        this.columns = isOff || !flip ? 8 : 7;
+        final boolean controlModeIsOff = controlMode == null;
+        this.rows = controlModeIsOff ? 8 : 7;
+        this.columns = 8;
 
         super.drawGrid ();
 
-        if (isOff)
+        if (controlModeIsOff)
             return;
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();

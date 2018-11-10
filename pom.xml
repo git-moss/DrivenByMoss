@@ -33,7 +33,7 @@
 	</repositories>
 
 	<dependencies>
- 		<dependency>
+		<dependency>
 			<groupId>com.bitwig</groupId>
 			<artifactId>extension-api</artifactId>
 			<version>7</version>
@@ -55,6 +55,29 @@
 	<build>
 
 		<plugins>
+
+			<!-- Enforce a minimum Maven version -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0-M2</version>
+				<executions>
+					<execution>
+						<id>enforce-maven</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>3.0.5</version>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -108,7 +131,19 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- Check for outdated libraries -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<generateBackupPoms>false</generateBackupPoms>
+				</configuration>
+			</plugin>
+
 		</plugins>
+
 	</build>
 
 </project>

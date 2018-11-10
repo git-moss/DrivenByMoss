@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 0,
+			"revision" : 1,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 104.0, 85.0, 1392.0, 1040.0 ],
+		"rect" : [ -3744.0, 76.0, 1406.0, 754.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -56,7 +56,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 423.666656494140625, 905.9090576171875, 123.0, 22.0 ],
-					"presentation_linecount" : 2,
 					"text" : "/track/1/clip/2/remove",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -1652,8 +1651,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 984.5, 292.0, 168.0, 22.0 ],
-					"text" : "/vkb_midi/1/aftertouch/60 127",
+					"patching_rect" : [ 984.5, 292.0, 166.0, 22.0 ],
+					"text" : "/vkb_midi/1/aftertouch/64 127",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
 
