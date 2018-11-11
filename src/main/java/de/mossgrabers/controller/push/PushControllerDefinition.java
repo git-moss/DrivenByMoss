@@ -42,7 +42,7 @@ public class PushControllerDefinition extends DefaultControllerDefinition
      */
     public PushControllerDefinition (final boolean isMkII)
     {
-        super ("", "Jürgen Moßgraber", "11.00", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "Push 2" : "Push 1", "Ableton", 1, 1);
+        super ("", "Jürgen Moßgraber", "11.01", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "Push 2" : "Push 1", "Ableton", 1, 1);
         this.isMkII = isMkII;
     }
 

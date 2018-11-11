@@ -66,6 +66,34 @@ public class SetupMode extends BaseMode
     public void onValueKnobTouch (final int index, final boolean isTouched)
     {
         this.isKnobTouched[index] = isTouched;
+
+        if (!isTouched || !this.surface.isDeletePressed ())
+            return;
+
+        this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+
+        final PushConfiguration config = this.surface.getConfiguration ();
+        switch (index)
+        {
+            case 2:
+                config.setDisplayBrightness (100);
+                break;
+            case 3:
+                config.setLEDBrightness (100);
+                break;
+            case 5:
+                config.setPadSensitivity (5);
+                break;
+            case 6:
+                config.setPadGain (5);
+                break;
+            case 7:
+                config.setPadDynamics (5);
+                break;
+            default:
+                // Not used
+                break;
+        }
     }
 
 
@@ -104,15 +132,21 @@ public class SetupMode extends BaseMode
     public void updateDisplay2 ()
     {
         final PushConfiguration config = this.surface.getConfiguration ();
+        final int displayBrightness = config.getDisplayBrightness ();
+        final int ledBrightness = config.getLedBrightness ();
+        final int padSensitivity = config.getPadSensitivity ();
+        final int padGain = config.getPadGain ();
+        final int padDynamics = config.getPadDynamics ();
+
         final DisplayModel message = this.surface.getDisplay ().getModel ();
         message.addOptionElement ("", "Setup", true, "", "", false, true);
         message.addOptionElement ("Brightness", "Info", false, "", "", false, true);
-        message.addParameterElement ("Display", config.getDisplayBrightness () * 1023 / 100, config.getDisplayBrightness () + "%", this.isKnobTouched[2], -1);
-        message.addParameterElement ("LEDs", config.getLedBrightness () * 1023 / 100, config.getLedBrightness () + "%", this.isKnobTouched[3], -1);
+        message.addParameterElement ("Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched[2], -1);
+        message.addParameterElement ("LEDs", ledBrightness * 1023 / 100, ledBrightness + "%", this.isKnobTouched[3], -1);
         message.addOptionElement ("        Pads", "", false, "", "", false, false);
-        message.addParameterElement ("Sensitivity", config.getPadSensitivity () * 1023 / 10, Integer.toString (config.getPadSensitivity ()), this.isKnobTouched[5], -1);
-        message.addParameterElement ("Gain", config.getPadGain () * 1023 / 10, Integer.toString (config.getPadGain ()), this.isKnobTouched[6], -1);
-        message.addParameterElement ("Dynamics", config.getPadDynamics () * 1023 / 10, Integer.toString (config.getPadDynamics ()), this.isKnobTouched[7], -1);
+        message.addParameterElement ("Sensitivity", padSensitivity * 1023 / 10, Integer.toString (padSensitivity), this.isKnobTouched[5], -1);
+        message.addParameterElement ("Gain", padGain * 1023 / 10, Integer.toString (padGain), this.isKnobTouched[6], -1);
+        message.addParameterElement ("Dynamics", padDynamics * 1023 / 10, Integer.toString (padDynamics), this.isKnobTouched[7], -1);
         message.send ();
     }
 }

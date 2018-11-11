@@ -30,12 +30,12 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     /** Settings for different Mute and Solo behaviour. */
     public enum TrackState
     {
-    /** Use Mute, Solo for muting/soloing the current track. */
-    NONE,
-    /** Use all mode buttons for muting. */
-    MUTE,
-    /** Use all mode buttons for soloing. */
-    SOLO
+        /** Use Mute, Solo for muting/soloing the current track. */
+        NONE,
+        /** Use all mode buttons for muting. */
+        MUTE,
+        /** Use all mode buttons for soloing. */
+        SOLO
     }
 
     /** Setting for the ribbon mode. */
@@ -495,7 +495,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void setDisplayBrightness (final int displayBrightness)
     {
-        this.displayBrightness = displayBrightness;
+        this.displayBrightnessSetting.set (displayBrightness);
     }
 
 
@@ -515,9 +515,9 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      *
      * @param ledBrightness The LED brightness
      */
-    public void setLedBrightness (final int ledBrightness)
+    public void setLEDBrightness (final int ledBrightness)
     {
-        this.ledBrightness = ledBrightness;
+        this.ledBrightnessSetting.set (ledBrightness);
     }
 
 
@@ -638,7 +638,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void setPadSensitivity (final int padSensitivity)
     {
-        this.padSensitivity = padSensitivity;
+        this.padSensitivitySetting.set (padSensitivity);
     }
 
 
@@ -660,7 +660,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void setPadGain (final int padGain)
     {
-        this.padGain = padGain;
+        this.padGainSetting.set (padGain);
     }
 
 
@@ -682,7 +682,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void setPadDynamics (final int padDynamics)
     {
-        this.padDynamics = padDynamics;
+        this.padDynamicsSetting.set (padDynamics);
     }
 
 
