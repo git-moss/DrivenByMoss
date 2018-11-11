@@ -60,7 +60,10 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
 
             case UP:
                 if (this.firstRowUsed)
+                {
                     modeManager.setActiveMode (null);
+                    this.surface.getViewManager ().restoreView ();
+                }
                 break;
         }
     }

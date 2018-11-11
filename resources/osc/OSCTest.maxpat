@@ -50,6 +50,30 @@
 					"fontname" : "Arial",
 					"fontsize" : 12.0,
 					"gradient" : 0,
+					"id" : "obj-117",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 984.5, 316.0, 143.0, 22.0 ],
+					"text" : "/vkb_midi/1/aftertouch 80",
+					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"bgcolor" : [ 0.678431, 0.819608, 0.819608, 1.0 ],
+					"bgfillcolor_angle" : 270.0,
+					"bgfillcolor_autogradient" : 0.79,
+					"bgfillcolor_color" : [ 0.290196, 0.309804, 0.301961, 1.0 ],
+					"bgfillcolor_color1" : [ 0.678431, 0.819608, 0.819608, 1.0 ],
+					"bgfillcolor_color2" : [ 0.685, 0.685, 0.685, 1.0 ],
+					"bgfillcolor_proportion" : 0.39,
+					"bgfillcolor_type" : "gradient",
+					"fontname" : "Arial",
+					"fontsize" : 12.0,
+					"gradient" : 0,
 					"id" : "obj-116",
 					"maxclass" : "message",
 					"numinlets" : 2,
@@ -1603,7 +1627,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 984.5, 465.0, 128.0, 22.0 ],
+					"patching_rect" : [ 984.5, 493.0, 128.0, 22.0 ],
 					"text" : "/vkb_midi/velocity 127",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -1627,7 +1651,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 984.5, 444.0, 115.0, 22.0 ],
+					"patching_rect" : [ 984.5, 472.0, 115.0, 22.0 ],
 					"text" : "/vkb_midi/velocity 0",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -3921,7 +3945,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 984.5, 395.0, 129.0, 22.0 ],
+					"patching_rect" : [ 984.5, 423.0, 129.0, 22.0 ],
 					"text" : "/vkb_midi/1/drum/64 0",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -3969,7 +3993,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 984.5, 377.0, 142.0, 22.0 ],
+					"patching_rect" : [ 984.5, 405.0, 142.0, 22.0 ],
 					"text" : "/vkb_midi/1/drum/64 127",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -3993,7 +4017,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 984.5, 352.0, 109.0, 22.0 ],
+					"patching_rect" : [ 984.5, 380.0, 109.0, 22.0 ],
 					"text" : "/vkb_midi/1/drum/-",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -4017,7 +4041,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 984.5, 328.0, 112.0, 22.0 ],
+					"patching_rect" : [ 984.5, 356.0, 112.0, 22.0 ],
 					"text" : "/vkb_midi/1/drum/+",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -4041,8 +4065,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 984.5, 95.0, 131.0, 22.0 ],
-					"text" : "/vkb_midi/1/note/64 70",
+					"patching_rect" : [ 984.5, 95.0, 136.0, 22.0 ],
+					"text" : "/vkb_midi/1/note/64 100",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
 
@@ -5941,6 +5965,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-116", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"source" : [ "obj-117", 0 ]
 				}
 
 			}

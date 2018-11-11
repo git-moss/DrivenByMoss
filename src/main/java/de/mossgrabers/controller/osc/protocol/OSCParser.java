@@ -1557,7 +1557,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
         final OSCConfiguration conf = (OSCConfiguration) this.configuration;
         try
         {
-            midiChannel = Integer.parseInt (command);
+            midiChannel = Math.max (Math.min (0, Integer.parseInt (command) - 1), 15);
         }
         catch (final NumberFormatException ex)
         {
