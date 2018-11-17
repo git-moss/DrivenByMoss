@@ -36,7 +36,7 @@ public abstract class AbstractModel implements IModel
     protected ITrackBank         trackBank;
     protected ITrackBank         effectTrackBank;
     protected IMasterTrack       masterTrack;
-    protected ICursorDevice      primaryDevice;
+    protected ICursorDevice      instrumentDevice;
     protected ICursorDevice      cursorDevice;
     protected ICursorDevice      drumDevice64;
     protected Map<String, IClip> cursorClips = new HashMap<> ();
@@ -164,9 +164,9 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public ICursorDevice getPrimaryDevice ()
+    public ICursorDevice getInstrumentDevice ()
     {
-        return this.primaryDevice;
+        return this.instrumentDevice;
     }
 
 

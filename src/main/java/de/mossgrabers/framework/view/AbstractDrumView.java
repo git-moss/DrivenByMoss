@@ -95,7 +95,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         super.onActivate ();
 
-        final ICursorDevice primary = this.model.getPrimaryDevice ();
+        final ICursorDevice primary = this.model.getInstrumentDevice ();
         primary.getDrumPadBank ().setIndication (true);
     }
 
@@ -106,7 +106,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         super.onDeactivate ();
 
-        final ICursorDevice primary = this.model.getPrimaryDevice ();
+        final ICursorDevice primary = this.model.getInstrumentDevice ();
         primary.getDrumPadBank ().setIndication (false);
     }
 
@@ -200,7 +200,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         }
 
         // halfColumns x playLines Drum Pad Grid
-        final ICursorDevice primary = this.model.getPrimaryDevice ();
+        final ICursorDevice primary = this.model.getInstrumentDevice ();
         final boolean hasDrumPads = primary.hasDrumPads ();
         boolean isSoloed = false;
         if (hasDrumPads)
@@ -293,7 +293,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
         if (oldDrumOctave != newDrumOctave)
-            this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageBackwards ();
+            this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageBackwards ();
     }
 
 
@@ -311,7 +311,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
         if (oldDrumOctave != newDrumOctave)
-            this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageForwards ();
+            this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageForwards ();
     }
 
 
@@ -370,7 +370,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         this.surface.setButtonConsumed (this.surface.getMuteButtonId ());
         this.updateNoteMapping ();
-        this.model.getPrimaryDevice ().getDrumPadBank ().getItem (playedPad).toggleMute ();
+        this.model.getInstrumentDevice ().getDrumPadBank ().getItem (playedPad).toggleMute ();
     }
 
 
@@ -378,7 +378,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         this.surface.setButtonConsumed (this.surface.getSoloButtonId ());
         this.updateNoteMapping ();
-        this.model.getPrimaryDevice ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
+        this.model.getInstrumentDevice ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
     }
 
 

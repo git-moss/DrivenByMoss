@@ -246,7 +246,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
             }
 
             case "primary":
-                this.parseDeviceValue (this.model.getPrimaryDevice (), oscParts, value);
+                this.parseDeviceValue (this.model.getInstrumentDevice (), oscParts, value);
                 break;
 
             //

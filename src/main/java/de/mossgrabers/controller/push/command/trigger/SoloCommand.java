@@ -99,5 +99,11 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
         }
         else if (activeModeId == Modes.MODE_MASTER)
             this.model.getMasterTrack ().toggleSolo ();
+        else
+        {
+            final ITrack selTrack = this.model.getSelectedTrack ();
+            if (selTrack != null)
+                selTrack.toggleSolo ();
+        }
     }
 }

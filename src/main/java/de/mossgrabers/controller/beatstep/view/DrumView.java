@@ -75,12 +75,12 @@ public class DrumView extends BaseSequencerView
                 if (isInc)
                 {
                     this.scales.incDrumOctave ();
-                    this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageForwards ();
+                    this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageForwards ();
                 }
                 else
                 {
                     this.scales.decDrumOctave ();
-                    this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageBackwards ();
+                    this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageBackwards ();
                 }
                 this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
@@ -142,7 +142,7 @@ public class DrumView extends BaseSequencerView
 
         if (this.isPlayMode)
         {
-            final ICursorDevice primary = this.model.getPrimaryDevice ();
+            final ICursorDevice primary = this.model.getInstrumentDevice ();
             final boolean hasDrumPads = primary.hasDrumPads ();
             boolean isSoloed = false;
             if (hasDrumPads)

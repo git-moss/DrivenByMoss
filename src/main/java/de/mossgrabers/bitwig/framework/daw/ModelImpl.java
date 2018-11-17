@@ -92,7 +92,7 @@ public class ModelImpl extends AbstractModel
         final int numDeviceLayers = this.modelSetup.getNumDeviceLayers ();
         final int numDrumPadLayers = this.modelSetup.getNumDrumPadLayers ();
         final int numDevicesInBank = this.modelSetup.getNumDevicesInBank ();
-        this.primaryDevice = new CursorDeviceImpl (this.host, valueChanger, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.instrumentDevice = new CursorDeviceImpl (this.host, valueChanger, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
         PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
         this.cursorDevice = new CursorDeviceImpl (this.host, valueChanger, cd, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
         if (numDrumPadLayers > 0)

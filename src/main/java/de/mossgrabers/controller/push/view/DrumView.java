@@ -46,7 +46,7 @@ public class DrumView extends DrumViewBase
         {
             this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
 
-            final ICursorDevice primary = this.model.getPrimaryDevice ();
+            final ICursorDevice primary = this.model.getInstrumentDevice ();
             if (!primary.hasDrumPads ())
                 return;
 
@@ -67,7 +67,7 @@ public class DrumView extends DrumViewBase
     public synchronized void handleSelectButton (final int playedPad)
     {
         // Do we have drum pads?
-        final ICursorDevice primary = this.model.getPrimaryDevice ();
+        final ICursorDevice primary = this.model.getInstrumentDevice ();
         if (!primary.hasDrumPads ())
             return;
         final ICursorDevice cd = this.model.getCursorDevice ();
@@ -137,6 +137,6 @@ public class DrumView extends DrumViewBase
     public void repositionBankPage ()
     {
         if (this.scrollPosition >= 0)
-            this.model.getPrimaryDevice ().getDrumPadBank ().scrollTo (this.scrollPosition);
+            this.model.getInstrumentDevice ().getDrumPadBank ().scrollTo (this.scrollPosition);
     }
 }

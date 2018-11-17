@@ -133,6 +133,8 @@ public abstract class AbstractBrowser implements IBrowser
     @Override
     public int getSelectedFilterItemIndex (final int columnIndex)
     {
+        if (columnIndex < 0)
+            return -1;
         return this.columnData[columnIndex].getCursorIndex ();
     }
 

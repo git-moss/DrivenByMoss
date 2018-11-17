@@ -350,7 +350,7 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
      */
     private String getKompleteInstance ()
     {
-        final ICursorDevice instrumentDevice = this.model.getPrimaryDevice ();
+        final ICursorDevice instrumentDevice = this.model.getInstrumentDevice ();
         if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
         {
             // "NIKBxx";

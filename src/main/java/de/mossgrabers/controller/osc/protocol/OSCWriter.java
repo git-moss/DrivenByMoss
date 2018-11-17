@@ -173,7 +173,7 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         final ILayerBank layerBank = cd.getLayerBank ();
         for (int i = 0; i < layerBank.getPageSize (); i++)
             this.flushDeviceLayers ("/device/layer/" + (i + 1) + "/", layerBank.getItem (i), dump);
-        this.flushDevice ("/primary/", this.model.getPrimaryDevice (), dump);
+        this.flushDevice ("/primary/", this.model.getInstrumentDevice (), dump);
 
         //
         // Browser

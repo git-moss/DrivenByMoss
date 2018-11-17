@@ -124,11 +124,11 @@ public interface IModel
 
 
     /**
-     * Get the primary device. This is the first instrument of the track.
+     * Get the first instrument device of the track.
      *
      * @return The device
      */
-    ICursorDevice getPrimaryDevice ();
+    ICursorDevice getInstrumentDevice ();
 
 
     /**

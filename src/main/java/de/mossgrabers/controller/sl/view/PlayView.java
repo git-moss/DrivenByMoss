@@ -120,7 +120,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             case 0:
                 this.clearPressedKeys ();
                 this.scales.decDrumOctave ();
-                this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageBackwards ();
+                this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageBackwards ();
                 this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
@@ -130,7 +130,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             case 1:
                 this.clearPressedKeys ();
                 this.scales.incDrumOctave ();
-                this.model.getPrimaryDevice ().getDrumPadBank ().scrollPageForwards ();
+                this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageForwards ();
                 this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
@@ -321,7 +321,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         if (this.isPlayMode)
         {
-            final ICursorDevice primary = this.model.getPrimaryDevice ();
+            final ICursorDevice primary = this.model.getInstrumentDevice ();
             final boolean hasDrumPads = primary.hasDrumPads ();
             boolean isSoloed = false;
             if (hasDrumPads)

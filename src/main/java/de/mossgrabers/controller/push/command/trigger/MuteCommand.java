@@ -99,5 +99,11 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
         }
         else if (activeModeId == Modes.MODE_MASTER)
             this.model.getMasterTrack ().toggleMute ();
+        else
+        {
+            final ITrack selTrack = this.model.getSelectedTrack ();
+            if (selTrack != null)
+                selTrack.toggleMute ();
+        }
     }
 }
