@@ -42,13 +42,13 @@
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
-			<version>4.5.2</version>
+			<version>5.1.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>purejavahidapi</groupId>
 			<artifactId>purejavahidapi</artifactId>
-			<version>0.0.12</version>
+			<version>0.0.13</version>
 		</dependency>
 	</dependencies>
 

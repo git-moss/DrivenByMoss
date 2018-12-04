@@ -4,7 +4,7 @@
 
     <groupId>purejavahidapi</groupId>
     <artifactId>purejavahidapi</artifactId>
-    <version>0.0.12</version>
+    <version>0.0.13</version>
     <packaging>jar</packaging>
 
     <name>Pure Java HID-API</name>
@@ -62,24 +62,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>
-                <groupId>net.nicoulaj.maven.plugins</groupId>
-                <artifactId>checksum-maven-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>artifacts</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <csvSummary>true</csvSummary>
-                    <csvSummaryFile>artifacts-checksums.csv</csvSummaryFile>
-                    <xmlSummary>true</xmlSummary>
-                    <xmlSummaryFile>artifacts-checksums.xml</xmlSummaryFile>
-                </configuration>
-            </plugin>         -->
         </plugins>
     </build>
 
@@ -87,7 +69,7 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>4.5.2</version>
+            <version>5.1.0</version>
         </dependency>
     </dependencies>
 </project>
