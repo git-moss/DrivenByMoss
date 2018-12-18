@@ -1,4 +1,4 @@
-// Written by Jürgen Moßgraber - mossgrabers.de
+﻿// Written by Jürgen Moßgraber - mossgrabers.de
 // (c) 2017-2018
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
@@ -95,12 +95,11 @@ public abstract class AbstractTrackMode extends BaseMode
             final ITrack selTrack = tb.getSelectedItem ();
             if (selTrack != null && selTrack.getIndex () == index)
             {
-                // If it is a group display child channels of group, otherwise jump into device
-                // mode
+                // If it is a group display child channels of group, otherwise toggle rec arm
                 if (selTrack.isGroup ())
                     tb.selectChildren ();
                 else
-                    this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_DEVICE, ButtonEvent.DOWN);
+                    track.toggleRecArm ();
             }
             else
                 track.select ();
