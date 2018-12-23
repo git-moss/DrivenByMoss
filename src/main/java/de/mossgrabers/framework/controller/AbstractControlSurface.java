@@ -919,7 +919,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      *
      * @param buttonID The button CC to check
      */
-    private void checkButtonState (final int buttonID)
+    protected void checkButtonState (final int buttonID)
     {
         if (this.buttonStates[buttonID] != ButtonEvent.DOWN)
             return;

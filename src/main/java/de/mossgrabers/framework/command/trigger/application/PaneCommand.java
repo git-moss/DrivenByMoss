@@ -25,14 +25,14 @@ public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> 
     /** The available panels. */
     public enum Panels
     {
-    /** Note editor. */
-    NOTE,
-    /** Automation editor. */
-    AUTOMATION,
-    /** Toggle device pane. */
-    DEVICE,
-    /** Mixer. */
-    MIXER
+        /** Note editor. */
+        NOTE,
+        /** Automation editor. */
+        AUTOMATION,
+        /** Toggle device pane. */
+        DEVICE,
+        /** Mixer. */
+        MIXER
     }
 
     private Panels panel;

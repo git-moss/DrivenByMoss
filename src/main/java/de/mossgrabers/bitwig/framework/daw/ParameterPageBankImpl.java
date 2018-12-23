@@ -127,7 +127,7 @@ public class ParameterPageBankImpl implements IParameterPageBank
 
     /** {@inheritDoc} */
     @Override
-    public void scrollTo (int position, boolean adjustPage)
+    public void scrollTo (final int position, final boolean adjustPage)
     {
         // Not supported
     }
@@ -242,7 +242,7 @@ public class ParameterPageBankImpl implements IParameterPageBank
 
     /** {@inheritDoc} */
     @Override
-    public void selectItemAtPosition (int position)
+    public void selectItemAtPosition (final int position)
     {
         // Intentionally empty
     }

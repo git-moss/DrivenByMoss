@@ -229,7 +229,7 @@ public class PolySequencerView extends AbstractSequencerView<PushControlSurface,
     @Override
     public void updateNoteMapping ()
     {
-        int [] matrix = this.scales.getNoteMatrix ();
+        final int [] matrix = this.scales.getNoteMatrix ();
         for (int i = this.scales.getStartNote () + this.sequencerSteps; i < this.scales.getEndNote (); i++)
             matrix[i] = -1;
         this.delayedUpdateNoteMapping (matrix);

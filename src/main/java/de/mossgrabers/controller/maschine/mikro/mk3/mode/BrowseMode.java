@@ -47,7 +47,7 @@ public class BrowseMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnobTouch (int index, boolean isTouched)
+    public void onValueKnobTouch (final int index, final boolean isTouched)
     {
         if (!isTouched)
             return;

@@ -188,7 +188,7 @@ public class GraphicsContextImpl implements IGraphicsContext
 
     /** {@inheritDoc} */
     @Override
-    public void drawTextInHeight (String text, double x, double y, double height, ColorEx color, ColorEx backgroundColor, double fontSize)
+    public void drawTextInHeight (final String text, final double x, final double y, final double height, final ColorEx color, final ColorEx backgroundColor, final double fontSize)
     {
         if (text == null || text.length () == 0)
             return;

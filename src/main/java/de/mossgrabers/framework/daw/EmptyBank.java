@@ -99,7 +99,7 @@ public class EmptyBank<T extends IItem> extends AbstractBank<T>
 
     /** {@inheritDoc} */
     @Override
-    public void scrollTo (int position, boolean adjustPage)
+    public void scrollTo (final int position, final boolean adjustPage)
     {
         // Intentionally empty
     }

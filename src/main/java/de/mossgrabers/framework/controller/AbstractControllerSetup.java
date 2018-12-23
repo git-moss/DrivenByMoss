@@ -235,6 +235,53 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
 
     /**
+     * Register a (global) trigger command for all views and assign it to a MIDI CC.
+     *
+     * @param commandID The ID of the command to register
+     * @param midiCC The midi CC
+     * @param midiChannel The midi channel to assign to
+     * @param command The command to register
+     */
+    protected void addTriggerCommand (final Integer commandID, final int midiCC, final int midiChannel, final TriggerCommand command)
+    {
+        this.addTriggerCommand (commandID, midiCC, midiChannel, command, 0);
+    }
+
+
+    /**
+     * Register a (global) trigger command for all views and assign it to a MIDI CC.
+     *
+     * @param commandID The ID of the command to register
+     * @param midiCC The midi CC
+     * @param midiChannel The midi channel to assign to
+     * @param command The command to register
+     * @param deviceIndex The index of the device
+     */
+    protected void addTriggerCommand (final Integer commandID, final int midiCC, final int midiChannel, final TriggerCommand command, final int deviceIndex)
+    {
+        final S surface = this.surfaces.get (deviceIndex);
+        surface.getViewManager ().registerTriggerCommand (commandID, command);
+        surface.assignTriggerCommand (midiCC, midiChannel, commandID);
+    }
+
+
+    /**
+     * Register a (global) continuous command for all views and assign it to a MIDI CC.
+     *
+     * @param commandID The ID of the command to register
+     * @param midiCC The midi CC
+     * @param midiChannel The midi channel to assign to
+     * @param command The command to register
+     */
+    protected void addContinuousCommand (final Integer commandID, final int midiCC, final int midiChannel, final ContinuousCommand command)
+    {
+        final S surface = this.surfaces.get (0);
+        surface.getViewManager ().registerContinuousCommand (commandID, command);
+        surface.assignContinuousCommand (midiCC, midiChannel, commandID);
+    }
+
+
+    /**
      * Register a (global) continuous command for all views and assign it to a MIDI CC.
      *
      * @param commandID The ID of the command to register

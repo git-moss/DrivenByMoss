@@ -25,7 +25,7 @@ public class GridButtonCommand extends AbstractTriggerCommand<MaschineMikroMk3Co
 
     /**
      * Constructor.
-     * 
+     *
      * @param index The index of the button
      * @param model The model
      * @param surface The surface

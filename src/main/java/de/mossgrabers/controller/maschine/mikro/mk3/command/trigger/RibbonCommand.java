@@ -23,7 +23,7 @@ public class RibbonCommand extends AbstractTriggerCommand<MaschineMikroMk3Contro
 
     /**
      * Constructor.
-     * 
+     *
      * @param model The model
      * @param surface The surface
      * @param modes The modes to toggle

@@ -25,7 +25,7 @@ public interface IValueChanger
      *
      * @return The value
      */
-    int getFractionValue ();
+    double getFractionValue ();
 
 
     /**

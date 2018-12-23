@@ -20,7 +20,7 @@ public class ToggleDuplicateButtonCommand extends AbstractTriggerCommand<Maschin
 {
     /**
      * Constructor.
-     * 
+     *
      * @param model The model
      * @param surface The surface
      */

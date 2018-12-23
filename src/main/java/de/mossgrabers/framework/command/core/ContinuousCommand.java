@@ -9,6 +9,7 @@ package de.mossgrabers.framework.command.core;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
+@FunctionalInterface
 public interface ContinuousCommand
 {
     /**

@@ -97,7 +97,7 @@ public class DrumView extends DrumViewBase
             // If the instrument of the pad was selected for editing, try to select it again
             if (isNested)
             {
-                IDrumPad selectedItem = cdDrumPadBank.getItem (playedPad % pageSize);
+                final IDrumPad selectedItem = cdDrumPadBank.getItem (playedPad % pageSize);
                 if (selectedItem != null)
                     selectedItem.enter ();
             }

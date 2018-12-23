@@ -861,7 +861,7 @@ public class Scales
 
 
     /**
-     * Overwrite to hook in translation for grids who do not send midi notes 36-100.
+     * Overwrite to hook in translation for grids which do not send midi notes 36-100.
      *
      * @param matrix The matrix to translate
      * @return The modified matrix

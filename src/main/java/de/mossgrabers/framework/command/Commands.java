@@ -230,6 +230,8 @@ public interface Commands
 
     /** Button to toggle the repeat command. */
     Integer COMMAND_REPEAT                   = Integer.valueOf (102);
+    /** Button to redo a command. */
+    Integer COMMAND_REDO                     = Integer.valueOf (103);
 
     /** The automation read command. */
     Integer COMMAND_AUTOMATION_READ          = Integer.valueOf (110);

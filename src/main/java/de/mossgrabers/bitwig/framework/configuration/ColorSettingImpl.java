@@ -55,7 +55,7 @@ public class ColorSettingImpl extends AbstractSetting<double []> implements ICol
     @Override
     public void set (final ColorEx color)
     {
-        this.set (color.getRed () / 255.0, color.getGreen () / 255.0, color.getBlue () / 255.0);
+        this.set (color.getRed (), color.getGreen (), color.getBlue ());
     }
 
 

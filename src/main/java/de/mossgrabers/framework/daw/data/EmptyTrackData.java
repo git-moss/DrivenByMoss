@@ -480,7 +480,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setNoteRepeatLength (double length)
+    public void setNoteRepeatLength (final double length)
     {
         // Intentionally empty
     }

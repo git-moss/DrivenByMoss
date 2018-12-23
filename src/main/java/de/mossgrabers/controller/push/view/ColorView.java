@@ -28,12 +28,12 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     /** What should the color be selected for? */
     public enum SelectMode
     {
-    /** Select a track color. */
-    MODE_TRACK,
-    /** Select a layer color. */
-    MODE_LAYER,
-    /** Select a clip color. */
-    MODE_CLIP
+        /** Select a track color. */
+        MODE_TRACK,
+        /** Select a layer color. */
+        MODE_LAYER,
+        /** Select a clip color. */
+        MODE_CLIP
     }
 
     private SelectMode mode;

@@ -24,6 +24,6 @@ public class KontrolOSCControllerDefinition extends DefaultControllerDefinition
      */
     public KontrolOSCControllerDefinition ()
     {
-        super ("", "Jürgen Moßgraber", "1.20", EXTENSION_ID, "Komplete Kontrol Mk II", "Native Instruments", 1, 0);
+        super ("", "Jürgen Moßgraber", "1.20", EXTENSION_ID, "Komplete Kontrol Mk II (OSC)", "Native Instruments", 1, 0);
     }
 }

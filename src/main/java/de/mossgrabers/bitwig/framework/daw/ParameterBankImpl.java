@@ -141,7 +141,7 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
 
     /** {@inheritDoc} */
     @Override
-    public void scrollTo (int position, boolean adjustPage)
+    public void scrollTo (final int position, final boolean adjustPage)
     {
         // Not supported
     }

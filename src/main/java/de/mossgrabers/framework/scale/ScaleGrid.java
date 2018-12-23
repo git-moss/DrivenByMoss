@@ -14,10 +14,10 @@ public class ScaleGrid
     /** Orientation of the layout. */
     public enum Orientation
     {
-    /** Lower notes are on the bottom, higher notes on the top. */
-    ORIENT_UP,
-    /** Lower notes are on the left, higher notes on the right. */
-    ORIENT_RIGHT
+        /** Lower notes are on the bottom, higher notes on the top. */
+        ORIENT_UP,
+        /** Lower notes are on the left, higher notes on the right. */
+        ORIENT_RIGHT
     }
 
     private final Scale  scale;

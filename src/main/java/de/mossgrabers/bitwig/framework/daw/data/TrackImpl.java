@@ -209,7 +209,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setNoteRepeatLength (double length)
+    public void setNoteRepeatLength (final double length)
     {
         // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/20
     }

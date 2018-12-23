@@ -21,7 +21,7 @@ public class SendMode extends BaseMode
 
     /**
      * Constructor.
-     * 
+     *
      * @param sendIndex The send index
      * @param surface The control surface
      * @param model The model

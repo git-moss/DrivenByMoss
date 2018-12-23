@@ -78,7 +78,10 @@ public class ModelImpl extends AbstractModel
         final int numScenes = this.modelSetup.getNumScenes ();
         if (this.modelSetup.hasFlatTrackList ())
         {
-            tb = controllerHost.createMainTrackBank (numTracks, numSends, numScenes);
+            if (this.modelSetup.hasFullFlatTrackList ())
+                tb = controllerHost.createTrackBank (numTracks, numSends, numScenes, true);
+            else
+                tb = controllerHost.createMainTrackBank (numTracks, numSends, numScenes);
             tb.followCursorTrack (this.cursorTrack);
         }
         else

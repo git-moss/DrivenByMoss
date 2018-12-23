@@ -23,10 +23,10 @@ public class KeyCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCon
     /** The direction of the cursor. */
     public enum Key
     {
-    /** The enter key. */
-    ENTER,
-    /** The escape key. */
-    ESCAPE
+        /** The enter key. */
+        ENTER,
+        /** The escape key. */
+        ESCAPE
     }
 
     protected Key key;

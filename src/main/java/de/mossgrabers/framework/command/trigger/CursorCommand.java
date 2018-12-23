@@ -26,14 +26,14 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
     /** The direction of the cursor. */
     public enum Direction
     {
-    /** Move left. */
-    LEFT,
-    /** Move right. */
-    RIGHT,
-    /** Move up. */
-    UP,
-    /** Move down. */
-    DOWN
+        /** Move left. */
+        LEFT,
+        /** Move right. */
+        RIGHT,
+        /** Move up. */
+        UP,
+        /** Move down. */
+        DOWN
     }
 
     protected Direction direction;

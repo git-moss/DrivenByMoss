@@ -20,7 +20,7 @@ public class ToggleFixedVelCommand extends AbstractTriggerCommand<MaschineMikroM
 {
     /**
      * Constructor.
-     * 
+     *
      * @param model The model
      * @param surface The surface
      */

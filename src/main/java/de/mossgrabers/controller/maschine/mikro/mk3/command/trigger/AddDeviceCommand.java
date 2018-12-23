@@ -24,7 +24,7 @@ public class AddDeviceCommand extends AddEffectCommand<MaschineMikroMk3ControlSu
 {
     /**
      * Constructor.
-     * 
+     *
      * @param model The model
      * @param surface The surface
      */

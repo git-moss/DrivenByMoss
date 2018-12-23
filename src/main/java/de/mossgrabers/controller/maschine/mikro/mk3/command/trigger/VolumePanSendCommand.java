@@ -66,7 +66,7 @@ public class VolumePanSendCommand extends AbstractTriggerCommand<MaschineMikroMk
             return Modes.MODE_VOLUME;
 
         // Move up, again if outside range return Volume
-        int newMode = currentMode.intValue () + 1;
+        final int newMode = currentMode.intValue () + 1;
         if (newMode > Modes.MODE_SEND8.intValue ())
             return Modes.MODE_VOLUME;
 
