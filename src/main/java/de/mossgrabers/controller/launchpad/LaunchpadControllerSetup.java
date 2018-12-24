@@ -149,8 +149,8 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
-        final IMidiInput input = midiAccess.createInput (this.isPro ? "Novation Launchpad Pro" : "Novation Launchpad MkII",
-                "80????" /* Note off */, "90????" /* Note on */);
+        final IMidiInput input = midiAccess.createInput ("Pads", "80????" /* Note off */,
+                "90????" /* Note on */);
         final LaunchpadControlSurface surface = new LaunchpadControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, this.isPro);
         this.surfaces.add (surface);
         surface.setDisplay (new DummyDisplay (this.host));

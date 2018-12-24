@@ -119,10 +119,10 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
-        midiAccess.createInput (1, "Komplete Kontrol MkII", "80????" /* Note off */,
-                "90????" /* Note on */, "B0????" /* Sustainpedal + Modulation + Strip */,
-                "D0????" /* Channel Aftertouch */, "E0????" /* Pitchbend */);
-        this.surfaces.add (new KontrolMkIIControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, midiAccess.createInput ("Komplete Kontrol MkII Control")));
+        midiAccess.createInput (1, "Keyboard", "80????" /* Note off */, "90????" /* Note on */,
+                "B0????" /* Sustainpedal + Modulation + Strip */, "D0????" /* Channel Aftertouch */,
+                "E0????" /* Pitchbend */);
+        this.surfaces.add (new KontrolMkIIControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, midiAccess.createInput (null)));
     }
 
 

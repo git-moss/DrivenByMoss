@@ -222,8 +222,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
-        final IMidiInput input = midiAccess.createInput (this.isPush2 ? "Ableton Push 2" : "Ableton Push 1",
-                "80????" /* Note off */, "90????" /* Note on */, "B040??" /* Sustainpedal */);
+        final IMidiInput input = midiAccess.createInput ("Pads", "80????" /* Note off */,
+                "90????" /* Note on */, "B040??" /* Sustainpedal */);
         final PushControlSurface surface = new PushControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
         surface.setDisplay (this.createDisplay (output));

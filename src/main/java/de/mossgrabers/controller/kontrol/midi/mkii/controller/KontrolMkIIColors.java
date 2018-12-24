@@ -31,16 +31,6 @@ public class KontrolMkIIColors
      */
     public static void addColors (final ColorManager colorManager)
     {
-        // TODO ?
-        // colorManager.registerColor (Scales.SCALE_COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK :
-        // PUSH1_COLOR2_BLACK);
-        // colorManager.registerColor (Scales.SCALE_COLOR_OCTAVE, isPush2 ? PUSH2_COLOR2_OCEAN_HI :
-        // PUSH1_COLOR2_OCEAN_HI);
-        // colorManager.registerColor (Scales.SCALE_COLOR_NOTE, isPush2 ? PUSH2_COLOR2_WHITE :
-        // PUSH1_COLOR2_WHITE);
-        // colorManager.registerColor (Scales.SCALE_COLOR_OUT_OF_SCALE, isPush2 ? PUSH2_COLOR_BLACK
-        // : PUSH1_COLOR_BLACK);
-
         colorManager.registerColor (AbstractMode.BUTTON_COLOR_OFF, 0);
         colorManager.registerColor (AbstractMode.BUTTON_COLOR_ON, 0);
         colorManager.registerColor (AbstractMode.BUTTON_COLOR_HI, 1);
