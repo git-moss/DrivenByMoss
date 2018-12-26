@@ -12,6 +12,10 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 
 /**
  * The Komplete Kontrol MkII control surface.
@@ -62,7 +66,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
     public static final int     KONTROL_NAVIGATE_SCENES         = 0x33;
 
     /** Transport navigation. */
-    public static final int     KONTROL_NAVIGATE_MOVE_TRANSPORT = 0x64; // TODO 0x34;
+    public static final int     KONTROL_NAVIGATE_MOVE_TRANSPORT = 0x64;             // TODO 0x34;
     /** Loop navigation. */
     public static final int     KONTROL_NAVIGATE_MOVE_LOOP      = 0x35;
 
@@ -98,6 +102,8 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
     };
 
     private int                 protocolVersion                 = 1;
+    private ValueCache          valueCache                      = new ValueCache ();
+    private Object              cacheLock                       = new Object ();
 
 
     /**
@@ -166,16 +172,20 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
      */
     public void sendKontrolTrackSysEx (final int stateID, final int value, final int track, final String info)
     {
-        final String asciiText = StringUtils.fixASCII (info);
+        this.sendKontrolTrackSysEx (stateID, value, track, StringUtils.fixASCII (info).chars ().toArray ());
+    }
 
-        final int length = asciiText.length ();
-        final int [] data = new int [3 + length];
-        data[0] = stateID;
-        data[1] = value;
-        data[2] = track;
-        for (int i = 0; i < length; i++)
-            data[3 + i] = asciiText.charAt (i);
-        this.sendKontrolSysEx (data);
+
+    /**
+     * Clear all cached values.
+     */
+    public void clearCache ()
+    {
+        synchronized (this.cacheLock)
+        {
+            this.valueCache.clearCache ();
+            this.clearButtonCache ();
+        }
     }
 
 
@@ -189,24 +199,20 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
      */
     public void sendKontrolTrackSysEx (final int stateID, final int value, final int track, final int [] info)
     {
+        synchronized (this.cacheLock)
+        {
+            if (this.valueCache.store (track, stateID, value, info))
+                return;
+        }
+
         final int [] data = new int [3 + info.length];
         data[0] = stateID;
         data[1] = value;
         data[2] = track;
         for (int i = 0; i < info.length; i++)
             data[3 + i] = info[i];
-        this.sendKontrolSysEx (data);
-    }
 
-
-    /**
-     * Send SysEx to the Kontrol.
-     *
-     * @param parameters The parameters to send
-     */
-    public void sendKontrolSysEx (final int [] parameters)
-    {
-        this.output.sendSysex ("F0 00 21 09 00 00 44 43 01 00" + StringUtils.toHexStr (parameters) + "F7");
+        this.output.sendSysex ("F0 00 21 09 00 00 44 43 01 00 " + StringUtils.toHexStr (data) + "F7");
     }
 
 
@@ -255,5 +261,64 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
     public void setProtocolVersion (final int protocolVersion)
     {
         this.protocolVersion = protocolVersion;
+    }
+
+    /**
+     * Caches the values of the sysex values.
+     */
+    private static class ValueCache
+    {
+        private final List<List<int []>> cache = new ArrayList<> (8);
+
+
+        /**
+         * Constructor.
+         */
+        public ValueCache ()
+        {
+            this.clearCache ();
+        }
+
+
+        /**
+         * Clear the cache.
+         */
+        public final void clearCache ()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                final List<int []> e = new ArrayList<> (128);
+                for (int j = 0; j < 128; j++)
+                    e.add (new int [0]);
+                this.cache.add (e);
+            }
+        }
+
+
+        /**
+         * Stores the value and data in the cache for the track and stateID.
+         *
+         * @param track The track number
+         * @param stateID The state id
+         * @param value The value
+         * @param data Further data
+         * @return False if cache was updated otherwise the given value and data are already stored
+         */
+        public boolean store (final int track, final int stateID, final int value, final int [] data)
+        {
+            final List<int []> trackItem = this.cache.get (track);
+            final int [] values = trackItem.get (stateID);
+
+            final int [] newValues = new int [1 + data.length];
+            newValues[0] = value;
+            if (data.length > 0)
+                System.arraycopy (data, 0, newValues, 1, data.length);
+
+            if (Arrays.equals (values, newValues))
+                return true;
+
+            trackItem.set (stateID, newValues);
+            return false;
+        }
     }
 }

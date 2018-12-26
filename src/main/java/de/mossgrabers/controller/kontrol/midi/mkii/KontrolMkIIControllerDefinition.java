@@ -38,7 +38,7 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
         final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
         switch (os)
         {
-            // TODO Test
+            // TODO Lookup with "-" seems to be broken
             case MAC:
             case WINDOWS:
                 for (int i = 1; i <= 16; i++)
@@ -56,9 +56,6 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
                 break;
 
             case LINUX:
-                // TODO can we display an error?
-                break;
-
             default:
                 // Not supported
                 break;

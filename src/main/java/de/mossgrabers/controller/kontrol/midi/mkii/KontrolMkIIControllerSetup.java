@@ -36,6 +36,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.ViewManager;
 
 
@@ -75,6 +76,17 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         KontrolMkIIColors.addColors (this.colorManager);
         this.valueChanger = new DefaultValueChanger (128, 0.2, 0.05);
         this.configuration = new KontrolMkIIConfiguration (this.valueChanger);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void init ()
+    {
+        if (OperatingSystem.get () == OperatingSystem.LINUX)
+            throw new RuntimeException ("Komplete Kontrol MkII is not supported on Linux since there is no Native Instruments DAW Integration Host.");
+
+        super.init ();
     }
 
 
@@ -162,28 +174,26 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     protected void registerContinuousCommands ()
     {
         final KontrolMkIIControlSurface surface = this.getSurface ();
-        final ITrackBank trackBank = this.model.getTrackBank ();
 
         this.addContinuousCommand (CONT_COMMAND_HELLO, KontrolMkIIControlSurface.CMD_HELLO, 15, value -> {
             surface.setProtocolVersion (value);
 
-            // TODO Initial flush of the whole DAW state; do not send before this...
-            // this.host.scheduleTask ( () -> this.writer.flush (true), 1000);
-
+            // Initial flush of the whole DAW state...
+            surface.clearCache ();
         });
 
         this.addContinuousCommand (CONT_COMMAND_MOVE_TRACK, KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, 15, value -> {
             if (value == 1)
-                trackBank.selectNextItem ();
+                this.model.getTrackBank ().selectNextItem ();
             else
-                trackBank.selectPreviousItem ();
+                this.model.getTrackBank ().selectPreviousItem ();
         });
 
         this.addContinuousCommand (CONT_COMMAND_MOVE_TRACK_BANK, KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, 15, value -> {
             if (value == 1)
-                trackBank.selectNextPage ();
+                this.model.getTrackBank ().selectNextPage ();
             else
-                trackBank.selectPreviousPage ();
+                this.model.getTrackBank ().selectPreviousPage ();
         });
 
         // TODO Not yet implemented on the Kontrol?!
@@ -203,16 +213,16 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
 
         // Move Loop 0x35 -1.1 Move Loop left/right (4D Encoder)
 
-        this.addContinuousCommand (CONT_COMMAND_TRACK_SELECT, KontrolMkIIControlSurface.KONTROL_BUTTON_SELECT, 15, value -> trackBank.getItem (value).select ());
-        this.addContinuousCommand (CONT_COMMAND_TRACK_MUTE, KontrolMkIIControlSurface.KONTROL_BUTTON_MUTE, 15, value -> trackBank.getItem (value).toggleMute ());
-        this.addContinuousCommand (CONT_COMMAND_TRACK_SOLO, KontrolMkIIControlSurface.KONTROL_BUTTON_SOLO, 15, value -> trackBank.getItem (value).toggleSolo ());
-        this.addContinuousCommand (CONT_COMMAND_TRACK_ARM, KontrolMkIIControlSurface.KONTROL_BUTTON_ARM, 15, value -> trackBank.getItem (value).toggleRecArm ());
+        this.addContinuousCommand (CONT_COMMAND_TRACK_SELECT, KontrolMkIIControlSurface.KONTROL_BUTTON_SELECT, 15, value -> this.model.getTrackBank ().getItem (value).select ());
+        this.addContinuousCommand (CONT_COMMAND_TRACK_MUTE, KontrolMkIIControlSurface.KONTROL_BUTTON_MUTE, 15, value -> this.model.getTrackBank ().getItem (value).toggleMute ());
+        this.addContinuousCommand (CONT_COMMAND_TRACK_SOLO, KontrolMkIIControlSurface.KONTROL_BUTTON_SOLO, 15, value -> this.model.getTrackBank ().getItem (value).toggleSolo ());
+        this.addContinuousCommand (CONT_COMMAND_TRACK_ARM, KontrolMkIIControlSurface.KONTROL_BUTTON_ARM, 15, value -> this.model.getTrackBank ().getItem (value).toggleRecArm ());
 
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = trackBank.getItem (i);
-            this.addContinuousCommand (Integer.valueOf (CONT_COMMAND_TRACK_VOLUME + i), KontrolMkIIControlSurface.KONTROL_KNOB_VOLUME + i, 15, value -> track.changeVolume (value));
-            this.addContinuousCommand (Integer.valueOf (CONT_COMMAND_TRACK_PAN + i), KontrolMkIIControlSurface.KONTROL_KNOB_PAN + i, 15, value -> track.changePan (value));
+            final int index = i;
+            this.addContinuousCommand (Integer.valueOf (CONT_COMMAND_TRACK_VOLUME + i), KontrolMkIIControlSurface.KONTROL_KNOB_VOLUME + i, 15, value -> this.model.getTrackBank ().getItem (index).changeVolume (value));
+            this.addContinuousCommand (Integer.valueOf (CONT_COMMAND_TRACK_PAN + i), KontrolMkIIControlSurface.KONTROL_KNOB_PAN + i, 15, value -> this.model.getTrackBank ().getItem (index).changePan (value));
         }
     }
 
@@ -269,8 +279,6 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     {
         final KontrolMkIIControlSurface surface = this.getSurface ();
 
-        // TODO Cache all data and send updates only on change
-
         final int [] vuData = new int [16];
 
         final ITrackBank trackBank = this.model.getTrackBank ();
@@ -295,8 +303,8 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
             vuData[j] = track.getVuLeft ();
             vuData[j + 1] = track.getVuRight ();
 
-            surface.sendCommand (0x50 + i, track.getVolume ());
-            surface.sendCommand (0x58 + i, track.getPan ());
+            surface.updateButton (KontrolMkIIControlSurface.KONTROL_KNOB_VOLUME + i, track.getVolume ());
+            surface.updateButton (KontrolMkIIControlSurface.KONTROL_KNOB_PAN + i, track.getPan ());
         }
 
         surface.sendKontrolTrackSysEx (0x49, 2, 0, vuData);
@@ -306,12 +314,13 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         final int selIndex = sel != null ? sel.getIndex () : -1;
         final boolean canScrollLeft = selIndex > 0 || trackBank.canScrollBackwards ();
         final boolean canScrollRight = selIndex >= 0 && selIndex < 7 && trackBank.getItem (selIndex + 1).doesExist () || trackBank.canScrollForwards ();
-        surface.sendCommand (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, (canScrollLeft ? 1 : 0) + (canScrollRight ? 2 : 0));
-        surface.sendCommand (KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, (trackBank.canScrollBackwards () ? 1 : 0) + (trackBank.canScrollForwards () ? 2 : 0));
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, (canScrollLeft ? 1 : 0) + (canScrollRight ? 2 : 0));
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, (trackBank.canScrollBackwards () ? 1 : 0) + (trackBank.canScrollForwards () ? 2 : 0));
 
-        // TODO Is anything lit?
-        surface.sendCommand (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, 3);
-        surface.sendCommand (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, 3);
+        // TODO Not yet implemented on the Kontrol?!
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, 3);
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, 3);
+
     }
 
 

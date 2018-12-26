@@ -462,6 +462,12 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
+     * Clear the cached lighting state of all buttons.
+     */
+    void clearButtonCache ();
+
+
+    /**
      * Check if the midi CC belongs to a button
      *
      * @param cc The CC to check
