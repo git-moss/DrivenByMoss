@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.maschine.mikro.mk3;
@@ -14,13 +14,9 @@ import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.ToggleFixedV
 import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.VolumePanSendCommand;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
 import de.mossgrabers.controller.maschine.mikro.mk3.mode.BrowseMode;
-import de.mossgrabers.controller.maschine.mikro.mk3.mode.DeviceMode;
 import de.mossgrabers.controller.maschine.mikro.mk3.mode.Modes;
-import de.mossgrabers.controller.maschine.mikro.mk3.mode.PanMode;
 import de.mossgrabers.controller.maschine.mikro.mk3.mode.PositionMode;
-import de.mossgrabers.controller.maschine.mikro.mk3.mode.SendMode;
 import de.mossgrabers.controller.maschine.mikro.mk3.mode.TempoMode;
-import de.mossgrabers.controller.maschine.mikro.mk3.mode.VolumeMode;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.ClipView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.DrumView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.MuteView;
@@ -66,6 +62,10 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
+import de.mossgrabers.framework.mode.track.SelectedPanMode;
+import de.mossgrabers.framework.mode.track.SelectedSendMode;
+import de.mossgrabers.framework.mode.track.SelectedVolumeMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.ViewManager;
 
@@ -186,15 +186,15 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
 
         modeManager.registerMode (Modes.MODE_BROWSE, new BrowseMode (surface, this.model));
 
-        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_VOLUME, new SelectedVolumeMode<> (surface, this.model));
+        modeManager.registerMode (Modes.MODE_PAN, new SelectedPanMode<> (surface, this.model));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode (i, surface, this.model));
+            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SelectedSendMode<> (i, surface, this.model));
 
         modeManager.registerMode (Modes.MODE_POSITION, new PositionMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_TEMPO, new TempoMode (surface, this.model));
 
-        modeManager.registerMode (Modes.MODE_DEVICE, new DeviceMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_DEVICE, new SelectedDeviceMode<> (surface, this.model));
 
         modeManager.setDefaultMode (Modes.MODE_VOLUME);
     }

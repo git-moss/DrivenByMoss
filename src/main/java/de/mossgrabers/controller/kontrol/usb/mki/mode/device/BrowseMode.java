@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.kontrol.usb.mki.mode.device;
@@ -42,7 +42,7 @@ public class BrowseMode extends AbstractKontrol1Mode
      */
     public BrowseMode (final Kontrol1ControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Browse", surface, model);
         this.selectionMode = SELECTION_OFF;
         this.filterColumn = 0;
     }
@@ -50,7 +50,7 @@ public class BrowseMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnobTouch (final int index, final boolean isTouched)
+    public void onKnobTouch (final int index, final boolean isTouched)
     {
         if (!isTouched)
             return;
@@ -287,7 +287,7 @@ public class BrowseMode extends AbstractKontrol1Mode
     @Override
     public void onMainKnobPressed ()
     {
-        this.onValueKnobTouch (7, true);
+        this.onKnobTouch (7, true);
     }
 
 
@@ -309,7 +309,7 @@ public class BrowseMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void scrollLeft ()
+    public void selectPreviousItem ()
     {
         this.model.getBrowser ().previousContentType ();
     }
@@ -317,7 +317,7 @@ public class BrowseMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void scrollRight ()
+    public void selectNextItem ()
     {
         this.model.getBrowser ().nextContentType ();
     }
@@ -325,7 +325,7 @@ public class BrowseMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void scrollUp ()
+    public void selectPreviousItemPage ()
     {
         // Intentionally empty
     }
@@ -333,7 +333,7 @@ public class BrowseMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void scrollDown ()
+    public void selectNextItemPage ()
     {
         // Intentionally empty
     }

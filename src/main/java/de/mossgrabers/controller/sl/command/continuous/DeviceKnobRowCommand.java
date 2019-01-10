@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.sl.command.continuous;
@@ -48,6 +48,6 @@ public class DeviceKnobRowCommand extends AbstractContinuousCommand<SLControlSur
         final ModeManager modeManager = this.surface.getModeManager ();
         if (!modeManager.isActiveOrTempMode (Modes.MODE_PARAMS))
             modeManager.setActiveMode (Modes.MODE_PARAMS);
-        modeManager.getMode (Modes.MODE_PARAMS).onValueKnob (this.index, v);
+        modeManager.getMode (Modes.MODE_PARAMS).onKnobValue (this.index, v);
     }
 }

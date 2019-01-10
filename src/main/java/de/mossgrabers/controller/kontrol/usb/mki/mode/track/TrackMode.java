@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.kontrol.usb.mki.mode.track;
@@ -30,7 +30,7 @@ public class TrackMode extends AbstractKontrol1Mode
      */
     public TrackMode (final Kontrol1ControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Track", surface, model);
     }
 
 
@@ -75,7 +75,7 @@ public class TrackMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack selectedTrack = tb.getSelectedItem ();

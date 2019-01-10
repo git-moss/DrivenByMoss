@@ -1,20 +1,25 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.maschine.mikro.mk3.mode;
+package de.mossgrabers.framework.mode.track;
 
-import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.SimpleMode;
 
 
 /**
- * The volume mode.
+ * The selected volume mode. All knobs control the panorama of the selected track.
+ *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class VolumeMode extends BaseMode
+public class SelectedVolumeMode<S extends IControlSurface<C>, C extends Configuration> extends SimpleMode<S, C>
 {
     /**
      * Constructor.
@@ -22,15 +27,15 @@ public class VolumeMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public VolumeMode (final MaschineMikroMk3ControlSurface surface, final IModel model)
+    public SelectedVolumeMode (final S surface, final IModel model)
     {
-        super (surface, model);
+        super ("Volume", surface, model, false);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (selectedTrack != null)
@@ -40,7 +45,7 @@ public class VolumeMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnobTouch (final int index, final boolean isTouched)
+    public void onKnobTouch (final int index, final boolean isTouched)
     {
         if (!isTouched)
             return;

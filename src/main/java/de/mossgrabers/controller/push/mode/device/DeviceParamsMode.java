@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.push.mode.device;
@@ -58,7 +58,7 @@ public class DeviceParamsMode extends BaseMode
      */
     public DeviceParamsMode (final PushControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Parameters", surface, model);
 
         this.isTemporary = false;
         this.showDevices = true;
@@ -89,7 +89,7 @@ public class DeviceParamsMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
     }
@@ -97,7 +97,7 @@ public class DeviceParamsMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnobTouch (final int index, final boolean isTouched)
+    public void onKnobTouch (final int index, final boolean isTouched)
     {
         this.isKnobTouched[index] = isTouched;
 

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.sl.view;
@@ -169,12 +169,12 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
 
         if (cm == Modes.MODE_FRAME)
         {
-            modeManager.getMode (Modes.MODE_FRAME).onRowButton (0, index, event);
+            modeManager.getMode (Modes.MODE_FRAME).onButton (0, index, event);
             return;
         }
         else if (cm == Modes.MODE_BROWSER)
         {
-            modeManager.getMode (Modes.MODE_BROWSER).onRowButton (0, index, event);
+            modeManager.getMode (Modes.MODE_BROWSER).onButton (0, index, event);
             return;
         }
 

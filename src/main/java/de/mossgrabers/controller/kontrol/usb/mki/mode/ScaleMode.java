@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.kontrol.usb.mki.mode;
@@ -12,7 +12,7 @@ import de.mossgrabers.framework.scale.Scales;
 
 
 /**
- * Mixes colors mode.
+ * Scales mode.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -29,7 +29,7 @@ public class ScaleMode extends AbstractKontrol1Mode
      */
     public ScaleMode (final Kontrol1ControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Scales", surface, model);
         this.isTemporary = true;
         this.scales = this.model.getScales ();
     }
@@ -51,7 +51,7 @@ public class ScaleMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         final boolean isInc = value <= 63;
 
@@ -90,7 +90,7 @@ public class ScaleMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void scrollLeft ()
+    public void selectPreviousItem ()
     {
         this.scales.prevScale ();
         this.updateScalePreferences ();
@@ -99,7 +99,7 @@ public class ScaleMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void scrollRight ()
+    public void selectNextItem ()
     {
         this.scales.nextScale ();
         this.updateScalePreferences ();
@@ -108,18 +108,18 @@ public class ScaleMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void scrollUp ()
+    public void selectPreviousItemPage ()
     {
-        this.scales.nextScaleOffset ();
+        this.scales.prevScaleOffset ();
         this.updateScalePreferences ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void scrollDown ()
+    public void selectNextItemPage ()
     {
-        this.scales.prevScaleOffset ();
+        this.scales.nextScaleOffset ();
         this.updateScalePreferences ();
     }
 

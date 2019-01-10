@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.push.mode.track;
@@ -39,12 +39,13 @@ public abstract class AbstractTrackMode extends BaseMode
     /**
      * Constructor.
      *
+     * @param name The name of the mode
      * @param surface The control surface
      * @param model The model
      */
-    public AbstractTrackMode (final PushControlSurface surface, final IModel model)
+    public AbstractTrackMode (final String name, final PushControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super (name, surface, model);
         this.isTemporary = false;
 
         for (int i = 0; i < 8; i++)

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.push.mode;
@@ -36,7 +36,7 @@ public class ScalesMode extends BaseMode
      */
     public ScalesMode (final PushControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Scale", surface, model);
         this.isTemporary = false;
         this.scales = model.getScales ();
     }
@@ -44,7 +44,7 @@ public class ScalesMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         if (index != 0)
             return;

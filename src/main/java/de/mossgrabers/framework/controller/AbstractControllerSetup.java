@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.controller;
@@ -101,8 +101,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     @Override
     public void init ()
     {
-        this.configuration.init (this.settings);
-
+        this.initConfiguration ();
         this.createScales ();
         this.createModel ();
         this.createSurface ();
@@ -135,6 +134,15 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     {
         for (final S surface: this.surfaces)
             surface.flush ();
+    }
+
+
+    /**
+     * Initialize the configuration settings.
+     */
+    protected void initConfiguration ()
+    {
+        this.configuration.init (this.settings);
     }
 
 

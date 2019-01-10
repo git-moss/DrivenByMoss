@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.sl.mode.device;
@@ -32,7 +32,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
      */
     public DeviceParamsMode (final SLControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Parameters", surface, model);
         this.isTemporary = false;
     }
 
@@ -61,7 +61,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
     }
@@ -103,7 +103,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
 
     /** {@inheritDoc} */
     @Override
-    public void onRowButton (final int row, final int index, final ButtonEvent event)
+    public void onButton (final int row, final int index, final ButtonEvent event)
     {
         // Intentionally empty
     }

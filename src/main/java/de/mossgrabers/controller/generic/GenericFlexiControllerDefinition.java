@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic;
@@ -24,6 +24,6 @@ public class GenericFlexiControllerDefinition extends DefaultControllerDefinitio
      */
     public GenericFlexiControllerDefinition ()
     {
-        super ("", "Jürgen Moßgraber", "1.20", EXTENSION_ID, "Flexi", "Generic", 1, 1);
+        super ("", "Jürgen Moßgraber", "2.00", EXTENSION_ID, "Flexi", "Generic", 1, 1);
     }
 }

@@ -1,12 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.kontrol.usb.mki.command.trigger;
 
 import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.IKontrol1Mode;
 import de.mossgrabers.framework.daw.IModel;
 
 
@@ -34,7 +33,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void scrollLeft ()
     {
-        ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTempMode ()).scrollLeft ();
+        this.surface.getModeManager ().getActiveOrTempMode ().selectPreviousItem ();
     }
 
 
@@ -42,7 +41,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void scrollRight ()
     {
-        ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTempMode ()).scrollRight ();
+        this.surface.getModeManager ().getActiveOrTempMode ().selectNextItem ();
     }
 
 
@@ -50,7 +49,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void scrollUp ()
     {
-        ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTempMode ()).scrollUp ();
+        this.surface.getModeManager ().getActiveOrTempMode ().selectNextItemPage ();
     }
 
 
@@ -58,6 +57,6 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void scrollDown ()
     {
-        ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTempMode ()).scrollDown ();
+        this.surface.getModeManager ().getActiveOrTempMode ().selectPreviousItemPage ();
     }
 }

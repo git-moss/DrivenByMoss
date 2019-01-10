@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.push.command.continuous;
@@ -64,6 +64,6 @@ public class SmallKnobTouchCommand extends AbstractTriggerCommand<PushControlSur
         else
             modeManager.restoreMode ();
 
-        modeManager.getMode (Modes.MODE_TRANSPORT).onValueKnobTouch (this.isTempo ? 4 : 6, isTouched);
+        modeManager.getMode (Modes.MODE_TRANSPORT).onKnobTouch (this.isTempo ? 4 : 6, isTouched);
     }
 }

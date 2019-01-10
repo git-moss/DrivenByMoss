@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.sl.mode;
@@ -40,14 +40,14 @@ public class FrameMode extends AbstractMode<SLControlSurface, SLConfiguration>
      */
     public FrameMode (final SLControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Frame", surface, model);
         this.isTemporary = false;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onRowButton (final int row, final int index, final ButtonEvent event)
+    public void onButton (final int row, final int index, final ButtonEvent event)
     {
         if (event != ButtonEvent.DOWN)
             return;

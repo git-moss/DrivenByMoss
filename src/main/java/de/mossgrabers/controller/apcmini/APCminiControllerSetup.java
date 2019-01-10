@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.apcmini;
@@ -9,11 +9,7 @@ import de.mossgrabers.controller.apcmini.command.trigger.TrackSelectCommand;
 import de.mossgrabers.controller.apcmini.controller.APCminiColors;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.controller.apcmini.controller.APCminiScales;
-import de.mossgrabers.controller.apcmini.mode.DeviceMode;
 import de.mossgrabers.controller.apcmini.mode.Modes;
-import de.mossgrabers.controller.apcmini.mode.PanMode;
-import de.mossgrabers.controller.apcmini.mode.SendMode;
-import de.mossgrabers.controller.apcmini.mode.VolumeMode;
 import de.mossgrabers.controller.apcmini.view.BrowserView;
 import de.mossgrabers.controller.apcmini.view.DrumView;
 import de.mossgrabers.controller.apcmini.view.PlayView;
@@ -42,6 +38,10 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.device.DeviceMode;
+import de.mossgrabers.framework.mode.track.PanMode;
+import de.mossgrabers.framework.mode.track.SendMode;
+import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
@@ -179,11 +179,11 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     {
         final APCminiControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.MODE_PAN, new PanMode<> (surface, this.model, true));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode (i, surface, this.model));
-        modeManager.registerMode (Modes.MODE_DEVICE, new DeviceMode (surface, this.model));
+            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode<> (i, surface, this.model, true));
+        modeManager.registerMode (Modes.MODE_DEVICE, new DeviceMode<> (surface, this.model, true));
 
         modeManager.setDefaultMode (Modes.MODE_VOLUME);
     }

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.apc.mode;
@@ -28,7 +28,7 @@ public class SendMode extends BaseMode
      */
     public SendMode (final APCControlSurface surface, final IModel model, final int sendIndex)
     {
-        super (surface, model, 2, 0);
+        super ("Send " + sendIndex, surface, model, 2, 0);
         this.sendIndex = sendIndex;
     }
 

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.push.mode.track;
@@ -33,13 +33,13 @@ public class TrackMode extends AbstractTrackMode
      */
     public TrackMode (final PushControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Track", surface, model);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)
@@ -98,7 +98,7 @@ public class TrackMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnobTouch (final int index, final boolean isTouched)
+    public void onKnobTouch (final int index, final boolean isTouched)
     {
         final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)

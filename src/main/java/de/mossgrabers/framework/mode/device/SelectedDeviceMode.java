@@ -1,21 +1,27 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.maschine.mikro.mk3.mode;
+package de.mossgrabers.framework.mode.device;
 
-import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.mode.SimpleMode;
 
 
 /**
- * The device parameter mode.
+ * The selected device parameter mode. All knobs control the panorama of the selected parameter of
+ * the cursor device.
+ *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceMode extends BaseMode
+public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configuration> extends SimpleMode<S, C>
 {
     int index = 0;
 
@@ -26,15 +32,15 @@ public class DeviceMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public DeviceMode (final MaschineMikroMk3ControlSurface surface, final IModel model)
+    public SelectedDeviceMode (final S surface, final IModel model)
     {
-        super (surface, model);
+        super ("Parameters", surface, model, false);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         if (cursorDevice == null)
@@ -47,7 +53,7 @@ public class DeviceMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnobTouch (final int index, final boolean isTouched)
+    public void onKnobTouch (final int index, final boolean isTouched)
     {
         if (!isTouched)
             return;

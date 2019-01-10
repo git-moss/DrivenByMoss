@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.launchpad.mode;
@@ -7,8 +7,7 @@ package de.mossgrabers.controller.launchpad.mode;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.mode.SimpleMode;
 
 
 /**
@@ -16,32 +15,17 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class AbstractTrackMode extends AbstractMode<LaunchpadControlSurface, LaunchpadConfiguration>
+public class AbstractTrackMode extends SimpleMode<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     /**
      * Constructor.
      *
+     * @param name The name of the mode
      * @param surface The surface
      * @param model The model
      */
-    public AbstractTrackMode (final LaunchpadControlSurface surface, final IModel model)
+    public AbstractTrackMode (final String name, final LaunchpadControlSurface surface, final IModel model)
     {
-        super (surface, model);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateDisplay ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onRowButton (final int row, final int index, final ButtonEvent event)
-    {
-        // Intentionally empty
+        super (name, surface, model, true);
     }
 }

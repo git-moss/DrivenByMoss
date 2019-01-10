@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.push.mode;
@@ -24,13 +24,13 @@ public class ConfigurationMode extends BaseMode
      */
     public ConfigurationMode (final PushControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Configuration", surface, model);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         if (index == 0 || index == 1)
             this.surface.getConfiguration ().changePadThreshold (value);
@@ -41,7 +41,7 @@ public class ConfigurationMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnobTouch (final int index, final boolean isTouched)
+    public void onKnobTouch (final int index, final boolean isTouched)
     {
         this.isKnobTouched[index] = isTouched;
     }

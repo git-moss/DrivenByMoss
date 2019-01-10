@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.utils;
@@ -189,8 +189,7 @@ public class StringUtils
      */
     public static String toHexStr (final int number)
     {
-        final String v = Integer.toHexString (number).toUpperCase ();
-        return v.length () < 2 ? '0' + v : v;
+        return String.format ("%02X", Integer.valueOf (number));
     }
 
 

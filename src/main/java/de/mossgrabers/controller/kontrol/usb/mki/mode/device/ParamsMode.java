@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.kontrol.usb.mki.mode.device;
@@ -39,7 +39,7 @@ public class ParamsMode extends AbstractKontrol1Mode
      */
     public ParamsMode (final Kontrol1ControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Parameters", surface, model);
     }
 
 
@@ -74,7 +74,7 @@ public class ParamsMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
     }
@@ -106,7 +106,7 @@ public class ParamsMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void scrollLeft ()
+    public void selectPreviousItem ()
     {
         if (this.surface.isShiftPressed ())
             this.model.getCursorDevice ().getParameterPageBank ().scrollBackwards ();
@@ -117,7 +117,7 @@ public class ParamsMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void scrollRight ()
+    public void selectNextItem ()
     {
         if (this.surface.isShiftPressed ())
             this.model.getCursorDevice ().getParameterPageBank ().scrollForwards ();
@@ -128,23 +128,23 @@ public class ParamsMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void scrollUp ()
-    {
-        if (this.surface.isShiftPressed ())
-            this.model.getCursorDevice ().getDeviceBank ().scrollPageForwards ();
-        else
-            this.model.getCursorDevice ().selectNext ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollDown ()
+    public void selectPreviousItemPage ()
     {
         if (this.surface.isShiftPressed ())
             this.model.getCursorDevice ().getDeviceBank ().scrollPageBackwards ();
         else
             this.model.getCursorDevice ().selectPrevious ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItemPage ()
+    {
+        if (this.surface.isShiftPressed ())
+            this.model.getCursorDevice ().getDeviceBank ().scrollPageForwards ();
+        else
+            this.model.getCursorDevice ().selectNext ();
     }
 
 

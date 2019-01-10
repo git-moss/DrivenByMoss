@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.apc.mode;
@@ -24,7 +24,7 @@ public class CrossfadeMode extends BaseMode
      */
     public CrossfadeMode (final APCControlSurface surface, final IModel model)
     {
-        super (surface, model, 3, 64);
+        super ("Crossfade", surface, model, 3, 64);
     }
 
 
@@ -32,6 +32,7 @@ public class CrossfadeMode extends BaseMode
     @Override
     public void setValue (final int index, final int value)
     {
+        // TODO this is wrong
         this.model.getCurrentTrackBank ().getItem (index).setPan (value);
     }
 

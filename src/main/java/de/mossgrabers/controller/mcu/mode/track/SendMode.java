@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.mcu.mode.track;
@@ -28,13 +28,13 @@ public class SendMode extends AbstractTrackMode
      */
     public SendMode (final MCUControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Send", surface, model);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
         this.model.getCurrentTrackBank ().getItem (extenderOffset + index).getSendBank ().getItem (this.getCurrentSendIndex ()).changeValue (value);

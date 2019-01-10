@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.kontrol.usb.mki.mode;
@@ -21,13 +21,14 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
 {
     /**
      * Constructor.
-     *
+     * 
+     * @param name The name of the mode
      * @param surface The surface
      * @param model The model
      */
-    public AbstractKontrol1Mode (final Kontrol1ControlSurface surface, final IModel model)
+    public AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super (name, surface, model);
         this.isTemporary = false;
     }
 
@@ -61,9 +62,9 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     public void onMainKnob (final int value)
     {
         if (this.model.getValueChanger ().calcKnobSpeed (value) > 0)
-            this.scrollRight ();
+            this.selectNextItem ();
         else
-            this.scrollLeft ();
+            this.selectPreviousItem ();
     }
 
 
@@ -96,37 +97,5 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (selectedTrack != null)
             selectedTrack.toggleSolo ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollLeft ()
-    {
-        this.selectPreviousTrack ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollRight ()
-    {
-        this.selectNextTrack ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollUp ()
-    {
-        this.selectNextTrackBankPage (null, 8);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollDown ()
-    {
-        this.selectPreviousTrackBankPage (null, 8);
     }
 }

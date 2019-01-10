@@ -1,11 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic;
 
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.mode.Modes;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IValueObserver;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -25,6 +26,12 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.device.DeviceMode;
+import de.mossgrabers.framework.mode.track.PanMode;
+import de.mossgrabers.framework.mode.track.SendMode;
+import de.mossgrabers.framework.mode.track.TrackMode;
+import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.scale.Scales;
 
 import java.util.Set;
@@ -49,7 +56,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         super (factory, host, settings);
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new GenericFlexiConfiguration (this.valueChanger);
+        this.configuration = new GenericFlexiConfiguration (this.valueChanger, host);
     }
 
 
@@ -97,9 +104,30 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
     /** {@inheritDoc} */
     @Override
+    protected void createModes ()
+    {
+        final GenericFlexiControlSurface surface = this.getSurface ();
+        final ModeManager modeManager = surface.getModeManager ();
+        modeManager.registerMode (Modes.MODE_TRACK, new TrackMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.MODE_PAN, new PanMode<> (surface, this.model, true));
+        for (int i = 0; i < 8; i++)
+            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode<> (i, surface, this.model, true));
+        modeManager.registerMode (Modes.MODE_DEVICE, new DeviceMode<> (surface, this.model, true));
+
+        modeManager.setDefaultMode (Modes.MODE_VOLUME);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void startup ()
     {
-        this.host.scheduleTask ( () -> this.getSurface ().updateKeyTranslation (), 2000);
+        this.host.scheduleTask ( () -> {
+            final GenericFlexiControlSurface surface = this.getSurface ();
+            surface.getConfiguration ().clearNoteMap ();
+            surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
+        }, 2000);
     }
 
 
@@ -107,6 +135,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     @Override
     protected void createObservers ()
     {
+        this.configuration.addSettingObserver (GenericFlexiConfiguration.SLOT_CHANGE, this.getSurface ()::updateKeyTranslation);
+
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver (this::handleTrackChange);
         final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();

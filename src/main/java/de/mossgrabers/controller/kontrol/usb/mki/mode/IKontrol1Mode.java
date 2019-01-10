@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.kontrol.usb.mki.mode;
@@ -23,30 +23,6 @@ public interface IKontrol1Mode
      * The main knob was pressed.
      */
     void onMainKnobPressed ();
-
-
-    /**
-     * Scroll left.
-     */
-    void scrollLeft ();
-
-
-    /**
-     * Scroll right.
-     */
-    void scrollRight ();
-
-
-    /**
-     * Scroll up.
-     */
-    void scrollUp ();
-
-
-    /**
-     * Scroll down.
-     */
-    void scrollDown ();
 
 
     /**

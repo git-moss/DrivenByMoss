@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.push.mode;
@@ -38,7 +38,7 @@ public class NoteMode extends BaseMode
      */
     public NoteMode (final PushControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Note", surface, model);
     }
 
 
@@ -63,7 +63,7 @@ public class NoteMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
         switch (index)

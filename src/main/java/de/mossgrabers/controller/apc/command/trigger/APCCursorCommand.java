@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.apc.command.trigger;
@@ -45,7 +45,7 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     {
         final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
         if (activeMode != null)
-            activeMode.selectPreviousTrack ();
+            activeMode.selectPreviousItem ();
     }
 
 
@@ -55,7 +55,7 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     {
         final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
         if (activeMode != null)
-            activeMode.selectNextTrack ();
+            activeMode.selectNextItem ();
 
     }
 }

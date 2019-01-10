@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2018
+// (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.push.mode.device;
@@ -46,12 +46,13 @@ public class DeviceLayerMode extends BaseMode
     /**
      * Constructor.
      *
+     * @param name The name of the mode
      * @param surface The control surface
      * @param model The model
      */
-    public DeviceLayerMode (final PushControlSurface surface, final IModel model)
+    public DeviceLayerMode (final String name, final PushControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super (name, surface, model);
         this.isTemporary = false;
 
         for (int i = 0; i < 8; i++)
@@ -61,7 +62,7 @@ public class DeviceLayerMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnob (final int index, final int value)
+    public void onKnobValue (final int index, final int value)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IChannel channel = cd.getLayerOrDrumPadBank ().getSelectedItem ();
@@ -87,7 +88,7 @@ public class DeviceLayerMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onValueKnobTouch (final int index, final boolean isTouched)
+    public void onKnobTouch (final int index, final boolean isTouched)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IChannel channel = cd.getLayerOrDrumPadBank ().getSelectedItem ();
