@@ -24,6 +24,6 @@ public class OSCControllerDefinition extends DefaultControllerDefinition
      */
     public OSCControllerDefinition ()
     {
-        super ("", "Jürgen Moßgraber", "6.11", EXTENSION_ID, "OSC", "Open Sound Control", 1, 0);
+        super ("", "Jürgen Moßgraber", "6.12", EXTENSION_ID, "OSC", "Open Sound Control", 1, 0);
     }
 }

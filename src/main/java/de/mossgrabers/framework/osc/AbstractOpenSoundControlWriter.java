@@ -55,17 +55,20 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
      */
     public void flush ()
     {
-        try
+        synchronized (this.messages)
         {
-            this.logMessages (this.messages);
-            this.oscServer.sendBundle (this.messages);
-        }
-        catch (final IOException ex)
-        {
-            this.model.getHost ().error ("Could not send UDP message.", ex);
-        }
+            try
+            {
+                this.logMessages (this.messages);
+                this.oscServer.sendBundle (this.messages);
+            }
+            catch (final IOException ex)
+            {
+                this.model.getHost ().error ("Could not send UDP message.", ex);
+            }
 
-        this.messages.clear ();
+            this.messages.clear ();
+        }
     }
 
 

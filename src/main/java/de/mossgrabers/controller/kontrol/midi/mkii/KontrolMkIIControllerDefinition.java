@@ -38,7 +38,7 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
         final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
         switch (os)
         {
-            // TODO Lookup with "-" seems to be broken
+            // TODO Bugfix required: Lookup with "-" seems to be broken
             case MAC:
             case WINDOWS:
                 for (int i = 1; i <= 16; i++)

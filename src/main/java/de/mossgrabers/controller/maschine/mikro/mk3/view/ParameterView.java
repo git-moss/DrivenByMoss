@@ -58,15 +58,11 @@ public class ParameterView extends BaseView
         {
             case 0:
                 cursorDevice.getParameterBank ().scrollBackwards ();
-                this.model.getHost ().scheduleTask ( () -> {
-                    this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
-                }, 200);
+                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ()), 200);
                 break;
             case 1:
                 cursorDevice.getParameterBank ().scrollForwards ();
-                this.model.getHost ().scheduleTask ( () -> {
-                    this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
-                }, 200);
+                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ()), 200);
                 break;
             case 2:
                 cursorDevice.selectPrevious ();

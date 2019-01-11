@@ -165,9 +165,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
             return;
         this.offsetY = Math.max (0, this.offsetY - AbstractRaindropsView.NUM_OCTAVE);
         this.updateScale ();
-        this.surface.scheduleTask ( () -> {
-            this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.keyManager.map (0), this.keyManager.map (7)));
-        }, 10);
+        this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.keyManager.map (0), this.keyManager.map (7))), 10);
     }
 
 
@@ -180,9 +178,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final int numRows = this.getClip ().getNumRows ();
         this.offsetY = Math.min (numRows - AbstractRaindropsView.NUM_OCTAVE, this.offsetY + AbstractRaindropsView.NUM_OCTAVE);
         this.updateScale ();
-        this.surface.scheduleTask ( () -> {
-            this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.keyManager.map (0), this.keyManager.map (7)));
-        }, 10);
+        this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.keyManager.map (0), this.keyManager.map (7))), 10);
     }
 
 
