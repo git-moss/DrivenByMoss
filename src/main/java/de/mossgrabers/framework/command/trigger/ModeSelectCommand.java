@@ -8,6 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -42,7 +43,10 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.surface.getModeManager ().setActiveMode (this.modeId);
+        if (event != ButtonEvent.DOWN)
+            return;
+        final ModeManager modeManager = this.surface.getModeManager ();
+        modeManager.setActiveMode (this.modeId);
+        this.model.getHost ().showNotification (modeManager.getActiveOrTempMode ().getName ());
     }
 }

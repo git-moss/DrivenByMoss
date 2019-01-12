@@ -28,7 +28,7 @@ public class SendMode extends BaseMode
      */
     public SendMode (final APCControlSurface surface, final IModel model, final int sendIndex)
     {
-        super ("Send " + sendIndex, surface, model, 2, 0);
+        super ("Send " + (sendIndex + 1), surface, model, 2, 0);
         this.sendIndex = sendIndex;
     }
 
