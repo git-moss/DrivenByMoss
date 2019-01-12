@@ -128,7 +128,8 @@ public class DummyDisplay implements Display
     @Override
     public void notify (final String message)
     {
-        this.host.showNotification (message);
+        if (message != null)
+            this.host.showNotification (message);
     }
 
 

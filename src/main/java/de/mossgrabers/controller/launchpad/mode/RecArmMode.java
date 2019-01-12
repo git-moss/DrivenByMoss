@@ -4,8 +4,10 @@
 
 package de.mossgrabers.controller.launchpad.mode;
 
+import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.AbstractMode;
 
 
 /**
@@ -13,7 +15,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class RecArmMode extends AbstractTrackMode
+public class RecArmMode extends AbstractMode<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     /**
      * Constructor.
@@ -23,6 +25,6 @@ public class RecArmMode extends AbstractTrackMode
      */
     public RecArmMode (final LaunchpadControlSurface surface, final IModel model)
     {
-        super ("Rec Arm", surface, model);
+        super ("Rec Arm", surface, model, true);
     }
 }

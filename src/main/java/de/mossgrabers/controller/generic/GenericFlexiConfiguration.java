@@ -264,11 +264,11 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     /**
      * Handles changing the function selection by the user.
-     * 
+     *
      * @param index The index of the changed function
      * @param value The new value
      */
-    private void handleFunctionChange (final int index, String value)
+    private void handleFunctionChange (final int index, final String value)
     {
         if (this.commandIsUpdating.get ())
             return;

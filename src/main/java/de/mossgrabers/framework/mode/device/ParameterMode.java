@@ -8,8 +8,9 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.mode.SimpleMode;
+import de.mossgrabers.framework.mode.AbstractMode;
 
 
 /**
@@ -21,7 +22,7 @@ import de.mossgrabers.framework.mode.SimpleMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceMode<S extends IControlSurface<C>, C extends Configuration> extends SimpleMode<S, C>
+public class ParameterMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
 {
     /**
      * Constructor.
@@ -31,9 +32,10 @@ public class DeviceMode<S extends IControlSurface<C>, C extends Configuration> e
      * @param isAbsolute If true the value change is happending with a setter otherwise relative
      *            change method is used
      */
-    public DeviceMode (final S surface, final IModel model, final boolean isAbsolute)
+    public ParameterMode (final S surface, final IModel model, final boolean isAbsolute)
     {
         super ("Parameters", surface, model, isAbsolute);
+        this.isTemporary = false;
     }
 
 
@@ -66,5 +68,63 @@ public class DeviceMode<S extends IControlSurface<C>, C extends Configuration> e
         final IParameter item = cursorDevice.getParameterBank ().getItem (index);
         if (item.doesExist ())
             item.resetValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getSelectedItemName ()
+    {
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        if (cursorDevice == null || !cursorDevice.doesExist ())
+            return null;
+        final IParameterPageBank parameterPageBank = cursorDevice.getParameterPageBank ();
+        return cursorDevice.getName () + " - " + parameterPageBank.getSelectedItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        if (this.surface.isShiftPressed ())
+            this.model.getCursorDevice ().getDeviceBank ().selectPreviousPage ();
+        else
+            this.model.getCursorDevice ().selectPrevious ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        if (this.surface.isShiftPressed ())
+            this.model.getCursorDevice ().getDeviceBank ().selectNextPage ();
+        else
+            this.model.getCursorDevice ().selectNext ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItemPage ()
+    {
+        this.model.getCursorDevice ().getParameterBank ().scrollBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItemPage ()
+    {
+        this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectItem (final int index)
+    {
+        this.model.getCursorDevice ().getDeviceBank ().getItem (index).select ();
     }
 }

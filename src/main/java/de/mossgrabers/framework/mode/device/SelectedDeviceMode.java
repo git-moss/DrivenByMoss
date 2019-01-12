@@ -9,7 +9,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.mode.SimpleMode;
+import de.mossgrabers.framework.mode.AbstractMode;
 
 
 /**
@@ -21,7 +21,7 @@ import de.mossgrabers.framework.mode.SimpleMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configuration> extends SimpleMode<S, C>
+public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
 {
     int index = 0;
 
@@ -35,6 +35,7 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
     public SelectedDeviceMode (final S surface, final IModel model)
     {
         super ("Parameters", surface, model, false);
+        this.isTemporary = false;
     }
 
 

@@ -35,20 +35,38 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     protected final S          surface;
     protected final IModel     model;
     protected boolean          isTemporary;
+    protected boolean          isAbsolute;
 
 
     /**
      * Constructor.
-     * 
+     *
      * @param name The name of the mode
      * @param surface The control surface
      * @param model The model
      */
     public AbstractMode (final String name, final S surface, final IModel model)
     {
+        this (name, surface, model, true);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     */
+    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
+    {
         this.name = name;
         this.surface = surface;
         this.model = model;
+        this.isAbsolute = isAbsolute;
+
         this.isTemporary = true;
     }
 
@@ -74,6 +92,36 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public void onDeactivate ()
     {
         // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateDisplay ()
+    {
+        // Intentionally empty
+    }
+
+
+    /**
+     * Get if absolute or relative value changing is enabled for the mode.
+     *
+     * @return True if absolute mode is on
+     */
+    public boolean isAbsolute ()
+    {
+        return this.isAbsolute;
+    }
+
+
+    /**
+     * Set if absolute or relative value changing is enabled for the mode.
+     *
+     * @param isAbsolute True to turn absolute mode on
+     */
+    public void setAbsolute (final boolean isAbsolute)
+    {
+        this.isAbsolute = isAbsolute;
     }
 
 
@@ -135,9 +183,17 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public void selectItem (int index)
+    public void selectItem (final int index)
     {
         this.model.getCurrentTrackBank ().getItem (index).select ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getSelectedItemName ()
+    {
+        return null;
     }
 
 
@@ -146,7 +202,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public void selectPreviousItem ()
     {
         if (this.surface.isShiftPressed ())
-            selectPreviousItemPage ();
+            this.selectPreviousItemPage ();
         else
             this.model.getCurrentTrackBank ().selectPreviousItem ();
     }
@@ -157,7 +213,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public void selectNextItem ()
     {
         if (this.surface.isShiftPressed ())
-            selectNextItemPage ();
+            this.selectNextItemPage ();
         else
             this.model.getCurrentTrackBank ().selectNextItem ();
     }

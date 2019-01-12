@@ -20,14 +20,12 @@ import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
-import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.mode.device.DeviceMode;
+import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SendMode;
 import de.mossgrabers.framework.mode.track.TrackMode;
@@ -113,7 +111,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         modeManager.registerMode (Modes.MODE_PAN, new PanMode<> (surface, this.model, true));
         for (int i = 0; i < 8; i++)
             modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode<> (i, surface, this.model, true));
-        modeManager.registerMode (Modes.MODE_DEVICE, new DeviceMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.MODE_DEVICE, new ParameterMode<> (surface, this.model, true));
 
         modeManager.setDefaultMode (Modes.MODE_VOLUME);
     }
@@ -135,13 +133,16 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     @Override
     protected void createObservers ()
     {
-        this.configuration.addSettingObserver (GenericFlexiConfiguration.SLOT_CHANGE, this.getSurface ()::updateKeyTranslation);
+        final GenericFlexiControlSurface surface = this.getSurface ();
+        this.configuration.addSettingObserver (GenericFlexiConfiguration.SLOT_CHANGE, surface::updateKeyTranslation);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver (this::handleTrackChange);
         final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
         if (effectTrackBank != null)
             effectTrackBank.addSelectionObserver (this::handleTrackChange);
+
+        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
     }
 
 
@@ -180,16 +181,13 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i;
 
             final ITrack track = trackBank.getItem (i);
-            track.setVolumeIndication (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_VOLUME_TRACK) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_VOLUME.ordinal () + i]));
-            track.setPanIndication (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_PANORAMA) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_PANORAMA.ordinal () + i]));
+            track.setVolumeIndication (this.testVolumeIndication (commands, allCommands, i, hasTrackSel));
+            track.setPanIndication (this.testPanIndication (commands, allCommands, i, hasTrackSel));
 
             final ISendBank sendBank = track.getSendBank ();
             final int sendPageSize = sendBank.getPageSize ();
             for (int j = 0; j < sendPageSize; j++)
-            {
-                final ISend send = sendBank.getItem (j);
-                send.setIndication (hasTrackSel && commands.contains (allCommands[FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal () + j]) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_SEND_1.ordinal () + j * sendPageSize + i]));
-            }
+                sendBank.getItem (j).setIndication (this.testSendIndication (commands, allCommands, i, hasTrackSel, sendPageSize, j));
         }
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
         masterTrack.setVolumeIndication (commands.contains (FlexiCommand.MASTER_SET_VOLUME));
@@ -197,9 +195,50 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
         final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
         for (int i = 0; i < parameterBank.getPageSize (); i++)
+            parameterBank.getItem (i).setIndication (this.testParameterIndication (commands, allCommands, i));
+    }
+
+
+    private boolean testVolumeIndication (final Set<FlexiCommand> commands, final FlexiCommand [] allCommands, final int trackIndex, final boolean hasTrackSel)
+    {
+        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_VOLUME_TRACK))
+            return true;
+        if (commands.contains (allCommands[FlexiCommand.TRACK_1_SET_VOLUME.ordinal () + trackIndex]))
+            return true;
+        return commands.contains (allCommands[FlexiCommand.MODES_KNOB1.ordinal () + trackIndex]) && this.getSurface ().getModeManager ().isActiveMode (Modes.MODE_VOLUME);
+    }
+
+
+    private boolean testPanIndication (final Set<FlexiCommand> commands, final FlexiCommand [] allCommands, final int trackIndex, final boolean hasTrackSel)
+    {
+        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_PANORAMA))
+            return true;
+        if (commands.contains (allCommands[FlexiCommand.TRACK_1_SET_PANORAMA.ordinal () + trackIndex]))
+            return true;
+        return commands.contains (allCommands[FlexiCommand.MODES_KNOB1.ordinal () + trackIndex]) && this.getSurface ().getModeManager ().isActiveMode (Modes.MODE_PAN);
+    }
+
+
+    private boolean testSendIndication (final Set<FlexiCommand> commands, final FlexiCommand [] allCommands, final int trackIndex, final boolean hasTrackSel, final int sendPageSize, final int sendIndex)
+    {
+        final ModeManager modeManager = this.getSurface ().getModeManager ();
+        if (hasTrackSel)
         {
-            final IParameter parameter = parameterBank.getItem (i);
-            parameter.setIndication (commands.contains (allCommands[FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal () + i]));
+            if (commands.contains (allCommands[FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal () + sendIndex]))
+                return true;
+            if (modeManager.isActiveMode (Modes.MODE_TRACK) && sendIndex < 6)
+                return true;
         }
+        if (commands.contains (allCommands[FlexiCommand.TRACK_1_SET_SEND_1.ordinal () + sendIndex * sendPageSize + trackIndex]))
+            return true;
+        return modeManager.isActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + sendIndex));
+    }
+
+
+    private boolean testParameterIndication (final Set<FlexiCommand> commands, final FlexiCommand [] allCommands, final int parameterIndex)
+    {
+        if (commands.contains (allCommands[FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal () + parameterIndex]))
+            return true;
+        return commands.contains (allCommands[FlexiCommand.MODES_KNOB1.ordinal () + parameterIndex]) && this.getSurface ().getModeManager ().isActiveMode (Modes.MODE_DEVICE);
     }
 }

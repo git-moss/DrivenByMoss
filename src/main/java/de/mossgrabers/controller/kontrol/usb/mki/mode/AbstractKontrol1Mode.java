@@ -21,7 +21,7 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
 {
     /**
      * Constructor.
-     * 
+     *
      * @param name The name of the mode
      * @param surface The surface
      * @param model The model

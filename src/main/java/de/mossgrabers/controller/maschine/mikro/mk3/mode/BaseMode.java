@@ -7,7 +7,7 @@ package de.mossgrabers.controller.maschine.mikro.mk3.mode;
 import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.SimpleMode;
+import de.mossgrabers.framework.mode.AbstractMode;
 
 
 /**
@@ -15,7 +15,7 @@ import de.mossgrabers.framework.mode.SimpleMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class BaseMode extends SimpleMode<MaschineMikroMk3ControlSurface, MaschineMikroMk3Configuration>
+public abstract class BaseMode extends AbstractMode<MaschineMikroMk3ControlSurface, MaschineMikroMk3Configuration>
 {
     /**
      * Constructor.

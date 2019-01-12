@@ -109,6 +109,14 @@ public interface Mode
 
 
     /**
+     * Get the selected item if any.
+     *
+     * @return THe selected item or null
+     */
+    String getSelectedItemName ();
+
+
+    /**
      * Selects the previous item in the page. Scrolls the page to the previous page if the first
      * item was selected (and if there is a previous page).
      */

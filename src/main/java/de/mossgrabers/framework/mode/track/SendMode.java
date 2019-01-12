@@ -9,7 +9,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.SimpleMode;
+import de.mossgrabers.framework.mode.AbstractMode;
 
 
 /**
@@ -21,7 +21,7 @@ import de.mossgrabers.framework.mode.SimpleMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendMode<S extends IControlSurface<C>, C extends Configuration> extends SimpleMode<S, C>
+public class SendMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
 {
     private int sendIndex;
 
@@ -37,8 +37,9 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
      */
     public SendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute)
     {
-        super ("Send " + sendIndex, surface, model, isAbsolute);
+        super ("Send " + (sendIndex + 1), surface, model, isAbsolute);
         this.sendIndex = sendIndex;
+        this.isTemporary = false;
     }
 
 
@@ -75,5 +76,16 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
         return track == null ? -1 : track.getSendBank ().getItem (this.sendIndex).getValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getSelectedItemName ()
+    {
+        final ITrack selectedItem = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (selectedItem == null || !selectedItem.doesExist ())
+            return null;
+        return selectedItem.getPosition () + 1 + ": " + selectedItem.getName ();
     }
 }

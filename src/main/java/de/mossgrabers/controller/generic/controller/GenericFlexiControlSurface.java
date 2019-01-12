@@ -14,8 +14,10 @@ import de.mossgrabers.framework.controller.Relative2ValueChanger;
 import de.mossgrabers.framework.controller.Relative3ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -26,8 +28,8 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Mode;
-import de.mossgrabers.framework.mode.SimpleMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.io.File;
@@ -106,7 +108,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     private void exportFile ()
     {
-        final File file = getFile ();
+        final File file = this.getFile ();
         if (file == null)
             return;
         if (!file.exists ())
@@ -739,6 +741,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
         final CommandSlot commandSlot = this.configuration.getCommandSlots ()[slotIndex];
         final FlexiCommand command = commandSlot.getCommand ();
+        final Mode mode = this.modeManager.getActiveOrTempMode ();
+        if (mode == null)
+            return;
         switch (command)
         {
             case OFF:
@@ -1029,7 +1034,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_SELECT:
             case TRACK_8_SELECT:
                 if (value > 0)
-                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).select ();
+                {
+                    final ITrack track = this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ());
+                    track.select ();
+                    this.getDisplay ().notify (track.getName ());
+                }
                 break;
             // Track 1-8: Toggle Active
             case TRACK_1_TOGGLE_ACTIVE:
@@ -1602,24 +1611,39 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case MODES_BUTTON7:
             case MODES_BUTTON8:
                 if (value > 0)
-                    this.modeManager.getActiveOrTempMode ().selectItem (command.ordinal () - FlexiCommand.MODES_BUTTON1.ordinal ());
+                {
+                    mode.selectItem (command.ordinal () - FlexiCommand.MODES_BUTTON1.ordinal ());
+                    this.notifyName (mode);
+                }
                 break;
 
             case MODES_NEXT_ITEM:
                 if (value > 0)
-                    this.modeManager.getActiveOrTempMode ().selectNextItem ();
+                {
+                    mode.selectNextItem ();
+                    this.notifyName (mode);
+                }
                 break;
             case MODES_PREV_ITEM:
                 if (value > 0)
-                    this.modeManager.getActiveOrTempMode ().selectPreviousItem ();
+                {
+                    mode.selectPreviousItem ();
+                    this.notifyName (mode);
+                }
                 break;
             case MODES_NEXT_PAGE:
                 if (value > 0)
-                    this.modeManager.getActiveOrTempMode ().selectNextItemPage ();
+                {
+                    mode.selectNextItemPage ();
+                    this.notifyName (mode);
+                }
                 break;
             case MODES_PREV_PAGE:
                 if (value > 0)
-                    this.modeManager.getActiveOrTempMode ().selectPreviousItemPage ();
+                {
+                    mode.selectPreviousItemPage ();
+                    this.notifyName (mode);
+                }
                 break;
             case MODES_SELECT_MODE_TRACK:
                 if (value > 0)
@@ -1684,6 +1708,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             this.isUpdatingValue = false;
         }, 400);
 
+    }
+
+
+    private void notifyName (final Mode mode)
+    {
+        this.host.scheduleTask ( () -> this.getDisplay ().notify (mode.getSelectedItemName ()), 100);
     }
 
 
@@ -1826,7 +1856,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void changeModeValue (final int knobMode, final int knobIndex, final int value)
     {
         final Mode mode = this.modeManager.getActiveOrTempMode ();
-        ((SimpleMode<?, ?>) mode).setAbsolute (knobMode == KNOB_MODE_ABSOLUTE);
+        ((AbstractMode<?, ?>) mode).setAbsolute (knobMode == KNOB_MODE_ABSOLUTE);
         mode.onKnobValue (knobIndex, value);
     }
 
@@ -1889,10 +1919,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (!this.increaseKnobMovement ())
             return;
 
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         if (this.getRelativeSpeed (knobMode, value) > 0)
-            this.model.getCursorDevice ().selectNext ();
+            cursorDevice.selectNext ();
         else
-            this.model.getCursorDevice ().selectPrevious ();
+            cursorDevice.selectPrevious ();
+        this.getDisplay ().notify (cursorDevice.getName ());
     }
 
 
@@ -1904,10 +1936,13 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (!this.increaseKnobMovement ())
             return;
 
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         if (this.getRelativeSpeed (knobMode, value) > 0)
-            this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
+            parameterBank.scrollForwards ();
         else
-            this.model.getCursorDevice ().getParameterBank ().scrollBackwards ();
+            parameterBank.scrollBackwards ();
+        this.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
     }
 
 
@@ -1919,10 +1954,13 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (!this.increaseKnobMovement ())
             return;
 
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         if (this.getRelativeSpeed (knobMode, value) > 0)
-            this.model.getCursorDevice ().getParameterBank ().scrollPageForwards ();
+            parameterBank.scrollPageForwards ();
         else
-            this.model.getCursorDevice ().getParameterBank ().scrollPageBackwards ();
+            parameterBank.scrollPageBackwards ();
+        this.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
     }
 
 
@@ -2076,7 +2114,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             newModeID = newMode.intValue ();
         } while (newModeID >= Modes.MODE_SEND1.intValue () && newModeID <= Modes.MODE_SEND8.intValue () && !trackBank.canEditSend (newModeID - Modes.MODE_SEND1.intValue ()));
 
-        this.modeManager.setActiveMode (newMode);
+        this.activateMode (newMode);
     }
 
 
@@ -2097,6 +2135,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             newModeID = newMode.intValue ();
         } while (newModeID >= Modes.MODE_SEND1.intValue () && newModeID <= Modes.MODE_SEND8.intValue () && !trackBank.canEditSend (newModeID - Modes.MODE_SEND1.intValue ()));
 
-        this.modeManager.setActiveMode (newMode);
+        this.activateMode (newMode);
     }
 }

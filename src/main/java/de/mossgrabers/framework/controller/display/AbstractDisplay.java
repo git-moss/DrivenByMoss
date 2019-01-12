@@ -142,6 +142,9 @@ public abstract class AbstractDisplay implements Display
     @Override
     public void notify (final String message)
     {
+        if (message == null)
+            return;
+
         this.host.showNotification (message);
         this.notifyOnDisplay (message);
     }

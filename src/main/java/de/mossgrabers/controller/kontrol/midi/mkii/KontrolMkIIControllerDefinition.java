@@ -43,7 +43,7 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
             case WINDOWS:
                 for (int i = 1; i <= 16; i++)
                 {
-                    addDeviceDiscoveryPair (new String []
+                    this.addDeviceDiscoveryPair (new String []
                     {
                         "Komplete Kontrol DAW - " + i,
                         "KOMPLETE KONTROL - " + i
