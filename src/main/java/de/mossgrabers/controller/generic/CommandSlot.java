@@ -15,12 +15,23 @@ import de.mossgrabers.controller.generic.controller.FlexiCommand;
  */
 public class CommandSlot
 {
-    private int          type        = 0;
-    private int          number      = 0;
-    private int          midiChannel = 0;
-    private int          knobMode    = 0;
-    private boolean      sendValue   = false;
-    private FlexiCommand command     = FlexiCommand.OFF;
+    /** The Off type. */
+    public static final int TYPE_OFF            = -1;
+    /** The CC type. */
+    public static final int TYPE_CC             = 0;
+    /** The note type. */
+    public static final int TYPE_NOTE           = 1;
+    /** The program change type. */
+    public static final int TYPE_PROGRAM_CHANGE = 2;
+    /** The pitch bend type. */
+    public static final int TYPE_PITCH_BEND     = 3;
+
+    private int             type                = -1;
+    private int             number              = 0;
+    private int             midiChannel         = 0;
+    private int             knobMode            = 0;
+    private boolean         sendValue           = false;
+    private FlexiCommand    command             = FlexiCommand.OFF;
 
 
     /**

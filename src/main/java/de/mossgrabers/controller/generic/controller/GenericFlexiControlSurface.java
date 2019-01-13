@@ -186,12 +186,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
             switch (slots[i].getType ())
             {
-                case GenericFlexiConfiguration.TYPE_CC:
+                case CommandSlot.TYPE_CC:
                     if (value >= 0 && value <= 127)
                         this.getOutput ().sendCCEx (slots[i].getMidiChannel (), slots[i].getNumber (), value);
                     break;
 
-                case GenericFlexiConfiguration.TYPE_PITCH_BEND:
+                case CommandSlot.TYPE_PITCH_BEND:
                     if (value >= 0 && value <= 127)
                         this.getOutput ().sendPitchbend (slots[i].getMidiChannel (), 0, value);
                     break;
@@ -693,27 +693,27 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         {
             // Note on/off
             case 0x90:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[GenericFlexiConfiguration.TYPE_NOTE + 1], data1, channel);
-                slotIndex = this.configuration.getSlotCommand (GenericFlexiConfiguration.TYPE_NOTE, data1, channel);
+                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_NOTE + 1], data1, channel);
+                slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel);
                 break;
 
             // Program Change
             case 0xC0:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[GenericFlexiConfiguration.TYPE_PROGRAM_CHANGE + 1], data1, channel);
-                slotIndex = this.configuration.getSlotCommand (GenericFlexiConfiguration.TYPE_PROGRAM_CHANGE, data1, channel);
+                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_PROGRAM_CHANGE + 1], data1, channel);
+                slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_PROGRAM_CHANGE, data1, channel);
                 value = 127;
                 break;
 
             // CC
             case 0xB0:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[GenericFlexiConfiguration.TYPE_CC + 1], data1, channel);
-                slotIndex = this.configuration.getSlotCommand (GenericFlexiConfiguration.TYPE_CC, data1, channel);
+                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_CC + 1], data1, channel);
+                slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_CC, data1, channel);
                 break;
 
             // Pitchbend
             case 0xE0:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[GenericFlexiConfiguration.TYPE_PITCH_BEND + 1], data1, channel);
-                slotIndex = this.configuration.getSlotCommand (GenericFlexiConfiguration.TYPE_PITCH_BEND, data1, channel);
+                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_PITCH_BEND + 1], data1, channel);
+                slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_PITCH_BEND, data1, channel);
                 break;
 
             default:

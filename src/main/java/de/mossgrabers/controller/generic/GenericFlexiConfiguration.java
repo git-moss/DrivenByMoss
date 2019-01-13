@@ -61,17 +61,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "Pitchbend"
     };
 
-    /** The Off type. */
-    public static final int        TYPE_OFF             = -1;
-    /** The CC type. */
-    public static final int        TYPE_CC              = 0;
-    /** The note type. */
-    public static final int        TYPE_NOTE            = 1;
-    /** The program change type. */
-    public static final int        TYPE_PROGRAM_CHANGE  = 2;
-    /** The pitch bend type. */
-    public static final int        TYPE_PITCH_BEND      = 3;
-
     /** The (CC, note or PC) number options. */
     private static final String [] OPTIONS_NUMBER       = new String [128];
 
@@ -225,7 +214,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.typeSetting.addValueObserver (value -> {
             final int index = AbstractConfiguration.lookupIndex (OPTIONS_TYPE, value);
             this.getSelectedSlot ().setType (index - 1);
-            this.sendValueSetting.setVisible (index == TYPE_CC);
+            this.sendValueSetting.setVisible (index == CommandSlot.TYPE_CC);
             this.clearNoteMap ();
             this.updateVisibility (!OPTIONS_TYPE[0].equals (value));
         });
@@ -347,7 +336,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             final CommandSlot slot = this.commandSlots[i];
             if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && slot.getMidiChannel () == midiChannel)
             {
-                if (type == TYPE_PITCH_BEND || slot.getNumber () == number)
+                if (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number)
                     return i;
             }
         }
@@ -369,7 +358,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
                 this.keyMap = Scales.getIdentityMatrix ();
                 for (final CommandSlot slot: this.commandSlots)
                 {
-                    if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == TYPE_NOTE)
+                    if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == CommandSlot.TYPE_NOTE)
                         this.keyMap[slot.getNumber ()] = -1;
                 }
             }
@@ -484,7 +473,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
                 // For backwards compatibility
                 if (command == FlexiCommand.OFF)
-                    type = TYPE_OFF;
+                    type = CommandSlot.TYPE_OFF;
 
                 slot.setType (type);
                 slot.setNumber (Integer.parseInt (props.getProperty (slotName + "NUMBER")));
