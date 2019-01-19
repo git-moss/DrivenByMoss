@@ -23,223 +23,223 @@ import java.util.Map;
  */
 public class Kontrol1UsbDevice
 {
-    private static final byte [] []            UPPER_CHARACTERS = new byte [] []
+    private static final byte [] []            UPPER_CHARACTERS          = new byte [] []
     {
         {
             (byte) 207,
             24
-        },                                                                                // A
+        },                                                                                         // A
         {
             (byte) 63,
             82
-        },                                                                                // B
+        },                                                                                         // B
         {
             (byte) 243,
             0
-        },                                                                                // C
+        },                                                                                         // C
         {
             (byte) 63,
             66
-        },                                                                                // D
+        },                                                                                         // D
         {
             (byte) 243,
             24
-        },                                                                                // E
+        },                                                                                         // E
         {
             (byte) 195,
             24
-        },                                                                                // F
+        },                                                                                         // F
         {
             (byte) 251,
             16
-        },                                                                                // G
+        },                                                                                         // G
         {
             (byte) 204,
             24
-        },                                                                                // H
+        },                                                                                         // H
         {
             (byte) 51,
             66
-        },                                                                                // I
+        },                                                                                         // I
         {
             (byte) 31,
             0
-        },                                                                                // J
+        },                                                                                         // J
         {
             (byte) 192,
             (byte) 140
-        },                                                                                // K
+        },                                                                                         // K
         {
             (byte) 240,
             0
-        },                                                                                // L
+        },                                                                                         // L
         {
             (byte) 204,
             5
-        },                                                                                // M
+        },                                                                                         // M
         {
             (byte) 204,
             (byte) 129
-        },                                                                                // N
+        },                                                                                         // N
         {
             (byte) 255,
             0
-        },                                                                                // O
+        },                                                                                         // O
         {
             (byte) 199,
             24
-        },                                                                                // P
+        },                                                                                         // P
         {
             (byte) 255,
             (byte) 128
-        },                                                                                // Q
+        },                                                                                         // Q
         {
             (byte) 199,
             (byte) 152
-        },                                                                                // R
+        },                                                                                         // R
         {
             (byte) 187,
             24
-        },                                                                                // S
+        },                                                                                         // S
         {
             (byte) 3,
             66
-        },                                                                                // T
+        },                                                                                         // T
         {
             (byte) 252,
             0
-        },                                                                                // U
+        },                                                                                         // U
         {
             (byte) 192,
             36
-        },                                                                                // V
+        },                                                                                         // V
         {
             (byte) 204,
             (byte) 160
-        },                                                                                // W
+        },                                                                                         // W
         {
             (byte) 0,
             (byte) 165
-        },                                                                                // X
+        },                                                                                         // X
         {
             (byte) 0,
             69
-        },                                                                                // Y
+        },                                                                                         // Y
         {
             (byte) 51,
             36
-        }                                                                                 // Z
+        }                                                                                          // Z
     };
 
-    private static final byte [] []            LOWER_CHARACTERS = new byte [] []
+    private static final byte [] []            LOWER_CHARACTERS          = new byte [] []
     {
         {
             (byte) 207,
             24
-        },                                                                                // A
+        },                                                                                         // A
         {
             (byte) 248,
             24
-        },                                                                                // b
+        },                                                                                         // b
         {
             (byte) 112,
             24
-        },                                                                                // c
+        },                                                                                         // c
         {
             (byte) 124,
             24
-        },                                                                                // d
+        },                                                                                         // d
         {
             (byte) 243,
             24
-        },                                                                                // E
+        },                                                                                         // E
         {
             (byte) 193,
             8
-        },                                                                                // f
+        },                                                                                         // f
         {
             (byte) 251,
             16
-        },                                                                                // G
+        },                                                                                         // G
         {
             (byte) 200,
             24
-        },                                                                                // h
+        },                                                                                         // h
         {
             0,
             64
-        },                                                                                // i
+        },                                                                                         // i
         {
             (byte) 31,
             0
-        },                                                                                // J
+        },                                                                                         // J
         {
             (byte) 192,
             (byte) 140
-        },                                                                                // K
+        },                                                                                         // K
         {
             0,
             66
-        },                                                                                // l
+        },                                                                                         // l
         {
             72,
             88
-        },                                                                                // m
+        },                                                                                         // m
         {
             64,
             72
-        },                                                                                // n
+        },                                                                                         // n
         {
             (byte) 120,
             24
-        },                                                                                // o
+        },                                                                                         // o
         {
             (byte) 199,
             24
-        },                                                                                // P
+        },                                                                                         // P
         {
             (byte) 255,
             (byte) 128
-        },                                                                                // Q
+        },                                                                                         // Q
         {
             (byte) 199,
             (byte) 152
-        },                                                                                // R
+        },                                                                                         // R
         {
             (byte) 187,
             24
-        },                                                                                // S
+        },                                                                                         // S
         {
             (byte) 224,
             8
-        },                                                                                // t
+        },                                                                                         // t
         {
             (byte) 120,
             0
-        },                                                                                // u
+        },                                                                                         // u
         {
             64,
             32
-        },                                                                                // v
+        },                                                                                         // v
         {
             (byte) 120,
             64
-        },                                                                                // w
+        },                                                                                         // w
         {
             (byte) 0,
             (byte) 165
-        },                                                                                // X
+        },                                                                                         // X
         {
             (byte) 0,
             69
-        },                                                                                // Y
+        },                                                                                         // Y
         {
             (byte) 51,
             36
-        }                                                                                 // Z
+        }                                                                                          // Z
     };
 
-    private static final byte [] []            NUMBERS          = new byte [] []
+    private static final byte [] []            NUMBERS                   = new byte [] []
     {
         {
             (byte) 255,
@@ -283,49 +283,49 @@ public class Kontrol1UsbDevice
         }
     };
 
-    private static final byte []               MINUS            = new byte []
+    private static final byte []               MINUS                     = new byte []
     {
         0,
         (byte) 24
     };
 
-    private static final byte []               PLUS             = new byte []
+    private static final byte []               PLUS                      = new byte []
     {
         0,
         (byte) 90
     };
 
-    private static final byte []               PERCENT          = new byte []
+    private static final byte []               PERCENT                   = new byte []
     {
         (byte) 153,
         (byte) 126
     };
 
-    private static final byte []               GREATER          = new byte []
+    private static final byte []               GREATER                   = new byte []
     {
         0,
         (byte) 33
     };
 
-    private static final byte []               APOSTROPH        = new byte []
+    private static final byte []               APOSTROPH                 = new byte []
     {
         (byte) 128,
         0
     };
 
-    private static final byte []               FWD_SLASH        = new byte []
+    private static final byte []               FWD_SLASH                 = new byte []
     {
         0,
         (byte) 36
     };
 
-    private static final byte []               BWD_SLASH        = new byte []
+    private static final byte []               BWD_SLASH                 = new byte []
     {
         0,
         (byte) 129
     };
 
-    private static final int []                BYTE_0           =
+    private static final int []                BYTE_0                    =
     {
         Kontrol1ControlSurface.BUTTON_MAIN_ENCODER,
         Kontrol1ControlSurface.BUTTON_PRESET_UP,
@@ -337,7 +337,7 @@ public class Kontrol1UsbDevice
         Kontrol1ControlSurface.BUTTON_OCTAVE_UP
     };
 
-    private static final int []                BYTE_1           =
+    private static final int []                BYTE_1                    =
     {
         Kontrol1ControlSurface.BUTTON_STOP,
         Kontrol1ControlSurface.BUTTON_REC,
@@ -349,7 +349,7 @@ public class Kontrol1UsbDevice
         Kontrol1ControlSurface.BUTTON_NAVIGATE_UP
     };
 
-    private static final int []                BYTE_2           =
+    private static final int []                BYTE_2                    =
     {
         Kontrol1ControlSurface.BUTTON_SHIFT,
         Kontrol1ControlSurface.BUTTON_SCALE,
@@ -361,7 +361,7 @@ public class Kontrol1UsbDevice
         Kontrol1ControlSurface.BUTTON_FWD
     };
 
-    private static final int []                BYTE_3           =
+    private static final int []                BYTE_3                    =
     {
         Kontrol1ControlSurface.TOUCH_ENCODER_1,
         Kontrol1ControlSurface.TOUCH_ENCODER_2,
@@ -373,12 +373,12 @@ public class Kontrol1UsbDevice
         Kontrol1ControlSurface.TOUCH_ENCODER_8
     };
 
-    private static final int []                BYTE_4           =
+    private static final int []                BYTE_4                    =
     {
         Kontrol1ControlSurface.TOUCH_ENCODER_MAIN
     };
 
-    private static final int []                TEST_BITS        =
+    private static final int []                TEST_BITS                 =
     {
         0x01,
         0x02,
@@ -390,7 +390,7 @@ public class Kontrol1UsbDevice
         0x80
     };
 
-    private static final int []                KEY_SIZES        = new int []
+    private static final int []                KEY_SIZES                 = new int []
     {
         25,
         49,
@@ -398,10 +398,14 @@ public class Kontrol1UsbDevice
         88
     };
 
-    private static final int                   REPORT_ID_UI     = 1;
+    private static final byte                  REPORT_ID_INPUT_UI        = (byte) 1;
+    private static final byte                  REPORT_ID_OUTPUT_LEDS     = (byte) 0x80;
+    private static final byte                  REPORT_ID_OUTPUT_KEY_LEDS = (byte) 0x82;
+    private static final byte                  REPORT_ID_OUTPUT_INIT     = (byte) 0xA0;
+    private static final byte                  REPORT_ID_OUTPUT_DISPLAY  = (byte) 0xE0;
 
-    private static final int                   SIZE_DISPLAY     = 248;
-    private static final int                   SIZE_BUTTON_LEDS = 25;
+    private static final int                   SIZE_DISPLAY              = 248;
+    private static final int                   SIZE_BUTTON_LEDS          = 25;
 
     private final int                          sizeKeyLEDs;
     private final IMemoryBlock                 displayBlock;
@@ -409,7 +413,7 @@ public class Kontrol1UsbDevice
     private final IMemoryBlock                 keyLedBlock;
     private final IMemoryBlock                 initBlock;
 
-    private static final Map<Integer, Integer> LED_MAPPING      = new HashMap<> (21);
+    private static final Map<Integer, Integer> LED_MAPPING               = new HashMap<> (21);
 
     private final IHost                        host;
     private IUsbDevice                         usbDevice;
@@ -418,22 +422,22 @@ public class Kontrol1UsbDevice
     private UIChangeCallback                   callback;
 
     private int                                mainEncoderValue;
-    private int []                             encoderValues    = new int [8];
+    private int []                             encoderValues             = new int [8];
 
-    private byte []                            buttonStates     = new byte [21];
-    private byte []                            oldButtonStates  = new byte [21];
+    private byte []                            buttonStates              = new byte [21];
+    private byte []                            oldButtonStates           = new byte [21];
 
-    private byte []                            keyColors        = new byte [88 * 3];
-    private byte []                            oldKeyColors     = new byte [88 * 3];
+    private byte []                            keyColors                 = new byte [88 * 3];
+    private byte []                            oldKeyColors              = new byte [88 * 3];
 
-    private final boolean [] []                dots             = new boolean [2] [72];
-    private final int [] []                    bars             = new int [9] [9];
-    private final char [] []                   texts            = new char [2] [72];
-    private final char [] []                   oldTexts         = new char [2] [72];
+    private final boolean [] []                dots                      = new boolean [2] [72];
+    private final int [] []                    bars                      = new int [9] [9];
+    private final char [] []                   texts                     = new char [2] [72];
+    private final char [] []                   oldTexts                  = new char [2] [72];
 
-    private final byte []                      line0            = new byte [SIZE_DISPLAY];
+    private final byte []                      line0                     = new byte [SIZE_DISPLAY];
 
-    private boolean                            isFirstStateMsg  = true;
+    private boolean                            isFirstStateMsg           = true;
 
     static
     {
@@ -520,7 +524,7 @@ public class Kontrol1UsbDevice
         {
             final ByteBuffer buffer = this.initBlock.createByteBuffer ();
             padBuffer (buffer);
-            this.hidDevice.sendOutputReport ((byte) 0xA0, this.initBlock);
+            this.hidDevice.sendOutputReport (REPORT_ID_OUTPUT_INIT, this.initBlock);
         }
     }
 
@@ -675,7 +679,7 @@ public class Kontrol1UsbDevice
             if (!Arrays.equals (this.line0, l0))
             {
                 System.arraycopy (l0, 0, this.line0, 0, this.line0.length);
-                this.hidDevice.sendOutputReport ((byte) 0xE0, this.displayBlock);
+                this.hidDevice.sendOutputReport (REPORT_ID_OUTPUT_DISPLAY, this.displayBlock);
             }
 
             for (int row = 1; row < 3; row++)
@@ -689,7 +693,7 @@ public class Kontrol1UsbDevice
                         displayBuffer.put (this.getCharacter (row - 1, j));
 
                     padBuffer (displayBuffer);
-                    this.hidDevice.sendOutputReport ((byte) 0xE0, this.displayBlock);
+                    this.hidDevice.sendOutputReport (REPORT_ID_OUTPUT_DISPLAY, this.displayBlock);
                 }
             }
         }
@@ -742,7 +746,7 @@ public class Kontrol1UsbDevice
             ledBuffer.clear ();
             ledBuffer.put (this.buttonStates);
             padBuffer (ledBuffer);
-            this.hidDevice.sendOutputReport ((byte) 0x80, this.ledBlock);
+            this.hidDevice.sendOutputReport (REPORT_ID_OUTPUT_LEDS, this.ledBlock);
         }
     }
 
@@ -785,7 +789,7 @@ public class Kontrol1UsbDevice
             keyLedBuffer.clear ();
             keyLedBuffer.put (this.keyColors, 0, this.sizeKeyLEDs);
             padBuffer (keyLedBuffer);
-            this.hidDevice.sendOutputReport ((byte) 0x82, this.keyLedBlock);
+            this.hidDevice.sendOutputReport (REPORT_ID_OUTPUT_KEY_LEDS, this.keyLedBlock);
         }
     }
 
@@ -819,7 +823,7 @@ public class Kontrol1UsbDevice
      */
     private void processHIDMessage (final byte reportID, final byte [] data, final int received)
     {
-        if (reportID != REPORT_ID_UI)
+        if (reportID != REPORT_ID_INPUT_UI)
             return;
 
         boolean encoderChange = false;

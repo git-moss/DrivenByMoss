@@ -168,7 +168,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         // The MIDI learn section
 
-        category = "Use a knob/fader/button to set, then click add...";
+        category = "Use a knob/fader/button then click Set...";
 
         this.learnTypeSetting = settingsUI.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE[0]);
         this.learnNumberSetting = settingsUI.getEnumSetting ("Number:", category, OPTIONS_NUMBER, OPTIONS_NUMBER[0]);
