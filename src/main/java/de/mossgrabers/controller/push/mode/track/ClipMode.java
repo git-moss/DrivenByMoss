@@ -169,16 +169,11 @@ public class ClipMode extends AbstractTrackMode
             return;
         }
 
-        switch (index)
+        if (index == 7)
         {
-            case 7:
-                final ViewManager viewManager = this.surface.getViewManager ();
-                ((ColorView) viewManager.getView (Views.VIEW_COLOR)).setMode (SelectMode.MODE_CLIP);
-                viewManager.setActiveView (Views.VIEW_COLOR);
-                break;
-            default:
-                // not used
-                break;
+            final ViewManager viewManager = this.surface.getViewManager ();
+            ((ColorView) viewManager.getView (Views.VIEW_COLOR)).setMode (SelectMode.MODE_CLIP);
+            viewManager.setActiveView (Views.VIEW_COLOR);
         }
     }
 

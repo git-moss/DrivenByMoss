@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -573,13 +574,13 @@ public class TransportImpl implements ITransport
     {
         switch (this.getPreroll ())
         {
-            case ITransport.PREROLL_NONE:
+            case TransportConstants.PREROLL_NONE:
                 return 0;
-            case ITransport.PREROLL_1_BAR:
+            case TransportConstants.PREROLL_1_BAR:
                 return 1;
-            case ITransport.PREROLL_2_BARS:
+            case TransportConstants.PREROLL_2_BARS:
                 return 2;
-            case ITransport.PREROLL_4_BARS:
+            case TransportConstants.PREROLL_4_BARS:
                 return 4;
             default:
                 return 0;
@@ -602,16 +603,16 @@ public class TransportImpl implements ITransport
         switch (preroll)
         {
             case 0:
-                this.setPreroll (ITransport.PREROLL_NONE);
+                this.setPreroll (TransportConstants.PREROLL_NONE);
                 break;
             case 1:
-                this.setPreroll (ITransport.PREROLL_1_BAR);
+                this.setPreroll (TransportConstants.PREROLL_1_BAR);
                 break;
             case 2:
-                this.setPreroll (ITransport.PREROLL_2_BARS);
+                this.setPreroll (TransportConstants.PREROLL_2_BARS);
                 break;
             case 4:
-                this.setPreroll (ITransport.PREROLL_4_BARS);
+                this.setPreroll (TransportConstants.PREROLL_4_BARS);
                 break;
             default:
                 this.host.errorln ("Unknown Preroll length: " + preroll);

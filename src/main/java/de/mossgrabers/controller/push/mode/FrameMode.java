@@ -159,6 +159,9 @@ public class FrameMode extends BaseMode
             case 7:
                 app.toggleInspector ();
                 break;
+            default:
+                // Not used
+                break;
         }
     }
 
@@ -199,6 +202,9 @@ public class FrameMode extends BaseMode
                 case 7:
                     app.toggleFullScreen ();
                     break;
+                default:
+                    // Not used
+                    break;
             }
         }
         else if (app.isMixerLayout ())
@@ -226,6 +232,9 @@ public class FrameMode extends BaseMode
                     break;
                 case 7:
                     app.toggleFullScreen ();
+                    break;
+                default:
+                    // Not used
                     break;
             }
         }

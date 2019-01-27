@@ -91,6 +91,10 @@ public class TrackEditing
                 if (!this.model.isEffectTrackBankActive ())
                     selectedTrack.getSendBank ().getItem (index - 8).changeValue (value);
                 break;
+
+            default:
+                // Not used
+                break;
         }
     }
 }

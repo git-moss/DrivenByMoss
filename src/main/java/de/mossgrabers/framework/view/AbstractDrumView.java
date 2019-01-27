@@ -407,10 +407,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         if (this.surface.isMutePressed () && !this.surface.isButtonConsumed (this.surface.getMuteButtonId ()))
             return false;
 
-        if (this.surface.isSoloPressed () && !this.surface.isButtonConsumed (this.surface.getSoloButtonId ()))
-            return false;
-
-        return true;
+        return !this.surface.isSoloPressed () || this.surface.isButtonConsumed (this.surface.getSoloButtonId ());
     }
 
 

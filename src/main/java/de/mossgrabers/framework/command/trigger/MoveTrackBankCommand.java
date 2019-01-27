@@ -8,10 +8,9 @@ import de.mossgrabers.controller.mcu.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
-import de.mossgrabers.framework.daw.IMarkerBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -26,9 +25,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private boolean moveLeft;
-    private boolean moveBy1;
-    private Integer deviceMode;
+    private final boolean moveLeft;
+    private final boolean moveBy1;
+    private final Integer deviceMode;
 
 
     /**
@@ -62,55 +61,46 @@ public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Config
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             if (this.moveBy1)
             {
-                if (this.moveLeft)
-                    cursorDevice.getParameterBank ().scrollBackwards ();
-                else
-                    cursorDevice.getParameterBank ().scrollForwards ();
+                this.handleBankMovement (cursorDevice.getParameterBank ());
+                return;
             }
+
+            if (this.moveLeft)
+                cursorDevice.selectPrevious ();
             else
-            {
-                if (this.moveLeft)
-                    cursorDevice.selectPrevious ();
-                else
-                    cursorDevice.selectNext ();
-            }
+                cursorDevice.selectNext ();
             return;
         }
 
         if (modeManager.isActiveOrTempMode (Modes.MODE_MARKER))
         {
-            final IMarkerBank markerBank = this.model.getMarkerBank ();
-            if (this.moveBy1)
-            {
-                if (this.moveLeft)
-                    markerBank.scrollBackwards ();
-                else
-                    markerBank.scrollForwards ();
-            }
-            else
-            {
-                if (this.moveLeft)
-                    markerBank.scrollPageBackwards ();
-                else
-                    markerBank.scrollPageForwards ();
-            }
+            this.handleBankMovement (this.model.getMarkerBank ());
             return;
         }
 
-        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
+        this.handleBankMovement (this.model.getCurrentTrackBank ());
+    }
+
+
+    /**
+     *
+     * @param bank
+     */
+    private void handleBankMovement (final IBank<?> bank)
+    {
         if (this.moveBy1)
         {
             if (this.moveLeft)
-                currentTrackBank.scrollBackwards ();
+                bank.scrollBackwards ();
             else
-                currentTrackBank.scrollForwards ();
+                bank.scrollForwards ();
         }
         else
         {
             if (this.moveLeft)
-                currentTrackBank.scrollPageBackwards ();
+                bank.scrollPageBackwards ();
             else
-                currentTrackBank.scrollPageForwards ();
+                bank.scrollPageForwards ();
         }
     }
 }

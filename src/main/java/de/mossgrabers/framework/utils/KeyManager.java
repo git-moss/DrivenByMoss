@@ -6,8 +6,8 @@ package de.mossgrabers.framework.utils;
 
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.NoteObserver;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.observer.NoteObserver;
 import de.mossgrabers.framework.scale.Scales;
 
 import java.util.ArrayList;

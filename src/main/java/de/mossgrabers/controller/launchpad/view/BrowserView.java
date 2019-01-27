@@ -150,6 +150,9 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
             case 41:
                 this.surface.sendMidiEvent (0x90, 84, velocity);
                 break;
+            default:
+                // Not used
+                break;
         }
 
         if (velocity == 0)
@@ -200,8 +203,6 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
                         browser.selectPreviousFilterItem (BrowserView.COLUMN_ORDER[col]);
                     break;
             }
-
-            return;
         }
     }
 

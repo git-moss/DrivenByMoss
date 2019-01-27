@@ -81,6 +81,10 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
                         browser.selectPreviousResult ();
                 }
                 break;
+
+            default:
+                // Not used
+                break;
         }
     }
 

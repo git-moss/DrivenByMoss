@@ -93,6 +93,9 @@ public class PlayView extends AbstractPlayView<APCminiControlSurface, APCminiCon
             case 7:
                 this.onOctaveDown (event);
                 break;
+            default:
+                // Not used
+                break;
         }
         this.updateNoteMapping ();
     }

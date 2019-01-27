@@ -127,7 +127,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             final int start = this.loopPadPressed < pad ? this.loopPadPressed : pad;
             final int end = (this.loopPadPressed < pad ? pad : this.loopPadPressed) + 1;
             final int lengthOfOnePad = this.getLengthOfOnePage (this.numDisplayCols);
-            final double newStart = start * lengthOfOnePad;
+            final double newStart = (double) start * lengthOfOnePad;
             clip.setLoopStart (newStart);
             clip.setLoopLength ((end - start) * lengthOfOnePad);
             clip.setPlayRange (newStart, (double) end * lengthOfOnePad);
@@ -198,7 +198,9 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
                 return hilite ? COLOR_STEP_HILITE_CONTENT : COLOR_CONTENT;
             // Empty
             default:
-                return hilite ? COLOR_STEP_HILITE_NO_CONTENT : this.getColor (note, this.useTrackColor ? track : null);
+                if (hilite)
+                    return COLOR_STEP_HILITE_NO_CONTENT;
+                return this.getColor (note, this.useTrackColor ? track : null);
         }
     }
 

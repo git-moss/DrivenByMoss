@@ -107,7 +107,7 @@ public class PushUsbDisplay
                     final int red = imageBuffer.get ();
                     imageBuffer.get (); // Drop unused Alpha
 
-                    final int pixel = SPixelFromRGB (red, green, blue);
+                    final int pixel = sPixelFromRGB (red, green, blue);
                     buffer.put ((byte) (pixel & 0x00FF));
                     buffer.put ((byte) ((pixel & 0xFF00) >> 8));
                 }
@@ -135,7 +135,7 @@ public class PushUsbDisplay
     }
 
 
-    private static int SPixelFromRGB (final int red, final int green, final int blue)
+    private static int sPixelFromRGB (final int red, final int green, final int blue)
     {
         int pixel = (blue & 0xF8) >> 3;
         pixel <<= 6;

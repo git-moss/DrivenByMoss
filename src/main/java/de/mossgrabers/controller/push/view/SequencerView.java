@@ -43,10 +43,7 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
         if (buttonID == PushControlSurface.PUSH_BUTTON_REPEAT)
             return this.model.getHost ().hasRepeat ();
 
-        if (this.surface.getConfiguration ().isPush2 () && buttonID == PushControlSurface.PUSH_BUTTON_USER_MODE)
-            return false;
-
-        return true;
+        return !this.surface.getConfiguration ().isPush2 () || buttonID != PushControlSurface.PUSH_BUTTON_USER_MODE;
     }
 
 

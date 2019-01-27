@@ -37,7 +37,7 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
     @Override
     public void onPitchbend (final int channel, final int data1, final int data2)
     {
-        final double value = Math.min (data2 * 127 + (double) data1, this.model.getValueChanger ().getUpperBound () - 1);
+        final double value = Math.min (data2 * 127 + (double) data1, this.model.getValueChanger ().getUpperBound () - 1.0);
         if (channel == 8)
         {
             if (this.surface.isShiftPressed ())

@@ -78,6 +78,7 @@ import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
@@ -212,7 +213,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
-        trackBank.addSelectionObserver (this::handleTrackChange);
+        trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
 
         this.model.getMasterTrack ().addSelectionObserver ( (index, isSelected) -> {
             final ModeManager modeManager = this.getSurface ().getModeManager ();
@@ -535,12 +536,12 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         surface.updateButton (MCUControlSurface.MCU_F7, transport.isPunchOutEnabled () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         surface.updateButton (MCUControlSurface.MCU_READ, !writingArrangerAutomation ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        final int writeState = writingArrangerAutomation && ITransport.AUTOMATION_MODES_VALUES[2].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF;
+        final int writeState = writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[2].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF;
         surface.updateButton (MCUControlSurface.MCU_WRITE, writeState);
         surface.updateButton (MCUControlSurface.MCU_GROUP, writeState);
         surface.updateButton (MCUControlSurface.MCU_TRIM, transport.isWritingClipLauncherAutomation () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_TOUCH, writingArrangerAutomation && ITransport.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateButton (MCUControlSurface.MCU_LATCH, writingArrangerAutomation && ITransport.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_TOUCH, writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateButton (MCUControlSurface.MCU_LATCH, writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         final View view = surface.getViewManager ().getView (Views.VIEW_CONTROL);
         surface.updateButton (MCUControlSurface.MCU_REWIND, ((WindCommand<MCUControlSurface, MCUConfiguration>) view.getTriggerCommand (Commands.COMMAND_REWIND)).isRewinding () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
@@ -801,10 +802,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     /**
      * Handle a track selection change.
      *
-     * @param index The index of the track
      * @param isSelected Has the track been selected?
      */
-    private void handleTrackChange (final int index, final boolean isSelected)
+    private void handleTrackChange (final boolean isSelected)
     {
         if (!isSelected)
             return;

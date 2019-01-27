@@ -539,7 +539,7 @@ public class KontrolOSCParser extends AbstractOpenSoundControlParser
 
     private static Number toNumber (final Object value)
     {
-        return value == null || !(value instanceof Number) ? Integer.valueOf (-1) : (Number) value;
+        return !(value instanceof Number) ? Integer.valueOf (-1) : (Number) value;
     }
 
 

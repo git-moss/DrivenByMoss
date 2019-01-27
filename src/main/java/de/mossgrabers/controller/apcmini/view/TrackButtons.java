@@ -61,6 +61,9 @@ public class TrackButtons
                 case APCminiControlSurface.TRACK_STATE_SELECT:
                     this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getItem (i).isSelected () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
                     break;
+                default:
+                    // Not used
+                    break;
             }
         }
     }
@@ -95,6 +98,9 @@ public class TrackButtons
                 break;
             case APCminiControlSurface.TRACK_STATE_SELECT:
                 this.surface.getViewManager ().getActiveView ().selectTrack (index);
+                break;
+            default:
+                // Not used
                 break;
         }
     }

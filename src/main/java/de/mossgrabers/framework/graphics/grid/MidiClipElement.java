@@ -91,7 +91,7 @@ public class MidiClipElement extends AbstractGridElement
         {
             final double start = playStart - startPos;
             final double x = width * start / pageLength;
-            gc.fillTriangle (x + 1, 0, x + 1 + len, len / 2, x + 1, len, lineColor);
+            gc.fillTriangle (x + 1, 0, x + 1 + len, len / 2.0, x + 1, len, lineColor);
         }
         // Draw play end in header
         final double playEnd = this.clip.getPlayEnd ();
@@ -99,7 +99,7 @@ public class MidiClipElement extends AbstractGridElement
         {
             final double end = playEnd - startPos;
             final double x = width * end / pageLength;
-            gc.fillTriangle (x + 1, 0, x + 1, len, x + 1 - top, len / 2, lineColor);
+            gc.fillTriangle (x + 1, 0, x + 1, len, x + 1 - top, len / 2.0, lineColor);
         }
 
         // Draw dividers
@@ -114,7 +114,7 @@ public class MidiClipElement extends AbstractGridElement
             {
                 final double time = startPos + step * stepLength;
                 final String measureText = StringUtils.formatMeasures (this.quartersPerMeasure, time, 1);
-                gc.drawTextInHeight (measureText, x, 0, top - 1, ColorEx.WHITE, top);
+                gc.drawTextInHeight (measureText, x, 0, top - 1.0, ColorEx.WHITE, top);
             }
         }
 

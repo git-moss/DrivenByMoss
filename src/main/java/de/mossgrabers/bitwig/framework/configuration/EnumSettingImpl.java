@@ -5,7 +5,7 @@
 package de.mossgrabers.bitwig.framework.configuration;
 
 import de.mossgrabers.framework.configuration.IEnumSetting;
-import de.mossgrabers.framework.configuration.IValueObserver;
+import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.Setting;

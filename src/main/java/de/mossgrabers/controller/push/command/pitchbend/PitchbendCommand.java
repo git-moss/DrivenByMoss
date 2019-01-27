@@ -82,6 +82,10 @@ public class PitchbendCommand extends AbstractPitchbendCommand<PushControlSurfac
                 if (selTrack != null)
                     selTrack.setVolume (this.model.getValueChanger ().toDAWValue (data2));
                 return;
+
+            default:
+                // Not used
+                break;
         }
 
         this.surface.getOutput ().sendPitchbend (data1, data2);

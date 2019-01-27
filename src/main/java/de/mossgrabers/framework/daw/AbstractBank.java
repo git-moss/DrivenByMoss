@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.observer.ItemSelectionObserver;
 
 import java.util.ArrayList;
 import java.util.HashSet;

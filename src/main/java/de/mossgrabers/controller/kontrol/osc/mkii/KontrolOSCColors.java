@@ -15,38 +15,24 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class KontrolOSCColors
+public final class KontrolOSCColors
 {
     /** Black. */
-    public static final double []               COLOR_BLACK      =
+    private static final double []              COLOR_BLACK      =
     {
         0,
         0,
         0
     };
     /** White. */
-    public static final double []               COLOR_WHITE      =
+    private static final double []              COLOR_WHITE      =
     {
         1,
         1,
         1
     };
-    /** Green. */
-    public static final double []               COLOR_GREEN      =
-    {
-        0,
-        1,
-        0
-    };
-    /** Red. */
-    public static final double []               COLOR_RED        =
-    {
-        1,
-        0,
-        0
-    };
     /** Ocean blue. */
-    public static final double []               COLOR_OCEAN_BLUE =
+    private static final double []              COLOR_OCEAN_BLUE =
     {
         0.2666666805744171,
         0.7843137383460999,

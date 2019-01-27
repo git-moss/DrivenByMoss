@@ -48,6 +48,9 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
             case 2:
             case 3:
                 break;
+            default:
+                // Not used
+                break;
         }
         this.updateScale ();
     }

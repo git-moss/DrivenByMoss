@@ -51,9 +51,17 @@ public class FaderAbsoluteCommand<S extends IControlSurface<C>, C extends Config
         if (this.surface.isShiftPressed ())
         {
             final int volume = track.getVolume ();
-            this.surface.getDisplay ().notify (volume < value ? "Move down" : volume > value ? "Move up" : "Perfect!");
+            this.surface.getDisplay ().notify (getNotificationText (value, volume));
         }
         else
             track.setVolume (value);
+    }
+
+
+    private static String getNotificationText (final int value, final int volume)
+    {
+        if (volume < value)
+            return "Move down";
+        return volume > value ? "Move up" : "Perfect!";
     }
 }

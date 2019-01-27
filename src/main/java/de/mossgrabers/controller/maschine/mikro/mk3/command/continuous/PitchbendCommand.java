@@ -59,6 +59,10 @@ public class PitchbendCommand extends AbstractContinuousCommand<MaschineMikroMk3
             case MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME:
                 this.model.getMasterTrack ().setVolume (this.model.getValueChanger ().toDAWValue (value));
                 return;
+
+            default:
+                // Not used
+                break;
         }
     }
 }

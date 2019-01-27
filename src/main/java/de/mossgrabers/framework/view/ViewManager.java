@@ -8,6 +8,7 @@ import de.mossgrabers.framework.command.core.AftertouchCommand;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
+import de.mossgrabers.framework.utils.FrameworkException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,7 +76,7 @@ public class ViewManager
 
         view = this.getActiveView ();
         if (view == null)
-            throw new RuntimeException ("Trying to activate view that does not exist: " + viewId);
+            throw new FrameworkException ("Trying to activate view that does not exist: " + viewId);
 
         view.onActivate ();
 

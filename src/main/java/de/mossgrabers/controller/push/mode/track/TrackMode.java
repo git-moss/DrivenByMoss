@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
+import de.mossgrabers.framework.graphics.grid.SendData;
 import de.mossgrabers.framework.utils.Pair;
 
 
@@ -53,6 +54,9 @@ public class TrackMode extends AbstractTrackMode
             case 1:
                 selectedTrack.changePan (value);
                 return;
+            default:
+                // Not used
+                break;
         }
 
         final ISendBank sendBank = selectedTrack.getSendBank ();
@@ -74,18 +78,15 @@ public class TrackMode extends AbstractTrackMode
             return;
         }
 
-        switch (index)
+        if (index == 2)
         {
-            case 2:
-                if (config.isDisplayCrossfader ())
-                    this.changeCrossfader (value, selectedTrack);
-                else
-                    sendBank.getItem (0).changeValue (value);
-                break;
-            default:
-                sendBank.getItem (index - (config.isDisplayCrossfader () ? 3 : 2)).changeValue (value);
-                break;
+            if (config.isDisplayCrossfader ())
+                this.changeCrossfader (value, selectedTrack);
+            else
+                sendBank.getItem (0).changeValue (value);
         }
+        else
+            sendBank.getItem (index - (config.isDisplayCrossfader () ? 3 : 2)).changeValue (value);
     }
 
 
@@ -110,31 +111,28 @@ public class TrackMode extends AbstractTrackMode
         final PushConfiguration config = this.surface.getConfiguration ();
         if (this.isPush2)
         {
-            if (isTouched)
+            if (isTouched && this.surface.isDeletePressed ())
             {
-                if (this.surface.isDeletePressed ())
+                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+                switch (index)
                 {
-                    this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
-                    switch (index)
-                    {
-                        case 0:
-                            selectedTrack.resetVolume ();
-                            break;
-                        case 1:
-                            selectedTrack.resetPan ();
-                            break;
-                        case 2:
-                            selectedTrack.setCrossfadeMode ("AB");
-                            break;
-                        case 3:
-                            // Not used
-                            break;
-                        default:
-                            sendBank.getItem (index - 4).resetValue ();
-                            break;
-                    }
-                    return;
+                    case 0:
+                        selectedTrack.resetVolume ();
+                        break;
+                    case 1:
+                        selectedTrack.resetPan ();
+                        break;
+                    case 2:
+                        selectedTrack.setCrossfadeMode ("AB");
+                        break;
+                    case 3:
+                        // Not used
+                        break;
+                    default:
+                        sendBank.getItem (index - 4).resetValue ();
+                        break;
                 }
+                return;
             }
 
             switch (index)
@@ -159,31 +157,28 @@ public class TrackMode extends AbstractTrackMode
             return;
         }
 
-        if (isTouched)
+        if (isTouched && this.surface.isDeletePressed ())
         {
-            if (this.surface.isDeletePressed ())
+            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+            switch (index)
             {
-                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
-                switch (index)
-                {
-                    case 0:
-                        selectedTrack.resetVolume ();
-                        break;
-                    case 1:
-                        selectedTrack.resetPan ();
-                        break;
-                    case 2:
-                        if (config.isDisplayCrossfader ())
-                            selectedTrack.setCrossfadeMode ("AB");
-                        else
-                            sendBank.getItem (0).resetValue ();
-                        break;
-                    default:
-                        sendBank.getItem (index - (config.isDisplayCrossfader () ? 3 : 2)).resetValue ();
-                        break;
-                }
-                return;
+                case 0:
+                    selectedTrack.resetVolume ();
+                    break;
+                case 1:
+                    selectedTrack.resetPan ();
+                    break;
+                case 2:
+                    if (config.isDisplayCrossfader ())
+                        selectedTrack.setCrossfadeMode ("AB");
+                    else
+                        sendBank.getItem (0).resetValue ();
+                    break;
+                default:
+                    sendBank.getItem (index - (config.isDisplayCrossfader () ? 3 : 2)).resetValue ();
+                    break;
             }
+            return;
         }
 
         switch (index)
@@ -295,32 +290,25 @@ public class TrackMode extends AbstractTrackMode
             }
             else if (sendsIndex == i)
             {
-                final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
                 final ITrack selTrack = tb.getItem (selectedIndex);
-                final String [] sendName = new String [4];
-                final String [] valueStr = new String [4];
-                final int [] value = new int [4];
-                final int [] modulatedValue = new int [4];
-                final boolean [] selected = new boolean [4];
+                final SendData [] sendData = new SendData [4];
                 for (int j = 0; j < 4; j++)
                 {
-                    final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
-                    final int sendPos = sendOffset + j;
-                    selected[j] = true;
-                    sendName[j] = "";
-                    valueStr[j] = "";
-                    value[j] = 0;
-                    if (selTrack == null)
-                        continue;
-                    final ISend send = selTrack.getSendBank ().getItem (sendPos);
-                    if (send == null)
-                        continue;
-                    sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getItem (sendPos).getName ();
-                    valueStr[j] = send.doesExist () && this.isKnobTouched[4 + j] ? send.getDisplayedValue (8) : "";
-                    value[j] = valueChanger.toDisplayValue (send.doesExist () ? send.getValue () : 0);
-                    modulatedValue[j] = valueChanger.toDisplayValue (send.doesExist () ? send.getModulatedValue () : 0);
+                    if (selTrack != null)
+                    {
+                        final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
+                        final int sendPos = sendOffset + j;
+                        final ISend send = selTrack.getSendBank ().getItem (sendPos);
+                        if (send != null)
+                        {
+                            final boolean exists = send.doesExist ();
+                            sendData[j] = new SendData (send.getName (), exists && this.isKnobTouched[4 + j] ? send.getDisplayedValue (8) : "", valueChanger.toDisplayValue (exists ? send.getValue () : 0), valueChanger.toDisplayValue (exists ? send.getModulatedValue () : 0), true);
+                            continue;
+                        }
+                    }
+                    sendData[j] = new SendData ("", "", 0, 0, true);
                 }
-                message.addSendsElement (topMenu, topMenuSelected, bottomMenu, t.getType (), bottomMenuColor, isBottomMenuOn, sendName, valueStr, value, modulatedValue, selected, true);
+                message.addSendsElement (topMenu, topMenuSelected, bottomMenu, t.getType (), bottomMenuColor, isBottomMenuOn, sendData, true);
             }
             else
                 message.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, t.getType (), bottomMenuColor, isBottomMenuOn);

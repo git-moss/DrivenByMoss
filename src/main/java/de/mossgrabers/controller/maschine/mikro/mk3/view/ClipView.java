@@ -82,6 +82,9 @@ public class ClipView extends BaseView
             case 3:
                 slotBank.selectNextPage ();
                 break;
+            default:
+                // Not used
+                break;
         }
     }
 }

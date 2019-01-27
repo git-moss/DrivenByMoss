@@ -17,7 +17,7 @@ import java.util.Arrays;
  */
 public class PadGridImpl implements PadGrid
 {
-    protected final static int NUM_NOTES = 128;
+    protected static final int NUM_NOTES = 128;
 
     protected IMidiOutput      output;
     protected ColorManager     colorManager;

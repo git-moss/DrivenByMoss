@@ -163,7 +163,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     {
         final ModelSetup ms = new ModelSetup ();
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
-        this.model.getTrackBank ().addSelectionObserver (this::handleTrackChange);
+        this.model.getTrackBank ().addSelectionObserver ( (index, value) -> this.handleTrackChange (value));
     }
 
 
@@ -326,10 +326,9 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     /**
      * Handle a track selection change.
      *
-     * @param index The index of the track
      * @param isSelected Has the track been selected?
      */
-    private void handleTrackChange (final int index, final boolean isSelected)
+    private void handleTrackChange (final boolean isSelected)
     {
         if (!isSelected)
             return;

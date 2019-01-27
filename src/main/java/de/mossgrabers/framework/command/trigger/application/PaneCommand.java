@@ -82,17 +82,7 @@ public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        switch (this.panel)
-        {
-            case DEVICE:
-                this.model.getApplication ().toggleDevices ();
-                break;
-            default:
-                // Not used
-                break;
-        }
+        if (event == ButtonEvent.DOWN && this.panel == Panels.DEVICE)
+            this.model.getApplication ().toggleDevices ();
     }
 }

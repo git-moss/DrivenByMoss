@@ -8,7 +8,6 @@ import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
 
@@ -57,24 +56,14 @@ public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, 
         switch (scene)
         {
             case 0:
-            {
-                final Scales scales = this.model.getScales ();
-                scales.nextScale ();
-                final String name = scales.getScale ().getName ();
-                this.surface.getConfiguration ().setScale (name);
-                this.surface.getDisplay ().notify (name);
+                this.scales.nextScale ();
+                this.notifyScale ();
                 break;
-            }
 
             case 1:
-            {
-                final Scales scales = this.model.getScales ();
-                scales.prevScale ();
-                final String name = scales.getScale ().getName ();
-                this.surface.getConfiguration ().setScale (name);
-                this.surface.getDisplay ().notify (name);
+                this.scales.prevScale ();
+                this.notifyScale ();
                 break;
-            }
 
             case 2:
                 this.scales.toggleChromatic ();
@@ -90,6 +79,10 @@ public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, 
             case 4:
                 this.onOctaveDown (event);
                 break;
+
+            default:
+                // Not used
+                break;
         }
         this.updateNoteMapping ();
     }
@@ -101,5 +94,13 @@ public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, 
     {
         super.updateNoteMapping ();
         this.updateScale ();
+    }
+
+
+    private void notifyScale ()
+    {
+        final String name = this.scales.getScale ().getName ();
+        this.surface.getConfiguration ().setScale (name);
+        this.surface.getDisplay ().notify (name);
     }
 }

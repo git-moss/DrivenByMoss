@@ -61,14 +61,10 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
         if (!layer.doesExist ())
             return;
 
-        if (isTouched)
+        if (isTouched && this.surface.isDeletePressed ())
         {
-            if (this.surface.isDeletePressed ())
-            {
-                this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                layer.resetVolume ();
-                return;
-            }
+            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            layer.resetVolume ();
         }
 
         layer.touchVolume (isTouched);

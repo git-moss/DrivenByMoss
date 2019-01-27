@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.FrameworkException;
 
 import com.bitwig.extension.controller.api.Application;
 import com.bitwig.extension.controller.api.Arranger;
@@ -137,7 +138,7 @@ public class ModelImpl extends AbstractModel
     public IClip getClip ()
     {
         if (this.cursorClips.isEmpty ())
-            throw new RuntimeException ("No cursor clip created!");
+            throw new FrameworkException ("No cursor clip created!");
         return this.cursorClips.values ().iterator ().next ();
     }
 

@@ -76,17 +76,14 @@ public class MasterMode extends BaseMode
     {
         this.isKnobTouched[index] = isTouched;
 
-        if (isTouched)
+        if (isTouched && this.surface.isDeletePressed ())
         {
-            if (this.surface.isDeletePressed ())
-            {
-                this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                if (index == 0)
-                    this.model.getMasterTrack ().resetVolume ();
-                else if (index == 1)
-                    this.model.getMasterTrack ().resetPan ();
-                return;
-            }
+            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            if (index == 0)
+                this.model.getMasterTrack ().resetVolume ();
+            else if (index == 1)
+                this.model.getMasterTrack ().resetPan ();
+            return;
         }
 
         if (index == 0)
@@ -174,6 +171,10 @@ public class MasterMode extends BaseMode
             case 7:
                 this.model.getProject ().next ();
                 break;
+
+            default:
+                // Not used
+                break;
         }
     }
 
@@ -235,10 +236,10 @@ public class MasterMode extends BaseMode
         if (muteState)
         {
             if (!master.isMute ())
-                color = this.isPush2 ? PushColors.PUSH2_COLOR2_YELLOW_HI : PushColors.PUSH1_COLOR2_YELLOW_HI;
+                color = PushColors.PUSH1_COLOR2_YELLOW_HI;
         }
         else
-            color = master.isSolo () ? this.isPush2 ? PushColors.PUSH2_COLOR2_BLUE_HI : PushColors.PUSH1_COLOR2_BLUE_HI : this.isPush2 ? PushColors.PUSH2_COLOR2_GREY_LO : PushColors.PUSH1_COLOR2_GREY_LO;
+            color = master.isSolo () ? PushColors.PUSH1_COLOR2_BLUE_HI : PushColors.PUSH1_COLOR2_GREY_LO;
 
         this.surface.updateButton (102, color);
         for (int i = 1; i < 8; i++)

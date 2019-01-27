@@ -50,6 +50,9 @@ public class TrackMode extends AbstractTrackMode
             case 1:
                 selectedTrack.changePan (value);
                 return;
+            default:
+                // Not used
+                break;
         }
 
         final MCUConfiguration config = this.surface.getConfiguration ();

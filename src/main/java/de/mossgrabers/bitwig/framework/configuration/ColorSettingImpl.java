@@ -5,8 +5,8 @@
 package de.mossgrabers.bitwig.framework.configuration;
 
 import de.mossgrabers.framework.configuration.IColorSetting;
-import de.mossgrabers.framework.configuration.IValueObserver;
 import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.SettableColorValue;
 import com.bitwig.extension.controller.api.Setting;

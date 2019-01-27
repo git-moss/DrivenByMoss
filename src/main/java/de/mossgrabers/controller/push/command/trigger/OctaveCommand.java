@@ -42,7 +42,7 @@ public class OctaveCommand extends AbstractTriggerCommand<PushControlSurface, Pu
     public void execute (final ButtonEvent event)
     {
         final View activeView = this.surface.getViewManager ().getActiveView ();
-        if (activeView == null || !(activeView instanceof TransposeView))
+        if (!(activeView instanceof TransposeView))
             return;
 
         if (this.isUp)

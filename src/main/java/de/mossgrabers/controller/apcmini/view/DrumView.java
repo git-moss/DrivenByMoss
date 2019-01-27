@@ -62,6 +62,9 @@ public class DrumView extends AbstractDrumView<APCminiControlSurface, APCminiCon
             case 3:
                 this.onRight (event);
                 break;
+            default:
+                // Not used
+                break;
         }
     }
 

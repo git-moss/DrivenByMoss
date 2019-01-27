@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class SessionMode extends AbstractTrackMode
 {
-    private static enum RowDisplayMode
+    private enum RowDisplayMode
     {
         ALL,
         UPPER,

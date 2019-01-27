@@ -90,8 +90,9 @@ public class FixedMode extends BaseMode
         d.setBlock (2, 0, "New Clip Length:");
         for (int i = 0; i < 8; i++)
         {
-            d.setCell (0, i, AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i]);
-            d.setCell (3, i, (newClipLength == i ? PushDisplay.SELECT_ARROW : "") + AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i]);
+            final String newClipLengthValue = AbstractConfiguration.getNewClipLengthValue (i);
+            d.setCell (0, i, newClipLengthValue);
+            d.setCell (3, i, (newClipLength == i ? PushDisplay.SELECT_ARROW : "") + newClipLengthValue);
         }
         d.allDone ();
     }
@@ -104,7 +105,10 @@ public class FixedMode extends BaseMode
         final int newClipLength = this.surface.getConfiguration ().getNewClipLength ();
         final DisplayModel message = this.surface.getDisplay ().getModel ();
         for (int i = 0; i < 8; i++)
-            message.addOptionElement (i == 0 ? "Create Clip (length not stored)" : "", AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i], false, i == 0 ? "New Clip Length" : "", AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[i], newClipLength == i, false);
+        {
+            final String newClipLengthValue = AbstractConfiguration.getNewClipLengthValue (i);
+            message.addOptionElement (i == 0 ? "Create Clip (length not stored)" : "", newClipLengthValue, false, i == 0 ? "New Clip Length" : "", newClipLengthValue, newClipLength == i, false);
+        }
         message.send ();
     }
 }

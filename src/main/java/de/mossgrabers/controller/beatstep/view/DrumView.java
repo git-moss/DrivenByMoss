@@ -50,14 +50,6 @@ public class DrumView extends BaseSequencerView
     @Override
     public void onKnob (final int index, final int value)
     {
-        if (index < 12)
-        {
-            this.extensions.onTrackKnob (index, value);
-            return;
-        }
-
-        final boolean isInc = value >= 65;
-
         switch (index)
         {
             case 12:
@@ -72,6 +64,7 @@ public class DrumView extends BaseSequencerView
             // Up/Down
             case 14:
                 this.keyManager.clearPressedKeys ();
+                final boolean isInc = value >= 65;
                 if (isInc)
                 {
                     this.scales.incDrumOctave ();
@@ -92,6 +85,11 @@ public class DrumView extends BaseSequencerView
                 this.isPlayMode = !this.isPlayMode;
                 this.surface.getDisplay ().notify (this.isPlayMode ? "Play/Select" : "Sequence");
                 this.updateNoteMapping ();
+                break;
+
+            // 0-11
+            default:
+                this.extensions.onTrackKnob (index, value);
                 break;
         }
     }
@@ -177,9 +175,17 @@ public class DrumView extends BaseSequencerView
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
                 final int y = col / 8;
-                padGrid.lightEx (x, 1 - y, isSet > 0 ? hilite ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE : hilite ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF);
+                padGrid.lightEx (x, 1 - y, getSequencerPadColor (isSet, hilite));
             }
         }
+    }
+
+
+    private static int getSequencerPadColor (final int isSet, final boolean hilite)
+    {
+        if (isSet > 0)
+            return hilite ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE;
+        return hilite ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF;
     }
 
 

@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.daw;
 
+import de.mossgrabers.framework.observer.ObserverManagement;
+
+
 /**
  * Interface to the Transport instance.
  *
@@ -11,32 +14,6 @@ package de.mossgrabers.framework.daw;
  */
 public interface ITransport extends ObserverManagement
 {
-    /** The names for automation modes. */
-    String [] AUTOMATION_MODES        =
-    {
-        "Latch",
-        "Touch",
-        "Write"
-    };
-
-    /** The names for automation modes values. */
-    String [] AUTOMATION_MODES_VALUES =
-    {
-        "latch",
-        "touch",
-        "write"
-    };
-
-    /** No preroll. */
-    String    PREROLL_NONE            = "none";
-    /** 1 bar preroll. */
-    String    PREROLL_1_BAR           = "one_bar";
-    /** 2 bar preroll. */
-    String    PREROLL_2_BARS          = "two_bars";
-    /** 4 bar preroll. */
-    String    PREROLL_4_BARS          = "four_bars";
-
-
     /**
      * Start the playback.
      */

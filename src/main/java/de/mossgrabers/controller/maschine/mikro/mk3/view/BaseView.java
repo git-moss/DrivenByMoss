@@ -77,6 +77,9 @@ public abstract class BaseView extends AbstractView<MaschineMikroMk3ControlSurfa
             case 3:
                 this.model.getCurrentTrackBank ().selectNextPage ();
                 break;
+            default:
+                // Not used
+                break;
         }
     }
 }

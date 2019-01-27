@@ -54,7 +54,7 @@ public class MCUSegmentDisplay
                     continue;
                 }
 
-                c = singleDigit; // 0x30 + i;
+                c = singleDigit;
                 if (addDot)
                     c += 0x40;
             }

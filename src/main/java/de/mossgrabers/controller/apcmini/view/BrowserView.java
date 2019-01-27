@@ -120,6 +120,10 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
             case 5:
                 this.surface.sendMidiEvent (0x90, 84, velocity);
                 break;
+
+            default:
+                // Not used
+                break;
         }
 
         if (velocity == 0)

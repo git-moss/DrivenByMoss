@@ -34,6 +34,6 @@ public class APCBrowserCommand extends BrowserCommand<APCControlSurface, APCConf
     @Override
     protected boolean getCommit ()
     {
-        return this.surface.isMkII () ? !this.surface.isShiftPressed () : true;
+        return !this.surface.isMkII () || !this.surface.isShiftPressed ();
     }
 }

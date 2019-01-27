@@ -5,7 +5,7 @@
 package de.mossgrabers.bitwig.framework.configuration;
 
 import de.mossgrabers.framework.configuration.IStringSetting;
-import de.mossgrabers.framework.configuration.IValueObserver;
+import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.SettableStringValue;
 import com.bitwig.extension.controller.api.Setting;

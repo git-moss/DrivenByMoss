@@ -98,4 +98,12 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
         if (selectedTrack != null)
             selectedTrack.toggleSolo ();
     }
+
+
+    protected static String getSecondLineText (final ITrack track)
+    {
+        if (track.isMute ())
+            return "-MUTED-";
+        return track.isSolo () ? "-SOLO-" : track.getVolumeStr (8);
+    }
 }

@@ -5,7 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.framework.daw.IParameterPageBank;
-import de.mossgrabers.framework.daw.ItemSelectionObserver;
+import de.mossgrabers.framework.observer.ItemSelectionObserver;
 
 import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.SettableIntegerValue;

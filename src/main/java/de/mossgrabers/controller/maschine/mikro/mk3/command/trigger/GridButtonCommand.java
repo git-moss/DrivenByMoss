@@ -42,7 +42,7 @@ public class GridButtonCommand extends AbstractTriggerCommand<MaschineMikroMk3Co
     public void execute (final ButtonEvent event)
     {
         final View activeView = this.surface.getViewManager ().getActiveView ();
-        if (activeView != null && activeView instanceof PadButtons)
+        if (activeView instanceof PadButtons)
             ((PadButtons) activeView).onButton (this.index, event);
     }
 }

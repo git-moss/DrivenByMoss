@@ -37,9 +37,7 @@ public class ParameterView extends BaseView
     {
         ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.MODE_DEVICE)).selectParameter (padIndex);
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        this.model.getHost ().scheduleTask ( () -> {
-            this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem () + ": " + cursorDevice.getParameterBank ().getItem (padIndex).getName ());
-        }, 200);
+        this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem () + ": " + cursorDevice.getParameterBank ().getItem (padIndex).getName ()), 200);
     }
 
 
@@ -69,6 +67,9 @@ public class ParameterView extends BaseView
                 break;
             case 3:
                 cursorDevice.selectNext ();
+                break;
+            default:
+                // Not used
                 break;
         }
     }

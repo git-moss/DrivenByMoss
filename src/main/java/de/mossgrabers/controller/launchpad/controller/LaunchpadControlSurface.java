@@ -299,11 +299,8 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     @Override
     public void setButtonEx (final int button, final int channel, final int state)
     {
-        if (!this.isPro)
-        {
-            if (button == LAUNCHPAD_BUTTON_SCENE1 || button == LAUNCHPAD_BUTTON_SCENE2 || button == LAUNCHPAD_BUTTON_SCENE3 || button == LAUNCHPAD_BUTTON_SCENE4 || button == LAUNCHPAD_BUTTON_SCENE5 || button == LAUNCHPAD_BUTTON_SCENE6 || button == LAUNCHPAD_BUTTON_SCENE7 || button == LAUNCHPAD_BUTTON_SCENE8)
-                this.output.sendNote (button, state);
-        }
+        if (!this.isPro && (button == LAUNCHPAD_BUTTON_SCENE1 || button == LAUNCHPAD_BUTTON_SCENE2 || button == LAUNCHPAD_BUTTON_SCENE3 || button == LAUNCHPAD_BUTTON_SCENE4 || button == LAUNCHPAD_BUTTON_SCENE5 || button == LAUNCHPAD_BUTTON_SCENE6 || button == LAUNCHPAD_BUTTON_SCENE7 || button == LAUNCHPAD_BUTTON_SCENE8))
+            this.output.sendNote (button, state);
 
         this.output.sendCC (button, state);
     }

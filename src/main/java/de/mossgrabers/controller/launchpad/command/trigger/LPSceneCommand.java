@@ -40,7 +40,7 @@ public class LPSceneCommand extends SceneCommand<LaunchpadControlSurface, Launch
         {
             final int index = 7 - this.scene;
             this.surface.getConfiguration ().setNewClipLength (index);
-            this.surface.getDisplay ().notify (AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[index]);
+            this.surface.getDisplay ().notify (AbstractConfiguration.getNewClipLengthValue (index));
             return;
         }
 

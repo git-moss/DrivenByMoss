@@ -53,6 +53,9 @@ public class SequencerView extends AbstractNoteSequencerView<APCminiControlSurfa
             case 3:
                 this.onRight (event);
                 break;
+            default:
+                // Not used
+                break;
         }
         this.updateScale ();
     }

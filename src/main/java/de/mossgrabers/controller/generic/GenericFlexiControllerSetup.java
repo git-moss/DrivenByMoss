@@ -8,7 +8,6 @@ import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.controller.generic.mode.Modes;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.configuration.IValueObserver;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
@@ -30,6 +29,7 @@ import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SendMode;
 import de.mossgrabers.framework.mode.track.TrackMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 
 import java.util.Set;
@@ -137,10 +137,10 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         this.configuration.addSettingObserver (GenericFlexiConfiguration.SLOT_CHANGE, surface::updateKeyTranslation);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
-        trackBank.addSelectionObserver (this::handleTrackChange);
+        trackBank.addSelectionObserver ( (index, selected) -> this.handleTrackChange (selected));
         final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
         if (effectTrackBank != null)
-            effectTrackBank.addSelectionObserver (this::handleTrackChange);
+            effectTrackBank.addSelectionObserver ( (index, selected) -> this.handleTrackChange (selected));
 
         surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
     }
@@ -149,10 +149,9 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     /**
      * Handle a track selection change.
      *
-     * @param index The index of the track
      * @param isSelected Has the track been selected?
      */
-    private void handleTrackChange (final int index, final boolean isSelected)
+    private void handleTrackChange (final boolean isSelected)
     {
         if (isSelected)
             this.update (null);

@@ -84,13 +84,7 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
         }
 
         final Integer activeModeId = this.surface.getModeManager ().getActiveOrTempModeId ();
-        if (Modes.isTrackMode (activeModeId))
-        {
-            final ITrack selTrack = this.model.getSelectedTrack ();
-            if (selTrack != null)
-                selTrack.toggleSolo ();
-        }
-        else if (Modes.isLayerMode (activeModeId))
+        if (Modes.isLayerMode (activeModeId))
         {
             final ICursorDevice cd = this.model.getCursorDevice ();
             final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();

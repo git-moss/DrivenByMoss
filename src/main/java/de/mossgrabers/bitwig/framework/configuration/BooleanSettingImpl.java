@@ -5,7 +5,7 @@
 package de.mossgrabers.bitwig.framework.configuration;
 
 import de.mossgrabers.framework.configuration.IBooleanSetting;
-import de.mossgrabers.framework.configuration.IValueObserver;
+import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.SettableBooleanValue;
 import com.bitwig.extension.controller.api.Setting;

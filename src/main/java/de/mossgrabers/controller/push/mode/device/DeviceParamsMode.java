@@ -103,14 +103,10 @@ public class DeviceParamsMode extends BaseMode
 
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IParameter param = cd.getParameterBank ().getItem (index);
-        if (isTouched)
+        if (isTouched && this.surface.isDeletePressed ())
         {
-            if (this.surface.isDeletePressed ())
-            {
-                this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                param.resetValue ();
-                return;
-            }
+            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            param.resetValue ();
         }
         param.touchValue (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
@@ -286,6 +282,9 @@ public class DeviceParamsMode extends BaseMode
                 break;
             case 7:
                 this.moveUp ();
+                break;
+            default:
+                // Not used
                 break;
         }
     }

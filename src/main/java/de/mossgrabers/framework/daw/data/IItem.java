@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.framework.daw.ObserverManagement;
+import de.mossgrabers.framework.observer.ObserverManagement;
 
 
 /**

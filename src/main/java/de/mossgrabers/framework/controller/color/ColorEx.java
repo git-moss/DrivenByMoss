@@ -30,9 +30,9 @@ public class ColorEx
 
     private static final double FACTOR     = 0.7;
 
-    private final double        red;
-    private final double        green;
-    private final double        blue;
+    private final double        redValue;
+    private final double        greenValue;
+    private final double        blueValue;
 
 
     /**
@@ -55,9 +55,9 @@ public class ColorEx
      */
     public ColorEx (final double red, final double green, final double blue)
     {
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
+        this.redValue = red;
+        this.greenValue = green;
+        this.blueValue = blue;
     }
 
 
@@ -143,7 +143,7 @@ public class ColorEx
      */
     public double getRed ()
     {
-        return this.red;
+        return this.redValue;
     }
 
 
@@ -154,7 +154,7 @@ public class ColorEx
      */
     public double getGreen ()
     {
-        return this.green;
+        return this.greenValue;
     }
 
 
@@ -165,6 +165,6 @@ public class ColorEx
      */
     public double getBlue ()
     {
-        return this.blue;
+        return this.blueValue;
     }
 }

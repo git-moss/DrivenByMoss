@@ -139,7 +139,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final ModelSetup ms = new ModelSetup ();
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
-        trackBank.addSelectionObserver (this::handleTrackChange);
+        trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
     }
 
 
@@ -396,10 +396,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     /**
      * Handle a track selection change.
      *
-     * @param index The index of the track
      * @param isSelected Has the track been selected?
      */
-    private void handleTrackChange (final int index, final boolean isSelected)
+    private void handleTrackChange (final boolean isSelected)
     {
         if (!isSelected)
             return;

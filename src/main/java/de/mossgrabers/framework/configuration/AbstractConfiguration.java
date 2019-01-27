@@ -6,6 +6,7 @@ package de.mossgrabers.framework.configuration;
 
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.observer.SettingObserver;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
@@ -160,7 +161,7 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
     /** The names for clip lengths. */
-    public static final String []                    NEW_CLIP_LENGTH_VALUES      =
+    protected static final String []                 NEW_CLIP_LENGTH_VALUES      =
     {
         "1 Beat",
         "2 Beat",
@@ -224,7 +225,7 @@ public abstract class AbstractConfiguration implements Configuration
     };
 
     /** The Off/On option. */
-    public static final String []                    ON_OFF_OPTIONS              =
+    protected static final String []                 ON_OFF_OPTIONS              =
     {
         "Off",
         "On"
@@ -237,7 +238,6 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                             enableVUMetersSetting;
     private IEnumSetting                             displayCrossfaderSetting;
     private IEnumSetting                             flipSessionSetting;
-    private IEnumSetting                             lockFlipSessionSetting;
     private IEnumSetting                             accentActiveSetting;
     private IIntegerSetting                          accentValueSetting;
     private IIntegerSetting                          quantizeAmountSetting;
@@ -297,13 +297,7 @@ public abstract class AbstractConfiguration implements Configuration
     @Override
     public void addSettingObserver (final Integer settingID, final SettingObserver observer)
     {
-        Set<SettingObserver> settingObservers = this.observers.get (settingID);
-        if (settingObservers == null)
-        {
-            settingObservers = new HashSet<> ();
-            this.observers.put (settingID, settingObservers);
-        }
-        settingObservers.add (observer);
+        this.observers.computeIfAbsent (settingID, id -> new HashSet<> ()).add (observer);
     }
 
 
@@ -773,8 +767,8 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateLockFlipSessionSetting (final ISettingsUI settingsUI)
     {
-        this.lockFlipSessionSetting = settingsUI.getEnumSetting ("Lock flip Session", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        this.lockFlipSessionSetting.addValueObserver (value -> {
+        final IEnumSetting lockFlipSessionSetting = settingsUI.getEnumSetting ("Lock flip Session", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        lockFlipSessionSetting.addValueObserver (value -> {
             this.lockFlipSession = "On".equals (value);
             this.notifyObservers (AbstractConfiguration.LOCK_FLIP_SESSION);
         });
@@ -1012,5 +1006,17 @@ public abstract class AbstractConfiguration implements Configuration
                 return i;
         }
         return 0;
+    }
+
+
+    /**
+     * Get a new clip length value string.
+     *
+     * @param index The index
+     * @return The text
+     */
+    public static String getNewClipLengthValue (final int index)
+    {
+        return NEW_CLIP_LENGTH_VALUES[index];
     }
 }

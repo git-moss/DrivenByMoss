@@ -8,9 +8,9 @@ import de.mossgrabers.bitwig.framework.daw.SlotBankImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISlotBank;
-import de.mossgrabers.framework.daw.NoteObserver;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.observer.NoteObserver;
 
 import com.bitwig.extension.controller.api.PlayingNote;
 import com.bitwig.extension.controller.api.Track;
@@ -35,6 +35,13 @@ public class TrackImpl extends ChannelImpl implements ITrack
     protected final ISlotBank         slotBank;
     protected final int []            noteCache     = new int [128];
     protected final Set<NoteObserver> noteObservers = new HashSet<> ();
+
+    private enum CrossfadeSetting
+    {
+        A,
+        AB,
+        B
+    }
 
 
     /**
@@ -268,19 +275,14 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public int getCrossfadeModeAsNumber ()
     {
-        switch (this.getCrossfadeMode ())
+        try
         {
-            case "A":
-                return 0;
-            case "AB":
-                return 1;
-            case "B":
-                return 2;
-            default:
-                // Not possible
-                break;
+            return CrossfadeSetting.valueOf (this.getCrossfadeMode ()).ordinal ();
         }
-        return -1;
+        catch (final IllegalArgumentException | NullPointerException ex)
+        {
+            return -1;
+        }
     }
 
 
@@ -288,7 +290,9 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void setCrossfadeModeAsNumber (final int modeValue)
     {
-        this.setCrossfadeMode (modeValue == 0 ? "A" : modeValue == 1 ? "AB" : "B");
+        final CrossfadeSetting [] values = CrossfadeSetting.values ();
+        if (modeValue < values.length)
+            this.setCrossfadeMode (values[modeValue].name ());
     }
 
 

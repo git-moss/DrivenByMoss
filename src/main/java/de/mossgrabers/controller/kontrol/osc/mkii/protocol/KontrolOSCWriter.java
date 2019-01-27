@@ -32,7 +32,10 @@ import java.util.List;
  */
 public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
 {
-    private static final List<Object> DOUBLE_TRUE = new ArrayList<> ();
+    private static final String       PATH_TRACK_VIEW = "track/view";
+    private static final String       PATH_TRACK      = "track";
+
+    private static final List<Object> DOUBLE_TRUE     = new ArrayList<> ();
     static
     {
         Collections.addAll (DOUBLE_TRUE, Integer.valueOf (1), Integer.valueOf (1));
@@ -129,12 +132,12 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
             if (this.is16)
             {
                 // 1.6
-                this.sendOSC (this.daw + "track/view", ps, dump);
+                this.sendOSC (this.daw + PATH_TRACK_VIEW, ps, dump);
             }
             else
             {
                 // 1.5
-                this.sendOSC (this.daw + "track", ps, dump);
+                this.sendOSC (this.daw + PATH_TRACK, ps, dump);
             }
         }
         if (tbe != null)
@@ -148,13 +151,13 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
                 {
                     // 1.6
                     Collections.addAll (ps, Integer.valueOf (trackType), Integer.valueOf (selTrack.getIndex ()), "");
-                    this.sendOSC (this.daw + "track/view", ps, dump);
+                    this.sendOSC (this.daw + PATH_TRACK_VIEW, ps, dump);
                 }
                 else
                 {
                     // 1.5
                     Collections.addAll (ps, Integer.valueOf (trackType), Integer.valueOf (selTrack.getIndex ()), "");
-                    this.sendOSC (this.daw + "track", ps, dump);
+                    this.sendOSC (this.daw + PATH_TRACK, ps, dump);
                 }
             }
         }
@@ -165,13 +168,13 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
             {
                 // 1.6
                 Collections.addAll (ps, Integer.valueOf (TrackType.MASTER), Integer.valueOf (0), "");
-                this.sendOSC (this.daw + "track/view", ps, dump);
+                this.sendOSC (this.daw + PATH_TRACK_VIEW, ps, dump);
             }
             else
             {
                 // 1.5
                 Collections.addAll (ps, Integer.valueOf (TrackType.MASTER), Integer.valueOf (0), "");
-                this.sendOSC (this.daw + "track", ps, dump);
+                this.sendOSC (this.daw + PATH_TRACK, ps, dump);
             }
         }
 
@@ -214,25 +217,25 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         if (is16)
         {
             // 1.6
-            this.sendTrackOSC (this.daw + "track/volume", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) normalizedVolume)), dump);
-            this.sendTrackOSC (this.daw + "track/pan", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) (valueChanger.toNormalizedValue (track.getPan ()) * 2.0 - 1.0))), dump);
-            this.sendTrackVuOSC (this.daw + "track/meter", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (0), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuLeft ()))), dump);
-            this.sendTrackVuOSC (this.daw + "track/meter", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (1), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuRight ()))), dump);
-            this.sendTrackOSC (this.daw + "track/arm", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (track.isRecArm () ? 1 : 0)), dump);
-            this.sendTrackOSC (this.daw + "track/mute", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (track.isMute () ? 1 : 0)), dump);
-            this.sendTrackOSC (this.daw + "track/solo", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (track.isSolo () ? 1 : 0)), dump);
+            this.sendTrackOSC (this.daw + "track/volume", createTrackValueParameter (trackIndex, trackType, Float.valueOf ((float) normalizedVolume)), dump);
+            this.sendTrackOSC (this.daw + "track/pan", createTrackValueParameter (trackIndex, trackType, Float.valueOf ((float) (valueChanger.toNormalizedValue (track.getPan ()) * 2.0 - 1.0))), dump);
+            this.sendTrackVuOSC (this.daw + "track/meter", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (0), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuLeft ()))), dump);
+            this.sendTrackVuOSC (this.daw + "track/meter", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (1), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuRight ()))), dump);
+            this.sendTrackOSC (this.daw + "track/arm", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (track.isRecArm () ? 1 : 0)), dump);
+            this.sendTrackOSC (this.daw + "track/mute", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (track.isMute () ? 1 : 0)), dump);
+            this.sendTrackOSC (this.daw + "track/solo", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (track.isSolo () ? 1 : 0)), dump);
         }
         else
         {
             // 1.5
-            this.sendTrackOSC (this.daw + "volume", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) normalizedVolume)), dump);
-            this.sendTrackOSC (this.daw + "pan", createTrackValueParameter (trackType, trackIndex, Float.valueOf ((float) (valueChanger.toNormalizedValue (track.getPan ()) * 2.0 - 1.0))), dump);
+            this.sendTrackOSC (this.daw + "volume", createTrackValueParameter (trackIndex, trackType, Float.valueOf ((float) normalizedVolume)), dump);
+            this.sendTrackOSC (this.daw + "pan", createTrackValueParameter (trackIndex, trackType, Float.valueOf ((float) (valueChanger.toNormalizedValue (track.getPan ()) * 2.0 - 1.0))), dump);
             // type and index are switched with these 2 messages...
-            this.sendTrackVuOSC (this.daw + "meter", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (0), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuLeft ()))), dump);
-            this.sendTrackVuOSC (this.daw + "meter", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (1), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuRight ()))), dump);
-            this.sendTrackOSC (this.daw + "arm", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (track.isRecArm () ? 1 : 0)), dump);
-            this.sendTrackOSC (this.daw + "mute", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (track.isMute () ? 1 : 0)), dump);
-            this.sendTrackOSC (this.daw + "solo", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (track.isSolo () ? 1 : 0)), dump);
+            this.sendTrackVuOSC (this.daw + "meter", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (0), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuLeft ()))), dump);
+            this.sendTrackVuOSC (this.daw + "meter", createTrackValueParameter (trackType, trackIndex, Integer.valueOf (1), Float.valueOf ((float) valueChanger.toNormalizedValue (track.getVuRight ()))), dump);
+            this.sendTrackOSC (this.daw + "arm", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (track.isRecArm () ? 1 : 0)), dump);
+            this.sendTrackOSC (this.daw + "mute", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (track.isMute () ? 1 : 0)), dump);
+            this.sendTrackOSC (this.daw + "solo", createTrackValueParameter (trackIndex, trackType, Integer.valueOf (track.isSolo () ? 1 : 0)), dump);
         }
 
         // Track info needs to be used to update the track name but must only be sent in this case
@@ -352,11 +355,7 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
     {
         final ICursorDevice instrumentDevice = this.model.getInstrumentDevice ();
         if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
-        {
-            // "NIKBxx";
-            final String kompleteID = instrumentDevice.getParameterBank ().getItem (0).getName ();
-            return kompleteID;
-        }
+            return instrumentDevice.getParameterBank ().getItem (0).getName ();
         return "";
     }
 
@@ -368,8 +367,8 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
         parameters.add (Integer.valueOf (TrackType.toTrackType (track.getType ())));
         parameters.add (Integer.valueOf (trackIndex));
         parameters.add (track.getName ());
-        parameters.add (Integer.valueOf (1)); // TODO Spec missing: How to convert? track.getColor
-                                              // ()
+        // TODO Spec missing: How to convert track color?
+        parameters.add (Integer.valueOf (1));
         parameters.add (Integer.valueOf (track.isRecArm () ? 1 : 0));
         parameters.add (Integer.valueOf (track.isSolo () ? 1 : 0));
         parameters.add (Integer.valueOf (track.isMute () ? 1 : 0));
@@ -381,13 +380,14 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
 
     /**
      * Creates a parameter list with track type and index.
-     *
-     * @param trackType The track type
+     * 
      * @param trackIndex The track index
+     * @param trackType The track type
      * @param values Other values
+     *
      * @return The full parameter list
      */
-    private static List<Object> createTrackValueParameter (final int trackType, final int trackIndex, final Object... values)
+    private static List<Object> createTrackValueParameter (final int trackIndex, final int trackType, final Object... values)
     {
         final List<Object> parameters = new ArrayList<> ();
         parameters.add (Integer.valueOf (trackType));

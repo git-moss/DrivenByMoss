@@ -54,7 +54,7 @@ public class TrackMode extends AbstractKontrol1Mode
 
         d.setCell (0, 0, (isEffectTrackBankActive ? "TR-FX " : "TRACK ") + (t.getPosition () + 1)).setCell (1, 0, StringUtils.shortenAndFixASCII (t.getName (), 8).toUpperCase ());
 
-        d.setCell (0, 1, "VOLUME").setCell (1, 1, t.isMute () ? "-MUTED-" : t.isSolo () ? "-SOLO-" : t.getVolumeStr (8)).setCell (0, 2, "PAN").setCell (1, 2, t.getPanStr (8));
+        d.setCell (0, 1, "VOLUME").setCell (1, 1, getSecondLineText (t)).setCell (0, 2, "PAN").setCell (1, 2, t.getPanStr (8));
         d.setBar (1, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_1), t.getVolume ());
         d.setPanBar (2, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_2), t.getPan ());
 

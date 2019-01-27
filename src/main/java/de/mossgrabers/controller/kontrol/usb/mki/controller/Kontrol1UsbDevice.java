@@ -480,7 +480,7 @@ public class Kontrol1UsbDevice
             this.usbDevice = host.getUsbDevice (0);
             this.hidDevice = this.usbDevice.getHidDevice ();
             if (this.hidDevice != null)
-                this.hidDevice.setCallback (this::processHIDMessage);
+                this.hidDevice.setCallback ( (reportID, data, received) -> this.processHIDMessage (reportID, data));
         }
         catch (final UsbException ex)
         {
@@ -819,9 +819,8 @@ public class Kontrol1UsbDevice
      *
      * @param reportID The report (= function/method) number
      * @param data The data
-     * @param received The number of valid bytes in the data array
      */
-    private void processHIDMessage (final byte reportID, final byte [] data, final int received)
+    private void processHIDMessage (final byte reportID, final byte [] data)
     {
         if (reportID != REPORT_ID_INPUT_UI)
             return;

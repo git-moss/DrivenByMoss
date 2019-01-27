@@ -94,7 +94,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
 
         final Object [] values = message.getValues ();
         final Object value = values == null || values.length == 0 ? null : values[0];
-        final int numValue = value == null || !(value instanceof Number) ? -1 : ((Number) value).intValue ();
+        final int numValue = !(value instanceof Number) ? -1 : ((Number) value).intValue ();
 
         final String command = oscParts.removeFirst ();
 

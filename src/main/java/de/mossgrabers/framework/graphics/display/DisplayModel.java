@@ -20,6 +20,7 @@ import de.mossgrabers.framework.graphics.grid.OptionsGridElement;
 import de.mossgrabers.framework.graphics.grid.ParamGridElement;
 import de.mossgrabers.framework.graphics.grid.SceneListGridElement;
 import de.mossgrabers.framework.graphics.grid.SelectionGridElement;
+import de.mossgrabers.framework.graphics.grid.SendData;
 import de.mossgrabers.framework.graphics.grid.SendsGridElement;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -76,6 +77,7 @@ public class DisplayModel
      */
     public DisplayModel ()
     {
+        // Manage notification message display time
         this.executor.scheduleAtFixedRate ( () -> {
             final int c = this.counter.get ();
             if (c <= 0)
@@ -267,16 +269,12 @@ public class DisplayModel
      * @param type The type of the channel
      * @param bottomMenuColor A background color for the menu
      * @param isBottomMenuOn True if the bottom menu is selected
-     * @param sendName The names of the sends
-     * @param valueStr The volumes as string
-     * @param value The volumes as values
-     * @param modulatedValue The modulated volumes as values
-     * @param selected The selected state of sends
+     * @param sendData The send information
      * @param isTrackMode True if track mode otherwise send mode
      */
-    public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String [] sendName, final String [] valueStr, final int [] value, final int [] modulatedValue, final boolean [] selected, final boolean isTrackMode)
+    public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final SendData [] sendData, final boolean isTrackMode)
     {
-        this.elements.add (new SendsGridElement (sendName, valueStr, value, modulatedValue, selected, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, isTrackMode));
+        this.elements.add (new SendsGridElement (sendData, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, isTrackMode));
 
     }
 

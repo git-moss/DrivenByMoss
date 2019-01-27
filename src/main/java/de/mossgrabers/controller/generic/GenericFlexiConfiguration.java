@@ -10,9 +10,9 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
-import de.mossgrabers.framework.configuration.IValueObserver;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 
 import java.awt.FileDialog;
@@ -105,7 +105,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private String                                   filename;
     private Object                                   syncMapUpdate         = new Object ();
     private int []                                   keyMap;
-    private int                                      selectedSlot          = 0;
+    private int                                      seleIndexctedSlot     = 0;
     private String                                   learnTypeValue        = null;
     private String                                   learnNumberValue      = null;
     private String                                   learnMidiChannelValue = null;
@@ -162,8 +162,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             final IEnumSetting fs = createFunctionSetting (values[i].getName (), category, settingsUI);
             this.functionSettings.add (fs);
             this.functionSettingsMap.put (values[i], fs);
-            final int index = i;
-            fs.addValueObserver (value -> this.handleFunctionChange (index, value));
+            fs.addValueObserver (this::handleFunctionChange);
         }
 
         // The MIDI learn section
@@ -177,7 +176,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.learnNumberSetting.setEnabled (false);
         this.learnMidiChannelSetting.setEnabled (false);
 
-        settingsUI.getSignalSetting (" ", category, "Set").addValueObserver ( (Void) -> {
+        settingsUI.getSignalSetting (" ", category, "Set").addValueObserver (value -> {
             if (this.learnTypeValue == null)
                 return;
             this.typeSetting.set (this.learnTypeValue);
@@ -195,7 +194,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         if (!GraphicsEnvironment.isHeadless ())
         {
-            settingsUI.getSignalSetting (" ", category, "Select").addValueObserver ( (Void) -> {
+            settingsUI.getSignalSetting (" ", category, "Select").addValueObserver (value -> {
                 final FileDialog fileDialog = new FileDialog ((Frame) null);
                 fileDialog.setVisible (true);
                 final String fn = fileDialog.getFile ();
@@ -206,8 +205,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             });
         }
 
-        settingsUI.getSignalSetting ("  ", category, "Export").addValueObserver ( (Void) -> this.notifyObservers (BUTTON_EXPORT));
-        settingsUI.getSignalSetting ("   ", category, "Import").addValueObserver ( (Void) -> this.notifyObservers (BUTTON_IMPORT));
+        settingsUI.getSignalSetting ("  ", category, "Export").addValueObserver (value -> this.notifyObservers (BUTTON_EXPORT));
+        settingsUI.getSignalSetting ("   ", category, "Import").addValueObserver (value -> this.notifyObservers (BUTTON_IMPORT));
 
         this.learnTypeSetting.set (OPTIONS_TYPE[0]);
 
@@ -254,10 +253,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     /**
      * Handles changing the function selection by the user.
      *
-     * @param index The index of the changed function
      * @param value The new value
      */
-    private void handleFunctionChange (final int index, final String value)
+    private void handleFunctionChange (final String value)
     {
         if (this.commandIsUpdating.get ())
             return;
@@ -298,7 +296,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     private CommandSlot getSelectedSlot ()
     {
-        return this.commandSlots[this.selectedSlot];
+        return this.commandSlots[this.seleIndexctedSlot];
     }
 
 
@@ -334,11 +332,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         for (int i = 0; i < this.commandSlots.length; i++)
         {
             final CommandSlot slot = this.commandSlots[i];
-            if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && slot.getMidiChannel () == midiChannel)
-            {
-                if (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number)
-                    return i;
-            }
+            if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && slot.getMidiChannel () == midiChannel && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
+                return i;
         }
         return -1;
     }
@@ -510,8 +505,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     private void selectSlot (final String value)
     {
-        this.selectedSlot = Integer.parseInt (value) - 1;
-        final CommandSlot slot = this.commandSlots[this.selectedSlot];
+        this.seleIndexctedSlot = Integer.parseInt (value) - 1;
+        final CommandSlot slot = this.commandSlots[this.seleIndexctedSlot];
 
         this.setType (slot.getType ());
         this.setNumber (slot.getNumber ());
@@ -600,9 +595,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.commandIsUpdating.set (true);
         for (int i = 0; i < values.length; i++)
             this.functionSettings.get (i).set (category == values[i] ? value.getName () : FlexiCommand.OFF.getName ());
-        this.host.scheduleTask ( () -> {
-            this.commandIsUpdating.set (false);
-        }, 600);
+        this.host.scheduleTask ( () -> this.commandIsUpdating.set (false), 600);
     }
 
 

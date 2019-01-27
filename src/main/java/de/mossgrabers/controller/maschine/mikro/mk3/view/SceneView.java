@@ -71,6 +71,9 @@ public class SceneView extends BaseView
             case 3:
                 this.model.getSceneBank ().selectNextPage ();
                 break;
+            default:
+                // Not used
+                break;
         }
     }
 }

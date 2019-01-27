@@ -151,6 +151,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
                 break;
 
             case 2:
+            default:
                 // Do nothing
                 break;
         }

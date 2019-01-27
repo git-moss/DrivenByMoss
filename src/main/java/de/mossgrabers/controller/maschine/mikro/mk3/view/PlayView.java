@@ -67,6 +67,9 @@ public class PlayView extends AbstractPlayView<MaschineMikroMk3ControlSurface, M
             case 3:
                 this.onOctaveUp (event);
                 break;
+            default:
+                // Not used
+                break;
         }
     }
 

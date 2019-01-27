@@ -69,6 +69,10 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
             case 15:
                 this.model.getTransport ().changeCrossfade (value);
                 break;
+
+            default:
+                // Not used
+                break;
         }
     }
 

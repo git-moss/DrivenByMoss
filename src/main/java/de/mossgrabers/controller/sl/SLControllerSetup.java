@@ -177,7 +177,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         final ModelSetup ms = new ModelSetup ();
         ms.setNumSends (6);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
-        this.model.getTrackBank ().addSelectionObserver (this::handleTrackChange);
+        this.model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
         this.model.getMasterTrack ().addSelectionObserver ( (index, isSelected) -> {
             if (!isSelected)
                 return;
@@ -348,10 +348,9 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     /**
      * Handle a track selection change.
      *
-     * @param index The index of the track
      * @param isSelected Has the track been selected?
      */
-    private void handleTrackChange (final int index, final boolean isSelected)
+    private void handleTrackChange (final boolean isSelected)
     {
         final ModeManager modeManager = this.getSurface ().getModeManager ();
         if (isSelected && modeManager.isActiveOrTempMode (Modes.MODE_MASTER))

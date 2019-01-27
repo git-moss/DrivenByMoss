@@ -118,6 +118,10 @@ public class DeviceBrowserMode extends BaseMode
                 for (int i = 0; i < browser.getNumResults (); i++)
                     d.setBlock (i / 4, i % 4, (items[i].isSelected () ? ">" : " ") + StringUtils.fixASCII (items[i].getName ()));
                 break;
+
+            default:
+                // Not used
+                break;
         }
         d.allDone ();
     }

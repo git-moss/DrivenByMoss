@@ -8,7 +8,6 @@ import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractRaindropsView;
 
@@ -45,24 +44,14 @@ public class RaindropsView extends AbstractRaindropsView<APCControlSurface, APCC
         switch (index)
         {
             case 0:
-            {
-                final Scales scales = this.model.getScales ();
-                scales.nextScale ();
-                final String name = scales.getScale ().getName ();
-                this.surface.getConfiguration ().setScale (name);
-                this.surface.getDisplay ().notify (name);
+                this.scales.nextScale ();
+                this.notifyScale ();
                 break;
-            }
 
             case 1:
-            {
-                final Scales scales = this.model.getScales ();
-                scales.prevScale ();
-                final String name = scales.getScale ().getName ();
-                this.surface.getConfiguration ().setScale (name);
-                this.surface.getDisplay ().notify (name);
+                this.scales.prevScale ();
+                this.notifyScale ();
                 break;
-            }
 
             case 2:
                 this.scales.toggleChromatic ();
@@ -77,6 +66,10 @@ public class RaindropsView extends AbstractRaindropsView<APCControlSurface, APCC
 
             case 4:
                 this.onOctaveDown (event);
+                break;
+
+            default:
+                // Not used
                 break;
         }
         this.updateNoteMapping ();
@@ -94,5 +87,13 @@ public class RaindropsView extends AbstractRaindropsView<APCControlSurface, APCC
         this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, ColorManager.BUTTON_STATE_OFF);
         this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, ColorManager.BUTTON_STATE_ON);
         this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, ColorManager.BUTTON_STATE_ON);
+    }
+
+
+    private void notifyScale ()
+    {
+        final String name = this.scales.getScale ().getName ();
+        this.surface.getConfiguration ().setScale (name);
+        this.surface.getDisplay ().notify (name);
     }
 }

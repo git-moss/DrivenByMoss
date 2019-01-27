@@ -24,6 +24,7 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
+import de.mossgrabers.framework.graphics.grid.SendData;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
@@ -426,24 +427,16 @@ public class DeviceLayerMode extends BaseMode
             else if (sendsIndex == i && l != null)
             {
                 final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
-                final String [] sendName = new String [4];
-                final String [] valueStr = new String [4];
-                final int [] value = new int [4];
-                final int [] modulatedValue = new int [4];
-                final boolean [] selected = new boolean [4];
+                final SendData [] sendData = new SendData [4];
                 for (int j = 0; j < 4; j++)
                 {
                     final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
                     final int sendPos = sendOffset + j;
                     final ISend send = l.getSendBank ().getItem (sendPos);
-                    sendName[j] = fxTrackBank == null ? send.getName () : fxTrackBank.getItem (sendPos).getName ();
                     final boolean doesExist = send.doesExist ();
-                    valueStr[j] = doesExist && this.isKnobTouched[4 + j] ? send.getDisplayedValue () : "";
-                    value[j] = doesExist ? send.getValue () : 0;
-                    modulatedValue[j] = doesExist ? send.getModulatedValue () : 0;
-                    selected[j] = true;
+                    sendData[j] = new SendData (fxTrackBank == null ? send.getName () : fxTrackBank.getItem (sendPos).getName (), doesExist && this.isKnobTouched[4 + j] ? send.getDisplayedValue () : "", doesExist ? send.getValue () : 0, doesExist ? send.getModulatedValue () : 0, true);
                 }
-                message.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, bank.getItem (offset + i).getColor (), layer.isSelected (), sendName, valueStr, value, modulatedValue, selected, true);
+                message.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, bank.getItem (offset + i).getColor (), layer.isSelected (), sendData, true);
             }
             else
                 message.addChannelSelectorElement (topMenu, isTopMenuOn, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn);

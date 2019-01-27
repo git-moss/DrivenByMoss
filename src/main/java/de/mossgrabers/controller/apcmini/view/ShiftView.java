@@ -204,22 +204,11 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
             // Device Parameters up/down
             case 24:
-            {
-                final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-                if (parameterBank.canScrollBackwards ())
-                {
-                    parameterBank.scrollBackwards ();
-                    this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getParameterPageBank ().getSelectedItem ());
-                }
+                scrollParameterBank (true, cursorDevice);
                 break;
-            }
+
             case 25:
-                final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-                if (parameterBank.canScrollForwards ())
-                {
-                    parameterBank.scrollForwards ();
-                    this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getParameterPageBank ().getSelectedItem ());
-                }
+                scrollParameterBank (false, cursorDevice);
                 break;
 
             // Device up/down
@@ -341,6 +330,10 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                     this.surface.getDisplay ().notify ("Device");
                 }
                 break;
+
+            default:
+                // Not used
+                break;
         }
     }
 
@@ -448,5 +441,24 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         final ViewManager viewManager = this.surface.getViewManager ();
         viewManager.setPreviousView (viewID);
         this.surface.getDisplay ().notify (viewManager.getView (viewID).getName ());
+    }
+
+
+    private void scrollParameterBank (final boolean scrollBack, final ICursorDevice cursorDevice)
+    {
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+        if (scrollBack)
+        {
+            if (!parameterBank.canScrollBackwards ())
+                return;
+            parameterBank.scrollBackwards ();
+        }
+        else
+        {
+            if (!parameterBank.canScrollForwards ())
+                return;
+            parameterBank.scrollForwards ();
+        }
+        this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getParameterPageBank ().getSelectedItem ());
     }
 }

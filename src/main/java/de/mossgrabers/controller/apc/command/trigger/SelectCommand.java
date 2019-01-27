@@ -61,7 +61,7 @@ public class SelectCommand extends AbstractTriggerCommand<APCControlSurface, APC
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.surface.getDisplay ().notify (AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[this.index]);
+        this.surface.getDisplay ().notify (AbstractConfiguration.getNewClipLengthValue (this.index));
         this.surface.getConfiguration ().setNewClipLength (this.index);
     }
 }

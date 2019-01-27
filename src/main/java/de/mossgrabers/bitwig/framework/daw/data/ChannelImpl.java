@@ -8,7 +8,6 @@ import de.mossgrabers.bitwig.framework.daw.SendBankImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISendBank;
-import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -22,10 +21,9 @@ import com.bitwig.extension.controller.api.SettableColorValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ChannelImpl extends AbstractItemImpl implements IChannel
+public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements IChannel
 {
     protected final IValueChanger valueChanger;
-    protected final Channel       channel;
 
     private int                   vu;
     private int                   vuLeft;
@@ -46,9 +44,9 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
      */
     public ChannelImpl (final IHost host, final IValueChanger valueChanger, final Channel channel, final int index, final int numSends)
     {
-        super (index);
+        super (index, channel);
 
-        this.channel = channel;
+        this.deviceChain = channel;
         this.valueChanger = valueChanger;
 
         if (channel == null)
@@ -77,12 +75,12 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.channel.exists ().setIsSubscribed (enable);
-        this.channel.name ().setIsSubscribed (enable);
-        this.channel.isActivated ().setIsSubscribed (enable);
-        this.channel.mute ().setIsSubscribed (enable);
-        this.channel.solo ().setIsSubscribed (enable);
-        this.channel.color ().setIsSubscribed (enable);
+        this.deviceChain.exists ().setIsSubscribed (enable);
+        this.deviceChain.name ().setIsSubscribed (enable);
+        this.deviceChain.isActivated ().setIsSubscribed (enable);
+        this.deviceChain.mute ().setIsSubscribed (enable);
+        this.deviceChain.solo ().setIsSubscribed (enable);
+        this.deviceChain.color ().setIsSubscribed (enable);
 
         this.volumeParameter.enableObservers (enable);
         this.panParameter.enableObservers (enable);
@@ -95,7 +93,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public boolean doesExist ()
     {
-        return this.channel.exists ().get ();
+        return this.deviceChain.exists ().get ();
     }
 
 
@@ -111,7 +109,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public boolean isActivated ()
     {
-        return this.channel.isActivated ().get ();
+        return this.deviceChain.isActivated ().get ();
     }
 
 
@@ -119,7 +117,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public void setIsActivated (final boolean value)
     {
-        this.channel.isActivated ().set (value);
+        this.deviceChain.isActivated ().set (value);
     }
 
 
@@ -127,23 +125,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public void toggleIsActivated ()
     {
-        this.channel.isActivated ().toggle ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName ()
-    {
-        return this.channel.name ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName (final int limit)
-    {
-        return this.channel.name ().getLimited (limit);
+        this.deviceChain.isActivated ().toggle ();
     }
 
 
@@ -295,7 +277,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public boolean isMute ()
     {
-        return this.channel.mute ().get ();
+        return this.deviceChain.mute ().get ();
     }
 
 
@@ -303,7 +285,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public void setMute (final boolean value)
     {
-        this.channel.mute ().set (value);
+        this.deviceChain.mute ().set (value);
     }
 
 
@@ -311,7 +293,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public void toggleMute ()
     {
-        this.channel.mute ().toggle ();
+        this.deviceChain.mute ().toggle ();
     }
 
 
@@ -319,7 +301,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public boolean isSolo ()
     {
-        return this.channel.solo ().get ();
+        return this.deviceChain.solo ().get ();
     }
 
 
@@ -327,7 +309,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public void setSolo (final boolean value)
     {
-        this.channel.solo ().set (value);
+        this.deviceChain.solo ().set (value);
     }
 
 
@@ -335,7 +317,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public void toggleSolo ()
     {
-        this.channel.solo ().toggle ();
+        this.deviceChain.solo ().toggle ();
     }
 
 
@@ -343,7 +325,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public double [] getColor ()
     {
-        final SettableColorValue color = this.channel.color ();
+        final SettableColorValue color = this.deviceChain.color ();
         return new double []
         {
             color.red (),
@@ -357,7 +339,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public void setColor (final double red, final double green, final double blue)
     {
-        this.channel.color ().set ((float) red, (float) green, (float) blue);
+        this.deviceChain.color ().set ((float) red, (float) green, (float) blue);
     }
 
 
@@ -397,7 +379,7 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public void duplicate ()
     {
-        this.channel.duplicate ();
+        this.deviceChain.duplicate ();
     }
 
 
@@ -405,10 +387,10 @@ public class ChannelImpl extends AbstractItemImpl implements IChannel
     @Override
     public void select ()
     {
-        this.channel.selectInEditor ();
-        this.channel.selectInMixer ();
-        this.channel.makeVisibleInArranger ();
-        this.channel.makeVisibleInMixer ();
+        this.deviceChain.selectInEditor ();
+        this.deviceChain.selectInMixer ();
+        this.deviceChain.makeVisibleInArranger ();
+        this.deviceChain.makeVisibleInMixer ();
     }
 
 

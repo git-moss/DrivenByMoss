@@ -150,7 +150,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
-        trackBank.addSelectionObserver (this::handleTrackChange);
+        trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
     }
 
 
@@ -370,26 +370,28 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getItem (i);
+            final boolean trackExists = track.doesExist ();
+
             boolean isOn;
             if (isShift)
                 isOn = i == clipLength;
             else
                 isOn = isSendA ? modeManager.isActiveOrTempMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i)) : i == selIndex;
             surface.updateButtonEx (APCControlSurface.APC_BUTTON_TRACK_SELECTION, i, isOn ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-            surface.updateButtonEx (APCControlSurface.APC_BUTTON_SOLO, i, track.doesExist () && (isShift ? track.isAutoMonitor () : track.isSolo ()) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-            surface.updateButtonEx (APCControlSurface.APC_BUTTON_ACTIVATOR, i, track.doesExist () && (isShift ? track.isMonitor () : !track.isMute ()) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateButtonEx (APCControlSurface.APC_BUTTON_SOLO, i, trackExists && getSoloButtonState (isShift, track) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateButtonEx (APCControlSurface.APC_BUTTON_ACTIVATOR, i, trackExists && getMuteButtonState (isShift, track) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
 
             if (this.isMkII)
             {
-                surface.updateButtonEx (APCControlSurface.APC_BUTTON_A_B, i, track.doesExist () && !"AB".equals (track.getCrossfadeMode ()) ? "A".equals (track.getCrossfadeMode ()) ? ColorManager.BUTTON_STATE_ON : APCColors.BUTTON_STATE_BLINK : ColorManager.BUTTON_STATE_OFF);
-                surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && track.isRecArm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+                surface.updateButtonEx (APCControlSurface.APC_BUTTON_A_B, i, getCrossfadeButtonColor (track, trackExists));
+                surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, trackExists && track.isRecArm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             }
             else
             {
                 if (isShift)
-                    surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && !"AB".equals (track.getCrossfadeMode ()) ? "A".equals (track.getCrossfadeMode ()) ? ColorManager.BUTTON_STATE_ON : APCColors.BUTTON_STATE_BLINK : ColorManager.BUTTON_STATE_OFF);
+                    surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, getCrossfadeButtonColor (track, trackExists));
                 else
-                    surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, track.doesExist () && track.isRecArm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+                    surface.updateButtonEx (APCControlSurface.APC_BUTTON_RECORD_ARM, i, trackExists && track.isRecArm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             }
         }
         surface.updateButton (APCControlSurface.APC_BUTTON_MASTER, this.model.getMasterTrack ().isSelected () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
@@ -427,6 +429,31 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         }
 
         this.updateDeviceKnobs ();
+    }
+
+
+    private static String getCrossfadeButtonColor (final ITrack track, final boolean trackExists)
+    {
+        if (!trackExists)
+            return ColorManager.BUTTON_STATE_OFF;
+
+        final String crossfadeMode = track.getCrossfadeMode ();
+        if ("AB".equals (crossfadeMode))
+            return ColorManager.BUTTON_STATE_OFF;
+
+        return "A".equals (crossfadeMode) ? ColorManager.BUTTON_STATE_ON : APCColors.BUTTON_STATE_BLINK;
+    }
+
+
+    private static boolean getMuteButtonState (final boolean isShift, final ITrack track)
+    {
+        return isShift ? track.isMonitor () : !track.isMute ();
+    }
+
+
+    private static boolean getSoloButtonState (final boolean isShift, final ITrack track)
+    {
+        return isShift ? track.isAutoMonitor () : track.isSolo ();
     }
 
 
@@ -513,10 +540,9 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     /**
      * Handle a track selection change.
      *
-     * @param index The index of the track
      * @param isSelected Has the track been selected?
      */
-    private void handleTrackChange (final int index, final boolean isSelected)
+    private void handleTrackChange (final boolean isSelected)
     {
         if (!isSelected)
             return;

@@ -165,6 +165,5 @@ public class RibbonMode extends BaseMode
             message.addOptionElement (i == 0 ? "CC Quick Select" : "", RibbonMode.CC_QUICK_SELECT[i], false, i == 0 ? "Function" : "", RibbonMode.FUNCTION[i], i < RibbonMode.FUNCTION_IDS.length && ribbonMode == RibbonMode.FUNCTION_IDS[i], false);
         message.addParameterElement ("Midi CC", -1, ribbonModeCC, this.isKnobTouched[5], -1);
         message.send ();
-        return;
     }
 }

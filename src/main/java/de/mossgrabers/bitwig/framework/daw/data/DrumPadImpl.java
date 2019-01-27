@@ -38,6 +38,6 @@ public class DrumPadImpl extends LayerImpl implements IDrumPad
     @Override
     public void browseToInsert ()
     {
-        ((DrumPad) this.channel).insertionPoint ().browse ();
+        ((DrumPad) this.deviceChain).insertionPoint ().browse ();
     }
 }

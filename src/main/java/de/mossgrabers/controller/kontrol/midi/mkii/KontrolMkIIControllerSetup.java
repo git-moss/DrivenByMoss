@@ -36,6 +36,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.ViewManager;
 
@@ -84,7 +85,7 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     public void init ()
     {
         if (OperatingSystem.get () == OperatingSystem.LINUX)
-            throw new RuntimeException ("Komplete Kontrol MkII is not supported on Linux since there is no Native Instruments DAW Integration Host.");
+            throw new FrameworkException ("Komplete Kontrol MkII is not supported on Linux since there is no Native Instruments DAW Integration Host.");
 
         super.init ();
     }
@@ -337,11 +338,7 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     {
         final ICursorDevice instrumentDevice = this.model.getInstrumentDevice ();
         if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
-        {
-            // "NIKBxx";
-            final String kompleteID = instrumentDevice.getParameterBank ().getItem (0).getName ();
-            return kompleteID;
-        }
+            return instrumentDevice.getParameterBank ().getItem (0).getName ();
         return "";
     }
 }

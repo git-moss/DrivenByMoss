@@ -201,10 +201,10 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
-        trackBank.addSelectionObserver (this::handleTrackChange);
+        trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
         final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
         if (effectTrackBank != null)
-            effectTrackBank.addSelectionObserver (this::handleTrackChange);
+            effectTrackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
         this.model.getMasterTrack ().addSelectionObserver ( (index, isSelected) -> {
             final PushControlSurface surface = this.getSurface ();
             final ModeManager modeManager = surface.getModeManager ();
@@ -369,9 +369,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             else
                 this.host.error ("Mode " + debugMode + " not registered.");
         });
-        this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, () -> {
-            this.getSurface ().getDisplay ().showDebugWindow ();
-        });
+        this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, this.getSurface ().getDisplay ()::showDebugWindow);
 
         this.configuration.addSettingObserver (PushConfiguration.DISPLAY_SCENES_CLIPS, () -> {
             if (Views.isSessionView (this.getSurface ().getViewManager ().getActiveViewId ()))
@@ -716,10 +714,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     /**
      * Handle a track selection change.
      *
-     * @param index The index of the track
      * @param isSelected Has the track been selected?
      */
-    private void handleTrackChange (final int index, final boolean isSelected)
+    private void handleTrackChange (final boolean isSelected)
     {
         if (!isSelected)
             return;

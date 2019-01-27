@@ -42,10 +42,7 @@ public class SessionView extends AbstractView<BeatstepControlSurface, BeatstepCo
     {
         // Knob 12-15 are currently not used
         if (index < 12)
-        {
             this.extensions.onTrackKnob (index, value);
-            return;
-        }
     }
 
 
@@ -87,6 +84,10 @@ public class SessionView extends AbstractView<BeatstepControlSurface, BeatstepCo
             case 14:
             case 15:
                 sceneBank.getItem (index - 8).launch ();
+                break;
+
+            default:
+                // Not used
                 break;
         }
     }

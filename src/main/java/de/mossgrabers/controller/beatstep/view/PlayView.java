@@ -41,14 +41,7 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
     @Override
     public void onKnob (final int index, final int value)
     {
-        if (index < 12)
-        {
-            this.extensions.onTrackKnob (index, value);
-            return;
-        }
-
         final boolean isInc = value >= 65;
-
         switch (index)
         {
             // Chromatic
@@ -85,6 +78,11 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
                 else
                     this.scales.decOctave ();
                 this.surface.getDisplay ().notify ("Octave " + (this.scales.getOctave () > 0 ? "+" : "") + this.scales.getOctave () + " (" + this.scales.getRangeText () + ")");
+                break;
+
+            // 0-11
+            default:
+                this.extensions.onTrackKnob (index, value);
                 break;
         }
 

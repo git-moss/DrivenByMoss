@@ -85,6 +85,10 @@ public class FrameMode extends AbstractMode<SLControlSurface, SLConfiguration>
             case 7:
                 this.model.getApplication ().toggleFullScreen ();
                 break;
+
+            default:
+                // Not used
+                break;
         }
     }
 

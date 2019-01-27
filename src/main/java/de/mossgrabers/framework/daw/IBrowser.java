@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
+import de.mossgrabers.framework.observer.ObserverManagement;
 
 
 /**

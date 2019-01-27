@@ -74,6 +74,10 @@ public class BrowserMode extends BaseMode
                 else
                     browser.selectNextResult ();
                 break;
+
+            default:
+                // Not used
+                break;
         }
     }
 }

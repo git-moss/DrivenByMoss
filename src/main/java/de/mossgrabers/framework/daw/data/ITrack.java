@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.daw.data;
 
 import de.mossgrabers.framework.daw.ISlotBank;
-import de.mossgrabers.framework.daw.NoteObserver;
+import de.mossgrabers.framework.observer.NoteObserver;
 
 
 /**

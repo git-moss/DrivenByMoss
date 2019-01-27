@@ -74,10 +74,7 @@ public class ScaleMode extends AbstractKontrol1Mode
                 break;
 
             case 2:
-                if (isInc)
-                    this.scales.setChromatic (true);
-                else
-                    this.scales.setChromatic (false);
+                this.scales.setChromatic (isInc);
                 this.updateScalePreferences ();
                 break;
 

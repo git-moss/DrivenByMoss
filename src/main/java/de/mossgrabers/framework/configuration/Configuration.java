@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.configuration;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration.BehaviourOnStop;
+import de.mossgrabers.framework.observer.SettingObserver;
 
 
 /**

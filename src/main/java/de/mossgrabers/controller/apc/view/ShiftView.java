@@ -125,6 +125,9 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
                 case 39:
                     this.model.getApplication ().redo ();
                     break;
+                default:
+                    // Not used
+                    break;
             }
             return;
         }

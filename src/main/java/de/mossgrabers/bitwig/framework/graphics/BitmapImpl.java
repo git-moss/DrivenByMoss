@@ -54,9 +54,7 @@ public class BitmapImpl implements IBitmap
     @Override
     public void render (final IRenderer renderer)
     {
-        this.bitmap.render (gc -> {
-            renderer.render (new GraphicsContextImpl (gc));
-        });
+        this.bitmap.render (gc -> renderer.render (new GraphicsContextImpl (gc)));
     }
 
 

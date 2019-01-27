@@ -19,52 +19,14 @@ import de.mossgrabers.framework.graphics.IGraphicsDimensions;
  */
 public class SendsGridElement extends SelectionGridElement
 {
-    final String []    sendNames           = new String []
-    {
-        "",
-        "",
-        "",
-        ""
-    };
-    final String []    sendTexts           = new String []
-    {
-        "",
-        "",
-        "",
-        ""
-    };
-    final int []       sendValues          = new int []
-    {
-        0,
-        0,
-        0,
-        0
-    };
-    final int []       modulatedSendValues = new int []
-    {
-        0,
-        0,
-        0,
-        0
-    };
-    private boolean [] sendEdited          = new boolean []
-    {
-        false,
-        false,
-        false,
-        false
-    };
-    private boolean    isExMode;
+    private final SendData [] sendData;
+    private final boolean     isExMode;
 
 
     /**
      * Constructor.
      *
-     * @param sendNames The names of the send tracks
-     * @param sendTexts The texts of the sends volumes
-     * @param sendValues The values of the sends volumes
-     * @param modulatedSendValues The modulated values of the sends volumes, -1 if not modulated
-     * @param sendEdited The states of which send can be edited
+     * @param sendData The send data
      * @param menuName The text for the menu
      * @param isMenuSelected True if the menu is selected
      * @param name The of the grid element (track name, parameter name, etc.)
@@ -73,18 +35,11 @@ public class SendsGridElement extends SelectionGridElement
      * @param type The type of the track
      * @param isExMode True if the sends grid element is an extension for a track grid element
      */
-    public SendsGridElement (final String [] sendNames, final String [] sendTexts, final int [] sendValues, final int [] modulatedSendValues, final boolean [] sendEdited, final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type, final boolean isExMode)
+    public SendsGridElement (final SendData [] sendData, final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type, final boolean isExMode)
     {
         super (menuName, isMenuSelected, name, color, isSelected, type);
-        for (int i = 0; i < 4; i++)
-        {
-            this.sendNames[i] = sendNames[i];
-            this.sendTexts[i] = sendTexts[i];
-            this.sendValues[i] = sendValues[i];
-            this.modulatedSendValues[i] = modulatedSendValues[i];
-            this.sendEdited[i] = sendEdited[i];
-        }
 
+        this.sendData = sendData;
         this.isExMode = isExMode;
     }
 
@@ -126,24 +81,27 @@ public class SendsGridElement extends SelectionGridElement
         final ColorEx faderColor = configuration.getColorFader ();
         final ColorEx editColor = configuration.getColorEdit ();
         final double faderLeft = left + inset;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < this.sendData.length; i++)
         {
-            if (this.sendNames[i].length () == 0)
+            final String n = this.sendData[i].getName ();
+            if (n.length () == 0)
                 break;
 
-            gc.drawTextInBounds (this.sendNames[i], faderLeft, topy + separatorSize, sliderWidth, sendRowHeight, Align.LEFT, textColor, sendRowHeight);
+            gc.drawTextInBounds (n, faderLeft, topy + separatorSize, sliderWidth, sendRowHeight, Align.LEFT, textColor, sendRowHeight);
             topy += sendRowHeight;
             gc.fillRectangle (faderLeft, topy + separatorSize, sliderWidth, sliderHeight, borderColor);
 
-            final double valueWidth = this.sendValues[i] * sliderWidth / getMaxValue ();
-            final boolean isSendModulated = this.modulatedSendValues[i] != -1;
-            final double modulatedValueWidth = isSendModulated ? (double) (this.modulatedSendValues[i] * sliderWidth / getMaxValue ()) : valueWidth;
+            final double valueWidth = this.sendData[i].getValue () * sliderWidth / getMaxValue ();
+            final int modulatedValue = this.sendData[i].getModulatedValue ();
+            final boolean isSendModulated = modulatedValue != -1;
+            final double modulatedValueWidth = isSendModulated ? (double) (modulatedValue * sliderWidth / getMaxValue ()) : valueWidth;
             final double faderTop = topy + separatorSize + 1;
             gc.fillRectangle (faderLeft + 1, faderTop, modulatedValueWidth - 1, sliderHeight - 2, faderColor);
 
-            if (this.sendEdited[i])
+            final String text = this.sendData[i].getText ();
+            if (this.sendData[i].isEdited ())
             {
-                final boolean isTouched = this.sendTexts[i] != null && this.sendTexts[i].length () > 0;
+                final boolean isTouched = text != null && text.length () > 0;
                 final double w = isTouched ? 3 : 1;
                 gc.fillRectangle (Math.min (faderLeft + sliderWidth - w - 1, faderLeft + valueWidth + 1), faderTop, w, sliderHeight - 2, editColor);
             }
@@ -156,16 +114,17 @@ public class SendsGridElement extends SelectionGridElement
         final double boxLeft = faderLeft + sliderWidth - boxWidth;
         topy = menuHeight;
         final ColorEx backgroundDarker = configuration.getColorBackgroundDarker ();
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < this.sendData.length; i++)
         {
             topy += sendRowHeight;
 
-            if (this.sendTexts[i].length () > 0)
+            final String text = this.sendData[i].getText ();
+            if (text.length () > 0)
             {
                 final double volumeTextTop = topy + sliderHeight + 1 + (this.isExMode ? 0 : separatorSize);
                 gc.fillRectangle (boxLeft, volumeTextTop, boxWidth, unit, backgroundDarker);
                 gc.strokeRectangle (boxLeft, volumeTextTop, boxWidth - 1, unit, borderColor);
-                gc.drawTextInBounds (this.sendTexts[i], boxLeft, volumeTextTop, boxWidth, unit, Align.CENTER, textColor, unit);
+                gc.drawTextInBounds (text, boxLeft, volumeTextTop, boxWidth, unit, Align.CENTER, textColor, unit);
             }
 
             topy += sendRowHeight;

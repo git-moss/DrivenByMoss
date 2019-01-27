@@ -121,11 +121,8 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.surface.isPro ())
-        {
-            if (this.handleControlModes (note, velocity))
-                return;
-        }
+        if (!this.surface.isPro () && this.handleControlModes (note, velocity))
+            return;
         if (velocity > 0)
             this.handleFunctions (note);
     }
@@ -202,6 +199,9 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
             case 99:
                 this.model.getApplication ().addEffectTrack ();
                 return;
+            default:
+                // Not used
+                break;
         }
 
         if (this.surface.isPro ())
@@ -248,6 +248,9 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
             case 51:
                 this.model.getCurrentTrackBank ().stop ();
                 break;
+            default:
+                // Not used
+                break;
         }
     }
 
@@ -256,11 +259,9 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     @Override
     public void onScene (final int scene, final ButtonEvent event)
     {
-        if (this.surface.isPro ())
+        if (this.surface.isPro () || event != ButtonEvent.DOWN)
             return;
 
-        if (event != ButtonEvent.DOWN)
-            return;
         switch (scene)
         {
             case 0:
@@ -286,6 +287,9 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 break;
             case 7:
                 this.handleControlModes (36, 127);
+                break;
+            default:
+                // Not used
                 break;
         }
     }

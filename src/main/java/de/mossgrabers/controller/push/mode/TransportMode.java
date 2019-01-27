@@ -9,6 +9,7 @@ import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -60,13 +61,13 @@ public class TransportMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
         if (index == 0)
-            this.model.getTransport ().setPreroll (ITransport.PREROLL_NONE);
+            this.model.getTransport ().setPreroll (TransportConstants.PREROLL_NONE);
         else if (index == 1)
-            this.model.getTransport ().setPreroll (ITransport.PREROLL_1_BAR);
+            this.model.getTransport ().setPreroll (TransportConstants.PREROLL_1_BAR);
         else if (index == 2)
-            this.model.getTransport ().setPreroll (ITransport.PREROLL_2_BARS);
+            this.model.getTransport ().setPreroll (TransportConstants.PREROLL_2_BARS);
         else if (index == 3)
-            this.model.getTransport ().setPreroll (ITransport.PREROLL_4_BARS);
+            this.model.getTransport ().setPreroll (TransportConstants.PREROLL_4_BARS);
     }
 
 
@@ -87,10 +88,10 @@ public class TransportMode extends BaseMode
     {
         final ITransport transport = this.model.getTransport ();
         final String preroll = transport.getPreroll ();
-        this.surface.updateButton (20, ITransport.PREROLL_NONE.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
-        this.surface.updateButton (21, ITransport.PREROLL_1_BAR.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
-        this.surface.updateButton (22, ITransport.PREROLL_2_BARS.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
-        this.surface.updateButton (23, ITransport.PREROLL_4_BARS.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateButton (20, TransportConstants.PREROLL_NONE.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateButton (21, TransportConstants.PREROLL_1_BAR.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateButton (22, TransportConstants.PREROLL_2_BARS.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateButton (23, TransportConstants.PREROLL_4_BARS.equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
         this.surface.updateButton (24, AbstractMode.BUTTON_COLOR_OFF);
         this.surface.updateButton (25, AbstractMode.BUTTON_COLOR_OFF);
         this.surface.updateButton (26, AbstractMode.BUTTON_COLOR_OFF);
@@ -124,10 +125,10 @@ public class TransportMode extends BaseMode
         final double tempo = transport.getTempo ();
         d.clear ();
         d.setBlock (2, 0, "Pre-roll");
-        d.setCell (3, 0, (preroll == ITransport.PREROLL_NONE ? PushDisplay.SELECT_ARROW : " ") + "None");
-        d.setCell (3, 1, (preroll == ITransport.PREROLL_1_BAR ? PushDisplay.SELECT_ARROW : " ") + "1 Bar");
-        d.setCell (3, 2, (preroll == ITransport.PREROLL_2_BARS ? PushDisplay.SELECT_ARROW : " ") + "2 Bars");
-        d.setCell (3, 3, (preroll == ITransport.PREROLL_4_BARS ? PushDisplay.SELECT_ARROW : " ") + "4 Bars");
+        d.setCell (3, 0, (preroll == TransportConstants.PREROLL_NONE ? PushDisplay.SELECT_ARROW : " ") + "None");
+        d.setCell (3, 1, (preroll == TransportConstants.PREROLL_1_BAR ? PushDisplay.SELECT_ARROW : " ") + "1 Bar");
+        d.setCell (3, 2, (preroll == TransportConstants.PREROLL_2_BARS ? PushDisplay.SELECT_ARROW : " ") + "2 Bars");
+        d.setCell (3, 3, (preroll == TransportConstants.PREROLL_4_BARS ? PushDisplay.SELECT_ARROW : " ") + "4 Bars");
         d.setBlock (0, 0, "Play Metro during").setBlock (0, 1, "Pre-roll?");
         d.setCell (1, 0, transport.isPrerollMetronomeEnabled () ? " Yes" : " No");
         d.setCell (0, 4, "Tempo").setCell (1, 4, transport.formatTempo (tempo)).setCell (2, 4, formatTempoBars (tempo));
@@ -145,10 +146,10 @@ public class TransportMode extends BaseMode
         final double tempo = transport.getTempo ();
 
         final DisplayModel message = this.surface.getDisplay ().getModel ();
-        message.addOptionElement ("Play Metronome during Pre-Roll?", transport.isPrerollMetronomeEnabled () ? "Yes" : "No", transport.isPrerollMetronomeEnabled (), "Pre-roll", "None", preroll == ITransport.PREROLL_NONE, false);
-        message.addOptionElement ("", "", false, "", "1 Bar", preroll == ITransport.PREROLL_1_BAR, false);
-        message.addOptionElement ("", "", false, "", "2 Bars", preroll == ITransport.PREROLL_2_BARS, false);
-        message.addOptionElement ("", "", false, "", "4 Bars", preroll == ITransport.PREROLL_4_BARS, false);
+        message.addOptionElement ("Play Metronome during Pre-Roll?", transport.isPrerollMetronomeEnabled () ? "Yes" : "No", transport.isPrerollMetronomeEnabled (), "Pre-roll", "None", preroll == TransportConstants.PREROLL_NONE, false);
+        message.addOptionElement ("", "", false, "", "1 Bar", preroll == TransportConstants.PREROLL_1_BAR, false);
+        message.addOptionElement ("", "", false, "", "2 Bars", preroll == TransportConstants.PREROLL_2_BARS, false);
+        message.addOptionElement ("", "", false, "", "4 Bars", preroll == TransportConstants.PREROLL_4_BARS, false);
         message.addParameterElement ("Tempo", (int) this.convertTempo (tempo), transport.formatTempo (tempo), this.isKnobTouched[4], -1);
         message.addOptionElement ("  Time Sig.", "", false, "       " + transport.getNumerator () + " / " + transport.getDenominator (), "", false, false);
         message.addOptionElement ("        Play Position", "", false, null, "        " + transport.getPositionText (), "", false, null, false, this.isKnobTouched[6]);

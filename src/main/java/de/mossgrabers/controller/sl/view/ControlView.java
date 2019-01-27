@@ -148,6 +148,10 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
             case 7:
                 this.model.getTransport ().tapTempo ();
                 break;
+
+            default:
+                // Not used
+                break;
         }
     }
 
@@ -227,6 +231,10 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
             case 7:
                 this.model.getCursorDevice ().selectNext ();
                 break;
+
+            default:
+                // Not used
+                break;
         }
     }
 
@@ -271,6 +279,10 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
                 else if (event == ButtonEvent.UP)
                     this.isTempoInc = false;
                 this.doChangeTempo ();
+                break;
+
+            default:
+                // Not used
                 break;
         }
     }

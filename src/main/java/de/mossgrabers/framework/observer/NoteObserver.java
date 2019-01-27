@@ -2,7 +2,7 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.daw;
+package de.mossgrabers.framework.observer;
 
 /**
  * Callback interface for observing notes.

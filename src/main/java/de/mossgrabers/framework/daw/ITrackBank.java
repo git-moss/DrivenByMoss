@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.observer.IIndexedValueObserver;
 
 
 /**
@@ -59,4 +60,12 @@ public interface ITrackBank extends IChannelBank<ITrack>
      * @return The name to display
      */
     String getEditSendName (int sendIndex);
+
+
+    /**
+     * Add an observer for the items name.
+     *
+     * @param observer The observer to notify on a name change
+     */
+    void addNameObserver (IIndexedValueObserver<String> observer);
 }

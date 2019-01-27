@@ -75,7 +75,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         {
             final MCUConfiguration configuration = this.surface.getConfiguration ();
             configuration.setNewClipLength (this.index);
-            display.notify ("New clip length: " + AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[configuration.getNewClipLength ()]);
+            display.notify ("New clip length: " + AbstractConfiguration.getNewClipLengthValue (configuration.getNewClipLength ()));
             return;
         }
 
@@ -95,7 +95,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     {
         if (event != ButtonEvent.DOWN || this.index >= 8)
             return;
-        this.surface.getDisplay ().notify (AbstractConfiguration.NEW_CLIP_LENGTH_VALUES[this.index]);
+        this.surface.getDisplay ().notify (AbstractConfiguration.getNewClipLengthValue (this.index));
         this.surface.getConfiguration ().setNewClipLength (this.index);
     }
 }

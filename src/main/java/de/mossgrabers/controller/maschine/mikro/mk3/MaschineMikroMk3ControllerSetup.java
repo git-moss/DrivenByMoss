@@ -92,9 +92,9 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
     };
     // @formatter:on
 
-    private final static Integer COMMAND_MOD       = Integer.valueOf (200);
-    private final static Integer COMMAND_PERFORM   = Integer.valueOf (201);
-    private final static Integer COMMAND_NOTES     = Integer.valueOf (202);
+    private static final Integer COMMAND_MOD       = Integer.valueOf (200);
+    private static final Integer COMMAND_PERFORM   = Integer.valueOf (201);
+    private static final Integer COMMAND_NOTES     = Integer.valueOf (202);
     private static final Integer COMMAND_PITCH     = Integer.valueOf (203);
     private static final Integer COMMAND_PARAMETER = Integer.valueOf (204);
 
@@ -146,7 +146,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
-        trackBank.addSelectionObserver (this::handleTrackChange);
+        trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
     }
 
 
@@ -417,10 +417,9 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
     /**
      * Handle a track selection change.
      *
-     * @param index The index of the track
      * @param isSelected Has the track been selected?
      */
-    private void handleTrackChange (final int index, final boolean isSelected)
+    private void handleTrackChange (final boolean isSelected)
     {
         if (!isSelected)
             return;

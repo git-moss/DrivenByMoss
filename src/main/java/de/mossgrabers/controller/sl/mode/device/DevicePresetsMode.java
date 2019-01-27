@@ -106,6 +106,10 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
                         break;
                 }
                 break;
+
+            default:
+                // Not used
+                break;
         }
     }
 
@@ -163,6 +167,10 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
                     }
                     d.setCell (i % 2 * 2, i / 2, text);
                 }
+                break;
+
+            default:
+                // Not used
                 break;
         }
         d.allDone ();

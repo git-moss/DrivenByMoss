@@ -66,7 +66,8 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
     public static final int     KONTROL_NAVIGATE_SCENES         = 0x33;
 
     /** Transport navigation. */
-    public static final int     KONTROL_NAVIGATE_MOVE_TRANSPORT = 0x64;             // TODO 0x34;
+    // TODO Documented as 0x34;
+    public static final int     KONTROL_NAVIGATE_MOVE_TRANSPORT = 0x64;
     /** Loop navigation. */
     public static final int     KONTROL_NAVIGATE_MOVE_LOOP      = 0x35;
 

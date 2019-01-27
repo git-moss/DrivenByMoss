@@ -9,6 +9,7 @@ import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -55,7 +56,7 @@ public class AutomationCommand extends AbstractTriggerCommand<MCUControlSurface,
                 break;
             // Write
             case 1:
-                transport.setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[2]);
+                transport.setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[2]);
                 if (!transport.isWritingArrangerAutomation ())
                     transport.toggleWriteArrangerAutomation ();
                 break;
@@ -65,15 +66,18 @@ public class AutomationCommand extends AbstractTriggerCommand<MCUControlSurface,
                 break;
             // Touch
             case 3:
-                transport.setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[1]);
+                transport.setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[1]);
                 if (!transport.isWritingArrangerAutomation ())
                     transport.toggleWriteArrangerAutomation ();
                 break;
             // Latch
             case 4:
-                transport.setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[0]);
+                transport.setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[0]);
                 if (!transport.isWritingArrangerAutomation ())
                     transport.toggleWriteArrangerAutomation ();
+                break;
+            default:
+                // Not used
                 break;
         }
     }

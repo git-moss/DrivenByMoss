@@ -47,13 +47,8 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.UP)
-            return;
-
-        if (this.surface.isSelectPressed ())
-            this.startBrowser (true, false);
-        else
-            this.startBrowser (false, false);
+        if (event == ButtonEvent.UP)
+            this.startBrowser (this.surface.isSelectPressed (), false);
     }
 
 

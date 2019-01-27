@@ -22,6 +22,7 @@ import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -852,17 +853,17 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             // Transport: Set Write Mode: Latch
             case TRANSPORT_SET_WRITE_MODE_LATCH:
                 if (value > 0)
-                    this.model.getTransport ().setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[0]);
+                    this.model.getTransport ().setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[0]);
                 break;
             // Transport: Set Write Mode: Touch
             case TRANSPORT_SET_WRITE_MODE_TOUCH:
                 if (value > 0)
-                    this.model.getTransport ().setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[1]);
+                    this.model.getTransport ().setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[1]);
                 break;
             // Transport: Set Write Mode: Write
             case TRANSPORT_SET_WRITE_MODE_WRITE:
                 if (value > 0)
-                    this.model.getTransport ().setAutomationWriteMode (ITransport.AUTOMATION_MODES_VALUES[2]);
+                    this.model.getTransport ().setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[2]);
                 break;
             // Transport: Set Tempo
             case TRANSPORT_SET_TEMPO:

@@ -230,6 +230,10 @@ public class DeviceBrowserMode extends BaseMode
                     d.setBlock (i % 4, i / 4, text);
                 }
                 break;
+
+            default:
+                // Not used
+                break;
         }
         d.allDone ();
     }
@@ -285,7 +289,7 @@ public class DeviceBrowserMode extends BaseMode
                     {
                         final int pos = i * 6 + item;
                         items[item] = pos < results.length ? results[pos].getName (16) : "";
-                        selected[item] = pos < results.length ? results[pos].isSelected () : false;
+                        selected[item] = pos < results.length && results[pos].isSelected ();
                     }
                     message.addListElement (items, selected);
                 }
@@ -308,6 +312,10 @@ public class DeviceBrowserMode extends BaseMode
                     }
                     message.addListElement (items, selected);
                 }
+                break;
+
+            default:
+                // Not used
                 break;
         }
 

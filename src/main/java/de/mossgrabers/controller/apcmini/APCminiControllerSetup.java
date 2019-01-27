@@ -46,6 +46,9 @@ import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Support for the Akai APCmini controller.
@@ -54,6 +57,23 @@ import de.mossgrabers.framework.view.ViewManager;
  */
 public class APCminiControllerSetup extends AbstractControllerSetup<APCminiControlSurface, APCminiConfiguration>
 {
+    private static final Map<String, Integer> NAMED_MODES = new HashMap<> ();
+    static
+    {
+        NAMED_MODES.put ("Volume", Modes.MODE_VOLUME);
+        NAMED_MODES.put ("Pan", Modes.MODE_PAN);
+        NAMED_MODES.put ("Send 1", Modes.MODE_SEND1);
+        NAMED_MODES.put ("Send 2", Modes.MODE_SEND2);
+        NAMED_MODES.put ("Send 3", Modes.MODE_SEND3);
+        NAMED_MODES.put ("Send 4", Modes.MODE_SEND4);
+        NAMED_MODES.put ("Send 5", Modes.MODE_SEND5);
+        NAMED_MODES.put ("Send 6", Modes.MODE_SEND6);
+        NAMED_MODES.put ("Send 7", Modes.MODE_SEND7);
+        NAMED_MODES.put ("Send 8", Modes.MODE_SEND8);
+        NAMED_MODES.put ("Device", Modes.MODE_DEVICE);
+    }
+
+
     /**
      * Constructor.
      *
@@ -96,7 +116,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
-        trackBank.addSelectionObserver (this::handleTrackChange);
+        trackBank.addSelectionObserver ( (index, value) -> this.handleTrackChange (value));
     }
 
 
@@ -123,50 +143,16 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         this.createScaleObservers (this.configuration);
 
         this.configuration.addSettingObserver (APCminiConfiguration.FADER_CTRL, () -> {
-            final ModeManager modeManager = surface.getModeManager ();
-            switch (this.configuration.getFaderCtrl ())
-            {
-                case "Volume":
-                    modeManager.setActiveMode (Modes.MODE_VOLUME);
-                    break;
-                case "Pan":
-                    modeManager.setActiveMode (Modes.MODE_PAN);
-                    break;
-                case "Send 1":
-                    modeManager.setActiveMode (Modes.MODE_SEND1);
-                    break;
-                case "Send 2":
-                    modeManager.setActiveMode (Modes.MODE_SEND2);
-                    break;
-                case "Send 3":
-                    modeManager.setActiveMode (Modes.MODE_SEND3);
-                    break;
-                case "Send 4":
-                    modeManager.setActiveMode (Modes.MODE_SEND4);
-                    break;
-                case "Send 5":
-                    modeManager.setActiveMode (Modes.MODE_SEND5);
-                    break;
-                case "Send 6":
-                    modeManager.setActiveMode (Modes.MODE_SEND6);
-                    break;
-                case "Send 7":
-                    modeManager.setActiveMode (Modes.MODE_SEND7);
-                    break;
-                case "Send 8":
-                    modeManager.setActiveMode (Modes.MODE_SEND8);
-                    break;
-                case "Device":
-                    modeManager.setActiveMode (Modes.MODE_DEVICE);
-                    break;
-            }
+            final Integer modeID = NAMED_MODES.get (this.configuration.getFaderCtrl ());
+            if (modeID != null)
+                surface.getModeManager ().setActiveMode (modeID);
         });
 
         this.configuration.addSettingObserver (APCminiConfiguration.SOFT_KEYS, () -> {
+            final String softKeys = this.configuration.getSoftKeys ();
             for (int i = 0; i < APCminiConfiguration.SOFT_KEYS_OPTIONS.length; i++)
             {
-                final String opt = APCminiConfiguration.SOFT_KEYS_OPTIONS[i];
-                if (opt.equals (this.configuration.getSoftKeys ()))
+                if (APCminiConfiguration.SOFT_KEYS_OPTIONS[i].equals (softKeys))
                     surface.setTrackState (i);
             }
         });
@@ -309,10 +295,9 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     /**
      * Handle a track selection change.
      *
-     * @param index The index of the track
      * @param isSelected Has the track been selected?
      */
-    private void handleTrackChange (final int index, final boolean isSelected)
+    private void handleTrackChange (final boolean isSelected)
     {
         if (!isSelected)
             return;

@@ -545,6 +545,9 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
                     out.sendSysex (SYSEX_HDR + "20 0" + i + " 00 F7");
                 }
                 break;
+            default:
+                // Not used
+                break;
         }
     }
 

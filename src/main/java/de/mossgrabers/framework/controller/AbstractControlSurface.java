@@ -649,23 +649,21 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         final int code = status & 0xF0;
         final int channel = status & 0xF;
 
-        View view;
         switch (code)
         {
-            // Note on/off
+            // Note off
             case 0x80:
+                this.handleNote (data1, 0);
+                break;
+
+            // Note on
             case 0x90:
-                if (this.isGridNote (data1))
-                    this.handleGridNote (data1, code == 0x80 ? 0 : data2);
-                else
-                    this.handleNoteEvent (data1, code == 0x80 ? 0 : data2);
+                this.handleNote (data1, data2);
                 break;
 
             // Polyphonic Aftertouch
             case 0xA0:
-                view = this.viewManager.getActiveView ();
-                if (view != null)
-                    view.executeAftertouchCommand (data1, data2);
+                this.handlePolyAftertouch (data1, data2);
                 break;
 
             // CC
@@ -675,22 +673,75 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
             // Channel Aftertouch
             case 0xD0:
-                view = this.viewManager.getActiveView ();
-                if (view != null)
-                    view.executeAftertouchCommand (-1, data1);
+                this.handleChannelAftertouch (data1);
                 break;
 
             // Pitch Bend
             case 0xE0:
-                view = this.viewManager.getActiveView ();
-                if (view != null)
-                    view.executePitchbendCommand (channel, data1, data2);
+                this.handlePitchBend (channel, data1, data2);
                 break;
 
             default:
                 this.host.println ("Unhandled midi status: " + status);
                 break;
         }
+    }
+
+
+    /**
+     * Handle a note event
+     *
+     * @param note The note
+     * @param velocity The velocity
+     */
+    protected void handleNote (final int note, final int velocity)
+    {
+        if (this.isGridNote (note))
+            this.handleGridNote (note, velocity);
+        else
+            this.handleNoteEvent (note, velocity);
+    }
+
+
+    /**
+     * Handle pitch bend.
+     *
+     * @param channel The MIDI channel
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    protected void handlePitchBend (final int channel, final int data1, final int data2)
+    {
+        final View view = this.viewManager.getActiveView ();
+        if (view != null)
+            view.executePitchbendCommand (channel, data1, data2);
+    }
+
+
+    /**
+     * Handle channel aftertouch.
+     *
+     * @param data1 First data byte
+     */
+    protected void handleChannelAftertouch (final int data1)
+    {
+        final View view = this.viewManager.getActiveView ();
+        if (view != null)
+            view.executeAftertouchCommand (-1, data1);
+    }
+
+
+    /**
+     * Handle poly aftertouch.
+     *
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    protected void handlePolyAftertouch (final int data1, final int data2)
+    {
+        final View view = this.viewManager.getActiveView ();
+        if (view != null)
+            view.executeAftertouchCommand (data1, data2);
     }
 
 

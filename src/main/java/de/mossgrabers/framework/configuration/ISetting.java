@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.configuration;
 
+import de.mossgrabers.framework.observer.IValueObserver;
+
+
 /**
  * An interface to a setting.
  *

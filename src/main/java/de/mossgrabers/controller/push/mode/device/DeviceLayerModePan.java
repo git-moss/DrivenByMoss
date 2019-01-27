@@ -61,14 +61,10 @@ public class DeviceLayerModePan extends DeviceLayerMode
         if (!layer.doesExist ())
             return;
 
-        if (isTouched)
+        if (isTouched && this.surface.isDeletePressed ())
         {
-            if (this.surface.isDeletePressed ())
-            {
-                this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
-                layer.resetPan ();
-                return;
-            }
+            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            layer.resetPan ();
         }
 
         layer.touchPan (isTouched);
