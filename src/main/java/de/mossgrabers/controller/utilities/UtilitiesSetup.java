@@ -38,7 +38,7 @@ public class UtilitiesSetup extends AbstractControllerSetup<IControlSurface<Util
     {
         super (factory, host, settings);
 
-        this.autoColor = new AutoColor ();
+        this.autoColor = new AutoColor (host);
 
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
@@ -95,7 +95,7 @@ public class UtilitiesSetup extends AbstractControllerSetup<IControlSurface<Util
     protected void createObservers ()
     {
         // Add name observers to all tracks
-        this.model.getTrackBank ().addNameObserver (this.autoColor::handleTrackNameChange);
+        this.model.getTrackBank ().addNameObserver (this.autoColor::matchTrackName);
     }
 
 

@@ -41,12 +41,10 @@ public class UtilitiesConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Auto Color
 
-        final NamedColor [] colors = NamedColor.values ();
-        for (int i = 0; i < colors.length; i++)
+        for (final NamedColor color: NamedColor.values ())
         {
-            final IStringSetting setting = settingsUI.getStringSetting (colors[i].getName (), "Auto Color", 256, "");
-            final int index = i;
-            setting.addValueObserver (name -> this.autoColor.handleRegExChange (index, colors[index], name));
+            final IStringSetting setting = settingsUI.getStringSetting (color.getName (), "Auto Color", 256, "");
+            setting.addValueObserver (name -> this.autoColor.handleRegExChange (color, name));
         }
     }
 }
