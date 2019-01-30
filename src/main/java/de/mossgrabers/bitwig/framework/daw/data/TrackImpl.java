@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.NoteObserver;
 
+import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.PlayingNote;
 import com.bitwig.extension.controller.api.Track;
 
@@ -27,14 +28,17 @@ import java.util.Set;
  */
 public class TrackImpl extends ChannelImpl implements ITrack
 {
-    protected static final int        NOTE_OFF      = 0;
-    protected static final int        NOTE_ON       = 1;
-    protected static final int        NOTE_ON_NEW   = 2;
+    protected static final int      NOTE_OFF      = 0;
+    protected static final int      NOTE_ON       = 1;
+    protected static final int      NOTE_ON_NEW   = 2;
 
-    protected final Track             track;
-    protected final ISlotBank         slotBank;
-    protected final int []            noteCache     = new int [128];
-    protected final Set<NoteObserver> noteObservers = new HashSet<> ();
+    protected final Track           track;
+
+    private final ISlotBank         slotBank;
+    private final int []            noteCache     = new int [128];
+    private final Set<NoteObserver> noteObservers = new HashSet<> ();
+    private final CursorTrack       cursorTrack;
+    private final IHost             host;
 
     private enum CrossfadeSetting
     {
@@ -49,15 +53,19 @@ public class TrackImpl extends ChannelImpl implements ITrack
      *
      * @param host The DAW host
      * @param valueChanger The valueChanger
+     * @param cursorTrack The cursor track of the bank to which this track belongs, required for
+     *            group navigation
      * @param track The track
      * @param index The index of the track in the page
      * @param numSends The number of sends of a bank
      * @param numScenes The number of scenes of a bank
      */
-    public TrackImpl (final IHost host, final IValueChanger valueChanger, final Track track, final int index, final int numSends, final int numScenes)
+    public TrackImpl (final IHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final Track track, final int index, final int numSends, final int numScenes)
     {
         super (host, valueChanger, track, index, numSends);
 
+        this.host = host;
+        this.cursorTrack = cursorTrack;
         this.track = track;
 
         track.trackType ().markInterested ();
@@ -97,6 +105,28 @@ public class TrackImpl extends ChannelImpl implements ITrack
         this.track.playingNotes ().setIsSubscribed (enable);
 
         this.slotBank.enableObservers (enable);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void enter ()
+    {
+        // Only group tracks can be entered
+        if (!this.isGroup ())
+            return;
+
+        // If this track is already the cursor track, enter it straight away
+        if (this.isSelected ())
+        {
+            this.cursorTrack.selectFirstChild ();
+            return;
+        }
+
+        // Make the track cursor track
+        this.select ();
+        // Delay the child selection a bit to ensure the track is selected
+        this.host.scheduleTask (this.cursorTrack::selectFirstChild, 100);
     }
 
 

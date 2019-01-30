@@ -99,7 +99,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 // If it is a group display child channels of group, otherwise jump into device
                 // mode
                 if (selTrack.isGroup ())
-                    tb.selectChildren ();
+                    selTrack.enter ();
                 else
                     this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_DEVICE, ButtonEvent.DOWN);
             }

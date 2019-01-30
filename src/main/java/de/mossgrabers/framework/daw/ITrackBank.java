@@ -16,12 +16,6 @@ import de.mossgrabers.framework.observer.IIndexedValueObserver;
 public interface ITrackBank extends IChannelBank<ITrack>
 {
     /**
-     * Selects the first child if this is a group track.
-     */
-    void selectChildren ();
-
-
-    /**
      * Selects the parent track if any (track must be inside a group).
      */
     void selectParent ();

@@ -913,8 +913,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 break;
 
             case "enter":
-                track.select ();
-                this.model.getCurrentTrackBank ().selectChildren ();
+                track.enter ();
                 break;
 
             case "color":

@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.observer.IIndexedValueObserver;
 
 import com.bitwig.extension.controller.api.Channel;
+import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.TrackBank;
 
 
@@ -23,19 +24,25 @@ import com.bitwig.extension.controller.api.TrackBank;
  */
 public abstract class AbstractTrackBankImpl extends AbstractChannelBank<TrackBank, ITrack> implements ITrackBank
 {
+    protected final CursorTrack cursorTrack;
+
+
     /**
      * Constructor.
      *
      * @param host The DAW host
      * @param valueChanger The value changer
+     * @param cursorTrack The cursor track assigned to this track bank
      * @param bank The bank to encapsulate
      * @param numTracks The number of tracks of a bank page
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final int numTracks, final int numScenes, final int numSends)
+    public AbstractTrackBankImpl (final IHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final TrackBank bank, final int numTracks, final int numScenes, final int numSends)
     {
         super (host, valueChanger, bank, numTracks, numScenes, numSends);
+
+        this.cursorTrack = cursorTrack;
 
         this.initItems ();
 
@@ -109,7 +116,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBank<TrackBan
     protected void initItems ()
     {
         for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new TrackImpl (this.host, this.valueChanger, this.bank.getItemAt (i), i, this.numSends, this.numScenes));
+            this.items.add (new TrackImpl (this.host, this.valueChanger, this.cursorTrack, this.bank.getItemAt (i), i, this.numSends, this.numScenes));
     }
 
 

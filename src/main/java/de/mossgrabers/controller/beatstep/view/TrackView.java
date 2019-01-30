@@ -87,29 +87,27 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
         final ITrackBank tb = this.model.getCurrentTrackBank ();
 
         int track;
-        ITrack selectedTrack;
-        ITrack sel;
+        ITrack selectedTrack = tb.getSelectedItem ();
         int index;
         int newSel;
         switch (note - 36)
         {
             // Toggle Activate
             case 0:
-                selectedTrack = tb.getSelectedItem ();
+
                 if (selectedTrack != null)
                     selectedTrack.toggleIsActivated ();
                 break;
 
             // Track left
             case 1:
-                sel = tb.getSelectedItem ();
-                index = sel == null ? 0 : sel.getIndex () - 1;
+                index = selectedTrack == null ? 0 : selectedTrack.getIndex () - 1;
                 if (index == -1 || this.surface.isShiftPressed ())
                 {
                     if (!tb.canScrollBackwards ())
                         return;
                     tb.scrollPageBackwards ();
-                    newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
+                    newSel = index == -1 || selectedTrack == null ? 7 : selectedTrack.getIndex ();
                     this.surface.scheduleTask ( () -> this.selectTrack (newSel), 75);
                     return;
                 }
@@ -118,14 +116,13 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
             // Track right
             case 2:
-                sel = tb.getSelectedItem ();
-                index = sel == null ? 0 : sel.getIndex () + 1;
+                index = selectedTrack == null ? 0 : selectedTrack.getIndex () + 1;
                 if (index == 8 || this.surface.isShiftPressed ())
                 {
                     if (!tb.canScrollForwards ())
                         return;
                     tb.scrollPageForwards ();
-                    newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
+                    newSel = index == 8 || selectedTrack == null ? 0 : selectedTrack.getIndex ();
                     this.surface.scheduleTask ( () -> this.selectTrack (newSel), 75);
                     return;
                 }
@@ -134,7 +131,8 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
             // Move down
             case 3:
-                tb.selectChildren ();
+                if (selectedTrack != null)
+                    selectedTrack.enter ();
                 break;
 
             // Move up

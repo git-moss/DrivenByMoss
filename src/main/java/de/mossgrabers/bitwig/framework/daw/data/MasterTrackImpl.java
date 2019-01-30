@@ -35,9 +35,17 @@ public class MasterTrackImpl extends TrackImpl implements IMasterTrack
      */
     public MasterTrackImpl (final IHost host, final IValueChanger valueChanger, final MasterTrack master)
     {
-        super (host, valueChanger, master, -1, 0, 0);
+        super (host, valueChanger, null, master, -1, 0, 0);
 
         this.track.addIsSelectedInEditorObserver (this::handleIsSelected);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void enter ()
+    {
+        // Mastertrack is not a group
     }
 
 
