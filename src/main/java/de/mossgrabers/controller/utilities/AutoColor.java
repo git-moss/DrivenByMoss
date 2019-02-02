@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.utilities;
 
-import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 
@@ -25,19 +24,16 @@ import java.util.regex.Pattern;
  */
 public class AutoColor
 {
-    private final IHost                              host;
     private final EnumMap<NamedColor, List<Pattern>> colorRegex = new EnumMap<> (NamedColor.class);
     private ITrackBank                               trackBank;
 
 
     /**
      * Constructor.
-     * 
-     * @param host
      */
-    protected AutoColor (IHost host)
+    protected AutoColor ()
     {
-        this.host = host;
+        // Intentionall empty
     }
 
 
@@ -49,8 +45,6 @@ public class AutoColor
      */
     public void handleRegExChange (final NamedColor color, final String filter)
     {
-        this.host.println ("Update filter: " + color.name () + ":" + filter);
-
         final List<Pattern> patterns = new ArrayList<> ();
         if (filter != null && !filter.trim ().isEmpty ())
         {
@@ -90,8 +84,6 @@ public class AutoColor
      */
     public void matchTrackName (final int channelIndex, final String trackName)
     {
-        this.host.println (channelIndex + ":" + trackName);
-
         if (!trackName.trim ().isEmpty ())
             this.matchColorsToTrack (this.trackBank.getItem (channelIndex), trackName);
     }
@@ -109,7 +101,7 @@ public class AutoColor
         synchronized (this.colorRegex)
         {
             for (final Entry<NamedColor, List<Pattern>> e: this.colorRegex.entrySet ())
-                this.matchColorToTrack (track, trackName, e.getKey (), e.getValue ());
+                matchColorToTrack (track, trackName, e.getKey (), e.getValue ());
         }
     }
 
@@ -124,14 +116,12 @@ public class AutoColor
      * @param color The color to apply
      * @param patterns The pattern to test against
      */
-    private void matchColorToTrack (final ITrack track, final String trackName, final NamedColor color, final List<Pattern> patterns)
+    private static void matchColorToTrack (final ITrack track, final String trackName, final NamedColor color, final List<Pattern> patterns)
     {
         for (final Pattern pattern: patterns)
         {
             if (pattern.matcher (trackName).matches ())
             {
-                this.host.println ("MATCH " + track.getIndex () + ":" + trackName + ":" + color.name () + ":" + pattern.pattern ());
-
                 track.setColor (color.getRed (), color.getGreen (), color.getBlue ());
                 break;
             }

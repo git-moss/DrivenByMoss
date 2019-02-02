@@ -111,8 +111,6 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         this.registerTriggerCommands ();
         this.registerContinuousCommands ();
         this.model.ensureClip ();
-
-        this.host.println ("Initialized.");
     }
 
 

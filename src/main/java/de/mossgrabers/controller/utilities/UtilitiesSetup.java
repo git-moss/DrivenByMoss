@@ -38,7 +38,7 @@ public class UtilitiesSetup extends AbstractControllerSetup<IControlSurface<Util
     {
         super (factory, host, settings);
 
-        this.autoColor = new AutoColor (host);
+        this.autoColor = new AutoColor ();
 
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
