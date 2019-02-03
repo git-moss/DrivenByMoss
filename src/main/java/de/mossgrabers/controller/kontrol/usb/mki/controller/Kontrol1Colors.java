@@ -8,6 +8,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
 
 
@@ -93,6 +94,15 @@ public class Kontrol1Colors
         colorManager.registerColor (AbstractPlayView.COLOR_OFF, BUTTON_STATE_OFF);
         colorManager.registerColor (AbstractPlayView.COLOR_PLAY, COLOR_PLAY);
         colorManager.registerColor (AbstractPlayView.COLOR_RECORD, COLOR_RECORD);
+
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_OFF, BUTTON_STATE_OFF);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_RECORD, COLOR_RECORD);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_PLAY, COLOR_PLAY);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_MUTED,
+                DAW_COLOR_START + 2 /* DAWColors.DAW_COLOR_GRAY */);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_HAS_CONTENT,
+                DAW_COLOR_START + 17 /* DAWColors.DAW_COLOR_BLUE */);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_NO_CONTENT, BUTTON_STATE_OFF);
 
         colorManager.registerColor (PadGrid.GRID_OFF, BUTTON_STATE_OFF);
 

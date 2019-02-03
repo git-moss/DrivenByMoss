@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.View;
 
 
@@ -238,6 +239,17 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
 
     /** {@inheritDoc} */
     @Override
+    public void keyboardChanged (final int firstNote)
+    {
+        final int endNote = firstNote + this.usbDevice.getNumKeys () - 1;
+        this.display.notify (Scales.formatDrumNote (firstNote) + " to " + Scales.formatDrumNote (endNote));
+
+        this.host.scheduleTask ( () -> this.getPadGrid ().forceFlush (), 100);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected void handleMidi (final int status, final int data1, final int data2)
     {
         final int code = status & 0xF0;
@@ -249,7 +261,8 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
             // Note on/off
             case 0x80:
             case 0x90:
-                // Not used
+                if (this.isGridNote (data1))
+                    this.handleGridNote (data1, data2);
                 break;
 
             // Polyphonic Aftertouch
@@ -291,22 +304,6 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
     public void updateButtonLEDs ()
     {
         this.usbDevice.updateButtonLEDs ();
-    }
-
-
-    /**
-     * Set a key LED. Note that key 0 is always the first key of the Sxx, which means they are
-     * different for the different models. Furthermore, this is independent from the octave
-     * transposition.
-     *
-     * @param key The index of the key 0-87
-     * @param red The red value 0-255
-     * @param green The green value 0-255
-     * @param blue The blue value 0-255
-     */
-    public void setKeyLED (final int key, final int red, final int green, final int blue)
-    {
-        this.usbDevice.setKeyLED (key, red, green, blue);
     }
 
 

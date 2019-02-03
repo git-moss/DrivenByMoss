@@ -332,7 +332,7 @@ public class DAWColors
 
     /**
      * Get the RGB color at the given index.
-     * 
+     *
      * @param colorIndex The index of the color
      * @return The RGB values of the color
      */

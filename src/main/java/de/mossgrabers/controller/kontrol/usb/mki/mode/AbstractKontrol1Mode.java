@@ -86,7 +86,11 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     public void onBack ()
     {
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedTrack != null)
+        if (selectedTrack == null)
+            return;
+        if (this.surface.isShiftPressed ())
+            selectedTrack.toggleMonitor ();
+        else
             selectedTrack.toggleMute ();
     }
 
@@ -96,7 +100,11 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     public void onEnter ()
     {
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedTrack != null)
+        if (selectedTrack == null)
+            return;
+        if (this.surface.isShiftPressed ())
+            selectedTrack.toggleRecArm ();
+        else
             selectedTrack.toggleSolo ();
     }
 

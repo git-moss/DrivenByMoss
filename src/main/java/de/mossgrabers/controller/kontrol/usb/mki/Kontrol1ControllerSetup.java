@@ -97,6 +97,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
+        ms.setNumDrumPadLayers (128);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver ( (index, isSelected) -> {
@@ -104,6 +105,9 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
             if (activeView instanceof ControlView)
                 ((ControlView) activeView).updateButtons ();
         });
+
+        final ICursorDevice primary = this.model.getInstrumentDevice ();
+        primary.getDrumPadBank ().setIndication (true);
     }
 
 
@@ -217,11 +221,14 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         this.addTriggerCommand (Commands.COMMAND_FADER_TOUCH_8, Kontrol1ControlSurface.TOUCH_ENCODER_8, new KnobRowTouchModeCommand<> (7, this.model, surface));
 
         // Block unused knobs and touches
-        this.addTriggerCommand (Commands.COMMAND_ROW1_1, Kontrol1ControlSurface.TOUCH_ENCODER_MAIN, new NopCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ROW1_2, Kontrol1ControlSurface.BUTTON_INSTANCE, new NopCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ROW1_3, Kontrol1ControlSurface.BUTTON_PRESET_UP, new NopCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ROW1_4, Kontrol1ControlSurface.BUTTON_PRESET_DOWN, new NopCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_SHIFT, Kontrol1ControlSurface.BUTTON_SHIFT, new NopCommand<> (this.model, surface));
+        final NopCommand<Kontrol1ControlSurface, Kontrol1Configuration> nopCommand = new NopCommand<> (this.model, surface);
+        this.addTriggerCommand (Commands.COMMAND_ROW1_1, Kontrol1ControlSurface.TOUCH_ENCODER_MAIN, nopCommand);
+        this.addTriggerCommand (Commands.COMMAND_ROW1_2, Kontrol1ControlSurface.BUTTON_INSTANCE, nopCommand);
+        this.addTriggerCommand (Commands.COMMAND_ROW1_3, Kontrol1ControlSurface.BUTTON_PRESET_UP, nopCommand);
+        this.addTriggerCommand (Commands.COMMAND_ROW1_4, Kontrol1ControlSurface.BUTTON_PRESET_DOWN, nopCommand);
+        this.addTriggerCommand (Commands.COMMAND_ROW1_5, Kontrol1ControlSurface.BUTTON_OCTAVE_DOWN, nopCommand);
+        this.addTriggerCommand (Commands.COMMAND_ROW1_6, Kontrol1ControlSurface.BUTTON_OCTAVE_UP, nopCommand);
+        this.addTriggerCommand (Commands.COMMAND_SHIFT, Kontrol1ControlSurface.BUTTON_SHIFT, nopCommand);
     }
 
 
@@ -263,8 +270,23 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
      */
     private void handleTrackChange (final boolean isSelected)
     {
-        if (isSelected)
-            this.updateIndication (this.getSurface ().getModeManager ().getActiveModeId ());
+        if (!isSelected)
+            return;
+
+        this.host.scheduleTask ( () -> {
+            final Kontrol1ControlSurface surface = this.getSurface ();
+            this.updateIndication (surface.getModeManager ().getActiveModeId ());
+            final View activeView = surface.getViewManager ().getActiveView ();
+            if (activeView != null)
+                activeView.updateNoteMapping ();
+
+            if (this.model.canSelectedTrackHoldNotes ())
+            {
+                final ICursorDevice primary = this.model.getInstrumentDevice ();
+                if (primary.hasDrumPads ())
+                    primary.getDrumPadBank ().scrollTo (0);
+            }
+        }, 100);
     }
 
 

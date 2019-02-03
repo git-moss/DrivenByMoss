@@ -37,7 +37,8 @@ public class Kontrol1PadGrid extends PadGridImpl
     protected void sendNoteState (final int note, final int color)
     {
         final int [] rgb = Kontrol1Colors.getColorFromIndex (color);
-        this.usbDevice.setKeyLED (note, rgb[0], rgb[1], rgb[2]);
+        final int n = note - this.usbDevice.getFirstNote ();
+        this.usbDevice.setKeyLED (n, rgb[0], rgb[1], rgb[2]);
     }
 
 

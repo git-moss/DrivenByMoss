@@ -35,4 +35,12 @@ public interface UIChangeCallback
      * @param valueIncreased The change value
      */
     void encoderChanged (int encIndex, boolean valueIncreased);
+
+
+    /**
+     * The keyboard was transposed.
+     *
+     * @param firstNote The left most note that the keyboard sends now
+     */
+    void keyboardChanged (int firstNote);
 }

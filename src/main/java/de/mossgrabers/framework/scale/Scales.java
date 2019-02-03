@@ -609,12 +609,12 @@ public class Scales
         if (midiNote == -1)
             return Scales.SCALE_COLOR_OFF;
         // Add 12 to prevent negative values
-        int n = (12 + midiNote - Scales.OFFSETS[this.scaleOffset]) % 12;
+        final int n = (12 + midiNote - Scales.OFFSETS[this.scaleOffset]) % 12;
         if (n == 0)
             return Scales.SCALE_COLOR_OCTAVE;
         if (!this.isChromatic ())
             return Scales.SCALE_COLOR_NOTE;
-        return isInScale (n) ? Scales.SCALE_COLOR_NOTE : Scales.SCALE_COLOR_OUT_OF_SCALE;
+        return this.isInScale (n) ? Scales.SCALE_COLOR_NOTE : Scales.SCALE_COLOR_OUT_OF_SCALE;
     }
 
 

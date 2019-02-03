@@ -231,13 +231,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void assignTriggerCommand (final int midiCC, final int midiChannel, final Integer commandID)
     {
-        Map<Integer, Integer> channelMap = this.triggerCommands.get (Integer.valueOf (midiCC));
-        if (channelMap == null)
-        {
-            channelMap = new HashMap<> ();
-            this.triggerCommands.put (Integer.valueOf (midiCC), channelMap);
-        }
-        channelMap.put (Integer.valueOf (midiChannel), commandID);
+        this.triggerCommands.computeIfAbsent (Integer.valueOf (midiCC), k -> new HashMap<> ()).put (Integer.valueOf (midiChannel), commandID);
     }
 
 

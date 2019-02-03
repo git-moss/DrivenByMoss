@@ -183,7 +183,8 @@ public class Kontrol1Display extends AbstractDisplay
      */
     public void setBar (final int column, final boolean hasBorder, final int value)
     {
-        this.usbDevice.setBar (column, hasBorder, value, this.maxParameterValue);
+        if (!this.isNotificationActive)
+            this.usbDevice.setBar (column, hasBorder, value, this.maxParameterValue);
     }
 
 
@@ -196,7 +197,8 @@ public class Kontrol1Display extends AbstractDisplay
      */
     public void setPanBar (final int column, final boolean hasBorder, final int value)
     {
-        this.usbDevice.setPanBar (column, hasBorder, value, this.maxParameterValue);
+        if (!this.isNotificationActive)
+            this.usbDevice.setPanBar (column, hasBorder, value, this.maxParameterValue);
     }
 
 
@@ -216,5 +218,22 @@ public class Kontrol1Display extends AbstractDisplay
         if (diff > 0)
             return text + Kontrol1Display.SPACES[diff];
         return text;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void notifyOnDisplay (final String message)
+    {
+        this.isNotificationActive = true;
+        this.clear ();
+        final int padLength = (this.noOfCharacters - message.length ()) / 2;
+        final String padding = padLength > 0 ? this.emptyLine.substring (0, padLength) : "";
+        this.notificationMessage = (padding + message + padding + "  ").substring (0, this.noOfCharacters);
+        this.flush ();
+        this.host.scheduleTask ( () -> {
+            this.isNotificationActive = false;
+            this.forceFlush ();
+        }, AbstractDisplay.NOTIFICATION_TIME);
     }
 }
