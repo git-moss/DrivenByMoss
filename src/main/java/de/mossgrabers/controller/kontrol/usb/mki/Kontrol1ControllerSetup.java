@@ -11,6 +11,7 @@ import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.Kontrol1CursorC
 import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.Kontrol1PlayCommand;
 import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.MainEncoderButtonCommand;
 import de.mossgrabers.controller.kontrol.usb.mki.command.trigger.ScaleButtonCommand;
+import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Colors;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Display;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1UsbDevice;
@@ -49,6 +50,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
@@ -83,6 +85,15 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
     /** {@inheritDoc} */
     @Override
+    protected void createScales ()
+    {
+        this.scales = new Scales (this.valueChanger, 0, 88, 88, 1);
+        this.scales.setChromatic (true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
@@ -109,6 +120,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
                 "80????" /* Note off */, "90????" /* Note on */, "B040??",
                 "B001??" /* Sustainpedal + Modulation */, "D0????" /* Channel Aftertouch */,
                 "E0????" /* Pitchbend */);
+
+        Kontrol1Colors.addColors (this.colorManager);
 
         final Kontrol1ControlSurface surface = new Kontrol1ControlSurface (host, this.colorManager, this.configuration, input, usbDevice);
         usbDevice.setCallback (surface);
@@ -151,6 +164,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     protected void createObservers ()
     {
         this.createScaleObservers (this.configuration);
+        this.configuration.addSettingObserver (Kontrol1Configuration.SCALE_IS_ACTIVE, this::updateViewNoteMapping);
 
         this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
 

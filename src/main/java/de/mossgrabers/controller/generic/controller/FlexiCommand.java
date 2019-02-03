@@ -239,6 +239,7 @@ public enum FlexiCommand
     DEVICE_TOGGLE_WINDOW(CommandCategory.DEVICE, "Device: Toggle Window", true),
     DEVICE_BYPASS(CommandCategory.DEVICE, "Device: Bypass", true),
     DEVICE_EXPAND(CommandCategory.DEVICE, "Device: Expand", true),
+    DEVICE_TOGGLE_PARAMETERS(CommandCategory.DEVICE, "Device: Parameters", true),
     DEVICE_SELECT_PREVIOUS(CommandCategory.DEVICE, "Device: Select Previous", true),
     DEVICE_SELECT_NEXT(CommandCategory.DEVICE, "Device: Select Next", true),
     DEVICE_SCROLL_DEVICES(CommandCategory.DEVICE, "Device: Scroll devices", false),

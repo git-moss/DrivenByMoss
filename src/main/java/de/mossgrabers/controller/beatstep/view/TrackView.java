@@ -87,7 +87,7 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
         final ITrackBank tb = this.model.getCurrentTrackBank ();
 
         int track;
-        ITrack selectedTrack = tb.getSelectedItem ();
+        final ITrack selectedTrack = tb.getSelectedItem ();
         int index;
         int newSel;
         switch (note - 36)

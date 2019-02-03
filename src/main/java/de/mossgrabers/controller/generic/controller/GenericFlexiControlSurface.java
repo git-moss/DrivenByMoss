@@ -546,6 +546,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case DEVICE_EXPAND:
                 return this.model.getCursorDevice ().isExpanded () ? 127 : 0;
 
+            case DEVICE_TOGGLE_PARAMETERS:
+                return this.model.getCursorDevice ().isParameterPageSectionVisible () ? 127 : 0;
+
             case DEVICE_SELECT_PREVIOUS:
             case DEVICE_SELECT_NEXT:
             case DEVICE_SELECT_PREVIOUS_PARAMETER_BANK:
@@ -1347,6 +1350,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case DEVICE_EXPAND:
                 if (value > 0)
                     this.model.getCursorDevice ().toggleExpanded ();
+                break;
+            // Device: Parameters
+            case DEVICE_TOGGLE_PARAMETERS:
+                if (value > 0)
+                    this.model.getCursorDevice ().toggleParameterPageSectionVisible ();
                 break;
             // Device: Select Previous
             case DEVICE_SELECT_PREVIOUS:

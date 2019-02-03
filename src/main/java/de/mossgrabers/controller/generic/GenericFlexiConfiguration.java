@@ -157,11 +157,11 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         category = "Selected Slot - Function";
 
         final CommandCategory [] values = CommandCategory.values ();
-        for (int i = 0; i < values.length; i++)
+        for (final CommandCategory value: values)
         {
-            final IEnumSetting fs = createFunctionSetting (values[i].getName (), category, settingsUI);
+            final IEnumSetting fs = createFunctionSetting (value.getName (), category, settingsUI);
             this.functionSettings.add (fs);
-            this.functionSettingsMap.put (values[i], fs);
+            this.functionSettingsMap.put (value, fs);
             fs.addValueObserver (this::handleFunctionChange);
         }
 

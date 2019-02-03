@@ -17,22 +17,22 @@ import java.util.Arrays;
  */
 public class PadGridImpl implements PadGrid
 {
-    protected static final int NUM_NOTES = 128;
+    protected static final int   NUM_NOTES = 128;
 
-    protected IMidiOutput      output;
-    protected ColorManager     colorManager;
+    protected final IMidiOutput  output;
+    protected final ColorManager colorManager;
 
-    protected final int []     currentButtonColors;
-    protected final int []     buttonColors;
-    protected final int []     currentBlinkColors;
-    protected final int []     blinkColors;
-    protected final boolean [] currentBlinkFast;
-    protected final boolean [] blinkFast;
+    protected final int []       currentButtonColors;
+    protected final int []       buttonColors;
+    protected final int []       currentBlinkColors;
+    protected final int []       blinkColors;
+    protected final boolean []   currentBlinkFast;
+    protected final boolean []   blinkFast;
 
-    private final int          rows;
-    private final int          cols;
-    private final int          startNote;
-    private final int          endNote;
+    private final int            rows;
+    private final int            cols;
+    private final int            startNote;
+    private final int            endNote;
 
 
     /**

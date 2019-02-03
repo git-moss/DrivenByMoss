@@ -355,7 +355,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     /**
      * Update the active views note mapping.
      */
-    private void updateViewNoteMapping ()
+    protected void updateViewNoteMapping ()
     {
         for (final S surface: this.surfaces)
         {

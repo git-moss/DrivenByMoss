@@ -757,18 +757,21 @@ public class Kontrol1UsbDevice
      * transposition.
      *
      * @param key The index of the key 0-87
-     * @param red The red value 0-255
-     * @param green The green value 0-255
-     * @param blue The blue value 0-255
+     * @param red The red value 0-127
+     * @param green The green value 0-127
+     * @param blue The blue value 0-127
      */
     public void setKeyLED (final int key, final int red, final int green, final int blue)
     {
         if (key < 0 || key >= 88)
             return;
         final int pos = 3 * key;
-        this.keyColors[pos] = (byte) red;
-        this.keyColors[pos + 1] = (byte) green;
-        this.keyColors[pos + 2] = (byte) blue;
+        synchronized (this.keyLedBlock)
+        {
+            this.keyColors[pos] = (byte) red;
+            this.keyColors[pos + 1] = (byte) green;
+            this.keyColors[pos + 2] = (byte) blue;
+        }
     }
 
 

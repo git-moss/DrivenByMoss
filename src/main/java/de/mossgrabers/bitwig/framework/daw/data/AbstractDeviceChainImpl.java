@@ -52,11 +52,8 @@ public abstract class AbstractDeviceChainImpl<T extends DeviceChain> extends Abs
     }
 
 
-    /**
-     * Add an observer for the device chains name.
-     *
-     * @param observer The observer to notify on a name change
-     */
+    /** {@inheritDoc} */
+    @Override
     public void addNameObserver (final IValueObserver<String> observer)
     {
         this.deviceChain.name ().addValueObserver (observer::update);

@@ -81,9 +81,9 @@ public class SendsGridElement extends SelectionGridElement
         final ColorEx faderColor = configuration.getColorFader ();
         final ColorEx editColor = configuration.getColorEdit ();
         final double faderLeft = left + inset;
-        for (int i = 0; i < this.sendData.length; i++)
+        for (final SendData element: this.sendData)
         {
-            final String n = this.sendData[i].getName ();
+            final String n = element.getName ();
             if (n.length () == 0)
                 break;
 
@@ -91,15 +91,15 @@ public class SendsGridElement extends SelectionGridElement
             topy += sendRowHeight;
             gc.fillRectangle (faderLeft, topy + separatorSize, sliderWidth, sliderHeight, borderColor);
 
-            final double valueWidth = this.sendData[i].getValue () * sliderWidth / getMaxValue ();
-            final int modulatedValue = this.sendData[i].getModulatedValue ();
+            final double valueWidth = element.getValue () * sliderWidth / getMaxValue ();
+            final int modulatedValue = element.getModulatedValue ();
             final boolean isSendModulated = modulatedValue != -1;
             final double modulatedValueWidth = isSendModulated ? (double) (modulatedValue * sliderWidth / getMaxValue ()) : valueWidth;
             final double faderTop = topy + separatorSize + 1;
             gc.fillRectangle (faderLeft + 1, faderTop, modulatedValueWidth - 1, sliderHeight - 2, faderColor);
 
-            final String text = this.sendData[i].getText ();
-            if (this.sendData[i].isEdited ())
+            final String text = element.getText ();
+            if (element.isEdited ())
             {
                 final boolean isTouched = text != null && text.length () > 0;
                 final double w = isTouched ? 3 : 1;
@@ -114,11 +114,11 @@ public class SendsGridElement extends SelectionGridElement
         final double boxLeft = faderLeft + sliderWidth - boxWidth;
         topy = menuHeight;
         final ColorEx backgroundDarker = configuration.getColorBackgroundDarker ();
-        for (int i = 0; i < this.sendData.length; i++)
+        for (final SendData element: this.sendData)
         {
             topy += sendRowHeight;
 
-            final String text = this.sendData[i].getText ();
+            final String text = element.getText ();
             if (text.length () > 0)
             {
                 final double volumeTextTop = topy + sliderHeight + 1 + (this.isExMode ? 0 : separatorSize);

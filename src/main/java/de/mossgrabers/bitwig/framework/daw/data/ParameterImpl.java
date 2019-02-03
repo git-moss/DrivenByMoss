@@ -7,6 +7,7 @@ package de.mossgrabers.bitwig.framework.daw.data;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.Parameter;
 
@@ -90,6 +91,14 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     public String getName (final int limit)
     {
         return this.parameter.name ().getLimited (limit);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addNameObserver (final IValueObserver<String> observer)
+    {
+        this.parameter.name ().addValueObserver (observer::update);
     }
 
 

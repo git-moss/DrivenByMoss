@@ -141,6 +141,7 @@ public class LaunchpadColors
         colorManager.registerColor (PadGrid.GRID_OFF, LAUNCHPAD_COLOR_BLACK);
 
         colorManager.registerColor (DAWColors.COLOR_OFF, LAUNCHPAD_COLOR_BLACK);
+        colorManager.registerColor (DAWColors.DAW_COLOR_GRAY_HALF, LAUNCHPAD_COLOR_GREY_MD);
         colorManager.registerColor (DAWColors.DAW_COLOR_DARK_GRAY, LAUNCHPAD_COLOR_GREY_LO);
         colorManager.registerColor (DAWColors.DAW_COLOR_GRAY, LAUNCHPAD_COLOR_GREY_MD);
         colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_GRAY, LAUNCHPAD_COLOR_GREY_LO);

@@ -352,6 +352,7 @@ public class PushColors
         colorManager.registerColor (PadGrid.GRID_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
 
         colorManager.registerColor (DAWColors.COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        colorManager.registerColor (DAWColors.DAW_COLOR_GRAY_HALF, isPush2 ? PUSH2_COLOR2_GREY_MD : PUSH1_COLOR2_GREY_MD);
         colorManager.registerColor (DAWColors.DAW_COLOR_DARK_GRAY, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
         colorManager.registerColor (DAWColors.DAW_COLOR_GRAY, isPush2 ? PUSH2_COLOR2_GREY_MD : PUSH1_COLOR2_GREY_MD);
         colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_GRAY, isPush2 ? PUSH2_COLOR2_GREY_LT : PUSH1_COLOR2_GREY_LT);

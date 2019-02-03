@@ -25,15 +25,18 @@ import java.util.regex.Pattern;
 public class AutoColor
 {
     private final EnumMap<NamedColor, List<Pattern>> colorRegex = new EnumMap<> (NamedColor.class);
+    private final UtilitiesConfiguration             configuration;
     private ITrackBank                               trackBank;
 
 
     /**
      * Constructor.
+     *
+     * @param configuration The configuration
      */
-    protected AutoColor ()
+    protected AutoColor (final UtilitiesConfiguration configuration)
     {
-        // Intentionall empty
+        this.configuration = configuration;
     }
 
 
@@ -45,6 +48,9 @@ public class AutoColor
      */
     public void handleRegExChange (final NamedColor color, final String filter)
     {
+        if (!this.configuration.isEnableAutoColor ())
+            return;
+
         final List<Pattern> patterns = new ArrayList<> ();
         if (filter != null && !filter.trim ().isEmpty ())
         {
@@ -61,6 +67,19 @@ public class AutoColor
 
 
     /**
+     * Handle the change of a track name. Check the new track name against all substrings.
+     *
+     * @param channelIndex The index of the channel to test
+     * @param trackName The new track name to test
+     */
+    public void matchTrackName (final int channelIndex, final String trackName)
+    {
+        if (this.configuration.isEnableAutoColor () && !trackName.trim ().isEmpty ())
+            this.matchColorsToTrack (this.trackBank.getItem (channelIndex), trackName);
+    }
+
+
+    /**
      * Updates all tracks (in the page) for a color.
      *
      * @param color The color to match for
@@ -73,19 +92,6 @@ public class AutoColor
             final ITrack track = this.trackBank.getItem (i);
             matchColorToTrack (track, track.getName (), color, patterns);
         }
-    }
-
-
-    /**
-     * Handle the change of a track name. Check the new track name against all substrings.
-     *
-     * @param channelIndex The index of the channel to test
-     * @param trackName The new track name to test
-     */
-    public void matchTrackName (final int channelIndex, final String trackName)
-    {
-        if (!trackName.trim ().isEmpty ())
-            this.matchColorsToTrack (this.trackBank.getItem (channelIndex), trackName);
     }
 
 

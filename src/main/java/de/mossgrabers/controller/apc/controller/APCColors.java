@@ -159,6 +159,7 @@ public class APCColors
 
         if (isMkII)
         {
+            colorManager.registerColor (DAWColors.DAW_COLOR_GRAY_HALF, APC_MKII_COLOR_GREY_MD);
             colorManager.registerColor (DAWColors.DAW_COLOR_DARK_GRAY, APC_MKII_COLOR_GREY_LO);
             colorManager.registerColor (DAWColors.DAW_COLOR_GRAY, APC_MKII_COLOR_GREY_MD);
             colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_GRAY, APC_MKII_COLOR_GREY_LO);

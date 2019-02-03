@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -38,11 +39,10 @@ public class UtilitiesSetup extends AbstractControllerSetup<IControlSurface<Util
     {
         super (factory, host, settings);
 
-        this.autoColor = new AutoColor ();
-
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new UtilitiesConfiguration (this.valueChanger, this.autoColor);
+        this.configuration = new UtilitiesConfiguration (this.valueChanger);
+        this.autoColor = new AutoColor (this.configuration);
     }
 
 
@@ -94,6 +94,23 @@ public class UtilitiesSetup extends AbstractControllerSetup<IControlSurface<Util
     @Override
     protected void createObservers ()
     {
+        // Update track colors if Auto Color is enabled in the settings
+        this.configuration.addSettingObserver (UtilitiesConfiguration.ENABLE_AUTO_COLOR, () -> {
+            if (!this.configuration.isEnableAutoColor ())
+                return;
+            final ITrackBank tb = this.model.getTrackBank ();
+            for (int i = 0; i < tb.getPageSize (); i++)
+                this.autoColor.matchTrackName (i, tb.getItem (i).getName ());
+        });
+
+        // Monitor all color regex settings
+        final NamedColor [] colors = NamedColor.values ();
+        for (int i = 0; i < colors.length; i++)
+        {
+            final NamedColor color = colors[i];
+            this.configuration.addSettingObserver (Integer.valueOf (UtilitiesConfiguration.COLOR_REGEX.intValue () + i), () -> this.autoColor.handleRegExChange (color, this.configuration.getColorRegExValue (color)));
+        }
+
         // Add name observers to all tracks
         this.model.getTrackBank ().addNameObserver (this.autoColor::matchTrackName);
     }

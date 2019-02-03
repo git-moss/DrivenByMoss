@@ -24,6 +24,7 @@ public class KeyManager implements NoteObserver
 {
     private final int []  pressedKeys = new int [128];
     private final IModel  model;
+    private final Scales  scales;
     private final PadGrid padGrid;
     private int []        noteMap     = Scales.getEmptyMatrix ();
 
@@ -37,6 +38,7 @@ public class KeyManager implements NoteObserver
     public KeyManager (final IModel model, final PadGrid padGrid)
     {
         this.model = model;
+        this.scales = this.model.getScales ();
         this.padGrid = padGrid;
         Arrays.fill (this.pressedKeys, 0);
     }
@@ -157,7 +159,7 @@ public class KeyManager implements NoteObserver
      */
     public String getColor (final int pad)
     {
-        return this.model.getScales ().getColor (this.noteMap, pad);
+        return this.scales.getColor (this.noteMap, pad);
     }
 
 

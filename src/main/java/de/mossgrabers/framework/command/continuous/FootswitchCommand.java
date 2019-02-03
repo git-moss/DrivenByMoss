@@ -133,7 +133,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
 
     /**
      * Handles all view related commands.
-     * 
+     *
      * @param event The event
      * @return True if handled
      */

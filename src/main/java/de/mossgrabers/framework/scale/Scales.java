@@ -608,20 +608,31 @@ public class Scales
         final int midiNote = noteMap[note];
         if (midiNote == -1)
             return Scales.SCALE_COLOR_OFF;
-        final int n = (midiNote - Scales.OFFSETS[this.scaleOffset]) % 12;
+        // Add 12 to prevent negative values
+        int n = (12 + midiNote - Scales.OFFSETS[this.scaleOffset]) % 12;
         if (n == 0)
             return Scales.SCALE_COLOR_OCTAVE;
-        if (this.isChromatic ())
+        if (!this.isChromatic ())
+            return Scales.SCALE_COLOR_NOTE;
+        return isInScale (n) ? Scales.SCALE_COLOR_NOTE : Scales.SCALE_COLOR_OUT_OF_SCALE;
+    }
+
+
+
+   /**
+     * Test if the note is part of the selected scale.
+     *
+     * @param note The note to test (0-11)
+     * @return True if it is part of the scale
+     */
+    public boolean isInScale (final int note)
+    {
+        for (final int interval: this.selectedScale.getIntervals ())
         {
-            final int [] notes = this.selectedScale.getIntervals ();
-            for (final int note2: notes)
-            {
-                if (note2 == n)
-                    return Scales.SCALE_COLOR_NOTE;
-            }
-            return Scales.SCALE_COLOR_OUT_OF_SCALE;
+            if (interval == note)
+                return true;
         }
-        return Scales.SCALE_COLOR_NOTE;
+        return false;
     }
 
 

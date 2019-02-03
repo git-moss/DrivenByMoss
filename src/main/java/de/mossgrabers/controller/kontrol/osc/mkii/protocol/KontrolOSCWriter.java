@@ -380,7 +380,7 @@ public class KontrolOSCWriter extends AbstractOpenSoundControlWriter
 
     /**
      * Creates a parameter list with track type and index.
-     * 
+     *
      * @param trackIndex The track index
      * @param trackType The track type
      * @param values Other values

@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.kontrol.usb.mki.mode;
 
 import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
+import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Colors;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Display;
 import de.mossgrabers.framework.daw.IModel;
@@ -44,7 +45,6 @@ public class ScaleMode extends AbstractKontrol1Mode
         d.setCell (0, 0, "SCALE");
         d.setCell (0, 1, "SCALE").setCell (1, 1, this.scales.getScale ().getName ().toUpperCase ());
         d.setCell (0, 2, "BASE").setCell (1, 2, Scales.BASES[this.scales.getScaleOffset ()]);
-        d.setCell (0, 3, "CHROMATC").setCell (1, 3, this.scales.isChromatic () ? "On" : "Off");
         d.allDone ();
     }
 
@@ -70,11 +70,6 @@ public class ScaleMode extends AbstractKontrol1Mode
                     this.scales.setScaleOffset (this.scales.getScaleOffset () + 1);
                 else
                     this.scales.setScaleOffset (this.scales.getScaleOffset () - 1);
-                this.updateScalePreferences ();
-                break;
-
-            case 2:
-                this.scales.setChromatic (isInc);
                 this.updateScalePreferences ();
                 break;
 
@@ -146,15 +141,15 @@ public class ScaleMode extends AbstractKontrol1Mode
         final boolean canScrollUp = this.scales.hasNextScaleOffset ();
         final boolean canScrollDown = this.scales.hasPrevScaleOffset ();
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, canScrollUp ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, canScrollDown ? Kontrol1ControlSurface.BUTTON_STATE_HI : Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, canScrollUp ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, canScrollDown ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BACK, Kontrol1ControlSurface.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_ENTER, Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BACK, Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_ENTER, Kontrol1Colors.BUTTON_STATE_ON);
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BROWSE, Kontrol1ControlSurface.BUTTON_STATE_ON);
+        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BROWSE, Kontrol1Colors.BUTTON_STATE_ON);
 
     }
 
@@ -164,6 +159,5 @@ public class ScaleMode extends AbstractKontrol1Mode
         final Kontrol1Configuration config = this.surface.getConfiguration ();
         config.setScale (this.scales.getScale ().getName ());
         config.setScaleBase (Scales.BASES[this.scales.getScaleOffset ()]);
-        config.setScaleInKey (!this.scales.isChromatic ());
     }
 }

@@ -8,6 +8,7 @@ import de.mossgrabers.framework.daw.EmptyBank;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.observer.NoteObserver;
 
 
@@ -134,6 +135,14 @@ public class EmptyTrackData implements ITrack
     public String getName (final int limit)
     {
         return "";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addNameObserver (final IValueObserver<String> observer)
+    {
+        // Intentionally empty
     }
 
 

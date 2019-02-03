@@ -17,10 +17,11 @@ import de.mossgrabers.framework.controller.IValueChanger;
  */
 public class Kontrol1Configuration extends AbstractConfiguration
 {
-    private static final Integer SCALE_IS_ACTIVE = Integer.valueOf (40);
+    /** ID for enable scale setting. */
+    public static final Integer SCALE_IS_ACTIVE = Integer.valueOf (40);
 
-    private IEnumSetting         scaleIsActiveSetting;
-    private boolean              scaleIsActive;
+    private IEnumSetting        scaleIsActiveSetting;
+    private boolean             scaleIsActive;
 
 
     /**
@@ -49,7 +50,6 @@ public class Kontrol1Configuration extends AbstractConfiguration
 
         this.activateScaleSetting (settingsUI);
         this.activateScaleBaseSetting (settingsUI);
-        this.activateScaleInScaleSetting (settingsUI);
 
         ///////////////////////////
         // Transport

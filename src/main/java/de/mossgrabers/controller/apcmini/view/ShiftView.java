@@ -204,11 +204,11 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
             // Device Parameters up/down
             case 24:
-                scrollParameterBank (true, cursorDevice);
+                this.scrollParameterBank (true, cursorDevice);
                 break;
 
             case 25:
-                scrollParameterBank (false, cursorDevice);
+                this.scrollParameterBank (false, cursorDevice);
                 break;
 
             // Device up/down

@@ -152,13 +152,6 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
         TOUCH_ENCODER_MAIN
     };
 
-    /** Color intensity for an active button. */
-    public static final int     BUTTON_STATE_HI       = 255;
-    /** Color intensity for an enabled button. */
-    public static final int     BUTTON_STATE_ON       = 6;
-    /** Color intensity for an disabled button. */
-    public static final int     BUTTON_STATE_OFF      = 0;
-
     private Kontrol1UsbDevice   usbDevice;
 
 
@@ -173,14 +166,9 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
      */
     public Kontrol1ControlSurface (final IHost host, final ColorManager colorManager, final Kontrol1Configuration configuration, final IMidiInput input, final Kontrol1UsbDevice usbDevice)
     {
-        super (host, configuration, colorManager, null, input, null, KONTROL1_BUTTONS_ALL);
+        super (host, configuration, colorManager, null, input, new Kontrol1PadGrid (colorManager, usbDevice), KONTROL1_BUTTONS_ALL);
 
         this.usbDevice = usbDevice;
-
-        this.colorManager.registerColor (ColorManager.BUTTON_STATE_OFF, BUTTON_STATE_OFF);
-        this.colorManager.registerColor (ColorManager.BUTTON_STATE_ON, BUTTON_STATE_ON);
-        this.colorManager.registerColor (ColorManager.BUTTON_STATE_HI, BUTTON_STATE_HI);
-
         this.shiftButtonId = BUTTON_SHIFT;
     }
 
@@ -198,6 +186,15 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
         this.display.clear ();
         this.display.notify ("START " + this.host.getName ().toUpperCase () + " TO PLAY");
         this.display.shutdown ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void redrawGrid ()
+    {
+        super.redrawGrid ();
+        this.updateKeyLEDs ();
     }
 
 

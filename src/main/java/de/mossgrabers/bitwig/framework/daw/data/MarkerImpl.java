@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IMarker;
+import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.ColorValue;
 import com.bitwig.extension.controller.api.CueMarker;
@@ -70,6 +71,14 @@ public class MarkerImpl extends AbstractItemImpl implements IMarker
     public String getName (final int limit)
     {
         return this.marker.getName ().getLimited (limit);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addNameObserver (final IValueObserver<String> observer)
+    {
+        this.marker.getName ().addValueObserver (observer::update);
     }
 
 

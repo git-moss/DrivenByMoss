@@ -5,9 +5,13 @@
 package de.mossgrabers.controller.utilities;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.IValueChanger;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 
 /**
@@ -17,20 +21,25 @@ import de.mossgrabers.framework.controller.IValueChanger;
  */
 public class UtilitiesConfiguration extends AbstractConfiguration
 {
-    private final AutoColor autoColor;
+    private static final String     CATEGORY_AUTO_COLOR = "Auto Color";
+
+    /** ID for dis-/enabling the auto color setting. */
+    public static final Integer     ENABLE_AUTO_COLOR   = Integer.valueOf (50);
+    /** First ID for all auto color settings. NOTE: All colors increase from that value! */
+    public static final Integer     COLOR_REGEX         = Integer.valueOf (100);
+
+    private boolean                 enableAutoColor;
+    private Map<NamedColor, String> colorRegEx          = new EnumMap<> (NamedColor.class);
 
 
     /**
      * Constructor.
      *
      * @param valueChanger The value changer
-     * @param autoColor The auto color access
      */
-    public UtilitiesConfiguration (final IValueChanger valueChanger, final AutoColor autoColor)
+    public UtilitiesConfiguration (final IValueChanger valueChanger)
     {
         super (valueChanger);
-
-        this.autoColor = autoColor;
     }
 
 
@@ -41,10 +50,45 @@ public class UtilitiesConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Auto Color
 
-        for (final NamedColor color: NamedColor.values ())
+        final IEnumSetting enableAutoColorSetting = settingsUI.getEnumSetting (CATEGORY_AUTO_COLOR, CATEGORY_AUTO_COLOR, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        enableAutoColorSetting.addValueObserver (value -> {
+            this.enableAutoColor = ON_OFF_OPTIONS[1].equals (value);
+            this.notifyObservers (UtilitiesConfiguration.ENABLE_AUTO_COLOR);
+        });
+
+        final NamedColor [] colors = NamedColor.values ();
+        for (int i = 0; i < colors.length; i++)
         {
-            final IStringSetting setting = settingsUI.getStringSetting (color.getName (), "Auto Color", 256, "");
-            setting.addValueObserver (name -> this.autoColor.handleRegExChange (color, name));
+            final NamedColor color = colors[i];
+            final IStringSetting setting = settingsUI.getStringSetting (color.getName (), CATEGORY_AUTO_COLOR, 256, "");
+            final int index = i;
+            setting.addValueObserver (value -> {
+                this.colorRegEx.put (color, value);
+                this.notifyObservers (Integer.valueOf (UtilitiesConfiguration.COLOR_REGEX.intValue () + index));
+            });
         }
+    }
+
+
+    /**
+     * Returns true if auto coloring is enabled.
+     *
+     * @return True if auto coloring is enabled
+     */
+    public boolean isEnableAutoColor ()
+    {
+        return this.enableAutoColor;
+    }
+
+
+    /**
+     * Get the regex value for the given color.
+     *
+     * @param color The color
+     * @return The regex
+     */
+    public String getColorRegExValue (final NamedColor color)
+    {
+        return this.colorRegEx.get (color);
     }
 }
