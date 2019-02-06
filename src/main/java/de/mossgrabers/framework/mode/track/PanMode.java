@@ -8,7 +8,6 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.AbstractMode;
 
 
 /**
@@ -19,7 +18,7 @@ import de.mossgrabers.framework.mode.AbstractMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PanMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
+public class PanMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractTrackMode<S, C>
 {
     /**
      * Constructor.
@@ -32,7 +31,6 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
     public PanMode (final S surface, final IModel model, final boolean isAbsolute)
     {
         super ("Panorama", surface, model, isAbsolute);
-        this.isTemporary = false;
     }
 
 
@@ -68,16 +66,5 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
         return track == null ? -1 : track.getPan ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getSelectedItemName ()
-    {
-        final ITrack selectedItem = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedItem == null || !selectedItem.doesExist ())
-            return null;
-        return selectedItem.getPosition () + 1 + ": " + selectedItem.getName ();
     }
 }

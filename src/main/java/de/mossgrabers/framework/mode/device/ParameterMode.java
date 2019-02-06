@@ -73,6 +73,18 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
 
     /** {@inheritDoc} */
     @Override
+    public int getKnobValue (final int index)
+    {
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        if (cursorDevice == null)
+            return -1;
+        final IParameter item = cursorDevice.getParameterBank ().getItem (index);
+        return item != null && item.doesExist () ? item.getValue () : -1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getSelectedItemName ()
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
@@ -125,6 +137,6 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void selectItem (final int index)
     {
-        this.model.getCursorDevice ().getDeviceBank ().getItem (index).select ();
+        this.model.getCursorDevice ().getParameterBank ().selectItemAtPosition (index);
     }
 }

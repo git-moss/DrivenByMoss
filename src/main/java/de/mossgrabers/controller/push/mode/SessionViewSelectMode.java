@@ -84,8 +84,8 @@ public class SessionViewSelectMode extends BaseMode
                 break;
 
             case 7:
-                configuration.toggleScenesClipMode ();
                 this.surface.getModeManager ().restoreMode ();
+                configuration.toggleScenesClipMode ();
                 break;
 
             default:

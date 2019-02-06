@@ -9,7 +9,6 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.AbstractMode;
 
 
 /**
@@ -20,7 +19,7 @@ import de.mossgrabers.framework.mode.AbstractMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
+public class TrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractTrackMode<S, C>
 {
     /**
      * Constructor.
@@ -33,7 +32,6 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
     public TrackMode (final S surface, final IModel model, final boolean isAbsolute)
     {
         super ("Track", surface, model, isAbsolute);
-        this.isTemporary = false;
     }
 
 
@@ -99,11 +97,21 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
 
     /** {@inheritDoc} */
     @Override
-    public String getSelectedItemName ()
+    public int getKnobValue (final int index)
     {
-        final ITrack selectedItem = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedItem == null || !selectedItem.doesExist ())
-            return null;
-        return selectedItem.getPosition () + 1 + ": " + selectedItem.getName ();
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        if (track == null)
+            return -1;
+        switch (index)
+        {
+            case 0:
+                return track.getVolume ();
+
+            case 1:
+                return track.getPan ();
+
+            default:
+                return track.getSendBank ().getItem (index - 2).getValue ();
+        }
     }
 }

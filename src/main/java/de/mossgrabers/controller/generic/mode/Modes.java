@@ -35,6 +35,8 @@ public class Modes
     public static final Integer MODE_SEND8  = Integer.valueOf (10);
     /** Device mode. */
     public static final Integer MODE_DEVICE = Integer.valueOf (11);
+    /** Browser mode. */
+    public static final Integer MODE_BROWSE = Integer.valueOf (12);
 
 
     /**

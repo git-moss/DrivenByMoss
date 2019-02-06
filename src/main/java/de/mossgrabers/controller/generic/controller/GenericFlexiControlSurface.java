@@ -29,7 +29,6 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -215,13 +214,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     {
         switch (command)
         {
-            case OFF:
-            case GLOBAL_UNDO:
-            case GLOBAL_REDO:
-            case GLOBAL_PREVIOUS_PROJECT:
-            case GLOBAL_NEXT_PROJECT:
-                return -1;
-
             case GLOBAL_TOGGLE_AUDIO_ENGINE:
                 return this.model.getApplication ().isEngineActive () ? 127 : 0;
 
@@ -230,9 +222,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
             case TRANSPORT_STOP:
                 return this.model.getTransport ().isPlaying () ? 0 : 127;
-
-            case TRANSPORT_RESTART:
-                return -1;
 
             case TRANSPORT_TOGGLE_REPEAT:
                 return this.model.getTransport ().isLoop () ? 127 : 0;
@@ -269,42 +258,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
             case TRANSPORT_TOGGLE_CLIP_AUTOMATION_WRITE:
                 return this.model.getTransport ().isWritingClipLauncherAutomation () ? 127 : 0;
-
-            case TRANSPORT_SET_WRITE_MODE_LATCH:
-            case TRANSPORT_SET_WRITE_MODE_TOUCH:
-            case TRANSPORT_SET_WRITE_MODE_WRITE:
-            case TRANSPORT_SET_TEMPO:
-            case TRANSPORT_TAP_TEMPO:
-            case TRANSPORT_MOVE_PLAY_CURSOR:
-            case LAYOUT_SET_ARRANGE_LAYOUT:
-            case LAYOUT_SET_MIX_LAYOUT:
-            case LAYOUT_SET_EDIT_LAYOUT:
-            case LAYOUT_TOGGLE_NOTE_EDITOR:
-            case LAYOUT_TOGGLE_AUTOMATION_EDITOR:
-            case LAYOUT_TOGGLE_DEVICES_PANEL:
-            case LAYOUT_TOGGLE_MIXER_PANEL:
-            case LAYOUT_TOGGLE_FULLSCREEN:
-            case LAYOUT_TOGGLE_ARRANGER_CUE_MARKERS:
-            case LAYOUT_TOGGLE_ARRANGER_PLAYBACK_FOLLOW:
-            case LAYOUT_TOGGLE_ARRANGER_TRACK_ROW_HEIGHT:
-            case LAYOUT_TOGGLE_ARRANGER_CLIP_LAUNCHER_SECTION:
-            case LAYOUT_TOGGLE_ARRANGER_TIME_LINE:
-            case LAYOUT_TOGGLE_ARRANGER_IO_SECTION:
-            case LAYOUT_TOGGLE_ARRANGER_EFFECT_TRACKS:
-            case LAYOUT_TOGGLE_MIXER_CLIP_LAUNCHER_SECTION:
-            case LAYOUT_TOGGLE_MIXER_CROSS_FADE_SECTION:
-            case LAYOUT_TOGGLE_MIXER_DEVICE_SECTION:
-            case LAYOUT_TOGGLE_MIXER_SENDSSECTION:
-            case LAYOUT_TOGGLE_MIXER_IO_SECTION:
-            case LAYOUT_TOGGLE_MIXER_METER_SECTION:
-            case TRACK_ADD_AUDIO_TRACK:
-            case TRACK_ADD_EFFECT_TRACK:
-            case TRACK_ADD_INSTRUMENT_TRACK:
-            case TRACK_SELECT_PREVIOUS_BANK_PAGE:
-            case TRACK_SELECT_NEXT_BANK_PAGE:
-            case TRACK_SELECT_PREVIOUS_TRACK:
-            case TRACK_SELECT_NEXT_TRACK:
-                return -1;
 
             case TRACK_1_SELECT:
             case TRACK_2_SELECT:
@@ -549,12 +502,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case DEVICE_TOGGLE_PARAMETERS:
                 return this.model.getCursorDevice ().isParameterPageSectionVisible () ? 127 : 0;
 
-            case DEVICE_SELECT_PREVIOUS:
-            case DEVICE_SELECT_NEXT:
-            case DEVICE_SELECT_PREVIOUS_PARAMETER_BANK:
-            case DEVICE_SELECT_NEXT_PARAMETER_BANK:
-                return -1;
-
             case DEVICE_SET_PARAMETER_1:
             case DEVICE_SET_PARAMETER_2:
             case DEVICE_SET_PARAMETER_3:
@@ -564,48 +511,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case DEVICE_SET_PARAMETER_7:
             case DEVICE_SET_PARAMETER_8:
                 return this.model.getCursorDevice ().getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal ()).getValue ();
-
-            case BROWSER_BROWSE_PRESETS:
-            case BROWSER_INSERT_DEVICE_BEFORE_CURRENT:
-            case BROWSER_INSERT_DEVICE_AFTER_CURRENT:
-            case BROWSER_COMMIT_SELECTION:
-            case BROWSER_CANCEL_SELECTION:
-            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_1:
-            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_2:
-            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_3:
-            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_4:
-            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_5:
-            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_6:
-            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1:
-            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_2:
-            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_3:
-            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_4:
-            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_5:
-            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_6:
-            case BROWSER_RESET_FILTER_COLUMN_1:
-            case BROWSER_RESET_FILTER_COLUMN_2:
-            case BROWSER_RESET_FILTER_COLUMN_3:
-            case BROWSER_RESET_FILTER_COLUMN_4:
-            case BROWSER_RESET_FILTER_COLUMN_5:
-            case BROWSER_RESET_FILTER_COLUMN_6:
-            case BROWSER_SELECT_THE_PREVIOUS_PRESET:
-            case BROWSER_SELECT_THE_NEXT_PRESET:
-            case BROWSER_SELECT_THE_PREVIOUS_TAB:
-            case BROWSER_SELECT_THE_NEXT_TAB:
-            case SCENE_1_LAUNCH_SCENE:
-            case SCENE_2_LAUNCH_SCENE:
-            case SCENE_3_LAUNCH_SCENE:
-            case SCENE_4_LAUNCH_SCENE:
-            case SCENE_5_LAUNCH_SCENE:
-            case SCENE_6_LAUNCH_SCENE:
-            case SCENE_7_LAUNCH_SCENE:
-            case SCENE_8_LAUNCH_SCENE:
-            case SCENE_SELECT_PREVIOUS_BANK:
-            case SCENE_SELECT_NEXT_BANK:
-            case SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS:
-            case CLIP_PREVIOUS:
-            case CLIP_NEXT:
-                return -1;
 
             case CLIP_PLAY:
                 final ISlot selectedSlot = this.model.getSelectedSlot ();
@@ -618,21 +523,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case CLIP_RECORD:
                 final ISlot selectedSlot3 = this.model.getSelectedSlot ();
                 return selectedSlot3 != null && selectedSlot3.isRecording () ? 127 : 0;
-
-            case CLIP_NEW:
-                return -1;
-
-            case MARKER_1_LAUNCH_MARKER:
-            case MARKER_2_LAUNCH_MARKER:
-            case MARKER_3_LAUNCH_MARKER:
-            case MARKER_4_LAUNCH_MARKER:
-            case MARKER_5_LAUNCH_MARKER:
-            case MARKER_6_LAUNCH_MARKER:
-            case MARKER_7_LAUNCH_MARKER:
-            case MARKER_8_LAUNCH_MARKER:
-            case MARKER_SELECT_PREVIOUS_BANK:
-            case MARKER_SELECT_NEXT_BANK:
-                return -1;
 
             case MODES_KNOB1:
                 return this.modeManager.getActiveOrTempMode ().getKnobValue (0);
@@ -650,32 +540,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 return this.modeManager.getActiveOrTempMode ().getKnobValue (6);
             case MODES_KNOB8:
                 return this.modeManager.getActiveOrTempMode ().getKnobValue (7);
-
-            case MODES_BUTTON1:
-            case MODES_BUTTON2:
-            case MODES_BUTTON3:
-            case MODES_BUTTON4:
-            case MODES_BUTTON5:
-            case MODES_BUTTON6:
-            case MODES_BUTTON7:
-            case MODES_BUTTON8:
-            case MODES_NEXT_PAGE:
-            case MODES_PREV_PAGE:
-            case MODES_SELECT_MODE_TRACK:
-            case MODES_SELECT_MODE_VOLUME:
-            case MODES_SELECT_MODE_PAN:
-            case MODES_SELECT_MODE_SEND1:
-            case MODES_SELECT_MODE_SEND2:
-            case MODES_SELECT_MODE_SEND3:
-            case MODES_SELECT_MODE_SEND4:
-            case MODES_SELECT_MODE_SEND5:
-            case MODES_SELECT_MODE_SEND6:
-            case MODES_SELECT_MODE_SEND7:
-            case MODES_SELECT_MODE_SEND8:
-            case MODES_SELECT_MODE_DEVICE:
-            case MODES_SELECT_MODE_NEXT:
-            case MODES_SELECT_MODE_PREV:
-                return -1;
 
             default:
                 return -1;
@@ -1443,6 +1307,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_4:
             case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_5:
             case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_6:
+            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_7:
+            case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_8:
                 if (value > 0)
                     this.model.getBrowser ().selectPreviousFilterItem (command.ordinal () - FlexiCommand.BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_1.ordinal ());
                 break;
@@ -1454,6 +1320,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_4:
             case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_5:
             case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_6:
+            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_7:
+            case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_8:
                 if (value > 0)
                     this.model.getBrowser ().selectNextFilterItem (command.ordinal () - FlexiCommand.BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1.ordinal ());
                 break;
@@ -1464,6 +1332,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case BROWSER_SCROLL_FILTER_IN_COLUMN_4:
             case BROWSER_SCROLL_FILTER_IN_COLUMN_5:
             case BROWSER_SCROLL_FILTER_IN_COLUMN_6:
+            case BROWSER_SCROLL_FILTER_IN_COLUMN_7:
+            case BROWSER_SCROLL_FILTER_IN_COLUMN_8:
                 this.scrollFilterColumn (commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1.ordinal (), value);
                 break;
 
@@ -1474,6 +1344,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case BROWSER_RESET_FILTER_COLUMN_4:
             case BROWSER_RESET_FILTER_COLUMN_5:
             case BROWSER_RESET_FILTER_COLUMN_6:
+            case BROWSER_RESET_FILTER_COLUMN_7:
+            case BROWSER_RESET_FILTER_COLUMN_8:
                 if (value > 0)
                     this.model.getBrowser ().resetFilterColumn (command.ordinal () - FlexiCommand.BROWSER_RESET_FILTER_COLUMN_1.ordinal ());
                 break;
@@ -1710,6 +1582,13 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (value > 0)
                     this.selectPreviousMode ();
                 break;
+            case MODES_BROWSE_PRESETS:
+                if (value > 0)
+                {
+                    this.model.getBrowser ().browseForPresets ();
+                    this.host.scheduleTask ( () -> this.activateMode (Modes.MODE_BROWSE), 500);
+                }
+                break;
         }
 
         this.host.scheduleTask ( () -> {
@@ -1739,7 +1618,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (knobMode == KNOB_MODE_ABSOLUTE)
             fxParam.setValue (value);
         else
-            fxParam.setValue (fxParam.getValue () + this.getRelativeSpeed (knobMode, value));
+            fxParam.setValue (this.limit (fxParam.getValue () + this.getRelativeSpeed (knobMode, value)));
     }
 
 
@@ -1754,7 +1633,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (knobMode == KNOB_MODE_ABSOLUTE)
             send.setValue (value);
         else
-            send.setValue (send.getValue () + this.getRelativeSpeed (knobMode, value));
+            send.setValue (this.limit (send.getValue () + this.getRelativeSpeed (knobMode, value)));
     }
 
 
@@ -1783,7 +1662,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (knobMode == KNOB_MODE_ABSOLUTE)
             transport.setCrossfade (value);
         else
-            transport.setCrossfade ((int) (transport.getCrossfade () + this.getRelativeSpeed (knobMode, value)));
+            transport.setCrossfade (this.limit (transport.getCrossfade () + this.getRelativeSpeed (knobMode, value)));
     }
 
 
@@ -1793,7 +1672,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (knobMode == KNOB_MODE_ABSOLUTE)
             transport.setMetronomeVolume (value);
         else
-            transport.setMetronomeVolume (transport.getMetronomeVolume () + this.getRelativeSpeed (knobMode, value));
+            transport.setMetronomeVolume (this.limit (transport.getMetronomeVolume () + this.getRelativeSpeed (knobMode, value)));
     }
 
 
@@ -1803,7 +1682,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (knobMode == KNOB_MODE_ABSOLUTE)
             track.setVolume (value);
         else
-            track.setVolume (track.getVolume () + this.getRelativeSpeed (knobMode, value));
+            track.setVolume (this.limit (track.getVolume () + this.getRelativeSpeed (knobMode, value)));
     }
 
 
@@ -1828,7 +1707,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (knobMode == KNOB_MODE_ABSOLUTE)
             track.setVolume (value);
         else
-            track.setVolume (track.getVolume () + this.getRelativeSpeed (knobMode, value));
+            track.setVolume (this.limit (track.getVolume () + this.getRelativeSpeed (knobMode, value)));
     }
 
 
@@ -1838,7 +1717,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (knobMode == KNOB_MODE_ABSOLUTE)
             track.setPan (value);
         else
-            track.setPan (track.getPan () + this.getRelativeSpeed (knobMode, value));
+            track.setPan (this.limit (track.getPan () + this.getRelativeSpeed (knobMode, value)));
     }
 
 
@@ -1848,7 +1727,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (knobMode == KNOB_MODE_ABSOLUTE)
             track.setPan (value);
         else
-            track.setPan (track.getPan () + this.getRelativeSpeed (knobMode, value));
+            track.setPan (this.limit (track.getPan () + this.getRelativeSpeed (knobMode, value)));
     }
 
 
@@ -1858,15 +1737,21 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (knobMode == KNOB_MODE_ABSOLUTE)
             transport.setCrossfade (value);
         else
-            transport.setCrossfade (transport.getCrossfade () + this.getRelativeSpeed (knobMode, value));
+            transport.setCrossfade (this.limit (transport.getCrossfade () + this.getRelativeSpeed (knobMode, value)));
     }
 
 
     private void changeModeValue (final int knobMode, final int knobIndex, final int value)
     {
         final Mode mode = this.modeManager.getActiveOrTempMode ();
-        ((AbstractMode<?, ?>) mode).setAbsolute (knobMode == KNOB_MODE_ABSOLUTE);
-        mode.onKnobValue (knobIndex, value);
+        if (knobMode == KNOB_MODE_ABSOLUTE)
+            mode.onKnobValue (knobIndex, value);
+        else
+        {
+            final int knobValue = mode.getKnobValue (knobIndex);
+            final int relativeSpeed = (int) Math.round (this.getRelativeSpeed (knobMode, value));
+            mode.onKnobValue (knobIndex, knobValue == -1 ? relativeSpeed : this.limit (knobValue + relativeSpeed));
+        }
     }
 
 
@@ -2145,5 +2030,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         } while (newModeID >= Modes.MODE_SEND1.intValue () && newModeID <= Modes.MODE_SEND8.intValue () && !trackBank.canEditSend (newModeID - Modes.MODE_SEND1.intValue ()));
 
         this.activateMode (newMode);
+    }
+
+
+    private int limit (final double value)
+    {
+        final IValueChanger valueChanger = this.model.getValueChanger ();
+        return (int) Math.max (0, Math.min (value, valueChanger.getUpperBound () - 1));
     }
 }
