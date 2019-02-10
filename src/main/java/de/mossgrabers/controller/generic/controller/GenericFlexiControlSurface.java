@@ -7,7 +7,9 @@ package de.mossgrabers.controller.generic.controller;
 import de.mossgrabers.controller.generic.CommandSlot;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.mode.Modes;
+import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.Relative2ValueChanger;
@@ -46,23 +48,22 @@ import java.util.List;
  */
 public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFlexiConfiguration>
 {
-    private static final int           BUTTON_REPEAT_INTERVAL = 75;
+    private static final int           KNOB_MODE_ABSOLUTE    = 0;
+    private static final int           KNOB_MODE_RELATIVE1   = 1;
+    private static final int           KNOB_MODE_RELATIVE2   = 2;
+    private static final int           KNOB_MODE_RELATIVE3   = 3;
 
-    private static final int           KNOB_MODE_ABSOLUTE     = 0;
-    private static final int           KNOB_MODE_RELATIVE1    = 1;
-    private static final int           KNOB_MODE_RELATIVE2    = 2;
-    private static final int           KNOB_MODE_RELATIVE3    = 3;
+    protected static final int         SCROLL_RATE           = 6;
+    private static final List<Integer> MODE_IDS              = new ArrayList<> ();
 
-    protected static final int         SCROLL_RATE            = 6;
-    private static final List<Integer> MODE_IDS               = new ArrayList<> ();
-
-    private int                        movementCounter        = 0;
+    private int                        movementCounter       = 0;
 
     private final IModel               model;
-    private final IValueChanger        relative2ValueChanger  = new Relative2ValueChanger (128, 1, 0.5);
-    private final IValueChanger        relative3ValueChanger  = new Relative3ValueChanger (128, 1, 0.5);
-    private final int []               valueCache             = new int [GenericFlexiConfiguration.NUM_SLOTS];
-    private boolean                    isUpdatingValue        = false;
+    private final IValueChanger        relative2ValueChanger = new Relative2ValueChanger (128, 1, 0.5);
+    private final IValueChanger        relative3ValueChanger = new Relative3ValueChanger (128, 1, 0.5);
+    private final int []               valueCache            = new int [GenericFlexiConfiguration.NUM_SLOTS];
+    private boolean                    isUpdatingValue       = false;
+    private final TriggerCommand       toggleTrackBankCommand;
 
     static
     {
@@ -97,6 +98,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
         Arrays.fill (this.valueCache, -1);
         this.model = model;
+
+        this.toggleTrackBankCommand = new ToggleTrackBanksCommand<> (model, this);
 
         this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_EXPORT, this::importFile);
         this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_IMPORT, this::exportFile);
@@ -178,28 +181,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             final FlexiCommand command = slots[i].getCommand ();
             if (command == FlexiCommand.OFF || !slots[i].isSendValue ())
                 continue;
-
             final int value = this.getCommandValue (command);
             if (this.valueCache[i] == value)
                 continue;
             this.valueCache[i] = value;
-
-            switch (slots[i].getType ())
-            {
-                case CommandSlot.TYPE_CC:
-                    if (value >= 0 && value <= 127)
-                        this.getOutput ().sendCCEx (slots[i].getMidiChannel (), slots[i].getNumber (), value);
-                    break;
-
-                case CommandSlot.TYPE_PITCH_BEND:
-                    if (value >= 0 && value <= 127)
-                        this.getOutput ().sendPitchbend (slots[i].getMidiChannel (), 0, value);
-                    break;
-
-                default:
-                    // Other types not supported
-                    break;
-            }
+            this.reflectValue (slots[i], value);
         }
     }
 
@@ -249,9 +235,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
             case TRANSPORT_TOGGLE_CLIP_OVERDUB:
                 return this.model.getTransport ().isLauncherOverdub () ? 127 : 0;
-
-            case TRANSPORT_SET_CROSSFADER:
-                return this.model.getTransport ().getCrossfade ();
 
             case TRANSPORT_TOGGLE_ARRANGER_AUTOMATION_WRITE:
                 return this.model.getTransport ().isWritingArrangerAutomation () ? 127 : 0;
@@ -703,10 +686,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (value > 0)
                     this.model.getTransport ().toggleLauncherOverdub ();
                 break;
-            // Transport: Set Crossfader
-            case TRANSPORT_SET_CROSSFADER:
-                this.handleCrossfade (commandSlot.getKnobMode (), value);
-                break;
             // Transport: Toggle Arranger Automation Write
             case TRANSPORT_TOGGLE_ARRANGER_AUTOMATION_WRITE:
                 if (value > 0)
@@ -852,6 +831,10 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                     this.model.getMixer ().toggleMeterSectionVisibility ();
                 break;
 
+            case TRACK_TOGGLE_TRACK_BANK:
+                if (value > 0)
+                    this.toggleTrackBankCommand.execute (ButtonEvent.DOWN);
+                break;
             // Track: Add Audio Track
             case TRACK_ADD_AUDIO_TRACK:
                 if (value > 0)
@@ -1250,12 +1233,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             // Device: Select Previous Parameter Bank
             case DEVICE_SELECT_PREVIOUS_PARAMETER_BANK:
                 if (value > 0)
-                    this.model.getCursorDevice ().getParameterBank ().scrollPageBackwards ();
+                    this.model.getCursorDevice ().getParameterBank ().selectPreviousPage ();
                 break;
             // Device: Select Next Parameter Bank
             case DEVICE_SELECT_NEXT_PARAMETER_BANK:
                 if (value > 0)
-                    this.model.getCursorDevice ().getParameterBank ().scrollPageForwards ();
+                    this.model.getCursorDevice ().getParameterBank ().selectNextPage ();
                 break;
 
             case DEVICE_SCROLL_PARAMETER_BANKS:
@@ -1393,12 +1376,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             // Scene: Select Previous Bank
             case SCENE_SELECT_PREVIOUS_BANK:
                 if (value > 0)
-                    this.model.getSceneBank ().scrollPageBackwards ();
+                    this.model.getSceneBank ().selectPreviousPage ();
                 break;
             // Scene: Select Next Bank
             case SCENE_SELECT_NEXT_BANK:
                 if (value > 0)
-                    this.model.getSceneBank ().scrollPageForwards ();
+                    this.model.getSceneBank ().selectNextPage ();
                 break;
             // Scene: Create Scene from playing Clips
             case SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS:
@@ -1656,16 +1639,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     }
 
 
-    private void handleCrossfade (final int knobMode, final int value)
-    {
-        final ITransport transport = this.model.getTransport ();
-        if (knobMode == KNOB_MODE_ABSOLUTE)
-            transport.setCrossfade (value);
-        else
-            transport.setCrossfade (this.limit (transport.getCrossfade () + this.getRelativeSpeed (knobMode, value)));
-    }
-
-
     private void handleMetronomeVolume (final int knobMode, final int value)
     {
         final ITransport transport = this.model.getTransport ();
@@ -1750,7 +1723,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         {
             final int knobValue = mode.getKnobValue (knobIndex);
             final int relativeSpeed = (int) Math.round (this.getRelativeSpeed (knobMode, value));
-            mode.onKnobValue (knobIndex, knobValue == -1 ? relativeSpeed : this.limit (knobValue + relativeSpeed));
+            mode.onKnobValue (knobIndex, knobValue == -1 ? relativeSpeed : (int) this.limit ((double) knobValue + relativeSpeed));
         }
     }
 
@@ -1762,21 +1735,10 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final int index = sel == null ? 0 : sel.getIndex () - 1;
         if (index == -1 || switchBank)
         {
-            this.scrollTrackBankLeft (sel, index);
+            tb.selectPreviousPage ();
             return;
         }
         tb.getItem (index).select ();
-    }
-
-
-    private void scrollTrackBankLeft (final ITrack sel, final int index)
-    {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollBackwards ())
-            return;
-        tb.scrollPageBackwards ();
-        final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
-        this.scheduleTask ( () -> tb.getItem (newSel).select (), BUTTON_REPEAT_INTERVAL);
     }
 
 
@@ -1787,21 +1749,10 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final int index = sel == null ? 0 : sel.getIndex () + 1;
         if (index == 8 || switchBank)
         {
-            this.scrollTrackBankRight (sel, index);
+            tb.selectNextPage ();
             return;
         }
         tb.getItem (index).select ();
-    }
-
-
-    private void scrollTrackBankRight (final ITrack sel, final int index)
-    {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollForwards ())
-            return;
-        tb.scrollPageForwards ();
-        final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
-        this.scheduleTask ( () -> tb.getItem (newSel).select (), BUTTON_REPEAT_INTERVAL);
     }
 
 
@@ -1851,9 +1802,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         if (this.getRelativeSpeed (knobMode, value) > 0)
-            parameterBank.scrollPageForwards ();
+            parameterBank.selectNextPage ();
         else
-            parameterBank.scrollPageBackwards ();
+            parameterBank.selectPreviousPage ();
         this.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
     }
 
@@ -1923,9 +1874,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final int index = sel == null ? 0 : sel.getIndex () - 1;
         if (index == -1 || switchBank)
         {
-            tb.getSceneBank ().scrollPageBackwards ();
-            final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
-            this.scheduleTask ( () -> slotBank.getItem (newSel).select (), BUTTON_REPEAT_INTERVAL);
+            tb.getSceneBank ().selectPreviousPage ();
             return;
         }
         slotBank.getItem (index).select ();
@@ -1944,9 +1893,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final ISceneBank sceneBank = tb.getSceneBank ();
         if (index == sceneBank.getPageSize () || switchBank)
         {
-            sceneBank.scrollPageForwards ();
-            final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
-            this.scheduleTask ( () -> slotBank.getItem (newSel).select (), BUTTON_REPEAT_INTERVAL);
+            sceneBank.selectNextPage ();
             return;
         }
         slotBank.getItem (index).select ();
@@ -2033,9 +1980,30 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     }
 
 
-    private int limit (final double value)
+    private void reflectValue (final CommandSlot slot, final int value)
+    {
+        switch (slot.getType ())
+        {
+            case CommandSlot.TYPE_CC:
+                if (value >= 0 && value <= 127)
+                    this.getOutput ().sendCCEx (slot.getMidiChannel (), slot.getNumber (), value);
+                break;
+
+            case CommandSlot.TYPE_PITCH_BEND:
+                if (value >= 0 && value <= 127)
+                    this.getOutput ().sendPitchbend (slot.getMidiChannel (), 0, value);
+                break;
+
+            default:
+                // Other types not supported
+                break;
+        }
+    }
+
+
+    private double limit (final double value)
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        return (int) Math.max (0, Math.min (value, valueChanger.getUpperBound () - 1));
+        return Math.max (0, Math.min (value, valueChanger.getUpperBound () - 1.0));
     }
 }

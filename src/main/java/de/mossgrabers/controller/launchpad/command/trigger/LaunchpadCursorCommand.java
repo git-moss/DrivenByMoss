@@ -121,8 +121,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             this.canScrollUp = cursorDevice.canSelectNextFX ();
             this.canScrollDown = cursorDevice.canSelectPreviousFX ();
             final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-            this.canScrollLeft = parameterBank.canScrollBackwards ();
-            this.canScrollRight = parameterBank.canScrollForwards ();
+            this.canScrollLeft = parameterBank.canScrollPageBackwards ();
+            this.canScrollRight = parameterBank.canScrollPageForwards ();
             return;
         }
 
@@ -149,11 +149,11 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         final ITrack sel = tb.getSelectedItem ();
         final int selIndex = sel != null ? sel.getIndex () : -1;
-        this.canScrollLeft = selIndex > 0 || tb.canScrollBackwards ();
-        this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollForwards ();
+        this.canScrollLeft = selIndex > 0 || tb.canScrollPageBackwards ();
+        this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollPageForwards ();
         final ISceneBank sceneBank = tb.getSceneBank ();
-        this.canScrollUp = sceneBank.canScrollBackwards ();
-        this.canScrollDown = sceneBank.canScrollForwards ();
+        this.canScrollUp = sceneBank.canScrollPageBackwards ();
+        this.canScrollDown = sceneBank.canScrollPageForwards ();
     }
 
 

@@ -66,13 +66,30 @@ public class ParameterPageBankImpl implements IParameterPageBank
     @Override
     public boolean canScrollBackwards ()
     {
-        return this.getSelectedItemPosition () > 0;
+        return this.canScrollPageBackwards ();
     }
 
 
     /** {@inheritDoc} */
     @Override
     public boolean canScrollForwards ()
+    {
+        return this.getSelectedItemPosition () < this.pageNames.size ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canScrollPageBackwards ()
+    {
+        int selectedItemPosition = this.getSelectedItemPosition ();
+        return selectedItemPosition > 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canScrollPageForwards ()
     {
         final int sel = this.getSelectedItemPosition ();
         final int end = sel / this.pageSize * this.pageSize + this.pageSize;
@@ -100,7 +117,7 @@ public class ParameterPageBankImpl implements IParameterPageBank
 
     /** {@inheritDoc} */
     @Override
-    public void scrollPageBackwards ()
+    public void selectPreviousPage ()
     {
         final SettableIntegerValue index = this.remoteControls.selectedPageIndex ();
         index.set (Math.max (index.get () - this.getPageSize (), 0));
@@ -109,7 +126,7 @@ public class ParameterPageBankImpl implements IParameterPageBank
 
     /** {@inheritDoc} */
     @Override
-    public void scrollPageForwards ()
+    public void selectNextPage ()
     {
         final SettableIntegerValue index = this.remoteControls.selectedPageIndex ();
         index.set (Math.min (index.get () + this.getPageSize (), this.pageNames.size () - 1));
@@ -219,22 +236,6 @@ public class ParameterPageBankImpl implements IParameterPageBank
     /** {@inheritDoc} */
     @Override
     public void selectPreviousItem ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectPreviousPage ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectNextPage ()
     {
         // Intentionally empty
     }

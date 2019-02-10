@@ -72,7 +72,7 @@ public class DuplicateCommand<S extends IControlSurface<C>, C extends Configurat
             }
 
             // Try to find the clip in the next page...
-            slotBank.scrollPageForwards ();
+            slotBank.selectNextPage ();
             this.model.getHost ().scheduleTask ( () -> {
                 final ISlot slotNew2 = slotBank.getSelectedItem ();
                 if (slotNew2 != null)

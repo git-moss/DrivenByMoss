@@ -72,9 +72,25 @@ public interface IBank<T> extends ObserverManagement
     /**
      * Is there a previous page to select?
      *
-     * @return True if there is a page previous of the current
+     * @return True if there is a previous item of the current
      */
     boolean canScrollBackwards ();
+
+
+    /**
+     * Is there a previous item?
+     *
+     * @return True if there is a next item after the current
+     */
+    boolean canScrollForwards ();
+
+
+    /**
+     * Is there a next item to select?
+     *
+     * @return True if there is a page previous of the current
+     */
+    boolean canScrollPageBackwards ();
 
 
     /**
@@ -82,7 +98,7 @@ public interface IBank<T> extends ObserverManagement
      *
      * @return True if there is a page after the current
      */
-    boolean canScrollForwards ();
+    boolean canScrollPageForwards ();
 
 
     /**
@@ -95,18 +111,6 @@ public interface IBank<T> extends ObserverManagement
      * Scroll items forwards by 1.
      */
     void scrollForwards ();
-
-
-    /**
-     * Scroll items backwards by 1 page.
-     */
-    void scrollPageBackwards ();
-
-
-    /**
-     * Scroll items forwards by 1 page.
-     */
-    void scrollPageForwards ();
 
 
     /**

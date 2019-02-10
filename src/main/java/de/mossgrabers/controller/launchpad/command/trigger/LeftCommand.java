@@ -42,14 +42,8 @@ public class LeftCommand extends MetronomeCommand<LaunchpadControlSurface, Launc
         final int index = sel == null ? 0 : sel.getIndex () - 1;
         final View view = this.surface.getViewManager ().getActiveView ();
         if (index == -1 || this.surface.isShiftPressed ())
-        {
-            if (!tb.canScrollBackwards ())
-                return;
-            tb.scrollPageBackwards ();
-            final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
-            this.surface.scheduleTask ( () -> view.selectTrack (newSel), 75);
-            return;
-        }
-        view.selectTrack (index);
+            tb.selectPreviousPage ();
+        else
+            view.selectTrack (index);
     }
 }

@@ -68,12 +68,12 @@ public class SequencerView extends BaseSequencerView
                 if (isInc)
                 {
                     this.scales.incDrumOctave ();
-                    this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageForwards ();
+                    this.model.getInstrumentDevice ().getDrumPadBank ().selectNextPage ();
                 }
                 else
                 {
                     this.scales.decDrumOctave ();
-                    this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageBackwards ();
+                    this.model.getInstrumentDevice ().getDrumPadBank ().selectPreviousPage ();
                 }
                 this.offsetY = SequencerView.START_KEY + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();

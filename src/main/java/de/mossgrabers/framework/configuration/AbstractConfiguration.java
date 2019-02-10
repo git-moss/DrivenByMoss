@@ -262,7 +262,7 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                  accentActive                = false;
     /** Fixed velocity value for accent. */
     private int                                      fixedAccentValue            = 127;
-    private int                                      quantizeAmount              = 1;
+    private int                                      quantizeAmount              = 100;
     private boolean                                  flipRecord                  = false;
     private int                                      newClipLength               = 2;
     private boolean                                  autoSelectDrum              = false;

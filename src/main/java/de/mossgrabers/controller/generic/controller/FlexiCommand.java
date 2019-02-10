@@ -36,7 +36,6 @@ public enum FlexiCommand
     TRANSPORT_TOGGLE_RECORD(CommandCategory.TRANSPORT, "Transport: Toggle Record", true),
     TRANSPORT_TOGGLE_ARRANGER_OVERDUB(CommandCategory.TRANSPORT, "Transport: Toggle Arranger Overdub", true),
     TRANSPORT_TOGGLE_CLIP_OVERDUB(CommandCategory.TRANSPORT, "Transport: Toggle Clip Overdub", true),
-    TRANSPORT_SET_CROSSFADER(CommandCategory.TRANSPORT, "Transport: Set Crossfader", false),
     TRANSPORT_TOGGLE_ARRANGER_AUTOMATION_WRITE(CommandCategory.TRANSPORT, "Transport: Toggle Arranger Automation Write", true),
     TRANSPORT_TOGGLE_CLIP_AUTOMATION_WRITE(CommandCategory.TRANSPORT, "Transport: Toggle Clip Automation Write", true),
     TRANSPORT_SET_WRITE_MODE_LATCH(CommandCategory.TRANSPORT, "Transport: Set Write Mode: Latch", true),
@@ -68,6 +67,7 @@ public enum FlexiCommand
     LAYOUT_TOGGLE_MIXER_IO_SECTION(CommandCategory.LAYOUT, "Layout: Toggle Mixer IO Section", true),
     LAYOUT_TOGGLE_MIXER_METER_SECTION(CommandCategory.LAYOUT, "Layout: Toggle Mixer Meter Section", true),
 
+    TRACK_TOGGLE_TRACK_BANK(CommandCategory.TRACK, "Track: Toggle Trackbank", true),
     TRACK_ADD_AUDIO_TRACK(CommandCategory.TRACK, "Track: Add Audio Track", true),
     TRACK_ADD_EFFECT_TRACK(CommandCategory.TRACK, "Track: Add Effect Track", true),
     TRACK_ADD_INSTRUMENT_TRACK(CommandCategory.TRACK, "Track: Add Instrument Track", true),

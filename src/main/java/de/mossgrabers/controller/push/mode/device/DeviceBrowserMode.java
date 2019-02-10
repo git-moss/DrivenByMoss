@@ -349,6 +349,24 @@ public class DeviceBrowserMode extends BaseMode
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        this.resetFilterColumn ();
+        this.model.getBrowser ().previousContentType ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        this.resetFilterColumn ();
+        this.model.getBrowser ().nextContentType ();
+    }
+
+
     private IBrowserColumn getFilterColumn (final int index)
     {
         final IBrowser browser = this.model.getBrowser ();

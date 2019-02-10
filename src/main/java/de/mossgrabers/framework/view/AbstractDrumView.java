@@ -293,7 +293,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
         if (oldDrumOctave != newDrumOctave)
-            this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageBackwards ();
+            this.model.getInstrumentDevice ().getDrumPadBank ().selectPreviousPage ();
     }
 
 
@@ -311,7 +311,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
         if (oldDrumOctave != newDrumOctave)
-            this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageForwards ();
+            this.model.getInstrumentDevice ().getDrumPadBank ().selectNextPage ();
     }
 
 

@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -138,5 +139,13 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     public void selectItem (final int index)
     {
         this.model.getCursorDevice ().getParameterBank ().selectItemAtPosition (index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected IParameterBank getBank ()
+    {
+        return this.model.getCursorDevice ().getParameterBank ();
     }
 }

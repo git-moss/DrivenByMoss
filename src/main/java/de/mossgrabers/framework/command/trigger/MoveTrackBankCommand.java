@@ -98,9 +98,9 @@ public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Config
         else
         {
             if (this.moveLeft)
-                bank.scrollPageBackwards ();
+                bank.selectPreviousPage ();
             else
-                bank.scrollPageForwards ();
+                bank.selectNextPage ();
         }
     }
 }

@@ -82,7 +82,7 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
 
     /** {@inheritDoc} */
     @Override
-    public boolean canScrollBackwards ()
+    public boolean canScrollPageBackwards ()
     {
         return this.remoteControls.hasPrevious ().get ();
     }
@@ -90,7 +90,7 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
 
     /** {@inheritDoc} */
     @Override
-    public boolean canScrollForwards ()
+    public boolean canScrollPageForwards ()
     {
         return this.remoteControls.hasNext ().get ();
     }
@@ -114,19 +114,33 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
 
     /** {@inheritDoc} */
     @Override
-    public void scrollPageBackwards ()
+    public void selectPreviousPage ()
     {
-        final SettableIntegerValue index = this.remoteControls.selectedPageIndex ();
-        index.set (Math.max (index.get () - this.getPageSize (), 0));
+        this.remoteControls.selectPreviousPage (false);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void scrollPageForwards ()
+    public void selectNextPage ()
     {
-        final SettableIntegerValue index = this.remoteControls.selectedPageIndex ();
-        index.set (Math.min (index.get () + this.getPageSize (), this.pageBank.getItemCount () - 1));
+        this.remoteControls.selectNextPage (false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        this.remoteControls.selectPrevious ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        this.remoteControls.selectNext ();
     }
 
 

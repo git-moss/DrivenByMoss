@@ -68,11 +68,11 @@ public class SessionView extends AbstractView<BeatstepControlSurface, BeatstepCo
                 break;
 
             case 6:
-                sceneBank.scrollPageBackwards ();
+                sceneBank.selectPreviousPage ();
                 break;
 
             case 7:
-                sceneBank.scrollPageForwards ();
+                sceneBank.selectNextPage ();
                 break;
 
             case 8:

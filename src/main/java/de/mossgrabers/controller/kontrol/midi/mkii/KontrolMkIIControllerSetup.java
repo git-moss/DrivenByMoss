@@ -15,6 +15,8 @@ import de.mossgrabers.framework.command.trigger.application.RedoCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
+import de.mossgrabers.framework.command.trigger.clip.StartClipCommand;
+import de.mossgrabers.framework.command.trigger.clip.StopClipCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
@@ -29,6 +31,8 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -57,6 +61,8 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     private static final Integer CONT_COMMAND_TRACK_ARM       = Integer.valueOf (106);
     private static final Integer CONT_COMMAND_NAVIGATE_CLIPS  = Integer.valueOf (107);
     private static final Integer CONT_COMMAND_NAVIGATE_SCENES = Integer.valueOf (108);
+    private static final Integer CONT_COMMAND_NAVIGATE_VOLUME = Integer.valueOf (109);
+    private static final Integer CONT_COMMAND_NAVIGATE_PAN    = Integer.valueOf (110);
 
     static final int             CONT_COMMAND_TRACK_VOLUME    = 120;
     static final int             CONT_COMMAND_TRACK_PAN       = 130;
@@ -167,6 +173,8 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         this.addTriggerCommand (Commands.COMMAND_REDO, KontrolMkIIControlSurface.KONTROL_BUTTON_REDO, 15, new RedoCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_QUANTIZE, KontrolMkIIControlSurface.KONTROL_BUTTON_QUANTIZE, 15, new QuantizeCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_AUTOMATION, KontrolMkIIControlSurface.KONTROL_BUTTON_AUTOMATION, 15, new WriteArrangerAutomationCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_CLIP, KontrolMkIIControlSurface.KONTROL_PLAY_CLIP, 15, new StartClipCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_STOP_CLIP, KontrolMkIIControlSurface.KONTROL_STOP_CLIP, 15, new StopClipCommand<> (this.model, surface));
     }
 
 
@@ -197,22 +205,24 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
                 this.model.getTrackBank ().selectPreviousPage ();
         });
 
-        // TODO Not yet implemented on the Kontrol?!
-        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_CLIPS, KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, 15, value -> this.host.println ("Navigate Clips"));
-        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_SCENES, KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, 15, value -> this.host.println ("Navigate Scenes"));
-
-        // TODO Not yet implemented on the Kontrol?!
-        // Move Transport 0x34 -1/1 Move Transport left/right (4D Encoder)
-        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_SCENES, KontrolMkIIControlSurface.KONTROL_NAVIGATE_MOVE_TRANSPORT, 15, value -> {
+        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_CLIPS, KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, 15, value -> {
+            final ITrack selectedTrack = this.model.getSelectedTrack ();
+            if (selectedTrack == null)
+                return;
             if (value == 1)
-                surface.println ("Encoder Up");
+                selectedTrack.getSlotBank ().selectPreviousItem ();
             else if (value == 127)
-                surface.println ("Encoder Down");
-            else
-                this.model.getTransport ().changePosition (value <= 63);
+                selectedTrack.getSlotBank ().selectNextItem ();
         });
 
-        // Move Loop 0x35 -1.1 Move Loop left/right (4D Encoder)
+        // Move Transport 0x34 -1/1 Move Transport left/right (4D Encoder)
+        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_SCENES, KontrolMkIIControlSurface.KONTROL_NAVIGATE_MOVE_TRANSPORT, 15, this::changePosition);
+        // Only on S models
+        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_VOLUME, KontrolMkIIControlSurface.KONTROL_CHANGE_VOLUME, 15, this::changePosition);
+        // Only on S models
+        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_PAN, KontrolMkIIControlSurface.KONTROL_CHANGE_PAN, 15, this::changePosition);
+
+        // KONTROL_NAVIGATE_MOVE_LOOP -1.1 Move Loop left/right (4D Encoder) -> Not implemented?!
 
         this.addContinuousCommand (CONT_COMMAND_TRACK_SELECT, KontrolMkIIControlSurface.KONTROL_BUTTON_SELECT, 15, value -> this.model.getTrackBank ().getItem (value).select ());
         this.addContinuousCommand (CONT_COMMAND_TRACK_MUTE, KontrolMkIIControlSurface.KONTROL_BUTTON_MUTE, 15, value -> this.model.getTrackBank ().getItem (value).toggleMute ());
@@ -283,22 +293,23 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         final int [] vuData = new int [16];
 
         final ITrackBank trackBank = this.model.getTrackBank ();
+
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = trackBank.getItem (i);
 
             // Track Available
             final int trackType = TrackType.toTrackType (track.getType ());
-            surface.sendKontrolTrackSysEx (0x40, trackType, i);
+            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_EXISTS, trackType, i);
 
-            surface.sendKontrolTrackSysEx (0x42, track.isSelected () ? 1 : 0, i);
-            surface.sendKontrolTrackSysEx (0x43, track.isMute () ? 1 : 0, i);
-            surface.sendKontrolTrackSysEx (0x44, track.isSolo () ? 1 : 0, i);
-            surface.sendKontrolTrackSysEx (0x45, track.isRecArm () ? 1 : 0, i);
+            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_BUTTON_SELECT, track.isSelected () ? 1 : 0, i);
+            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_BUTTON_MUTE, track.isMute () ? 1 : 0, i);
+            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_BUTTON_SOLO, track.isSolo () ? 1 : 0, i);
+            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_BUTTON_ARM, track.isRecArm () ? 1 : 0, i);
 
-            surface.sendKontrolTrackSysEx (0x46, 0, i, track.getVolumeStr ());
-            surface.sendKontrolTrackSysEx (0x47, 0, i, track.getPanStr ());
-            surface.sendKontrolTrackSysEx (0x48, 0, i, track.getName ());
+            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME, 0, i, track.getVolumeStr ());
+            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_PAN, 0, i, track.getPanStr ());
+            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_NAME, 0, i, track.getName ());
 
             final int j = 2 * i;
             vuData[j] = track.getVuLeft ();
@@ -308,20 +319,23 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
             surface.updateButton (KontrolMkIIControlSurface.KONTROL_KNOB_PAN + i, track.getPan ());
         }
 
-        surface.sendKontrolTrackSysEx (0x49, 2, 0, vuData);
-        surface.sendKontrolTrackSysEx (0x41, 0, 0, this.getKompleteInstance ());
+        surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
+        surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_INSTANCE, 0, 0, this.getKompleteInstance ());
 
-        final ITrack sel = trackBank.getSelectedItem ();
-        final int selIndex = sel != null ? sel.getIndex () : -1;
-        final boolean canScrollLeft = selIndex > 0 || trackBank.canScrollBackwards ();
-        final boolean canScrollRight = selIndex >= 0 && selIndex < 7 && trackBank.getItem (selIndex + 1).doesExist () || trackBank.canScrollForwards ();
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, (canScrollLeft ? 1 : 0) + (canScrollRight ? 2 : 0));
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, (trackBank.canScrollBackwards () ? 1 : 0) + (trackBank.canScrollForwards () ? 2 : 0));
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, (trackBank.canScrollBackwards () ? 1 : 0) + (trackBank.canScrollForwards () ? 2 : 0));
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, (trackBank.canScrollPageBackwards () ? 1 : 0) + (trackBank.canScrollPageForwards () ? 2 : 0));
 
-        // TODO Not yet implemented on the Kontrol?!
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, 3);
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, 3);
+        final ITrack selectedTrack = trackBank.getSelectedItem ();
+        int value = 0;
+        if (selectedTrack != null)
+        {
+            final ISlotBank slotBank = selectedTrack.getSlotBank ();
+            value = (slotBank.canScrollForwards () ? 1 : 0) + (slotBank.canScrollBackwards () ? 2 : 0);
+        }
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, value);
 
+        final ISceneBank sceneBank = trackBank.getSceneBank ();
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, (sceneBank.canScrollForwards () ? 1 : 0) + (sceneBank.canScrollBackwards () ? 2 : 0));
     }
 
 
@@ -340,5 +354,11 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
             return instrumentDevice.getParameterBank ().getItem (0).getName ();
         return "";
+    }
+
+
+    private void changePosition (final int value)
+    {
+        this.model.getTransport ().changePosition (value <= 63);
     }
 }

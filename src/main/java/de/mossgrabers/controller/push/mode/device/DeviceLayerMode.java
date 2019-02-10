@@ -666,4 +666,13 @@ public class DeviceLayerMode extends BaseMode
         }
         return 0;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected IChannelBank<?> getBank ()
+    {
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        return cursorDevice == null ? null : cursorDevice.getLayerOrDrumPadBank ();
+    }
 }

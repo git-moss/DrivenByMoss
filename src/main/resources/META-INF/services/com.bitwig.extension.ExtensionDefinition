@@ -20,6 +20,7 @@ de.mossgrabers.bitwig.controller.kontrol.usb.mki.Kontrol1S49ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.usb.mki.Kontrol1S61ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.usb.mki.Kontrol1S88ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.osc.mkii.KontrolOSCExtensionDefinition
-#de.mossgrabers.bitwig.controller.kontrol.midi.mkii.KontrolMkIIExtensionDefinition
+de.mossgrabers.bitwig.controller.kontrol.midi.mkii.KontrolMkIIExtensionDefinition
 de.mossgrabers.bitwig.controller.maschine.mikro.mk3.MaschineMikroMk3ExtensionDefinition
 de.mossgrabers.bitwig.controller.utilities.UtilitiesExtensionDefinition
+de.mossgrabers.bitwig.controller.xbox.XboxControllerExtensionDefinition

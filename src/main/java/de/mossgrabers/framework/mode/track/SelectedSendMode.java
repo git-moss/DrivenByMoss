@@ -7,6 +7,7 @@ package de.mossgrabers.framework.mode.track;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 
@@ -59,5 +60,14 @@ public class SelectedSendMode<S extends IControlSurface<C>, C extends Configurat
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (selectedTrack != null)
             selectedTrack.getSendBank ().getItem (this.sendIndex).resetValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected ISendBank getBank ()
+    {
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+        return selectedTrack == null ? null : selectedTrack.getSendBank ();
     }
 }

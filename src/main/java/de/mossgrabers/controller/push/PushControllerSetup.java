@@ -105,7 +105,7 @@ import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.ConvertCommand;
 import de.mossgrabers.framework.command.trigger.clip.DoubleCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
-import de.mossgrabers.framework.command.trigger.clip.StopClipCommand;
+import de.mossgrabers.framework.command.trigger.clip.StopAllClipsCommand;
 import de.mossgrabers.framework.command.trigger.device.AddEffectCommand;
 import de.mossgrabers.framework.command.trigger.track.AddTrackCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
@@ -487,7 +487,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         if (this.host.hasClips ())
         {
-            this.addTriggerCommand (Commands.COMMAND_STOP_CLIP, PushControlSurface.PUSH_BUTTON_CLIP_STOP, new StopClipCommand<> (this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_STOP_CLIP, PushControlSurface.PUSH_BUTTON_CLIP_STOP, new StopAllClipsCommand<> (this.model, surface));
             this.addTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, PushControlSurface.PUSH_BUTTON_SESSION, new SelectSessionViewCommand (this.model, surface));
         }
         else

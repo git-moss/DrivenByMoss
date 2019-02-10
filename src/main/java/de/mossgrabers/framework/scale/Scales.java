@@ -502,6 +502,17 @@ public class Scales
     {
         this.drumOctave = Math.max (DRUM_OCTAVE_LOWER, Math.min (drumOctave, DRUM_OCTAVE_UPPER));
     }
+    
+    
+    /**
+     * Get the current offset of the drum grid.
+     *
+     * @return The offset
+     */
+    public int getDrumOffset ()
+    {
+        return this.drumNoteStart + this.drumOctave * 16;    
+    }
 
 
     /**
@@ -686,7 +697,8 @@ public class Scales
         final int [] noteMap = Scales.getEmptyMatrix ();
         for (int note = this.startNote; note < this.endNote; note++)
         {
-            final int n = matrix[note - this.startNote] == -1 ? -1 : matrix[note - this.startNote] + this.startNote + this.pianoOctave * 12;
+            final int ns = matrix[note - this.startNote];
+            final int n = ns == -1 ? -1 : ns + this.startNote + this.pianoOctave * 12;
             noteMap[note] = n < 0 || n > 127 ? -1 : n;
         }
         return noteMap;
@@ -728,9 +740,11 @@ public class Scales
     public int [] getDrumMatrix ()
     {
         final int [] noteMap = Scales.getEmptyMatrix ();
+        final int drumOffset = this.getDrumOffset ();
         for (int note = this.drumNoteStart; note < this.drumNoteEnd; note++)
         {
-            final int n = this.drumMatrix[note - this.drumNoteStart] == -1 ? -1 : this.drumMatrix[note - this.drumNoteStart] + this.drumNoteStart + this.drumOctave * 16;
+            final int ns = this.drumMatrix[note - this.drumNoteStart];
+            final int n = ns == -1 ? -1 : ns + drumOffset;
             noteMap[note] = n < 0 || n > 127 ? -1 : n;
         }
         return noteMap;
@@ -805,7 +819,7 @@ public class Scales
      */
     public String getDrumRangeText ()
     {
-        final int s = this.startNote + this.drumOctave * 16;
+        final int s = this.getDrumOffset ();
         return Scales.formatDrumNote (s) + " to " + Scales.formatDrumNote (s + 15);
     }
 

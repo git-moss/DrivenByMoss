@@ -43,7 +43,7 @@ public class EmptyBank<T extends IItem> extends AbstractBank<T>
 
     /** {@inheritDoc} */
     @Override
-    public boolean canScrollBackwards ()
+    public boolean canScrollPageBackwards ()
     {
         return false;
     }
@@ -51,7 +51,7 @@ public class EmptyBank<T extends IItem> extends AbstractBank<T>
 
     /** {@inheritDoc} */
     @Override
-    public boolean canScrollForwards ()
+    public boolean canScrollPageForwards ()
     {
         return false;
     }
@@ -68,22 +68,6 @@ public class EmptyBank<T extends IItem> extends AbstractBank<T>
     /** {@inheritDoc} */
     @Override
     public void scrollForwards ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollPageBackwards ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void scrollPageForwards ()
     {
         // Intentionally empty
     }

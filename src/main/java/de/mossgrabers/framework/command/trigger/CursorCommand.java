@@ -153,9 +153,9 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
     {
         final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
         if (this.surface.isShiftPressed ())
-            sceneBank.scrollPageBackwards ();
+            sceneBank.selectPreviousPage ();
         else
-            sceneBank.scrollBackwards ();
+            sceneBank.selectPreviousPage ();
     }
 
 
@@ -166,7 +166,7 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
     {
         final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
         if (this.surface.isShiftPressed ())
-            sceneBank.scrollPageForwards ();
+            sceneBank.selectNextPage ();
         else
             sceneBank.scrollForwards ();
     }

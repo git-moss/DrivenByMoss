@@ -87,8 +87,8 @@ public class ParamsMode extends AbstractKontrol1Mode
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        final boolean canScrollLeft = parameterBank.canScrollBackwards ();
-        final boolean canScrollRight = parameterBank.canScrollForwards ();
+        final boolean canScrollLeft = parameterBank.canScrollPageBackwards ();
+        final boolean canScrollRight = parameterBank.canScrollPageForwards ();
         final boolean canScrollUp = cursorDevice.canSelectNextFX ();
         final boolean canScrollDown = cursorDevice.canSelectPreviousFX ();
 
@@ -132,7 +132,7 @@ public class ParamsMode extends AbstractKontrol1Mode
     public void selectPreviousItemPage ()
     {
         if (this.surface.isShiftPressed ())
-            this.model.getCursorDevice ().getDeviceBank ().scrollPageBackwards ();
+            this.model.getCursorDevice ().getDeviceBank ().selectPreviousPage ();
         else
             this.model.getCursorDevice ().selectPrevious ();
     }
@@ -143,7 +143,7 @@ public class ParamsMode extends AbstractKontrol1Mode
     public void selectNextItemPage ()
     {
         if (this.surface.isShiftPressed ())
-            this.model.getCursorDevice ().getDeviceBank ().scrollPageForwards ();
+            this.model.getCursorDevice ().getDeviceBank ().selectNextPage ();
         else
             this.model.getCursorDevice ().selectNext ();
     }
@@ -181,5 +181,14 @@ public class ParamsMode extends AbstractKontrol1Mode
                 return displayedValue.toUpperCase ();
         }
         return displayedValue;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected IParameterBank getBank ()
+    {
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        return cursorDevice == null ? null : cursorDevice.getParameterBank ();
     }
 }

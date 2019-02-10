@@ -174,4 +174,24 @@ public abstract class AbstractBank<T extends IItem> implements IBank<T>
     {
         // Intentionally empty
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canScrollBackwards ()
+    {
+        final IItem sel = this.getSelectedItem ();
+        final int selIndex = sel != null ? sel.getIndex () : -1;
+        return selIndex > 0 || this.canScrollPageBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canScrollForwards ()
+    {
+        final IItem sel = this.getSelectedItem ();
+        final int selIndex = sel != null ? sel.getIndex () : -1;
+        return selIndex >= 0 && selIndex < 7 && this.getItem (selIndex + 1).doesExist () || this.canScrollPageForwards ();
+    }
 }

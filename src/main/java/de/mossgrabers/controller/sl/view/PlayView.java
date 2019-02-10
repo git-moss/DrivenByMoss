@@ -120,7 +120,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             case 0:
                 this.clearPressedKeys ();
                 this.scales.decDrumOctave ();
-                this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageBackwards ();
+                this.model.getInstrumentDevice ().getDrumPadBank ().selectPreviousPage ();
                 this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
@@ -130,7 +130,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             case 1:
                 this.clearPressedKeys ();
                 this.scales.incDrumOctave ();
-                this.model.getInstrumentDevice ().getDrumPadBank ().scrollPageForwards ();
+                this.model.getInstrumentDevice ().getDrumPadBank ().selectNextPage ();
                 this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
@@ -228,9 +228,9 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (activeModeId == Modes.MODE_SESSION)
         {
             if (isUp)
-                this.model.getSceneBank ().scrollPageForwards ();
+                this.model.getSceneBank ().selectNextPage ();
             else
-                this.model.getSceneBank ().scrollPageBackwards ();
+                this.model.getSceneBank ().selectPreviousPage ();
             return;
         }
 

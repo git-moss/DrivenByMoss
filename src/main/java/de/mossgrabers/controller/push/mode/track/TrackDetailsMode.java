@@ -212,4 +212,12 @@ public class TrackDetailsMode extends BaseMode
         final IMasterTrack master = this.model.getMasterTrack ();
         return master.isSelected () ? master : null;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected ITrackBank getBank ()
+    {
+        return this.model.getCurrentTrackBank ();
+    }
 }

@@ -35,7 +35,7 @@ public class MarkersMode extends BaseMode
         "Launch",
     };
 
-    private boolean                actionModeLaunch = false;
+    private boolean                actionModeLaunch = true;
 
 
     /**
@@ -165,5 +165,13 @@ public class MarkersMode extends BaseMode
         final boolean canEditMarkers = this.model.getHost ().canEditMarkers ();
         for (int i = 0; i < 8; i++)
             this.surface.updateButton (102 + i, canEditMarkers && !EDIT_MENU[i].isEmpty () ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected IMarkerBank getBank ()
+    {
+        return this.model.getMarkerBank ();
     }
 }

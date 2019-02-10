@@ -13,6 +13,7 @@ import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IModel;
@@ -20,6 +21,7 @@ import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDevice;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -468,78 +470,13 @@ public class DeviceParamsMode extends BaseMode
     }
 
 
-    /**
-     * Is there a previous page?
-     *
-     * @return True if there is
-     */
-    public boolean canSelectPreviousPage ()
+    /** {@inheritDoc} */
+    @Override
+    protected IBank<? extends IItem> getBank ()
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        return this.showDevices ? cursorDevice.canSelectPreviousFX () : cursorDevice.getParameterBank ().canScrollBackwards ();
-    }
-
-
-    /**
-     * Is there a next page?
-     *
-     * @return True if there is
-     */
-    public boolean canSelectNextPage ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        return this.showDevices ? cursorDevice.canSelectNextFX () : cursorDevice.getParameterBank ().canScrollForwards ();
-    }
-
-
-    /**
-     * Select the previous device or parameter page depending on the mode.
-     */
-    public void selectPreviousPage ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (this.showDevices)
-            cursorDevice.selectPrevious ();
-        else
-            cursorDevice.getParameterBank ().scrollBackwards ();
-    }
-
-
-    /**
-     * Select the next device or parameter page depending on the mode.
-     */
-    public void selectNextPage ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (this.showDevices)
-            cursorDevice.selectNext ();
-        else
-            cursorDevice.getParameterBank ().scrollForwards ();
-    }
-
-
-    /**
-     * Select the previous device bank or parameter page bank depending on the mode.
-     */
-    public void selectPreviousPageBank ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (this.showDevices)
-            cursorDevice.getDeviceBank ().scrollPageBackwards ();
-        else
-            cursorDevice.getParameterBank ().scrollPageBackwards ();
-    }
-
-
-    /**
-     * Select the next device bank or parameter page bank depending on the mode.
-     */
-    public void selectNextPageBank ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (this.showDevices)
-            cursorDevice.getDeviceBank ().scrollPageForwards ();
-        else
-            cursorDevice.getParameterBank ().scrollPageForwards ();
+        if (cursorDevice == null)
+            return null;
+        return this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ();
     }
 }

@@ -50,4 +50,12 @@ public abstract class AbstractTrackMode extends BaseMode
 
         return true;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected ITrackBank getBank ()
+    {
+        return this.model.getCurrentTrackBank ();
+    }
 }

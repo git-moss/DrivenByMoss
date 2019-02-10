@@ -140,4 +140,36 @@ public interface Mode
      * Selects the next item page and selects the first item of the page.
      */
     void selectNextItemPage ();
+
+
+    /**
+     * Is there a previous item that can be selected?
+     *
+     * @return True if there is an item
+     */
+    boolean hasPreviousItem ();
+
+
+    /**
+     * Is there a next item that can be selected?
+     *
+     * @return True if there is an item
+     */
+    boolean hasNextItem ();
+
+
+    /**
+     * Is there a previous item page that can be selected?
+     *
+     * @return True if there is an item
+     */
+    boolean hasPreviousItemPage ();
+
+
+    /**
+     * Is there a next item page that can be selected?
+     *
+     * @return True if there is an item
+     */
+    boolean hasNextItemPage ();
 }

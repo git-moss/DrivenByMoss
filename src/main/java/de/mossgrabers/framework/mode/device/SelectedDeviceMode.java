@@ -8,13 +8,14 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.AbstractMode;
 
 
 /**
- * The selected device parameter mode. All knobs control the panorama of the selected parameter of
- * the cursor device.
+ * The selected device parameter mode. All knobs control the value of the selected parameter of the
+ * cursor device.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
@@ -86,5 +87,14 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
     public int getSelectedParameter ()
     {
         return this.index;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected IParameterBank getBank ()
+    {
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        return cursorDevice == null ? null : cursorDevice.getParameterBank ();
     }
 }

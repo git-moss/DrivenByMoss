@@ -95,4 +95,12 @@ public class TrackMode extends AbstractKontrol1Mode
                 break;
         }
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected ITrackBank getBank ()
+    {
+        return this.model.getCurrentTrackBank ();
+    }
 }

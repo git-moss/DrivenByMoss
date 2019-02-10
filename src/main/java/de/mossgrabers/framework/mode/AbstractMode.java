@@ -6,7 +6,9 @@ package de.mossgrabers.framework.mode;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -174,7 +176,9 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectItem (final int index)
     {
-        this.model.getCurrentTrackBank ().getItem (index).select ();
+        final IBank<? extends IItem> bank = this.getBank ();
+        if (bank != null)
+            bank.getItem (index).select ();
     }
 
 
@@ -191,9 +195,14 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public void selectPreviousItem ()
     {
         if (this.surface.isShiftPressed ())
+        {
             this.selectPreviousItemPage ();
-        else
-            this.model.getCurrentTrackBank ().selectPreviousItem ();
+            return;
+        }
+
+        final IBank<? extends IItem> bank = this.getBank ();
+        if (bank != null)
+            bank.selectPreviousItem ();
     }
 
 
@@ -202,9 +211,14 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public void selectNextItem ()
     {
         if (this.surface.isShiftPressed ())
+        {
             this.selectNextItemPage ();
-        else
-            this.model.getCurrentTrackBank ().selectNextItem ();
+            return;
+        }
+
+        final IBank<? extends IItem> bank = this.getBank ();
+        if (bank != null)
+            bank.selectNextItem ();
     }
 
 
@@ -212,7 +226,9 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectPreviousItemPage ()
     {
-        this.model.getCurrentTrackBank ().selectPreviousPage ();
+        final IBank<? extends IItem> bank = this.getBank ();
+        if (bank != null)
+            bank.selectPreviousPage ();
     }
 
 
@@ -220,6 +236,55 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectNextItemPage ()
     {
-        this.model.getCurrentTrackBank ().selectNextPage ();
+        final IBank<? extends IItem> bank = this.getBank ();
+        if (bank != null)
+            bank.selectNextPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItem ()
+    {
+        final IBank<? extends IItem> bank = this.getBank ();
+        return bank != null && bank.canScrollBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItem ()
+    {
+        final IBank<? extends IItem> bank = this.getBank ();
+        return bank != null && bank.canScrollForwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItemPage ()
+    {
+        final IBank<? extends IItem> bank = this.getBank ();
+        return bank != null && bank.canScrollPageBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItemPage ()
+    {
+        final IBank<? extends IItem> bank = this.getBank ();
+        return bank != null && bank.canScrollPageForwards ();
+    }
+
+
+    /**
+     * Get the item bank, if any.
+     *
+     * @return The bank or null
+     */
+    protected IBank<? extends IItem> getBank ()
+    {
+        return null;
     }
 }

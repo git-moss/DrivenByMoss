@@ -128,7 +128,7 @@ public class LayerBankImpl extends AbstractBankImpl<DeviceLayerBank, ILayer> imp
 
     /** {@inheritDoc} */
     @Override
-    public boolean canScrollBackwards ()
+    public boolean canScrollPageBackwards ()
     {
         return this.cursorDeviceLayer.hasPrevious ().get ();
     }
@@ -136,7 +136,7 @@ public class LayerBankImpl extends AbstractBankImpl<DeviceLayerBank, ILayer> imp
 
     /** {@inheritDoc} */
     @Override
-    public boolean canScrollForwards ()
+    public boolean canScrollPageForwards ()
     {
         return this.cursorDeviceLayer.hasNext ().get ();
     }

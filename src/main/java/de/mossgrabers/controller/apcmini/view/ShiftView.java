@@ -274,16 +274,16 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         switch (index)
         {
             case 0:
-                tb.getSceneBank ().scrollPageBackwards ();
+                tb.getSceneBank ().selectPreviousPage ();
                 break;
             case 1:
-                tb.getSceneBank ().scrollPageForwards ();
+                tb.getSceneBank ().selectNextPage ();
                 break;
             case 2:
-                tb.scrollPageBackwards ();
+                tb.selectPreviousPage ();
                 break;
             case 3:
-                tb.scrollPageForwards ();
+                tb.selectNextPage ();
                 break;
 
             case 4:
@@ -391,10 +391,10 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ISceneBank sceneBank = tb.getSceneBank ();
-        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1, sceneBank.canScrollBackwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON2, sceneBank.canScrollForwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3, tb.canScrollBackwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON4, tb.canScrollForwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1, sceneBank.canScrollPageBackwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON2, sceneBank.canScrollPageForwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON3, tb.canScrollPageBackwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON4, tb.canScrollPageForwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
         final Integer mode = this.surface.getModeManager ().getActiveOrTempModeId ();
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON5, Modes.MODE_VOLUME.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
@@ -449,13 +449,13 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         if (scrollBack)
         {
-            if (!parameterBank.canScrollBackwards ())
+            if (!parameterBank.canScrollPageBackwards ())
                 return;
             parameterBank.scrollBackwards ();
         }
         else
         {
-            if (!parameterBank.canScrollForwards ())
+            if (!parameterBank.canScrollPageForwards ())
                 return;
             parameterBank.scrollForwards ();
         }

@@ -76,4 +76,12 @@ public class VolumeMode extends AbstractKontrol1Mode
     {
         this.model.getCurrentTrackBank ().getItem (index).changeVolume (value);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected ITrackBank getBank ()
+    {
+        return this.model.getCurrentTrackBank ();
+    }
 }

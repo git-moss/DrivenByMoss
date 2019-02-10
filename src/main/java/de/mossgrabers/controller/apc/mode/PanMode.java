@@ -6,6 +6,7 @@ package de.mossgrabers.controller.apc.mode;
 
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 
 
@@ -42,5 +43,13 @@ public class PanMode extends BaseMode
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
         return track.doesExist () ? Integer.valueOf (track.getPan ()) : null;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected ITrackBank getBank ()
+    {
+        return this.model.getCurrentTrackBank ();
     }
 }

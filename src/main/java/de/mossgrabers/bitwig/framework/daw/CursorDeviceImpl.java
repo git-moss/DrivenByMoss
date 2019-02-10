@@ -94,7 +94,7 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 
         // Monitor the sibling devices of the cursor device
         final DeviceBank siblings = checkedNumDevices > 0 ? this.cursorDevice.createSiblingsDeviceBank (checkedNumDevices) : null;
-        this.deviceBank = new DeviceBankImpl (host, valueChanger, siblings, checkedNumDevices);
+        this.deviceBank = new DeviceBankImpl (host, valueChanger, this, siblings, checkedNumDevices);
 
         // Monitor the layers of a container device (if any)
         this.layerBank = new LayerBankImpl (host, valueChanger, checkedNumDeviceLayers > 0 ? this.cursorDevice.createLayerBank (checkedNumDeviceLayers) : null, this.cursorDeviceLayer, numDeviceLayers, numSends, checkedNumDevices);
@@ -250,7 +250,7 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
         final boolean moveBank = this.getIndex () == 0;
         this.cursorDevice.selectPrevious ();
         if (moveBank)
-            this.deviceBank.scrollPageBackwards ();
+            this.deviceBank.selectPreviousPage ();
     }
 
 
@@ -261,7 +261,7 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
         final boolean moveBank = this.getIndex () == this.getDeviceBank ().getPageSize () - 1;
         this.cursorDevice.selectNext ();
         if (moveBank)
-            this.deviceBank.scrollPageForwards ();
+            this.deviceBank.selectNextPage ();
     }
 
 

@@ -43,9 +43,9 @@ public class RightCommand extends MetronomeCommand<LaunchpadControlSurface, Laun
         final View view = this.surface.getViewManager ().getActiveView ();
         if (index == 8 || this.surface.isShiftPressed ())
         {
-            if (!tb.canScrollForwards ())
+            if (!tb.canScrollPageForwards ())
                 return;
-            tb.scrollPageForwards ();
+            tb.selectNextPage ();
             final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
             this.surface.scheduleTask ( () -> view.selectTrack (newSel), 75);
             return;

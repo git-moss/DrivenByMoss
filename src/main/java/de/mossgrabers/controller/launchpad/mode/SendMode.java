@@ -7,7 +7,7 @@ package de.mossgrabers.controller.launchpad.mode;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.mode.track.AbstractTrackMode;
 
 
 /**
@@ -15,7 +15,7 @@ import de.mossgrabers.framework.mode.AbstractMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendMode extends AbstractMode<LaunchpadControlSurface, LaunchpadConfiguration>
+public class SendMode extends AbstractTrackMode<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     /**
      * Constructor.

@@ -165,11 +165,11 @@ public class OSCParser extends AbstractOpenSoundControlParser
                         {
                             case "+":
                                 if (value == null || numValue > 0)
-                                    sceneBank.scrollPageForwards ();
+                                    sceneBank.selectNextPage ();
                                 break;
                             case "-":
                                 if (value == null || numValue > 0)
-                                    sceneBank.scrollPageBackwards ();
+                                    sceneBank.selectPreviousPage ();
                                 break;
                             default:
                                 this.host.error ("Unknown Scene subcommand: " + subCommand2);
@@ -678,19 +678,9 @@ public class OSCParser extends AbstractOpenSoundControlParser
                             return;
                         }
                         if ("+".equals (oscParts.removeFirst ()))
-                        {
-                            if (!tb.canScrollForwards ())
-                                return;
-                            tb.scrollPageForwards ();
-                            this.host.scheduleTask ( () -> tb.getItem (0).select (), 75);
-                        }
+                            tb.selectNextPage ();
                         else // "-"
-                        {
-                            if (!tb.canScrollBackwards ())
-                                return;
-                            tb.scrollPageBackwards ();
-                            this.host.scheduleTask ( () -> tb.getItem (7).select (), 75);
-                        }
+                            tb.selectPreviousPage ();
                         break;
                     case "+":
                         tb.scrollForwards ();
@@ -710,10 +700,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 final int index = sel == null ? 0 : sel.getIndex () + 1;
                 if (index == tb.getPageSize ())
                 {
-                    if (!tb.canScrollForwards ())
-                        return;
-                    tb.scrollPageForwards ();
-                    this.host.scheduleTask ( () -> tb.getItem (0).select (), 75);
+                    tb.selectNextPage ();
                     return;
                 }
                 tb.getItem (index).select ();
@@ -726,10 +713,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 final int index = sel == null ? 0 : sel.getIndex () - 1;
                 if (index == -1)
                 {
-                    if (!tb.canScrollBackwards ())
-                        return;
-                    tb.scrollPageBackwards ();
-                    this.host.scheduleTask ( () -> tb.getItem (7).select (), 75);
+                    tb.selectPreviousPage ();
                     return;
                 }
                 tb.getItem (index).select ();
@@ -1095,15 +1079,9 @@ public class OSCParser extends AbstractOpenSoundControlParser
                             return;
                         }
                         if ("+".equals (oscParts.removeFirst ()))
-                        {
-                            deviceBank.scrollPageForwards ();
-                            this.host.scheduleTask ( () -> deviceBank.getItem (0).select (), 75);
-                        }
+                            deviceBank.selectNextPage ();
                         else // "-"
-                        {
-                            deviceBank.scrollPageBackwards ();
-                            this.host.scheduleTask ( () -> deviceBank.getItem (deviceBank.getPageSize () - 1).select (), 75);
-                        }
+                            deviceBank.selectPreviousPage ();
                         break;
                     default:
                         this.host.error ("Unknown Device Bank subcommand: " + subCommand3);
@@ -1162,10 +1140,10 @@ public class OSCParser extends AbstractOpenSoundControlParser
                         switch (part)
                         {
                             case "+":
-                                cursorDevice.getParameterBank ().scrollPageForwards ();
+                                cursorDevice.getParameterBank ().selectNextPage ();
                                 break;
                             case "-":
-                                cursorDevice.getParameterBank ().scrollPageBackwards ();
+                                cursorDevice.getParameterBank ().selectPreviousPage ();
                                 break;
 
                             case "bank":
@@ -1313,12 +1291,10 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 switch (subCommand)
                 {
                     case "+":
-                        markerBank.scrollPageForwards ();
-                        this.host.scheduleTask ( () -> markerBank.getItem (0).select (), 75);
+                        markerBank.selectNextPage ();
                         break;
                     case "-":
-                        markerBank.scrollPageBackwards ();
-                        this.host.scheduleTask ( () -> markerBank.getItem (markerBank.getPageSize () - 1).select (), 75);
+                        markerBank.selectPreviousPage ();
                         break;
                     default:
                         this.host.error ("Unknown Marker Bank subcommand: " + subCommand);

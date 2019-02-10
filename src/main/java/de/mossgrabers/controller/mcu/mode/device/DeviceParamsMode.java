@@ -93,4 +93,13 @@ public class DeviceParamsMode extends BaseMode
         final int extenderOffset = this.surface.getExtenderOffset ();
         this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + index).resetValue ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected IParameterBank getBank ()
+    {
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        return cursorDevice == null ? null : cursorDevice.getParameterBank ();
+    }
 }

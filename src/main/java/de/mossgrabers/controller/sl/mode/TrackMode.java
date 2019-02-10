@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.mode.track.AbstractTrackMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TrackMode extends AbstractMode<SLControlSurface, SLConfiguration>
+public class TrackMode extends AbstractTrackMode<SLControlSurface, SLConfiguration>
 {
     /**
      * Constructor.
@@ -30,8 +30,7 @@ public class TrackMode extends AbstractMode<SLControlSurface, SLConfiguration>
      */
     public TrackMode (final SLControlSurface surface, final IModel model)
     {
-        super ("Track", surface, model);
-        this.isTemporary = false;
+        super ("Track", surface, model, true);
     }
 
 

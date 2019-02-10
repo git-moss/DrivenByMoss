@@ -11,7 +11,9 @@ import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
@@ -263,5 +265,13 @@ public class MasterMode extends BaseMode
         final IMasterTrack mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (enable);
         mt.setPanIndication (enable);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected IBank<? extends IItem> getBank ()
+    {
+        return null;
     }
 }

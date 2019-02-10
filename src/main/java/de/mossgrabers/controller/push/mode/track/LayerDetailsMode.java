@@ -10,6 +10,7 @@ import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.controller.push.view.ColorView;
 import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
@@ -138,5 +139,13 @@ public class LayerDetailsMode extends BaseMode
             message.addOptionElement ("", "", false, "", "Select Color", false, false);
         }
         message.send ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected IChannelBank<?> getBank ()
+    {
+        return this.model.getCursorDevice ().getLayerOrDrumPadBank ();
     }
 }

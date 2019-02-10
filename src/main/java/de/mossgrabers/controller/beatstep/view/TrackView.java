@@ -89,7 +89,6 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
         int track;
         final ITrack selectedTrack = tb.getSelectedItem ();
         int index;
-        int newSel;
         switch (note - 36)
         {
             // Toggle Activate
@@ -103,30 +102,18 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
             case 1:
                 index = selectedTrack == null ? 0 : selectedTrack.getIndex () - 1;
                 if (index == -1 || this.surface.isShiftPressed ())
-                {
-                    if (!tb.canScrollBackwards ())
-                        return;
-                    tb.scrollPageBackwards ();
-                    newSel = index == -1 || selectedTrack == null ? 7 : selectedTrack.getIndex ();
-                    this.surface.scheduleTask ( () -> this.selectTrack (newSel), 75);
-                    return;
-                }
-                this.selectTrack (index);
+                    tb.selectPreviousPage ();
+                else
+                    this.selectTrack (index);
                 break;
 
             // Track right
             case 2:
                 index = selectedTrack == null ? 0 : selectedTrack.getIndex () + 1;
                 if (index == 8 || this.surface.isShiftPressed ())
-                {
-                    if (!tb.canScrollForwards ())
-                        return;
-                    tb.scrollPageForwards ();
-                    newSel = index == 8 || selectedTrack == null ? 0 : selectedTrack.getIndex ();
-                    this.surface.scheduleTask ( () -> this.selectTrack (newSel), 75);
-                    return;
-                }
-                this.selectTrack (index);
+                    tb.selectNextPage ();
+                else
+                    this.selectTrack (index);
                 break;
 
             // Move down
@@ -146,12 +133,12 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
             // Track Page down
             case 6:
-                this.scrollTracksLeft ();
+                tb.selectPreviousPage ();
                 break;
 
             // Track Page up
             case 7:
-                this.scrollTracksRight ();
+                tb.selectNextPage ();
                 break;
 
             default:
@@ -181,31 +168,4 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
         padGrid.light (42, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
         padGrid.light (43, BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE);
     }
-
-
-    private void scrollTracksLeft ()
-    {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollBackwards ())
-            return;
-        final ITrack sel = tb.getSelectedItem ();
-        final int index = sel == null ? 0 : sel.getIndex () - 1;
-        tb.scrollPageBackwards ();
-        final int newSel = index == -1 || sel == null ? 7 : sel.getIndex ();
-        this.surface.scheduleTask ( () -> this.selectTrack (newSel), 100);
-    }
-
-
-    private void scrollTracksRight ()
-    {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        if (!tb.canScrollForwards ())
-            return;
-        final ITrack sel = tb.getSelectedItem ();
-        final int index = sel == null ? 0 : sel.getIndex () + 1;
-        tb.scrollPageForwards ();
-        final int newSel = index == 8 || sel == null ? 0 : sel.getIndex ();
-        this.surface.scheduleTask ( () -> this.selectTrack (newSel), 100);
-    }
-
 }

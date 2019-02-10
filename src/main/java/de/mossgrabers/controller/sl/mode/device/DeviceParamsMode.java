@@ -107,4 +107,13 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
     {
         // Intentionally empty
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected IParameterBank getBank ()
+    {
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        return cursorDevice == null ? null : cursorDevice.getParameterBank ();
+    }
 }

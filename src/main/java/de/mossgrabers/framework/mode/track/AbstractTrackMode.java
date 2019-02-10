@@ -7,6 +7,7 @@ package de.mossgrabers.framework.mode.track;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 
@@ -45,5 +46,13 @@ public class AbstractTrackMode<S extends IControlSurface<C>, C extends Configura
         if (selectedItem == null || !selectedItem.doesExist ())
             return null;
         return selectedItem.getPosition () + 1 + ": " + selectedItem.getName ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected ITrackBank getBank ()
+    {
+        return this.model.getCurrentTrackBank ();
     }
 }

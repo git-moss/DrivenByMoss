@@ -66,11 +66,14 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
     public static final int     KONTROL_NAVIGATE_SCENES         = 0x33;
 
     /** Transport navigation. */
-    // TODO Documented as 0x34;
-    public static final int     KONTROL_NAVIGATE_MOVE_TRANSPORT = 0x64;
+    public static final int     KONTROL_NAVIGATE_MOVE_TRANSPORT = 0x34;
     /** Loop navigation. */
     public static final int     KONTROL_NAVIGATE_MOVE_LOOP      = 0x35;
 
+    /** Track exists. */
+    public static final int     KONTROL_TRACK_EXISTS            = 0x40;
+    /** Name of the Komplete plugin ID on the track, if exists. */
+    public static final int     KONTROL_TRACK_INSTANCE          = 0x41;
     /** Select a track. */
     public static final int     KONTROL_BUTTON_SELECT           = 0x42;
     /** Mute a track. */
@@ -79,11 +82,36 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
     public static final int     KONTROL_BUTTON_SOLO             = 0x44;
     /** Arm a track. */
     public static final int     KONTROL_BUTTON_ARM              = 0x45;
+    /** Volume of a track. */
+    public static final int     KONTROL_TRACK_VOLUME            = 0x46;
+    /** Panorama of a track. */
+    public static final int     KONTROL_TRACK_PAN               = 0x47;
+    /** Name of a track. */
+    public static final int     KONTROL_TRACK_NAME              = 0x48;
+    /** VU of a track. */
+    public static final int     KONTROL_TRACK_VU                = 0x49;
 
-    /** Change the volume of a track. */
+    /** Change the volume of a track 0x50 - 0x57. */
     public static final int     KONTROL_KNOB_VOLUME             = 0x50;
-    /** Change the panorama of a track. */
+    /** Change the panorama of a track 0x58 - 0x5F. */
     public static final int     KONTROL_KNOB_PAN                = 0x58;
+
+    /** Play the currently selected clip. */
+    public static final int     KONTROL_PLAY_CLIP               = 0x60;
+    /** Stop the clip playing on the currently selected track. */
+    public static final int     KONTROL_STOP_CLIP               = 0x61;
+    /** Start the currently selected scene. */
+    public static final int     KONTROL_PLAY_SCENE              = 0x62;
+    /** Record Session button pressed. */
+    public static final int     KONTROL_RECORD_SESSION          = 0x63;
+    /** Increase/decrease volume of selected track. */
+    public static final int     KONTROL_CHANGE_VOLUME           = 0x64;
+    /** Increase/decrease pan of selected track. */
+    public static final int     KONTROL_CHANGE_PAN              = 0x65;
+    /** Toggle mute of the selected track. */
+    public static final int     KONTROL_TOGGLE_MUTE             = 0x66;
+    /** Toggle solo of the selected track. */
+    public static final int     KONTROL_TOGGLE_SOLO             = 0x67;
 
     private static final int [] KONTROL_BUTTONS_ALL             =
     {

@@ -41,10 +41,10 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack t = tb.getSelectedItem ();
         final int selIndex = t != null ? t.getIndex () : -1;
-        final boolean canScrollLeft = selIndex > 0 || tb.canScrollBackwards ();
-        final boolean canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollForwards ();
-        final boolean canScrollUp = tb.canScrollForwards ();
-        final boolean canScrollDown = tb.canScrollBackwards ();
+        final boolean canScrollLeft = selIndex > 0 || tb.canScrollPageBackwards ();
+        final boolean canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollPageForwards ();
+        final boolean canScrollUp = tb.canScrollPageForwards ();
+        final boolean canScrollDown = tb.canScrollPageBackwards ();
 
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
         this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);

@@ -19,7 +19,13 @@ import java.util.UUID;
  */
 public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("E39043C6-301A-448B-879D-B0308C484265");
+    private static final UUID      EXTENSION_ID = UUID.fromString ("E39043C6-301A-448B-879D-B0308C484265");
+    private static final String [] A_SERIES     =
+    {
+        "KOMPLETE KONTROL A25 MIDI",
+        "KOMPLETE KONTROL A49 MIDI",
+        "KOMPLETE KONTROL A61 MIDI"
+    };
 
 
     /**
@@ -27,7 +33,7 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
      */
     public KontrolMkIIControllerDefinition ()
     {
-        super ("", "Jürgen Moßgraber", "1.00", EXTENSION_ID, "Komplete Kontrol Mk II (Midi)", "Native Instruments", 2, 2);
+        super ("", "Jürgen Moßgraber", "1.00", EXTENSION_ID, "Komplete Kontrol A / MkII (Midi)", "Native Instruments", 2, 2);
     }
 
 
@@ -51,6 +57,18 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
                     {
                         "Komplete Kontrol DAW - " + i,
                         "KOMPLETE KONTROL - " + i
+                    });
+                }
+                for (int i = 0; i < A_SERIES.length; i++)
+                {
+                    this.addDeviceDiscoveryPair (new String []
+                    {
+                        "Komplete Kontrol A DAW",
+                        A_SERIES[i]
+                    }, new String []
+                    {
+                        "Komplete Kontrol A DAW",
+                        A_SERIES[i]
                     });
                 }
                 break;
