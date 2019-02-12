@@ -22,7 +22,6 @@ import de.mossgrabers.controller.push.command.trigger.PageLeftCommand;
 import de.mossgrabers.controller.push.command.trigger.PageRightCommand;
 import de.mossgrabers.controller.push.command.trigger.PanSendCommand;
 import de.mossgrabers.controller.push.command.trigger.PushBrowserCommand;
-import de.mossgrabers.controller.push.command.trigger.PushCursorCommand;
 import de.mossgrabers.controller.push.command.trigger.PushQuantizeCommand;
 import de.mossgrabers.controller.push.command.trigger.RasteredKnobCommand;
 import de.mossgrabers.controller.push.command.trigger.ScalesCommand;
@@ -45,7 +44,6 @@ import de.mossgrabers.controller.push.mode.FrameMode;
 import de.mossgrabers.controller.push.mode.GrooveMode;
 import de.mossgrabers.controller.push.mode.InfoMode;
 import de.mossgrabers.controller.push.mode.MarkersMode;
-import de.mossgrabers.controller.push.mode.Modes;
 import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.controller.push.mode.NoteRepeatMode;
 import de.mossgrabers.controller.push.mode.NoteViewSelectMode;
@@ -85,7 +83,6 @@ import de.mossgrabers.controller.push.view.RaindropsView;
 import de.mossgrabers.controller.push.view.ScenePlayView;
 import de.mossgrabers.controller.push.view.SequencerView;
 import de.mossgrabers.controller.push.view.SessionView;
-import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
@@ -95,6 +92,7 @@ import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.ButtonRowModeCommand;
+import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.KnobRowTouchModeCommand;
@@ -131,10 +129,12 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -469,10 +469,10 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addTriggerCommand (Commands.COMMAND_ADD_EFFECT, PushControlSurface.PUSH_BUTTON_ADD_EFFECT, new AddEffectCommand<> (Modes.MODE_BROWSER, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_ADD_TRACK, PushControlSurface.PUSH_BUTTON_ADD_TRACK, new AddTrackCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, PushControlSurface.PUSH_BUTTON_NOTE, new SelectPlayViewCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, PushControlSurface.PUSH_BUTTON_DOWN, new PushCursorCommand (Direction.DOWN, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, PushControlSurface.PUSH_BUTTON_UP, new PushCursorCommand (Direction.UP, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, PushControlSurface.PUSH_BUTTON_LEFT, new PushCursorCommand (Direction.LEFT, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, PushControlSurface.PUSH_BUTTON_RIGHT, new PushCursorCommand (Direction.RIGHT, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, PushControlSurface.PUSH_BUTTON_DOWN, new CursorCommand<> (Direction.DOWN, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, PushControlSurface.PUSH_BUTTON_UP, new CursorCommand<> (Direction.UP, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, PushControlSurface.PUSH_BUTTON_LEFT, new CursorCommand<> (Direction.LEFT, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, PushControlSurface.PUSH_BUTTON_RIGHT, new CursorCommand<> (Direction.RIGHT, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_OCTAVE_DOWN, PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, new OctaveCommand (false, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_OCTAVE_UP, PushControlSurface.PUSH_BUTTON_OCTAVE_UP, new OctaveCommand (true, this.model, surface));
 
@@ -623,7 +623,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final View activeView = viewManager.getActiveView ();
         if (activeView != null)
         {
-            ((PushCursorCommand) activeView.getTriggerCommand (Commands.COMMAND_ARROW_DOWN)).updateArrows ();
+            ((CursorCommand<?, ?>) activeView.getTriggerCommand (Commands.COMMAND_ARROW_DOWN)).updateArrows ();
             ((SceneView) activeView).updateSceneButtons ();
         }
 

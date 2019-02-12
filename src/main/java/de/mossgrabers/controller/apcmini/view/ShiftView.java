@@ -7,7 +7,6 @@ package de.mossgrabers.controller.apcmini.view;
 import de.mossgrabers.controller.apcmini.APCminiConfiguration;
 import de.mossgrabers.controller.apcmini.controller.APCminiColors;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.controller.apcmini.mode.Modes;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -20,11 +19,13 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
 
@@ -315,7 +316,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 break;
 
             case 7:
-                if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE))
+                if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
                 {
                     this.model.getBrowser ().browseForPresets ();
                     final ViewManager viewManager = this.surface.getViewManager ();
@@ -325,7 +326,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 }
                 else
                 {
-                    modeManager.setActiveMode (Modes.MODE_DEVICE);
+                    modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);
                     this.surface.getConfiguration ().setFaderCtrl ("Device");
                     this.surface.getDisplay ().notify ("Device");
                 }
@@ -400,7 +401,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON5, Modes.MODE_VOLUME.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON6, Modes.MODE_PAN.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON7, Modes.isSendMode (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON8, Modes.MODE_DEVICE.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON8, Modes.MODE_DEVICE_PARAMS.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
     }
 

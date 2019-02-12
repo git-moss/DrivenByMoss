@@ -5,12 +5,12 @@
 package de.mossgrabers.controller.beatstep.controller;
 
 import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
-import de.mossgrabers.controller.beatstep.view.Views;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.view.Views;
 
 
 /**

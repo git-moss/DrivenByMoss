@@ -6,11 +6,11 @@ package de.mossgrabers.controller.apcmini.command.trigger;
 
 import de.mossgrabers.controller.apcmini.APCminiConfiguration;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.controller.apcmini.view.Views;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**

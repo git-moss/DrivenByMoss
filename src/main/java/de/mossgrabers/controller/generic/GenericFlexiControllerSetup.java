@@ -6,7 +6,6 @@ package de.mossgrabers.controller.generic;
 
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
-import de.mossgrabers.controller.generic.mode.Modes;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
@@ -24,6 +23,7 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.BrowserMode;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.track.PanMode;
@@ -112,8 +112,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         modeManager.registerMode (Modes.MODE_PAN, new PanMode<> (surface, this.model, true));
         for (int i = 0; i < 8; i++)
             modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode<> (i, surface, this.model, true));
-        modeManager.registerMode (Modes.MODE_DEVICE, new ParameterMode<> (surface, this.model, true));
-        modeManager.registerMode (Modes.MODE_BROWSE, new BrowserMode<> (surface, this.model));
+        modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.MODE_BROWSER, new BrowserMode<> (surface, this.model));
 
         modeManager.setDefaultMode (Modes.MODE_VOLUME);
     }
@@ -240,6 +240,6 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     {
         if (commands.contains (allCommands[FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal () + parameterIndex]))
             return true;
-        return commands.contains (allCommands[FlexiCommand.MODES_KNOB1.ordinal () + parameterIndex]) && this.getSurface ().getModeManager ().isActiveMode (Modes.MODE_DEVICE);
+        return commands.contains (allCommands[FlexiCommand.MODES_KNOB1.ordinal () + parameterIndex]) && this.getSurface ().getModeManager ().isActiveMode (Modes.MODE_DEVICE_PARAMS);
     }
 }

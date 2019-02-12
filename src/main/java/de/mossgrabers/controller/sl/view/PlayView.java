@@ -8,7 +8,6 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.command.trigger.ButtonRowSelectCommand;
 import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.controller.sl.mode.Modes;
 import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
@@ -19,9 +18,11 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.Arrays;
 
@@ -251,9 +252,9 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         final ModeManager modeManager = this.surface.getModeManager ();
         if (isUp)
-            ((DeviceParamsMode) modeManager.getMode (Modes.MODE_PARAMS)).nextPage ();
+            ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).nextPage ();
         else
-            ((DeviceParamsMode) modeManager.getMode (Modes.MODE_PARAMS)).previousPage ();
+            ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).previousPage ();
     }
 
 
@@ -270,7 +271,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW2_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
 
         // LED indications for device parameters
-        ((DeviceParamsMode) this.surface.getModeManager ().getMode (Modes.MODE_PARAMS)).setLEDs ();
+        ((DeviceParamsMode) this.surface.getModeManager ().getMode (Modes.MODE_DEVICE_PARAMS)).setLEDs ();
 
         // Transport buttons
         if (this.surface.isTransportActive ())
@@ -291,7 +292,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         final Integer mode = this.surface.getModeManager ().getActiveOrTempModeId ();
         final boolean isSession = mode == Modes.MODE_SESSION;
-        final boolean isDevice = mode == Modes.MODE_PARAMS;
+        final boolean isDevice = mode == Modes.MODE_DEVICE_PARAMS;
         final boolean isPlayOptions = mode == Modes.MODE_PLAY_OPTIONS;
         final boolean isTrack = mode == Modes.MODE_TRACK;
         final boolean isMaster = mode == Modes.MODE_MASTER;

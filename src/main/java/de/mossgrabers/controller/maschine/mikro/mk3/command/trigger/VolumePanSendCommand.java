@@ -6,10 +6,10 @@ package de.mossgrabers.controller.maschine.mikro.mk3.command.trigger;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
-import de.mossgrabers.controller.maschine.mikro.mk3.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 

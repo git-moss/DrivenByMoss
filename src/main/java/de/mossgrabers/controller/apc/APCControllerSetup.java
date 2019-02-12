@@ -6,7 +6,6 @@ package de.mossgrabers.controller.apc;
 
 import de.mossgrabers.controller.apc.command.continuous.DeviceKnobRowCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCBrowserCommand;
-import de.mossgrabers.controller.apc.command.trigger.APCCursorCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCQuantizeCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCRecordCommand;
 import de.mossgrabers.controller.apc.command.trigger.BankLeftCommand;
@@ -16,7 +15,6 @@ import de.mossgrabers.controller.apc.command.trigger.DeviceRightCommand;
 import de.mossgrabers.controller.apc.command.trigger.MasterCommand;
 import de.mossgrabers.controller.apc.command.trigger.NudgeCommand;
 import de.mossgrabers.controller.apc.command.trigger.PanelLayoutCommand;
-import de.mossgrabers.controller.apc.command.trigger.RecArmCommand;
 import de.mossgrabers.controller.apc.command.trigger.SelectCommand;
 import de.mossgrabers.controller.apc.command.trigger.SendCommand;
 import de.mossgrabers.controller.apc.command.trigger.SessionRecordCommand;
@@ -26,7 +24,6 @@ import de.mossgrabers.controller.apc.command.trigger.StopClipCommand;
 import de.mossgrabers.controller.apc.controller.APCColors;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.controller.apc.mode.BrowserMode;
-import de.mossgrabers.controller.apc.mode.Modes;
 import de.mossgrabers.controller.apc.mode.PanMode;
 import de.mossgrabers.controller.apc.mode.SendMode;
 import de.mossgrabers.controller.apc.view.DrumView;
@@ -35,7 +32,6 @@ import de.mossgrabers.controller.apc.view.RaindropsView;
 import de.mossgrabers.controller.apc.view.SequencerView;
 import de.mossgrabers.controller.apc.view.SessionView;
 import de.mossgrabers.controller.apc.view.ShiftView;
-import de.mossgrabers.controller.apc.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.continuous.CrossfaderCommand;
@@ -44,6 +40,7 @@ import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.continuous.TempoCommand;
+import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
@@ -52,6 +49,7 @@ import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceOnOffCommand;
 import de.mossgrabers.framework.command.trigger.track.CrossfadeModeCommand;
 import de.mossgrabers.framework.command.trigger.track.MuteCommand;
+import de.mossgrabers.framework.command.trigger.track.RecArmCommand;
 import de.mossgrabers.framework.command.trigger.track.SoloCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
@@ -75,10 +73,12 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -238,7 +238,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             viewManager.registerTriggerCommand (selectCommand, new SelectCommand (i, this.model, surface));
             viewManager.registerTriggerCommand (soloCommand, new SoloCommand<> (i, this.model, surface));
             viewManager.registerTriggerCommand (muteCommand, new MuteCommand<> (i, this.model, surface));
-            viewManager.registerTriggerCommand (recArmCommand, new RecArmCommand (i, this.model, surface));
+            viewManager.registerTriggerCommand (recArmCommand, new RecArmCommand<> (i, this.model, surface));
             viewManager.registerTriggerCommand (crossfadeCommand, new CrossfadeModeCommand<> (i, this.model, surface));
             viewManager.registerTriggerCommand (stopClipCommand, new StopClipCommand<> (i, this.model, surface));
             surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_TRACK_SELECTION, i, selectCommand);
@@ -290,10 +290,10 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addTriggerCommand (Commands.COMMAND_BROWSE, APCControlSurface.APC_BUTTON_BANK, new APCBrowserCommand (this.model, surface));
         this.addTriggerCommand (COMMAND_BANK_LEFT, APCControlSurface.APC_BUTTON_DEVICE_LEFT, new BankLeftCommand (this.model, surface));
         this.addTriggerCommand (COMMAND_BANK_RIGHT, APCControlSurface.APC_BUTTON_DEVICE_RIGHT, new BankRightCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, surface.getDownButtonId (), new APCCursorCommand (Direction.DOWN, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, surface.getUpButtonId (), new APCCursorCommand (Direction.UP, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, surface.getLeftButtonId (), new APCCursorCommand (Direction.LEFT, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, surface.getRightButtonId (), new APCCursorCommand (Direction.RIGHT, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, surface.getDownButtonId (), new CursorCommand<> (Direction.DOWN, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, surface.getUpButtonId (), new CursorCommand<> (Direction.UP, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, surface.getLeftButtonId (), new CursorCommand<> (Direction.LEFT, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, surface.getRightButtonId (), new CursorCommand<> (Direction.RIGHT, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_SCENE1, APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, new SceneCommand<> (7, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_SCENE2, APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, new SceneCommand<> (6, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_SCENE3, APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, new SceneCommand<> (5, this.model, surface));
@@ -350,7 +350,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final View activeView = viewManager.getActiveView ();
         if (activeView != null)
         {
-            ((APCCursorCommand) activeView.getTriggerCommand (Commands.COMMAND_ARROW_DOWN)).updateArrows ();
+            ((CursorCommand<?, ?>) activeView.getTriggerCommand (Commands.COMMAND_ARROW_DOWN)).updateArrows ();
             ((SceneView) activeView).updateSceneButtons ();
         }
 

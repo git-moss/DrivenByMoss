@@ -5,9 +5,9 @@
 package de.mossgrabers.controller.maschine.mikro.mk3.view;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
-import de.mossgrabers.controller.maschine.mikro.mk3.mode.Modes;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -35,7 +35,7 @@ public class ParameterView extends BaseView
     @Override
     protected void executeFunction (final int padIndex)
     {
-        ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.MODE_DEVICE)).selectParameter (padIndex);
+        ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.MODE_DEVICE_PARAMS)).selectParameter (padIndex);
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem () + ": " + cursorDevice.getParameterBank ().getItem (padIndex).getName ()), 200);
     }

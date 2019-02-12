@@ -5,8 +5,6 @@
 package de.mossgrabers.controller.push;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.mode.Modes;
-import de.mossgrabers.controller.push.view.Views;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IColorSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
@@ -16,7 +14,10 @@ import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
+import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.view.Views;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -39,78 +40,74 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     }
 
     /** Setting for the ribbon mode. */
-    public static final Integer    RIBBON_MODE                     = Integer.valueOf (30);
+    public static final Integer       RIBBON_MODE                     = Integer.valueOf (30);
     /** Setting for the ribbon mode midi CC. */
-    public static final Integer    RIBBON_MODE_CC_VAL              = Integer.valueOf (31);
+    public static final Integer       RIBBON_MODE_CC_VAL              = Integer.valueOf (31);
     /** Setting for the velocity curve. */
-    public static final Integer    VELOCITY_CURVE                  = Integer.valueOf (32);
+    public static final Integer       VELOCITY_CURVE                  = Integer.valueOf (32);
     /** Setting for the pad threshold. */
-    public static final Integer    PAD_THRESHOLD                   = Integer.valueOf (33);
+    public static final Integer       PAD_THRESHOLD                   = Integer.valueOf (33);
 
     /** Setting for the display brightness. */
-    public static final Integer    DISPLAY_BRIGHTNESS              = Integer.valueOf (34);
+    public static final Integer       DISPLAY_BRIGHTNESS              = Integer.valueOf (34);
     /** Setting for the pad LED brightness. */
-    public static final Integer    LED_BRIGHTNESS                  = Integer.valueOf (35);
+    public static final Integer       LED_BRIGHTNESS                  = Integer.valueOf (35);
     /** Setting for the pad sensitivity. */
-    public static final Integer    PAD_SENSITIVITY                 = Integer.valueOf (36);
+    public static final Integer       PAD_SENSITIVITY                 = Integer.valueOf (36);
     /** Setting for the pad gain. */
-    public static final Integer    PAD_GAIN                        = Integer.valueOf (37);
+    public static final Integer       PAD_GAIN                        = Integer.valueOf (37);
     /** Setting for the pad dynamics. */
-    public static final Integer    PAD_DYNAMICS                    = Integer.valueOf (38);
+    public static final Integer       PAD_DYNAMICS                    = Integer.valueOf (38);
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer    STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (39);
+    public static final Integer       STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (39);
     /** Setting for the default note view. */
-    public static final Integer    DEFAULT_NOTE_VIEW               = Integer.valueOf (40);
+    public static final Integer       DEFAULT_NOTE_VIEW               = Integer.valueOf (40);
     /** Mode debug. */
-    public static final Integer    DEBUG_MODE                      = Integer.valueOf (41);
+    public static final Integer       DEBUG_MODE                      = Integer.valueOf (41);
     /** Push 2 display debug window. */
-    public static final Integer    DEBUG_WINDOW                    = Integer.valueOf (42);
+    public static final Integer       DEBUG_WINDOW                    = Integer.valueOf (42);
     /** Background color of an element. */
-    public static final Integer    COLOR_BACKGROUND                = Integer.valueOf (50);
+    public static final Integer       COLOR_BACKGROUND                = Integer.valueOf (50);
     /** Border color of an element. */
-    public static final Integer    COLOR_BORDER                    = Integer.valueOf (51);
+    public static final Integer       COLOR_BORDER                    = Integer.valueOf (51);
     /** Text color of an element. */
-    public static final Integer    COLOR_TEXT                      = Integer.valueOf (52);
+    public static final Integer       COLOR_TEXT                      = Integer.valueOf (52);
     /** Fader color of an element. */
-    public static final Integer    COLOR_FADER                     = Integer.valueOf (53);
+    public static final Integer       COLOR_FADER                     = Integer.valueOf (53);
     /** VU color of an element. */
-    public static final Integer    COLOR_VU                        = Integer.valueOf (54);
+    public static final Integer       COLOR_VU                        = Integer.valueOf (54);
     /** Edit color of an element. */
-    public static final Integer    COLOR_EDIT                      = Integer.valueOf (55);
+    public static final Integer       COLOR_EDIT                      = Integer.valueOf (55);
     /** Record color of an element. */
-    public static final Integer    COLOR_RECORD                    = Integer.valueOf (56);
+    public static final Integer       COLOR_RECORD                    = Integer.valueOf (56);
     /** Solo color of an element. */
-    public static final Integer    COLOR_SOLO                      = Integer.valueOf (57);
+    public static final Integer       COLOR_SOLO                      = Integer.valueOf (57);
     /** Mute color of an element. */
-    public static final Integer    COLOR_MUTE                      = Integer.valueOf (58);
+    public static final Integer       COLOR_MUTE                      = Integer.valueOf (58);
     /** Background color darker of an element. */
-    public static final Integer    COLOR_BACKGROUND_DARKER         = Integer.valueOf (59);
+    public static final Integer       COLOR_BACKGROUND_DARKER         = Integer.valueOf (59);
     /** Background color lighter of an element. */
-    public static final Integer    COLOR_BACKGROUND_LIGHTER        = Integer.valueOf (60);
+    public static final Integer       COLOR_BACKGROUND_LIGHTER        = Integer.valueOf (60);
     /** Session view options. */
-    public static final Integer    SESSION_VIEW                    = Integer.valueOf (61);
+    public static final Integer       SESSION_VIEW                    = Integer.valueOf (61);
     /** Display scenes or clips. */
-    public static final Integer    DISPLAY_SCENES_CLIPS            = Integer.valueOf (62);
+    public static final Integer       DISPLAY_SCENES_CLIPS            = Integer.valueOf (62);
 
     /** Use ribbon for pitch bend. */
-    public static final int        RIBBON_MODE_PITCH               = 0;
+    public static final int           RIBBON_MODE_PITCH               = 0;
     /** Use ribbon for midi CC. */
-    public static final int        RIBBON_MODE_CC                  = 1;
+    public static final int           RIBBON_MODE_CC                  = 1;
     /** Use ribbon for midi CC and pitch bend. */
-    public static final int        RIBBON_MODE_CC_PB               = 2;
+    public static final int           RIBBON_MODE_CC_PB               = 2;
     /** Use ribbon for pitch bend and midi CC. */
-    public static final int        RIBBON_MODE_PB_CC               = 3;
+    public static final int           RIBBON_MODE_PB_CC               = 3;
     /** Use ribbon as volume fader. */
-    public static final int        RIBBON_MODE_FADER               = 4;
+    public static final int           RIBBON_MODE_FADER               = 4;
 
-    private boolean                isSoloLongPressed               = false;
-    private boolean                isMuteLongPressed               = false;
-    private boolean                isMuteSoloLocked                = false;
+    private static final String       CATEGORY_RIBBON                 = "Ribbon";
+    private static final String       CATEGORY_COLORS                 = "Display Colors";
 
-    private static final String    CATEGORY_RIBBON                 = "Ribbon";
-    private static final String    CATEGORY_COLORS                 = "Display Colors";
-
-    private static final String [] RIBBON_MODE_VALUES              =
+    private static final String []    RIBBON_MODE_VALUES              =
     {
         "Pitch",
         "CC",
@@ -119,73 +116,134 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         "Fader"
     };
 
-    private static final String [] SESSION_VIEW_OPTIONS            =
+    private static final String []    SESSION_VIEW_OPTIONS            =
     {
         "Session",
         "Flipped",
         "Scenes"
     };
 
-    private Integer                defaultNoteView                 = Views.VIEW_PLAY;
-    private boolean                displayScenesClips;
-    private boolean                isScenesClipView;
+    /** Debug modes. */
+    private static final Set<Integer> DEBUG_MODES                     = new HashSet<> ();
+
+    static
+    {
+        DEBUG_MODES.add (Modes.MODE_TRACK);
+        DEBUG_MODES.add (Modes.MODE_TRACK_DETAILS);
+        DEBUG_MODES.add (Modes.MODE_VOLUME);
+        DEBUG_MODES.add (Modes.MODE_CROSSFADER);
+        DEBUG_MODES.add (Modes.MODE_PAN);
+        DEBUG_MODES.add (Modes.MODE_SEND1);
+        DEBUG_MODES.add (Modes.MODE_SEND2);
+        DEBUG_MODES.add (Modes.MODE_SEND3);
+        DEBUG_MODES.add (Modes.MODE_SEND4);
+        DEBUG_MODES.add (Modes.MODE_SEND5);
+        DEBUG_MODES.add (Modes.MODE_SEND6);
+        DEBUG_MODES.add (Modes.MODE_SEND7);
+        DEBUG_MODES.add (Modes.MODE_SEND8);
+        DEBUG_MODES.add (Modes.MODE_SEND);
+        DEBUG_MODES.add (Modes.MODE_MASTER);
+        DEBUG_MODES.add (Modes.MODE_MASTER_TEMP);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_PARAMS);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_VOLUME);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_PAN);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND1);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND2);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND3);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND4);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND5);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND6);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND7);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND8);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND);
+        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_DETAILS);
+        DEBUG_MODES.add (Modes.MODE_BROWSER);
+        DEBUG_MODES.add (Modes.MODE_CLIP);
+        DEBUG_MODES.add (Modes.MODE_NOTE);
+        DEBUG_MODES.add (Modes.MODE_FRAME);
+        DEBUG_MODES.add (Modes.MODE_GROOVE);
+        DEBUG_MODES.add (Modes.MODE_ACCENT);
+        DEBUG_MODES.add (Modes.MODE_SCALES);
+        DEBUG_MODES.add (Modes.MODE_SCALE_LAYOUT);
+        DEBUG_MODES.add (Modes.MODE_FIXED);
+        DEBUG_MODES.add (Modes.MODE_RIBBON);
+        DEBUG_MODES.add (Modes.MODE_VIEW_SELECT);
+        DEBUG_MODES.add (Modes.MODE_AUTOMATION);
+        DEBUG_MODES.add (Modes.MODE_TRANSPORT);
+        DEBUG_MODES.add (Modes.MODE_CONFIGURATION);
+        DEBUG_MODES.add (Modes.MODE_SETUP);
+        DEBUG_MODES.add (Modes.MODE_INFO);
+        DEBUG_MODES.add (Modes.MODE_SESSION_VIEW_SELECT);
+        DEBUG_MODES.add (Modes.MODE_SESSION);
+        DEBUG_MODES.add (Modes.MODE_MARKERS);
+        DEBUG_MODES.add (Modes.MODE_REPEAT_NOTE);
+    }
+
+    private boolean         isSoloLongPressed           = false;
+    private boolean         isMuteLongPressed           = false;
+    private boolean         isMuteSoloLocked            = false;
+
+    private Integer         defaultNoteView             = Views.VIEW_PLAY;
+    private boolean         displayScenesClips;
+    private boolean         isScenesClipView;
 
     /** What does the ribbon send? **/
-    private int                    ribbonMode                      = RIBBON_MODE_PITCH;
-    private int                    ribbonModeCCVal                 = 1;
-    private boolean                stopAutomationOnKnobRelease     = false;
-    private TrackState             trackState                      = TrackState.MUTE;
-    private Integer                debugMode                       = Modes.MODE_TRACK;
+    private int             ribbonMode                  = RIBBON_MODE_PITCH;
+    private int             ribbonModeCCVal             = 1;
+    private boolean         stopAutomationOnKnobRelease = false;
+    private TrackState      trackState                  = TrackState.MUTE;
+    private Integer         debugMode                   = Modes.MODE_TRACK;
 
     // Only Push 1
-    private int                    velocityCurve                   = 1;
-    private int                    padThreshold                    = 20;
+    private int             velocityCurve               = 1;
+    private int             padThreshold                = 20;
 
     // Only Push 2
-    private boolean                sendsAreToggled                 = false;
-    private int                    displayBrightness               = 255;
-    private int                    ledBrightness                   = 127;
-    private int                    padSensitivity                  = 5;
-    private int                    padGain                         = 5;
-    private int                    padDynamics                     = 5;
-    private ColorEx                colorBackground                 = DEFAULT_COLOR_BACKGROUND;
-    private ColorEx                colorBorder                     = DEFAULT_COLOR_BORDER;
-    private ColorEx                colorText                       = DEFAULT_COLOR_TEXT;
-    private ColorEx                colorFader                      = DEFAULT_COLOR_FADER;
-    private ColorEx                colorVU                         = DEFAULT_COLOR_VU;
-    private ColorEx                colorEdit                       = DEFAULT_COLOR_EDIT;
-    private ColorEx                colorRecord                     = DEFAULT_COLOR_RECORD;
-    private ColorEx                colorSolo                       = DEFAULT_COLOR_SOLO;
-    private ColorEx                colorMute                       = DEFAULT_COLOR_MUTE;
-    private ColorEx                colorBackgroundDarker           = DEFAULT_COLOR_BACKGROUND_DARKER;
-    private ColorEx                colorBackgroundLighter          = DEFAULT_COLOR_BACKGROUND_LIGHTER;
+    private boolean         sendsAreToggled             = false;
+    private int             displayBrightness           = 255;
+    private int             ledBrightness               = 127;
+    private int             padSensitivity              = 5;
+    private int             padGain                     = 5;
+    private int             padDynamics                 = 5;
+    private ColorEx         colorBackground             = DEFAULT_COLOR_BACKGROUND;
+    private ColorEx         colorBorder                 = DEFAULT_COLOR_BORDER;
+    private ColorEx         colorText                   = DEFAULT_COLOR_TEXT;
+    private ColorEx         colorFader                  = DEFAULT_COLOR_FADER;
+    private ColorEx         colorVU                     = DEFAULT_COLOR_VU;
+    private ColorEx         colorEdit                   = DEFAULT_COLOR_EDIT;
+    private ColorEx         colorRecord                 = DEFAULT_COLOR_RECORD;
+    private ColorEx         colorSolo                   = DEFAULT_COLOR_SOLO;
+    private ColorEx         colorMute                   = DEFAULT_COLOR_MUTE;
+    private ColorEx         colorBackgroundDarker       = DEFAULT_COLOR_BACKGROUND_DARKER;
+    private ColorEx         colorBackgroundLighter      = DEFAULT_COLOR_BACKGROUND_LIGHTER;
 
-    private final IHost            host;
-    private final boolean          isPush2;
+    private final IHost     host;
+    private final boolean   isPush2;
 
-    private IIntegerSetting        displayBrightnessSetting;
-    private IIntegerSetting        ledBrightnessSetting;
-    private IEnumSetting           ribbonModeSetting;
-    private IIntegerSetting        ribbonModeCCSetting;
-    private IIntegerSetting        padSensitivitySetting;
-    private IIntegerSetting        padGainSetting;
-    private IIntegerSetting        padDynamicsSetting;
-    private IEnumSetting           velocityCurveSetting;
-    private IEnumSetting           padThresholdSetting;
-    private IEnumSetting           debugModeSetting;
-    private IColorSetting          colorBackgroundSetting;
-    private IColorSetting          colorBackgroundDarkerSetting;
-    private IColorSetting          colorBackgroundLighterSetting;
-    private IColorSetting          colorBorderSetting;
-    private IColorSetting          colorTextSetting;
-    private IColorSetting          colorFaderSetting;
-    private IColorSetting          colorVUSetting;
-    private IColorSetting          colorEditSetting;
-    private IColorSetting          colorRecordSetting;
-    private IColorSetting          colorSoloSetting;
-    private IColorSetting          colorMuteSetting;
-    private IEnumSetting           sessionViewSetting;
-    private IEnumSetting           displayScenesClipsSetting;
+    private IIntegerSetting displayBrightnessSetting;
+    private IIntegerSetting ledBrightnessSetting;
+    private IEnumSetting    ribbonModeSetting;
+    private IIntegerSetting ribbonModeCCSetting;
+    private IIntegerSetting padSensitivitySetting;
+    private IIntegerSetting padGainSetting;
+    private IIntegerSetting padDynamicsSetting;
+    private IEnumSetting    velocityCurveSetting;
+    private IEnumSetting    padThresholdSetting;
+    private IEnumSetting    debugModeSetting;
+    private IColorSetting   colorBackgroundSetting;
+    private IColorSetting   colorBackgroundDarkerSetting;
+    private IColorSetting   colorBackgroundLighterSetting;
+    private IColorSetting   colorBorderSetting;
+    private IColorSetting   colorTextSetting;
+    private IColorSetting   colorFaderSetting;
+    private IColorSetting   colorVUSetting;
+    private IColorSetting   colorEditSetting;
+    private IColorSetting   colorRecordSetting;
+    private IColorSetting   colorSoloSetting;
+    private IColorSetting   colorMuteSetting;
+    private IEnumSetting    sessionViewSetting;
+    private IEnumSetting    displayScenesClipsSetting;
 
 
     /**
@@ -1039,11 +1097,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         final String [] noteViewNames = Views.getNoteViewNames ();
         final IEnumSetting defaultNoteViewSetting = settingsUI.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, noteViewNames, noteViewNames[0]);
         defaultNoteViewSetting.addValueObserver (value -> {
-            for (int i = 0; i < noteViewNames.length; i++)
-            {
-                if (noteViewNames[i].equals (value))
-                    this.defaultNoteView = Views.getNoteView (i);
-            }
+            this.defaultNoteView = Views.getNoteView (value);
             this.notifyObservers (DEFAULT_NOTE_VIEW);
         });
     }
@@ -1148,10 +1202,9 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     private void activateDebugSettings (final ISettingsUI settingsUI)
     {
-        final Set<Integer> allModes = Modes.ALL_MODES;
-        final String [] modes = new String [allModes.size ()];
+        final String [] modes = new String [DEBUG_MODES.size ()];
         int i = 0;
-        for (final Integer mode: allModes)
+        for (final Integer mode: DEBUG_MODES)
         {
             modes[i] = mode.toString ();
             i++;

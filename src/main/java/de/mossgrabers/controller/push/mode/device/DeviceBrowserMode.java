@@ -367,6 +367,38 @@ public class DeviceBrowserMode extends BaseMode
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItem ()
+    {
+        return this.model.getBrowser ().hasPreviousContentType ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItem ()
+    {
+        return this.model.getBrowser ().hasNextContentType ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItemPage ()
+    {
+        return this.hasPreviousItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItemPage ()
+    {
+        return this.hasNextItem ();
+    }
+
+
     private IBrowserColumn getFilterColumn (final int index)
     {
         final IBrowser browser = this.model.getBrowser ();

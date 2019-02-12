@@ -6,7 +6,6 @@ package de.mossgrabers.controller.generic.controller;
 
 import de.mossgrabers.controller.generic.CommandSlot;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
-import de.mossgrabers.controller.generic.mode.Modes;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
@@ -32,6 +31,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.io.File;
@@ -78,7 +78,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         MODE_IDS.add (Modes.MODE_SEND6);
         MODE_IDS.add (Modes.MODE_SEND7);
         MODE_IDS.add (Modes.MODE_SEND8);
-        MODE_IDS.add (Modes.MODE_DEVICE);
+        MODE_IDS.add (Modes.MODE_DEVICE_PARAMS);
     }
 
 
@@ -1555,7 +1555,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 break;
             case MODES_SELECT_MODE_DEVICE:
                 if (value > 0)
-                    this.activateMode (Modes.MODE_DEVICE);
+                    this.activateMode (Modes.MODE_DEVICE_PARAMS);
                 break;
             case MODES_SELECT_MODE_NEXT:
                 if (value > 0)
@@ -1569,7 +1569,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (value > 0)
                 {
                     this.model.getBrowser ().browseForPresets ();
-                    this.host.scheduleTask ( () -> this.activateMode (Modes.MODE_BROWSE), 500);
+                    this.host.scheduleTask ( () -> this.activateMode (Modes.MODE_BROWSER), 500);
                 }
                 break;
         }

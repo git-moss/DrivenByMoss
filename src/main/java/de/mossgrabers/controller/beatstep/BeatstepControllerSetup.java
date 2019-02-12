@@ -17,7 +17,6 @@ import de.mossgrabers.controller.beatstep.view.SequencerView;
 import de.mossgrabers.controller.beatstep.view.SessionView;
 import de.mossgrabers.controller.beatstep.view.ShiftView;
 import de.mossgrabers.controller.beatstep.view.TrackView;
-import de.mossgrabers.controller.beatstep.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -40,6 +39,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**

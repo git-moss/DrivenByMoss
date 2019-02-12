@@ -49,7 +49,7 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
             case WINDOWS:
                 for (int i = 1; i <= 16; i++)
                 {
-                    this.addDeviceDiscoveryPair (new String []
+                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                     {
                         "Komplete Kontrol DAW - " + i,
                         "KOMPLETE KONTROL - " + i
@@ -57,11 +57,11 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
                     {
                         "Komplete Kontrol DAW - " + i,
                         "KOMPLETE KONTROL - " + i
-                    });
+                    }));
                 }
                 for (int i = 0; i < A_SERIES.length; i++)
                 {
-                    this.addDeviceDiscoveryPair (new String []
+                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                     {
                         "Komplete Kontrol A DAW",
                         A_SERIES[i]
@@ -69,8 +69,17 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
                     {
                         "Komplete Kontrol A DAW",
                         A_SERIES[i]
-                    });
+                    }));
                 }
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Komplete Kontrol M DAW",
+                    "KOMPLETE KONTROL M32 MIDI"
+                }, new String []
+                {
+                    "Komplete Kontrol M DAW",
+                    "KOMPLETE KONTROL M32 MIDI"
+                }));
                 break;
 
             case LINUX:

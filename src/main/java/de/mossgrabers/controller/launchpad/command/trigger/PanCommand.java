@@ -5,9 +5,9 @@
 package de.mossgrabers.controller.launchpad.command.trigger;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.controller.launchpad.view.Views;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -33,6 +33,6 @@ public class PanCommand extends AbstractTrackCommand
     @Override
     public void execute (final ButtonEvent event)
     {
-        this.onFaderModeButton (event, Views.VIEW_PAN, "Pan");
+        this.onFaderModeButton (event, Views.VIEW_TRACK_PAN, "Pan");
     }
 }

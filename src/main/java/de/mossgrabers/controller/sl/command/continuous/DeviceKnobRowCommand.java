@@ -6,10 +6,10 @@ package de.mossgrabers.controller.sl.command.continuous;
 
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.controller.sl.mode.Modes;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 
 
 /**
@@ -46,8 +46,8 @@ public class DeviceKnobRowCommand extends AbstractContinuousCommand<SLControlSur
         // Convert negative relative value
         final int v = value > 64 ? 127 - (value - 64) : value;
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (!modeManager.isActiveOrTempMode (Modes.MODE_PARAMS))
-            modeManager.setActiveMode (Modes.MODE_PARAMS);
-        modeManager.getMode (Modes.MODE_PARAMS).onKnobValue (this.index, v);
+        if (!modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
+            modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);
+        modeManager.getMode (Modes.MODE_DEVICE_PARAMS).onKnobValue (this.index, v);
     }
 }

@@ -10,6 +10,8 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -21,7 +23,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class CursorCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class CursorCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /** The direction of the cursor. */
     public enum Direction
@@ -130,20 +132,38 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
      */
     protected void updateArrowStates ()
     {
-        // Intentionally empty
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = tb.getSceneBank ();
+        this.canScrollUp = sceneBank.canScrollPageBackwards ();
+        this.canScrollDown = sceneBank.canScrollPageForwards ();
+
+        final Mode mode = this.surface.getModeManager ().getActiveOrTempMode ();
+        final boolean shiftPressed = this.surface.isShiftPressed ();
+        this.canScrollLeft = shiftPressed ? mode.hasPreviousItemPage () : mode.hasPreviousItem ();
+        this.canScrollRight = shiftPressed ? mode.hasNextItemPage () : mode.hasNextItem ();
     }
 
 
     /**
      * Scroll left. Tracks, devices or parameter banks.
      */
-    protected abstract void scrollLeft ();
+    protected void scrollLeft ()
+    {
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
+        if (activeMode != null)
+            activeMode.selectPreviousItem ();
+    }
 
 
     /**
      * Scroll right. Tracks, devices or parameter banks.
      */
-    protected abstract void scrollRight ();
+    protected void scrollRight ()
+    {
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
+        if (activeMode != null)
+            activeMode.selectNextItem ();
+    }
 
 
     /**
@@ -153,7 +173,7 @@ public abstract class CursorCommand<S extends IControlSurface<C>, C extends Conf
     {
         final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
         if (this.surface.isShiftPressed ())
-            sceneBank.selectPreviousPage ();
+            sceneBank.selectNextPage ();
         else
             sceneBank.selectPreviousPage ();
     }

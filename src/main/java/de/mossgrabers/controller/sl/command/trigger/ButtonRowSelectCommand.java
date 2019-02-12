@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.sl.command.trigger;
 
-import de.mossgrabers.controller.sl.mode.Modes;
 import de.mossgrabers.controller.sl.view.SLView;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
@@ -12,6 +11,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.View;
 
@@ -61,7 +61,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
                 break;
 
             case 1:
-                this.surface.getModeManager ().setActiveMode (Modes.MODE_PARAMS);
+                this.surface.getModeManager ().setActiveMode (Modes.MODE_DEVICE_PARAMS);
                 this.surface.getDisplay ().notify ("Device Parameters");
                 break;
 

@@ -14,39 +14,39 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * A command to toggle mute on a track. Additionally, toggles auto monitor if shifted.
+ * A rec arm button command.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SoloCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class RecArmCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     private int index;
 
 
     /**
-     * Constructor. Toggles the solo of the currently selected track, if any.
+     * Constructor. Toggles the rec arm of the currently selected track, if any.
      *
      * @param model The model
      * @param surface The surface
      */
-    public SoloCommand (final IModel model, final S surface)
+    public RecArmCommand (final IModel model, final S surface)
     {
         this (-1, model, surface);
     }
 
 
     /**
-     * Constructor. Toggles the solo of the track at the given index in the page of the current
+     * Constructor. Toggles the rec arm of the track at the given index in the page of the current
      * track bank.
      *
      * @param index The channel index
      * @param model The model
      * @param surface The surface
      */
-    public SoloCommand (final int index, final IModel model, final S surface)
+    public RecArmCommand (final int index, final IModel model, final S surface)
     {
         super (model, surface);
         this.index = index;
@@ -62,19 +62,6 @@ public class SoloCommand<S extends IControlSurface<C>, C extends Configuration> 
         final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
         final ITrack track = this.index == -1 ? currentTrackBank.getSelectedItem () : currentTrackBank.getItem (this.index);
         if (track != null)
-            track.toggleSolo ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void executeShifted (final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack track = this.index == -1 ? currentTrackBank.getSelectedItem () : currentTrackBank.getItem (this.index);
-        if (track != null)
-            track.toggleAutoMonitor ();
+            track.toggleRecArm ();
     }
 }

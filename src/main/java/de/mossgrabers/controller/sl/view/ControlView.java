@@ -8,7 +8,6 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.command.trigger.ButtonRowSelectCommand;
 import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.controller.sl.mode.Modes;
 import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.controller.sl.mode.device.DevicePresetsMode;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -19,8 +18,10 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
 
@@ -165,10 +166,10 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
 
         final ModeManager modeManager = this.surface.getModeManager ();
         Integer cm = modeManager.getActiveOrTempModeId ();
-        if (cm != Modes.MODE_TRACK_TOGGLES && cm != Modes.MODE_FRAME && cm != Modes.MODE_BROWSER)
+        if (cm != Modes.MODE_TRACK_DETAILS && cm != Modes.MODE_FRAME && cm != Modes.MODE_BROWSER)
         {
-            modeManager.setActiveMode (Modes.MODE_TRACK_TOGGLES);
-            cm = Modes.MODE_TRACK_TOGGLES;
+            modeManager.setActiveMode (Modes.MODE_TRACK_DETAILS);
+            cm = Modes.MODE_TRACK_DETAILS;
         }
 
         if (cm == Modes.MODE_FRAME)
@@ -321,8 +322,8 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
     public void onButtonRow2Select ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final boolean selectFrame = modeManager.getActiveOrTempModeId () == Modes.MODE_TRACK_TOGGLES;
-        modeManager.setActiveMode (selectFrame ? Modes.MODE_FRAME : Modes.MODE_TRACK_TOGGLES);
+        final boolean selectFrame = modeManager.getActiveOrTempModeId () == Modes.MODE_TRACK_DETAILS;
+        modeManager.setActiveMode (selectFrame ? Modes.MODE_FRAME : Modes.MODE_TRACK_DETAILS);
         this.surface.getDisplay ().notify (selectFrame ? "Layouts & Panels" : "Track & Device");
     }
 
@@ -342,14 +343,14 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
             new P2ButtonCommand (isUp, this.model, this.surface).execute (event);
         else if (activeModeId == Modes.MODE_TRACK || activeModeId == Modes.MODE_MASTER)
             new ButtonRowSelectCommand<> (3, this.model, this.surface).execute (event);
-        else if (activeModeId == Modes.MODE_TRACK_TOGGLES || activeModeId == Modes.MODE_FRAME)
+        else if (activeModeId == Modes.MODE_TRACK_DETAILS || activeModeId == Modes.MODE_FRAME)
             this.onButtonRow2Select ();
         else
         {
             if (isUp)
-                ((DeviceParamsMode) modeManager.getMode (Modes.MODE_PARAMS)).nextPage ();
+                ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).nextPage ();
             else
-                ((DeviceParamsMode) modeManager.getMode (Modes.MODE_PARAMS)).previousPage ();
+                ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).previousPage ();
         }
     }
 
@@ -365,13 +366,13 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
 
         final Integer mode = this.surface.getModeManager ().getActiveOrTempModeId ();
         final boolean isTrack = mode == Modes.MODE_TRACK;
-        final boolean isTrackToggles = mode == Modes.MODE_TRACK_TOGGLES;
+        final boolean isTrackToggles = mode == Modes.MODE_TRACK_DETAILS;
         final boolean isVolume = mode == Modes.MODE_VOLUME;
         final boolean isMaster = mode == Modes.MODE_MASTER;
         final boolean isFixed = mode == Modes.MODE_FIXED;
         final boolean isFrame = mode == Modes.MODE_FRAME;
         final boolean isPreset = mode == Modes.MODE_BROWSER;
-        final boolean isDevice = mode == Modes.MODE_PARAMS;
+        final boolean isDevice = mode == Modes.MODE_DEVICE_PARAMS;
         final boolean isFunctions = mode == Modes.MODE_FUNCTIONS;
 
         if (mode == Modes.MODE_VIEW_SELECT)
@@ -424,7 +425,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
             this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW3_1 + i, tb.getItem (i).isSelected () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
 
         // LED indications for device parameters
-        ((DeviceParamsMode) this.surface.getModeManager ().getMode (Modes.MODE_PARAMS)).setLEDs ();
+        ((DeviceParamsMode) this.surface.getModeManager ().getMode (Modes.MODE_DEVICE_PARAMS)).setLEDs ();
 
         // Transport buttons
         this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW4_3, !transport.isPlaying () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);

@@ -14,7 +14,6 @@ import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.ToggleFixedV
 import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.VolumePanSendCommand;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
 import de.mossgrabers.controller.maschine.mikro.mk3.mode.BrowseMode;
-import de.mossgrabers.controller.maschine.mikro.mk3.mode.Modes;
 import de.mossgrabers.controller.maschine.mikro.mk3.mode.PositionMode;
 import de.mossgrabers.controller.maschine.mikro.mk3.mode.TempoMode;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.ClipView;
@@ -25,7 +24,6 @@ import de.mossgrabers.controller.maschine.mikro.mk3.view.PlayView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.SceneView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.SelectView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.SoloView;
-import de.mossgrabers.controller.maschine.mikro.mk3.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
@@ -62,12 +60,14 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
 import de.mossgrabers.framework.mode.track.SelectedPanMode;
 import de.mossgrabers.framework.mode.track.SelectedSendMode;
 import de.mossgrabers.framework.mode.track.SelectedVolumeMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -184,7 +184,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         final MaschineMikroMk3ControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.registerMode (Modes.MODE_BROWSE, new BrowseMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_BROWSER, new BrowseMode (surface, this.model));
 
         modeManager.registerMode (Modes.MODE_VOLUME, new SelectedVolumeMode<> (surface, this.model));
         modeManager.registerMode (Modes.MODE_PAN, new SelectedPanMode<> (surface, this.model));
@@ -194,7 +194,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         modeManager.registerMode (Modes.MODE_POSITION, new PositionMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_TEMPO, new TempoMode (surface, this.model));
 
-        modeManager.registerMode (Modes.MODE_DEVICE, new SelectedDeviceMode<> (surface, this.model));
+        modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new SelectedDeviceMode<> (surface, this.model));
 
         modeManager.setDefaultMode (Modes.MODE_VOLUME);
     }
@@ -207,13 +207,13 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         final MaschineMikroMk3ControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
 
-        viewManager.registerView (Views.VIEW_SCENE, new SceneView (surface, this.model));
+        viewManager.registerView (Views.VIEW_SCENE_PLAY, new SceneView (surface, this.model));
         viewManager.registerView (Views.VIEW_CLIP, new ClipView (surface, this.model));
 
         viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
         viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
 
-        viewManager.registerView (Views.VIEW_PARAMETER, new ParameterView (surface, this.model));
+        viewManager.registerView (Views.VIEW_DEVICE, new ParameterView (surface, this.model));
 
         viewManager.registerView (Views.VIEW_TRACK_SELECT, new SelectView (surface, this.model));
         viewManager.registerView (Views.VIEW_TRACK_SOLO, new SoloView (surface, this.model));
@@ -253,21 +253,21 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         this.addTriggerCommand (Commands.COMMAND_VOLUME, MaschineMikroMk3ControlSurface.MIKRO_3_VOLUME, new VolumePanSendCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_TAP_TEMPO, MaschineMikroMk3ControlSurface.MIKRO_3_SWING, new ModeSelectCommand<> (Modes.MODE_POSITION, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_USER, MaschineMikroMk3ControlSurface.MIKRO_3_TEMPO, new ModeSelectCommand<> (Modes.MODE_TEMPO, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_DEVICE, MaschineMikroMk3ControlSurface.MIKRO_3_PLUGIN, new ModeSelectCommand<> (Modes.MODE_DEVICE, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_DEVICE, MaschineMikroMk3ControlSurface.MIKRO_3_PLUGIN, new ModeSelectCommand<> (Modes.MODE_DEVICE_PARAMS, this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_DEVICE_ON_OFF, MaschineMikroMk3ControlSurface.MIKRO_3_SAMPLING, new PaneCommand<> (PaneCommand.Panels.DEVICE, this.model, surface));
 
         // Browser
         this.addTriggerCommand (Commands.COMMAND_ADD_TRACK, MaschineMikroMk3ControlSurface.MIKRO_3_PROJECT, new ProjectButtonCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_ADD_EFFECT, MaschineMikroMk3ControlSurface.MIKRO_3_FAVORITES, new AddDeviceCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_BROWSE, MaschineMikroMk3ControlSurface.MIKRO_3_BROWSER, new BrowserCommand<> (Modes.MODE_BROWSE, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_BROWSE, MaschineMikroMk3ControlSurface.MIKRO_3_BROWSER, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
 
         // Pad modes
         this.addTriggerCommand (Commands.COMMAND_ACCENT, MaschineMikroMk3ControlSurface.MIKRO_3_FIXED_VEL, new ToggleFixedVelCommand (this.model, surface));
 
-        this.addTriggerCommand (Commands.COMMAND_SCENE1, MaschineMikroMk3ControlSurface.MIKRO_3_SCENE, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_SCENE));
+        this.addTriggerCommand (Commands.COMMAND_SCENE1, MaschineMikroMk3ControlSurface.MIKRO_3_SCENE, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_SCENE_PLAY));
         this.addTriggerCommand (Commands.COMMAND_CLIP, MaschineMikroMk3ControlSurface.MIKRO_3_PATTERN, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_CLIP));
         this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, MaschineMikroMk3ControlSurface.MIKRO_3_EVENTS, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_PLAY, Views.VIEW_DRUM));
-        this.addTriggerCommand (COMMAND_PARAMETER, MaschineMikroMk3ControlSurface.MIKRO_3_VARIATION, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_PARAMETER));
+        this.addTriggerCommand (COMMAND_PARAMETER, MaschineMikroMk3ControlSurface.MIKRO_3_VARIATION, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_DEVICE));
         this.addTriggerCommand (Commands.COMMAND_DUPLICATE, MaschineMikroMk3ControlSurface.MIKRO_3_DUPLICATE, new ToggleDuplicateButtonCommand (this.model, surface));
 
         this.addTriggerCommand (Commands.COMMAND_TRACK, MaschineMikroMk3ControlSurface.MIKRO_3_SELECT, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_TRACK_SELECT));
@@ -337,16 +337,16 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_VOLUME, modeID != null && modeID.intValue () <= Modes.MODE_SEND8.intValue () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
         surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_SWING, modeID != null && modeID.intValue () == Modes.MODE_POSITION.intValue () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
         surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_TEMPO, modeID != null && modeID.intValue () == Modes.MODE_TEMPO.intValue () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_PLUGIN, modeID != null && modeID.intValue () == Modes.MODE_DEVICE.intValue () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_PLUGIN, modeID != null && modeID.intValue () == Modes.MODE_DEVICE_PARAMS.intValue () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
         surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_SAMPLING, this.model.getCursorDevice ().isWindowOpen () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
 
         surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_FIXED_VEL, this.configuration.isAccentActive () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
 
         final ViewManager viewManager = this.getSurface ().getViewManager ();
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_SCENE, viewManager.isActiveView (Views.VIEW_SCENE) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_SCENE, viewManager.isActiveView (Views.VIEW_SCENE_PLAY) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
         surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_PATTERN, viewManager.isActiveView (Views.VIEW_CLIP) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
         surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_EVENTS, viewManager.isActiveView (Views.VIEW_PLAY) || viewManager.isActiveView (Views.VIEW_DRUM) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_VARIATION, viewManager.isActiveView (Views.VIEW_PARAMETER) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_VARIATION, viewManager.isActiveView (Views.VIEW_DEVICE) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
 
         surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_DUPLICATE, this.configuration.isDuplicateEnabled () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
         surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_SELECT, viewManager.isActiveView (Views.VIEW_TRACK_SELECT) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
@@ -379,7 +379,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         final MaschineMikroMk3ControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
 
-        final boolean isSession = viewManager.isActiveView (Views.VIEW_SCENE) || viewManager.isActiveView (Views.VIEW_CLIP);
+        final boolean isSession = viewManager.isActiveView (Views.VIEW_SCENE_PLAY) || viewManager.isActiveView (Views.VIEW_CLIP);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
 
         final boolean isVolume = Modes.MODE_VOLUME.equals (mode);

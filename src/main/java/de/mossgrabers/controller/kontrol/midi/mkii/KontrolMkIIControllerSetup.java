@@ -8,7 +8,6 @@ import de.mossgrabers.controller.kontrol.midi.mkii.command.trigger.KontrolRecord
 import de.mossgrabers.controller.kontrol.midi.mkii.controller.KontrolMkIIColors;
 import de.mossgrabers.controller.kontrol.midi.mkii.controller.KontrolMkIIControlSurface;
 import de.mossgrabers.controller.kontrol.midi.mkii.view.ControlView;
-import de.mossgrabers.controller.kontrol.midi.mkii.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.application.RedoCommand;
@@ -17,6 +16,8 @@ import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
 import de.mossgrabers.framework.command.trigger.clip.StartClipCommand;
 import de.mossgrabers.framework.command.trigger.clip.StopClipCommand;
+import de.mossgrabers.framework.command.trigger.track.MuteCommand;
+import de.mossgrabers.framework.command.trigger.track.SoloCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
@@ -43,6 +44,7 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -60,9 +62,10 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     private static final Integer CONT_COMMAND_TRACK_SOLO      = Integer.valueOf (105);
     private static final Integer CONT_COMMAND_TRACK_ARM       = Integer.valueOf (106);
     private static final Integer CONT_COMMAND_NAVIGATE_CLIPS  = Integer.valueOf (107);
-    private static final Integer CONT_COMMAND_NAVIGATE_SCENES = Integer.valueOf (108);
-    private static final Integer CONT_COMMAND_NAVIGATE_VOLUME = Integer.valueOf (109);
-    private static final Integer CONT_COMMAND_NAVIGATE_PAN    = Integer.valueOf (110);
+    private static final Integer CONT_COMMAND_MOVE_TRANSPORT  = Integer.valueOf (108);
+    private static final Integer CONT_COMMAND_MOVE_LOOP       = Integer.valueOf (109);
+    private static final Integer CONT_COMMAND_NAVIGATE_VOLUME = Integer.valueOf (110);
+    private static final Integer CONT_COMMAND_NAVIGATE_PAN    = Integer.valueOf (111);
 
     static final int             CONT_COMMAND_TRACK_VOLUME    = 120;
     static final int             CONT_COMMAND_TRACK_PAN       = 130;
@@ -81,7 +84,7 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
 
         this.colorManager = new ColorManager ();
         KontrolMkIIColors.addColors (this.colorManager);
-        this.valueChanger = new DefaultValueChanger (128, 0.2, 0.05);
+        this.valueChanger = new DefaultValueChanger (1024, 5, 1);
         this.configuration = new KontrolMkIIConfiguration (this.valueChanger);
     }
 
@@ -175,6 +178,8 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         this.addTriggerCommand (Commands.COMMAND_AUTOMATION, KontrolMkIIControlSurface.KONTROL_BUTTON_AUTOMATION, 15, new WriteArrangerAutomationCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_CLIP, KontrolMkIIControlSurface.KONTROL_PLAY_CLIP, 15, new StartClipCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_STOP_CLIP, KontrolMkIIControlSurface.KONTROL_STOP_CLIP, 15, new StopClipCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_MUTE, KontrolMkIIControlSurface.KONTROL_TOGGLE_MUTE, 15, new MuteCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_SOLO, KontrolMkIIControlSurface.KONTROL_TOGGLE_SOLO, 15, new SoloCommand<> (this.model, surface));
     }
 
 
@@ -215,14 +220,12 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
                 selectedTrack.getSlotBank ().selectNextItem ();
         });
 
-        // Move Transport 0x34 -1/1 Move Transport left/right (4D Encoder)
-        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_SCENES, KontrolMkIIControlSurface.KONTROL_NAVIGATE_MOVE_TRANSPORT, 15, this::changePosition);
-        // Only on S models
-        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_VOLUME, KontrolMkIIControlSurface.KONTROL_CHANGE_VOLUME, 15, this::changePosition);
-        // Only on S models
-        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_PAN, KontrolMkIIControlSurface.KONTROL_CHANGE_PAN, 15, this::changePosition);
+        this.addContinuousCommand (CONT_COMMAND_MOVE_TRANSPORT, KontrolMkIIControlSurface.KONTROL_NAVIGATE_MOVE_TRANSPORT, 15, this::changeTransportPosition);
+        this.addContinuousCommand (CONT_COMMAND_MOVE_LOOP, KontrolMkIIControlSurface.KONTROL_NAVIGATE_MOVE_LOOP, 15, this::changeLoopPosition);
 
-        // KONTROL_NAVIGATE_MOVE_LOOP -1.1 Move Loop left/right (4D Encoder) -> Not implemented?!
+        // Only on S models
+        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_VOLUME, KontrolMkIIControlSurface.KONTROL_CHANGE_VOLUME, 15, this::changeTransportPosition);
+        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_PAN, KontrolMkIIControlSurface.KONTROL_CHANGE_PAN, 15, this::changeTransportPosition);
 
         this.addContinuousCommand (CONT_COMMAND_TRACK_SELECT, KontrolMkIIControlSurface.KONTROL_BUTTON_SELECT, 15, value -> this.model.getTrackBank ().getItem (value).select ());
         this.addContinuousCommand (CONT_COMMAND_TRACK_MUTE, KontrolMkIIControlSurface.KONTROL_BUTTON_MUTE, 15, value -> this.model.getTrackBank ().getItem (value).toggleMute ());
@@ -246,16 +249,6 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
 
         this.getSurface ().sendCommand (KontrolMkIIControlSurface.CMD_HELLO, 0);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void exit ()
-    {
-        this.getSurface ().sendCommand (KontrolMkIIControlSurface.CMD_GOODBYE, 0);
-
-        super.exit ();
     }
 
 
@@ -312,11 +305,11 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
             surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_NAME, 0, i, track.getName ());
 
             final int j = 2 * i;
-            vuData[j] = track.getVuLeft ();
-            vuData[j + 1] = track.getVuRight ();
+            vuData[j] = this.valueChanger.toMidiValue (track.getVuLeft ());
+            vuData[j + 1] = this.valueChanger.toMidiValue (track.getVuRight ());
 
-            surface.updateButton (KontrolMkIIControlSurface.KONTROL_KNOB_VOLUME + i, track.getVolume ());
-            surface.updateButton (KontrolMkIIControlSurface.KONTROL_KNOB_PAN + i, track.getPan ());
+            surface.updateButton (KontrolMkIIControlSurface.KONTROL_KNOB_VOLUME + i, this.valueChanger.toMidiValue (track.getVolume ()));
+            surface.updateButton (KontrolMkIIControlSurface.KONTROL_KNOB_PAN + i, this.valueChanger.toMidiValue (track.getPan ()));
         }
 
         surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
@@ -357,8 +350,15 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     }
 
 
-    private void changePosition (final int value)
+    private void changeTransportPosition (final int value)
     {
         this.model.getTransport ().changePosition (value <= 63);
+    }
+
+
+    private void changeLoopPosition (final int value)
+    {
+        // Changing of loop position is not possible. Therefore, change position fine grained
+        this.model.getTransport ().changePosition (value <= 63, true);
     }
 }

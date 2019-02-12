@@ -7,7 +7,6 @@ package de.mossgrabers.controller.kontrol.usb.mki.mode.device;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Colors;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.AbstractKontrol1Mode;
-import de.mossgrabers.controller.kontrol.usb.mki.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.controller.display.Display;
@@ -16,6 +15,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.view.Views;
 
 
 /**

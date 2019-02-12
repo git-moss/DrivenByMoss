@@ -6,9 +6,9 @@ package de.mossgrabers.controller.apc.command.trigger;
 
 import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
-import de.mossgrabers.controller.apc.mode.Modes;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Modes;
 
 
 /**

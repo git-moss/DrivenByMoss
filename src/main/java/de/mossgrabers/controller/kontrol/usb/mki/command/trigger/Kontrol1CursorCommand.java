@@ -7,6 +7,7 @@ package de.mossgrabers.controller.kontrol.usb.mki.command.trigger;
 import de.mossgrabers.controller.kontrol.usb.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Mode;
 
 
 /**
@@ -31,25 +32,11 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
 
     /** {@inheritDoc} */
     @Override
-    protected void scrollLeft ()
-    {
-        this.surface.getModeManager ().getActiveOrTempMode ().selectPreviousItem ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void scrollRight ()
-    {
-        this.surface.getModeManager ().getActiveOrTempMode ().selectNextItem ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void scrollUp ()
     {
-        this.surface.getModeManager ().getActiveOrTempMode ().selectNextItemPage ();
+        final Mode mode = this.surface.getModeManager ().getActiveOrTempMode ();
+        if (mode != null)
+            mode.selectNextItemPage ();
     }
 
 
@@ -57,6 +44,8 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void scrollDown ()
     {
-        this.surface.getModeManager ().getActiveOrTempMode ().selectPreviousItemPage ();
+        final Mode mode = this.surface.getModeManager ().getActiveOrTempMode ();
+        if (mode != null)
+            mode.selectPreviousItemPage ();
     }
 }

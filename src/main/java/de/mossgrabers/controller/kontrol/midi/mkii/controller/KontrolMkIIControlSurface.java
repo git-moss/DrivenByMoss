@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.kontrol.midi.mkii.controller;
 
 import de.mossgrabers.controller.kontrol.midi.mkii.KontrolMkIIConfiguration;
+import de.mossgrabers.controller.kontrol.midi.mkii.TrackType;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
@@ -127,7 +128,9 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
         KONTROL_BUTTON_UNDO,
         KONTROL_BUTTON_REDO,
         KONTROL_BUTTON_QUANTIZE,
-        KONTROL_BUTTON_AUTOMATION
+        KONTROL_BUTTON_AUTOMATION,
+        KONTROL_TOGGLE_MUTE,
+        KONTROL_TOGGLE_SOLO
     };
 
     private int                 protocolVersion                 = 1;
@@ -154,7 +157,14 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
     @Override
     public void shutdown ()
     {
-        // Intentionally empty
+        // Turn off all buttons
+        for (final int button: this.getButtons ())
+            this.setButton (button, 0);
+
+        for (int i = 0; i < 8; i++)
+            this.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_EXISTS, TrackType.EMPTY, i);
+
+        this.sendCommand (KontrolMkIIControlSurface.CMD_GOODBYE, 0);
     }
 
 

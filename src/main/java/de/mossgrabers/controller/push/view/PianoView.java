@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.Views;
 
 
 /**

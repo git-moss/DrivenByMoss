@@ -9,7 +9,6 @@ import de.mossgrabers.controller.apcmini.command.trigger.TrackSelectCommand;
 import de.mossgrabers.controller.apcmini.controller.APCminiColors;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.controller.apcmini.controller.APCminiScales;
-import de.mossgrabers.controller.apcmini.mode.Modes;
 import de.mossgrabers.controller.apcmini.view.BrowserView;
 import de.mossgrabers.controller.apcmini.view.DrumView;
 import de.mossgrabers.controller.apcmini.view.PlayView;
@@ -17,7 +16,6 @@ import de.mossgrabers.controller.apcmini.view.RaindropsView;
 import de.mossgrabers.controller.apcmini.view.SequencerView;
 import de.mossgrabers.controller.apcmini.view.SessionView;
 import de.mossgrabers.controller.apcmini.view.ShiftView;
-import de.mossgrabers.controller.apcmini.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
@@ -38,6 +36,7 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SendMode;
@@ -45,6 +44,7 @@ import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,20 +57,20 @@ import java.util.Map;
  */
 public class APCminiControllerSetup extends AbstractControllerSetup<APCminiControlSurface, APCminiConfiguration>
 {
-    private static final Map<String, Integer> NAMED_MODES = new HashMap<> ();
+    private static final Map<String, Integer> FADER_CTRL_MODES = new HashMap<> ();
     static
     {
-        NAMED_MODES.put ("Volume", Modes.MODE_VOLUME);
-        NAMED_MODES.put ("Pan", Modes.MODE_PAN);
-        NAMED_MODES.put ("Send 1", Modes.MODE_SEND1);
-        NAMED_MODES.put ("Send 2", Modes.MODE_SEND2);
-        NAMED_MODES.put ("Send 3", Modes.MODE_SEND3);
-        NAMED_MODES.put ("Send 4", Modes.MODE_SEND4);
-        NAMED_MODES.put ("Send 5", Modes.MODE_SEND5);
-        NAMED_MODES.put ("Send 6", Modes.MODE_SEND6);
-        NAMED_MODES.put ("Send 7", Modes.MODE_SEND7);
-        NAMED_MODES.put ("Send 8", Modes.MODE_SEND8);
-        NAMED_MODES.put ("Device", Modes.MODE_DEVICE);
+        FADER_CTRL_MODES.put ("Volume", Modes.MODE_VOLUME);
+        FADER_CTRL_MODES.put ("Pan", Modes.MODE_PAN);
+        FADER_CTRL_MODES.put ("Send 1", Modes.MODE_SEND1);
+        FADER_CTRL_MODES.put ("Send 2", Modes.MODE_SEND2);
+        FADER_CTRL_MODES.put ("Send 3", Modes.MODE_SEND3);
+        FADER_CTRL_MODES.put ("Send 4", Modes.MODE_SEND4);
+        FADER_CTRL_MODES.put ("Send 5", Modes.MODE_SEND5);
+        FADER_CTRL_MODES.put ("Send 6", Modes.MODE_SEND6);
+        FADER_CTRL_MODES.put ("Send 7", Modes.MODE_SEND7);
+        FADER_CTRL_MODES.put ("Send 8", Modes.MODE_SEND8);
+        FADER_CTRL_MODES.put ("Device", Modes.MODE_DEVICE_PARAMS);
     }
 
 
@@ -143,7 +143,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         this.createScaleObservers (this.configuration);
 
         this.configuration.addSettingObserver (APCminiConfiguration.FADER_CTRL, () -> {
-            final Integer modeID = NAMED_MODES.get (this.configuration.getFaderCtrl ());
+            final Integer modeID = FADER_CTRL_MODES.get (this.configuration.getFaderCtrl ());
             if (modeID != null)
                 surface.getModeManager ().setActiveMode (modeID);
         });
@@ -169,7 +169,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         modeManager.registerMode (Modes.MODE_PAN, new PanMode<> (surface, this.model, true));
         for (int i = 0; i < 8; i++)
             modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode<> (i, surface, this.model, true));
-        modeManager.registerMode (Modes.MODE_DEVICE, new ParameterMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
 
         modeManager.setDefaultMode (Modes.MODE_VOLUME);
     }
@@ -264,7 +264,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         final boolean isSession = viewManager.isActiveView (Views.VIEW_SESSION) || isShiftView;
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isPan = Modes.MODE_PAN.equals (mode);
-        final boolean isDevice = Modes.MODE_DEVICE.equals (mode);
+        final boolean isDevice = Modes.MODE_DEVICE_PARAMS.equals (mode);
 
         tb.setIndication (!isEffect && isSession);
         if (tbe != null)

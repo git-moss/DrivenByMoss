@@ -29,7 +29,6 @@ import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mcu.controller.MCUDisplay;
 import de.mossgrabers.controller.mcu.controller.MCUSegmentDisplay;
 import de.mossgrabers.controller.mcu.mode.MarkerMode;
-import de.mossgrabers.controller.mcu.mode.Modes;
 import de.mossgrabers.controller.mcu.mode.device.DeviceBrowserMode;
 import de.mossgrabers.controller.mcu.mode.device.DeviceParamsMode;
 import de.mossgrabers.controller.mcu.mode.track.MasterMode;
@@ -38,7 +37,6 @@ import de.mossgrabers.controller.mcu.mode.track.SendMode;
 import de.mossgrabers.controller.mcu.mode.track.TrackMode;
 import de.mossgrabers.controller.mcu.mode.track.VolumeMode;
 import de.mossgrabers.controller.mcu.view.ControlView;
-import de.mossgrabers.controller.mcu.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
@@ -86,8 +84,10 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -149,7 +149,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         MODE_ACRONYMS.put (Modes.MODE_MASTER, "MT");
         MODE_ACRONYMS.put (Modes.MODE_DEVICE_PARAMS, "DC");
         MODE_ACRONYMS.put (Modes.MODE_BROWSER, "BR");
-        MODE_ACRONYMS.put (Modes.MODE_MARKER, "MK");
+        MODE_ACRONYMS.put (Modes.MODE_MARKERS, "MK");
 
     }
 
@@ -264,7 +264,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
             modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
             modeManager.registerMode (Modes.MODE_BROWSER, new DeviceBrowserMode (surface, this.model));
-            modeManager.registerMode (Modes.MODE_MARKER, new MarkerMode (surface, this.model));
+            modeManager.registerMode (Modes.MODE_MARKERS, new MarkerMode (surface, this.model));
         }
     }
 

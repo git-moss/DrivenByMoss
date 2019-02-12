@@ -21,7 +21,6 @@ import de.mossgrabers.controller.sl.mode.FixedMode;
 import de.mossgrabers.controller.sl.mode.FrameMode;
 import de.mossgrabers.controller.sl.mode.FunctionMode;
 import de.mossgrabers.controller.sl.mode.MasterMode;
-import de.mossgrabers.controller.sl.mode.Modes;
 import de.mossgrabers.controller.sl.mode.PlayOptionsMode;
 import de.mossgrabers.controller.sl.mode.SessionMode;
 import de.mossgrabers.controller.sl.mode.TrackMode;
@@ -32,7 +31,6 @@ import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.controller.sl.mode.device.DevicePresetsMode;
 import de.mossgrabers.controller.sl.view.ControlView;
 import de.mossgrabers.controller.sl.view.PlayView;
-import de.mossgrabers.controller.sl.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -51,8 +49,10 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -224,10 +224,10 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         modeManager.registerMode (Modes.MODE_PLAY_OPTIONS, new PlayOptionsMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_SESSION, new SessionMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_TRACK_TOGGLES, new TrackTogglesMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_TRACK_DETAILS, new TrackTogglesMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_VIEW_SELECT, new ViewSelectMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_PARAMS, new DeviceParamsMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_BROWSER, new DevicePresetsMode (surface, this.model));
     }
 

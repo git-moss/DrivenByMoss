@@ -6,12 +6,12 @@ package de.mossgrabers.controller.maschine.mikro.mk3.command.trigger;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
-import de.mossgrabers.controller.maschine.mikro.mk3.mode.Modes;
 import de.mossgrabers.framework.command.trigger.device.AddEffectCommand;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -30,7 +30,7 @@ public class AddDeviceCommand extends AddEffectCommand<MaschineMikroMk3ControlSu
      */
     public AddDeviceCommand (final IModel model, final MaschineMikroMk3ControlSurface surface)
     {
-        super (Modes.MODE_BROWSE, model, surface);
+        super (Modes.MODE_BROWSER, model, surface);
     }
 
 

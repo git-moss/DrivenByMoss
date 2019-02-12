@@ -8,11 +8,13 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * A mute button command.
+ * A command to toggle mute on a track. Additionally, toggles monitor if shifted.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
@@ -25,7 +27,20 @@ public class MuteCommand<S extends IControlSurface<C>, C extends Configuration> 
 
 
     /**
-     * Constructor.
+     * Constructor. Toggles the mute of the currently selected track, if any.
+     *
+     * @param model The model
+     * @param surface The surface
+     */
+    public MuteCommand (final IModel model, final S surface)
+    {
+        this (-1, model, surface);
+    }
+
+
+    /**
+     * Constructor. Toggles the mute of the track at the given index in the page of the current
+     * track bank.
      *
      * @param index The channel index
      * @param model The model
@@ -42,8 +57,12 @@ public class MuteCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getItem (this.index).toggleMute ();
+        if (event != ButtonEvent.DOWN)
+            return;
+        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack track = this.index == -1 ? currentTrackBank.getSelectedItem () : currentTrackBank.getItem (this.index);
+        if (track != null)
+            track.toggleMute ();
     }
 
 
@@ -51,7 +70,11 @@ public class MuteCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getItem (this.index).toggleMonitor ();
+        if (event != ButtonEvent.DOWN)
+            return;
+        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack track = this.index == -1 ? currentTrackBank.getSelectedItem () : currentTrackBank.getItem (this.index);
+        if (track != null)
+            track.toggleMonitor ();
     }
 }

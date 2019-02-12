@@ -15,14 +15,12 @@ import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Colors;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1Display;
 import de.mossgrabers.controller.kontrol.usb.mki.controller.Kontrol1UsbDevice;
-import de.mossgrabers.controller.kontrol.usb.mki.mode.Modes;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.ScaleMode;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.device.BrowseMode;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.device.ParamsMode;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.track.TrackMode;
 import de.mossgrabers.controller.kontrol.usb.mki.mode.track.VolumeMode;
 import de.mossgrabers.controller.kontrol.usb.mki.view.ControlView;
-import de.mossgrabers.controller.kontrol.usb.mki.view.Views;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
@@ -50,9 +48,11 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -146,10 +146,10 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
         modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_PARAMS, new ParamsMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new ParamsMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_BROWSER, new BrowseMode (surface, this.model));
 
-        modeManager.registerMode (Modes.MODE_SCALE, new ScaleMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_SCALES, new ScaleMode (surface, this.model));
     }
 
 
@@ -196,8 +196,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         this.addTriggerCommand (Commands.COMMAND_FORWARD, Kontrol1ControlSurface.BUTTON_FWD, new WindCommand<> (this.model, surface, true));
         this.addTriggerCommand (Commands.COMMAND_LOOP, Kontrol1ControlSurface.BUTTON_LOOP, new ToggleLoopCommand<> (this.model, surface));
 
-        this.addTriggerCommand (Commands.COMMAND_PAGE_LEFT, Kontrol1ControlSurface.BUTTON_PAGE_LEFT, new ModeMultiSelectCommand<> (this.model, surface, Modes.MODE_PARAMS, Modes.MODE_VOLUME, Modes.MODE_TRACK));
-        this.addTriggerCommand (Commands.COMMAND_PAGE_RIGHT, Kontrol1ControlSurface.BUTTON_PAGE_RIGHT, new ModeMultiSelectCommand<> (this.model, surface, Modes.MODE_TRACK, Modes.MODE_VOLUME, Modes.MODE_PARAMS));
+        this.addTriggerCommand (Commands.COMMAND_PAGE_LEFT, Kontrol1ControlSurface.BUTTON_PAGE_LEFT, new ModeMultiSelectCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, Modes.MODE_VOLUME, Modes.MODE_TRACK));
+        this.addTriggerCommand (Commands.COMMAND_PAGE_RIGHT, Kontrol1ControlSurface.BUTTON_PAGE_RIGHT, new ModeMultiSelectCommand<> (this.model, surface, Modes.MODE_TRACK, Modes.MODE_VOLUME, Modes.MODE_DEVICE_PARAMS));
 
         this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, Kontrol1ControlSurface.BUTTON_MAIN_ENCODER, new MainEncoderButtonCommand (this.model, surface));
 
@@ -303,7 +303,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final boolean isEffect = this.model.isEffectTrackBankActive ();
 
         final boolean isVolume = Modes.MODE_VOLUME.equals (mode);
-        final boolean isDevice = Modes.MODE_PARAMS.equals (mode);
+        final boolean isDevice = Modes.MODE_DEVICE_PARAMS.equals (mode);
 
         tb.setIndication (isVolume);
         if (tbe != null)

@@ -17,6 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SceneView;
+import de.mossgrabers.framework.view.Views;
 
 
 /**

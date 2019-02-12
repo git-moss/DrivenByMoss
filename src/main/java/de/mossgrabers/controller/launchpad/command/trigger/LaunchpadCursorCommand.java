@@ -7,12 +7,10 @@ package de.mossgrabers.controller.launchpad.command.trigger;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.controller.launchpad.mode.Modes;
 import de.mossgrabers.controller.launchpad.view.DrumView;
 import de.mossgrabers.controller.launchpad.view.DrumView64;
 import de.mossgrabers.controller.launchpad.view.RaindropsView;
 import de.mossgrabers.controller.launchpad.view.SequencerView;
-import de.mossgrabers.controller.launchpad.view.Views;
 import de.mossgrabers.framework.command.trigger.CursorCommand;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -23,6 +21,7 @@ import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -30,6 +29,7 @@ import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TransposeView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -163,7 +163,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.VIEW_SESSION) || viewManager.isActiveView (Views.VIEW_VOLUME) || viewManager.isActiveView (Views.VIEW_PAN) || viewManager.isActiveView (Views.VIEW_SENDS))
+        if (viewManager.isActiveView (Views.VIEW_SESSION) || viewManager.isActiveView (Views.VIEW_TRACK_VOLUME) || viewManager.isActiveView (Views.VIEW_TRACK_PAN) || viewManager.isActiveView (Views.VIEW_TRACK_SENDS))
             return LaunchpadColors.LAUNCHPAD_COLOR_LIME;
 
         if (viewManager.isActiveView (Views.VIEW_RAINDROPS))
