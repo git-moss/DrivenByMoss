@@ -11,7 +11,7 @@ import de.mossgrabers.controller.launchpad.view.DrumView;
 import de.mossgrabers.controller.launchpad.view.DrumView64;
 import de.mossgrabers.controller.launchpad.view.RaindropsView;
 import de.mossgrabers.controller.launchpad.view.SequencerView;
-import de.mossgrabers.framework.command.trigger.CursorCommand;
+import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -85,9 +85,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.VIEW_DRUM))
         {
             final INoteClip clip = ((DrumView) viewManager.getView (Views.VIEW_DRUM)).getClip ();
-            final int octave = this.model.getScales ().getDrumOctave ();
-            this.canScrollUp = octave < 5;
-            this.canScrollDown = octave > -3;
+            final Scales scales = this.model.getScales ();
+            this.canScrollUp = scales.canScrollDrumOctaveUp ();
+            this.canScrollDown = scales.canScrollDrumOctaveDown ();
             this.canScrollLeft = clip.canScrollStepsBackwards ();
             this.canScrollRight = clip.canScrollStepsForwards ();
             return;

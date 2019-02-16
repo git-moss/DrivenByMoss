@@ -6,6 +6,7 @@ package de.mossgrabers.controller.generic;
 
 import de.mossgrabers.controller.generic.controller.CommandCategory;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
+import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -45,10 +46,11 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     private static final String [] OPTIONS_KNOBMODE     = new String []
     {
-        "Absolute",
+        "Absolute (push button: Button down > 0, button up = 0)",
         "Relative (1-64 increments, 127-65 decrements)",
         "Relative (65-127 increments, 63-0 decrements)",
-        "Relative (1-63 increments, 65-127 decrements)"
+        "Relative (1-63 increments, 65-127 decrements)",
+        "Absolute (toggle button: 1st press > 0, 2nd press = 0)"
     };
 
     /** The types. */
@@ -58,18 +60,146 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "CC",
         "Note",
         "Program Change",
-        "Pitchbend"
+        "Pitchbend",
+        "MMC"
     };
 
-    /** The (CC, note or PC) number options. */
-    private static final String [] OPTIONS_NUMBER       = new String [128];
+    static final String []         NUMBER_NAMES         = new String []
+    {
+        "0  CC Bank Select",
+        "1  MMC Stop, CC Modulation",
+        "2  MMC Play, CC Breath Controller",
+        "3  MMC Deferred Play",
+        "4  MMC Fast Forward, CC Foot Controller",
+        "5  MMC Rewind, CC Portamento Time",
+        "6  MMC Punch In, CC Data Entry MSB",
+        "7  MMC Punch Out, CC Volume",
+        "8  MMC Record Pause, CC Balance",
+        "9  MMC Play Pause   ",
+        "10 MMC Eject, CC Pan",
+        "11 MMC Chase, CC Expression",
+        "12 CC Effect Controller 1",
+        "13 CC Effect Controller 2",
+        "14 -",
+        "15 -",
+        "16  -",
+        "17  -",
+        "18  -",
+        "19  -",
+        "20  -",
+        "21  -",
+        "22  -",
+        "23  -",
+        "24  -",
+        "25  -",
+        "26  -",
+        "27  -",
+        "28  -",
+        "29  -",
+        "30  -",
+        "31  -",
+        "32  -",
+        "33  -",
+        "34  -",
+        "35  -",
+        "36  -",
+        "37  -",
+        "38  -",
+        "39  -",
+        "30  -",
+        "41  -",
+        "42  -",
+        "43  -",
+        "44  -",
+        "45  -",
+        "46  -",
+        "47  -",
+        "48  -",
+        "49  -",
+        "50  -",
+        "51  -",
+        "52  -",
+        "53  -",
+        "54  -",
+        "55  -",
+        "56  -",
+        "57  -",
+        "58  -",
+        "59  -",
+        "60  -",
+        "61  -",
+        "62  -",
+        "63  -",
+        "64  CC Damper Pedal",
+        "65  CC Portamento On/Off Switch",
+        "66  CC Sostenuto On/Off Switch",
+        "67  CC Soft Pedal On/Off Switch",
+        "68  CC Legato Footswitch",
+        "69  CC Hold 2",
+        "70  CC Sound Controller 1",
+        "71  CC Sound Controller 2",
+        "72  CC Sound Controller 3",
+        "73  CC Sound Controller 4",
+        "74  CC Sound Controller 5",
+        "75  CC Sound Controller 6",
+        "76  CC Sound Controller 7",
+        "77  CC Sound Controller 8",
+        "78  CC Sound Controller 9",
+        "79  CC Sound Controller 10",
+        "80  CC General Purpose",
+        "81  CC General Purpose",
+        "82  CC General Purpose",
+        "83  CC General Purpose",
+        "84  CC Portamento",
+        "85  -",
+        "86  -",
+        "87  -",
+        "88  -",
+        "89  -",
+        "90  -",
+        "91  CC Effect 1 Depth",
+        "92  CC Effect 2 Depth",
+        "93  CC Effect 3 Depth",
+        "94  CC Effect 4 Depth",
+        "95  CC Effect 5 Depth",
+        "96  CC (+1) Data Increment",
+        "97  CC (-1) Data Decrement",
+        "98  CC NRPN LSB",
+        "99  CC NRPN MSB",
+        "100 CC RPN LSB",
+        "101 CC RPN MSB",
+        "102 -",
+        "103 -",
+        "104 -",
+        "105 -",
+        "106 -",
+        "107 -",
+        "108 -",
+        "109 -",
+        "110 -",
+        "111 -",
+        "112 -",
+        "113 -",
+        "114 -",
+        "115 -",
+        "116 -",
+        "117 -",
+        "118 -",
+        "119 -",
+        "120 CC All Sound Off",
+        "121 CC Reset All Controllers",
+        "122 CC Local On/Off Switch",
+        "123 CC All Notes Off",
+        "124 CC Omni Mode Off",
+        "125 CC Omni Mode On",
+        "126 CC Mono Mode",
+        "127 CC Poly Mode"
+    };
 
     /** The midi channel options. */
     private static final String [] OPTIONS_MIDI_CHANNEL = new String [16];
     static
     {
-        for (int i = 0; i < OPTIONS_NUMBER.length; i++)
-            OPTIONS_NUMBER[i] = Integer.toString (i);
         for (int i = 0; i < OPTIONS_MIDI_CHANNEL.length; i++)
             OPTIONS_MIDI_CHANNEL[i] = Integer.toString (i + 1);
     }
@@ -78,6 +208,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public static final Integer                      BUTTON_EXPORT         = Integer.valueOf (50);
     /** Import signal. */
     public static final Integer                      BUTTON_IMPORT         = Integer.valueOf (51);
+    /** Enable MMC. */
+    public static final Integer                      ENABLE_MMC            = Integer.valueOf (52);
 
     /** A setting of a slot has changed. */
     static final Integer                             SLOT_CHANGE           = Integer.valueOf (1000);
@@ -147,7 +279,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         category = "Selected Slot - MIDI trigger";
 
         this.typeSetting = settingsUI.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE[0]);
-        this.numberSetting = settingsUI.getEnumSetting ("Number:", category, OPTIONS_NUMBER, OPTIONS_NUMBER[0]);
+        this.numberSetting = settingsUI.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES[0]);
         this.midiChannelSetting = settingsUI.getEnumSetting ("Midi Channel:", category, OPTIONS_MIDI_CHANNEL, OPTIONS_MIDI_CHANNEL[0]);
         this.knobModeSetting = settingsUI.getEnumSetting ("Knob Mode:", category, OPTIONS_KNOBMODE, OPTIONS_KNOBMODE[0]);
         this.sendValueSetting = settingsUI.getEnumSetting ("Send value to device:", category, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
@@ -170,7 +302,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         category = "Use a knob/fader/button then click Set...";
 
         this.learnTypeSetting = settingsUI.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE[0]);
-        this.learnNumberSetting = settingsUI.getEnumSetting ("Number:", category, OPTIONS_NUMBER, OPTIONS_NUMBER[0]);
+        this.learnNumberSetting = settingsUI.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES[0]);
         this.learnMidiChannelSetting = settingsUI.getEnumSetting ("Midi channel:", category, OPTIONS_MIDI_CHANNEL, OPTIONS_MIDI_CHANNEL[0]);
         this.learnTypeSetting.setEnabled (false);
         this.learnNumberSetting.setEnabled (false);
@@ -218,7 +350,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             this.updateVisibility (!OPTIONS_TYPE[0].equals (value));
         });
         this.numberSetting.addValueObserver (value -> {
-            this.getSelectedSlot ().setNumber (AbstractConfiguration.lookupIndex (OPTIONS_NUMBER, value));
+            this.getSelectedSlot ().setNumber (AbstractConfiguration.lookupIndex (NUMBER_NAMES, value));
             this.clearNoteMap ();
         });
         this.midiChannelSetting.addValueObserver (value -> {
@@ -289,7 +421,10 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private void fixKnobMode ()
     {
         final CommandSlot slot = this.getSelectedSlot ();
-        if (slot.getCommand ().isTrigger () && slot.getKnobMode () > 0)
+        final FlexiCommand command = slot.getCommand ();
+        if (!command.isTrigger ())
+            return;
+        if (!GenericFlexiControlSurface.isAbsolute (slot.getKnobMode ()) || slot.getType () == CommandSlot.TYPE_MMC)
             this.knobModeSetting.set (OPTIONS_KNOBMODE[0]);
     }
 
@@ -310,7 +445,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public void setLearnValues (final String type, final int number, final int midiChannel)
     {
         this.learnTypeValue = type;
-        this.learnNumberValue = Integer.toString (number);
+        this.learnNumberValue = NUMBER_NAMES[number];
         this.learnMidiChannelValue = Integer.toString (midiChannel + 1);
 
         this.learnTypeSetting.set (type);
@@ -546,7 +681,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      */
     private void setNumber (final int value)
     {
-        this.numberSetting.set (OPTIONS_NUMBER[value]);
+        this.numberSetting.set (NUMBER_NAMES[value]);
     }
 
 

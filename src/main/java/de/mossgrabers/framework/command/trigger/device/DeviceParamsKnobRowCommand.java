@@ -2,11 +2,11 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.apc.command.continuous;
+package de.mossgrabers.framework.command.trigger.device;
 
-import de.mossgrabers.controller.apc.APCConfiguration;
-import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 
@@ -14,11 +14,14 @@ import java.util.Date;
 
 
 /**
- * Command to change a device parameter.
+ * Command to change a device parameter. Slows down the knob.
+ *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceKnobRowCommand extends AbstractContinuousCommand<APCControlSurface, APCConfiguration>
+public class DeviceParamsKnobRowCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
 {
     private int     index;
     private long    moveStartTime;
@@ -32,7 +35,7 @@ public class DeviceKnobRowCommand extends AbstractContinuousCommand<APCControlSu
      * @param model The model
      * @param surface The surface
      */
-    public DeviceKnobRowCommand (final int index, final IModel model, final APCControlSurface surface)
+    public DeviceParamsKnobRowCommand (final int index, final IModel model, final S surface)
     {
         super (model, surface);
         this.index = index;

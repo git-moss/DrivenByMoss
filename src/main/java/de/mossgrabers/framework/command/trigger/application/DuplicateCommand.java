@@ -2,7 +2,7 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.command.trigger;
+package de.mossgrabers.framework.command.trigger.application;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;

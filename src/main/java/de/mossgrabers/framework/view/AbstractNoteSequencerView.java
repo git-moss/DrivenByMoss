@@ -28,6 +28,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     protected int   numDisplayCols;
     protected int   startKey       = 36;
     protected int   loopPadPressed = -1;
+    protected int   offsetY;
 
     private boolean useTrackColor;
 

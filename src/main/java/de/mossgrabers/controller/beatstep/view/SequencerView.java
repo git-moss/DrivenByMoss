@@ -24,6 +24,8 @@ public class SequencerView extends BaseSequencerView
     private static final int NUM_DISPLAY_COLS = 16;
     private static final int START_KEY        = 36;
 
+    protected int            offsetY;
+
 
     /**
      * Constructor.
@@ -75,7 +77,7 @@ public class SequencerView extends BaseSequencerView
                     this.scales.decDrumOctave ();
                     this.model.getInstrumentDevice ().getDrumPadBank ().selectPreviousPage ();
                 }
-                this.offsetY = SequencerView.START_KEY + this.scales.getDrumOctave () * 16;
+                this.offsetY = this.scales.getDrumOffset ();
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
                 break;

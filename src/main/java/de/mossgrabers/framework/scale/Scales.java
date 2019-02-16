@@ -21,6 +21,10 @@ import java.util.Map;
  */
 public class Scales
 {
+    private static final int            DRUM_NOTE_LOWER          = 4;
+    private static final int            DRUM_NOTE_UPPER          = 100;
+    private static final int            DRUM_DEFAULT_OFFSET      = 16;
+
     /** The names of notes. */
     private static final String []      NOTE_NAMES               =
     {
@@ -130,7 +134,8 @@ public class Scales
     private boolean                     chromaticOn              = false;
     private int                         shift                    = 3;
     private int                         octave                   = 0;
-    private int                         drumOctave               = 0;
+    private int                         drumOffset;
+    private int                         drumDefaultOffset;
     private int                         pianoOctave              = 0;
     private int                         startNote;
     private int                         endNote;
@@ -142,7 +147,7 @@ public class Scales
     private int                         drumNoteEnd              = DRUM_NOTE_END;
 
     private final Map<Scale, ScaleGrid> scaleGrids               = new EnumMap<> (Scale.class);
-    private IValueChanger                valueChanger;
+    private IValueChanger               valueChanger;
 
 
     /**
@@ -161,6 +166,9 @@ public class Scales
         this.endNote = endNote; // last note + 1
         this.numColumns = numColumns;
         this.numRows = numRows;
+        
+        this.drumOffset = this.drumNoteStart;
+        this.drumDefaultOffset = DRUM_DEFAULT_OFFSET;
 
         this.generateMatrices ();
     }
@@ -494,13 +502,11 @@ public class Scales
 
 
     /**
-     * Sets the octave offset for the drum layout.
-     *
-     * @param drumOctave The octave offset
+     * Resetss the octave offset for the drum layout.
      */
-    public void setDrumOctave (final int drumOctave)
+    public void resetDrumOctave ()
     {
-        this.drumOctave = Math.max (DRUM_OCTAVE_LOWER, Math.min (drumOctave, DRUM_OCTAVE_UPPER));
+        this.drumOffset = this.drumNoteStart;
     }
     
     
@@ -511,39 +517,96 @@ public class Scales
      */
     public int getDrumOffset ()
     {
-        return this.drumNoteStart + this.drumOctave * 16;    
+        return this.drumOffset;    
     }
 
-
+    
     /**
-     * Get the octave offset for the drum layout.
+     * Returns true if the drum octave can be decreased.
      *
-     * @return The octave offset
+     * @return True if the drum octave can be decreased.
      */
-    public int getDrumOctave ()
+    public boolean canScrollDrumOctaveDown ()
     {
-        return this.drumOctave;
+        
+        return this.drumOffset - this.drumDefaultOffset >= DRUM_NOTE_LOWER;
     }
-
+    
 
     /**
-     * Increases the drum layout by 1 octave.
+     * Returns true if the drum octave can be increased.
+     *
+     * @return True if the drum octave can be increased.
+     */
+    public boolean canScrollDrumOctaveUp ()
+    {
+        
+        return this.drumOffset + this.drumDefaultOffset <= DRUM_NOTE_UPPER;
+    }
+    
+
+    /**
+     * Increases the drum layout by default drum offset.
      */
     public void incDrumOctave ()
     {
-        this.setDrumOctave (this.drumOctave + 1);
+        this.drumOffset = Math.min (DRUM_NOTE_UPPER, this.drumOffset + this.drumDefaultOffset); 
     }
 
 
     /**
-     * Decreases the drum layout by 1 octave.
+     * Decreases the drum layout by the default drum offset.
      */
     public void decDrumOctave ()
     {
-        this.setDrumOctave (this.drumOctave - 1);
+        this.drumOffset = Math.max (DRUM_NOTE_LOWER, this.drumOffset - this.drumDefaultOffset); 
     }
 
 
+    /**
+     * Increases the drum layout by the given offset.
+     * 
+     * @param offset The offset by which to increase the drum offset
+     */
+    public void incDrumOffset (final int offset)
+    {
+        this.drumOffset = Math.min (100, this.drumOffset + offset); 
+    }
+
+
+    /**
+     * Decreases the drum layout by the given offset.
+     * 
+     * @param offset The offset by which to decrease the drum offset
+     */
+    public void decDrumOffset (final int offset)
+    {
+        this.drumOffset = Math.max (4, this.drumOffset - offset); 
+    }
+
+
+    /**
+     * Set the default value for de-/increasing the drum offset. 
+     *
+     * @param drumDefaultOffset The offset
+     */
+    public void setDrumDefaultOffset (final int drumDefaultOffset)
+    {
+        this.drumDefaultOffset = drumDefaultOffset;
+    }
+
+    
+    /**
+     * Get the default value for de-/increasing the drum offset. 
+     *
+     * @return The offset
+     */
+    public int getDrumDefaultOffset ()
+    {
+        return this.drumDefaultOffset;
+    }
+    
+    
     /**
      * Sets the octave offset for the piano layout.
      *

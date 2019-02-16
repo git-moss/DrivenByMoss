@@ -14,11 +14,11 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to duplicate an object (clip, track, ...) depending on the context.
+ * Start playback. Execute the new command if shifted..
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DoubleCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
+public class PlayAndNewCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     private final PlayCommand<LaunchpadControlSurface, LaunchpadConfiguration> playCommand;
     private final NewCommand<LaunchpadControlSurface, LaunchpadConfiguration>  newCommand;
@@ -30,7 +30,7 @@ public class DoubleCommand extends AbstractTriggerCommand<LaunchpadControlSurfac
      * @param model The model
      * @param surface The surface
      */
-    public DoubleCommand (final IModel model, final LaunchpadControlSurface surface)
+    public PlayAndNewCommand (final IModel model, final LaunchpadControlSurface surface)
     {
         super (model, surface);
 

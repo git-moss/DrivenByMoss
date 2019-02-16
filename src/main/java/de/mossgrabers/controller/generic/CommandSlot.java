@@ -25,6 +25,8 @@ public class CommandSlot
     public static final int TYPE_PROGRAM_CHANGE = 2;
     /** The pitch bend type. */
     public static final int TYPE_PITCH_BEND     = 3;
+    /** The MMC type. */
+    public static final int TYPE_MMC            = 4;
 
     private int             type                = -1;
     private int             number              = 0;

@@ -27,6 +27,8 @@ public enum FlexiCommand
     TRANSPORT_PLAY(CommandCategory.TRANSPORT, "Transport: Play", true),
     TRANSPORT_STOP(CommandCategory.TRANSPORT, "Transport: Stop", true),
     TRANSPORT_RESTART(CommandCategory.TRANSPORT, "Transport: Restart", true),
+    TRANSPORT_REWIND(CommandCategory.TRANSPORT, "Transport: Rewind", true),
+    TRANSPORT_FAST_FORWARD(CommandCategory.TRANSPORT, "Transport: Fast Forward", true),
     TRANSPORT_TOGGLE_REPEAT(CommandCategory.TRANSPORT, "Transport: Toggle Repeat", true),
     TRANSPORT_TOGGLE_METRONOME(CommandCategory.TRANSPORT, "Transport: Toggle Metronome", true),
     TRANSPORT_SET_METRONOME_VOLUME(CommandCategory.TRANSPORT, "Transport: Set Metronome Volume", false),

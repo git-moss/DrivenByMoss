@@ -15,7 +15,7 @@ import de.mossgrabers.framework.mode.Mode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trigger.CursorCommand<Kontrol1ControlSurface, Kontrol1Configuration>
+public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trigger.mode.CursorCommand<Kontrol1ControlSurface, Kontrol1Configuration>
 {
     /**
      * Constructor.

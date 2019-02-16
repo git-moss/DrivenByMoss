@@ -2,7 +2,7 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.apc.command.trigger;
+package de.mossgrabers.framework.command.trigger.application;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
@@ -12,29 +12,24 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Stop clip button command.
+ * Command to flip through the different panel layouts. Toggles the cursor device window if shifted.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class StopClipCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class PanelLayoutCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private int index;
-
-
     /**
      * Constructor.
      *
-     * @param index The channel index
      * @param model The model
      * @param surface The surface
      */
-    public StopClipCommand (final int index, final IModel model, final S surface)
+    public PanelLayoutCommand (final IModel model, final S surface)
     {
         super (model, surface);
-        this.index = index;
     }
 
 
@@ -43,7 +38,7 @@ public class StopClipCommand<S extends IControlSurface<C>, C extends Configurati
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getItem (this.index).stop ();
+            this.model.getCursorDevice ().toggleWindowOpen ();
     }
 
 
@@ -52,6 +47,6 @@ public class StopClipCommand<S extends IControlSurface<C>, C extends Configurati
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getItem (this.index).returnToArrangement ();
+            this.model.getApplication ().nextPanelLayout ();
     }
 }

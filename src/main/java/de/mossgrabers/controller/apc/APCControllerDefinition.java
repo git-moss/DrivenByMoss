@@ -33,7 +33,7 @@ public class APCControllerDefinition extends DefaultControllerDefinition
      */
     public APCControllerDefinition (final boolean isMkII)
     {
-        super ("", "Jürgen Moßgraber", "5.13", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "APC40 mkII" : "APC40", "Akai", 1, 1);
+        super ("", "Jürgen Moßgraber", "5.20", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "APC40 mkII" : "APC40", "Akai", 1, 1);
         this.isMkII = isMkII;
     }
 

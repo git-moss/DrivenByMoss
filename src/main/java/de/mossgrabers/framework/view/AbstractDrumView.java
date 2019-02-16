@@ -76,8 +76,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.sequencerSteps = numSequencerLines * GRID_COLUMNS;
         this.halfColumns = GRID_COLUMNS / 2;
 
-        this.offsetY = AbstractDrumView.DRUM_START_KEY;
-
         this.canScrollUp = false;
         this.canScrollDown = false;
 
@@ -121,6 +119,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final int index = note - DRUM_START_KEY;
         final int x = index % GRID_COLUMNS;
         final int y = index / GRID_COLUMNS;
+        final int offsetY = this.scales.getDrumOffset ();
 
         // Sequencer steps
         final INoteClip clip = this.getClip ();
@@ -129,7 +128,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             if (velocity != 0)
             {
                 final int col = GRID_COLUMNS * (this.allLines - 1 - y) + x;
-                clip.toggleStep (col, this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                clip.toggleStep (col, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
             }
             return;
         }
@@ -141,8 +140,8 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             final int playedPad = velocity == 0 ? -1 : this.selectedPad;
 
             // Mark selected note
-            this.keyManager.setKeyPressed (this.offsetY + this.selectedPad, velocity);
-            this.playNote (this.offsetY + this.selectedPad, velocity);
+            this.keyManager.setKeyPressed (offsetY + this.selectedPad, velocity);
+            this.playNote (offsetY + this.selectedPad, velocity);
 
             if (playedPad < 0)
                 return;
@@ -231,8 +230,10 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected String getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed, final boolean isRecording)
     {
+        final int offsetY = this.scales.getDrumOffset ();
+
         // Playing note?
-        if (this.keyManager.isKeyPressed (this.offsetY + index))
+        if (this.keyManager.isKeyPressed (offsetY + index))
             return isRecording ? AbstractDrumView.COLOR_PAD_RECORD : AbstractDrumView.COLOR_PAD_PLAY;
         // Selected?
         if (this.selectedPad == index)
@@ -283,17 +284,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     @Override
     public void onOctaveDown (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        this.keyManager.clearPressedKeys ();
-        final int oldDrumOctave = this.scales.getDrumOctave ();
-        this.scales.decDrumOctave ();
-        final int newDrumOctave = this.scales.getDrumOctave ();
-        this.offsetY = AbstractDrumView.DRUM_START_KEY + newDrumOctave * 16;
-        this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
-        if (oldDrumOctave != newDrumOctave)
-            this.model.getInstrumentDevice ().getDrumPadBank ().selectPreviousPage ();
+        this.changeOctave (event, false, this.surface.isShiftPressed () ? 4 : this.scales.getDrumDefaultOffset ());
     }
 
 
@@ -301,17 +292,29 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     @Override
     public void onOctaveUp (final ButtonEvent event)
     {
+        this.changeOctave (event, true, this.surface.isShiftPressed () ? 4 : this.scales.getDrumDefaultOffset ());
+    }
+
+
+    /**
+     * Switch the drum octave up or down.
+     *
+     * @param event The button press event
+     * @param isUp Move up if true otherwise down
+     * @param offset The offset to move up or down
+     */
+    protected void changeOctave (final ButtonEvent event, final boolean isUp, final int offset)
+    {
         if (event != ButtonEvent.DOWN)
             return;
         this.keyManager.clearPressedKeys ();
-        final int oldDrumOctave = this.scales.getDrumOctave ();
-        this.scales.incDrumOctave ();
-        final int newDrumOctave = this.scales.getDrumOctave ();
-        this.offsetY = AbstractDrumView.DRUM_START_KEY + newDrumOctave * 16;
+        if (isUp)
+            this.scales.incDrumOffset (offset);
+        else
+            this.scales.decDrumOffset (offset);
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
-        if (oldDrumOctave != newDrumOctave)
-            this.model.getInstrumentDevice ().getDrumPadBank ().selectNextPage ();
+        this.model.getInstrumentDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), false);
     }
 
 
@@ -362,7 +365,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
         this.updateNoteMapping ();
-        this.getClip ().clearRow (this.offsetY + playedPad);
+        this.getClip ().clearRow (this.scales.getDrumOffset () + playedPad);
     }
 
 
@@ -440,7 +443,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
         for (int col = 0; col < this.sequencerSteps; col++)
         {
-            final int isSet = clip.getStep (col, this.offsetY + this.selectedPad);
+            final int isSet = clip.getStep (col, this.scales.getDrumOffset () + this.selectedPad);
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;

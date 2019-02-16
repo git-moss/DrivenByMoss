@@ -90,21 +90,21 @@ import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
+import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
-import de.mossgrabers.framework.command.trigger.ButtonRowModeCommand;
-import de.mossgrabers.framework.command.trigger.CursorCommand;
-import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
-import de.mossgrabers.framework.command.trigger.DuplicateCommand;
-import de.mossgrabers.framework.command.trigger.KnobRowTouchModeCommand;
-import de.mossgrabers.framework.command.trigger.NopCommand;
-import de.mossgrabers.framework.command.trigger.RepeatCommand;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
+import de.mossgrabers.framework.command.trigger.application.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.ConvertCommand;
 import de.mossgrabers.framework.command.trigger.clip.DoubleCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.clip.NoteRepeatCommand;
 import de.mossgrabers.framework.command.trigger.clip.StopAllClipsCommand;
 import de.mossgrabers.framework.command.trigger.device.AddEffectCommand;
+import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
+import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
+import de.mossgrabers.framework.command.trigger.mode.CursorCommand.Direction;
+import de.mossgrabers.framework.command.trigger.mode.KnobRowTouchModeCommand;
 import de.mossgrabers.framework.command.trigger.track.AddTrackCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
@@ -493,7 +493,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         else
             this.addTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, PushControlSurface.PUSH_BUTTON_SESSION, new NopCommand<> (this.model, surface));
 
-        final TriggerCommand repeatCommand = this.host.hasRepeat () ? new RepeatCommand<> (this.model, surface) : new NopCommand<> (this.model, surface);
+        final TriggerCommand repeatCommand = this.host.hasRepeat () ? new NoteRepeatCommand<> (this.model, surface) : new NopCommand<> (this.model, surface);
         this.addTriggerCommand (Commands.COMMAND_REPEAT, PushControlSurface.PUSH_BUTTON_REPEAT, repeatCommand);
     }
 
@@ -743,7 +743,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             viewManager.getActiveView ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
-        this.scales.setDrumOctave (0);
+        this.scales.resetDrumOctave ();
         if (viewManager.isActiveView (Views.VIEW_DRUM))
             viewManager.getView (Views.VIEW_DRUM).updateNoteMapping ();
     }

@@ -36,6 +36,6 @@ public class PlayPositionCommand<S extends IControlSurface<C>, C extends Configu
     @Override
     public void execute (final int value)
     {
-        this.model.getTransport ().changePosition (value <= 61);
+        this.model.getTransport ().changePosition (this.model.getValueChanger ().calcKnobSpeed (value) > 0);
     }
 }

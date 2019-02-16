@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.apcmini;
 
-import de.mossgrabers.controller.apcmini.command.trigger.ShiftCommand;
 import de.mossgrabers.controller.apcmini.command.trigger.TrackSelectCommand;
 import de.mossgrabers.controller.apcmini.controller.APCminiColors;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
@@ -20,6 +19,7 @@ import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
+import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
@@ -200,7 +200,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     protected void registerTriggerCommands ()
     {
         final APCminiControlSurface surface = this.getSurface ();
-        this.addNoteCommand (Commands.COMMAND_SHIFT, APCminiControlSurface.APC_BUTTON_SHIFT, new ShiftCommand (this.model, surface));
+        this.addNoteCommand (Commands.COMMAND_SHIFT, APCminiControlSurface.APC_BUTTON_SHIFT, new ToggleShiftViewCommand<> (this.model, surface));
         for (int i = 0; i < 8; i++)
         {
             this.addNoteCommand (Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, new TrackSelectCommand (i, this.model, surface));
@@ -311,7 +311,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
             viewManager.getActiveView ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
-        this.scales.setDrumOctave (0);
+        this.scales.resetDrumOctave ();
         if (viewManager.isActiveView (Views.VIEW_DRUM))
             viewManager.getView (Views.VIEW_DRUM).updateNoteMapping ();
     }

@@ -68,6 +68,9 @@ public class XboxControllerSetup extends AbstractControllerSetup<XboxControlSurf
     @Override
     protected void createSurface ()
     {
+        final IHost host = this.model.getHost ();
+        // final XboxUsbDevice usbDevice = new XboxUsbDevice (host);
+
         final XboxControlSurface surface = new XboxControlSurface (this.model.getHost (), this.colorManager, this.configuration);
         this.surfaces.add (surface);
         // TODO

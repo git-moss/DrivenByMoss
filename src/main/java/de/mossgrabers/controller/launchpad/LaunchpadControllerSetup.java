@@ -6,12 +6,12 @@ package de.mossgrabers.controller.launchpad;
 
 import de.mossgrabers.controller.launchpad.command.continuous.FaderCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.ClickCommand;
-import de.mossgrabers.controller.launchpad.command.trigger.DoubleCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.LPSceneCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.LaunchpadCursorCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.LaunchpadDuplicateCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.MuteCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.PanCommand;
+import de.mossgrabers.controller.launchpad.command.trigger.PlayAndNewCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.RecordArmCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.SelectDeviceViewCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.SelectNoteViewCommand;
@@ -46,12 +46,12 @@ import de.mossgrabers.controller.launchpad.view.ShiftView;
 import de.mossgrabers.controller.launchpad.view.VolumeView;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
-import de.mossgrabers.framework.command.trigger.CursorCommand.Direction;
-import de.mossgrabers.framework.command.trigger.NopCommand;
+import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
+import de.mossgrabers.framework.command.trigger.mode.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -220,7 +220,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.addTriggerCommand (Commands.COMMAND_DELETE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DELETE, new DeleteCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_QUANTIZE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_QUANTIZE, new QuantizeCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_DUPLICATE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE, new LaunchpadDuplicateCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_DOUBLE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DOUBLE, new DoubleCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_DOUBLE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DOUBLE, new PlayAndNewCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_RECORD, LaunchpadControlSurface.LAUNCHPAD_BUTTON_RECORD, new RecordCommand<> (this.model, surface));
 
         final ViewManager viewManager = surface.getViewManager ();
@@ -419,7 +419,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
             viewManager.getActiveView ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
-        this.scales.setDrumOctave (0);
+        this.scales.resetDrumOctave ();
         if (viewManager.isActiveView (Views.VIEW_DRUM))
             viewManager.getView (Views.VIEW_DRUM).updateNoteMapping ();
     }

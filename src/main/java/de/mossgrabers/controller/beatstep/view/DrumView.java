@@ -13,7 +13,6 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.scale.Scales;
 
 
 /**
@@ -35,8 +34,6 @@ public class DrumView extends BaseSequencerView
     public DrumView (final BeatstepControlSurface surface, final IModel model)
     {
         super ("Drum", surface, model, 128, DrumView.NUM_DISPLAY_COLS);
-
-        this.offsetY = Scales.DRUM_NOTE_START;
 
         final ITrackBank tb = model.getTrackBank ();
         // Light notes send from the sequencer
@@ -75,7 +72,6 @@ public class DrumView extends BaseSequencerView
                     this.scales.decDrumOctave ();
                     this.model.getInstrumentDevice ().getDrumPadBank ().selectPreviousPage ();
                 }
-                this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
                 break;
@@ -104,17 +100,18 @@ public class DrumView extends BaseSequencerView
 
         final int index = note - 36;
 
+        final int offsetY = this.scales.getDrumOffset ();
         if (this.isPlayMode)
         {
             this.selectedPad = index; // 0-16
 
             // Mark selected note
-            this.keyManager.setKeyPressed (this.offsetY + this.selectedPad, velocity);
+            this.keyManager.setKeyPressed (offsetY + this.selectedPad, velocity);
         }
         else
         {
             if (velocity != 0)
-                this.getClip ().toggleStep (index < 8 ? index + 8 : index - 8, this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                this.getClip ().toggleStep (index < 8 ? index + 8 : index - 8, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
         }
     }
 
@@ -162,21 +159,21 @@ public class DrumView extends BaseSequencerView
                     padGrid.lightEx (x, y, this.getPadColor (index, primary, isSoloed));
                 }
             }
+            return;
         }
-        else
+
+        final INoteClip clip = this.getClip ();
+        // Paint the sequencer steps
+        final int step = clip.getCurrentStep ();
+        final int hiStep = this.isInXRange (step) ? step % DrumView.NUM_DISPLAY_COLS : -1;
+        final int offsetY = this.scales.getDrumOffset ();
+        for (int col = 0; col < DrumView.NUM_DISPLAY_COLS; col++)
         {
-            final INoteClip clip = this.getClip ();
-            // Paint the sequencer steps
-            final int step = clip.getCurrentStep ();
-            final int hiStep = this.isInXRange (step) ? step % DrumView.NUM_DISPLAY_COLS : -1;
-            for (int col = 0; col < DrumView.NUM_DISPLAY_COLS; col++)
-            {
-                final int isSet = clip.getStep (col, this.offsetY + this.selectedPad);
-                final boolean hilite = col == hiStep;
-                final int x = col % 8;
-                final int y = col / 8;
-                padGrid.lightEx (x, 1 - y, getSequencerPadColor (isSet, hilite));
-            }
+            final int isSet = clip.getStep (col, offsetY + this.selectedPad);
+            final boolean hilite = col == hiStep;
+            final int x = col % 8;
+            final int y = col / 8;
+            padGrid.lightEx (x, 1 - y, getSequencerPadColor (isSet, hilite));
         }
     }
 
@@ -191,8 +188,9 @@ public class DrumView extends BaseSequencerView
 
     private int getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed)
     {
+        final int offsetY = this.scales.getDrumOffset ();
         // Playing note?
-        if (this.keyManager.isKeyPressed (this.offsetY + index))
+        if (this.keyManager.isKeyPressed (offsetY + index))
             return BeatstepColors.BEATSTEP_BUTTON_STATE_PINK;
         // Selected?
         if (this.selectedPad == index)

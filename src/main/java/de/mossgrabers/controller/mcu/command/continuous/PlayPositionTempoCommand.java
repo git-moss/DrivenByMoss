@@ -34,7 +34,7 @@ public class PlayPositionTempoCommand extends PlayPositionCommand<MCUControlSurf
     public void execute (final int value)
     {
         if (this.surface.isPressed (MCUControlSurface.MCU_OPTION))
-            this.model.getTransport ().changeTempo (value <= 61);
+            this.model.getTransport ().changeTempo (this.model.getValueChanger ().calcKnobSpeed (value) > 0);
         else
             super.execute (value);
     }

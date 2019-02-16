@@ -4,19 +4,23 @@
 
 package de.mossgrabers.controller.apc.command.trigger;
 
-import de.mossgrabers.controller.apc.APCConfiguration;
-import de.mossgrabers.controller.apc.controller.APCControlSurface;
+import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * The browser command.
+ * Stop all playing clips. Activate the browser if shifted.
+ *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BankRightCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
+public class StopAllClipsOrBrowseCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -24,7 +28,7 @@ public class BankRightCommand extends AbstractTriggerCommand<APCControlSurface, 
      * @param model The model
      * @param surface The surface
      */
-    public BankRightCommand (final IModel model, final APCControlSurface surface)
+    public StopAllClipsOrBrowseCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }
@@ -35,7 +39,7 @@ public class BankRightCommand extends AbstractTriggerCommand<APCControlSurface, 
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
+            this.model.getCurrentTrackBank ().stop ();
     }
 
 
@@ -43,7 +47,6 @@ public class BankRightCommand extends AbstractTriggerCommand<APCControlSurface, 
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.model.getCursorDevice ().selectNext ();
+        this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_BROWSE).executeNormal (event);
     }
 }

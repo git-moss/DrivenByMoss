@@ -19,7 +19,6 @@ import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.Views;
@@ -55,7 +54,6 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         this.transportControl = new TransportControl (surface, model);
 
-        this.offsetY = Scales.DRUM_NOTE_START;
         this.selectedPad = 0;
 
         this.pressedKeys = new int [128];
@@ -122,7 +120,6 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
                 this.clearPressedKeys ();
                 this.scales.decDrumOctave ();
                 this.model.getInstrumentDevice ().getDrumPadBank ().selectPreviousPage ();
-                this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
                 break;
@@ -132,7 +129,6 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
                 this.clearPressedKeys ();
                 this.scales.incDrumOctave ();
                 this.model.getInstrumentDevice ().getDrumPadBank ().selectNextPage ();
-                this.offsetY = Scales.DRUM_NOTE_START + this.scales.getDrumOctave () * 16;
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
                 break;
@@ -349,25 +345,25 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
                         this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW3_1 + x, color);
                 }
             }
+            return;
         }
-        else
+
+        final INoteClip clip = this.getClip ();
+        // Paint the sequencer steps
+        final int step = clip.getCurrentStep ();
+        final int hiStep = this.isInXRange (step) ? step % PlayView.NUM_DISPLAY_COLS : -1;
+        final int offsetY = this.scales.getDrumOffset ();
+        for (int col = 0; col < PlayView.NUM_DISPLAY_COLS; col++)
         {
-            final INoteClip clip = this.getClip ();
-            // Paint the sequencer steps
-            final int step = clip.getCurrentStep ();
-            final int hiStep = this.isInXRange (step) ? step % PlayView.NUM_DISPLAY_COLS : -1;
-            for (int col = 0; col < PlayView.NUM_DISPLAY_COLS; col++)
-            {
-                final int isSet = clip.getStep (col, this.offsetY + this.selectedPad);
-                final boolean hilite = col == hiStep;
-                final int x = col % 8;
-                final double y = col / 8.0;
-                final int color = isSet > 0 ? SLControlSurface.MKII_BUTTON_STATE_ON : hilite ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
-                if (y == 0)
-                    this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW3_1 + x, color);
-                else
-                    this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW4_1 + x, color);
-            }
+            final int isSet = clip.getStep (col, offsetY + this.selectedPad);
+            final boolean hilite = col == hiStep;
+            final int x = col % 8;
+            final double y = col / 8.0;
+            final int color = isSet > 0 ? SLControlSurface.MKII_BUTTON_STATE_ON : hilite ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+            if (y == 0)
+                this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW3_1 + x, color);
+            else
+                this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROW4_1 + x, color);
         }
     }
 
@@ -395,19 +391,20 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         final int index = note - 36;
 
+        final int offsetY = this.scales.getDrumOffset ();
         if (this.isPlayMode)
         {
             this.selectedPad = index; // 0-16
 
             // Mark selected note
-            this.pressedKeys[this.offsetY + this.selectedPad] = velocity;
+            this.pressedKeys[offsetY + this.selectedPad] = velocity;
 
             this.surface.sendMidiEvent (0x90, this.keyManager.map (note), velocity);
         }
         else
         {
             if (velocity != 0)
-                this.getClip ().toggleStep (index < 8 ? index + 8 : index - 8, this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                this.getClip ().toggleStep (index < 8 ? index + 8 : index - 8, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
         }
     }
 
@@ -422,8 +419,9 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
     private int getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed)
     {
+        final int offsetY = this.scales.getDrumOffset ();
         // Playing note?
-        if (this.pressedKeys[this.offsetY + index] > 0)
+        if (this.pressedKeys[offsetY + index] > 0)
             return SLControlSurface.MKII_BUTTON_STATE_ON;
         // Selected?
         if (this.selectedPad == index)

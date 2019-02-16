@@ -48,7 +48,7 @@ public class DrumView8 extends DrumViewBase
         final int sound = y + this.soundOffset;
         final int col = x;
 
-        this.getClip ().toggleStep (col, this.offsetY + this.selectedPad + sound, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+        this.getClip ().toggleStep (col, this.scales.getDrumOffset () + this.selectedPad + sound, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
     }
 
 
@@ -72,11 +72,12 @@ public class DrumView8 extends DrumViewBase
         final int greenHi = isPush2 ? PushColors.PUSH2_COLOR2_GREEN_HI : PushColors.PUSH1_COLOR2_GREEN_HI;
         final int off = isPush2 ? PushColors.PUSH2_COLOR2_BLACK : PushColors.PUSH1_COLOR2_BLACK;
         final int hiStep = this.isInXRange (step) ? step % DrumView8.NUM_DISPLAY_COLS : -1;
+        final int offsetY = this.scales.getDrumOffset ();
         for (int sound = 0; sound < 8; sound++)
         {
             for (int col = 0; col < DrumView8.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = this.getClip ().getStep (col, this.offsetY + this.selectedPad + sound + this.soundOffset);
+                final int isSet = this.getClip ().getStep (col, offsetY + this.selectedPad + sound + this.soundOffset);
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
                 int y = col / 8;

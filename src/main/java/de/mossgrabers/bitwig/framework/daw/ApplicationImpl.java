@@ -92,6 +92,22 @@ public class ApplicationImpl implements IApplication
 
     /** {@inheritDoc} */
     @Override
+    public void previousPanelLayout ()
+    {
+        this.application.previousPanelLayout ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void nextPanelLayout ()
+    {
+        this.application.nextPanelLayout ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isArrangeLayout ()
     {
         return PANEL_LAYOUT_ARRANGE.equals (this.getPanelLayout ());

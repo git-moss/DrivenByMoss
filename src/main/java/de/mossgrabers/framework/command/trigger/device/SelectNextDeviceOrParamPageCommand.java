@@ -2,49 +2,51 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.command.trigger;
+package de.mossgrabers.framework.command.trigger.device;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to delegate the touching of a knob/fader row to the active mode.
+ * Selects the next parameter page or device if shifted.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class KnobRowTouchModeCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class SelectNextDeviceOrParamPageCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private int index;
-
-
     /**
      * Constructor.
      *
-     * @param index The index of the button
      * @param model The model
      * @param surface The surface
      */
-    public KnobRowTouchModeCommand (final int index, final IModel model, final S surface)
+    public SelectNextDeviceOrParamPageCommand (final IModel model, final S surface)
     {
         super (model, surface);
-        this.index = index;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void executeNormal (final ButtonEvent event)
     {
-        final Mode m = this.surface.getModeManager ().getActiveOrTempMode ();
-        if (m != null && event != ButtonEvent.LONG)
-            m.onKnobTouch (this.index, event == ButtonEvent.DOWN);
+        if (event == ButtonEvent.DOWN)
+            this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.DOWN)
+            this.model.getCursorDevice ().selectNext ();
     }
 }

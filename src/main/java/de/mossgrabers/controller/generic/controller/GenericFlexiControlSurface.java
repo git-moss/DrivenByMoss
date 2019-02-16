@@ -9,6 +9,7 @@ import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
+import de.mossgrabers.framework.command.trigger.transport.WindCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.Relative2ValueChanger;
@@ -33,6 +34,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,22 +50,26 @@ import java.util.List;
  */
 public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFlexiConfiguration>
 {
-    private static final int           KNOB_MODE_ABSOLUTE    = 0;
-    private static final int           KNOB_MODE_RELATIVE1   = 1;
-    private static final int           KNOB_MODE_RELATIVE2   = 2;
-    private static final int           KNOB_MODE_RELATIVE3   = 3;
+    private static final int                                                         KNOB_MODE_ABSOLUTE        = 0;
+    private static final int                                                         KNOB_MODE_RELATIVE1       = 1;
+    private static final int                                                         KNOB_MODE_RELATIVE2       = 2;
+    private static final int                                                         KNOB_MODE_RELATIVE3       = 3;
+    private static final int                                                         KNOB_MODE_ABSOLUTE_TOGGLE = 4;
 
-    protected static final int         SCROLL_RATE           = 6;
-    private static final List<Integer> MODE_IDS              = new ArrayList<> ();
+    protected static final int                                                       SCROLL_RATE               = 6;
+    private static final List<Integer>                                               MODE_IDS                  = new ArrayList<> ();
 
-    private int                        movementCounter       = 0;
+    private int                                                                      movementCounter           = 0;
 
-    private final IModel               model;
-    private final IValueChanger        relative2ValueChanger = new Relative2ValueChanger (128, 1, 0.5);
-    private final IValueChanger        relative3ValueChanger = new Relative3ValueChanger (128, 1, 0.5);
-    private final int []               valueCache            = new int [GenericFlexiConfiguration.NUM_SLOTS];
-    private boolean                    isUpdatingValue       = false;
-    private final TriggerCommand       toggleTrackBankCommand;
+    private final IModel                                                             model;
+    private final IValueChanger                                                      relative2ValueChanger     = new Relative2ValueChanger (128, 1, 0.5);
+    private final IValueChanger                                                      relative3ValueChanger     = new Relative3ValueChanger (128, 1, 0.5);
+    private final int []                                                             valueCache                = new int [GenericFlexiConfiguration.NUM_SLOTS];
+    private boolean                                                                  isUpdatingValue           = false;
+    private final TriggerCommand                                                     toggleTrackBankCommand;
+
+    private final WindCommand<GenericFlexiControlSurface, GenericFlexiConfiguration> rwdCommand;
+    private final WindCommand<GenericFlexiControlSurface, GenericFlexiConfiguration> ffwdCommand;
 
     static
     {
@@ -103,6 +109,29 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
         this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_EXPORT, this::importFile);
         this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_IMPORT, this::exportFile);
+
+        this.rwdCommand = new WindCommand<> (this.model, this, false);
+        this.ffwdCommand = new WindCommand<> (this.model, this, true);
+
+        this.input.setSysexCallback (this::handleSysEx);
+    }
+
+
+    private void handleSysEx (final String dataStr)
+    {
+        final int [] data = StringUtils.fromHexStr (dataStr);
+        if (data.length != 6 || data[0] != 0xF0 || data[1] != 0x7F || data[3] != 0x06 || data[5] != 0xF7)
+            return;
+
+        final int channel = data[2];
+        final int number = data[4];
+
+        this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_MMC + 1], number, channel);
+        final int slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_MMC, number, channel);
+        if (slotIndex == -1)
+            return;
+        this.handleCommand (slotIndex, 127);
+        this.handleCommand (slotIndex, 0);
     }
 
 
@@ -595,6 +624,10 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final Mode mode = this.modeManager.getActiveOrTempMode ();
         if (mode == null)
             return;
+
+        final int knobMode = commandSlot.getKnobMode ();
+        final boolean isButtonPressed = knobMode == KNOB_MODE_ABSOLUTE_TOGGLE || (knobMode == KNOB_MODE_ABSOLUTE && value > 0);
+
         switch (command)
         {
             case OFF:
@@ -603,276 +636,282 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
             // Global: Undo
             case GLOBAL_UNDO:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().undo ();
                 break;
             // Global: Redo
             case GLOBAL_REDO:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().redo ();
                 break;
             // Global: Previous Project
             case GLOBAL_PREVIOUS_PROJECT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getProject ().previous ();
                 break;
             // Global: Next Project
             case GLOBAL_NEXT_PROJECT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getProject ().next ();
                 break;
             // Global: Toggle Audio Engine
             case GLOBAL_TOGGLE_AUDIO_ENGINE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().toggleEngineActive ();
                 break;
 
             // Transport: Play
             case TRANSPORT_PLAY:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().play ();
                 break;
             // Transport: Stop
             case TRANSPORT_STOP:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().stop ();
                 break;
             // Transport: Restart
             case TRANSPORT_RESTART:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().restart ();
+                break;
+            case TRANSPORT_REWIND:
+                this.rwdCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP);
+                break;
+            case TRANSPORT_FAST_FORWARD:
+                this.ffwdCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP);
                 break;
             // Transport: Toggle Repeat
             case TRANSPORT_TOGGLE_REPEAT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().toggleLoop ();
                 break;
             // Transport: Toggle Metronome
             case TRANSPORT_TOGGLE_METRONOME:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().toggleMetronome ();
                 break;
             // Transport: Set Metronome Volume
             case TRANSPORT_SET_METRONOME_VOLUME:
-                this.handleMetronomeVolume (commandSlot.getKnobMode (), value);
+                this.handleMetronomeVolume (knobMode, value);
                 break;
             // Transport: Toggle Metronome in Pre-roll
             case TRANSPORT_TOGGLE_METRONOME_IN_PREROLL:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().togglePrerollMetronome ();
                 break;
             // Transport: Toggle Punch In
             case TRANSPORT_TOGGLE_PUNCH_IN:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().togglePunchIn ();
                 break;
             // Transport: Toggle Punch Out
             case TRANSPORT_TOGGLE_PUNCH_OUT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().togglePunchOut ();
                 break;
             // Transport: Toggle Record
             case TRANSPORT_TOGGLE_RECORD:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().record ();
                 break;
             // Transport: Toggle Arranger Overdub
             case TRANSPORT_TOGGLE_ARRANGER_OVERDUB:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().toggleOverdub ();
                 break;
             // Transport: Toggle Clip Overdub
             case TRANSPORT_TOGGLE_CLIP_OVERDUB:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().toggleLauncherOverdub ();
                 break;
             // Transport: Toggle Arranger Automation Write
             case TRANSPORT_TOGGLE_ARRANGER_AUTOMATION_WRITE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().toggleWriteArrangerAutomation ();
                 break;
             // Transport: Toggle Clip Automation Write
             case TRANSPORT_TOGGLE_CLIP_AUTOMATION_WRITE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().toggleWriteClipLauncherAutomation ();
                 break;
             // Transport: Set Write Mode: Latch
             case TRANSPORT_SET_WRITE_MODE_LATCH:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[0]);
                 break;
             // Transport: Set Write Mode: Touch
             case TRANSPORT_SET_WRITE_MODE_TOUCH:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[1]);
                 break;
             // Transport: Set Write Mode: Write
             case TRANSPORT_SET_WRITE_MODE_WRITE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[2]);
                 break;
             // Transport: Set Tempo
             case TRANSPORT_SET_TEMPO:
-                this.handleTempo (commandSlot.getKnobMode (), value);
+                this.handleTempo (knobMode, value);
                 break;
             // Transport: Tap Tempo
             case TRANSPORT_TAP_TEMPO:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTransport ().tapTempo ();
                 break;
             // Transport: Move Play Cursor
             case TRANSPORT_MOVE_PLAY_CURSOR:
-                this.handlePlayCursor (commandSlot.getKnobMode (), value);
+                this.handlePlayCursor (knobMode, value);
                 break;
 
             // Layout: Set Arrange Layout
             case LAYOUT_SET_ARRANGE_LAYOUT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_ARRANGE);
                 break;
             // Layout: Set Mix Layout
             case LAYOUT_SET_MIX_LAYOUT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_MIX);
                 break;
             // Layout: Set Edit Layout
             case LAYOUT_SET_EDIT_LAYOUT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_EDIT);
                 break;
             // Layout: Toggle Note Editor
             case LAYOUT_TOGGLE_NOTE_EDITOR:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().toggleNoteEditor ();
                 break;
             // Layout: Toggle Automation Editor
             case LAYOUT_TOGGLE_AUTOMATION_EDITOR:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().toggleAutomationEditor ();
                 break;
             // Layout: Toggle Devices Panel
             case LAYOUT_TOGGLE_DEVICES_PANEL:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().toggleDevices ();
                 break;
             // Layout: Toggle Mixer Panel
             case LAYOUT_TOGGLE_MIXER_PANEL:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().toggleMixer ();
                 break;
             // Layout: Toggle Fullscreen
             case LAYOUT_TOGGLE_FULLSCREEN:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().toggleFullScreen ();
                 break;
             // Layout: Toggle Arranger Cue Markers
             case LAYOUT_TOGGLE_ARRANGER_CUE_MARKERS:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getArranger ().toggleCueMarkerVisibility ();
                 break;
             // Layout: Toggle Arranger Playback Follow
             case LAYOUT_TOGGLE_ARRANGER_PLAYBACK_FOLLOW:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getArranger ().togglePlaybackFollow ();
                 break;
             // Layout: Toggle Arranger Track Row Height
             case LAYOUT_TOGGLE_ARRANGER_TRACK_ROW_HEIGHT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getArranger ().toggleTrackRowHeight ();
                 break;
             // Layout: Toggle Arranger Clip Launcher Section
             case LAYOUT_TOGGLE_ARRANGER_CLIP_LAUNCHER_SECTION:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getArranger ().toggleClipLauncher ();
                 break;
             // Layout: Toggle Arranger Time Line
             case LAYOUT_TOGGLE_ARRANGER_TIME_LINE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getArranger ().toggleTimeLine ();
                 break;
             // Layout: Toggle Arranger IO Section
             case LAYOUT_TOGGLE_ARRANGER_IO_SECTION:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getArranger ().toggleIoSection ();
                 break;
             // Layout: Toggle Arranger Effect Tracks
             case LAYOUT_TOGGLE_ARRANGER_EFFECT_TRACKS:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getArranger ().toggleEffectTracks ();
                 break;
             // Layout: Toggle Mixer Clip Launcher Section
             case LAYOUT_TOGGLE_MIXER_CLIP_LAUNCHER_SECTION:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getMixer ().toggleClipLauncherSectionVisibility ();
                 break;
             // Layout: Toggle Mixer Cross Fade Section
             case LAYOUT_TOGGLE_MIXER_CROSS_FADE_SECTION:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getMixer ().toggleCrossFadeSectionVisibility ();
                 break;
             // Layout: Toggle Mixer Device Section
             case LAYOUT_TOGGLE_MIXER_DEVICE_SECTION:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getMixer ().toggleDeviceSectionVisibility ();
                 break;
             // Layout: Toggle Mixer sendsSection
             case LAYOUT_TOGGLE_MIXER_SENDSSECTION:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getMixer ().toggleSendsSectionVisibility ();
                 break;
             // Layout: Toggle Mixer IO Section
             case LAYOUT_TOGGLE_MIXER_IO_SECTION:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getMixer ().toggleIoSectionVisibility ();
                 break;
             // Layout: Toggle Mixer Meter Section
             case LAYOUT_TOGGLE_MIXER_METER_SECTION:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getMixer ().toggleMeterSectionVisibility ();
                 break;
 
             case TRACK_TOGGLE_TRACK_BANK:
-                if (value > 0)
+                if (isButtonPressed)
                     this.toggleTrackBankCommand.execute (ButtonEvent.DOWN);
                 break;
             // Track: Add Audio Track
             case TRACK_ADD_AUDIO_TRACK:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().addAudioTrack ();
                 break;
             // Track: Add Effect Track
             case TRACK_ADD_EFFECT_TRACK:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().addEffectTrack ();
                 break;
             // Track: Add Instrument Track
             case TRACK_ADD_INSTRUMENT_TRACK:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getApplication ().addInstrumentTrack ();
                 break;
             // Track: Select Previous Bank Page
             case TRACK_SELECT_PREVIOUS_BANK_PAGE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.scrollTrackLeft (true);
                 break;
             // Track: Select Next Bank Page
             case TRACK_SELECT_NEXT_BANK_PAGE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.scrollTrackRight (true);
                 break;
             // Track: Select Previous Track
             case TRACK_SELECT_PREVIOUS_TRACK:
-                if (value > 0)
+                if (isButtonPressed)
                     this.scrollTrackLeft (false);
                 break;
             // Track: Select Next Track
             case TRACK_SELECT_NEXT_TRACK:
-                if (value > 0)
+                if (isButtonPressed)
                     this.scrollTrackRight (false);
                 break;
 
             case TRACK_SCROLL_TRACKS:
-                this.scrollTrack (commandSlot.getKnobMode (), value);
+                this.scrollTrack (knobMode, value);
                 break;
 
             // Track 1-8: Select
@@ -884,7 +923,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SELECT:
             case TRACK_7_SELECT:
             case TRACK_8_SELECT:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     final ITrack track = this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ());
                     track.select ();
@@ -900,11 +939,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_ACTIVE:
             case TRACK_7_TOGGLE_ACTIVE:
             case TRACK_8_TOGGLE_ACTIVE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).toggleIsActivated ();
                 break;
             case TRACK_SELECTED_TOGGLE_ACTIVE:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     final ITrack selectedTrack = this.model.getSelectedTrack ();
                     if (selectedTrack != null)
@@ -920,11 +959,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_VOLUME:
             case TRACK_7_SET_VOLUME:
             case TRACK_8_SET_VOLUME:
-                this.changeTrackVolume (commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.TRACK_1_SET_VOLUME.ordinal (), value);
+                this.changeTrackVolume (knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_VOLUME.ordinal (), value);
                 break;
             // Track Selected: Set Volume Track
             case TRACK_SELECTED_SET_VOLUME_TRACK:
-                this.changeTrackVolume (commandSlot.getKnobMode (), -1, value);
+                this.changeTrackVolume (knobMode, -1, value);
                 break;
             // Track 1-8: Set Panorama
             case TRACK_1_SET_PANORAMA:
@@ -935,11 +974,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_PANORAMA:
             case TRACK_7_SET_PANORAMA:
             case TRACK_8_SET_PANORAMA:
-                this.changeTrackPanorama (commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.TRACK_1_SET_PANORAMA.ordinal (), value);
+                this.changeTrackPanorama (knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_PANORAMA.ordinal (), value);
                 break;
             // Track Selected: Set Panorama
             case TRACK_SELECTED_SET_PANORAMA:
-                this.changeTrackPanorama (commandSlot.getKnobMode (), -1, value);
+                this.changeTrackPanorama (knobMode, -1, value);
                 break;
             // Track 1-8: Toggle Mute
             case TRACK_1_TOGGLE_MUTE:
@@ -950,12 +989,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_MUTE:
             case TRACK_7_TOGGLE_MUTE:
             case TRACK_8_TOGGLE_MUTE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).toggleMute ();
                 break;
             // Track Selected: Toggle Mute
             case TRACK_SELECTED_TOGGLE_MUTE:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     final ITrack selectedTrack = this.model.getSelectedTrack ();
                     if (selectedTrack != null)
@@ -971,12 +1010,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_SOLO:
             case TRACK_7_TOGGLE_SOLO:
             case TRACK_8_TOGGLE_SOLO:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).toggleSolo ();
                 break;
             // Track Selected: Toggle Solo
             case TRACK_SELECTED_TOGGLE_SOLO:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     final ITrack selectedTrack = this.model.getSelectedTrack ();
                     if (selectedTrack != null)
@@ -992,12 +1031,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_ARM:
             case TRACK_7_TOGGLE_ARM:
             case TRACK_8_TOGGLE_ARM:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).toggleRecArm ();
                 break;
             // Track Selected: Toggle Arm
             case TRACK_SELECTED_TOGGLE_ARM:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     final ITrack selectedTrack = this.model.getSelectedTrack ();
                     if (selectedTrack != null)
@@ -1013,12 +1052,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_MONITOR:
             case TRACK_7_TOGGLE_MONITOR:
             case TRACK_8_TOGGLE_MONITOR:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).toggleMonitor ();
                 break;
             // Track Selected: Toggle Monitor
             case TRACK_SELECTED_TOGGLE_MONITOR:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     final ITrack selectedTrack = this.model.getSelectedTrack ();
                     if (selectedTrack != null)
@@ -1034,12 +1073,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_TOGGLE_AUTO_MONITOR:
             case TRACK_7_TOGGLE_AUTO_MONITOR:
             case TRACK_8_TOGGLE_AUTO_MONITOR:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).toggleAutoMonitor ();
                 break;
             // Track Selected: Toggle Auto Monitor
             case TRACK_SELECTED_TOGGLE_AUTO_MONITOR:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     final ITrack selectedTrack = this.model.getSelectedTrack ();
                     if (selectedTrack != null)
@@ -1056,7 +1095,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_1:
             case TRACK_7_SET_SEND_1:
             case TRACK_8_SET_SEND_1:
-                this.changeSendVolume (0, commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal (), value);
+                this.changeSendVolume (0, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal (), value);
                 break;
 
             // Track 1-8: Set Send 2
@@ -1068,7 +1107,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_2:
             case TRACK_7_SET_SEND_2:
             case TRACK_8_SET_SEND_2:
-                this.changeSendVolume (1, commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_2.ordinal (), value);
+                this.changeSendVolume (1, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_2.ordinal (), value);
                 break;
 
             // Track 1-8: Set Send 3
@@ -1080,7 +1119,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_3:
             case TRACK_7_SET_SEND_3:
             case TRACK_8_SET_SEND_3:
-                this.changeSendVolume (2, commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_3.ordinal (), value);
+                this.changeSendVolume (2, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_3.ordinal (), value);
                 break;
 
             // Track 1-8: Set Send 4
@@ -1092,7 +1131,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_4:
             case TRACK_7_SET_SEND_4:
             case TRACK_8_SET_SEND_4:
-                this.changeSendVolume (3, commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_4.ordinal (), value);
+                this.changeSendVolume (3, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_4.ordinal (), value);
                 break;
 
             // Track 1: Set Send 5
@@ -1104,7 +1143,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_5:
             case TRACK_7_SET_SEND_5:
             case TRACK_8_SET_SEND_5:
-                this.changeSendVolume (4, commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_5.ordinal (), value);
+                this.changeSendVolume (4, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_5.ordinal (), value);
                 break;
 
             // Track 1: Set Send 6
@@ -1116,7 +1155,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_6:
             case TRACK_7_SET_SEND_6:
             case TRACK_8_SET_SEND_6:
-                this.changeSendVolume (5, commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_6.ordinal (), value);
+                this.changeSendVolume (5, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_6.ordinal (), value);
                 break;
 
             // Track 1-8: Set Send 7
@@ -1128,7 +1167,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_7:
             case TRACK_7_SET_SEND_7:
             case TRACK_8_SET_SEND_7:
-                this.changeSendVolume (6, commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_7.ordinal (), value);
+                this.changeSendVolume (6, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_7.ordinal (), value);
                 break;
 
             // Track 1-8: Set Send 8
@@ -1140,7 +1179,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_8:
             case TRACK_7_SET_SEND_8:
             case TRACK_8_SET_SEND_8:
-                this.changeSendVolume (7, commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_8.ordinal (), value);
+                this.changeSendVolume (7, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_8.ordinal (), value);
                 break;
 
             // Track Selected: Set Send 1-8
@@ -1152,97 +1191,97 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_SELECTED_SET_SEND_6:
             case TRACK_SELECTED_SET_SEND_7:
             case TRACK_SELECTED_SET_SEND_8:
-                this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal (), commandSlot.getKnobMode (), -1, value);
+                this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal (), knobMode, -1, value);
                 break;
 
             // Master: Set Volume
             case MASTER_SET_VOLUME:
-                this.changeMasterVolume (commandSlot.getKnobMode (), value);
+                this.changeMasterVolume (knobMode, value);
                 break;
             // Master: Set Panorama
             case MASTER_SET_PANORAMA:
-                this.changeMasterPanorama (commandSlot.getKnobMode (), value);
+                this.changeMasterPanorama (knobMode, value);
                 break;
             // Master: Toggle Mute
             case MASTER_TOGGLE_MUTE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getMasterTrack ().toggleMute ();
                 break;
             // Master: Toggle Solo
             case MASTER_TOGGLE_SOLO:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getMasterTrack ().toggleSolo ();
                 break;
             // Master: Toggle Arm
             case MASTER_TOGGLE_ARM:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getMasterTrack ().toggleRecArm ();
                 break;
             // Master: Crossfader
             case MASTER_CROSSFADER:
-                this.changeMasterCrossfader (commandSlot.getKnobMode (), value);
+                this.changeMasterCrossfader (knobMode, value);
                 break;
 
             // Device: Toggle Window
             case DEVICE_TOGGLE_WINDOW:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().toggleWindowOpen ();
                 break;
             // Device: Bypass
             case DEVICE_BYPASS:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().toggleEnabledState ();
                 break;
             // Device: Expand
             case DEVICE_EXPAND:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().toggleExpanded ();
                 break;
             // Device: Parameters
             case DEVICE_TOGGLE_PARAMETERS:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().toggleParameterPageSectionVisible ();
                 break;
             // Device: Select Previous
             case DEVICE_SELECT_PREVIOUS:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().selectPrevious ();
                 break;
             // Device: Select Next
             case DEVICE_SELECT_NEXT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().selectNext ();
                 break;
 
             case DEVICE_SCROLL_DEVICES:
-                this.scrollDevice (commandSlot.getKnobMode (), value);
+                this.scrollDevice (knobMode, value);
                 break;
 
             case DEVICE_SELECT_PREVIOUS_PARAMETER_PAGE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().getParameterBank ().scrollBackwards ();
                 break;
             case DEVICE_SELECT_NEXT_PARAMETER_PAGE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
                 break;
             case DEVICE_SCROLL_PARAMETER_PAGES:
-                this.scrollParameterPage (commandSlot.getKnobMode (), value);
+                this.scrollParameterPage (knobMode, value);
                 break;
 
             // Device: Select Previous Parameter Bank
             case DEVICE_SELECT_PREVIOUS_PARAMETER_BANK:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().getParameterBank ().selectPreviousPage ();
                 break;
             // Device: Select Next Parameter Bank
             case DEVICE_SELECT_NEXT_PARAMETER_BANK:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().getParameterBank ().selectNextPage ();
                 break;
 
             case DEVICE_SCROLL_PARAMETER_BANKS:
-                this.scrollParameterBank (commandSlot.getKnobMode (), value);
+                this.scrollParameterBank (knobMode, value);
                 break;
 
             // Device: Set Parameter 1-8
@@ -1254,32 +1293,32 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case DEVICE_SET_PARAMETER_6:
             case DEVICE_SET_PARAMETER_7:
             case DEVICE_SET_PARAMETER_8:
-                this.handleParameter (commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal (), value);
+                this.handleParameter (knobMode, command.ordinal () - FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal (), value);
                 break;
 
             // Browser: Browse Presets
             case BROWSER_BROWSE_PRESETS:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getBrowser ().browseForPresets ();
                 break;
             // Browser: Insert Device before current
             case BROWSER_INSERT_DEVICE_BEFORE_CURRENT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().browseToInsertBeforeDevice ();
                 break;
             // Browser: Insert Device after current
             case BROWSER_INSERT_DEVICE_AFTER_CURRENT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getCursorDevice ().browseToInsertAfterDevice ();
                 break;
             // Browser: Commit Selection
             case BROWSER_COMMIT_SELECTION:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getBrowser ().stopBrowsing (true);
                 break;
             // Browser: Cancel Selection
             case BROWSER_CANCEL_SELECTION:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getBrowser ().stopBrowsing (false);
                 break;
 
@@ -1292,7 +1331,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_6:
             case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_7:
             case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_8:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getBrowser ().selectPreviousFilterItem (command.ordinal () - FlexiCommand.BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_1.ordinal ());
                 break;
 
@@ -1305,7 +1344,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_6:
             case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_7:
             case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_8:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getBrowser ().selectNextFilterItem (command.ordinal () - FlexiCommand.BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1.ordinal ());
                 break;
 
@@ -1317,7 +1356,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case BROWSER_SCROLL_FILTER_IN_COLUMN_6:
             case BROWSER_SCROLL_FILTER_IN_COLUMN_7:
             case BROWSER_SCROLL_FILTER_IN_COLUMN_8:
-                this.scrollFilterColumn (commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1.ordinal (), value);
+                this.scrollFilterColumn (knobMode, command.ordinal () - FlexiCommand.BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1.ordinal (), value);
                 break;
 
             // Browser: Reset Filter Column 1-6
@@ -1329,35 +1368,35 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case BROWSER_RESET_FILTER_COLUMN_6:
             case BROWSER_RESET_FILTER_COLUMN_7:
             case BROWSER_RESET_FILTER_COLUMN_8:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getBrowser ().resetFilterColumn (command.ordinal () - FlexiCommand.BROWSER_RESET_FILTER_COLUMN_1.ordinal ());
                 break;
 
             // Browser: Select the previous preset
             case BROWSER_SELECT_THE_PREVIOUS_PRESET:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getBrowser ().selectPreviousResult ();
                 break;
             // Browser: Select the next preset
             case BROWSER_SELECT_THE_NEXT_PRESET:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getBrowser ().selectNextResult ();
                 break;
             case BROWSER_SCROLL_PRESETS:
-                this.scrollPresetColumn (commandSlot.getKnobMode (), value);
+                this.scrollPresetColumn (knobMode, value);
                 break;
             // Browser: Select the previous tab
             case BROWSER_SELECT_THE_PREVIOUS_TAB:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getBrowser ().previousContentType ();
                 break;
             // Browser: Select the next tab"
             case BROWSER_SELECT_THE_NEXT_TAB:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getBrowser ().nextContentType ();
                 break;
             case BROWSER_SCROLL_TABS:
-                this.scrollBrowserTabs (commandSlot.getKnobMode (), value);
+                this.scrollBrowserTabs (knobMode, value);
                 break;
 
             // Scene 1-8: Launch Scene
@@ -1369,42 +1408,42 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case SCENE_6_LAUNCH_SCENE:
             case SCENE_7_LAUNCH_SCENE:
             case SCENE_8_LAUNCH_SCENE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getSceneBank ().getItem (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_SCENE.ordinal ()).launch ();
                 break;
 
             // Scene: Select Previous Bank
             case SCENE_SELECT_PREVIOUS_BANK:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getSceneBank ().selectPreviousPage ();
                 break;
             // Scene: Select Next Bank
             case SCENE_SELECT_NEXT_BANK:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getSceneBank ().selectNextPage ();
                 break;
             // Scene: Create Scene from playing Clips
             case SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS:
-                if (value > 0)
+                if (isButtonPressed)
                     this.model.getProject ().createSceneFromPlayingLauncherClips ();
                 break;
 
             case CLIP_PREVIOUS:
-                if (value > 0)
+                if (isButtonPressed)
                     this.scrollClipLeft (false);
                 break;
 
             case CLIP_NEXT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.scrollClipRight (false);
                 break;
 
             case CLIP_SCROLL:
-                this.scrollClips (commandSlot.getKnobMode (), value);
+                this.scrollClips (knobMode, value);
                 break;
 
             case CLIP_PLAY:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     final ISlot selectedSlot = this.model.getSelectedSlot ();
                     if (selectedSlot != null)
@@ -1413,7 +1452,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 break;
 
             case CLIP_STOP:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     final ITrack track = this.model.getSelectedTrack ();
                     if (track != null)
@@ -1422,7 +1461,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 break;
 
             case CLIP_RECORD:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     final ISlot selectedSlot = this.model.getSelectedSlot ();
                     if (selectedSlot != null)
@@ -1431,7 +1470,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 break;
 
             case CLIP_NEW:
-                if (value > 0)
+                if (isButtonPressed)
                     new NewCommand<> (this.model, this).executeNormal (ButtonEvent.DOWN);
                 break;
 
@@ -1463,7 +1502,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case MODES_KNOB6:
             case MODES_KNOB7:
             case MODES_KNOB8:
-                this.changeModeValue (commandSlot.getKnobMode (), command.ordinal () - FlexiCommand.MODES_KNOB1.ordinal (), value);
+                this.changeModeValue (knobMode, command.ordinal () - FlexiCommand.MODES_KNOB1.ordinal (), value);
                 break;
 
             case MODES_BUTTON1:
@@ -1474,7 +1513,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case MODES_BUTTON6:
             case MODES_BUTTON7:
             case MODES_BUTTON8:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     mode.selectItem (command.ordinal () - FlexiCommand.MODES_BUTTON1.ordinal ());
                     this.notifyName (mode);
@@ -1482,91 +1521,91 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 break;
 
             case MODES_NEXT_ITEM:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     mode.selectNextItem ();
                     this.notifyName (mode);
                 }
                 break;
             case MODES_PREV_ITEM:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     mode.selectPreviousItem ();
                     this.notifyName (mode);
                 }
                 break;
             case MODES_NEXT_PAGE:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     mode.selectNextItemPage ();
                     this.notifyName (mode);
                 }
                 break;
             case MODES_PREV_PAGE:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     mode.selectPreviousItemPage ();
                     this.notifyName (mode);
                 }
                 break;
             case MODES_SELECT_MODE_TRACK:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_TRACK);
                 break;
             case MODES_SELECT_MODE_VOLUME:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_VOLUME);
                 break;
             case MODES_SELECT_MODE_PAN:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_PAN);
                 break;
             case MODES_SELECT_MODE_SEND1:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_SEND1);
                 break;
             case MODES_SELECT_MODE_SEND2:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_SEND2);
                 break;
             case MODES_SELECT_MODE_SEND3:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_SEND3);
                 break;
             case MODES_SELECT_MODE_SEND4:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_SEND4);
                 break;
             case MODES_SELECT_MODE_SEND5:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_SEND5);
                 break;
             case MODES_SELECT_MODE_SEND6:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_SEND6);
                 break;
             case MODES_SELECT_MODE_SEND7:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_SEND7);
                 break;
             case MODES_SELECT_MODE_SEND8:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_SEND8);
                 break;
             case MODES_SELECT_MODE_DEVICE:
-                if (value > 0)
+                if (isButtonPressed)
                     this.activateMode (Modes.MODE_DEVICE_PARAMS);
                 break;
             case MODES_SELECT_MODE_NEXT:
-                if (value > 0)
+                if (isButtonPressed)
                     this.selectNextMode ();
                 break;
             case MODES_SELECT_MODE_PREV:
-                if (value > 0)
+                if (isButtonPressed)
                     this.selectPreviousMode ();
                 break;
             case MODES_BROWSE_PRESETS:
-                if (value > 0)
+                if (isButtonPressed)
                 {
                     this.model.getBrowser ().browseForPresets ();
                     this.host.scheduleTask ( () -> this.activateMode (Modes.MODE_BROWSER), 500);
@@ -1598,7 +1637,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void handleParameter (final int knobMode, final int index, final int value)
     {
         final IParameter fxParam = this.model.getCursorDevice ().getParameterBank ().getItem (index);
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             fxParam.setValue (value);
         else
             fxParam.setValue (this.limit (fxParam.getValue () + this.getRelativeSpeed (knobMode, value)));
@@ -1613,7 +1652,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final ISend send = track.getSendBank ().getItem (sendIndex);
         if (send == null)
             return;
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             send.setValue (value);
         else
             send.setValue (this.limit (send.getValue () + this.getRelativeSpeed (knobMode, value)));
@@ -1632,7 +1671,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void handleTempo (final int knobMode, final int value)
     {
         final ITransport transport = this.model.getTransport ();
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             transport.setTempo (value);
         else
             transport.changeTempo (this.getRelativeSpeed (knobMode, value) > 0);
@@ -1642,7 +1681,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void handleMetronomeVolume (final int knobMode, final int value)
     {
         final ITransport transport = this.model.getTransport ();
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             transport.setMetronomeVolume (value);
         else
             transport.setMetronomeVolume (this.limit (transport.getMetronomeVolume () + this.getRelativeSpeed (knobMode, value)));
@@ -1652,7 +1691,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void changeTrackVolume (final int knobMode, final int trackIndex, final int value)
     {
         final ITrack track = this.getTrack (trackIndex);
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             track.setVolume (value);
         else
             track.setVolume (this.limit (track.getVolume () + this.getRelativeSpeed (knobMode, value)));
@@ -1661,7 +1700,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private void scrollTrack (final int knobMode, final int value)
     {
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             return;
 
         if (!this.increaseKnobMovement ())
@@ -1677,7 +1716,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void changeMasterVolume (final int knobMode, final int value)
     {
         final ITrack track = this.model.getMasterTrack ();
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             track.setVolume (value);
         else
             track.setVolume (this.limit (track.getVolume () + this.getRelativeSpeed (knobMode, value)));
@@ -1687,7 +1726,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void changeTrackPanorama (final int knobMode, final int trackIndex, final int value)
     {
         final ITrack track = this.getTrack (trackIndex);
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             track.setPan (value);
         else
             track.setPan (this.limit (track.getPan () + this.getRelativeSpeed (knobMode, value)));
@@ -1697,7 +1736,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void changeMasterPanorama (final int knobMode, final int value)
     {
         final ITrack track = this.model.getMasterTrack ();
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             track.setPan (value);
         else
             track.setPan (this.limit (track.getPan () + this.getRelativeSpeed (knobMode, value)));
@@ -1707,7 +1746,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void changeMasterCrossfader (final int knobMode, final int value)
     {
         final ITransport transport = this.model.getTransport ();
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             transport.setCrossfade (value);
         else
             transport.setCrossfade (this.limit (transport.getCrossfade () + this.getRelativeSpeed (knobMode, value)));
@@ -1717,7 +1756,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void changeModeValue (final int knobMode, final int knobIndex, final int value)
     {
         final Mode mode = this.modeManager.getActiveOrTempMode ();
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             mode.onKnobValue (knobIndex, value);
         else
         {
@@ -1758,7 +1797,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private void scrollDevice (final int knobMode, final int value)
     {
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             return;
 
         if (!this.increaseKnobMovement ())
@@ -1775,7 +1814,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private void scrollParameterPage (final int knobMode, final int value)
     {
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             return;
 
         if (!this.increaseKnobMovement ())
@@ -1793,7 +1832,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private void scrollParameterBank (final int knobMode, final int value)
     {
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             return;
 
         if (!this.increaseKnobMovement ())
@@ -1811,7 +1850,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private void scrollFilterColumn (final int knobMode, final int filterColumn, final int value)
     {
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             return;
 
         if (this.getRelativeSpeed (knobMode, value) > 0)
@@ -1823,7 +1862,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private void scrollPresetColumn (final int knobMode, final int value)
     {
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             return;
 
         if (this.getRelativeSpeed (knobMode, value) > 0)
@@ -1835,7 +1874,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private void scrollBrowserTabs (final int knobMode, final int value)
     {
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             return;
 
         if (!this.increaseKnobMovement ())
@@ -1850,7 +1889,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private void scrollClips (final int knobMode, final int value)
     {
-        if (knobMode == KNOB_MODE_ABSOLUTE)
+        if (isAbsolute (knobMode))
             return;
 
         if (!this.increaseKnobMovement ())
@@ -2005,5 +2044,17 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
         return Math.max (0, Math.min (value, valueChanger.getUpperBound () - 1.0));
+    }
+
+
+    /**
+     * Return if the given knob mode is one of the absoulte ones.
+     *
+     * @param knobMode The knob mode to test
+     * @return True if it is an absolute mode
+     */
+    public static boolean isAbsolute (final int knobMode)
+    {
+        return knobMode == KNOB_MODE_ABSOLUTE || knobMode == KNOB_MODE_ABSOLUTE_TOGGLE;
     }
 }

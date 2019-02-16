@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.beatstep;
 
-import de.mossgrabers.controller.beatstep.command.continuous.BeatstepPlayPositionCommand;
 import de.mossgrabers.controller.beatstep.command.continuous.KnobRowViewCommand;
 import de.mossgrabers.controller.beatstep.command.trigger.StepCommand;
 import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
@@ -19,6 +18,7 @@ import de.mossgrabers.controller.beatstep.view.ShiftView;
 import de.mossgrabers.controller.beatstep.view.TrackView;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
+import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ISetupFactory;
@@ -258,7 +258,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
             this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_1 + i, new KnobRowViewCommand (i, this.model, surface));
             this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_9 + i, new KnobRowViewCommand (i + 8, this.model, surface));
         }
-        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, new BeatstepPlayPositionCommand (this.model, surface));
+        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, new PlayPositionCommand<> (this.model, surface));
         final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);
         playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, surface));
     }
@@ -338,7 +338,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
             viewManager.getActiveView ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
-        this.scales.setDrumOctave (0);
+        this.scales.resetDrumOctave ();
         if (viewManager.isActiveView (Views.VIEW_DRUM))
             viewManager.getView (Views.VIEW_DRUM).updateNoteMapping ();
     }

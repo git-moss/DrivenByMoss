@@ -2,7 +2,7 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.command.trigger;
+package de.mossgrabers.framework.command.trigger.mode;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
@@ -139,8 +139,8 @@ public class CursorCommand<S extends IControlSurface<C>, C extends Configuration
 
         final Mode mode = this.surface.getModeManager ().getActiveOrTempMode ();
         final boolean shiftPressed = this.surface.isShiftPressed ();
-        this.canScrollLeft = shiftPressed ? mode.hasPreviousItemPage () : mode.hasPreviousItem ();
-        this.canScrollRight = shiftPressed ? mode.hasNextItemPage () : mode.hasNextItem ();
+        this.canScrollLeft = mode != null && (shiftPressed ? mode.hasPreviousItemPage () : mode.hasPreviousItem ());
+        this.canScrollRight = mode != null && (shiftPressed ? mode.hasNextItemPage () : mode.hasNextItem ());
     }
 
 

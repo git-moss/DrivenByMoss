@@ -76,7 +76,6 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 
     protected int                 numSequencerRows;
     protected int                 selectedIndex;
-    protected int                 offsetY;
     protected final Configuration configuration;
 
     protected final int           clipRows;
@@ -118,8 +117,6 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         this.configuration = this.surface.getConfiguration ();
 
         this.selectedIndex = 4;
-
-        this.offsetY = 0;
 
         this.numSequencerRows = numSequencerRows;
 

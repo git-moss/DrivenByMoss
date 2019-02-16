@@ -51,6 +51,18 @@ public interface IApplication extends ObserverManagement
 
 
     /**
+     * Switches to the previous panel layout of the active display profile.
+     */
+    void previousPanelLayout ();
+
+
+    /**
+     * Switches to the next panel layout of the active display profile.
+     */
+    void nextPanelLayout ();
+
+
+    /**
      * Returns the active panel layout (ARRANGE, MIX or EDIT).
      *
      * @return (ARRANGE, MIX or EDIT)

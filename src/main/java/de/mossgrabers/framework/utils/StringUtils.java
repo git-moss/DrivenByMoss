@@ -213,18 +213,18 @@ public class StringUtils
      * @param data The data to convert
      * @return The parsed byte array
      */
-    public static byte [] fromHexStr (final String data)
+    public static int [] fromHexStr (final String data)
     {
         final int length = data.length ();
         if (length % 2 != 0)
             throw new IllegalArgumentException ("Length of hex data must be a multiple of 2!");
 
         final int size = length / 2;
-        final byte [] result = new byte [size];
+        final int [] result = new int [size];
         for (int i = 0; i < size; i++)
         {
             final int pos = i * 2;
-            result[i] = Byte.parseByte (data.substring (pos, pos + 2), 16);
+            result[i] = Integer.parseInt (data.substring (pos, pos + 2), 16);
         }
         return result;
     }

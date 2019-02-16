@@ -14,21 +14,26 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * The master button command.
+ * Select a send mode.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MasterCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
+public class SendModeCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
 {
+    private int sendIndex;
+
+
     /**
      * Constructor.
      *
+     * @param sendIndex The channel index
      * @param model The model
      * @param surface The surface
      */
-    public MasterCommand (final IModel model, final APCControlSurface surface)
+    public SendModeCommand (final int sendIndex, final IModel model, final APCControlSurface surface)
     {
         super (model, surface);
+        this.sendIndex = sendIndex;
     }
 
 
@@ -36,8 +41,7 @@ public class MasterCommand extends AbstractTriggerCommand<APCControlSurface, APC
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.model.getMasterTrack ().select ();
+        this.handleExecute (event, this.sendIndex);
     }
 
 
@@ -45,19 +49,21 @@ public class MasterCommand extends AbstractTriggerCommand<APCControlSurface, APC
     @Override
     public void executeShifted (final ButtonEvent event)
     {
+        this.handleExecute (event, this.sendIndex + 3);
+    }
+
+
+    private void handleExecute (final ButtonEvent event, final int index)
+    {
         if (event != ButtonEvent.DOWN)
             return;
-        this.model.toggleCurrentTrackBank ();
-        if (this.model.isEffectTrackBankActive ())
-        {
-            // No Sends on effect tracks
-            final ModeManager modeManager = this.surface.getModeManager ();
-            final int mode = modeManager.getActiveOrTempModeId ().intValue ();
-            if (mode >= Modes.MODE_SEND1.intValue () && mode <= Modes.MODE_SEND8.intValue ())
-                modeManager.setActiveMode (Modes.MODE_PAN);
-        }
 
-        if (this.model.getSelectedTrack () == null)
-            this.model.getCurrentTrackBank ().getItem (0).select ();
+        // No Sends on FX tracks
+        if (this.model.isEffectTrackBankActive ())
+            return;
+
+        final ModeManager modeManager = this.surface.getModeManager ();
+        modeManager.setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + index));
+        this.model.getHost ().showNotification (modeManager.getActiveOrTempMode ().getName ());
     }
 }

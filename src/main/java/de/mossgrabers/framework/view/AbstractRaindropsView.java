@@ -31,6 +31,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     protected int              numDisplayRows   = 8;
     protected boolean          ongoingResolutionChange;
     private boolean            useTrackColor;
+    protected int              offsetY;
 
 
     /**

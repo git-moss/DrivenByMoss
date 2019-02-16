@@ -12,7 +12,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command handle the stop button.
+ * Command handle the record button. RStart arranger record if pressed. Execute New command if
+ * shifted.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

@@ -27,7 +27,16 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration> implements SceneView
 {
-    private static final int [] TRANSLATE =
+    private static final Integer [] VIEW_IDS  = new Integer []
+    {
+        Views.VIEW_SESSION,
+        Views.VIEW_PLAY,
+        Views.VIEW_DRUM,
+        Views.VIEW_SEQUENCER,
+        Views.VIEW_RAINDROPS
+    };
+
+    private static final int []     TRANSLATE =
     {
         0,
         2,
@@ -154,17 +163,16 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         if (!this.model.getHost ().hasClips ())
             return;
 
-        final Integer viewID = Integer.valueOf (Views.VIEW_SESSION.intValue () + scene);
         final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.setActiveView (viewID);
-        this.surface.getDisplay ().notify (viewManager.getView (viewID).getName ());
+        viewManager.setActiveView (VIEW_IDS[scene]);
+        this.surface.getDisplay ().notify (viewManager.getView (VIEW_IDS[scene]).getName ());
 
-        if (Views.VIEW_SESSION.equals (viewID))
+        if (Views.VIEW_SESSION.equals (VIEW_IDS[scene]))
             return;
 
         final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack != null)
-            viewManager.setPreferredView (selectedTrack.getPosition (), viewID);
+            viewManager.setPreferredView (selectedTrack.getPosition (), VIEW_IDS[scene]);
     }
 
 

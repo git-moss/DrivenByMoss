@@ -14,11 +14,12 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * A select track command.
+ * Selects a track. Sets the new clip length if shifted. If "Send A" button is pressed selects a
+ * send.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SelectCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
+public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
 {
     private int index;
 
@@ -26,11 +27,11 @@ public class SelectCommand extends AbstractTriggerCommand<APCControlSurface, APC
     /**
      * Constructor.
      *
-     * @param index The channel index
+     * @param index The channel / clip length / send index
      * @param model The model
      * @param surface The surface
      */
-    public SelectCommand (final int index, final IModel model, final APCControlSurface surface)
+    public SelectTrackSendOrClipLengthCommand (final int index, final IModel model, final APCControlSurface surface)
     {
         super (model, surface);
         this.index = index;

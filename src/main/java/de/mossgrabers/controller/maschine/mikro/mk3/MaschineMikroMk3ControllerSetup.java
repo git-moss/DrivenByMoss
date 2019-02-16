@@ -27,14 +27,13 @@ import de.mossgrabers.controller.maschine.mikro.mk3.view.SoloView;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
-import de.mossgrabers.framework.command.trigger.KnobRowTouchModeCommand;
-import de.mossgrabers.framework.command.trigger.ModeSelectCommand;
-import de.mossgrabers.framework.command.trigger.RepeatCommand;
-import de.mossgrabers.framework.command.trigger.ViewMultiSelectCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.clip.NoteRepeatCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
+import de.mossgrabers.framework.command.trigger.mode.KnobRowTouchModeCommand;
+import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
@@ -42,6 +41,7 @@ import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
 import de.mossgrabers.framework.command.trigger.transport.WriteArrangerAutomationCommand;
 import de.mossgrabers.framework.command.trigger.transport.WriteClipLauncherAutomationCommand;
+import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
@@ -240,7 +240,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         this.addTriggerCommand (Commands.COMMAND_NEW, MaschineMikroMk3ControlSurface.MIKRO_3_GROUP, new NewCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_AUTOMATION, MaschineMikroMk3ControlSurface.MIKRO_3_AUTO, new WriteClipLauncherAutomationCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_AUTOMATION_WRITE, MaschineMikroMk3ControlSurface.MIKRO_3_LOCK, new WriteArrangerAutomationCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_REPEAT, MaschineMikroMk3ControlSurface.MIKRO_3_NOTE_REPEAT, new RepeatCommand<> (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_REPEAT, MaschineMikroMk3ControlSurface.MIKRO_3_NOTE_REPEAT, new NoteRepeatCommand<> (this.model, surface));
 
         // Ribbon
         this.addTriggerCommand (COMMAND_PITCH, MaschineMikroMk3ControlSurface.MIKRO_3_PITCH, new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_UP, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP));
@@ -430,7 +430,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
             viewManager.getActiveView ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
-        this.scales.setDrumOctave (0);
+        this.scales.resetDrumOctave ();
         if (viewManager.isActiveView (Views.VIEW_DRUM))
             viewManager.getView (Views.VIEW_DRUM).updateNoteMapping ();
 
