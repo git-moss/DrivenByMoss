@@ -127,7 +127,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput ("Akai APCmini");
-        final APCminiControlSurface surface = new APCminiControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input);
+        final APCminiControlSurface surface = new APCminiControlSurface (this.host, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
         surface.setDisplay (new DummyDisplay (this.host));
     }

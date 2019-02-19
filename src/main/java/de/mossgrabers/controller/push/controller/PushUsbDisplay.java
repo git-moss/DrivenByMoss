@@ -86,42 +86,45 @@ public class PushUsbDisplay
      */
     public void send (final IBitmap image)
     {
-        if (this.usbDevice == null || this.usbEndpoint == null || this.isSending.get ())
-            return;
+        synchronized (this.isSending)
+        {
+            if (this.usbDevice == null || this.usbEndpoint == null || this.isSending.get ())
+                return;
 
-        this.isSending.set (true);
+            this.isSending.set (true);
 
-        final ByteBuffer buffer = this.imageBlock.createByteBuffer ();
+            final ByteBuffer buffer = this.imageBlock.createByteBuffer ();
 
-        image.encode ( (imageBuffer, width, height) -> {
-            buffer.clear ();
+            image.encode ( (imageBuffer, width, height) -> {
+                buffer.clear ();
 
-            final int padding = (buffer.capacity () - height * width * 2) / height;
+                final int padding = (buffer.capacity () - height * width * 2) / height;
 
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
                 {
-                    final int blue = imageBuffer.get ();
-                    final int green = imageBuffer.get ();
-                    final int red = imageBuffer.get ();
-                    imageBuffer.get (); // Drop unused Alpha
+                    for (int x = 0; x < width; x++)
+                    {
+                        final int blue = imageBuffer.get ();
+                        final int green = imageBuffer.get ();
+                        final int red = imageBuffer.get ();
+                        imageBuffer.get (); // Drop unused Alpha
 
-                    final int pixel = sPixelFromRGB (red, green, blue);
-                    buffer.put ((byte) (pixel & 0x00FF));
-                    buffer.put ((byte) ((pixel & 0xFF00) >> 8));
+                        final int pixel = sPixelFromRGB (red, green, blue);
+                        buffer.put ((byte) (pixel & 0x00FF));
+                        buffer.put ((byte) ((pixel & 0xFF00) >> 8));
+                    }
+
+                    for (int x = 0; x < padding; x++)
+                        buffer.put ((byte) 0x00);
                 }
 
-                for (int x = 0; x < padding; x++)
-                    buffer.put ((byte) 0x00);
-            }
+                imageBuffer.rewind ();
+            });
 
-            imageBuffer.rewind ();
-        });
-
-        this.usbEndpoint.send (this.headerBlock, TIMEOUT);
-        this.usbEndpoint.send (this.imageBlock, TIMEOUT);
-        this.isSending.set (false);
+            this.usbEndpoint.send (this.headerBlock, TIMEOUT);
+            this.usbEndpoint.send (this.imageBlock, TIMEOUT);
+            this.isSending.set (false);
+        }
     }
 
 
@@ -130,8 +133,11 @@ public class PushUsbDisplay
      */
     public void shutdown ()
     {
-        this.usbDevice = null;
-        this.usbEndpoint = null;
+        synchronized (this.isSending)
+        {
+            this.usbDevice = null;
+            this.usbEndpoint = null;
+        }
     }
 
 

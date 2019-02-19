@@ -165,7 +165,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput (this.isMkII ? "Akai APC40 mkII" : "Akai APC40",
                 "B040??" /* Sustainpedal */);
-        final APCControlSurface surface = new APCControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, this.isMkII);
+        final APCControlSurface surface = new APCControlSurface (this.host, this.colorManager, this.configuration, output, input, this.isMkII);
         this.surfaces.add (surface);
         surface.setDisplay (new DummyDisplay (this.host));
         for (int i = 0; i < 8; i++)

@@ -158,7 +158,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput ("Maschine Mikro Mk3", "80????", "90????");
         this.colorManager.registerColor (PadGrid.GRID_OFF, 0);
-        final MaschineMikroMk3ControlSurface surface = new MaschineMikroMk3ControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input);
+        final MaschineMikroMk3ControlSurface surface = new MaschineMikroMk3ControlSurface (this.host, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
         surface.setDisplay (new DummyDisplay (this.host));
     }

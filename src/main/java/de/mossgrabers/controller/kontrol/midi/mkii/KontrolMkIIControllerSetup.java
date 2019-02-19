@@ -144,7 +144,7 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         midiAccess.createInput (1, "Keyboard", "80????" /* Note off */, "90????" /* Note on */,
                 "B0????" /* Sustainpedal + Modulation + Strip */, "D0????" /* Channel Aftertouch */,
                 "E0????" /* Pitchbend */);
-        this.surfaces.add (new KontrolMkIIControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, midiAccess.createInput (null)));
+        this.surfaces.add (new KontrolMkIIControlSurface (this.host, this.colorManager, this.configuration, output, midiAccess.createInput (null)));
     }
 
 

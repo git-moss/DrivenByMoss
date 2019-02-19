@@ -2,7 +2,7 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.utilities;
+package de.mossgrabers.controller.autocolor;
 
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 public class AutoColor
 {
     private final EnumMap<NamedColor, List<Pattern>> colorRegex = new EnumMap<> (NamedColor.class);
-    private final UtilitiesConfiguration             configuration;
+    private final AutoColorConfiguration             configuration;
     private ITrackBank                               trackBank;
 
 
@@ -34,7 +34,7 @@ public class AutoColor
      *
      * @param configuration The configuration
      */
-    protected AutoColor (final UtilitiesConfiguration configuration)
+    protected AutoColor (final AutoColorConfiguration configuration)
     {
         this.configuration = configuration;
     }

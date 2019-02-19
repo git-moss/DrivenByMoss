@@ -235,7 +235,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         {
             final IMidiOutput output = midiAccess.createOutput (i);
             final IMidiInput input = midiAccess.createInput (i, null);
-            final MCUControlSurface surface = new MCUControlSurface (this.surfaces, this.model.getHost (), this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1), i == 0);
+            final MCUControlSurface surface = new MCUControlSurface (this.surfaces, this.host, this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1), i == 0);
             this.surfaces.add (surface);
             surface.setDisplay (new MCUDisplay (this.host, output, true, false));
             surface.setSecondDisplay (new MCUDisplay (this.host, output, false, i == 0));

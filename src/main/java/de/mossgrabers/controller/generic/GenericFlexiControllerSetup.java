@@ -93,7 +93,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput ("Generic Flexi");
 
-        final GenericFlexiControlSurface surface = new GenericFlexiControlSurface (this.model.getHost (), this.model, this.colorManager, this.configuration, output, input);
+        final GenericFlexiControlSurface surface = new GenericFlexiControlSurface (this.host, this.model, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
         surface.setDisplay (new DummyDisplay (this.host));
 

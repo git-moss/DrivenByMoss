@@ -25,9 +25,9 @@ import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
+import de.mossgrabers.framework.command.trigger.mode.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.mode.KnobRowTouchModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
-import de.mossgrabers.framework.command.trigger.mode.CursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
@@ -115,8 +115,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     @Override
     protected void createSurface ()
     {
-        final IHost host = this.model.getHost ();
-        final Kontrol1UsbDevice usbDevice = new Kontrol1UsbDevice (this.modelIndex, host);
+        final Kontrol1UsbDevice usbDevice = new Kontrol1UsbDevice (this.modelIndex, this.host);
         usbDevice.init ();
 
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
@@ -127,10 +126,10 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
         Kontrol1Colors.addColors (this.colorManager);
 
-        final Kontrol1ControlSurface surface = new Kontrol1ControlSurface (host, this.colorManager, this.configuration, input, usbDevice);
+        final Kontrol1ControlSurface surface = new Kontrol1ControlSurface (this.host, this.colorManager, this.configuration, input, usbDevice);
         usbDevice.setCallback (surface);
         this.surfaces.add (surface);
-        final Kontrol1Display display = new Kontrol1Display (host, this.valueChanger.getUpperBound (), this.configuration, usbDevice);
+        final Kontrol1Display display = new Kontrol1Display (this.host, this.valueChanger.getUpperBound (), this.configuration, usbDevice);
         surface.setDisplay (display);
 
         surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);

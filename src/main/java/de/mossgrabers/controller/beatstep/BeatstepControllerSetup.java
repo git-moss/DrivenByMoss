@@ -197,7 +197,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
             input.createNoteInput ("Drums", "99????", "89????");
         }
 
-        final BeatstepControlSurface surface = new BeatstepControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input, this.isPro);
+        final BeatstepControlSurface surface = new BeatstepControlSurface (this.host, this.colorManager, this.configuration, output, input, this.isPro);
         this.surfaces.add (surface);
         surface.setDisplay (new DummyDisplay (this.host));
     }

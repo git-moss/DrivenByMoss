@@ -110,7 +110,8 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         this.createViews ();
         this.registerTriggerCommands ();
         this.registerContinuousCommands ();
-        this.model.ensureClip ();
+        if (this.model != null)
+            this.model.ensureClip ();
     }
 
 

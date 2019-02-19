@@ -90,7 +90,7 @@ public class KontrolOSCControllerSetup extends AbstractControllerSetup<IControlS
     {
         this.factory.createMidiAccess ().createInput ("Kontrol OSC Midi");
 
-        final DummyControlSurface<KontrolOSCConfiguration> surface = new DummyControlSurface<> (this.model.getHost (), this.colorManager, this.configuration);
+        final DummyControlSurface<KontrolOSCConfiguration> surface = new DummyControlSurface<> (this.host, this.colorManager, this.configuration);
         this.surfaces.add (surface);
 
         // Send OSC messages

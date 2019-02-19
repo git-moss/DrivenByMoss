@@ -96,7 +96,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiInput input = midiAccess.createInput ("OSC");
 
-        final OSCControlSurface surface = new OSCControlSurface (this.model.getHost (), this.configuration, this.colorManager, input);
+        final OSCControlSurface surface = new OSCControlSurface (this.host, this.configuration, this.colorManager, input);
         this.surfaces.add (surface);
         this.keyManager = new KeyManager (this.model, surface.getPadGrid ());
 

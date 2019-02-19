@@ -2,7 +2,7 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.utilities;
+package de.mossgrabers.controller.autocolor;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
@@ -15,11 +15,11 @@ import java.util.Map;
 
 
 /**
- * The configuration settings for the Utilities implementation.
+ * The configuration settings for the Auto Color implementation.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class UtilitiesConfiguration extends AbstractConfiguration
+public class AutoColorConfiguration extends AbstractConfiguration
 {
     private static final String     CATEGORY_AUTO_COLOR = "Auto Color";
 
@@ -37,7 +37,7 @@ public class UtilitiesConfiguration extends AbstractConfiguration
      *
      * @param valueChanger The value changer
      */
-    public UtilitiesConfiguration (final IValueChanger valueChanger)
+    public AutoColorConfiguration (final IValueChanger valueChanger)
     {
         super (valueChanger);
     }
@@ -53,7 +53,7 @@ public class UtilitiesConfiguration extends AbstractConfiguration
         final IEnumSetting enableAutoColorSetting = settingsUI.getEnumSetting (CATEGORY_AUTO_COLOR, CATEGORY_AUTO_COLOR, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         enableAutoColorSetting.addValueObserver (value -> {
             this.enableAutoColor = ON_OFF_OPTIONS[1].equals (value);
-            this.notifyObservers (UtilitiesConfiguration.ENABLE_AUTO_COLOR);
+            this.notifyObservers (AutoColorConfiguration.ENABLE_AUTO_COLOR);
         });
 
         final NamedColor [] colors = NamedColor.values ();
@@ -64,7 +64,7 @@ public class UtilitiesConfiguration extends AbstractConfiguration
             final int index = i;
             setting.addValueObserver (value -> {
                 this.colorRegEx.put (color, value);
-                this.notifyObservers (Integer.valueOf (UtilitiesConfiguration.COLOR_REGEX.intValue () + index));
+                this.notifyObservers (Integer.valueOf (AutoColorConfiguration.COLOR_REGEX.intValue () + index));
             });
         }
     }

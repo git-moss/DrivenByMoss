@@ -2,7 +2,7 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.utilities;
+package de.mossgrabers.controller.autocolor;
 
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -17,11 +17,11 @@ import de.mossgrabers.framework.scale.Scales;
 
 
 /**
- * Support for the Open Sound Control (Utilities) protocol.
+ * Auto coloring of tracks.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class UtilitiesSetup extends AbstractControllerSetup<IControlSurface<UtilitiesConfiguration>, UtilitiesConfiguration>
+public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<AutoColorConfiguration>, AutoColorConfiguration>
 {
     private static final int MAX_TRACKS = 100;
 
@@ -35,13 +35,13 @@ public class UtilitiesSetup extends AbstractControllerSetup<IControlSurface<Util
      * @param factory The factory
      * @param settings The settings
      */
-    public UtilitiesSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    public AutoColorSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
     {
         super (factory, host, settings);
 
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new UtilitiesConfiguration (this.valueChanger);
+        this.configuration = new AutoColorConfiguration (this.valueChanger);
         this.autoColor = new AutoColor (this.configuration);
     }
 
@@ -95,7 +95,7 @@ public class UtilitiesSetup extends AbstractControllerSetup<IControlSurface<Util
     protected void createObservers ()
     {
         // Update track colors if Auto Color is enabled in the settings
-        this.configuration.addSettingObserver (UtilitiesConfiguration.ENABLE_AUTO_COLOR, () -> {
+        this.configuration.addSettingObserver (AutoColorConfiguration.ENABLE_AUTO_COLOR, () -> {
             if (!this.configuration.isEnableAutoColor ())
                 return;
             final ITrackBank tb = this.model.getTrackBank ();
@@ -108,7 +108,7 @@ public class UtilitiesSetup extends AbstractControllerSetup<IControlSurface<Util
         for (int i = 0; i < colors.length; i++)
         {
             final NamedColor color = colors[i];
-            this.configuration.addSettingObserver (Integer.valueOf (UtilitiesConfiguration.COLOR_REGEX.intValue () + i), () -> this.autoColor.handleRegExChange (color, this.configuration.getColorRegExValue (color)));
+            this.configuration.addSettingObserver (Integer.valueOf (AutoColorConfiguration.COLOR_REGEX.intValue () + i), () -> this.autoColor.handleRegExChange (color, this.configuration.getColorRegExValue (color)));
         }
 
         // Add name observers to all tracks
