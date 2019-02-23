@@ -45,10 +45,11 @@ public interface IControllerDefinition
 
     /**
      * The version of this controller implementation.
-     *
+     * 
+     * @param pckg The package which contains the controller definition
      * @return The version
      */
-    String getVersion ();
+    String getVersion (Package pckg);
 
 
     /**

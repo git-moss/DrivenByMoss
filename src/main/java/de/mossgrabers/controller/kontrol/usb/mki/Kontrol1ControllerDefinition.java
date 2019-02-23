@@ -56,7 +56,7 @@ public class Kontrol1ControllerDefinition extends DefaultControllerDefinition
      */
     public Kontrol1ControllerDefinition (final int modelIndex)
     {
-        super ("", "Jürgen Moßgraber", "1.10", EXTENSION_ID[modelIndex], HARDWARE_MODEL[modelIndex], "Native Instruments", 1, 0);
+        super (EXTENSION_ID[modelIndex], HARDWARE_MODEL[modelIndex], "Native Instruments", 1, 0);
         this.modelIndex = modelIndex;
     }
 

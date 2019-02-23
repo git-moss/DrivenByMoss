@@ -27,7 +27,7 @@ public class MaschineMikroMk3ControllerDefinition extends DefaultControllerDefin
      */
     public MaschineMikroMk3ControllerDefinition ()
     {
-        super ("", "Jürgen Moßgraber", "1.00", EXTENSION_ID, "Maschine Mikro Mk3", "Native Instruments", 1, 1);
+        super (EXTENSION_ID, "Maschine Mikro Mk3", "Native Instruments", 1, 1);
     }
 
 

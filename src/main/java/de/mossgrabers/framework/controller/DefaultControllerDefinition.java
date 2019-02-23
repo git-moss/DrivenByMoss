@@ -23,7 +23,6 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
 {
     private final String name;
     private final String author;
-    private final String version;
     private final UUID   uuid;
     private final String hardwareModel;
     private final String hardwareVendor;
@@ -34,20 +33,16 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
     /**
      * Constructor.
      *
-     * @param name The name of the controller implementation
-     * @param author The author of the controller implementation
-     * @param version The version of the controller implementation
      * @param uuid The UUID of the controller implementation
      * @param hardwareModel The hardware model which this controller implementation supports
      * @param hardwareVendor The hardware vendor of the controller
      * @param numMidiInPorts The number of required midi in ports
      * @param numMidiOutPorts The number of required midi out ports
      */
-    public DefaultControllerDefinition (final String name, final String author, final String version, final UUID uuid, final String hardwareModel, final String hardwareVendor, final int numMidiInPorts, final int numMidiOutPorts)
+    public DefaultControllerDefinition (final UUID uuid, final String hardwareModel, final String hardwareVendor, final int numMidiInPorts, final int numMidiOutPorts)
     {
-        this.name = name;
-        this.author = author;
-        this.version = version;
+        this.name = "";
+        this.author = "Jürgen Moßgraber";
         this.uuid = uuid;
         this.hardwareModel = hardwareModel;
         this.hardwareVendor = hardwareVendor;
@@ -82,9 +77,9 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
 
     /** {@inheritDoc} */
     @Override
-    public String getVersion ()
+    public String getVersion (final Package pckg)
     {
-        return this.version;
+        return pckg == null ? "1.0" : pckg.getImplementationVersion ();
     }
 
 
@@ -214,6 +209,6 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
     @Override
     public String toString ()
     {
-        return new StringBuilder (this.getHardwareVendor ()).append (' ').append (this.getHardwareModel ()).append (" - ").append (this.getVersion ()).toString ();
+        return new StringBuilder (this.getHardwareVendor ()).append (' ').append (this.getHardwareModel ()).toString ();
     }
 }

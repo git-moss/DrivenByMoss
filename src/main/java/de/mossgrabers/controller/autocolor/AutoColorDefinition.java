@@ -24,6 +24,6 @@ public class AutoColorDefinition extends DefaultControllerDefinition
      */
     public AutoColorDefinition ()
     {
-        super ("", "Jürgen Moßgraber", "1.00", EXTENSION_ID, "Auto Color", "Utilities", 0, 0);
+        super (EXTENSION_ID, "Auto Color", "Utilities", 0, 0);
     }
 }

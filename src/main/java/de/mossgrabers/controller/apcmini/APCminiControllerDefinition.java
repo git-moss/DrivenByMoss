@@ -27,7 +27,7 @@ public class APCminiControllerDefinition extends DefaultControllerDefinition
      */
     public APCminiControllerDefinition ()
     {
-        super ("", "Jürgen Moßgraber", "5.02", EXTENSION_ID, "APCmini", "Akai", 1, 1);
+        super (EXTENSION_ID, "APCmini", "Akai", 1, 1);
     }
 
 

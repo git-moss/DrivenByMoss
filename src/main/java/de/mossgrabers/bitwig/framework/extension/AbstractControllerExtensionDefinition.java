@@ -69,7 +69,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public String getVersion ()
     {
-        return this.definition.getVersion ();
+        return this.definition.getVersion (Package.getPackage ("de.mossgrabers.framework.daw"));
     }
 
 

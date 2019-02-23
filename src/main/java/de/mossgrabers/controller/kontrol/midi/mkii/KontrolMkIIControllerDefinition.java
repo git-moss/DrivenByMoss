@@ -33,7 +33,7 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
      */
     public KontrolMkIIControllerDefinition ()
     {
-        super ("", "Jürgen Moßgraber", "1.00", EXTENSION_ID, "Komplete Kontrol A / MkII (Midi)", "Native Instruments", 2, 2);
+        super (EXTENSION_ID, "Komplete Kontrol A / MkII (Midi)", "Native Instruments", 2, 2);
     }
 
 

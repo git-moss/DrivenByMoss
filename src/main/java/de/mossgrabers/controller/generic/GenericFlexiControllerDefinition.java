@@ -24,6 +24,6 @@ public class GenericFlexiControllerDefinition extends DefaultControllerDefinitio
      */
     public GenericFlexiControllerDefinition ()
     {
-        super ("", "Jürgen Moßgraber", "2.20", EXTENSION_ID, "Flexi", "Generic", 1, 1);
+        super (EXTENSION_ID, "Flexi", "Generic", 1, 1);
     }
 }

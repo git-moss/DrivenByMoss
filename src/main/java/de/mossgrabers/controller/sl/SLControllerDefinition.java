@@ -30,7 +30,7 @@ public class SLControllerDefinition extends DefaultControllerDefinition
      */
     public SLControllerDefinition (final boolean isMkII)
     {
-        super ("", "Jürgen Moßgraber", "5.11", isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "SL MkII" : "SL MkI", "Novation", 2, 1);
+        super (isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "SL MkII" : "SL MkI", "Novation", 2, 1);
     }
 
 

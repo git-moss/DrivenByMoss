@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.view.View;
 
 import java.util.Arrays;
 
@@ -1063,5 +1064,21 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     public boolean shouldUpdateButton (final int button)
     {
         return PUSH_BUTTON_UPDATE[button];
+    }
+
+
+    /**
+     * Update all view controlled button states.
+     */
+    public void updateButtons ()
+    {
+        final View view = this.viewManager.getActiveView ();
+        if (view == null)
+            return;
+        for (final int button: this.getButtons ())
+        {
+            if (this.shouldUpdateButton (button))
+                this.setButton (button, view.usesButton (button) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        }
     }
 }

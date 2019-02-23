@@ -24,6 +24,6 @@ public class MidiMonitorDefinition extends DefaultControllerDefinition
      */
     public MidiMonitorDefinition ()
     {
-        super ("", "Jürgen Moßgraber", "1.00", EXTENSION_ID, "Midi Monitor", "Utilities", 1, 0);
+        super (EXTENSION_ID, "Midi Monitor", "Utilities", 1, 0);
     }
 }

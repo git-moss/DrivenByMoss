@@ -344,21 +344,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         }
 
         surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateMode (newMode));
-
-        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> {
-            // Update button states
-            final View view = surface.getViewManager ().getActiveView ();
-            for (final int button: surface.getButtons ())
-            {
-                if (surface.shouldUpdateButton (button))
-                    surface.setButton (button, view.usesButton (button) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-            }
-            // Update ribbon mode
-            if (Views.VIEW_SESSION.equals (activeViewId))
-                surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_PAN);
-            else
-                this.updateRibbonMode ();
-        });
+        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.onViewChange ());
 
         this.configuration.addSettingObserver (PushConfiguration.RIBBON_MODE, this::updateRibbonMode);
         this.configuration.addSettingObserver (PushConfiguration.DEBUG_MODE, () -> {
@@ -551,6 +537,27 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     }
 
 
+    /**
+     * Called when a new view is selected.
+     */
+    private void onViewChange ()
+    {
+        final PushControlSurface surface = this.getSurface ();
+        surface.updateButtons ();
+
+        // Update ribbon mode
+        if (surface.getViewManager ().isActiveView (Views.VIEW_SESSION))
+            surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_PAN);
+        else
+            this.updateRibbonMode ();
+
+        this.updateIndication (null);
+    }
+
+
+    /**
+     * Update all buttons, except the ones controlled by the views. Refreshed on flush.
+     */
     private void updateButtons ()
     {
         final ITransport t = this.model.getTransport ();
@@ -561,10 +568,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final boolean isShift = surface.isShiftPressed ();
         final boolean isFlipRecord = this.configuration.isFlipRecord ();
         final boolean isRecordShifted = isShift && !isFlipRecord || !isShift && isFlipRecord;
-        if (isRecordShifted)
-            surface.updateButton (PushControlSurface.PUSH_BUTTON_AUTOMATION, t.isWritingClipLauncherAutomation () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
-        else
-            surface.updateButton (PushControlSurface.PUSH_BUTTON_AUTOMATION, t.isWritingArrangerAutomation () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
+        final boolean isWriting = isRecordShifted ? t.isWritingClipLauncherAutomation () : t.isWritingArrangerAutomation ();
+        surface.updateButton (PushControlSurface.PUSH_BUTTON_AUTOMATION, isWriting ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
         surface.updateButton (PushControlSurface.PUSH_BUTTON_RECORD, isRecordShifted ? t.isLauncherOverdub () ? PushColors.PUSH_BUTTON_STATE_OVR_HI : PushColors.PUSH_BUTTON_STATE_OVR_ON : t.isRecording () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
 
         String repeatState = ColorManager.BUTTON_STATE_OFF;
@@ -670,16 +675,19 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     {
         if (mode == this.currentMode)
             return;
-        this.currentMode = mode;
+
+        if (mode != null)
+            this.currentMode = mode;
 
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final PushControlSurface surface = this.getSurface ();
         final boolean isSession = surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isPan = Modes.MODE_PAN.equals (mode);
-        final boolean isVolume = Modes.MODE_VOLUME.equals (mode);
-        final boolean isDevice = Modes.isDeviceMode (mode) || Modes.isLayerMode (mode);
+        final boolean isTrackMode = Modes.MODE_TRACK.equals (this.currentMode);
+        final boolean isVolume = Modes.MODE_VOLUME.equals (this.currentMode);
+        final boolean isPan = Modes.MODE_PAN.equals (this.currentMode);
+        final boolean isDevice = Modes.isDeviceMode (this.currentMode) || Modes.isLayerMode (this.currentMode);
 
         tb.setIndication (!isEffect && isSession);
         if (tbe != null)
@@ -690,14 +698,14 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         for (int i = 0; i < tb.getPageSize (); i++)
         {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
+            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrackMode;
             final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
             track.setPanIndication (!isEffect && (isPan || hasTrackSel));
 
             final ISendBank sendBank = track.getSendBank ();
             for (int j = 0; j < sendBank.getPageSize (); j++)
-                sendBank.getItem (j).setIndication (!isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
+                sendBank.getItem (j).setIndication (!isEffect && (this.currentMode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
 
             if (tbe != null)
             {
