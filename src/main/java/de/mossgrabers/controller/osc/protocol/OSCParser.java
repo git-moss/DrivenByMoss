@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IHost;
@@ -94,7 +95,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
 
         final Object [] values = message.getValues ();
         final Object value = values == null || values.length == 0 ? null : values[0];
-        final int numValue = !(value instanceof Number) ? -1 : ((Number) value).intValue ();
+        final double numValue = !(value instanceof Number) ? -1 : ((Number) value).doubleValue ();
 
         final String command = oscParts.removeFirst ();
 
@@ -294,7 +295,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
     }
 
 
-    private boolean parseTransportCommands (final String command, final LinkedList<String> oscParts, final Object value, final int numValue)
+    private boolean parseTransportCommands (final String command, final LinkedList<String> oscParts, final Object value, final double numValue)
     {
         switch (command)
         {
@@ -397,16 +398,14 @@ public class OSCParser extends AbstractOpenSoundControlParser
                         if (value == null || numValue > 0)
                         {
                             final double v = value == null ? 1.0 : ((Number) value).doubleValue ();
-                            if (value instanceof Number)
-                                this.transport.setTempo (this.transport.getTempo () + v);
+                            this.transport.setTempo (this.transport.getTempo () + v);
                         }
                         return true;
                     case "-":
                         if (value == null || numValue > 0)
                         {
                             final double v2 = value == null ? 1.0 : ((Number) value).doubleValue ();
-                            if (value instanceof Number)
-                                this.transport.setTempo (this.transport.getTempo () - v2);
+                            this.transport.setTempo (this.transport.getTempo () - v2);
                         }
                         return true;
                     default:
@@ -469,7 +468,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 return true;
 
             case "preroll":
-                this.transport.setPrerollAsBars (numValue);
+                this.transport.setPrerollAsBars ((int) numValue);
                 return true;
 
             default:
@@ -615,7 +614,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
     }
 
 
-    private void parseTrackCommands (final LinkedList<String> oscParts, final Object value, final int numValue)
+    private void parseTrackCommands (final LinkedList<String> oscParts, final Object value, final double numValue)
     {
         if (oscParts.isEmpty ())
         {
@@ -820,8 +819,9 @@ public class OSCParser extends AbstractOpenSoundControlParser
                     track.setCrossfadeMode (parts.removeFirst ());
                 break;
 
+            case "select":
             case "selected":
-                if (intValue > 0)
+                if (intValue != 0)
                     track.select ();
                 break;
 
@@ -1429,11 +1429,18 @@ public class OSCParser extends AbstractOpenSoundControlParser
         }
         final String command = parts.removeFirst ();
         final int numValue = value instanceof Number ? ((Number) value).intValue () : -1;
-        final IChannel layer = cursorDevice.getLayerOrDrumPadBank ().getItem (layerIndex);
+        final IChannelBank<?> layerOrDrumPadBank = cursorDevice.getLayerOrDrumPadBank ();
+        if (layerIndex >= layerOrDrumPadBank.getPageSize ())
+        {
+            this.host.println ("Layer or drumpad index larger than page size: " + layerIndex);
+            return;
+        }
+
+        final IChannel layer = layerOrDrumPadBank.getItem (layerIndex);
         switch (command)
         {
             case "select":
-                cursorDevice.getLayerOrDrumPadBank ().getItem (layerIndex).select ();
+                layerOrDrumPadBank.getItem (layerIndex).select ();
                 break;
 
             case PART_VOLUME:
@@ -1466,6 +1473,10 @@ public class OSCParser extends AbstractOpenSoundControlParser
 
             case "send":
                 final int sendNo = Integer.parseInt (parts.removeFirst ()) - 1;
+                if (parts.isEmpty ())
+                    return;
+                if (!PART_VOLUME.equals (parts.removeFirst ()))
+                    return;
                 if (parts.isEmpty ())
                     layer.getSendBank ().getItem (sendNo).setValue (numValue);
                 else if (PART_TOUCH.equals (parts.get (0)))

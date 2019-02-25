@@ -203,6 +203,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         final ModelSetup ms = new ModelSetup ();
         ms.setNumTracks (adjustedNum);
+        ms.setNumScenes (0);
         ms.setNumFilterColumnEntries (8);
         ms.setNumResults (8);
         ms.setNumParams (adjustedNum);

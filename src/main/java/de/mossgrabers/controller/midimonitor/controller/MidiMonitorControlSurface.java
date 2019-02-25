@@ -305,7 +305,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
         {
             sb.append (String.format ("%02X", Integer.valueOf (data[i])));
 
-            if (i != 0 && i % 16 == 0)
+            if (i != 0 && (i + 1) % 16 == 0)
             {
                 this.host.println (sb.toString ());
                 sb = new StringBuilder ("| ");
@@ -316,8 +316,8 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
 
         if (sb.length () > 2)
         {
-            if (data.length == 6 && data[0] == 0xF0 || data[1] == 0x7F || data[3] == 0x06 || data[5] == 0xF7)
-                sb.append (" - ").append (MMC_NAMES[data[4]]);
+            if (data.length == 6 && data[0] == 0xF0 && data[1] == 0x7F && data[3] == 0x06 && data[5] == 0xF7)
+                sb.append (" - MMC ").append (MMC_NAMES[data[4]]);
             this.host.println (sb.toString ());
         }
     }
