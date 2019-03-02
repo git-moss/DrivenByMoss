@@ -202,13 +202,24 @@ public interface IModel
 
 
     /**
-     * Creates a new track bank for monitoring scenes.
+     * Creates a new bank for monitoring scenes.
      *
-     * @param numTracks The number of tracks in a bank page
      * @param numScenes The number of scenes in a bank page
-     * @return The track bank
+     * @return The scene bank
      */
-    ITrackBank createSceneViewTrackBank (final int numTracks, final int numScenes);
+    ISceneBank createSceneBank (final int numScenes);
+
+
+    /**
+     * Deactivate all solo states of all tracks.
+     */
+    void deactivateSolo ();
+
+
+    /**
+     * Deactivate all mute states of all tracks.
+     */
+    void deactivateMute ();
 
 
     /**

@@ -213,7 +213,10 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     protected void registerTriggerCommands ()
     {
         final LaunchpadControlSurface surface = this.getSurface ();
-        this.addTriggerCommand (Commands.COMMAND_SHIFT, this.getSurface ().getShiftButtonId (), new ShiftCommand (this.model, surface));
+        final ShiftCommand command = new ShiftCommand (this.model, surface);
+        this.addTriggerCommand (Commands.COMMAND_SHIFT, surface.getShiftButtonId (), command);
+        if (this.isPro)
+            this.addTriggerCommand (Commands.COMMAND_USER, surface.getUserButtonId (), command);
 
         this.addTriggerCommand (Commands.COMMAND_METRONOME, LaunchpadControlSurface.LAUNCHPAD_BUTTON_CLICK, new ClickCommand (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_UNDO, LaunchpadControlSurface.LAUNCHPAD_BUTTON_UNDO, new UndoCommand<> (this.model, surface));

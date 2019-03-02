@@ -28,7 +28,7 @@ import java.util.List;
 
 
 /**
- * Mode for editing the parameters of a clip.
+ * Mode for displaying clips or scenes.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -42,7 +42,7 @@ public class SessionMode extends AbstractTrackMode
     }
 
     private RowDisplayMode rowDisplayMode;
-    private ITrackBank     trackBank;
+    private ISceneBank     sceneBank;
 
 
     /**
@@ -56,7 +56,7 @@ public class SessionMode extends AbstractTrackMode
         super ("Session", surface, model);
         this.isTemporary = false;
         this.rowDisplayMode = this.isPush2 ? RowDisplayMode.ALL : RowDisplayMode.UPPER;
-        this.trackBank = model.createSceneViewTrackBank (8, 64);
+        this.sceneBank = model.createSceneBank (64);
     }
 
 
@@ -151,8 +151,6 @@ public class SessionMode extends AbstractTrackMode
 
     private void updateDisplay1Scenes ()
     {
-        final ISceneBank sceneBank = this.trackBank.getSceneBank ();
-
         final int maxCols = 8;
         final int maxRows = this.rowDisplayMode == RowDisplayMode.ALL ? 8 : 4;
 
@@ -165,7 +163,7 @@ public class SessionMode extends AbstractTrackMode
                 if (this.rowDisplayMode == RowDisplayMode.LOWER)
                     sceneIndex += 32;
 
-                final IScene scene = sceneBank.getItem (sceneIndex);
+                final IScene scene = this.sceneBank.getItem (sceneIndex);
                 if (!scene.doesExist ())
                     continue;
                 final boolean isSel = scene.isSelected ();
@@ -252,8 +250,6 @@ public class SessionMode extends AbstractTrackMode
 
     private void updateDisplay2Scenes ()
     {
-        final ISceneBank sceneBank = this.trackBank.getSceneBank ();
-
         final int maxCols = 8;
         final int maxRows = this.rowDisplayMode == RowDisplayMode.ALL ? 8 : 4;
 
@@ -266,7 +262,7 @@ public class SessionMode extends AbstractTrackMode
                 int sceneIndex = (maxRows - 1 - row) * 8 + col;
                 if (this.rowDisplayMode == RowDisplayMode.LOWER)
                     sceneIndex += 32;
-                scenes.add (sceneBank.getItem (sceneIndex));
+                scenes.add (this.sceneBank.getItem (sceneIndex));
             }
             message.addSceneListElement (scenes);
         }

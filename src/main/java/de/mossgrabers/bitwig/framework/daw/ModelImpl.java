@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.AbstractModel;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FrameworkException;
@@ -25,6 +25,9 @@ import com.bitwig.extension.controller.api.MasterTrack;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
 import com.bitwig.extension.controller.api.TrackBank;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * The model which contains all data and access to the DAW.
@@ -33,9 +36,13 @@ import com.bitwig.extension.controller.api.TrackBank;
  */
 public class ModelImpl extends AbstractModel
 {
-    private ControllerHost controllerHost;
-    private CursorTrack    cursorTrack;
-    private BooleanValue   masterTrackEqualsValue;
+    private static final int               ALL_TRACKS = 1000;
+
+    private final ControllerHost           controllerHost;
+    private final CursorTrack              cursorTrack;
+    private final BooleanValue             masterTrackEqualsValue;
+    private final Map<Integer, ISceneBank> sceneBanks = new HashMap<> (1);
+    private final TrackBank                muteSoloTrackBank;
 
 
     /**
@@ -92,6 +99,8 @@ public class ModelImpl extends AbstractModel
         final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numTracks, numScenes);
         this.effectTrackBank = new EffectTrackBankImpl (this.host, valueChanger, this.cursorTrack, effectTrackBank, numTracks, numScenes, this.trackBank);
 
+        this.muteSoloTrackBank = controllerHost.createTrackBank (ALL_TRACKS, 0, 0, true);
+
         final int numParams = this.modelSetup.getNumParams ();
         final int numDeviceLayers = this.modelSetup.getNumDeviceLayers ();
         final int numDrumPadLayers = this.modelSetup.getNumDrumPadLayers ();
@@ -117,11 +126,31 @@ public class ModelImpl extends AbstractModel
 
     /** {@inheritDoc} */
     @Override
-    public ITrackBank createSceneViewTrackBank (final int numTracks, final int numScenes)
+    public ISceneBank createSceneBank (final int numScenes)
     {
-        final TrackBank tb = this.controllerHost.createMainTrackBank (numTracks, this.modelSetup.getNumSends (), numScenes);
-        tb.followCursorTrack (this.cursorTrack);
-        return new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, numTracks, numScenes, 0);
+        return this.sceneBanks.computeIfAbsent (Integer.valueOf (numScenes), key -> {
+            final TrackBank tb = this.controllerHost.createMainTrackBank (1, this.modelSetup.getNumSends (), numScenes);
+            tb.followCursorTrack (this.cursorTrack);
+            return new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, 1, numScenes, 0).getSceneBank ();
+        });
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void deactivateSolo ()
+    {
+        for (int i = 0; i < ALL_TRACKS; i++)
+            this.muteSoloTrackBank.getItemAt (i).solo ().set (false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void deactivateMute ()
+    {
+        for (int i = 0; i < ALL_TRACKS; i++)
+            this.muteSoloTrackBank.getItemAt (i).mute ().set (false);
     }
 
 

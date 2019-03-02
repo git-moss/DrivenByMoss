@@ -125,6 +125,7 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -533,7 +534,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
 
         surface.sendPressureMode (true);
-        surface.getOutput ().sendIdentityRequest ();
+        surface.getOutput ().sendSysex (DeviceInquiry.createQuery ());
     }
 
 

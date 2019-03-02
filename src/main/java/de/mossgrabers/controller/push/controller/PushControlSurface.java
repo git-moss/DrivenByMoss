@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -24,31 +25,8 @@ import java.util.Arrays;
  */
 public class PushControlSurface extends AbstractControlSurface<PushConfiguration>
 {
-    private static final int        PUSH1_IDENTITY_MIN_LENGTH = 35;
-    private static final int []     PUSH1_ID                  = new int []
-    {
-        0xF0,
-        0x7E,
-        0x00,
-        0x06,
-        0x02,
-        0x47,
-        0x15
-    };
-
-    private static final int        PUSH2_IDENTITY_MIN_LENGTH = 21;
-    private static final int []     PUSH2_ID                  = new int []
-    {
-        0xF0,
-        0x7E,
-        0x01,
-        0x06,
-        0x02,
-        0x00
-    };
-
     /** The names for the dynamic curves. */
-    public static final String []   PUSH_PAD_CURVES_NAME      =
+    public static final String []   PUSH_PAD_CURVES_NAME     =
     {
         "Linear",
         "Log 1 (Default)",
@@ -59,7 +37,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     };
 
     /** The names for the pad thresholds. */
-    public static final String []   PUSH_PAD_THRESHOLDS_NAME  =
+    public static final String []   PUSH_PAD_THRESHOLDS_NAME =
     {
         "-20",
         "-19",
@@ -105,190 +83,190 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     };
 
     /** The tap button. */
-    public static final int         PUSH_BUTTON_TAP           = 3;
+    public static final int         PUSH_BUTTON_TAP          = 3;
     /** The metronome button. */
-    public static final int         PUSH_BUTTON_METRONOME     = 9;
+    public static final int         PUSH_BUTTON_METRONOME    = 9;
     /** The small knob 1. */
-    public static final int         PUSH_SMALL_KNOB1          = 14;
+    public static final int         PUSH_SMALL_KNOB1         = 14;
     /** The small knob 2. */
-    public static final int         PUSH_SMALL_KNOB2          = 15;
+    public static final int         PUSH_SMALL_KNOB2         = 15;
     /** The button 1 in row 1. */
-    public static final int         PUSH_BUTTON_ROW1_1        = 20;
+    public static final int         PUSH_BUTTON_ROW1_1       = 20;
     /** The button 2 in row 1. */
-    public static final int         PUSH_BUTTON_ROW1_2        = 21;
+    public static final int         PUSH_BUTTON_ROW1_2       = 21;
     /** The button 3 in row 1. */
-    public static final int         PUSH_BUTTON_ROW1_3        = 22;
+    public static final int         PUSH_BUTTON_ROW1_3       = 22;
     /** The button 4 in row 1. */
-    public static final int         PUSH_BUTTON_ROW1_4        = 23;
+    public static final int         PUSH_BUTTON_ROW1_4       = 23;
     /** The button 5 in row 1. */
-    public static final int         PUSH_BUTTON_ROW1_5        = 24;
+    public static final int         PUSH_BUTTON_ROW1_5       = 24;
     /** The button 6 in row 1. */
-    public static final int         PUSH_BUTTON_ROW1_6        = 25;
+    public static final int         PUSH_BUTTON_ROW1_6       = 25;
     /** The button 7 in row 1. */
-    public static final int         PUSH_BUTTON_ROW1_7        = 26;
+    public static final int         PUSH_BUTTON_ROW1_7       = 26;
     /** The button 8 in row 1. */
-    public static final int         PUSH_BUTTON_ROW1_8        = 27;
+    public static final int         PUSH_BUTTON_ROW1_8       = 27;
     /** The master button. */
-    public static final int         PUSH_BUTTON_MASTER        = 28;
+    public static final int         PUSH_BUTTON_MASTER       = 28;
     /** The clip stop button. */
-    public static final int         PUSH_BUTTON_CLIP_STOP     = 29;
+    public static final int         PUSH_BUTTON_CLIP_STOP    = 29;
     /** The setup button - only Push 2. */
-    public static final int         PUSH_BUTTON_SETUP         = 30;
+    public static final int         PUSH_BUTTON_SETUP        = 30;
     /** The layout button - only Push 2. */
-    public static final int         PUSH_BUTTON_LAYOUT        = 31;
+    public static final int         PUSH_BUTTON_LAYOUT       = 31;
     /** The convert button - only Push 2. */
-    public static final int         PUSH_BUTTON_CONVERT       = 35;
+    public static final int         PUSH_BUTTON_CONVERT      = 35;
     /** The scene 1 button. */
-    public static final int         PUSH_BUTTON_SCENE1        = 36;       // 1/4
+    public static final int         PUSH_BUTTON_SCENE1       = 36; // 1/4
     /** The scene 2 button. */
-    public static final int         PUSH_BUTTON_SCENE2        = 37;
+    public static final int         PUSH_BUTTON_SCENE2       = 37;
     /** The scene 3 button. */
-    public static final int         PUSH_BUTTON_SCENE3        = 38;
+    public static final int         PUSH_BUTTON_SCENE3       = 38;
     /** The scene 4 button. */
-    public static final int         PUSH_BUTTON_SCENE4        = 39;
+    public static final int         PUSH_BUTTON_SCENE4       = 39;
     /** The scene 5 button. */
-    public static final int         PUSH_BUTTON_SCENE5        = 40;       // ...
+    public static final int         PUSH_BUTTON_SCENE5       = 40; // ...
     /** The scene 6 button. */
-    public static final int         PUSH_BUTTON_SCENE6        = 41;
+    public static final int         PUSH_BUTTON_SCENE6       = 41;
     /** The scene 7 button. */
-    public static final int         PUSH_BUTTON_SCENE7        = 42;
+    public static final int         PUSH_BUTTON_SCENE7       = 42;
     /** The scene 8 button. */
-    public static final int         PUSH_BUTTON_SCENE8        = 43;       // 1/32T
+    public static final int         PUSH_BUTTON_SCENE8       = 43; // 1/32T
     /** The cursor left button. */
-    public static final int         PUSH_BUTTON_LEFT          = 44;
+    public static final int         PUSH_BUTTON_LEFT         = 44;
     /** The cursor right button. */
-    public static final int         PUSH_BUTTON_RIGHT         = 45;
+    public static final int         PUSH_BUTTON_RIGHT        = 45;
     /** The cursor up button. */
-    public static final int         PUSH_BUTTON_UP            = 46;
+    public static final int         PUSH_BUTTON_UP           = 46;
     /** The cursor down button. */
-    public static final int         PUSH_BUTTON_DOWN          = 47;
+    public static final int         PUSH_BUTTON_DOWN         = 47;
     /** The select button. */
-    public static final int         PUSH_BUTTON_SELECT        = 48;
+    public static final int         PUSH_BUTTON_SELECT       = 48;
     /** The shift button. */
-    public static final int         PUSH_BUTTON_SHIFT         = 49;
+    public static final int         PUSH_BUTTON_SHIFT        = 49;
     /** The note button. */
-    public static final int         PUSH_BUTTON_NOTE          = 50;
+    public static final int         PUSH_BUTTON_NOTE         = 50;
     /** The session button. */
-    public static final int         PUSH_BUTTON_SESSION       = 51;
+    public static final int         PUSH_BUTTON_SESSION      = 51;
     /** The add effect button. */
-    public static final int         PUSH_BUTTON_ADD_EFFECT    = 52;
+    public static final int         PUSH_BUTTON_ADD_EFFECT   = 52;
     /** The add track button. */
-    public static final int         PUSH_BUTTON_ADD_TRACK     = 53;
+    public static final int         PUSH_BUTTON_ADD_TRACK    = 53;
     /** The octave down button. */
-    public static final int         PUSH_BUTTON_OCTAVE_DOWN   = 54;
+    public static final int         PUSH_BUTTON_OCTAVE_DOWN  = 54;
     /** The octave up button. */
-    public static final int         PUSH_BUTTON_OCTAVE_UP     = 55;
+    public static final int         PUSH_BUTTON_OCTAVE_UP    = 55;
     /** The repeat button. */
-    public static final int         PUSH_BUTTON_REPEAT        = 56;
+    public static final int         PUSH_BUTTON_REPEAT       = 56;
     /** The accent button. */
-    public static final int         PUSH_BUTTON_ACCENT        = 57;
+    public static final int         PUSH_BUTTON_ACCENT       = 57;
     /** The scales button. */
-    public static final int         PUSH_BUTTON_SCALES        = 58;
+    public static final int         PUSH_BUTTON_SCALES       = 58;
     /** The user mode button. */
-    public static final int         PUSH_BUTTON_USER_MODE     = 59;
+    public static final int         PUSH_BUTTON_USER_MODE    = 59;
     /** The mute button. */
-    public static final int         PUSH_BUTTON_MUTE          = 60;
+    public static final int         PUSH_BUTTON_MUTE         = 60;
     /** The solo button. */
-    public static final int         PUSH_BUTTON_SOLO          = 61;
+    public static final int         PUSH_BUTTON_SOLO         = 61;
     /** The device left button. */
-    public static final int         PUSH_BUTTON_DEVICE_LEFT   = 62;
+    public static final int         PUSH_BUTTON_DEVICE_LEFT  = 62;
     /** The device right button. */
-    public static final int         PUSH_BUTTON_DEVICE_RIGHT  = 63;
+    public static final int         PUSH_BUTTON_DEVICE_RIGHT = 63;
     /** The footswitch 1. */
-    public static final int         PUSH_FOOTSWITCH1          = 64;
+    public static final int         PUSH_FOOTSWITCH1         = 64;
     /** The footswitch 2. */
-    public static final int         PUSH_FOOTSWITCH2          = 69;
+    public static final int         PUSH_FOOTSWITCH2         = 69;
     /** The knob 1. */
-    public static final int         PUSH_KNOB1                = 71;
+    public static final int         PUSH_KNOB1               = 71;
     /** The knob 2. */
-    public static final int         PUSH_KNOB2                = 72;
+    public static final int         PUSH_KNOB2               = 72;
     /** The knob 3. */
-    public static final int         PUSH_KNOB3                = 73;
+    public static final int         PUSH_KNOB3               = 73;
     /** The knob 4. */
-    public static final int         PUSH_KNOB4                = 74;
+    public static final int         PUSH_KNOB4               = 74;
     /** The knob 5. */
-    public static final int         PUSH_KNOB5                = 75;
+    public static final int         PUSH_KNOB5               = 75;
     /** The knob 6. */
-    public static final int         PUSH_KNOB6                = 76;
+    public static final int         PUSH_KNOB6               = 76;
     /** The knob 7. */
-    public static final int         PUSH_KNOB7                = 77;
+    public static final int         PUSH_KNOB7               = 77;
     /** The knob 8. */
-    public static final int         PUSH_KNOB8                = 78;
+    public static final int         PUSH_KNOB8               = 78;
     /** The knob 9 - master knob. */
-    public static final int         PUSH_KNOB9                = 79;
+    public static final int         PUSH_KNOB9               = 79;
     /** The play button. */
-    public static final int         PUSH_BUTTON_PLAY          = 85;
+    public static final int         PUSH_BUTTON_PLAY         = 85;
     /** The record button. */
-    public static final int         PUSH_BUTTON_RECORD        = 86;
+    public static final int         PUSH_BUTTON_RECORD       = 86;
     /** The new button. */
-    public static final int         PUSH_BUTTON_NEW           = 87;
+    public static final int         PUSH_BUTTON_NEW          = 87;
     /** The duplicate button. */
-    public static final int         PUSH_BUTTON_DUPLICATE     = 88;
+    public static final int         PUSH_BUTTON_DUPLICATE    = 88;
     /** The automation button. */
-    public static final int         PUSH_BUTTON_AUTOMATION    = 89;
+    public static final int         PUSH_BUTTON_AUTOMATION   = 89;
     /** The fixed length button. */
-    public static final int         PUSH_BUTTON_FIXED_LENGTH  = 90;
+    public static final int         PUSH_BUTTON_FIXED_LENGTH = 90;
     /** The second row button 1. */
-    public static final int         PUSH_BUTTON_ROW2_1        = 102;
+    public static final int         PUSH_BUTTON_ROW2_1       = 102;
     /** The second row button 2. */
-    public static final int         PUSH_BUTTON_ROW2_2        = 103;
+    public static final int         PUSH_BUTTON_ROW2_2       = 103;
     /** The second row button 3. */
-    public static final int         PUSH_BUTTON_ROW2_3        = 104;
+    public static final int         PUSH_BUTTON_ROW2_3       = 104;
     /** The second row button 4. */
-    public static final int         PUSH_BUTTON_ROW2_4        = 105;
+    public static final int         PUSH_BUTTON_ROW2_4       = 105;
     /** The second row button 5. */
-    public static final int         PUSH_BUTTON_ROW2_5        = 106;
+    public static final int         PUSH_BUTTON_ROW2_5       = 106;
     /** The second row button 6. */
-    public static final int         PUSH_BUTTON_ROW2_6        = 107;
+    public static final int         PUSH_BUTTON_ROW2_6       = 107;
     /** The second row button 7. */
-    public static final int         PUSH_BUTTON_ROW2_7        = 108;
+    public static final int         PUSH_BUTTON_ROW2_7       = 108;
     /** The second row button 8. */
-    public static final int         PUSH_BUTTON_ROW2_8        = 109;
+    public static final int         PUSH_BUTTON_ROW2_8       = 109;
     /** The device button. */
-    public static final int         PUSH_BUTTON_DEVICE        = 110;
+    public static final int         PUSH_BUTTON_DEVICE       = 110;
     /** The browse button. */
-    public static final int         PUSH_BUTTON_BROWSE        = 111;
+    public static final int         PUSH_BUTTON_BROWSE       = 111;
     /** The track / mix button. */
-    public static final int         PUSH_BUTTON_TRACK         = 112;
+    public static final int         PUSH_BUTTON_TRACK        = 112;
     /** The clip button. */
-    public static final int         PUSH_BUTTON_CLIP          = 113;
+    public static final int         PUSH_BUTTON_CLIP         = 113;
     /** The volume button - only Push 1. */
-    public static final int         PUSH_BUTTON_VOLUME        = 114;
+    public static final int         PUSH_BUTTON_VOLUME       = 114;
     /** The pan/send button - only Push 1. */
-    public static final int         PUSH_BUTTON_PAN_SEND      = 115;
+    public static final int         PUSH_BUTTON_PAN_SEND     = 115;
     /** The quantize button. */
-    public static final int         PUSH_BUTTON_QUANTIZE      = 116;
+    public static final int         PUSH_BUTTON_QUANTIZE     = 116;
     /** The double button. */
-    public static final int         PUSH_BUTTON_DOUBLE        = 117;
+    public static final int         PUSH_BUTTON_DOUBLE       = 117;
     /** The delete button. */
-    public static final int         PUSH_BUTTON_DELETE        = 118;
+    public static final int         PUSH_BUTTON_DELETE       = 118;
     /** The undo button. */
-    public static final int         PUSH_BUTTON_UNDO          = 119;
+    public static final int         PUSH_BUTTON_UNDO         = 119;
 
     /** The note sent when touching knob 1. */
-    public static final int         PUSH_KNOB1_TOUCH          = 0;
+    public static final int         PUSH_KNOB1_TOUCH         = 0;
     /** The note sent when touching knob 2. */
-    public static final int         PUSH_KNOB2_TOUCH          = 1;
+    public static final int         PUSH_KNOB2_TOUCH         = 1;
     /** The note sent when touching knob 3. */
-    public static final int         PUSH_KNOB3_TOUCH          = 2;
+    public static final int         PUSH_KNOB3_TOUCH         = 2;
     /** The note sent when touching knob 4. */
-    public static final int         PUSH_KNOB4_TOUCH          = 3;
+    public static final int         PUSH_KNOB4_TOUCH         = 3;
     /** The note sent when touching knob 5. */
-    public static final int         PUSH_KNOB5_TOUCH          = 4;
+    public static final int         PUSH_KNOB5_TOUCH         = 4;
     /** The note sent when touching knob 6. */
-    public static final int         PUSH_KNOB6_TOUCH          = 5;
+    public static final int         PUSH_KNOB6_TOUCH         = 5;
     /** The note sent when touching knob 7. */
-    public static final int         PUSH_KNOB7_TOUCH          = 6;
+    public static final int         PUSH_KNOB7_TOUCH         = 6;
     /** The note sent when touching knob 8. */
-    public static final int         PUSH_KNOB8_TOUCH          = 7;
+    public static final int         PUSH_KNOB8_TOUCH         = 7;
     /** The note sent when touching the master knob. */
-    public static final int         PUSH_KNOB9_TOUCH          = 8;
+    public static final int         PUSH_KNOB9_TOUCH         = 8;
     /** The note sent when touching the small knob 1. */
-    public static final int         PUSH_SMALL_KNOB1_TOUCH    = 10;
+    public static final int         PUSH_SMALL_KNOB1_TOUCH   = 10;
     /** The note sent when touching the small knob 2. */
-    public static final int         PUSH_SMALL_KNOB2_TOUCH    = 9;
+    public static final int         PUSH_SMALL_KNOB2_TOUCH   = 9;
 
-    private static final int []     PUSH_BUTTONS_ALL          =
+    private static final int []     PUSH_BUTTONS_ALL         =
     {
         PUSH_BUTTON_TAP,
         PUSH_BUTTON_METRONOME,
@@ -924,53 +902,30 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
     private void handleSysEx (final String data)
     {
+        final DeviceInquiry deviceInquiry = new DeviceInquiry (StringUtils.fromHexStr (data));
+        if (!deviceInquiry.isValid ())
+            return;
+
+        final int [] revisionLevel = deviceInquiry.getRevisionLevel ();
+
         if (this.configuration.isPush2 ())
         {
-            final int byteLength = data.length () / 2;
-            if (byteLength < PUSH2_IDENTITY_MIN_LENGTH)
-            {
-                this.errorln ("Wrong Push 2 identifier length " + byteLength + " but must be " + PUSH2_IDENTITY_MIN_LENGTH);
-                this.errorln (data);
+            if (revisionLevel.length != 10)
                 return;
-            }
 
-            for (int i = 0; i < PUSH2_ID.length; i++)
-            {
-                final int value = StringUtils.fromHexStr (data, i);
-                if (value != PUSH2_ID[i])
-                {
-                    this.errorln ("Wrong identifier value at index " + i + ": " + value + " : " + PUSH2_ID[i]);
-                    return;
-                }
-            }
-
-            this.majorVersion = StringUtils.fromHexStr (data, 12);
-            this.minorVersion = StringUtils.fromHexStr (data, 13);
-            this.buildNumber = StringUtils.fromHexStr (data, 14) + (StringUtils.fromHexStr (data, 15) << 7);
-            this.serialNumber = StringUtils.fromHexStr (data, 16) + (StringUtils.fromHexStr (data, 17) << 7) + (StringUtils.fromHexStr (data, 18) << 14) + (StringUtils.fromHexStr (data, 19) << 21) + (StringUtils.fromHexStr (data, 20) << 28);
-            this.boardRevision = byteLength > 21 ? StringUtils.fromHexStr (data, 21) : 0;
+            this.majorVersion = revisionLevel[0];
+            this.minorVersion = revisionLevel[1];
+            this.buildNumber = revisionLevel[2] + (revisionLevel[3] << 7);
+            this.serialNumber = revisionLevel[4] + (revisionLevel[5] << 7) + (revisionLevel[6] << 14) + (revisionLevel[7] << 21) + (revisionLevel[8] << 28);
+            this.boardRevision = revisionLevel[9];
         }
         else
         {
-            final int byteLength = data.length () / 2;
-            if (byteLength < PUSH1_IDENTITY_MIN_LENGTH)
-            {
-                this.errorln ("Wrong Push 1 identifier length " + byteLength + " but must be " + PUSH1_IDENTITY_MIN_LENGTH);
+            if (revisionLevel.length != 24)
                 return;
-            }
 
-            for (int i = 0; i < PUSH1_ID.length; i++)
-            {
-                final int value = StringUtils.fromHexStr (data, i);
-                if (value != PUSH1_ID[i])
-                {
-                    this.errorln ("Wrong identifier value at index " + i + ": " + value + " : " + PUSH1_ID[i]);
-                    return;
-                }
-            }
-
-            this.majorVersion = StringUtils.fromHexStr (data, 10);
-            this.minorVersion = StringUtils.fromHexStr (data, 12) + StringUtils.fromHexStr (data, 11) * 10;
+            this.majorVersion = revisionLevel[0];
+            this.minorVersion = revisionLevel[2] + revisionLevel[1] * 10;
             this.buildNumber = 0;
             this.serialNumber = 0;
             this.boardRevision = 0;

@@ -121,12 +121,4 @@ class MidiOutputImpl implements IMidiOutput
     {
         this.port.sendSysex (data);
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void sendIdentityRequest ()
-    {
-        this.sendSysex ("F0 7E 7F 06 01 F7");
-    }
 }

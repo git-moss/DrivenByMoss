@@ -11,7 +11,6 @@ import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -26,7 +25,7 @@ import de.mossgrabers.framework.view.SceneView;
  */
 public class ScenePlayView extends AbstractView<PushControlSurface, PushConfiguration> implements SceneView
 {
-    private ITrackBank trackBank;
+    private ISceneBank sceneBank;
 
 
     /**
@@ -38,7 +37,8 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     public ScenePlayView (final PushControlSurface surface, final IModel model)
     {
         super ("Scene Play", surface, model);
-        this.trackBank = model.createSceneViewTrackBank (8, 64);
+
+        this.sceneBank = model.createSceneBank (64);
     }
 
 
@@ -65,12 +65,11 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     @Override
     public void drawGrid ()
     {
-        final ISceneBank sceneBank = this.trackBank.getSceneBank ();
         final PadGrid padGrid = this.surface.getPadGrid ();
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         for (int i = 0; i < 64; i++)
         {
-            final IScene scene = sceneBank.getItem (i);
+            final IScene scene = this.sceneBank.getItem (i);
             if (scene.isSelected ())
                 padGrid.light (36 + i, isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE);
             else
@@ -89,7 +88,7 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
         if (velocity == 0)
             return;
 
-        final IScene scene = this.trackBank.getSceneBank ().getItem (note - 36);
+        final IScene scene = this.sceneBank.getItem (note - 36);
 
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
         {

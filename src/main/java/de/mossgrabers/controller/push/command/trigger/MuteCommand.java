@@ -42,6 +42,13 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
         // Update for key combinations
         this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
 
+        if (this.surface.isSelectPressed ())
+        {
+            if (event == ButtonEvent.UP)
+                this.model.deactivateMute ();
+            return;
+        }
+
         final PushConfiguration config = this.surface.getConfiguration ();
         if (!config.isPush2 ())
         {
@@ -53,7 +60,15 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
         if (this.surface.isShiftPressed ())
         {
             if (event == ButtonEvent.UP)
-                config.setMuteSoloLocked (!config.isMuteSoloLocked ());
+            {
+                if (config.isMuteSoloLocked () && config.isMuteState ())
+                    config.setMuteSoloLocked (false);
+                else
+                {
+                    config.setMuteSoloLocked (true);
+                    config.setTrackState (TrackState.MUTE);
+                }
+            }
             return;
         }
 

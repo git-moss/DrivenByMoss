@@ -101,10 +101,4 @@ public interface IMidiOutput
      * @param data The data to send, formatted as a hex string, e.g. F0 7E 7F 06 01 F7
      */
     void sendSysex (String data);
-
-
-    /**
-     * Sends an identity request to the controller which is connected to this output.
-     */
-    void sendIdentityRequest ();
 }

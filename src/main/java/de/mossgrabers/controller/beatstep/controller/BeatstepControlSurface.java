@@ -115,8 +115,6 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
         super (host, configuration, colorManager, output, input, new BeatstepPadGrid (colorManager, output), BEATSTEP_BUTTONS_ALL);
 
         this.isPro = isPro;
-
-        this.output.sendIdentityRequest ();
     }
 
 

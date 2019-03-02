@@ -42,6 +42,13 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
         // Update for key combinations
         this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
 
+        if (this.surface.isSelectPressed ())
+        {
+            if (event == ButtonEvent.UP)
+                this.model.deactivateSolo ();
+            return;
+        }
+
         final PushConfiguration config = this.surface.getConfiguration ();
         if (!config.isPush2 ())
         {
@@ -53,7 +60,15 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
         if (this.surface.isShiftPressed ())
         {
             if (event == ButtonEvent.UP)
-                config.setMuteSoloLocked (!config.isMuteSoloLocked ());
+            {
+                if (config.isMuteSoloLocked () && config.isSoloState ())
+                    config.setMuteSoloLocked (false);
+                else
+                {
+                    config.setMuteSoloLocked (true);
+                    config.setTrackState (TrackState.SOLO);
+                }
+            }
             return;
         }
 
