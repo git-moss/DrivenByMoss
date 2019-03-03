@@ -121,6 +121,7 @@
     </dependency>
   </dependencies>
   <properties>
+    <bitwig.extension.directory>/Users/saile/Documents/Bitwig Studio/Extensions</bitwig.extension.directory>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>

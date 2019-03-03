@@ -5,3 +5,9 @@ last-build.bin
 fileHashes.lock
 /.settings/org.eclipse.m2e.core.prefs
 /.settings/org.sonarlint.eclipse.core.prefs
+/.idea/
+.idea/
+DrivenByMoss (1).iml
+/DrivenByMoss (2).iml
+/DrivenByMoss (2).iml
+src/main/java/target/

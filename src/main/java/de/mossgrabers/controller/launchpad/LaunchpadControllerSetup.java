@@ -112,6 +112,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         LaunchpadColors.addColors (this.colorManager);
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
         this.configuration = new LaunchpadConfiguration (this.valueChanger, isPro);
+        Views.init(host);
     }
 
 

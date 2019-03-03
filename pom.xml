@@ -10,6 +10,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<bitwig.extension.directory>/Users/saile/Documents/Bitwig Studio/Extensions</bitwig.extension.directory>
 	</properties>
 
 	<repositories>
