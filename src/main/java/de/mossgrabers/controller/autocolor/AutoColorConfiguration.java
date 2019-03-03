@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -35,11 +36,12 @@ public class AutoColorConfiguration extends AbstractConfiguration
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
      */
-    public AutoColorConfiguration (final IValueChanger valueChanger)
+    public AutoColorConfiguration (final IHost host, final IValueChanger valueChanger)
     {
-        super (valueChanger);
+        super (host, valueChanger);
     }
 
 

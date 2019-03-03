@@ -7,6 +7,7 @@ package de.mossgrabers.controller.launchpad;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 
 
 /**
@@ -22,12 +23,13 @@ public class LaunchpadConfiguration extends AbstractConfiguration
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
      * @param isPro Is Pro or MkII?
      */
-    public LaunchpadConfiguration (final IValueChanger valueChanger, final boolean isPro)
+    public LaunchpadConfiguration (final IHost host, final IValueChanger valueChanger, final boolean isPro)
     {
-        super (valueChanger);
+        super (host, valueChanger);
         this.isPro = isPro;
     }
 

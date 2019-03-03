@@ -46,7 +46,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
 
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new OSCConfiguration (this.valueChanger);
+        this.configuration = new OSCConfiguration (host, this.valueChanger);
     }
 
 

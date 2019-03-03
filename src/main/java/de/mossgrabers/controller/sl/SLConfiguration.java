@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 
 
 /**
@@ -40,12 +41,13 @@ public class SLConfiguration extends AbstractConfiguration
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
      * @param isMkII Is MkI or MkII?
      */
-    public SLConfiguration (final IValueChanger valueChanger, final boolean isMkII)
+    public SLConfiguration (final IHost host, final IValueChanger valueChanger, final boolean isMkII)
     {
-        super (valueChanger);
+        super (host, valueChanger);
         this.isMkII = isMkII;
     }
 

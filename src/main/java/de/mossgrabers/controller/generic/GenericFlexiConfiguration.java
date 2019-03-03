@@ -217,8 +217,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     /** The number of command slots. */
     public static final int                          NUM_SLOTS             = 200;
 
-    private final IHost                              host;
-
     private IEnumSetting                             slotSelectionSetting;
     private IEnumSetting                             typeSetting;
     private IEnumSetting                             numberSetting;
@@ -248,13 +246,12 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
-     * @param host
      */
-    public GenericFlexiConfiguration (final IValueChanger valueChanger, final IHost host)
+    public GenericFlexiConfiguration (final IHost host, final IValueChanger valueChanger)
     {
-        super (valueChanger);
-        this.host = host;
+        super (host, valueChanger);
     }
 
 

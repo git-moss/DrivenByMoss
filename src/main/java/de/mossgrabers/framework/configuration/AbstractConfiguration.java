@@ -6,10 +6,12 @@ package de.mossgrabers.framework.configuration;
 
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.observer.SettingObserver;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -231,6 +233,8 @@ public abstract class AbstractConfiguration implements Configuration
         "On"
     };
 
+    protected final IHost                            host;
+
     private IEnumSetting                             scaleBaseSetting;
     private IEnumSetting                             scaleInKeySetting;
     private IEnumSetting                             scaleLayoutSetting;
@@ -285,11 +289,15 @@ public abstract class AbstractConfiguration implements Configuration
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
      */
-    public AbstractConfiguration (final IValueChanger valueChanger)
+    public AbstractConfiguration (final IHost host, final IValueChanger valueChanger)
     {
         this.valueChanger = valueChanger;
+
+        this.host = host;
+        Views.init (host);
     }
 
 

@@ -180,7 +180,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         this.colorManager = new ColorManager ();
         this.valueChanger = new Relative2ValueChanger (16241 + 1, 100, 10);
-        this.configuration = new MCUConfiguration (this.valueChanger);
+        this.configuration = new MCUConfiguration (host, this.valueChanger);
     }
 
 

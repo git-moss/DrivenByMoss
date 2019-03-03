@@ -32,7 +32,7 @@ public class MidiMonitorSetup extends AbstractControllerSetup<IControlSurface<Mi
     {
         super (factory, host, settings);
 
-        this.configuration = new MidiMonitorConfiguration (null);
+        this.configuration = new MidiMonitorConfiguration (host, null);
     }
 
 

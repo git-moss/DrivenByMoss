@@ -41,7 +41,7 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
 
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new AutoColorConfiguration (this.valueChanger);
+        this.configuration = new AutoColorConfiguration (host, this.valueChanger);
         this.autoColor = new AutoColor (this.configuration);
     }
 

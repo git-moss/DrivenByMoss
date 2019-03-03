@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 
 
 /**
@@ -54,11 +55,12 @@ public class MaschineMikroMk3Configuration extends AbstractConfiguration
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
      */
-    public MaschineMikroMk3Configuration (final IValueChanger valueChanger)
+    public MaschineMikroMk3Configuration (final IHost host, final IValueChanger valueChanger)
     {
-        super (valueChanger);
+        super (host, valueChanger);
     }
 
 

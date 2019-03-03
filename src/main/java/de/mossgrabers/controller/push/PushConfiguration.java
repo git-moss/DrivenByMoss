@@ -218,7 +218,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private ColorEx         colorBackgroundDarker       = DEFAULT_COLOR_BACKGROUND_DARKER;
     private ColorEx         colorBackgroundLighter      = DEFAULT_COLOR_BACKGROUND_LIGHTER;
 
-    private final IHost     host;
     private final boolean   isPush2;
 
     private IIntegerSetting displayBrightnessSetting;
@@ -255,11 +254,9 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public PushConfiguration (final IHost host, final IValueChanger valueChanger, final boolean isPush2)
     {
-        super (valueChanger);
-        this.host = host;
-        this.isPush2 = isPush2;
+        super (host, valueChanger);
 
-        Views.init (host);
+        this.isPush2 = isPush2;
     }
 
 

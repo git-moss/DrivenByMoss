@@ -124,19 +124,19 @@ public class Views
 
         NOTE_VIEWS.add (VIEW_PLAY);
         NOTE_VIEWS.add (VIEW_PIANO);
+        NOTE_VIEWS.add (VIEW_DRUM64);
         NOTE_VIEW_NAMES.put (VIEW_NAME_PLAY, VIEW_PLAY);
         NOTE_VIEW_NAMES.put (VIEW_NAME_PIANO, VIEW_PIANO);
+        NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM64, VIEW_DRUM64);
 
         if (host.hasDrumDevice ())
         {
             NOTE_VIEWS.add (VIEW_DRUM);
             NOTE_VIEWS.add (VIEW_DRUM4);
             NOTE_VIEWS.add (VIEW_DRUM8);
-            NOTE_VIEWS.add (VIEW_DRUM64);
             NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM, VIEW_DRUM);
             NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM4, VIEW_DRUM4);
             NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM8, VIEW_DRUM8);
-            NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM64, VIEW_DRUM64);
 
             SEQUENCER_VIEWS.add (VIEW_DRUM);
             SEQUENCER_VIEWS.add (VIEW_DRUM4);

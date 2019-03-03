@@ -85,7 +85,7 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         this.colorManager = new ColorManager ();
         KontrolMkIIColors.addColors (this.colorManager);
         this.valueChanger = new DefaultValueChanger (1024, 5, 1);
-        this.configuration = new KontrolMkIIConfiguration (this.valueChanger);
+        this.configuration = new KontrolMkIIConfiguration (host, this.valueChanger);
     }
 
 

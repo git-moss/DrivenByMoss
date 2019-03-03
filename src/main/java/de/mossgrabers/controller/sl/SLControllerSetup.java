@@ -147,7 +147,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         this.isMkII = isMkII;
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new SLConfiguration (this.valueChanger, isMkII);
+        this.configuration = new SLConfiguration (host, this.valueChanger, isMkII);
     }
 
 

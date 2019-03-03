@@ -87,7 +87,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         this.colorManager = new ColorManager ();
         APCminiColors.addColors (this.colorManager);
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new APCminiConfiguration (this.valueChanger);
+        this.configuration = new APCminiConfiguration (host, this.valueChanger);
     }
 
 

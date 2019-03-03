@@ -135,7 +135,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         this.colorManager = new ColorManager ();
         BeatstepColors.addColors (this.colorManager);
         this.valueChanger = new Relative3ValueChanger (128, 1, 0.5);
-        this.configuration = new BeatstepConfiguration (this.valueChanger, isPro);
+        this.configuration = new BeatstepConfiguration (host, this.valueChanger, isPro);
     }
 
 

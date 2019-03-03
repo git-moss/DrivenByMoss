@@ -111,7 +111,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         super (factory, host, settings);
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new MaschineMikroMk3Configuration (this.valueChanger);
+        this.configuration = new MaschineMikroMk3Configuration (host, this.valueChanger);
     }
 
 

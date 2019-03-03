@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.osc.AbstractOpenSoundControlConfiguration;
 
 
@@ -33,11 +34,12 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
      */
-    public OSCConfiguration (final IValueChanger valueChanger)
+    public OSCConfiguration (final IHost host, final IValueChanger valueChanger)
     {
-        super (valueChanger);
+        super (host, valueChanger);
     }
 
 

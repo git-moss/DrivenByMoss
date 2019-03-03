@@ -7,6 +7,7 @@ package de.mossgrabers.controller.kontrol.osc.mkii;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.osc.AbstractOpenSoundControlConfiguration;
 
 
@@ -54,11 +55,12 @@ public class KontrolOSCConfiguration extends AbstractOpenSoundControlConfigurati
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
      */
-    public KontrolOSCConfiguration (final IValueChanger valueChanger)
+    public KontrolOSCConfiguration (final IHost host, final IValueChanger valueChanger)
     {
-        super (valueChanger);
+        super (host, valueChanger);
     }
 
 

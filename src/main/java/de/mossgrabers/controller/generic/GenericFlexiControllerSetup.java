@@ -55,7 +55,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         super (factory, host, settings);
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new GenericFlexiConfiguration (this.valueChanger, host);
+        this.configuration = new GenericFlexiConfiguration (host, this.valueChanger);
     }
 
 

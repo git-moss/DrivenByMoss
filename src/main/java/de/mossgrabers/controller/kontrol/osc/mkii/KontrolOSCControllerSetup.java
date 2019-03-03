@@ -45,7 +45,7 @@ public class KontrolOSCControllerSetup extends AbstractControllerSetup<IControlS
 
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new KontrolOSCConfiguration (this.valueChanger);
+        this.configuration = new KontrolOSCConfiguration (host, this.valueChanger);
     }
 
 
