@@ -35,7 +35,7 @@ public class SelectedSendMode<S extends IControlSurface<C>, C extends Configurat
      */
     public SelectedSendMode (final int sendIndex, final S surface, final IModel model)
     {
-        super ("Send " + sendIndex, surface, model, false);
+        super ("Send", surface, model, false);
         this.sendIndex = sendIndex;
         this.isTemporary = false;
     }

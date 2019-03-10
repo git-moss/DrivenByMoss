@@ -25,6 +25,16 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {
+    private static final Integer []                                    VIEWS = new Integer []
+    {
+        Views.VIEW_TRACK,
+        Views.VIEW_DEVICE,
+        Views.VIEW_PLAY,
+        Views.VIEW_DRUM,
+        Views.VIEW_SEQUENCER,
+        Views.VIEW_SESSION
+    };
+
     private PlayCommand<BeatstepControlSurface, BeatstepConfiguration> playCommand;
 
 
@@ -132,7 +142,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
                     return;
 
                 final ViewManager viewManager = this.surface.getViewManager ();
-                final Integer viewId = Integer.valueOf (viewIndex);
+                final Integer viewId = VIEWS[viewIndex];
                 if (this.surface.isPro ())
                     viewManager.setActiveView (viewId);
                 else
