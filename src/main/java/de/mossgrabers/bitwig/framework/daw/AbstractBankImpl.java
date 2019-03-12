@@ -158,12 +158,8 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
     @Override
     public void scrollTo (final int position, final boolean adjustPage)
     {
-        if (position < 0 || position >= this.getItemCount ())
-            return;
-        final int pageSize = this.getPageSize ();
-        final int pos = adjustPage ? position / pageSize * pageSize : position;
-        this.bank.scrollIntoView (position);
-        this.bank.scrollPosition ().set (pos);
+        if (position >= 0 && position < this.getItemCount ())
+            this.bank.scrollPosition ().set (position);
     }
 
 
