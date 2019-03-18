@@ -26,10 +26,10 @@ public class MCUControllerDefinition extends DefaultControllerDefinition
 
     private static final String [] HARDWARE_MODEL =
     {
-        "Control Universal",
-        "Control Universal + 1 Extender",
-        "Control Universal + 2 Extenders",
-        "Control Universal + 3 Extenders"
+        "MCU - Control Universal",
+        "MCU - Control Universal + 1 Extender",
+        "MCU - Control Universal + 2 Extenders",
+        "MCU - Control Universal + 3 Extenders"
     };
 
 

@@ -22,18 +22,21 @@ import java.util.Set;
  */
 public abstract class AbstractBank<T extends IItem> implements IBank<T>
 {
+    protected final IHost                      host;
     protected final List<T>                    items;
-    protected int                              pageSize;
     protected final Set<ItemSelectionObserver> observers = new HashSet<> ();
+    protected int                              pageSize;
 
 
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param pageSize The number of elements in a page of the bank
      */
-    public AbstractBank (final int pageSize)
+    public AbstractBank (final IHost host, final int pageSize)
     {
+        this.host = host;
         this.pageSize = pageSize;
         this.items = new ArrayList<> (this.pageSize);
     }
@@ -103,8 +106,9 @@ public abstract class AbstractBank<T extends IItem> implements IBank<T>
     {
         if (position < 0 || position >= this.getItemCount ())
             return;
-        this.scrollTo (position);
-        this.getItem (position % this.getPageSize ()).setSelected (true);
+        final int ps = this.getPageSize ();
+        this.scrollTo ((position / ps) * ps);
+        this.host.scheduleTask ( () -> this.getItem (position % ps).select (), 75);
     }
 
 

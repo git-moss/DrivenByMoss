@@ -1,0 +1,827 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2019
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.controller.hui;
+
+import de.mossgrabers.controller.hui.controller.HUIControlSurface;
+import de.mossgrabers.controller.hui.controller.HUIDisplay;
+import de.mossgrabers.controller.hui.controller.HUISegmentDisplay;
+import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.trigger.transport.WindCommand;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.ISettingsUI;
+import de.mossgrabers.framework.controller.AbstractControllerSetup;
+import de.mossgrabers.framework.controller.ISetupFactory;
+import de.mossgrabers.framework.controller.Relative2ValueChanger;
+import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.ISendBank;
+import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.constants.TransportConstants;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiAccess;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.view.View;
+import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+
+/**
+ * Support for the Mackie HUI protocol.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurface, HUIConfiguration>
+{
+    /** State for button LED on. */
+    public static final int                   HUI_BUTTON_STATE_ON       = 127;
+    /** State for button LED off. */
+    public static final int                   HUI_BUTTON_STATE_OFF      = 0;
+
+    private static final Integer              COMMAND_NOTE_EDITOR       = Integer.valueOf (150);
+    private static final Integer              COMMAND_AUTOMATION_EDITOR = Integer.valueOf (151);
+    private static final Integer              COMMAND_TOGGLE_DEVICE     = Integer.valueOf (152);
+    private static final Integer              COMMAND_MIXER             = Integer.valueOf (153);
+    private static final Integer              COMMAND_TEMPO_TICKS       = Integer.valueOf (154);
+    private static final Integer              COMMAND_ENTER             = Integer.valueOf (155);
+    private static final Integer              COMMAND_CANCEL            = Integer.valueOf (156);
+    private static final Integer              COMMAND_FLIP              = Integer.valueOf (157);
+    private static final Integer              COMMAND_GROOVE            = Integer.valueOf (158);
+    private static final Integer              COMMAND_OVERDUB           = Integer.valueOf (159);
+    private static final Integer              COMMAND_SCRUB             = Integer.valueOf (160);
+    private static final Integer              COMMAND_FOOTSWITCH1       = Integer.valueOf (161);
+    private static final Integer              COMMAND_FOOTSWITCH2       = Integer.valueOf (162);
+    private static final Integer              COMMAND_F1                = Integer.valueOf (163);
+    private static final Integer              COMMAND_F2                = Integer.valueOf (164);
+    private static final Integer              COMMAND_F3                = Integer.valueOf (165);
+    private static final Integer              COMMAND_F4                = Integer.valueOf (166);
+    private static final Integer              COMMAND_F5                = Integer.valueOf (167);
+    private static final Integer              COMMAND_TOGGLE_DISPLAY    = Integer.valueOf (168);
+    private static final Integer              COMMAND_LAYOUT_ARRANGE    = Integer.valueOf (169);
+    private static final Integer              COMMAND_LAYOUT_MIX        = Integer.valueOf (170);
+    private static final Integer              COMMAND_LAYOUT_EDIT       = Integer.valueOf (171);
+    private static final Integer              COMMAND_CONTROL           = Integer.valueOf (172);
+    private static final Integer              COMMAND_ALT               = Integer.valueOf (173);
+
+    private static final Map<Integer, String> MODE_ACRONYMS             = new HashMap<> ();
+
+    static
+    {
+        MODE_ACRONYMS.put (Modes.MODE_TRACK, "TR");
+        MODE_ACRONYMS.put (Modes.MODE_VOLUME, "VL");
+        MODE_ACRONYMS.put (Modes.MODE_PAN, "PN");
+        MODE_ACRONYMS.put (Modes.MODE_SEND1, "S1");
+        MODE_ACRONYMS.put (Modes.MODE_SEND2, "S2");
+        MODE_ACRONYMS.put (Modes.MODE_SEND3, "S3");
+        MODE_ACRONYMS.put (Modes.MODE_SEND4, "S4");
+        MODE_ACRONYMS.put (Modes.MODE_SEND5, "S5");
+        MODE_ACRONYMS.put (Modes.MODE_SEND6, "S6");
+        MODE_ACRONYMS.put (Modes.MODE_SEND7, "S7");
+        MODE_ACRONYMS.put (Modes.MODE_SEND8, "S8");
+        MODE_ACRONYMS.put (Modes.MODE_MASTER, "MT");
+        MODE_ACRONYMS.put (Modes.MODE_DEVICE_PARAMS, "DC");
+        MODE_ACRONYMS.put (Modes.MODE_BROWSER, "BR");
+        MODE_ACRONYMS.put (Modes.MODE_MARKERS, "MK");
+    }
+
+    private final int [] masterVuValues   = new int [2];
+    private int          masterFaderValue = -1;
+    private final int [] vuValues         = new int [36];
+    private final int [] faderValues      = new int [36];
+
+
+    /**
+     * Constructor.
+     *
+     * @param host The DAW host
+     * @param factory The factory
+     * @param settings The settings
+     */
+    public HUIControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    {
+        super (factory, host, settings);
+
+        Arrays.fill (this.vuValues, -1);
+        Arrays.fill (this.faderValues, -1);
+        Arrays.fill (this.masterVuValues, -1);
+
+        this.colorManager = new ColorManager ();
+        this.valueChanger = new Relative2ValueChanger (16241 + 1, 100, 10);
+        this.configuration = new HUIConfiguration (host, this.valueChanger);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void flush ()
+    {
+        this.flushSurfaces ();
+
+        this.updateButtons ();
+        this.updateMode (this.getSurface ().getModeManager ().getActiveOrTempModeId ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createModel ()
+    {
+        final int adjustedNum = 8;
+
+        final ModelSetup ms = new ModelSetup ();
+        ms.setNumTracks (adjustedNum);
+        ms.setNumScenes (0);
+        ms.setNumFilterColumnEntries (8);
+        ms.setNumResults (8);
+        ms.setNumParams (adjustedNum);
+        ms.setNumDeviceLayers (0);
+        ms.setNumDrumPadLayers (0);
+        ms.setNumMarkers (adjustedNum);
+        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+
+        final ITrackBank trackBank = this.model.getTrackBank ();
+        trackBank.setIndication (true);
+        trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
+
+        this.model.getMasterTrack ().addSelectionObserver ( (index, isSelected) -> {
+            final ModeManager modeManager = this.getSurface ().getModeManager ();
+            if (isSelected)
+                modeManager.setActiveMode (Modes.MODE_MASTER);
+            else
+                modeManager.restoreMode ();
+        });
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createSurface ()
+    {
+        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
+
+        final IMidiOutput output = midiAccess.createOutput ();
+        final IMidiInput input = midiAccess.createInput (null);
+        final HUIControlSurface surface = new HUIControlSurface (this.host, this.colorManager, this.configuration, output, input);
+        this.surfaces.add (surface);
+        surface.setDisplay (new HUIDisplay (this.host, output, true, false));
+        surface.setSegmentDisplay (new HUISegmentDisplay (output));
+        surface.getModeManager ().setDefaultMode (Modes.MODE_VOLUME);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createModes ()
+    {
+        final HUIControlSurface surface = this.getSurface ();
+        final ModeManager modeManager = surface.getModeManager ();
+
+        // TODO
+        // modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (surface, this.model));
+        // modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
+        // modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
+        // final SendMode modeSend = new SendMode (surface, this.model);
+        // for (int i = 0; i < 8; i++)
+        // modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i),
+        // modeSend);
+        // modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (surface, this.model,
+        // false));
+        //
+        // modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new DeviceParamsMode (surface,
+        // this.model));
+        // modeManager.registerMode (Modes.MODE_BROWSER, new DeviceBrowserMode (surface,
+        // this.model));
+        // modeManager.registerMode (Modes.MODE_MARKERS, new MarkerMode (surface, this.model));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createObservers ()
+    {
+        final HUIControlSurface surface = this.getSurface ();
+        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> {
+            surface.getModeManager ().setActiveMode (newMode);
+            this.updateMode (null);
+            this.updateMode (newMode);
+        });
+
+        this.configuration.addSettingObserver (AbstractConfiguration.ENABLE_VU_METERS, () -> {
+            surface.switchVuMode (this.configuration.isEnableVUMeters () ? HUIControlSurface.VUMODE_LED_AND_LCD : HUIControlSurface.VUMODE_OFF);
+            final Mode activeMode = surface.getModeManager ().getActiveOrTempMode ();
+            if (activeMode != null)
+                activeMode.updateDisplay ();
+            ((HUIDisplay) surface.getDisplay ()).forceFlush ();
+        });
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createViews ()
+    {
+        final HUIControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
+        // TODO
+        // viewManager.registerView (Views.VIEW_CONTROL, new ControlView (surface, this.model));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void registerTriggerCommands ()
+    {
+        // Assignments to the main device
+        final HUIControlSurface surface = this.getSurface ();
+
+        // TODO
+
+        // // Footswitches
+        // this.addTriggerCommand (COMMAND_FOOTSWITCH1, HUIControlSurface.HUI_USER_A, new
+        // AssignableCommand (0, this.model, surface));
+        // this.addTriggerCommand (COMMAND_FOOTSWITCH2, HUIControlSurface.HUI_USER_B, new
+        // AssignableCommand (1, this.model, surface));
+        //
+        // // Navigation
+        // this.addTriggerCommand (Commands.COMMAND_REWIND, HUIControlSurface.HUI_REWIND, new
+        // WindCommand<> (this.model, surface, false));
+        // this.addTriggerCommand (Commands.COMMAND_FORWARD, HUIControlSurface.HUI_FORWARD, new
+        // WindCommand<> (this.model, surface, true));
+        // this.addTriggerCommand (Commands.COMMAND_LOOP, HUIControlSurface.HUI_REPEAT, new
+        // ToggleLoopCommand<> (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_STOP, HUIControlSurface.HUI_STOP, new
+        // StopCommand<> (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_PLAY, HUIControlSurface.HUI_PLAY, new
+        // PlayCommand<> (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_RECORD, HUIControlSurface.HUI_RECORD, new
+        // HUIRecordCommand (this.model, surface));
+        //
+        // this.addTriggerCommand (COMMAND_SCRUB, HUIControlSurface.HUI_SCRUB, new ScrubCommand
+        // (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, HUIControlSurface.HUI_ARROW_LEFT,
+        // new CursorCommand (Direction.LEFT, this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, HUIControlSurface.HUI_ARROW_RIGHT,
+        // new CursorCommand (Direction.RIGHT, this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_ARROW_UP, HUIControlSurface.HUI_ARROW_UP, new
+        // CursorCommand (Direction.UP, this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, HUIControlSurface.HUI_ARROW_DOWN,
+        // new CursorCommand (Direction.DOWN, this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_ZOOM, HUIControlSurface.HUI_ZOOM, new
+        // ZoomCommand (this.model, surface));
+        //
+        // // Display Mode
+        // this.addTriggerCommand (COMMAND_TOGGLE_DISPLAY, HUIControlSurface.HUI_NAME_VALUE, new
+        // ToggleDisplayCommand (this.model, surface));
+        // this.addTriggerCommand (COMMAND_TEMPO_TICKS, HUIControlSurface.HUI_SMPTE_BEATS, new
+        // TempoTicksCommand (this.model, surface));
+        //
+        // // Functions
+        // this.addTriggerCommand (Commands.COMMAND_SHIFT, HUIControlSurface.HUI_SHIFT, new
+        // ShiftCommand (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_SELECT, HUIControlSurface.HUI_OPTION, new
+        // NopCommand<> (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_PUNCH_IN, HUIControlSurface.HUI_F6, new
+        // PunchInCommand<> (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_PUNCH_OUT, HUIControlSurface.HUI_F7, new
+        // PunchOutCommand<> (this.model, surface));
+        // this.addTriggerCommand (COMMAND_F1, HUIControlSurface.HUI_F1, new AssignableCommand (2,
+        // this.model, surface));
+        // this.addTriggerCommand (COMMAND_F2, HUIControlSurface.HUI_F2, new AssignableCommand (3,
+        // this.model, surface));
+        // this.addTriggerCommand (COMMAND_F3, HUIControlSurface.HUI_F3, new AssignableCommand (4,
+        // this.model, surface));
+        // this.addTriggerCommand (COMMAND_F4, HUIControlSurface.HUI_F4, new AssignableCommand (5,
+        // this.model, surface));
+        // this.addTriggerCommand (COMMAND_F5, HUIControlSurface.HUI_F5, new AssignableCommand (6,
+        // this.model, surface));
+        //
+        // // Assignment
+        // this.addTriggerCommand (Commands.COMMAND_TRACK, HUIControlSurface.HUI_MODE_IO, new
+        // TracksCommand (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_PAN_SEND, HUIControlSurface.HUI_MODE_PAN, new
+        // ModeSelectCommand<> (Modes.MODE_PAN, this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_SENDS, HUIControlSurface.HUI_MODE_SENDS, new
+        // SendSelectCommand (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_DEVICE, HUIControlSurface.HUI_MODE_PLUGIN, new
+        // DevicesCommand (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_LEFT, HUIControlSurface.HUI_MODE_EQ,
+        // new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, true, true));
+        // this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_RIGHT,
+        // HUIControlSurface.HUI_MODE_DYN, new MoveTrackBankCommand<> (this.model, surface,
+        // Modes.MODE_DEVICE_PARAMS, true, false));
+        //
+        // // Automation
+        // this.addTriggerCommand (Commands.COMMAND_AUTOMATION_READ, HUIControlSurface.HUI_READ, new
+        // AutomationCommand (0, this.model, surface));
+        // final AutomationCommand writeCommand = new AutomationCommand (1, this.model, surface);
+        // this.addTriggerCommand (Commands.COMMAND_AUTOMATION_WRITE, HUIControlSurface.HUI_WRITE,
+        // writeCommand);
+        // this.addTriggerCommand (Commands.COMMAND_AUTOMATION_WRITE, HUIControlSurface.HUI_GROUP,
+        // writeCommand);
+        // this.addTriggerCommand (Commands.COMMAND_AUTOMATION_TRIM, HUIControlSurface.HUI_TRIM, new
+        // AutomationCommand (2, this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_AUTOMATION_TOUCH, HUIControlSurface.HUI_TOUCH,
+        // new AutomationCommand (3, this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_AUTOMATION_LATCH, HUIControlSurface.HUI_LATCH,
+        // new AutomationCommand (4, this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_UNDO, HUIControlSurface.HUI_UNDO, new
+        // UndoCommand<> (this.model, surface));
+        //
+        // // Panes
+        // this.addTriggerCommand (COMMAND_NOTE_EDITOR, HUIControlSurface.HUI_MIDI_TRACKS, new
+        // PaneCommand<> (PaneCommand.Panels.NOTE, this.model, surface));
+        // this.addTriggerCommand (COMMAND_AUTOMATION_EDITOR, HUIControlSurface.HUI_INPUTS, new
+        // PaneCommand<> (PaneCommand.Panels.AUTOMATION, this.model, surface));
+        // this.addTriggerCommand (COMMAND_TOGGLE_DEVICE, HUIControlSurface.HUI_AUDIO_TRACKS, new
+        // PaneCommand<> (PaneCommand.Panels.DEVICE, this.model, surface));
+        // this.addTriggerCommand (COMMAND_MIXER, HUIControlSurface.HUI_AUDIO_INSTR, new
+        // PaneCommand<> (PaneCommand.Panels.MIXER, this.model, surface));
+        //
+        // // Layouts
+        // this.addTriggerCommand (COMMAND_LAYOUT_ARRANGE, HUIControlSurface.HUI_AUX, new
+        // LayoutCommand<> (IApplication.PANEL_LAYOUT_ARRANGE, this.model, surface));
+        // this.addTriggerCommand (COMMAND_LAYOUT_MIX, HUIControlSurface.HUI_BUSSES, new
+        // LayoutCommand<> (IApplication.PANEL_LAYOUT_MIX, this.model, surface));
+        // this.addTriggerCommand (COMMAND_LAYOUT_EDIT, HUIControlSurface.HUI_OUTPUTS, new
+        // LayoutCommand<> (IApplication.PANEL_LAYOUT_EDIT, this.model, surface));
+        //
+        // // Utilities
+        // this.addTriggerCommand (Commands.COMMAND_BROWSE, HUIControlSurface.HUI_USER, new
+        // BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_METRONOME, HUIControlSurface.HUI_CLICK, new
+        // MetronomeCommand<> (this.model, surface));
+        // this.addTriggerCommand (COMMAND_GROOVE, HUIControlSurface.HUI_SOLO, new GrooveCommand
+        // (this.model, surface));
+        // this.addTriggerCommand (COMMAND_OVERDUB, HUIControlSurface.HUI_REPLACE, new
+        // OverdubCommand (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_TAP_TEMPO, HUIControlSurface.HUI_NUDGE, new
+        // TapTempoCommand<> (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_DUPLICATE, HUIControlSurface.HUI_DROP, new
+        // DuplicateCommand<> (this.model, surface));
+        //
+        // this.addTriggerCommand (Commands.COMMAND_DEVICE_ON_OFF, HUIControlSurface.HUI_F8, new
+        // DeviceOnOffCommand<> (this.model, surface));
+        //
+        // // Currently not used but prevent error in console
+        // this.addTriggerCommand (COMMAND_CONTROL, HUIControlSurface.HUI_CONTROL, new NopCommand<>
+        // (this.model, surface));
+        // this.addTriggerCommand (COMMAND_ALT, HUIControlSurface.HUI_ALT, new NopCommand<>
+        // (this.model, surface));
+        //
+        // // Fader Controls
+        // this.addTriggerCommand (COMMAND_FLIP, HUIControlSurface.HUI_FLIP, new
+        // ToggleTrackBanksCommand<> (this.model, surface));
+        // this.addTriggerCommand (COMMAND_CANCEL, HUIControlSurface.HUI_CANCEL, new KeyCommand
+        // (Key.ESCAPE, this.model, surface));
+        // this.addTriggerCommand (COMMAND_ENTER, HUIControlSurface.HUI_ENTER, new KeyCommand
+        // (Key.ENTER, this.model, surface));
+        //
+        // this.addTriggerCommand (Commands.COMMAND_MOVE_BANK_LEFT, HUIControlSurface.HUI_BANK_LEFT,
+        // new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, false, true));
+        // this.addTriggerCommand (Commands.COMMAND_MOVE_BANK_RIGHT,
+        // HUIControlSurface.HUI_BANK_RIGHT, new MoveTrackBankCommand<> (this.model, surface,
+        // Modes.MODE_DEVICE_PARAMS, false, false));
+        // this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_LEFT,
+        // HUIControlSurface.HUI_TRACK_LEFT, new MoveTrackBankCommand<> (this.model, surface,
+        // Modes.MODE_DEVICE_PARAMS, true, true));
+        // this.addTriggerCommand (Commands.COMMAND_MOVE_TRACK_RIGHT,
+        // HUIControlSurface.HUI_TRACK_RIGHT, new MoveTrackBankCommand<> (this.model, surface,
+        // Modes.MODE_DEVICE_PARAMS, true, false));
+        //
+        // // Additional commands for footcontrollers
+        // final ViewManager viewManager = surface.getViewManager ();
+        // viewManager.registerTriggerCommand (Commands.COMMAND_NEW, new NewCommand<> (this.model,
+        // surface));
+        // viewManager.registerTriggerCommand (Commands.COMMAND_TAP_TEMPO, new TapTempoCommand<>
+        // (this.model, surface));
+        //
+        // // Only HUI
+        // this.addTriggerCommand (Commands.COMMAND_SAVE, HUIControlSurface.HUI_SAVE, new
+        // SaveCommand<> (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_MARKER, HUIControlSurface.HUI_MARKER, new
+        // MarkerCommand<> (this.model, surface));
+        // this.addTriggerCommand (Commands.COMMAND_TOGGLE_VU, HUIControlSurface.HUI_EDIT, new
+        // ToggleVUCommand<> (this.model, surface));
+        //
+        // this.addTriggerCommand (Commands.COMMAND_MASTERTRACK, HUIControlSurface.HUI_FADER_MASTER,
+        // new SelectCommand (8, this.model, surface));
+        //
+        // this.registerTriggerCommandsToAllDevices ();
+    }
+
+
+    /**
+     * Common track editing - Assignment to all devices
+     */
+    protected void registerTriggerCommandsToAllDevices ()
+    {
+        // TODO
+        // final HUIControlSurface surface = this.getSurface (index);
+        // final ViewManager viewManager = surface.getViewManager ();
+        // for (int i = 0; i < 8; i++)
+        // {
+        // Integer commandID = Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i);
+        // viewManager.registerTriggerCommand (commandID, new SelectCommand (i, this.model,
+        // surface));
+        // surface.assignTriggerCommand (HUIControlSurface.HUI_SELECT1 + i, commandID);
+        //
+        // commandID = Integer.valueOf (Commands.COMMAND_FADER_TOUCH_1.intValue () + i);
+        // viewManager.registerTriggerCommand (commandID, new FaderTouchCommand (i, this.model,
+        // surface));
+        // surface.assignTriggerCommand (HUIControlSurface.HUI_FADER_TOUCH1 + i, commandID);
+        //
+        // this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i),
+        // HUIControlSurface.HUI_VSELECT1 + i, new ButtonRowModeCommand<> (0, i, this.model,
+        // surface), index);
+        // this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i),
+        // HUIControlSurface.HUI_ARM1 + i, new ButtonRowModeCommand<> (1, i, this.model, surface),
+        // index);
+        // this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i),
+        // HUIControlSurface.HUI_SOLO1 + i, new ButtonRowModeCommand<> (2, i, this.model, surface),
+        // index);
+        // this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW4_1.intValue () + i),
+        // HUIControlSurface.HUI_MUTE1 + i, new ButtonRowModeCommand<> (3, i, this.model, surface),
+        // index);
+        // }
+        //
+        // viewManager.registerPitchbendCommand (new PitchbendVolumeCommand (this.model, surface));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void registerContinuousCommands ()
+    {
+        // TODO
+        // HUIControlSurface surface = this.getSurface ();
+        // ViewManager viewManager = surface.getViewManager ();
+        // viewManager.registerContinuousCommand (Commands.CONT_COMMAND_PLAY_POSITION, new
+        // PlayPositionTempoCommand (this.model, surface));
+        // surface.assignContinuousCommand (HUIControlSurface.HUI_CC_JOG, 1,
+        // Commands.CONT_COMMAND_PLAY_POSITION);
+        //
+        // for (int index = 0; index < this.numHUIDevices; index++)
+        // {
+        // surface = this.getSurface (index);
+        // viewManager = surface.getViewManager ();
+        // for (int i = 0; i < 8; i++)
+        // {
+        // final Integer commandID = Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i);
+        // viewManager.registerContinuousCommand (commandID, new KnobRowModeCommand<> (i,
+        // this.model, surface));
+        // surface.assignContinuousCommand (HUIControlSurface.HUI_CC_VPOT1 + i, 1, commandID);
+        // }
+        // }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void startup ()
+    {
+        final HUIControlSurface surface = this.getSurface ();
+        surface.switchVuMode (HUIControlSurface.VUMODE_LED);
+
+        // TODO
+        // surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
+        // surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
+
+        this.sendPing ();
+    }
+
+
+    private void sendPing ()
+    {
+        this.getSurface ().getOutput ().sendNote (0, 0);
+        this.host.scheduleTask (this::sendPing, 1000);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    private void updateButtons ()
+    {
+        final HUIControlSurface surface = this.getSurface ();
+        final Integer mode = surface.getModeManager ().getActiveOrTempModeId ();
+        if (mode == null)
+            return;
+
+        this.updateVUandFaders ();
+        this.updateSegmentDisplay ();
+
+        // Set button states
+        final ITransport t = this.model.getTransport ();
+        final boolean isShift = surface.isShiftPressed ();
+        final boolean isFlipRecord = this.configuration.isFlipRecord ();
+        final boolean isRecordShifted = isShift && !isFlipRecord || !isShift && isFlipRecord;
+
+        final boolean isTrackOn = Modes.MODE_TRACK.equals (mode) || Modes.MODE_VOLUME.equals (mode);
+        final boolean isPanOn = Modes.MODE_PAN.equals (mode);
+        final boolean isSendOn = mode.intValue () >= Modes.MODE_SEND1.intValue () && mode.intValue () <= Modes.MODE_SEND8.intValue ();
+        final boolean isDeviceOn = Modes.MODE_DEVICE_PARAMS.equals (mode);
+
+        final boolean isLEDOn = surface.isPressed (HUIControlSurface.HUI_OPTION) ? this.model.isCursorTrackPinned () : isTrackOn;
+        surface.updateButton (HUIControlSurface.HUI_MODE_IO, isLEDOn ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_MODE_PAN, isPanOn ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_MODE_SENDS, isSendOn ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final boolean isOn = surface.isPressed (HUIControlSurface.HUI_OPTION) ? cursorDevice.isPinned () : isDeviceOn;
+
+        surface.updateButton (HUIControlSurface.HUI_MODE_PLUGIN, isOn ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_USER, Modes.MODE_BROWSER.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+
+        final ITransport transport = this.model.getTransport ();
+        final String automationWriteMode = transport.getAutomationWriteMode ();
+        final boolean writingArrangerAutomation = transport.isWritingArrangerAutomation ();
+
+        surface.updateButton (HUIControlSurface.HUI_F6, transport.isPunchInEnabled () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_F7, transport.isPunchOutEnabled () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+
+        surface.updateButton (HUIControlSurface.HUI_READ, !writingArrangerAutomation ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        final int writeState = writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[2].equals (automationWriteMode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF;
+        surface.updateButton (HUIControlSurface.HUI_WRITE, writeState);
+        surface.updateButton (HUIControlSurface.HUI_GROUP, writeState);
+        surface.updateButton (HUIControlSurface.HUI_TRIM, transport.isWritingClipLauncherAutomation () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_TOUCH, writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_LATCH, writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+
+        final View view = surface.getViewManager ().getView (Views.VIEW_CONTROL);
+        surface.updateButton (HUIControlSurface.HUI_REWIND, ((WindCommand<HUIControlSurface, HUIConfiguration>) view.getTriggerCommand (Commands.COMMAND_REWIND)).isRewinding () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_FORWARD, ((WindCommand<HUIControlSurface, HUIConfiguration>) view.getTriggerCommand (Commands.COMMAND_FORWARD)).isForwarding () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_REPEAT, t.isLoop () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_STOP, !t.isPlaying () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_PLAY, t.isPlaying () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_RECORD, isRecordShifted ? t.isLauncherOverdub () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF : t.isRecording () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+
+        surface.updateButton (HUIControlSurface.HUI_NAME_VALUE, surface.getConfiguration ().isDisplayTrackNames () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_ZOOM, surface.getConfiguration ().isZoomState () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_SCRUB, surface.getModeManager ().isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+
+        surface.updateButton (HUIControlSurface.HUI_MIDI_TRACKS, HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_INPUTS, HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_AUDIO_TRACKS, surface.isShiftPressed () && cursorDevice.isWindowOpen () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_AUDIO_INSTR, HUI_BUTTON_STATE_OFF);
+
+        surface.updateButton (HUIControlSurface.HUI_CLICK, (isShift ? t.isMetronomeTicksOn () : t.isMetronomeOn ()) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_SOLO, this.model.getGroove ().getParameters ()[0].getValue () > 0 ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_REPLACE, (isShift ? t.isLauncherOverdub () : t.isArrangerOverdub ()) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_FLIP, this.model.isEffectTrackBankActive () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+
+        final boolean displayTicks = this.configuration.isDisplayTicks ();
+        surface.updateButton (HUIControlSurface.HUI_SMPTE_BEATS, displayTicks ? HUI_BUTTON_STATE_OFF : HUI_BUTTON_STATE_ON);
+        surface.updateButton (HUIControlSurface.HUI_SMPTE_LED, displayTicks ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateButton (HUIControlSurface.HUI_BEATS_LED, displayTicks ? HUI_BUTTON_STATE_OFF : HUI_BUTTON_STATE_ON);
+
+        surface.updateButton (HUIControlSurface.HUI_MARKER, this.model.getArranger ().areCueMarkersVisible () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+    }
+
+
+    private void updateSegmentDisplay ()
+    {
+        if (!this.configuration.hasSegmentDisplay ())
+            return;
+
+        final ITransport t = this.model.getTransport ();
+        String positionText = t.getPositionText ();
+        if (this.configuration.isDisplayTicks ())
+            positionText += " ";
+        else
+        {
+            String tempoStr = t.formatTempoNoFraction (t.getTempo ());
+            final int pos = positionText.lastIndexOf (':');
+            if (tempoStr.length () < 3)
+                tempoStr = "0" + tempoStr;
+            positionText = positionText.substring (0, pos + 1) + tempoStr;
+        }
+
+        this.getSurface ().getSegmentDisplay ().setTransportPositionDisplay (positionText);
+    }
+
+
+    private void updateVUandFaders ()
+    {
+        final double upperBound = this.valueChanger.getUpperBound ();
+        final boolean enableVUMeters = this.configuration.isEnableVUMeters ();
+        final boolean hasMotorFaders = this.configuration.hasMotorFaders ();
+
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        IMidiOutput output;
+        final HUIControlSurface surface = this.getSurface ();
+        output = surface.getOutput ();
+        for (int i = 0; i < 8; i++)
+        {
+            final int channel = i;
+            final ITrack track = tb.getItem (channel);
+
+            // Update VU LEDs of channel
+            if (enableVUMeters)
+            {
+                final int vu = track.getVu ();
+                if (vu != this.vuValues[channel])
+                {
+                    this.vuValues[channel] = vu;
+                    final int scaledValue = (int) Math.round (vu * 12 / upperBound);
+                    output.sendChannelAftertouch (0x10 * i + scaledValue, 0);
+                }
+            }
+
+            // Update motor fader of channel
+            if (hasMotorFaders)
+                this.updateFaders (output, i, channel, track);
+        }
+
+        final IMasterTrack masterTrack = this.model.getMasterTrack ();
+
+        output = surface.getOutput ();
+
+        // Stereo VU of master channel
+        if (enableVUMeters)
+        {
+            int vu = masterTrack.getVuLeft ();
+            if (vu != this.masterVuValues[0])
+            {
+                this.masterVuValues[0] = vu;
+                final int scaledValue = (int) Math.round (vu * 12 / upperBound);
+                output.sendChannelAftertouch (1, scaledValue, 0);
+            }
+
+            vu = masterTrack.getVuRight ();
+            if (vu != this.masterVuValues[1])
+            {
+                this.masterVuValues[1] = vu;
+                final int scaledValue = (int) Math.round (vu * 12 / upperBound);
+                output.sendChannelAftertouch (1, 0x10 + scaledValue, 0);
+            }
+        }
+
+        // Update motor fader of master channel
+        if (hasMotorFaders)
+        {
+            final int volume = surface.isShiftPressed () ? this.model.getTransport ().getMetronomeVolume () : masterTrack.getVolume ();
+            if (volume != this.masterFaderValue)
+            {
+                this.masterFaderValue = volume;
+                output.sendPitchbend (8, volume % 127, volume / 127);
+            }
+        }
+    }
+
+
+    private void updateFaders (final IMidiOutput output, final int index, final int channel, final ITrack track)
+    {
+        int value = track.getVolume ();
+
+        if (this.configuration.useFadersAsKnobs ())
+        {
+            final ModeManager modeManager = this.getSurface ().getModeManager ();
+            if (modeManager.isActiveOrTempMode (Modes.MODE_VOLUME))
+                value = track.getVolume ();
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_PAN))
+                value = track.getPan ();
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_TRACK))
+            {
+                final ITrack selectedTrack = this.model.getSelectedTrack ();
+                if (selectedTrack == null)
+                    value = 0;
+                else
+                {
+                    switch (index)
+                    {
+                        case 0:
+                            value = selectedTrack.getVolume ();
+                            break;
+                        case 1:
+                            value = selectedTrack.getPan ();
+                            break;
+                        default:
+                            final boolean effectTrackBankActive = this.model.isEffectTrackBankActive ();
+                            if (index == 2)
+                            {
+                                if (this.configuration.isDisplayCrossfader ())
+                                {
+                                    final int crossfadeMode = selectedTrack.getCrossfadeModeAsNumber ();
+                                    value = crossfadeMode == 2 ? this.valueChanger.getUpperBound () : crossfadeMode == 1 ? this.valueChanger.getUpperBound () / 2 : 0;
+                                }
+                                else if (!effectTrackBankActive)
+                                    value = selectedTrack.getSendBank ().getItem (0).getValue ();
+                            }
+                            else if (!effectTrackBankActive)
+                                value = selectedTrack.getSendBank ().getItem (index - (this.configuration.isDisplayCrossfader () ? 3 : 2)).getValue ();
+                            break;
+                    }
+                }
+            }
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND1))
+                value = track.getSendBank ().getItem (0).getValue ();
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND2))
+                value = track.getSendBank ().getItem (1).getValue ();
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND3))
+                value = track.getSendBank ().getItem (2).getValue ();
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND4))
+                value = track.getSendBank ().getItem (3).getValue ();
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND5))
+                value = track.getSendBank ().getItem (4).getValue ();
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND6))
+                value = track.getSendBank ().getItem (5).getValue ();
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND7))
+                value = track.getSendBank ().getItem (6).getValue ();
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND8))
+                value = track.getSendBank ().getItem (7).getValue ();
+            else if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
+                value = this.model.getCursorDevice ().getParameterBank ().getItem (channel).getValue ();
+        }
+
+        if (value != this.faderValues[channel])
+        {
+            this.faderValues[channel] = value;
+            output.sendPitchbend (index, value % 127, value / 127);
+        }
+    }
+
+
+    private void updateMode (final Integer mode)
+    {
+        if (mode == null)
+            return;
+
+        this.updateIndication (mode);
+        if (this.configuration.hasAssignmentDisplay ())
+            this.getSurface ().getSegmentDisplay ().setAssignmentDisplay (MODE_ACRONYMS.get (mode));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateIndication (final Integer mode)
+    {
+        if (mode == this.currentMode)
+            return;
+        this.currentMode = mode;
+
+        final ITrackBank tb = this.model.getTrackBank ();
+        final ITrackBank tbe = this.model.getEffectTrackBank ();
+        final boolean isEffect = this.model.isEffectTrackBankActive ();
+        final boolean isPan = Modes.MODE_PAN.equals (mode);
+        final boolean isTrack = Modes.MODE_TRACK.equals (mode);
+        final boolean isDevice = Modes.MODE_DEVICE_PARAMS.equals (mode);
+
+        tb.setIndication (!isEffect);
+        if (tbe != null)
+            tbe.setIndication (isEffect);
+
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final ITrack selectedTrack = tb.getSelectedItem ();
+        for (int i = 0; i < tb.getPageSize (); i++)
+        {
+            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrack;
+            final ITrack track = tb.getItem (i);
+            track.setVolumeIndication (!isEffect && (isTrack || hasTrackSel));
+            track.setPanIndication (!isEffect && (isPan || hasTrackSel));
+
+            final ISendBank sendBank = track.getSendBank ();
+            for (int j = 0; j < sendBank.getPageSize (); j++)
+                sendBank.getItem (j).setIndication (!isEffect && (mode.intValue () - Modes.MODE_SEND1.intValue () == j || hasTrackSel));
+
+            if (tbe != null)
+            {
+                final ITrack fxTrack = tbe.getItem (i);
+                fxTrack.setVolumeIndication (isEffect);
+                fxTrack.setPanIndication (isEffect && isPan);
+            }
+        }
+
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+        for (int i = 0; i < parameterBank.getPageSize (); i++)
+            parameterBank.getItem (i).setIndication (isDevice);
+    }
+
+
+    /**
+     * Handle a track selection change.
+     *
+     * @param isSelected Has the track been selected?
+     */
+    private void handleTrackChange (final boolean isSelected)
+    {
+        if (!isSelected)
+            return;
+
+        final ModeManager modeManager = this.getSurface ().getModeManager ();
+        if (modeManager.isActiveOrTempMode (Modes.MODE_MASTER))
+            modeManager.setActiveMode (Modes.MODE_TRACK);
+    }
+}

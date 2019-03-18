@@ -54,7 +54,9 @@ public class OpenSoundControlServerImpl implements IOpenSoundControlServer
         {
             this.sendMessage (message);
             pos++;
-            if (pos > 1000)
+            // We cannot get the exact size of the message due to the API, so let's try to stay
+            // below 64K, which is the maximum of an UDP message
+            if (pos > 100)
             {
                 pos = 0;
                 this.connection.endBundle ();

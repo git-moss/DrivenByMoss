@@ -227,6 +227,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     public int getCommandValue (final FlexiCommand command)
     {
+        final Mode mode = this.modeManager.getActiveOrTempMode ();
         switch (command)
         {
             case GLOBAL_TOGGLE_AUDIO_ENGINE:
@@ -537,21 +538,21 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 return selectedSlot3 != null && selectedSlot3.isRecording () ? 127 : 0;
 
             case MODES_KNOB1:
-                return this.modeManager.getActiveOrTempMode ().getKnobValue (0);
+                return mode == null ? 0 : mode.getKnobValue (0);
             case MODES_KNOB2:
-                return this.modeManager.getActiveOrTempMode ().getKnobValue (1);
+                return mode == null ? 0 : mode.getKnobValue (1);
             case MODES_KNOB3:
-                return this.modeManager.getActiveOrTempMode ().getKnobValue (2);
+                return mode == null ? 0 : mode.getKnobValue (2);
             case MODES_KNOB4:
-                return this.modeManager.getActiveOrTempMode ().getKnobValue (3);
+                return mode == null ? 0 : mode.getKnobValue (3);
             case MODES_KNOB5:
-                return this.modeManager.getActiveOrTempMode ().getKnobValue (4);
+                return mode == null ? 0 : mode.getKnobValue (4);
             case MODES_KNOB6:
-                return this.modeManager.getActiveOrTempMode ().getKnobValue (5);
+                return mode == null ? 0 : mode.getKnobValue (5);
             case MODES_KNOB7:
-                return this.modeManager.getActiveOrTempMode ().getKnobValue (6);
+                return mode == null ? 0 : mode.getKnobValue (6);
             case MODES_KNOB8:
-                return this.modeManager.getActiveOrTempMode ().getKnobValue (7);
+                return mode == null ? 0 : mode.getKnobValue (7);
 
             default:
                 return -1;

@@ -21,7 +21,7 @@ public class EmptyBank<T extends IItem> extends AbstractBank<T>
      */
     public EmptyBank ()
     {
-        super (0);
+        super (null, 0);
     }
 
 

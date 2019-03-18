@@ -6,7 +6,7 @@
 	<artifactId>DrivenByMoss</artifactId>
 	<packaging>jar</packaging>
 	<name>DrivenByMoss</name>
-	<version>5.9</version>
+	<version>5.91</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,13 +18,11 @@
 			<name>Bitwig Maven Repository</name>
 			<url>https://maven.bitwig.com</url>
 		</repository>
-
 		<repository>
 			<id>MavenCentral</id>
 			<name>Maven Central Repository</name>
 			<url>https://mvnrepository.com</url>
 		</repository>
-
 		<repository>
 			<id>maven-local-repository</id>
 			<url>file:///${project.basedir}/maven-local-repository</url>
@@ -37,17 +35,25 @@
 			<artifactId>extension-api</artifactId>
 			<version>7</version>
 		</dependency>
-
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
 			<version>5.2.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna-platform</artifactId>
+			<version>5.2.0</version>
+		</dependency>
 		<dependency>
 			<groupId>purejavahidapi</groupId>
 			<artifactId>purejavahidapi</artifactId>
 			<version>0.0.13</version>
+		</dependency>
+		<dependency>
+			<artifactId>nativefilechooser</artifactId>
+			<groupId>de.mossgrabers</groupId>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 

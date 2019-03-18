@@ -84,7 +84,7 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
             // We use the same number of page entries (numParams) for the page bank, add a specific
             // parameter if there is one controller who wants that differently
             this.parameterPageBank = new ParameterPageBankImpl (remoteControlsPage, numParams);
-            this.parameterBank = new ParameterBankImpl (valueChanger, this.parameterPageBank, remoteControlsPage, numParams);
+            this.parameterBank = new ParameterBankImpl (host, valueChanger, this.parameterPageBank, remoteControlsPage, numParams);
         }
         else
         {

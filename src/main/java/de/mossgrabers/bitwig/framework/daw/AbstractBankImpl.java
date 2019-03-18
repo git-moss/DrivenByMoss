@@ -22,7 +22,6 @@ import com.bitwig.extension.controller.api.Bank;
  */
 public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> extends AbstractBank<T>
 {
-    protected final IHost         host;
     protected final IValueChanger valueChanger;
     protected final B             bank;
 
@@ -37,9 +36,8 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
      */
     public AbstractBankImpl (final IHost host, final IValueChanger valueChanger, final B bank, final int pageSize)
     {
-        super (pageSize);
+        super (host, pageSize);
 
-        this.host = host;
         this.valueChanger = valueChanger;
         this.bank = bank;
 

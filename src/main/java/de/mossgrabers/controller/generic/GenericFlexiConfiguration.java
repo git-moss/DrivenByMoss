@@ -15,10 +15,11 @@ import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.nativefiledialogs.FileFilter;
+import de.mossgrabers.nativefiledialogs.NativeFileDialogs;
+import de.mossgrabers.nativefiledialogs.NativeFileDialogsFactory;
+import de.mossgrabers.nativefiledialogs.PlatformNotSupported;
 
-import java.awt.FileDialog;
-import java.awt.Frame;
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -242,6 +243,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private AtomicBoolean                            doNotFire             = new AtomicBoolean (false);
     private AtomicBoolean                            commandIsUpdating     = new AtomicBoolean (false);
 
+    private NativeFileDialogs                        dialogs;
+
 
     /**
      * Constructor.
@@ -259,6 +262,15 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     @Override
     public void init (final ISettingsUI settingsUI)
     {
+        try
+        {
+            this.dialogs = NativeFileDialogsFactory.create (null);
+        }
+        catch (final PlatformNotSupported ex)
+        {
+            this.host.error ("Could not create dialogs instance.", ex);
+        }
+
         String category = "Slot";
 
         final String [] slotEntries = new String [NUM_SLOTS];
@@ -321,25 +333,34 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         final IStringSetting fileSetting = settingsUI.getStringSetting ("Filename to ex-/import:", category, -1, "");
         fileSetting.addValueObserver (value -> this.filename = value);
 
-        if (!GraphicsEnvironment.isHeadless ())
-        {
-            settingsUI.getSignalSetting (" ", category, "Select").addValueObserver (value -> {
-                final FileDialog fileDialog = new FileDialog ((Frame) null);
-                fileDialog.setVisible (true);
-                final String fn = fileDialog.getFile ();
-                if (fn == null)
-                    return;
-                final File file = new File (fileDialog.getDirectory (), fn);
-                fileSetting.set (file.getAbsolutePath ());
-            });
-        }
+        settingsUI.getSignalSetting (" ", category, "Select").addValueObserver (value -> {
+            if (this.filename != null)
+            {
+                final File currentFolder = new File (this.filename);
+                if (currentFolder.exists ())
+                    this.dialogs.setCurrentDirectory (currentFolder);
+            }
+
+            try
+            {
+                final File fn = this.dialogs.selectFile (new FileFilter ("Configuration", "properties"), new FileFilter ("All files", "*"));
+                if (fn != null)
+                    fileSetting.set (fn.getAbsolutePath ());
+            }
+            catch (final IOException ex)
+            {
+                this.host.error ("Could not create file dialog.", ex);
+            }
+        });
 
         settingsUI.getSignalSetting ("  ", category, "Export").addValueObserver (value -> this.notifyObservers (BUTTON_EXPORT));
         settingsUI.getSignalSetting ("   ", category, "Import").addValueObserver (value -> this.notifyObservers (BUTTON_IMPORT));
 
         this.learnTypeSetting.set (OPTIONS_TYPE[0]);
 
-        this.typeSetting.addValueObserver (value -> {
+        this.typeSetting.addValueObserver (value ->
+
+        {
             final int index = AbstractConfiguration.lookupIndex (OPTIONS_TYPE, value);
             this.getSelectedSlot ().setType (index - 1);
             this.sendValueSetting.setVisible (index == CommandSlot.TYPE_CC);

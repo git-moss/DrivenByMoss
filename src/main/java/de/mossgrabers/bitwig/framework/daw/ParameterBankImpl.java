@@ -7,6 +7,7 @@ package de.mossgrabers.bitwig.framework.daw;
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.AbstractBank;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IItem;
@@ -31,14 +32,15 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
      * @param pageBank The page bank
      * @param remoteControlsPage The remote controls bank
      * @param numParams The number of parameters in the page of the bank
      */
-    public ParameterBankImpl (final IValueChanger valueChanger, final IParameterPageBank pageBank, final CursorRemoteControlsPage remoteControlsPage, final int numParams)
+    public ParameterBankImpl (final IHost host, final IValueChanger valueChanger, final IParameterPageBank pageBank, final CursorRemoteControlsPage remoteControlsPage, final int numParams)
     {
-        super (numParams);
+        super (host, numParams);
         this.pageBank = pageBank;
 
         this.valueChanger = valueChanger;
