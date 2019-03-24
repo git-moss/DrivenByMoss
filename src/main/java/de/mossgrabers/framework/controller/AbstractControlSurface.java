@@ -35,6 +35,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 {
     protected static final int                          BUTTON_STATE_INTERVAL = 400;
     protected static final int                          NUM_NOTES             = 128;
+    protected static final int                          NUM_BUTTONS           = 256;
 
     protected final IHost                               host;
     protected final C                                   configuration;
@@ -105,8 +106,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
         // Button related
         this.buttons = buttons;
-        this.buttonStates = new ButtonEvent [NUM_NOTES];
-        this.buttonConsumed = new boolean [NUM_NOTES];
+        this.buttonStates = new ButtonEvent [NUM_BUTTONS];
+        this.buttonConsumed = new boolean [NUM_BUTTONS];
         if (this.buttons != null)
         {
             for (final int button: this.buttons)
@@ -118,8 +119,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
         // Optimisation for button LED updates, cache 128 possible note values on
         // all 16 midi channels
-        this.buttonCache = new ArrayList<> (NUM_NOTES);
-        for (int i = 0; i < NUM_NOTES; i++)
+        this.buttonCache = new ArrayList<> (NUM_BUTTONS);
+        for (int i = 0; i < NUM_BUTTONS; i++)
         {
             final int [] channels = new int [16];
             Arrays.fill (channels, -1);
@@ -576,7 +577,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void clearButtonCache ()
     {
-        for (int i = 0; i < NUM_NOTES; i++)
+        for (int i = 0; i < NUM_BUTTONS; i++)
             this.buttonCache.get (i)[0] = -1;
     }
 
@@ -628,6 +629,15 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     public void shutdown ()
     {
         this.flushExecutor.shutdown ();
+
+        for (final int button: this.getButtons ())
+            this.setButton (button, 0);
+
+        if (this.pads != null)
+            this.pads.turnOff ();
+
+        if (this.display != null)
+            this.display.shutdown ();
     }
 
 

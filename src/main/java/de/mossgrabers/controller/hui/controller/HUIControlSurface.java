@@ -5,12 +5,15 @@
 package de.mossgrabers.controller.hui.controller;
 
 import de.mossgrabers.controller.hui.HUIConfiguration;
+import de.mossgrabers.framework.command.continuous.FaderAbsoluteCommand;
+import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
+import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Arrays;
 
@@ -23,258 +26,410 @@ import java.util.Arrays;
 @SuppressWarnings("javadoc")
 public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
 {
-    // TODO adapt to HUI
+    public static final int         HUI_FADER1                   = 0;
+    public static final int         HUI_SELECT1                  = 1;
+    public static final int         HUI_MUTE1                    = 2;
+    public static final int         HUI_SOLO1                    = 3;
+    public static final int         HUI_AUTO1                    = 4;
+    public static final int         HUI_VSELECT1                 = 5;
+    public static final int         HUI_INSERT1                  = 6;
+    public static final int         HUI_ARM1                     = 7;
 
-    // Notes 0x90
+    public static final int         HUI_FADER2                   = 8;
+    public static final int         HUI_SELECT2                  = 9;
+    public static final int         HUI_MUTE2                    = 10;
+    public static final int         HUI_SOLO2                    = 11;
+    public static final int         HUI_AUTO2                    = 12;
+    public static final int         HUI_VSELECT2                 = 13;
+    public static final int         HUI_INSERT2                  = 14;
+    public static final int         HUI_ARM2                     = 15;
 
-    public static final int         HUI_ARM1              = 0x00;
-    public static final int         HUI_ARM2              = 0x01;
-    public static final int         HUI_ARM3              = 0x02;
-    public static final int         HUI_ARM4              = 0x03;
-    public static final int         HUI_ARM5              = 0x04;
-    public static final int         HUI_ARM6              = 0x05;
-    public static final int         HUI_ARM7              = 0x06;
-    public static final int         HUI_ARM8              = 0x07;
+    public static final int         HUI_FADER3                   = 16;
+    public static final int         HUI_SELECT3                  = 17;
+    public static final int         HUI_MUTE3                    = 18;
+    public static final int         HUI_SOLO3                    = 19;
+    public static final int         HUI_AUTO3                    = 20;
+    public static final int         HUI_VSELECT3                 = 21;
+    public static final int         HUI_INSERT3                  = 22;
+    public static final int         HUI_ARM3                     = 23;
 
-    public static final int         HUI_SOLO1             = 0x08;
-    public static final int         HUI_SOLO2             = 0x09;
-    public static final int         HUI_SOLO3             = 0x0A;
-    public static final int         HUI_SOLO4             = 0x0B;
-    public static final int         HUI_SOLO5             = 0x0C;
-    public static final int         HUI_SOLO6             = 0x0D;
-    public static final int         HUI_SOLO7             = 0x0E;
-    public static final int         HUI_SOLO8             = 0x0F;
+    public static final int         HUI_FADER4                   = 24;
+    public static final int         HUI_SELECT4                  = 25;
+    public static final int         HUI_MUTE4                    = 26;
+    public static final int         HUI_SOLO4                    = 27;
+    public static final int         HUI_AUTO4                    = 28;
+    public static final int         HUI_VSELECT4                 = 29;
+    public static final int         HUI_INSERT4                  = 30;
+    public static final int         HUI_ARM4                     = 31;
 
-    public static final int         HUI_MUTE1             = 0x10;
-    public static final int         HUI_MUTE2             = 0x11;
-    public static final int         HUI_MUTE3             = 0x12;
-    public static final int         HUI_MUTE4             = 0x13;
-    public static final int         HUI_MUTE5             = 0x14;
-    public static final int         HUI_MUTE6             = 0x15;
-    public static final int         HUI_MUTE7             = 0x16;
-    public static final int         HUI_MUTE8             = 0x17;
+    public static final int         HUI_FADER5                   = 32;
+    public static final int         HUI_SELECT5                  = 33;
+    public static final int         HUI_MUTE5                    = 34;
+    public static final int         HUI_SOLO5                    = 35;
+    public static final int         HUI_AUTO5                    = 36;
+    public static final int         HUI_VSELECT5                 = 37;
+    public static final int         HUI_INSERT5                  = 38;
+    public static final int         HUI_ARM5                     = 39;
 
-    public static final int         HUI_SELECT1           = 0x18;
-    public static final int         HUI_SELECT2           = 0x19;
-    public static final int         HUI_SELECT3           = 0x1A;
-    public static final int         HUI_SELECT4           = 0x1B;
-    public static final int         HUI_SELECT5           = 0x1C;
-    public static final int         HUI_SELECT6           = 0x1D;
-    public static final int         HUI_SELECT7           = 0x1E;
-    public static final int         HUI_SELECT8           = 0x1F;
+    public static final int         HUI_FADER6                   = 40;
+    public static final int         HUI_SELECT6                  = 41;
+    public static final int         HUI_MUTE6                    = 42;
+    public static final int         HUI_SOLO6                    = 43;
+    public static final int         HUI_AUTO6                    = 44;
+    public static final int         HUI_VSELECT6                 = 45;
+    public static final int         HUI_INSERT6                  = 46;
+    public static final int         HUI_ARM6                     = 47;
 
-    public static final int         HUI_VSELECT1          = 0x20;
-    public static final int         HUI_VSELECT2          = 0x21;
-    public static final int         HUI_VSELECT3          = 0x22;
-    public static final int         HUI_VSELECT4          = 0x23;
-    public static final int         HUI_VSELECT5          = 0x24;
-    public static final int         HUI_VSELECT6          = 0x25;
-    public static final int         HUI_VSELECT7          = 0x26;
-    public static final int         HUI_VSELECT8          = 0x27;
+    public static final int         HUI_FADER7                   = 48;
+    public static final int         HUI_SELECT7                  = 49;
+    public static final int         HUI_MUTE7                    = 50;
+    public static final int         HUI_SOLO7                    = 51;
+    public static final int         HUI_AUTO7                    = 52;
+    public static final int         HUI_VSELECT7                 = 53;
+    public static final int         HUI_INSERT7                  = 54;
+    public static final int         HUI_ARM7                     = 55;
 
-    public static final int         HUI_MODE_IO           = 0x28;
-    public static final int         HUI_MODE_SENDS        = 0x29;
-    public static final int         HUI_MODE_PAN          = 0x2A;
-    public static final int         HUI_MODE_PLUGIN       = 0x2B;
-    public static final int         HUI_MODE_EQ           = 0x2C;
-    public static final int         HUI_MODE_DYN          = 0x2D;
-    public static final int         HUI_BANK_LEFT         = 0x2E;
-    public static final int         HUI_BANK_RIGHT        = 0x2F;
-    public static final int         HUI_TRACK_LEFT        = 0x30;
-    public static final int         HUI_TRACK_RIGHT       = 0x31;
+    public static final int         HUI_FADER8                   = 56;
+    public static final int         HUI_SELECT8                  = 57;
+    public static final int         HUI_MUTE8                    = 58;
+    public static final int         HUI_SOLO8                    = 59;
+    public static final int         HUI_AUTO8                    = 60;
+    public static final int         HUI_VSELECT8                 = 61;
+    public static final int         HUI_INSERT8                  = 62;
+    public static final int         HUI_ARM8                     = 63;
 
-    public static final int         HUI_FLIP              = 0x32;
-    public static final int         HUI_EDIT              = 0x33;
-    public static final int         HUI_NAME_VALUE        = 0x34;
-    public static final int         HUI_SMPTE_BEATS       = 0x35;
+    public static final int         HUI_KEY_CTRL_CLT             = 64;
+    public static final int         HUI_KEY_SHIFT_AD             = 65;
+    public static final int         HUI_KEY_EDITMODE             = 66;
+    public static final int         HUI_KEY_UNDO                 = 67;
+    public static final int         HUI_KEY_ALT_FINE             = 68;
+    public static final int         HUI_KEY_OPTION_A             = 69;
+    public static final int         HUI_KEY_EDITTOOL             = 70;
+    public static final int         HUI_KEY_SAVE                 = 71;
 
-    public static final int         HUI_F1                = 0x36;
-    public static final int         HUI_F2                = 0x37;
-    public static final int         HUI_F3                = 0x38;
-    public static final int         HUI_F4                = 0x39;
-    public static final int         HUI_F5                = 0x3A;
-    public static final int         HUI_F6                = 0x3B;
-    public static final int         HUI_F7                = 0x3C;
-    public static final int         HUI_F8                = 0x3D;
+    public static final int         HUI_WINDOW_MIX               = 72;
+    public static final int         HUI_WINDOW_EDIT              = 73;
+    public static final int         HUI_WINDOW_TRANSPRT          = 74;
+    public static final int         HUI_WINDOW_MEM_LOC           = 75;
+    public static final int         HUI_WINDOW_STATUS            = 76;
+    public static final int         HUI_WINDOW_ALT               = 77;
 
-    public static final int         HUI_MIDI_TRACKS       = 0x3E;
-    public static final int         HUI_INPUTS            = 0x3F;
-    public static final int         HUI_AUDIO_TRACKS      = 0x40;
-    public static final int         HUI_AUDIO_INSTR       = 0x41;
-    public static final int         HUI_AUX               = 0x42;
-    public static final int         HUI_BUSSES            = 0x43;
-    public static final int         HUI_OUTPUTS           = 0x44;
-    public static final int         HUI_USER              = 0x45;
-    public static final int         HUI_SHIFT             = 0x46;
-    public static final int         HUI_OPTION            = 0x47;
-    public static final int         HUI_CONTROL           = 0x48;
-    public static final int         HUI_ALT               = 0x49;
-    public static final int         HUI_READ              = 0x4A;
-    public static final int         HUI_WRITE             = 0x4B;
-    public static final int         HUI_TRIM              = 0x4C;
-    public static final int         HUI_TOUCH             = 0x4D;
-    public static final int         HUI_LATCH             = 0x4E;
-    public static final int         HUI_GROUP             = 0x4F;
-    public static final int         HUI_SAVE              = 0x50;
-    public static final int         HUI_UNDO              = 0x51;
-    public static final int         HUI_CANCEL            = 0x52;
-    public static final int         HUI_ENTER             = 0x53;
-    public static final int         HUI_MARKER            = 0x54;
-    public static final int         HUI_NUDGE             = 0x55;
-    public static final int         HUI_REPEAT            = 0x56;
-    public static final int         HUI_DROP              = 0x57;
-    public static final int         HUI_REPLACE           = 0x58;
-    public static final int         HUI_CLICK             = 0x59;
-    public static final int         HUI_SOLO              = 0x5A;
-    public static final int         HUI_REWIND            = 0x5B;
-    public static final int         HUI_FORWARD           = 0x5C;
-    public static final int         HUI_STOP              = 0x5D;
-    public static final int         HUI_PLAY              = 0x5E;
-    public static final int         HUI_RECORD            = 0x5F;
-    public static final int         HUI_ARROW_UP          = 0x60;
-    public static final int         HUI_ARROW_DOWN        = 0x61;
-    public static final int         HUI_ARROW_LEFT        = 0x62;
-    public static final int         HUI_ARROW_RIGHT       = 0x63;
-    public static final int         HUI_ZOOM              = 0x64;
-    public static final int         HUI_SCRUB             = 0x65;
-    public static final int         HUI_USER_A            = 0x66;
-    public static final int         HUI_USER_B            = 0x67;
-    public static final int         HUI_FADER_TOUCH1      = 0x68;
-    public static final int         HUI_FADER_TOUCH2      = 0x69;
-    public static final int         HUI_FADER_TOUCH3      = 0x6A;
-    public static final int         HUI_FADER_TOUCH4      = 0x6B;
-    public static final int         HUI_FADER_TOUCH5      = 0x6C;
-    public static final int         HUI_FADER_TOUCH6      = 0x6D;
-    public static final int         HUI_FADER_TOUCH7      = 0x6E;
-    public static final int         HUI_FADER_TOUCH8      = 0x6F;
-    public static final int         HUI_FADER_MASTER      = 0x70;
-    public static final int         HUI_SMPTE_LED         = 0x71;
-    public static final int         HUI_BEATS_LED         = 0x72;
-    public static final int         HUI_RUDE_SOLO_L       = 0x73;
-    public static final int         HUI_RELAY_CLICK       = 0x76;
+    public static final int         HUI_CHANL_LEFT               = 80;
+    public static final int         HUI_BANK_LEFT                = 81;
+    public static final int         HUI_CHANL_RIGHT              = 82;
+    public static final int         HUI_BANK_RIGHT               = 83;
 
-    // CC: 41-43 inc, 1-3 dec
-    public static final int         HUI_CC_VPOT1          = 0x10;
-    public static final int         HUI_CC_VPOT2          = 0x11;
-    public static final int         HUI_CC_VPOT3          = 0x12;
-    public static final int         HUI_CC_VPOT4          = 0x13;
-    public static final int         HUI_CC_VPOT5          = 0x14;
-    public static final int         HUI_CC_VPOT6          = 0x15;
-    public static final int         HUI_CC_VPOT7          = 0x16;
-    public static final int         HUI_CC_VPOT8          = 0x17;
+    public static final int         HUI_ASSIGN1_OUTPUT           = 88;
+    public static final int         HUI_ASSIGN1_INPUT            = 89;
+    public static final int         HUI_ASSIGN1_PAN              = 90;
+    public static final int         HUI_ASSIGN1_SEND_E           = 91;
+    public static final int         HUI_ASSIGN1_SEND_D           = 92;
+    public static final int         HUI_ASSIGN1_SEND_C           = 93;
+    public static final int         HUI_ASSIGN1_SEND_B           = 94;
+    public static final int         HUI_ASSIGN1_SEND_A           = 95;
 
-    public static final int         HUI_CC_JOG            = 0x3C;
+    public static final int         HUI_ASSIGN2_ASSIGN           = 96;
+    public static final int         HUI_ASSIGN2_DEFAULT          = 97;
+    public static final int         HUI_ASSIGN2_SUSPEND          = 98;
+    public static final int         HUI_ASSIGN2_SHIFT            = 99;
+    public static final int         HUI_ASSIGN2_MUTE             = 100;
+    public static final int         HUI_ASSIGN2_BYPASS           = 101;
+    public static final int         HUI_ASSIGN2_RECRDYAL         = 102;
 
-    // Sysex
+    public static final int         HUI_CURSOR_DOWN              = 104;
+    public static final int         HUI_CURSOR_LEFT              = 105;
+    public static final int         HUI_CURSOR_MODE              = 106;
+    public static final int         HUI_CURSOR_RIGHT             = 107;
+    public static final int         HUI_CURSOR_UP                = 108;
+    public static final int         HUI_WHEEL_SCRUB              = 109;
+    public static final int         HUI_WHEEL_SHUTTLE            = 110;
 
-    public static final int []      HUI_SYSEX_HEADER      = new int []
+    public static final int         HUI_TRANSPORT_TALKBACK       = 112;
+    public static final int         HUI_TRANSPORT_REWIND         = 113;
+    public static final int         HUI_TRANSPORT_FAST_FWD       = 114;
+    public static final int         HUI_TRANSPORT_STOP           = 115;
+    public static final int         HUI_TRANSPORT_PLAY           = 116;
+    public static final int         HUI_TRANSPORT_RECORD         = 117;
+
+    public static final int         HUI_TRANSPORT_RETURN_TO_ZERO = 120;
+    public static final int         HUI_TRANSPORT_TO_END         = 121;
+    public static final int         HUI_TRANSPORT_ON_LINE        = 122;
+    public static final int         HUI_TRANSPORT_LOOP           = 123;
+    public static final int         HUI_TRANSPORT_QICK_PUNCH     = 124;
+
+    public static final int         HUI_TRANSPORT_AUDITION       = 128;
+    public static final int         HUI_TRANSPORT_PRE            = 129;
+    public static final int         HUI_TRANSPORT_IN             = 130;
+    public static final int         HUI_TRANSPORT_OUT            = 131;
+    public static final int         HUI_TRANSPORT_POST           = 132;
+
+    public static final int         HUI_CONTROL_ROOM_INPUT_3     = 136;
+    public static final int         HUI_CONTROL_ROOM_INPUT_2     = 137;
+    public static final int         HUI_CONTROL_ROOM_INPUT_1     = 138;
+    public static final int         HUI_CONTROL_ROOM_MUTE        = 139;
+    public static final int         HUI_CONTROL_ROOM_DISCRETE    = 140;
+
+    public static final int         HUI_CONTROL_ROOM_OUTPUT_3    = 144;
+    public static final int         HUI_CONTROL_ROOM_OUTPUT_2    = 145;
+    public static final int         HUI_CONTROL_ROOM_OUTPUT_1    = 146;
+    public static final int         HUI_CONTROL_ROOM_DIM         = 147;
+    public static final int         HUI_CONTROL_ROOM_MONO        = 148;
+
+    public static final int         HUI_NUM_0                    = 152;
+    public static final int         HUI_NUM_1                    = 153;
+    public static final int         HUI_NUM_4                    = 154;
+    public static final int         HUI_NUM_2                    = 155;
+    public static final int         HUI_NUM_5                    = 156;
+    public static final int         HUI_NUM_DOT                  = 157;
+    public static final int         HUI_NUM_3                    = 158;
+    public static final int         HUI_NUM_6                    = 159;
+
+    public static final int         HUI_NUM_ENTER                = 160;
+    public static final int         HUI_NUM_PLUS                 = 161;
+
+    public static final int         HUI_NUM_7                    = 168;
+    public static final int         HUI_NUM_8                    = 169;
+    public static final int         HUI_NUM_9                    = 170;
+    public static final int         HUI_NUM_MINUS                = 171;
+    public static final int         HUI_NUM_CLR                  = 172;
+    public static final int         HUI_NUM_SET                  = 173;
+    public static final int         HUI_NUM_DIV                  = 174;
+    public static final int         HUI_NUM_MULT                 = 175;
+
+    public static final int         HUI_TIMECODE                 = 176;
+    public static final int         HUI_FEET                     = 177;
+    public static final int         HUI_BEATS                    = 178;
+    public static final int         HUI_RUDESOLO                 = 179;
+
+    public static final int         HUI_AUTO_ENABLE_PLUG_IN      = 184;
+    public static final int         HUI_AUTO_ENABLE_PAN          = 185;
+    public static final int         HUI_AUTO_ENABLE_FADER        = 186;
+    public static final int         HUI_AUTO_ENABLE_SENDMUTE     = 187;
+    public static final int         HUI_AUTO_ENABLE_SEND         = 188;
+    public static final int         HUI_AUTO_ENABLE_MUTE         = 189;
+
+    public static final int         HUI_AUTO_MODE_TRIM           = 192;
+    public static final int         HUI_AUTO_MODE_LATCH          = 193;
+    public static final int         HUI_AUTO_MODE_READ           = 194;
+    public static final int         HUI_AUTO_MODE_OFF            = 195;
+    public static final int         HUI_AUTO_MODE_WRITE          = 196;
+    public static final int         HUI_AUTO_MODE_TOUCH          = 197;
+
+    public static final int         HUI_STATUS_PHASE             = 200;
+    public static final int         HUI_STATUS_MONITOR           = 201;
+    public static final int         HUI_STATUS_AUTO              = 202;
+    public static final int         HUI_STATUS_SUSPEND           = 203;
+    public static final int         HUI_STATUS_CREATE            = 204;
+    public static final int         HUI_STATUS_GROUP             = 205;
+
+    public static final int         HUI_EDIT_PASTE               = 208;
+    public static final int         HUI_EDIT_CUT                 = 209;
+    public static final int         HUI_EDIT_CAPTURE             = 210;
+    public static final int         HUI_EDIT_DELETE              = 211;
+    public static final int         HUI_EDIT_COPY                = 212;
+    public static final int         HUI_EDIT_SEPARATE            = 213;
+
+    public static final int         HUI_F1                       = 216;
+    public static final int         HUI_F2                       = 217;
+    public static final int         HUI_F3                       = 218;
+    public static final int         HUI_F4                       = 219;
+    public static final int         HUI_F5                       = 220;
+    public static final int         HUI_F6                       = 221;
+    public static final int         HUI_F7                       = 222;
+    public static final int         HUI_F8_ESC                   = 223;
+
+    public static final int         HUI_DSP_EDIT_INS_PARA        = 224;
+    public static final int         HUI_DSP_EDIT_ASSIGN          = 225;
+    public static final int         HUI_DSP_EDIT_SELECT_1        = 226;
+    public static final int         HUI_DSP_EDIT_SELECT_2        = 227;
+    public static final int         HUI_DSP_EDIT_SELECT_3        = 228;
+    public static final int         HUI_DSP_EDIT_SELECT_4        = 229;
+    public static final int         HUI_DSP_EDIT_BYPASS          = 230;
+    public static final int         HUI_DSP_EDIT_COMPARE         = 231;
+
+    public static final int         HUI_FS_RLAY1                 = 232;
+    public static final int         HUI_FS_RLAY2                 = 233;
+    public static final int         HUI_CLICK                    = 234;
+    public static final int         HUI_BEEP                     = 235;
+
+    private static final int []     HUI_BUTTONS_ALL              =
     {
-        0xF0,
-        0x00,
-        0x00,
-        0x66,
-        0x14
-    };
-
-    public static final String      SYSEX_HDR             = "F0 00 00 66 14 ";
-
-    public static final int         HUI_SYSEX_CMD_DISPLAY = 0x12;
-
-    private static final int []     HUI_BUTTONS_ALL       =
-    {
-        HUI_ARM1,
-        HUI_ARM2,
-        HUI_ARM3,
-        HUI_ARM4,
-        HUI_ARM5,
-        HUI_ARM6,
-        HUI_ARM7,
-        HUI_ARM8,
-        HUI_SOLO1,
-        HUI_SOLO2,
-        HUI_SOLO3,
-        HUI_SOLO4,
-        HUI_SOLO5,
-        HUI_SOLO6,
-        HUI_SOLO7,
-        HUI_SOLO8,
-        HUI_MUTE1,
-        HUI_MUTE2,
-        HUI_MUTE3,
-        HUI_MUTE4,
-        HUI_MUTE5,
-        HUI_MUTE6,
-        HUI_MUTE7,
-        HUI_MUTE8,
+        HUI_FADER1,
         HUI_SELECT1,
-        HUI_SELECT2,
-        HUI_SELECT3,
-        HUI_SELECT4,
-        HUI_SELECT5,
-        HUI_SELECT6,
-        HUI_SELECT7,
-        HUI_SELECT8,
+        HUI_MUTE1,
+        HUI_SOLO1,
+        HUI_AUTO1,
         HUI_VSELECT1,
+        HUI_INSERT1,
+        HUI_ARM1,
+        HUI_FADER2,
+        HUI_SELECT2,
+        HUI_MUTE2,
+        HUI_SOLO2,
+        HUI_AUTO2,
         HUI_VSELECT2,
+        HUI_INSERT2,
+        HUI_ARM2,
+        HUI_FADER3,
+        HUI_SELECT3,
+        HUI_MUTE3,
+        HUI_SOLO3,
+        HUI_AUTO3,
         HUI_VSELECT3,
+        HUI_INSERT3,
+        HUI_ARM3,
+        HUI_FADER4,
+        HUI_SELECT4,
+        HUI_MUTE4,
+        HUI_SOLO4,
+        HUI_AUTO4,
         HUI_VSELECT4,
+        HUI_INSERT4,
+        HUI_ARM4,
+        HUI_FADER5,
+        HUI_SELECT5,
+        HUI_MUTE5,
+        HUI_SOLO5,
+        HUI_AUTO5,
         HUI_VSELECT5,
+        HUI_INSERT5,
+        HUI_ARM5,
+        HUI_FADER6,
+        HUI_SELECT6,
+        HUI_MUTE6,
+        HUI_SOLO6,
+        HUI_AUTO6,
         HUI_VSELECT6,
+        HUI_INSERT6,
+        HUI_ARM6,
+        HUI_FADER7,
+        HUI_SELECT7,
+        HUI_MUTE7,
+        HUI_SOLO7,
+        HUI_AUTO7,
         HUI_VSELECT7,
+        HUI_INSERT7,
+        HUI_ARM7,
+        HUI_FADER8,
+        HUI_SELECT8,
+        HUI_MUTE8,
+        HUI_SOLO8,
+        HUI_AUTO8,
         HUI_VSELECT8,
-        HUI_FADER_TOUCH1,
-        HUI_FADER_TOUCH2,
-        HUI_FADER_TOUCH3,
-        HUI_FADER_TOUCH4,
-        HUI_FADER_TOUCH5,
-        HUI_FADER_TOUCH6,
-        HUI_FADER_TOUCH7,
-        HUI_FADER_TOUCH8,
-        HUI_FADER_MASTER,
-        HUI_MODE_IO,
-        HUI_MODE_SENDS,
-        HUI_MODE_PAN,
-        HUI_MODE_PLUGIN,
-        HUI_MODE_EQ,
-        HUI_MODE_DYN,
+        HUI_INSERT8,
+        HUI_ARM8,
+        HUI_KEY_CTRL_CLT,
+        HUI_KEY_SHIFT_AD,
+        HUI_KEY_EDITMODE,
+        HUI_KEY_UNDO,
+        HUI_KEY_ALT_FINE,
+        HUI_KEY_OPTION_A,
+        HUI_KEY_EDITTOOL,
+        HUI_KEY_SAVE,
+        HUI_WINDOW_MIX,
+        HUI_WINDOW_EDIT,
+        HUI_WINDOW_TRANSPRT,
+        HUI_WINDOW_MEM_LOC,
+        HUI_WINDOW_STATUS,
+        HUI_WINDOW_ALT,
+        HUI_CHANL_LEFT,
         HUI_BANK_LEFT,
+        HUI_CHANL_RIGHT,
         HUI_BANK_RIGHT,
-        HUI_TRACK_LEFT,
-        HUI_TRACK_RIGHT,
-        HUI_FLIP,
-        HUI_EDIT,
-        HUI_NAME_VALUE,
-        HUI_SMPTE_BEATS,
-        HUI_MIDI_TRACKS,
-        HUI_INPUTS,
-        HUI_AUDIO_TRACKS,
-        HUI_AUDIO_INSTR,
-        HUI_SHIFT,
-        HUI_OPTION,
-        HUI_REWIND,
-        HUI_FORWARD,
-        HUI_STOP,
-        HUI_PLAY,
-        HUI_RECORD,
-        HUI_ARROW_UP,
-        HUI_ARROW_DOWN,
-        HUI_ARROW_LEFT,
-        HUI_ARROW_RIGHT,
-        HUI_ZOOM,
-        HUI_SCRUB,
-        HUI_USER_A,
-        HUI_USER_B,
-        HUI_REPEAT,
-        HUI_READ,
-        HUI_WRITE,
-        HUI_TRIM,
-        HUI_TOUCH,
-        HUI_LATCH,
-        HUI_UNDO,
-        HUI_USER,
-        HUI_CLICK,
-        HUI_SOLO,
-        HUI_REPLACE,
+        HUI_ASSIGN1_OUTPUT,
+        HUI_ASSIGN1_INPUT,
+        HUI_ASSIGN1_PAN,
+        HUI_ASSIGN1_SEND_E,
+        HUI_ASSIGN1_SEND_D,
+        HUI_ASSIGN1_SEND_C,
+        HUI_ASSIGN1_SEND_B,
+        HUI_ASSIGN1_SEND_A,
+        HUI_ASSIGN2_ASSIGN,
+        HUI_ASSIGN2_DEFAULT,
+        HUI_ASSIGN2_SUSPEND,
+        HUI_ASSIGN2_SHIFT,
+        HUI_ASSIGN2_MUTE,
+        HUI_ASSIGN2_BYPASS,
+        HUI_ASSIGN2_RECRDYAL,
+        HUI_CURSOR_DOWN,
+        HUI_CURSOR_LEFT,
+        HUI_CURSOR_MODE,
+        HUI_CURSOR_RIGHT,
+        HUI_CURSOR_UP,
+        HUI_WHEEL_SCRUB,
+        HUI_WHEEL_SHUTTLE,
+        HUI_TRANSPORT_TALKBACK,
+        HUI_TRANSPORT_REWIND,
+        HUI_TRANSPORT_FAST_FWD,
+        HUI_TRANSPORT_STOP,
+        HUI_TRANSPORT_PLAY,
+        HUI_TRANSPORT_RECORD,
+        HUI_TRANSPORT_RETURN_TO_ZERO,
+        HUI_TRANSPORT_TO_END,
+        HUI_TRANSPORT_ON_LINE,
+        HUI_TRANSPORT_LOOP,
+        HUI_TRANSPORT_QICK_PUNCH,
+        HUI_TRANSPORT_AUDITION,
+        HUI_TRANSPORT_PRE,
+        HUI_TRANSPORT_IN,
+        HUI_TRANSPORT_OUT,
+        HUI_TRANSPORT_POST,
+        HUI_CONTROL_ROOM_INPUT_3,
+        HUI_CONTROL_ROOM_INPUT_2,
+        HUI_CONTROL_ROOM_INPUT_1,
+        HUI_CONTROL_ROOM_MUTE,
+        HUI_CONTROL_ROOM_DISCRETE,
+        HUI_CONTROL_ROOM_OUTPUT_3,
+        HUI_CONTROL_ROOM_OUTPUT_2,
+        HUI_CONTROL_ROOM_OUTPUT_1,
+        HUI_CONTROL_ROOM_DIM,
+        HUI_CONTROL_ROOM_MONO,
+        HUI_NUM_0,
+        HUI_NUM_1,
+        HUI_NUM_4,
+        HUI_NUM_2,
+        HUI_NUM_5,
+        HUI_NUM_DOT,
+        HUI_NUM_3,
+        HUI_NUM_6,
+        HUI_NUM_ENTER,
+        HUI_NUM_PLUS,
+        HUI_NUM_7,
+        HUI_NUM_8,
+        HUI_NUM_9,
+        HUI_NUM_MINUS,
+        HUI_NUM_CLR,
+        HUI_NUM_SET,
+        HUI_NUM_DIV,
+        HUI_NUM_MULT,
+        HUI_TIMECODE,
+        HUI_FEET,
+        HUI_BEATS,
+        HUI_RUDESOLO,
+        HUI_AUTO_ENABLE_PLUG_IN,
+        HUI_AUTO_ENABLE_PAN,
+        HUI_AUTO_ENABLE_FADER,
+        HUI_AUTO_ENABLE_SENDMUTE,
+        HUI_AUTO_ENABLE_SEND,
+        HUI_AUTO_ENABLE_MUTE,
+        HUI_AUTO_MODE_TRIM,
+        HUI_AUTO_MODE_LATCH,
+        HUI_AUTO_MODE_READ,
+        HUI_AUTO_MODE_OFF,
+        HUI_AUTO_MODE_WRITE,
+        HUI_AUTO_MODE_TOUCH,
+        HUI_STATUS_PHASE,
+        HUI_STATUS_MONITOR,
+        HUI_STATUS_AUTO,
+        HUI_STATUS_SUSPEND,
+        HUI_STATUS_CREATE,
+        HUI_STATUS_GROUP,
+        HUI_EDIT_PASTE,
+        HUI_EDIT_CUT,
+        HUI_EDIT_CAPTURE,
+        HUI_EDIT_DELETE,
+        HUI_EDIT_COPY,
+        HUI_EDIT_SEPARATE,
         HUI_F1,
         HUI_F2,
         HUI_F3,
@@ -282,17 +437,15 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
         HUI_F5,
         HUI_F6,
         HUI_F7,
-        HUI_F8,
-        HUI_CANCEL,
-        HUI_ENTER,
-        HUI_SAVE,
-        HUI_MARKER,
-        HUI_AUX,
-        HUI_BUSSES,
-        HUI_OUTPUTS,
-        HUI_GROUP,
-        HUI_NUDGE,
-        HUI_DROP
+        HUI_F8_ESC,
+        HUI_DSP_EDIT_INS_PARA,
+        HUI_DSP_EDIT_ASSIGN,
+        HUI_DSP_EDIT_SELECT_1,
+        HUI_DSP_EDIT_SELECT_2,
+        HUI_DSP_EDIT_SELECT_3,
+        HUI_DSP_EDIT_SELECT_4,
+        HUI_DSP_EDIT_BYPASS,
+        HUI_DSP_EDIT_COMPARE
     };
 
     private static final boolean [] HUI_BUTTON_UPDATE;
@@ -302,19 +455,26 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
         Arrays.fill (HUI_BUTTON_UPDATE, false);
     }
 
-    public static final int   VUMODE_LED               = 1;
-    public static final int   VUMODE_OFF               = 2;
-    public static final int   VUMODE_LED_AND_LCD       = 3;
-    public static final int   VUMODE_LCD               = 4;
+    public static final int                                                    KNOB_LED_MODE_OFF        = -1;
+    public static final int                                                    KNOB_LED_MODE_SINGLE_DOT = 0;
+    public static final int                                                    KNOB_LED_MODE_BOOST_CUT  = 1;
+    public static final int                                                    KNOB_LED_MODE_WRAP       = 2;
+    public static final int                                                    KNOB_LED_MODE_SPREAD     = 3;
 
-    public static final int   KNOB_LED_MODE_SINGLE_DOT = 0;
-    public static final int   KNOB_LED_MODE_BOOST_CUT  = 1;
-    public static final int   KNOB_LED_MODE_WRAP       = 2;
-    public static final int   KNOB_LED_MODE_SPREAD     = 3;
+    private HUISegmentDisplay                                                  segmentDisplay;
+    private HUIMainDisplay                                                     mainDisplay;
+    private int []                                                             knobValues               = new int [8];
 
-    private HUISegmentDisplay segmentDisplay;
-    private int               activeVuMode             = VUMODE_LED;
-    private int []            knobValues               = new int [8];
+    // The currently selected zone (area of a group of buttons)
+    private int                                                                zone;
+
+    @SuppressWarnings("unchecked")
+    private final FaderAbsoluteCommand<HUIControlSurface, HUIConfiguration> [] faderCommands            = new FaderAbsoluteCommand [8];
+    @SuppressWarnings("unchecked")
+    private final KnobRowModeCommand<HUIControlSurface, HUIConfiguration> []   knobCommands             = new KnobRowModeCommand [8];
+    private final PlayPositionCommand<HUIControlSurface, HUIConfiguration>     playPositionCommand;
+
+    private final int []                                                       faderHiValues            = new int [8];
 
 
     /**
@@ -325,19 +485,27 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
      * @param configuration The configuration
      * @param output The midi output
      * @param input The midi input
+     * @param model The model
      */
-    public HUIControlSurface (final IHost host, final ColorManager colorManager, final HUIConfiguration configuration, final IMidiOutput output, final IMidiInput input)
+    public HUIControlSurface (final IHost host, final ColorManager colorManager, final HUIConfiguration configuration, final IMidiOutput output, final IMidiInput input, final IModel model)
     {
         super (host, configuration, colorManager, output, input, null, HUI_BUTTONS_ALL);
 
-        this.shiftButtonId = HUI_SHIFT;
-        this.selectButtonId = HUI_OPTION;
-        this.leftButtonId = HUI_ARROW_LEFT;
-        this.rightButtonId = HUI_ARROW_RIGHT;
-        this.upButtonId = HUI_ARROW_UP;
-        this.downButtonId = HUI_ARROW_DOWN;
+        this.shiftButtonId = HUI_KEY_SHIFT_AD;
+        this.selectButtonId = HUI_KEY_OPTION_A;
+        this.leftButtonId = HUI_CURSOR_LEFT;
+        this.rightButtonId = HUI_CURSOR_RIGHT;
+        this.upButtonId = HUI_CURSOR_UP;
+        this.downButtonId = HUI_CURSOR_DOWN;
 
         Arrays.fill (this.knobValues, -1);
+
+        for (int i = 0; i < 8; i++)
+        {
+            this.faderCommands[i] = new FaderAbsoluteCommand<> (i, model, this);
+            this.knobCommands[i] = new KnobRowModeCommand<> (i, model, this);
+        }
+        this.playPositionCommand = new PlayPositionCommand<> (model, this);
     }
 
 
@@ -345,12 +513,10 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
     @Override
     public void shutdown ()
     {
-        // Turn off all buttons
-        for (final int button: this.getButtons ())
-            this.setButton (button, 0);
+        super.shutdown ();
 
-        this.display.shutdown ();
         this.segmentDisplay.shutdown ();
+        this.mainDisplay.shutdown ();
     }
 
 
@@ -358,7 +524,10 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
     @Override
     public void setButton (final int button, final int state)
     {
-        this.output.sendNote (button, state);
+        // Select the zone
+        this.output.sendCC (0x0C, button / 8);
+        // Turn on / off button
+        this.output.sendCC (0x2C, (state > 0 ? 0x40 : 0x00) + button % 8);
     }
 
 
@@ -384,15 +553,19 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
      */
     public void setKnobLED (final int index, final int knobLEDMode, final int value, final int maxValue)
     {
-        final int rescale = (int) Math.round (value * 11.0 / maxValue);
-        int v = knobLEDMode << 4;
-        v += rescale;
+        int v = 0;
+
+        if (knobLEDMode != KNOB_LED_MODE_OFF)
+        {
+            final int rescale = (int) Math.round (value * 10.0 / maxValue);
+            v = 0x10 * knobLEDMode + rescale + 1;
+        }
 
         if (this.knobValues[index] == v)
             return;
 
         this.knobValues[index] = v;
-        this.output.sendCC (0x30 + index, v);
+        this.output.sendCC (0x10 + index, v);
     }
 
 
@@ -401,56 +574,68 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
     protected void handleMidi (final int status, final int data1, final int data2)
     {
         final int code = status & 0xF0;
-        switch (code)
+        if (code != 0xB0)
+            return;
+
+        switch (data1)
         {
-            // Note on/off
-            case 0x80:
-            case 0x90:
-                // Reroute all notes to CC buttons
-                // TODO
-                // this.handleCC (0, data1, data2);
+            // Move fader hi-byte
+            case 0x00:
+            case 0x01:
+            case 0x02:
+            case 0x03:
+            case 0x04:
+            case 0x05:
+            case 0x06:
+            case 0x07:
+                this.faderHiValues[data1] = data2;
                 break;
 
-            case 0xB0:
-                // Handle knobs and jog wheel
-                this.handleCC (1, data1, data2);
+            case 0x0d:
+                this.playPositionCommand.execute (data2);
+                break;
 
-                host.println (status + ":" + StringUtils.toHexStr (data1) + ":" + StringUtils.toHexStr (data2));
+            // Button zone selection
+            case 0x0F:
+                this.zone = data2;
+                break;
 
-                // 176:0F:0E REC
-                // 176:2F:45
-                // 176:0F:0E
-                // 176:2F:05
-                // >
-                // 176:0F:0F LOOP
-                // 176:2F:43
-                // 176:0F:0F
-                // 176:2F:03
-                // >
-                // 176:0F:0E PLAY
-                // 176:2F:44
-                // 176:0F:0E
-                // 176:2F:04
-                // >
-                // 176:0F:0E STOP
-                // 176:2F:43
-                // 176:0F:0E
-                // 176:2F:03
-                // >
-                // 176:0F:0E FFWD
-                // 176:2F:42
-                // 176:0F:0E
-                // 176:2F:02
-                // >
-                // 176:0F:0E BACK
-                // 176:2F:41
-                // 176:0F:0E
-                // 176:2F:01
+            // Move fader lo-byte
+            case 0x20:
+            case 0x21:
+            case 0x22:
+            case 0x23:
+            case 0x24:
+            case 0x25:
+            case 0x26:
+            case 0x27:
+                final int chnl = data1 - 0x20;
+                final int value = (this.faderHiValues[chnl] << 7) + data2;
+                this.faderCommands[chnl].execute (value);
+                break;
 
+            // Button port up/down (a button in the selected row)
+            case 0x2F:
+                final boolean isDown = data2 >= 0x40;
+                final int cc = this.zone * 8 + data2 % 8;
+                if (this.isButton (cc))
+                    this.handleCC (0, cc, isDown ? 127 : 0);
+                break;
+
+            case 0x40:
+            case 0x41:
+            case 0x42:
+            case 0x43:
+            case 0x44:
+            case 0x45:
+            case 0x46:
+            case 0x47:
+                final int channel = data1 - 0x40;
+                this.knobCommands[channel].execute (data2);
                 break;
 
             default:
-                super.handleMidi (status, data1, data2);
+                this.host.println ("Unhandled midi CC: " + data1);
                 break;
         }
     }
@@ -478,57 +663,25 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
     }
 
 
-    // leds on/leds and vu-meter on display on/vu-meter on display on/all off
-    public void switchVuMode (final int mode)
+    /**
+     * Set the main display.
+     *
+     * @param mainDisplay The main display
+     */
+    public void setMainDisplay (final HUIMainDisplay mainDisplay)
     {
-        // Always horizontal
-        this.output.sendSysex (new StringBuilder (SYSEX_HDR).append ("21 00 F7").toString ());
+        this.mainDisplay = mainDisplay;
+    }
 
-        if (this.activeVuMode != mode)
-        {
-            if (this.activeVuMode < 5)
-                this.activeVuMode = mode;
-            else
-                this.activeVuMode = VUMODE_LED;
-        }
-        final IMidiOutput out = this.getOutput ();
-        // the mcu changes the vu-meter mode when receiving the
-        // corresponding sysex message
-        switch (this.activeVuMode)
-        {
-            case VUMODE_LED:
-                for (int i = 0; i < 8; i++)
-                {
-                    // resets the leds (and vu-meters on the display?)
-                    out.sendChannelAftertouch (0 + (i << 4), 0);
-                    out.sendSysex (SYSEX_HDR + "20 0" + i + " 01 F7");
-                }
-                break;
-            case VUMODE_LED_AND_LCD:
-                for (int i = 0; i < 8; i++)
-                {
-                    out.sendChannelAftertouch (0 + (i << 4), 0);
-                    out.sendSysex (SYSEX_HDR + "20 0" + i + " 03 F7");
-                }
-                break;
-            case VUMODE_LCD:
-                for (int i = 0; i < 8; i++)
-                {
-                    out.sendChannelAftertouch (0 + (i << 4), 0);
-                    out.sendSysex (SYSEX_HDR + "20 0" + i + " 06 F7");
-                }
-                break;
-            case VUMODE_OFF:
-                for (int i = 0; i < 8; i++)
-                {
-                    out.sendChannelAftertouch (0 + (i << 4), 0);
-                    out.sendSysex (SYSEX_HDR + "20 0" + i + " 00 F7");
-                }
-                break;
-            default:
-                // Not used
-                break;
-        }
+
+    /**
+     * Get the main display.
+     *
+     * @return The main display
+     */
+    public HUIMainDisplay getMainDisplay ()
+    {
+        return this.mainDisplay;
     }
 
 
@@ -537,5 +690,16 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
     public boolean isGridNote (final int note)
     {
         return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void scheduledFlush ()
+    {
+        super.scheduledFlush ();
+
+        if (this.mainDisplay != null)
+            this.mainDisplay.flush ();
     }
 }

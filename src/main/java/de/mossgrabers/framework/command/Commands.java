@@ -278,6 +278,23 @@ public final class Commands
     /** The command to touch a fader. */
     public static final Integer COMMAND_FADER_TOUCH_8            = Integer.valueOf (130);
 
+    /** The command to select Send 1. */
+    public static final Integer COMMAND_SEND1                    = Integer.valueOf (131);
+    /** The command to select Send 2. */
+    public static final Integer COMMAND_SEND2                    = Integer.valueOf (132);
+    /** The command to select Send 3. */
+    public static final Integer COMMAND_SEND3                    = Integer.valueOf (133);
+    /** The command to select Send 4. */
+    public static final Integer COMMAND_SEND4                    = Integer.valueOf (134);
+    /** The command to select Send 5. */
+    public static final Integer COMMAND_SEND5                    = Integer.valueOf (135);
+    /** The command to select Send 6. */
+    public static final Integer COMMAND_SEND6                    = Integer.valueOf (136);
+    /** The command to select Send 7. */
+    public static final Integer COMMAND_SEND7                    = Integer.valueOf (137);
+    /** The command to select Send 8. */
+    public static final Integer COMMAND_SEND8                    = Integer.valueOf (138);
+
     /** Continuous knob 1. */
     public static final Integer CONT_COMMAND_KNOB1               = Integer.valueOf (1);
     /** Continuous knob 2. */

@@ -606,18 +606,13 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     @Override
     public void shutdown ()
     {
-        // Turn off all buttons
-        for (final int button: this.getButtons ())
-            this.setButton (button, 0);
-
         // Turn off 1st/2nd row buttons
         for (int i = 20; i < 28; i++)
             this.setButton (i, 0);
         for (int i = 102; i < 110; i++)
             this.setButton (i, 0);
 
-        this.pads.turnOff ();
-        this.display.shutdown ();
+        super.shutdown ();
     }
 
 

@@ -8,7 +8,7 @@ import de.mossgrabers.controller.kontrol.midi.mkii.KontrolMkIIConfiguration;
 import de.mossgrabers.controller.kontrol.midi.mkii.controller.KontrolMkIIControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.AbstractView;
+import de.mossgrabers.framework.view.ControlOnlyView;
 
 
 /**
@@ -16,7 +16,7 @@ import de.mossgrabers.framework.view.AbstractView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ControlView extends AbstractView<KontrolMkIIControlSurface, KontrolMkIIConfiguration>
+public class ControlView extends ControlOnlyView<KontrolMkIIControlSurface, KontrolMkIIConfiguration>
 {
     private static final int [] IDENTITY_MAP = Scales.getIdentityMatrix ();
 
@@ -29,23 +29,7 @@ public class ControlView extends AbstractView<KontrolMkIIControlSurface, Kontrol
      */
     public ControlView (final KontrolMkIIControlSurface surface, final IModel model)
     {
-        super ("Control", surface, model);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void drawGrid ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onGridNote (final int note, final int velocity)
-    {
-        // Intentionally empty
+        super (surface, model);
     }
 
 

@@ -186,7 +186,8 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
 
         this.display.clear ();
         this.display.notify ("START " + this.host.getName ().toUpperCase () + " TO PLAY");
-        this.display.shutdown ();
+
+        super.shutdown ();
     }
 
 

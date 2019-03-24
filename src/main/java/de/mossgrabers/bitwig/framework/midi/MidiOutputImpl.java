@@ -4,7 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.midi;
 
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.daw.midi.AbstractMidiOutputImpl;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.MidiOut;
@@ -15,7 +15,7 @@ import com.bitwig.extension.controller.api.MidiOut;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-class MidiOutputImpl implements IMidiOutput
+class MidiOutputImpl extends AbstractMidiOutputImpl
 {
     private MidiOut port;
 
@@ -45,70 +45,6 @@ class MidiOutputImpl implements IMidiOutput
 
     /** {@inheritDoc} */
     @Override
-    public void sendCC (final int cc, final int value)
-    {
-        this.port.sendMidi (0xB0, cc, value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void sendCCEx (final int channel, final int cc, final int value)
-    {
-        this.port.sendMidi (0xB0 + channel, cc, value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void sendNote (final int note, final int velocity)
-    {
-        this.port.sendMidi (0x90, note, velocity);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void sendNoteEx (final int channel, final int note, final int velocity)
-    {
-        this.port.sendMidi (0x90 + channel, note, velocity);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void sendChannelAftertouch (final int data1, final int data2)
-    {
-        this.port.sendMidi (0xD0, data1, data2);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void sendChannelAftertouch (final int channel, final int data1, final int data2)
-    {
-        this.port.sendMidi (0xD0 + channel, data1, data2);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void sendPitchbend (final int data1, final int data2)
-    {
-        this.port.sendMidi (0xE0, data1, data2);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void sendPitchbend (final int channel, final int data1, final int data2)
-    {
-        this.port.sendMidi (0xE0 + channel, data1, data2);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void sendSysex (final byte [] data)
     {
         this.port.sendSysex (data);
@@ -120,5 +56,13 @@ class MidiOutputImpl implements IMidiOutput
     public void sendSysex (final String data)
     {
         this.port.sendSysex (data);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void sendMidiShort (final int status, final int data1, final int data2)
+    {
+        this.port.sendMidi (status, data1, data2);
     }
 }

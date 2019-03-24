@@ -211,7 +211,7 @@ public class Views
 
     /**
      * Get the note view at the given index.
-     * 
+     *
      * @param name The name of the note view
      * @return The note view
      */

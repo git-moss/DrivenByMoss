@@ -120,14 +120,6 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
 
     /** {@inheritDoc} */
     @Override
-    public void shutdown ()
-    {
-        this.pads.turnOff ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean isShiftPressed ()
     {
         return this.isShift;

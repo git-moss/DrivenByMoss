@@ -82,7 +82,7 @@ public class ParameterPageBankImpl implements IParameterPageBank
     @Override
     public boolean canScrollPageBackwards ()
     {
-        int selectedItemPosition = this.getSelectedItemPosition ();
+        final int selectedItemPosition = this.getSelectedItemPosition ();
         return selectedItemPosition > 0;
     }
 

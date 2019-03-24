@@ -2,10 +2,11 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu.command.trigger;
+package de.mossgrabers.controller.hui.command.trigger;
 
-import de.mossgrabers.controller.mcu.MCUConfiguration;
-import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
+import de.mossgrabers.controller.hui.HUIConfiguration;
+import de.mossgrabers.controller.hui.controller.HUIControlSurface;
+import de.mossgrabers.framework.command.trigger.track.SelectCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -17,7 +18,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FaderTouchCommand extends SelectCommand
+public class FaderTouchCommand extends SelectCommand<HUIControlSurface, HUIConfiguration>
 {
     /**
      * Constructor.
@@ -26,7 +27,7 @@ public class FaderTouchCommand extends SelectCommand
      * @param model The model
      * @param surface The surface
      */
-    public FaderTouchCommand (final int index, final IModel model, final MCUControlSurface surface)
+    public FaderTouchCommand (final int index, final IModel model, final HUIControlSurface surface)
     {
         super (index, model, surface);
     }
@@ -36,16 +37,10 @@ public class FaderTouchCommand extends SelectCommand
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        final MCUConfiguration configuration = this.surface.getConfiguration ();
+        final HUIConfiguration configuration = this.surface.getConfiguration ();
         if (this.index < 8)
         {
             final ModeManager modeManager = this.surface.getModeManager ();
-            if (configuration.useFadersAsKnobs ())
-            {
-                modeManager.getActiveOrTempMode ().onKnobTouch (this.index, event == ButtonEvent.DOWN);
-                return;
-            }
-
             if (event == ButtonEvent.DOWN)
                 modeManager.setActiveMode (Modes.MODE_VOLUME);
             else if (event == ButtonEvent.UP)

@@ -157,9 +157,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
     @Override
     public void shutdown ()
     {
-        // Turn off all buttons
-        for (final int button: this.getButtons ())
-            this.setButton (button, 0);
+        super.shutdown ();
 
         for (int i = 0; i < 8; i++)
             this.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_EXISTS, TrackType.EMPTY, i);

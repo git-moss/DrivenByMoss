@@ -7,6 +7,7 @@ package de.mossgrabers.controller.mcu.command.trigger;
 import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -16,21 +17,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
+public class MCUCursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {
-    /** The direction of the cursor. */
-    public enum Direction
-    {
-        /** Move left. */
-        LEFT,
-        /** Move right. */
-        RIGHT,
-        /** Move up. */
-        UP,
-        /** Move down. */
-        DOWN
-    }
-
     protected Direction        direction;
 
     private final ModeSwitcher switcher;
@@ -43,7 +31,7 @@ public class CursorCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
      * @param model The model
      * @param surface The surface
      */
-    public CursorCommand (final Direction direction, final IModel model, final MCUControlSurface surface)
+    public MCUCursorCommand (final Direction direction, final IModel model, final MCUControlSurface surface)
     {
         super (model, surface);
         this.direction = direction;

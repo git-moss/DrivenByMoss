@@ -14,18 +14,17 @@ import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
- * The HUI main display.
+ * The HUI main display. Note that the original HUI display uses a modified ASCII set (e.g. it
+ * supports umlauts) but since emulations do not support it this implementation sticks to basic
+ * ASCII.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class HUIDisplay extends AbstractDisplay
 {
-    // TODO adapt to HUI
+    private static final String      SYSEX_DISPLAY_HEADER = "F0 00 00 66 05 00 10 ";
 
-    private static final String         SYSEX_DISPLAY_HEADER1 = "F0 00 00 66 14 12 ";
-    private static final String         SYSEX_DISPLAY_HEADER2 = "F0 00 00 67 15 13 ";
-
-    private static final String []      SPACES                =
+    private static final String []   SPACES               =
     {
         "",
         " ",
@@ -39,32 +38,23 @@ public class HUIDisplay extends AbstractDisplay
         "         "
     };
 
-    private boolean                     isFirst;
-    private int                         charactersOfCell;
-    private boolean                     hasMaster;
+    private int                      charactersOfCell;
 
-    private final LatestTaskExecutor [] executors             = new LatestTaskExecutor [4];
+    private final LatestTaskExecutor executor             = new LatestTaskExecutor ();
 
 
     /**
-     * Constructor. 2 rows (0-1) with 4 blocks (0-3). Each block consists of 18 characters or 2
-     * cells (0-8).
+     * Constructor. 1 row (0) with 9 blocks (0-8). Each block consists of 4 characters or 1 cell
+     * (0-8).
      *
      * @param host The host
      * @param output The midi output which addresses the display
-     * @param isFirst True if it is the first display, otherwise the second
-     * @param hasMaster True if a 9th master cell should be added
      */
-    public HUIDisplay (final IHost host, final IMidiOutput output, final boolean isFirst, final boolean hasMaster)
+    public HUIDisplay (final IHost host, final IMidiOutput output)
     {
-        super (host, output, 2 /* No of rows */, !isFirst && hasMaster ? 9 : 8 /* No of cells */, 56);
+        super (host, output, 1 /* No of rows */, 9 /* No of cells */, 36);
 
-        this.isFirst = isFirst;
-        this.hasMaster = hasMaster;
         this.charactersOfCell = this.noOfCharacters / this.noOfCells;
-
-        for (int i = 0; i < 4; i++)
-            this.executors[i] = new LatestTaskExecutor ();
     }
 
 
@@ -110,7 +100,7 @@ public class HUIDisplay extends AbstractDisplay
     @Override
     public Display setCell (final int row, final int column, final int value, final Format format)
     {
-        this.cells[row * this.noOfCells + column] = pad (Integer.toString (value), this.charactersOfCell - 1) + " ";
+        this.cells[row * this.noOfCells + column] = pad (Integer.toString (value), this.charactersOfCell);
         return this;
     }
 
@@ -121,7 +111,7 @@ public class HUIDisplay extends AbstractDisplay
     {
         try
         {
-            this.cells[row * this.noOfCells + column] = pad (value, this.charactersOfCell - 1) + " ";
+            this.cells[row * this.noOfCells + column] = pad (value, this.charactersOfCell);
         }
         catch (final ArrayIndexOutOfBoundsException ex)
         {
@@ -135,50 +125,38 @@ public class HUIDisplay extends AbstractDisplay
     @Override
     public void writeLine (final int row, final String text)
     {
-        final LatestTaskExecutor executor = this.executors[row + (this.isFirst ? 0 : 2)];
-        if (!executor.isShutdown ())
-            executor.execute ( () -> {
-                try
-                {
-                    this.sendDisplayLine (row, text);
-                }
-                catch (final RuntimeException ex)
-                {
-                    this.host.error ("Could not send line to HUI display.", ex);
-                }
-            });
+        if (this.executor.isShutdown ())
+            return;
+        this.executor.execute ( () -> {
+            try
+            {
+                this.sendDisplayLine (text);
+            }
+            catch (final RuntimeException ex)
+            {
+                this.host.error ("Could not send line to HUI display.", ex);
+            }
+        });
     }
 
 
     /**
      * Send a line to the display
      *
-     * @param row The row
      * @param text The text to send
      */
-    private void sendDisplayLine (final int row, final String text)
+    private void sendDisplayLine (final String text)
     {
-        String t = text;
-        if (!this.isFirst && this.hasMaster)
+        final String t = text;
+
+        final int [] array = new int [5];
+        for (int cell = 0; cell < this.noOfCells; cell++)
         {
-            if (row == 0)
-                t = t.substring (0, t.length () - 1) + 'r';
-            t = "  " + t;
+            array[0] = cell;
+            for (int i = 0; i < 4; i++)
+                array[1 + i] = t.charAt (cell * 4 + i);
+            this.output.sendSysex (new StringBuilder (SYSEX_DISPLAY_HEADER).append (StringUtils.toHexStr (array)).append ("F7").toString ());
         }
-        final int length = t.length ();
-        final int [] array = new int [length];
-        for (int i = 0; i < length; i++)
-            array[i] = t.charAt (i);
-        final StringBuilder code = new StringBuilder ();
-        if (this.isFirst)
-            code.append (SYSEX_DISPLAY_HEADER1);
-        else
-            code.append (SYSEX_DISPLAY_HEADER2);
-        if (row == 0)
-            code.append ("00 ");
-        else
-            code.append ("38 ");
-        this.output.sendSysex (code.append (StringUtils.toHexStr (array)).append ("F7").toString ());
     }
 
 
@@ -189,8 +167,7 @@ public class HUIDisplay extends AbstractDisplay
         this.notify ("Please start " + this.host.getName () + "...");
 
         // Prevent further sends
-        for (int i = 0; i < 4; i++)
-            this.executors[i].shutdown ();
+        this.executor.shutdown ();
     }
 
 

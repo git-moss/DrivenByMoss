@@ -20,7 +20,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractView;
+import de.mossgrabers.framework.view.ControlOnlyView;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ControlView extends AbstractView<SLControlSurface, SLConfiguration> implements SLView
+public class ControlView extends ControlOnlyView<SLControlSurface, SLConfiguration> implements SLView
 {
     private boolean          isTempoDec;
     private boolean          isTempoInc;
@@ -46,7 +46,7 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
      */
     public ControlView (final SLControlSurface surface, final IModel model)
     {
-        super ("Control", surface, model);
+        super (surface, model);
         this.transportControl = new TransportControl (surface, model);
     }
 
@@ -439,14 +439,6 @@ public class ControlView extends AbstractView<SLControlSurface, SLConfiguration>
         this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROWSEL4, isTrack || isMaster ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
         this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROWSEL6, isVolume ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
         this.surface.updateButton (SLControlSurface.MKII_BUTTON_ROWSEL7, SLControlSurface.MKII_BUTTON_STATE_OFF);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void drawGrid ()
-    {
-        // Intentionally empty
     }
 
 

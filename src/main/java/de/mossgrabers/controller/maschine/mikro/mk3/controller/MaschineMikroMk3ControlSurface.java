@@ -165,17 +165,6 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
 
     /** {@inheritDoc} */
     @Override
-    public void shutdown ()
-    {
-        for (final int button: this.getButtons ())
-            this.setButton (button, 0);
-
-        this.pads.turnOff ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void setButton (final int button, final int state)
     {
         this.output.sendCC (button, state);

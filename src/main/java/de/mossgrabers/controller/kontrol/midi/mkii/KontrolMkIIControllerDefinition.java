@@ -59,16 +59,16 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
                         "KOMPLETE KONTROL - " + i
                     }));
                 }
-                for (int i = 0; i < A_SERIES.length; i++)
+                for (final String element: A_SERIES)
                 {
                     midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                     {
                         "Komplete Kontrol A DAW",
-                        A_SERIES[i]
+                        element
                     }, new String []
                     {
                         "Komplete Kontrol A DAW",
-                        A_SERIES[i]
+                        element
                     }));
                 }
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []

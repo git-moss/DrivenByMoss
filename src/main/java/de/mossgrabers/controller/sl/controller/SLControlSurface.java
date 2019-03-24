@@ -234,6 +234,8 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
         this.display.clear ();
         this.turnOffAllLEDs ();
         this.output.sendSysex (SYSEX_AUTOMAP_OFF);
+
+        super.shutdown ();
     }
 
 

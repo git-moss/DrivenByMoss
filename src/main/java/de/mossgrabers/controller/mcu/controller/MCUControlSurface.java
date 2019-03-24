@@ -355,11 +355,18 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     @Override
     public void shutdown ()
     {
-        // Turn off all buttons
-        for (final int button: this.getButtons ())
-            this.setButton (button, 0);
+        final IMidiOutput output = this.getOutput ();
+        for (int i = 0; i < 8; i++)
+        {
+            output.sendChannelAftertouch (0x10 * i, 0);
+            output.sendPitchbend (i, 0, 0);
+        }
+        output.sendChannelAftertouch (1, 0, 0);
+        output.sendChannelAftertouch (1, 0x10, 0);
+        output.sendPitchbend (8, 0, 0);
 
-        this.display.shutdown ();
+        super.shutdown ();
+
         this.secondDisplay.shutdown ();
         this.segmentDisplay.shutdown ();
     }

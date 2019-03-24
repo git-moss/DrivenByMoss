@@ -50,6 +50,25 @@ public interface IMidiOutput
 
 
     /**
+     * Send polyphonic aftertouch to the output on midi channel 1.
+     *
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    void sendPolyphonicAftertouch (int data1, int data2);
+
+
+    /**
+     * Send polyphonic aftertouch to the output on the given midi channel.
+     *
+     * @param channel The midi channel
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    void sendPolyphonicAftertouch (int channel, int data1, int data2);
+
+
+    /**
      * Send channel aftertouch to the output on midi channel 1.
      *
      * @param data1 First data byte

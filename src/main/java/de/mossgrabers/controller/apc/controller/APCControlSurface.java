@@ -251,17 +251,6 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void shutdown ()
-    {
-        for (final int button: this.getButtons ())
-            this.setButton (button, 0);
-
-        this.pads.turnOff ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void setButton (final int button, final int state)
     {
         this.output.sendNote (button, state);

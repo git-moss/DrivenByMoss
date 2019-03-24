@@ -44,7 +44,7 @@ import de.mossgrabers.framework.command.trigger.device.DeviceParamsKnobRowComman
 import de.mossgrabers.framework.command.trigger.device.SelectNextDeviceOrParamPageCommand;
 import de.mossgrabers.framework.command.trigger.device.SelectPreviousDeviceOrParamPageCommand;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
-import de.mossgrabers.framework.command.trigger.mode.CursorCommand.Direction;
+import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.track.CrossfadeModeCommand;
 import de.mossgrabers.framework.command.trigger.track.MasterCommand;

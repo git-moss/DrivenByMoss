@@ -627,7 +627,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             return;
 
         final int knobMode = commandSlot.getKnobMode ();
-        final boolean isButtonPressed = knobMode == KNOB_MODE_ABSOLUTE_TOGGLE || (knobMode == KNOB_MODE_ABSOLUTE && value > 0);
+        final boolean isButtonPressed = knobMode == KNOB_MODE_ABSOLUTE_TOGGLE || knobMode == KNOB_MODE_ABSOLUTE && value > 0;
 
         switch (command)
         {

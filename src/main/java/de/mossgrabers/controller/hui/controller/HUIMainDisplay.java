@@ -2,7 +2,7 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu.controller;
+package de.mossgrabers.controller.hui.controller;
 
 import de.mossgrabers.framework.controller.display.AbstractDisplay;
 import de.mossgrabers.framework.controller.display.Display;
@@ -10,20 +10,27 @@ import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.LatestTaskExecutor;
-import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
- * The MCU main display.
+ * The HUI main display. Sadly, I do not own a device to test this.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MCUDisplay extends AbstractDisplay
+public class HUIMainDisplay extends AbstractDisplay
 {
-    private static final String         SYSEX_DISPLAY_HEADER1 = "F0 00 00 66 14 12 ";
-    private static final String         SYSEX_DISPLAY_HEADER2 = "F0 00 00 67 15 13 ";
+    private static final byte []        SYSEX_DISPLAY_HEADER = new byte []
+    {
+        (byte) 0xF0,
+        (byte) 0x00,
+        (byte) 0x00,
+        (byte) 0x66,
+        (byte) 0x05,
+        (byte) 0x00,
+        (byte) 0x12
+    };
 
-    private static final String []      SPACES                =
+    private static final String []      SPACES               =
     {
         "",
         " ",
@@ -37,31 +44,23 @@ public class MCUDisplay extends AbstractDisplay
         "         "
     };
 
-    private boolean                     isFirst;
     private int                         charactersOfCell;
-    private boolean                     hasMaster;
 
-    private final LatestTaskExecutor [] executors             = new LatestTaskExecutor [4];
+    private final LatestTaskExecutor [] executors            = new LatestTaskExecutor [2];
 
 
     /**
-     * Constructor. 2 rows (0-1) with 4 blocks (0-3). Each block consists of 18 characters or 2
-     * cells (0-8).
+     * Constructor. 2 rows (0-1) with 4 blocks (0-3). Each block consists of 2 cells (0-7).
      *
      * @param host The host
      * @param output The midi output which addresses the display
-     * @param isFirst True if it is the first display, otherwise the second
-     * @param hasMaster True if a 9th master cell should be added
      */
-    public MCUDisplay (final IHost host, final IMidiOutput output, final boolean isFirst, final boolean hasMaster)
+    public HUIMainDisplay (final IHost host, final IMidiOutput output)
     {
-        super (host, output, 2 /* No of rows */, !isFirst && hasMaster ? 9 : 8 /* No of cells */, 56);
+        super (host, output, 2 /* No of rows */, 8 /* No of cells */, 40);
 
-        this.isFirst = isFirst;
-        this.hasMaster = hasMaster;
         this.charactersOfCell = this.noOfCharacters / this.noOfCells;
-
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < this.executors.length; i++)
             this.executors[i] = new LatestTaskExecutor ();
     }
 
@@ -78,7 +77,7 @@ public class MCUDisplay extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public MCUDisplay clearCell (final int row, final int cell)
+    public HUIMainDisplay clearCell (final int row, final int cell)
     {
         this.cells[row * this.noOfCells + cell] = "         ".substring (0, this.charactersOfCell);
         return this;
@@ -108,7 +107,7 @@ public class MCUDisplay extends AbstractDisplay
     @Override
     public Display setCell (final int row, final int column, final int value, final Format format)
     {
-        this.cells[row * this.noOfCells + column] = pad (Integer.toString (value), this.charactersOfCell - 1) + " ";
+        this.cells[row * this.noOfCells + column] = pad (Integer.toString (value), this.charactersOfCell);
         return this;
     }
 
@@ -119,7 +118,7 @@ public class MCUDisplay extends AbstractDisplay
     {
         try
         {
-            this.cells[row * this.noOfCells + column] = pad (value, this.charactersOfCell - 1) + " ";
+            this.cells[row * this.noOfCells + column] = pad (value, this.charactersOfCell);
         }
         catch (final ArrayIndexOutOfBoundsException ex)
         {
@@ -133,17 +132,16 @@ public class MCUDisplay extends AbstractDisplay
     @Override
     public void writeLine (final int row, final String text)
     {
-        final LatestTaskExecutor executor = this.executors[row + (this.isFirst ? 0 : 2)];
-        if (executor.isShutdown ())
+        if (this.executors[row].isShutdown ())
             return;
-        executor.execute ( () -> {
+        this.executors[row].execute ( () -> {
             try
             {
                 this.sendDisplayLine (row, text);
             }
             catch (final RuntimeException ex)
             {
-                this.host.error ("Could not send line to MCU display.", ex);
+                this.host.error ("Could not send line to HUI display.", ex);
             }
         });
     }
@@ -157,27 +155,24 @@ public class MCUDisplay extends AbstractDisplay
      */
     private void sendDisplayLine (final int row, final String text)
     {
-        String t = text;
-        if (!this.isFirst && this.hasMaster)
+        final byte [] line = new byte [52];
+        System.arraycopy (SYSEX_DISPLAY_HEADER, 0, line, 0, SYSEX_DISPLAY_HEADER.length);
+        line[line.length - 1] = (byte) 0xF7;
+
+        final int pos = SYSEX_DISPLAY_HEADER.length;
+        final int offset = row * 4;
+
+        for (int i = 0; i < 4; i++)
         {
-            if (row == 0)
-                t = t.substring (0, t.length () - 1) + 'r';
-            t = "  " + t;
+            final int start = 11 * i;
+            final int textStart = 10 * i;
+            final int index = pos + start;
+            line[index] = (byte) (offset + i);
+            for (int j = 0; j < 10; j++)
+                line[index + j + 1] = (byte) text.charAt (textStart + j);
         }
-        final int length = t.length ();
-        final int [] array = new int [length];
-        for (int i = 0; i < length; i++)
-            array[i] = t.charAt (i);
-        final StringBuilder code = new StringBuilder ();
-        if (this.isFirst)
-            code.append (SYSEX_DISPLAY_HEADER1);
-        else
-            code.append (SYSEX_DISPLAY_HEADER2);
-        if (row == 0)
-            code.append ("00 ");
-        else
-            code.append ("38 ");
-        this.output.sendSysex (code.append (StringUtils.toHexStr (array)).append ("F7").toString ());
+
+        this.output.sendSysex (line);
     }
 
 

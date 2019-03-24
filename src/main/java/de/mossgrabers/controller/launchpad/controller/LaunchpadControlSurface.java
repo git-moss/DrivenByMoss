@@ -250,7 +250,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     @Override
     public boolean isShiftPressed ()
     {
-        return this.isPressed (this.shiftButtonId) || (this.isPro () && this.isUserPressed ());
+        return this.isPressed (this.shiftButtonId) || this.isPro () && this.isUserPressed ();
     }
 
 
@@ -349,11 +349,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
         // Turn off front LED
         this.sendLaunchpadSysEx ("0A 63 00");
 
-        this.pads.turnOff ();
-
-        // Turn off all buttons
-        for (final int button: this.getButtons ())
-            this.setButton (button, LAUNCHPAD_BUTTON_STATE_OFF);
+        super.shutdown ();
     }
 
 
