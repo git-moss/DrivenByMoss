@@ -286,8 +286,23 @@ public abstract class AbstractModel implements IModel
     @Override
     public ITrack getSelectedTrack ()
     {
-        final ITrackBank tb = this.getCurrentTrackBank ();
-        return tb == null ? null : tb.getSelectedItem ();
+        // Is a "normal" track selected?
+        ITrackBank tb = this.getTrackBank ();
+        ITrack sel = tb.getSelectedItem ();
+        if (sel != null)
+            return sel;
+
+        // Is an effect track selected?
+        tb = this.getEffectTrackBank ();
+        if (tb != null)
+        {
+            sel = tb.getSelectedItem ();
+            if (sel != null)
+                return sel;
+        }
+
+        // Is the master track selected?
+        return this.masterTrack.isSelected () ? this.masterTrack : null;
     }
 
 

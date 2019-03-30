@@ -84,7 +84,7 @@ public class HUISegmentDisplay
         // Create and send the message with changed digits
         final int [] data = new int [pos + 1];
         System.arraycopy (this.transportBuffer, 0, data, 0, data.length);
-        final String msg = SYSEX_HDR + StringUtils.toHexStr (data) + " F7";
+        final String msg = SYSEX_HDR + StringUtils.toHexStr (data) + "F7";
         this.output.sendSysex (msg);
     }
 

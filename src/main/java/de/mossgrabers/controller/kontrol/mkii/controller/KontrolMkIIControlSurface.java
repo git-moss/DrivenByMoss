@@ -1,0 +1,361 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2019
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.controller.kontrol.mkii.controller;
+
+import de.mossgrabers.controller.kontrol.mkii.KontrolMkIIConfiguration;
+import de.mossgrabers.controller.kontrol.mkii.TrackType;
+import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+/**
+ * The Komplete Kontrol MkII control surface.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkIIConfiguration>
+{
+    /** Command to initialise the protocol handshake. */
+    public static final int     CMD_HELLO                       = 0x01;
+    /** Command to stop the protocol. */
+    public static final int     CMD_GOODBYE                     = 0x02;
+
+    /** The play button. */
+    public static final int     KONTROL_BUTTON_PLAY             = 0x10;
+    /** The restart button (Shift+Play). No LED. */
+    public static final int     KONTROL_BUTTON_RESTART          = 0x11;
+    /** The record button. */
+    public static final int     KONTROL_BUTTON_RECORD           = 0x12;
+    /** The count-in button (Shift+Rec). */
+    public static final int     KONTROL_BUTTON_COUNT_IN         = 0x13;
+    /** The stop button. */
+    public static final int     KONTROL_BUTTON_STOP             = 0x14;
+    /** The clear button. */
+    public static final int     KONTROL_BUTTON_CLEAR            = 0x15;
+    /** The loop button. */
+    public static final int     KONTROL_BUTTON_LOOP             = 0x16;
+    /** The metro button. */
+    public static final int     KONTROL_BUTTON_METRO            = 0x17;
+    /** The tempo button. No LED. */
+    public static final int     KONTROL_BUTTON_TEMPO            = 0x18;
+    /** The undo button. */
+    public static final int     KONTROL_BUTTON_UNDO             = 0x20;
+    /** The redo button (Shift+Undo). */
+    public static final int     KONTROL_BUTTON_REDO             = 0x21;
+    /** The quantize button. */
+    public static final int     KONTROL_BUTTON_QUANTIZE         = 0x22;
+    /** The auto button. */
+    public static final int     KONTROL_BUTTON_AUTOMATION       = 0x23;
+
+    /** Track navigation. */
+    public static final int     KONTROL_NAVIGATE_TRACKS         = 0x30;
+    /** Track bank navigation. */
+    public static final int     KONTROL_NAVIGATE_BANKS          = 0x31;
+    /** Clip navigation. */
+    public static final int     KONTROL_NAVIGATE_CLIPS          = 0x32;
+    /** Scene navigation. */
+    public static final int     KONTROL_NAVIGATE_SCENES         = 0x33;
+
+    /** Transport navigation. */
+    public static final int     KONTROL_NAVIGATE_MOVE_TRANSPORT = 0x34;
+    /** Loop navigation. */
+    public static final int     KONTROL_NAVIGATE_MOVE_LOOP      = 0x35;
+
+    /** Track exists. */
+    public static final int     KONTROL_TRACK_EXISTS            = 0x40;
+    /** Name of the Komplete plugin ID on the track, if exists. */
+    public static final int     KONTROL_TRACK_INSTANCE          = 0x41;
+    /** Select a track. */
+    public static final int     KONTROL_BUTTON_SELECT           = 0x42;
+    /** Mute a track. */
+    public static final int     KONTROL_BUTTON_MUTE             = 0x43;
+    /** Solo a track. */
+    public static final int     KONTROL_BUTTON_SOLO             = 0x44;
+    /** Arm a track. */
+    public static final int     KONTROL_BUTTON_ARM              = 0x45;
+    /** Volume of a track. */
+    public static final int     KONTROL_TRACK_VOLUME            = 0x46;
+    /** Panorama of a track. */
+    public static final int     KONTROL_TRACK_PAN               = 0x47;
+    /** Name of a track. */
+    public static final int     KONTROL_TRACK_NAME              = 0x48;
+    /** VU of a track. */
+    public static final int     KONTROL_TRACK_VU                = 0x49;
+
+    /** Change the volume of a track 0x50 - 0x57. */
+    public static final int     KONTROL_KNOB_VOLUME             = 0x50;
+    /** Change the panorama of a track 0x58 - 0x5F. */
+    public static final int     KONTROL_KNOB_PAN                = 0x58;
+
+    /** Play the currently selected clip. */
+    public static final int     KONTROL_PLAY_CLIP               = 0x60;
+    /** Stop the clip playing on the currently selected track. */
+    public static final int     KONTROL_STOP_CLIP               = 0x61;
+    /** Start the currently selected scene. */
+    public static final int     KONTROL_PLAY_SCENE              = 0x62;
+    /** Record Session button pressed. */
+    public static final int     KONTROL_RECORD_SESSION          = 0x63;
+    /** Increase/decrease volume of selected track. */
+    public static final int     KONTROL_CHANGE_VOLUME           = 0x64;
+    /** Increase/decrease pan of selected track. */
+    public static final int     KONTROL_CHANGE_PAN              = 0x65;
+    /** Toggle mute of the selected track. */
+    public static final int     KONTROL_TOGGLE_MUTE             = 0x66;
+    /** Toggle solo of the selected track. */
+    public static final int     KONTROL_TOGGLE_SOLO             = 0x67;
+
+    private static final int [] KONTROL_BUTTONS_ALL             =
+    {
+        KONTROL_BUTTON_PLAY,
+        KONTROL_BUTTON_RESTART,
+        KONTROL_BUTTON_RECORD,
+        KONTROL_BUTTON_COUNT_IN,
+        KONTROL_BUTTON_STOP,
+        KONTROL_BUTTON_CLEAR,
+        KONTROL_BUTTON_LOOP,
+        KONTROL_BUTTON_METRO,
+        KONTROL_BUTTON_TEMPO,
+        KONTROL_BUTTON_UNDO,
+        KONTROL_BUTTON_REDO,
+        KONTROL_BUTTON_QUANTIZE,
+        KONTROL_BUTTON_AUTOMATION,
+        KONTROL_TOGGLE_MUTE,
+        KONTROL_TOGGLE_SOLO
+    };
+
+    private int                 protocolVersion                 = 1;
+    private ValueCache          valueCache                      = new ValueCache ();
+    private Object              cacheLock                       = new Object ();
+
+
+    /**
+     * Constructor.
+     *
+     * @param host The host
+     * @param colorManager The color manager
+     * @param configuration The configuration
+     * @param output The midi output
+     * @param input The midi input
+     */
+    public KontrolMkIIControlSurface (final IHost host, final ColorManager colorManager, final KontrolMkIIConfiguration configuration, final IMidiOutput output, final IMidiInput input)
+    {
+        super (host, configuration, colorManager, output, input, null, KONTROL_BUTTONS_ALL);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void shutdown ()
+    {
+        super.shutdown ();
+
+        for (int i = 0; i < 8; i++)
+            this.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_EXISTS, TrackType.EMPTY, i);
+
+        this.sendCommand (KontrolMkIIControlSurface.CMD_GOODBYE, 0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setButton (final int button, final int state)
+    {
+        this.sendCommand (button, state);
+    }
+
+
+    /**
+     * Send a command to the Komplete Kontrol.
+     *
+     * @param command The command number
+     * @param value The value
+     */
+    public void sendCommand (final int command, final int value)
+    {
+        this.output.sendCCEx (15, command, value);
+    }
+
+
+    /**
+     * Send SysEx to the Kontrol.
+     *
+     * @param stateID The state ID (command)
+     * @param value The value to send
+     * @param track The track index (0-7)
+     */
+    public void sendKontrolTrackSysEx (final int stateID, final int value, final int track)
+    {
+        this.sendKontrolTrackSysEx (stateID, value, track, "");
+    }
+
+
+    /**
+     * Send SysEx to the Kontrol.
+     *
+     * @param stateID The state ID (command)
+     * @param value The value to send
+     * @param track The track index (0-7)
+     * @param info An info string
+     */
+    public void sendKontrolTrackSysEx (final int stateID, final int value, final int track, final String info)
+    {
+        this.sendKontrolTrackSysEx (stateID, value, track, StringUtils.fixASCII (info).chars ().toArray ());
+    }
+
+
+    /**
+     * Clear all cached values.
+     */
+    public void clearCache ()
+    {
+        synchronized (this.cacheLock)
+        {
+            this.valueCache.clearCache ();
+            this.clearButtonCache ();
+        }
+    }
+
+
+    /**
+     * Send SysEx to the Kontrol.
+     *
+     * @param stateID The state ID (command)
+     * @param value The value to send
+     * @param track The track index (0-7)
+     * @param info Further info data
+     */
+    public void sendKontrolTrackSysEx (final int stateID, final int value, final int track, final int [] info)
+    {
+        synchronized (this.cacheLock)
+        {
+            if (this.valueCache.store (track, stateID, value, info))
+                return;
+        }
+
+        final int [] data = new int [3 + info.length];
+        data[0] = stateID;
+        data[1] = value;
+        data[2] = track;
+        for (int i = 0; i < info.length; i++)
+            data[3 + i] = info[i];
+
+        this.output.sendSysex ("F0 00 21 09 00 00 44 43 01 00 " + StringUtils.toHexStr (data) + "F7");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleCC (final int channel, final int cc, final int value)
+    {
+        if (channel != 15)
+            return;
+
+        // Emulate a proper button press, NIHost only sends value 1
+        if (this.isButton (cc))
+        {
+            super.handleCC (channel, cc, 127);
+            super.handleCC (channel, cc, 0);
+        }
+        else
+            super.handleCC (channel, cc, value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void checkButtonState (final int buttonID)
+    {
+        // No long presses on the Komplete Kontrol MkII
+    }
+
+
+    /**
+     * Get the protocol number of the currently connected Komplete Kontrol.
+     *
+     * @return The protocol number
+     */
+    public int getProtocolVersion ()
+    {
+        return this.protocolVersion;
+    }
+
+
+    /**
+     * Set the protocol number of the currently connected Komplete Kontrol.
+     *
+     * @param protocolVersion The protocol number
+     */
+    public void setProtocolVersion (final int protocolVersion)
+    {
+        this.protocolVersion = protocolVersion;
+    }
+
+    /**
+     * Caches the values of the sysex values.
+     */
+    private static class ValueCache
+    {
+        private final List<List<int []>> cache = new ArrayList<> (8);
+
+
+        /**
+         * Constructor.
+         */
+        public ValueCache ()
+        {
+            this.clearCache ();
+        }
+
+
+        /**
+         * Clear the cache.
+         */
+        public final void clearCache ()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                final List<int []> e = new ArrayList<> (128);
+                for (int j = 0; j < 128; j++)
+                    e.add (new int [0]);
+                this.cache.add (e);
+            }
+        }
+
+
+        /**
+         * Stores the value and data in the cache for the track and stateID.
+         *
+         * @param track The track number
+         * @param stateID The state id
+         * @param value The value
+         * @param data Further data
+         * @return False if cache was updated otherwise the given value and data are already stored
+         */
+        public boolean store (final int track, final int stateID, final int value, final int [] data)
+        {
+            final List<int []> trackItem = this.cache.get (track);
+            final int [] values = trackItem.get (stateID);
+
+            final int [] newValues = new int [1 + data.length];
+            newValues[0] = value;
+            if (data.length > 0)
+                System.arraycopy (data, 0, newValues, 1, data.length);
+
+            if (Arrays.equals (values, newValues))
+                return true;
+
+            trackItem.set (stateID, newValues);
+            return false;
+        }
+    }
+}

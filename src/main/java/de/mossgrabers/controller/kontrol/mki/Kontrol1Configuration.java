@@ -1,0 +1,87 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2019
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.controller.kontrol.mki;
+
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
+import de.mossgrabers.framework.configuration.ISettingsUI;
+import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
+
+
+/**
+ * The configuration settings for Kontrol 1.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class Kontrol1Configuration extends AbstractConfiguration
+{
+    /** ID for enable scale setting. */
+    public static final Integer SCALE_IS_ACTIVE = Integer.valueOf (40);
+
+    private IEnumSetting        scaleIsActiveSetting;
+    private boolean             scaleIsActive;
+
+
+    /**
+     * Constructor.
+     *
+     * @param host The DAW host
+     * @param valueChanger The value changer
+     */
+    public Kontrol1Configuration (final IHost host, final IValueChanger valueChanger)
+    {
+        super (host, valueChanger);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void init (final ISettingsUI settingsUI)
+    {
+        ///////////////////////////
+        // Scale
+
+        this.scaleIsActiveSetting = settingsUI.getEnumSetting ("Is active", CATEGORY_SCALES, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.scaleIsActiveSetting.addValueObserver (value -> {
+            this.scaleIsActive = "On".equals (value);
+            this.notifyObservers (SCALE_IS_ACTIVE);
+        });
+
+        this.activateScaleSetting (settingsUI);
+        this.activateScaleBaseSetting (settingsUI);
+
+        ///////////////////////////
+        // Transport
+
+        this.activateBehaviourOnStopSetting (settingsUI);
+        this.activateFlipRecordSetting (settingsUI);
+
+        ///////////////////////////
+        // Workflow
+
+        this.activateEnableVUMetersSetting (settingsUI);
+    }
+
+
+    /**
+     * True if the scale is active.
+     *
+     * @return True if the scale is active.
+     */
+    public boolean isScaleIsActive ()
+    {
+        return this.scaleIsActive;
+    }
+
+
+    /**
+     * Toggle if the scale is active.
+     */
+    public void toggleScaleIsActive ()
+    {
+        this.scaleIsActiveSetting.set (ON_OFF_OPTIONS[this.scaleIsActive ? 0 : 1]);
+    }
+}
