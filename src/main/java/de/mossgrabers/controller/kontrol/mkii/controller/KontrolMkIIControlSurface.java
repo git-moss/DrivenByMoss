@@ -203,8 +203,6 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
      */
     public void handshakeSuccess (final int protocol)
     {
-        // TODO Do we receive the version?
-
         synchronized (this.handshakeLock)
         {
             this.setProtocolVersion (protocol);

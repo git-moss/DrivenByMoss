@@ -7,6 +7,7 @@ package de.mossgrabers.controller.kontrol.mkii;
 import de.mossgrabers.controller.kontrol.mkii.command.trigger.KontrolRecordCommand;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolMkIIColors;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolMkIIControlSurface;
+import de.mossgrabers.controller.kontrol.mkii.controller.SlowValueChanger;
 import de.mossgrabers.controller.kontrol.mkii.view.ControlView;
 import de.mossgrabers.framework.command.Commands;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
@@ -27,7 +28,6 @@ import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
 import de.mossgrabers.framework.command.trigger.transport.WriteArrangerAutomationCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
-import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -87,7 +87,7 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         this.colorManager = new ColorManager ();
         KontrolMkIIColors.addColors (this.colorManager);
         // TODO Adjust the relative speed of volume and pan by model
-        this.valueChanger = new DefaultValueChanger (1024, 5, 1);
+        this.valueChanger = new SlowValueChanger (1024, 5, 1);
         this.configuration = new KontrolMkIIConfiguration (host, this.valueChanger);
     }
 
@@ -245,12 +245,12 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
                 sceneBank.selectNextItem ();
         });
 
-        this.addContinuousCommand (CONT_COMMAND_MOVE_TRANSPORT, KontrolMkIIControlSurface.KONTROL_NAVIGATE_MOVE_TRANSPORT, 15, this::changeTransportPosition);
+        this.addContinuousCommand (CONT_COMMAND_MOVE_TRANSPORT, KontrolMkIIControlSurface.KONTROL_NAVIGATE_MOVE_TRANSPORT, 15, value -> this.changeTransportPosition (value, 0));
         this.addContinuousCommand (CONT_COMMAND_MOVE_LOOP, KontrolMkIIControlSurface.KONTROL_NAVIGATE_MOVE_LOOP, 15, this::changeLoopPosition);
 
         // Only on S models
-        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_VOLUME, KontrolMkIIControlSurface.KONTROL_CHANGE_SELECTED_TRACK_VOLUME, 15, this::changeTransportPosition);
-        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_PAN, KontrolMkIIControlSurface.KONTROL_CHANGE_SELECTED_TRACK_PAN, 15, this::changeTransportPosition);
+        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_VOLUME, KontrolMkIIControlSurface.KONTROL_CHANGE_SELECTED_TRACK_VOLUME, 15, value -> this.changeTransportPosition (value, 1));
+        this.addContinuousCommand (CONT_COMMAND_NAVIGATE_PAN, KontrolMkIIControlSurface.KONTROL_CHANGE_SELECTED_TRACK_PAN, 15, value -> this.changeTransportPosition (value, 2));
 
         this.addContinuousCommand (CONT_COMMAND_TRACK_SELECT, KontrolMkIIControlSurface.KONTROL_TRACK_SELECTED, 15, value -> this.model.getTrackBank ().getItem (value).select ());
         this.addContinuousCommand (CONT_COMMAND_TRACK_MUTE, KontrolMkIIControlSurface.KONTROL_TRACK_MUTE, 15, value -> this.model.getTrackBank ().getItem (value).toggleMute ());
@@ -300,8 +300,6 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_REDO, ColorManager.BUTTON_STATE_HI);
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_QUANTIZE, ColorManager.BUTTON_STATE_HI);
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_AUTOMATION, t.isWritingArrangerAutomation () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        // TODO Remove?
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_TEMPO, ColorManager.BUTTON_STATE_ON);
     }
 
 
@@ -379,9 +377,10 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     }
 
 
-    private void changeTransportPosition (final int value)
+    private void changeTransportPosition (final int value, final int mode)
     {
-        this.model.getTransport ().changePosition (value <= 63);
+        final boolean increase = mode == 0 ? value == 1 : value <= 63;
+        this.model.getTransport ().changePosition (increase);
     }
 
 
