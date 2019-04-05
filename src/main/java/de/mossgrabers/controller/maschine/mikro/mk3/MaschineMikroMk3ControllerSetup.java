@@ -363,7 +363,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
     private void updateMode (final Integer mode)
     {
         final Integer m = mode == null ? this.getSurface ().getModeManager ().getActiveOrTempModeId () : mode;
-        if (m == this.currentMode)
+        if (this.currentMode != null && this.currentMode.equals (m))
             return;
         this.currentMode = m;
         this.updateIndication (m);

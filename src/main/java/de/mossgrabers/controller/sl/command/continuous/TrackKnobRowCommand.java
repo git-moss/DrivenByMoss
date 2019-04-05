@@ -44,13 +44,13 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         Integer cm = modeManager.getActiveOrTempModeId ();
-        if (cm != Modes.MODE_TRACK && cm != Modes.MODE_MASTER)
+        if (!Modes.MODE_TRACK.equals (cm) && !Modes.MODE_MASTER.equals (cm))
         {
             modeManager.setActiveMode (Modes.MODE_TRACK);
             cm = Modes.MODE_TRACK;
         }
 
-        if (cm == Modes.MODE_MASTER)
+        if (Modes.MODE_MASTER.equals (cm))
         {
             if (this.index == 0)
                 this.model.getMasterTrack ().setVolume (value);
@@ -78,7 +78,7 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
 
             case 2:
                 if (this.surface.getConfiguration ().isDisplayCrossfader ())
-                    track.setCrossfadeModeAsNumber (value == 0 ? 0 : value == 127 ? 2 : 1);
+                    track.setCrossfadeModeAsNumber (toCrossfadeNumber (value));
                 else if (!this.model.isEffectTrackBankActive ())
                     track.getSendBank ().getItem (0).setValue (value);
                 break;
@@ -89,5 +89,13 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
                     track.getSendBank ().getItem (this.index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).setValue (value);
                 break;
         }
+    }
+
+
+    private static int toCrossfadeNumber (final int value)
+    {
+        if (value == 0)
+            return 0;
+        return value == 127 ? 2 : 1;
     }
 }

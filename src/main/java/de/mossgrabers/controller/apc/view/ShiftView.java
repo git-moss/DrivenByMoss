@@ -191,10 +191,10 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         }
 
         final Integer previousViewId = this.surface.getViewManager ().getPreviousViewId ();
-        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, previousViewId == Views.VIEW_SESSION ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, previousViewId == Views.VIEW_PLAY ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, previousViewId == Views.VIEW_DRUM ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, previousViewId == Views.VIEW_SEQUENCER ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, previousViewId == Views.VIEW_RAINDROPS ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, Views.VIEW_SESSION.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, Views.VIEW_PLAY.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, Views.VIEW_DRUM.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, Views.VIEW_SEQUENCER.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, Views.VIEW_RAINDROPS.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
     }
 }

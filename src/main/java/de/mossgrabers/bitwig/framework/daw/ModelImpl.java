@@ -100,6 +100,8 @@ public class ModelImpl extends AbstractModel
         this.effectTrackBank = new EffectTrackBankImpl (this.host, valueChanger, this.cursorTrack, effectTrackBank, numTracks, numScenes, this.trackBank);
 
         this.muteSoloTrackBank = controllerHost.createTrackBank (ALL_TRACKS, 0, 0, true);
+        for (int i = 0; i < ALL_TRACKS; i++)
+            this.muteSoloTrackBank.getItemAt (i).solo ().markInterested ();
 
         final int numParams = this.modelSetup.getNumParams ();
         final int numDeviceLayers = this.modelSetup.getNumDeviceLayers ();
@@ -133,6 +135,19 @@ public class ModelImpl extends AbstractModel
             tb.followCursorTrack (this.cursorTrack);
             return new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, 1, numScenes, 0).getSceneBank ();
         });
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasSolo ()
+    {
+        for (int i = 0; i < ALL_TRACKS; i++)
+        {
+            if (this.muteSoloTrackBank.getItemAt (i).solo ().get ())
+                return true;
+        }
+        return false;
     }
 
 

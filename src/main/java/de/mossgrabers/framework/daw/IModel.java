@@ -211,6 +211,14 @@ public interface IModel
 
 
     /**
+     * Check if any of the tracks is soloed.
+     *
+     * @return True if there is at least one soloed track
+     */
+    boolean hasSolo ();
+
+
+    /**
      * Deactivate all solo states of all tracks.
      */
     void deactivateSolo ();

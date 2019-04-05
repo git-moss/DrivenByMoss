@@ -25,7 +25,8 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 {
     protected final IValueChanger valueChanger;
 
-    private int                   vu;
+    private static final int      MAX_RESOLUTION = 16384;
+
     private int                   vuLeft;
     private int                   vuRight;
     private IParameter            volumeParameter;
@@ -62,10 +63,8 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
         this.volumeParameter = new ParameterImpl (valueChanger, channel.volume (), 0);
         this.panParameter = new ParameterImpl (valueChanger, channel.pan (), 0);
 
-        final int maxParameterValue = valueChanger.getUpperBound ();
-        channel.addVuMeterObserver (maxParameterValue, -1, true, value -> this.handleVUMeters (maxParameterValue, value));
-        channel.addVuMeterObserver (maxParameterValue, 0, true, value -> this.handleVULeftMeter (maxParameterValue, value));
-        channel.addVuMeterObserver (maxParameterValue, 1, true, value -> this.handleVURightMeter (maxParameterValue, value));
+        channel.addVuMeterObserver (MAX_RESOLUTION, 0, true, this::handleVULeftMeter);
+        channel.addVuMeterObserver (MAX_RESOLUTION, 1, true, this::handleVURightMeter);
 
         this.sendBank = new SendBankImpl (host, valueChanger, numSends == 0 ? null : channel.sendBank (), numSends);
     }
@@ -163,7 +162,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     /** {@inheritDoc} */
     @Override
-    public void setVolume (final double value)
+    public void setVolume (final int value)
     {
         this.volumeParameter.setValue (value);
     }
@@ -235,7 +234,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     /** {@inheritDoc} */
     @Override
-    public void setPan (final double value)
+    public void setPan (final int value)
     {
         this.panParameter.setValue (value);
     }
@@ -347,7 +346,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     @Override
     public int getVu ()
     {
-        return this.vu;
+        return (this.vuLeft + this.vuRight) * this.valueChanger.getUpperBound () / MAX_RESOLUTION / 2;
     }
 
 
@@ -355,7 +354,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     @Override
     public int getVuLeft ()
     {
-        return this.vuLeft;
+        return this.vuLeft * this.valueChanger.getUpperBound () / MAX_RESOLUTION;
     }
 
 
@@ -363,7 +362,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     @Override
     public int getVuRight ()
     {
-        return this.vuRight;
+        return this.vuRight * this.valueChanger.getUpperBound () / MAX_RESOLUTION;
     }
 
 
@@ -410,26 +409,18 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     }
 
 
-    private void handleVUMeters (final int maxParameterValue, final int value)
+    private void handleVULeftMeter (final int value)
     {
         // Limit value to this.configuration.getMaxParameterValue () due to
         // https://github.com/teotigraphix/Framework4Bitwig/issues/98
-        this.vu = value >= maxParameterValue ? maxParameterValue - 1 : value;
+        this.vuLeft = value >= MAX_RESOLUTION ? MAX_RESOLUTION - 1 : value;
     }
 
 
-    private void handleVULeftMeter (final int maxParameterValue, final int value)
+    private void handleVURightMeter (final int value)
     {
         // Limit value to this.configuration.getMaxParameterValue () due to
         // https://github.com/teotigraphix/Framework4Bitwig/issues/98
-        this.vuLeft = value >= maxParameterValue ? maxParameterValue - 1 : value;
-    }
-
-
-    private void handleVURightMeter (final int maxParameterValue, final int value)
-    {
-        // Limit value to this.configuration.getMaxParameterValue () due to
-        // https://github.com/teotigraphix/Framework4Bitwig/issues/98
-        this.vuRight = value >= maxParameterValue ? maxParameterValue - 1 : value;
+        this.vuRight = value >= MAX_RESOLUTION ? MAX_RESOLUTION - 1 : value;
     }
 }

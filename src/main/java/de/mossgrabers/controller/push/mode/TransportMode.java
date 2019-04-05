@@ -125,10 +125,10 @@ public class TransportMode extends BaseMode
         final double tempo = transport.getTempo ();
         d.clear ();
         d.setBlock (2, 0, "Pre-roll");
-        d.setCell (3, 0, (preroll == TransportConstants.PREROLL_NONE ? PushDisplay.SELECT_ARROW : " ") + "None");
-        d.setCell (3, 1, (preroll == TransportConstants.PREROLL_1_BAR ? PushDisplay.SELECT_ARROW : " ") + "1 Bar");
-        d.setCell (3, 2, (preroll == TransportConstants.PREROLL_2_BARS ? PushDisplay.SELECT_ARROW : " ") + "2 Bars");
-        d.setCell (3, 3, (preroll == TransportConstants.PREROLL_4_BARS ? PushDisplay.SELECT_ARROW : " ") + "4 Bars");
+        d.setCell (3, 0, (TransportConstants.PREROLL_NONE.equals (preroll) ? PushDisplay.SELECT_ARROW : " ") + "None");
+        d.setCell (3, 1, (TransportConstants.PREROLL_1_BAR.equals (preroll) ? PushDisplay.SELECT_ARROW : " ") + "1 Bar");
+        d.setCell (3, 2, (TransportConstants.PREROLL_2_BARS.equals (preroll) ? PushDisplay.SELECT_ARROW : " ") + "2 Bars");
+        d.setCell (3, 3, (TransportConstants.PREROLL_4_BARS.equals (preroll) ? PushDisplay.SELECT_ARROW : " ") + "4 Bars");
         d.setBlock (0, 0, "Play Metro during").setBlock (0, 1, "Pre-roll?");
         d.setCell (1, 0, transport.isPrerollMetronomeEnabled () ? " Yes" : " No");
         d.setCell (0, 4, "Tempo").setCell (1, 4, transport.formatTempo (tempo)).setCell (2, 4, formatTempoBars (tempo));
@@ -146,10 +146,10 @@ public class TransportMode extends BaseMode
         final double tempo = transport.getTempo ();
 
         final DisplayModel message = this.surface.getDisplay ().getModel ();
-        message.addOptionElement ("Play Metronome during Pre-Roll?", transport.isPrerollMetronomeEnabled () ? "Yes" : "No", transport.isPrerollMetronomeEnabled (), "Pre-roll", "None", preroll == TransportConstants.PREROLL_NONE, false);
-        message.addOptionElement ("", "", false, "", "1 Bar", preroll == TransportConstants.PREROLL_1_BAR, false);
-        message.addOptionElement ("", "", false, "", "2 Bars", preroll == TransportConstants.PREROLL_2_BARS, false);
-        message.addOptionElement ("", "", false, "", "4 Bars", preroll == TransportConstants.PREROLL_4_BARS, false);
+        message.addOptionElement ("Play Metronome during Pre-Roll?", transport.isPrerollMetronomeEnabled () ? "Yes" : "No", transport.isPrerollMetronomeEnabled (), "Pre-roll", "None", TransportConstants.PREROLL_NONE.equals (preroll), false);
+        message.addOptionElement ("", "", false, "", "1 Bar", TransportConstants.PREROLL_1_BAR.equals (preroll), false);
+        message.addOptionElement ("", "", false, "", "2 Bars", TransportConstants.PREROLL_2_BARS.equals (preroll), false);
+        message.addOptionElement ("", "", false, "", "4 Bars", TransportConstants.PREROLL_4_BARS.equals (preroll), false);
         message.addParameterElement ("Tempo", (int) this.convertTempo (tempo), transport.formatTempo (tempo), this.isKnobTouched[4], -1);
         message.addOptionElement ("  Time Sig.", "", false, "       " + transport.getNumerator () + " / " + transport.getDenominator (), "", false, false);
         message.addOptionElement ("        Play Position", "", false, null, "        " + transport.getPositionText (), "", false, null, false, this.isKnobTouched[6]);

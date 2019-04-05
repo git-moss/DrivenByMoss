@@ -19,11 +19,8 @@ import com.bitwig.extension.controller.api.Parameter;
  */
 public class ParameterImpl extends AbstractItemImpl implements IParameter
 {
-    private IValueChanger   valueChanger;
-    private final Parameter parameter;
-
-    private int             value;
-    private int             modulatedValue;
+    private final IValueChanger valueChanger;
+    private final Parameter     parameter;
 
 
     /**
@@ -40,13 +37,11 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
         this.valueChanger = valueChanger;
         this.parameter = parameter;
 
-        final int maxParameterValue = this.valueChanger.getUpperBound ();
-
         parameter.exists ().markInterested ();
         parameter.name ().markInterested ();
         parameter.displayedValue ().markInterested ();
-        parameter.value ().addValueObserver (maxParameterValue, this::handleValue);
-        parameter.modulatedValue ().addValueObserver (maxParameterValue, this::handleModulatedValue);
+        parameter.value ().markInterested ();
+        parameter.modulatedValue ().markInterested ();
     }
 
 
@@ -122,15 +117,15 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public int getValue ()
     {
-        return this.value;
+        return this.valueChanger.fromNormalizedValue (this.parameter.value ().get ());
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setValue (final double value)
+    public void setValue (final int value)
     {
-        this.parameter.set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.parameter.set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -146,7 +141,7 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public int getModulatedValue ()
     {
-        return this.modulatedValue;
+        return this.valueChanger.fromNormalizedValue (this.parameter.modulatedValue ().get ());
     }
 
 
@@ -171,17 +166,5 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     public void touchValue (final boolean isBeingTouched)
     {
         this.parameter.touch (isBeingTouched);
-    }
-
-
-    private void handleValue (final int value)
-    {
-        this.value = value;
-    }
-
-
-    private void handleModulatedValue (final int modulatedValue)
-    {
-        this.modulatedValue = modulatedValue;
     }
 }

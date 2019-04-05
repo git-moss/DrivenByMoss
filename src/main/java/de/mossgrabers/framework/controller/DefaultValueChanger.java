@@ -11,10 +11,10 @@ package de.mossgrabers.framework.controller;
  */
 public class DefaultValueChanger implements IValueChanger
 {
-    private final int    upperBound;
-    private final double fractionValue;
-    private final double slowFractionValue;
-    private boolean      isSlow;
+    private int     upperBound;
+    private double  fractionValue;
+    private double  slowFractionValue;
+    private boolean isSlow;
 
 
     /**
@@ -42,6 +42,14 @@ public class DefaultValueChanger implements IValueChanger
 
     /** {@inheritDoc} */
     @Override
+    public void setUpperBound (final int upperBound)
+    {
+        this.upperBound = upperBound;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public double getFractionValue ()
     {
         return this.fractionValue;
@@ -50,9 +58,25 @@ public class DefaultValueChanger implements IValueChanger
 
     /** {@inheritDoc} */
     @Override
+    public void setFractionValue (final double fractionValue)
+    {
+        this.fractionValue = fractionValue;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public double getSlowFractionValue ()
     {
         return this.slowFractionValue;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSlowFractionValue (final double slowFractionValue)
+    {
+        this.slowFractionValue = slowFractionValue;
     }
 
 

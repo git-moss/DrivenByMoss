@@ -99,7 +99,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
 
         final String command = oscParts.removeFirst ();
 
-        if (this.parseTransportCommands (command, oscParts, value, numValue))
+        if (this.parseTransportCommands (command, oscParts, value, (int) numValue))
             return;
 
         if (this.parseGlobalCommands (command))
@@ -223,7 +223,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 {
                     final int trackNo = Integer.parseInt (oscParts.get (0));
                     oscParts.removeFirst ();
-                    this.parseTrackValue (tb.getItem (trackNo - 1), oscParts, value);
+                    this.parseTrackValue (tb.getItem (trackNo - 1), oscParts, value == null ? Integer.valueOf (-1) : value);
                 }
                 catch (final NumberFormatException ex)
                 {
@@ -232,7 +232,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 break;
 
             case "master":
-                this.parseTrackValue (this.masterTrack, oscParts, value);
+                this.parseTrackValue (this.masterTrack, oscParts, value == null ? Integer.valueOf (-1) : value);
                 break;
 
             //
@@ -295,7 +295,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
     }
 
 
-    private boolean parseTransportCommands (final String command, final LinkedList<String> oscParts, final Object value, final double numValue)
+    private boolean parseTransportCommands (final String command, final LinkedList<String> oscParts, final Object value, final int numValue)
     {
         switch (command)
         {
@@ -468,7 +468,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 return true;
 
             case "preroll":
-                this.transport.setPrerollAsBars ((int) numValue);
+                this.transport.setPrerollAsBars (numValue);
                 return true;
 
             default:
@@ -815,7 +815,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 break;
 
             case "crossfadeMode":
-                if (numValue == 1)
+                if (intValue == 1)
                     track.setCrossfadeMode (parts.removeFirst ());
                 break;
 
@@ -827,24 +827,24 @@ public class OSCParser extends AbstractOpenSoundControlParser
 
             case PART_VOLUME:
                 if (parts.isEmpty ())
-                    track.setVolume (numValue);
+                    track.setVolume (intValue);
                 else if (PART_INDICATE.equals (parts.get (0)))
-                    track.setVolumeIndication (numValue > 0);
+                    track.setVolumeIndication (intValue > 0);
                 else if (PART_RESET.equals (parts.get (0)))
                     track.resetVolume ();
                 else if (PART_TOUCH.equals (parts.get (0)))
-                    track.touchVolume (numValue > 0);
+                    track.touchVolume (intValue > 0);
                 break;
 
             case "pan":
                 if (parts.isEmpty ())
-                    track.setPan (numValue);
+                    track.setPan (intValue);
                 else if (PART_INDICATE.equals (parts.get (0)))
-                    track.setPanIndication (numValue > 0);
+                    track.setPanIndication (intValue > 0);
                 else if (PART_RESET.equals (parts.get (0)))
                     track.resetPan ();
                 else if (PART_TOUCH.equals (parts.get (0)))
-                    track.touchPan (numValue > 0);
+                    track.touchPan (intValue > 0);
                 break;
 
             case "mute":
@@ -983,7 +983,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
             return;
         }
 
-        final double numValue = value instanceof Number ? ((Number) value).doubleValue () : -1;
+        final int numValue = value instanceof Number ? ((Number) value).intValue () : -1;
 
         final String command = parts.removeFirst ();
         switch (command)

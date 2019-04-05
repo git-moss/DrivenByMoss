@@ -611,7 +611,7 @@ public class DeviceLayerMode extends BaseMode
         if (!cd.hasLayers ())
         {
             this.disableSecondRow ();
-            this.surface.updateButton (109, this.isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE);
+            this.surface.updateButton (109, PushColors.PUSH1_COLOR2_WHITE);
             return;
         }
 

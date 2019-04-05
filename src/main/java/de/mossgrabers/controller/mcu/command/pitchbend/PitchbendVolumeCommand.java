@@ -37,7 +37,7 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
     @Override
     public void onPitchbend (final int channel, final int data1, final int data2)
     {
-        final double value = Math.min (data2 * 127 + (double) data1, this.model.getValueChanger ().getUpperBound () - 1.0);
+        final int value = Math.min (data2 * 127 + data1, this.model.getValueChanger ().getUpperBound () - 1);
         if (channel == 8)
         {
             if (this.surface.isShiftPressed ())
@@ -76,7 +76,7 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
             else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND8))
                 track.getSendBank ().getItem (7).setValue (value);
             else if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
-                this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + channel).setValue ((int) value);
+                this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + channel).setValue (value);
             return;
         }
 
@@ -84,7 +84,7 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
     }
 
 
-    private void handleTrack (final int index, final double value)
+    private void handleTrack (final int index, final int value)
     {
         final ITrack selectedTrack = this.model.getSelectedTrack ();
         switch (index)

@@ -674,7 +674,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     @Override
     protected void updateIndication (final Integer mode)
     {
-        if (mode == this.currentMode)
+        if (this.currentMode != null && this.currentMode.equals (mode))
             return;
 
         if (mode != null)

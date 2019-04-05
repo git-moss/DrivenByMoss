@@ -306,7 +306,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     @Override
     protected void updateIndication (final Integer mode)
     {
-        if (mode == this.currentMode)
+        if (this.currentMode != null && this.currentMode.equals (mode))
             return;
         this.currentMode = mode;
 

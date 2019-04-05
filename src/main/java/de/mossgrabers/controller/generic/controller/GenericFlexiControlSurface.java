@@ -21,6 +21,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
@@ -402,7 +403,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_1:
             case TRACK_7_SET_SEND_1:
             case TRACK_8_SET_SEND_1:
-                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal ()).getSendBank ().getItem (0).getValue ();
+                return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal (), 0);
 
             case TRACK_1_SET_SEND_2:
             case TRACK_2_SET_SEND_2:
@@ -412,7 +413,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_2:
             case TRACK_7_SET_SEND_2:
             case TRACK_8_SET_SEND_2:
-                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_2.ordinal ()).getSendBank ().getItem (1).getValue ();
+                return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_2.ordinal (), 1);
 
             case TRACK_1_SET_SEND_3:
             case TRACK_2_SET_SEND_3:
@@ -422,7 +423,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_3:
             case TRACK_7_SET_SEND_3:
             case TRACK_8_SET_SEND_3:
-                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_3.ordinal ()).getSendBank ().getItem (2).getValue ();
+                return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_3.ordinal (), 2);
 
             case TRACK_1_SET_SEND_4:
             case TRACK_2_SET_SEND_4:
@@ -432,7 +433,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_4:
             case TRACK_7_SET_SEND_4:
             case TRACK_8_SET_SEND_4:
-                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_4.ordinal ()).getSendBank ().getItem (3).getValue ();
+                return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_4.ordinal (), 3);
 
             case TRACK_1_SET_SEND_5:
             case TRACK_2_SET_SEND_5:
@@ -442,7 +443,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_5:
             case TRACK_7_SET_SEND_5:
             case TRACK_8_SET_SEND_5:
-                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_5.ordinal ()).getSendBank ().getItem (4).getValue ();
+                return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_5.ordinal (), 4);
 
             case TRACK_1_SET_SEND_6:
             case TRACK_2_SET_SEND_6:
@@ -452,7 +453,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_6:
             case TRACK_7_SET_SEND_6:
             case TRACK_8_SET_SEND_6:
-                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_6.ordinal ()).getSendBank ().getItem (5).getValue ();
+                return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_6.ordinal (), 5);
 
             case TRACK_1_SET_SEND_7:
             case TRACK_2_SET_SEND_7:
@@ -462,7 +463,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_7:
             case TRACK_7_SET_SEND_7:
             case TRACK_8_SET_SEND_7:
-                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_7.ordinal ()).getSendBank ().getItem (6).getValue ();
+                return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_7.ordinal (), 6);
 
             case TRACK_1_SET_SEND_8:
             case TRACK_2_SET_SEND_8:
@@ -472,7 +473,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_8:
             case TRACK_7_SET_SEND_8:
             case TRACK_8_SET_SEND_8:
-                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_8.ordinal ()).getSendBank ().getItem (7).getValue ();
+                return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_8.ordinal (), 7);
 
             case TRACK_SELECTED_SET_SEND_1:
             case TRACK_SELECTED_SET_SEND_2:
@@ -482,8 +483,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_SELECTED_SET_SEND_6:
             case TRACK_SELECTED_SET_SEND_7:
             case TRACK_SELECTED_SET_SEND_8:
-                final ITrack track6 = this.model.getSelectedTrack ();
-                return track6 == null ? 0 : track6.getSendBank ().getItem (command.ordinal () - FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal ()).getValue ();
+                return this.getSendValue (-1, command.ordinal () - FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal ());
 
             case MASTER_SET_VOLUME:
                 return this.model.getMasterTrack ().getVolume ();
@@ -1096,7 +1096,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_1:
             case TRACK_7_SET_SEND_1:
             case TRACK_8_SET_SEND_1:
-                this.changeSendVolume (0, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal (), value);
+                this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal (), 0, knobMode, value);
                 break;
 
             // Track 1-8: Set Send 2
@@ -1108,7 +1108,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_2:
             case TRACK_7_SET_SEND_2:
             case TRACK_8_SET_SEND_2:
-                this.changeSendVolume (1, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_2.ordinal (), value);
+                this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_2.ordinal (), 1, knobMode, value);
                 break;
 
             // Track 1-8: Set Send 3
@@ -1120,7 +1120,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_3:
             case TRACK_7_SET_SEND_3:
             case TRACK_8_SET_SEND_3:
-                this.changeSendVolume (2, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_3.ordinal (), value);
+                this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_3.ordinal (), 2, knobMode, value);
                 break;
 
             // Track 1-8: Set Send 4
@@ -1132,7 +1132,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_4:
             case TRACK_7_SET_SEND_4:
             case TRACK_8_SET_SEND_4:
-                this.changeSendVolume (3, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_4.ordinal (), value);
+                this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_4.ordinal (), 3, knobMode, value);
                 break;
 
             // Track 1: Set Send 5
@@ -1144,7 +1144,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_5:
             case TRACK_7_SET_SEND_5:
             case TRACK_8_SET_SEND_5:
-                this.changeSendVolume (4, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_5.ordinal (), value);
+                this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_5.ordinal (), 4, knobMode, value);
                 break;
 
             // Track 1: Set Send 6
@@ -1156,7 +1156,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_6:
             case TRACK_7_SET_SEND_6:
             case TRACK_8_SET_SEND_6:
-                this.changeSendVolume (5, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_6.ordinal (), value);
+                this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_6.ordinal (), 5, knobMode, value);
                 break;
 
             // Track 1-8: Set Send 7
@@ -1168,7 +1168,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_7:
             case TRACK_7_SET_SEND_7:
             case TRACK_8_SET_SEND_7:
-                this.changeSendVolume (6, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_7.ordinal (), value);
+                this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_7.ordinal (), 6, knobMode, value);
                 break;
 
             // Track 1-8: Set Send 8
@@ -1180,7 +1180,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_6_SET_SEND_8:
             case TRACK_7_SET_SEND_8:
             case TRACK_8_SET_SEND_8:
-                this.changeSendVolume (7, knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_8.ordinal (), value);
+                this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_8.ordinal (), 7, knobMode, value);
                 break;
 
             // Track Selected: Set Send 1-8
@@ -1192,7 +1192,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_SELECTED_SET_SEND_6:
             case TRACK_SELECTED_SET_SEND_7:
             case TRACK_SELECTED_SET_SEND_8:
-                this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal (), knobMode, -1, value);
+                this.changeSendVolume (-1, command.ordinal () - FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal (), knobMode, value);
                 break;
 
             // Master: Set Volume
@@ -1645,14 +1645,38 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     }
 
 
-    private void changeSendVolume (final int sendIndex, final int knobMode, final int trackIndex, final int value)
+    private int getSendValue (final int trackIndex, final int sendIndex)
+    {
+        final ITrack track = this.getTrack (trackIndex);
+        if (track == null)
+            return 0;
+
+        final ISendBank sendBank = track.getSendBank ();
+        if (sendIndex >= sendBank.getPageSize ())
+            return 0;
+
+        final ISend send = sendBank.getItem (sendIndex);
+        if (send == null)
+            return 0;
+
+        return send.getValue ();
+    }
+
+
+    private void changeSendVolume (final int trackIndex, final int sendIndex, final int knobMode, final int value)
     {
         final ITrack track = this.getTrack (trackIndex);
         if (track == null)
             return;
-        final ISend send = track.getSendBank ().getItem (sendIndex);
+
+        final ISendBank sendBank = track.getSendBank ();
+        if (sendIndex >= sendBank.getPageSize ())
+            return;
+
+        final ISend send = sendBank.getItem (sendIndex);
         if (send == null)
             return;
+
         if (isAbsolute (knobMode))
             send.setValue (value);
         else
@@ -2041,10 +2065,10 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     }
 
 
-    private double limit (final double value)
+    private int limit (final double value)
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        return Math.max (0, Math.min (value, valueChanger.getUpperBound () - 1.0));
+        return (int) Math.max (0, Math.min (value, valueChanger.getUpperBound () - 1.0));
     }
 
 

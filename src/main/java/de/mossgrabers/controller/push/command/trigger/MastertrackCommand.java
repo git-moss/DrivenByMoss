@@ -72,7 +72,7 @@ public class MastertrackCommand extends AbstractTriggerCommand<PushControlSurfac
             return;
         }
 
-        if (modeManager.getActiveOrTempModeId () == Modes.MODE_MASTER)
+        if (Modes.MODE_MASTER.equals (modeManager.getActiveOrTempModeId ()))
         {
             if (this.selectedTrackBeforeMasterMode >= 0)
                 this.model.getCurrentTrackBank ().getItem (this.selectedTrackBeforeMasterMode).select ();

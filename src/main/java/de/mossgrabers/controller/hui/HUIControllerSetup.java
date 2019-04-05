@@ -542,7 +542,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     @Override
     protected void updateIndication (final Integer mode)
     {
-        if (mode == this.currentMode)
+        if (this.currentMode != null && this.currentMode.equals (mode))
             return;
         this.currentMode = mode;
 

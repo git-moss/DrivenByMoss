@@ -69,7 +69,7 @@ public interface IChannel extends IItem
      *
      * @param value The new value
      */
-    void setVolume (double value);
+    void setVolume (int value);
 
 
     /**
@@ -140,7 +140,7 @@ public interface IChannel extends IItem
      *
      * @param value The new value
      */
-    void setPan (double value);
+    void setPan (int value);
 
 
     /**

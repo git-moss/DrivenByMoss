@@ -305,7 +305,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setVolume (final double value)
+    public void setVolume (final int value)
     {
         // Intentionally empty
     }
@@ -345,7 +345,7 @@ public class EmptyTrackData implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void setPan (final double value)
+    public void setPan (final int value)
     {
         // Intentionally empty
     }

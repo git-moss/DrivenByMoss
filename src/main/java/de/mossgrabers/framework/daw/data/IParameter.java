@@ -49,7 +49,7 @@ public interface IParameter extends IItem
      *
      * @param value The new value to set
      */
-    void setValue (double value);
+    void setValue (int value);
 
 
     /**

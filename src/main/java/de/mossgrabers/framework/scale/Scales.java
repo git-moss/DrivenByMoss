@@ -803,11 +803,10 @@ public class Scales
     public int [] getDrumMatrix ()
     {
         final int [] noteMap = Scales.getEmptyMatrix ();
-        final int drumOffset = this.getDrumOffset ();
         for (int note = this.drumNoteStart; note < this.drumNoteEnd; note++)
         {
             final int ns = this.drumMatrix[note - this.drumNoteStart];
-            final int n = ns == -1 ? -1 : ns + drumOffset;
+            final int n = ns == -1 ? -1 : ns + this.drumOffset;
             noteMap[note] = n < 0 || n > 127 ? -1 : n;
         }
         return noteMap;

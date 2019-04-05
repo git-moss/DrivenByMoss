@@ -155,7 +155,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param value The value
      */
-    void setMetronomeVolume (final double value);
+    void setMetronomeVolume (final int value);
 
 
     /**
@@ -404,7 +404,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param value The value
      */
-    void setCrossfade (final double value);
+    void setCrossfade (final int value);
 
 
     /**

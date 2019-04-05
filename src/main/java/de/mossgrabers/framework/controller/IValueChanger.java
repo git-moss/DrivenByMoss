@@ -21,6 +21,14 @@ public interface IValueChanger
 
 
     /**
+     * Set the upper bound.
+     *
+     * @param upperBound The new upper bound
+     */
+    void setUpperBound (int upperBound);
+
+
+    /**
      * Get the value for de-/incrementing values.
      *
      * @return The value
@@ -29,11 +37,27 @@ public interface IValueChanger
 
 
     /**
+     * Set the fraction value for relative change.
+     *
+     * @param fractionValue The fraction value
+     */
+    void setFractionValue (double fractionValue);
+
+
+    /**
      * Get the value for de-/incrementing values slowly.
      *
      * @return The value
      */
     double getSlowFractionValue ();
+
+
+    /**
+     * Set the slow fraction value for relative change.
+     *
+     * @param slowFractionValue The slow fraction value
+     */
+    void setSlowFractionValue (double slowFractionValue);
 
 
     /**

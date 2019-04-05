@@ -113,11 +113,11 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         if (this.model.getHost ().hasClips ())
         {
             final Integer previousViewId = this.surface.getViewManager ().getPreviousViewId ();
-            padGrid.light (36 + 56, previousViewId == Views.VIEW_SESSION ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 57, previousViewId == Views.VIEW_PLAY ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 58, previousViewId == Views.VIEW_DRUM ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 59, previousViewId == Views.VIEW_SEQUENCER ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 60, previousViewId == Views.VIEW_RAINDROPS ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 56, Views.VIEW_SESSION.equals (previousViewId) ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 57, Views.VIEW_PLAY.equals (previousViewId) ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 58, Views.VIEW_DRUM.equals (previousViewId) ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 59, Views.VIEW_SEQUENCER.equals (previousViewId) ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 60, Views.VIEW_RAINDROPS.equals (previousViewId) ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
         }
         else
         {

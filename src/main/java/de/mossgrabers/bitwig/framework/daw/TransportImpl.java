@@ -35,9 +35,7 @@ public class TransportImpl implements ITransport
     private IValueChanger       valueChanger;
     private Transport           transport;
 
-    private int                 crossfade              = 0;
     private double              tempo;
-    private int                 metronomeValue;
 
 
     /**
@@ -68,12 +66,11 @@ public class TransportImpl implements ITransport
         this.transport.preRoll ().markInterested ();
         this.transport.tempo ().value ().addRawValueObserver (this::handleTempo);
         this.transport.getPosition ().markInterested ();
-        this.transport.crossfade ().value ().addValueObserver (valueChanger.getUpperBound (), this::handleCrossfade);
+        this.transport.crossfade ().value ().markInterested ();
 
         final SettableRangedValue metronomeVolume = this.transport.metronomeVolume ();
         metronomeVolume.markInterested ();
         metronomeVolume.displayedValue ().markInterested ();
-        metronomeVolume.addValueObserver (valueChanger.getUpperBound (), this::handleMetronomeValue);
 
         final TimeSignatureValue ts = this.transport.timeSignature ();
         ts.numerator ().markInterested ();
@@ -263,7 +260,7 @@ public class TransportImpl implements ITransport
     @Override
     public int getMetronomeVolume ()
     {
-        return this.metronomeValue;
+        return this.valueChanger.fromNormalizedValue (this.transport.metronomeVolume ().get ());
     }
 
 
@@ -277,9 +274,9 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public void setMetronomeVolume (final double value)
+    public void setMetronomeVolume (final int value)
     {
-        this.transport.metronomeVolume ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.transport.metronomeVolume ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -538,9 +535,9 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public void setCrossfade (final double value)
+    public void setCrossfade (final int value)
     {
-        this.transport.crossfade ().set (Double.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.transport.crossfade ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -548,7 +545,7 @@ public class TransportImpl implements ITransport
     @Override
     public int getCrossfade ()
     {
-        return this.crossfade;
+        return this.valueChanger.fromNormalizedValue (this.transport.crossfade ().get ());
     }
 
 
@@ -633,7 +630,6 @@ public class TransportImpl implements ITransport
     @Override
     public int getDenominator ()
     {
-
         return this.transport.timeSignature ().denominator ().get ();
     }
 
@@ -649,17 +645,5 @@ public class TransportImpl implements ITransport
     private void handleTempo (final double value)
     {
         this.tempo = Math.min (TransportImpl.TEMPO_MAX, Math.max (TransportImpl.TEMPO_MIN, value));
-    }
-
-
-    private void handleCrossfade (final int value)
-    {
-        this.crossfade = value;
-    }
-
-
-    private void handleMetronomeValue (final int value)
-    {
-        this.metronomeValue = value;
     }
 }
