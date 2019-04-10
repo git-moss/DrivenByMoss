@@ -154,7 +154,7 @@ public class LaunchpadColors
         colorManager.registerColor (DAWColors.DAW_COLOR_PINK, LAUNCHPAD_COLOR_PINK_HI);
         colorManager.registerColor (DAWColors.DAW_COLOR_RED, LAUNCHPAD_COLOR_RED);
         colorManager.registerColor (DAWColors.DAW_COLOR_ORANGE, LAUNCHPAD_COLOR_ORANGE);
-        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_ORANGE, LAUNCHPAD_COLOR_RED_LO);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_ORANGE, LAUNCHPAD_COLOR_AMBER_HI);
         colorManager.registerColor (DAWColors.DAW_COLOR_MOSS_GREEN, LAUNCHPAD_COLOR_LIME_LO);
         colorManager.registerColor (DAWColors.DAW_COLOR_GREEN, LAUNCHPAD_COLOR_SPRING);
         colorManager.registerColor (DAWColors.DAW_COLOR_COLD_GREEN, LAUNCHPAD_COLOR_TURQUOISE);
@@ -163,7 +163,7 @@ public class LaunchpadColors
         colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_PINK, LAUNCHPAD_COLOR_MAGENTA_PINK);
         colorManager.registerColor (DAWColors.DAW_COLOR_SKIN, LAUNCHPAD_COLOR_ROSE);
         colorManager.registerColor (DAWColors.DAW_COLOR_REDDISH_BROWN, LAUNCHPAD_COLOR_AMBER);
-        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_BROWN, LAUNCHPAD_COLOR_AMBER_HI);
+        colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_BROWN, LAUNCHPAD_COLOR_AMBER_YELLOW);
         colorManager.registerColor (DAWColors.DAW_COLOR_LIGHT_GREEN, LAUNCHPAD_COLOR_LIME);
         colorManager.registerColor (DAWColors.DAW_COLOR_BLUISH_GREEN, LAUNCHPAD_COLOR_SPRING_HI);
         colorManager.registerColor (DAWColors.DAW_COLOR_GREEN_BLUE, LAUNCHPAD_COLOR_TURQUOISE_CYAN);
