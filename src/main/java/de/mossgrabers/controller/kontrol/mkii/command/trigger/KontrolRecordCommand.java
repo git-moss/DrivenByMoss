@@ -52,9 +52,12 @@ public class KontrolRecordCommand extends AbstractTriggerCommand<KontrolMkIICont
                 this.model.getTransport ().record ();
                 break;
             case KontrolMkIIConfiguration.RECORD_CLIP:
-                final ISlot selectedSlot = this.model.getSelectedSlot ();
-                if (selectedSlot != null)
-                    selectedSlot.record ();
+                final ISlot slot = this.model.getSelectedSlot ();
+                if (slot == null)
+                    return;
+                if (!slot.isRecording ())
+                    slot.record ();
+                slot.launch ();
                 break;
             case KontrolMkIIConfiguration.NEW_CLIP:
                 new NewCommand<> (this.model, this.surface).executeNormal (ButtonEvent.DOWN);
