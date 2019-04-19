@@ -19,9 +19,9 @@ import de.mossgrabers.framework.daw.IHost;
 public class APCminiConfiguration extends AbstractConfiguration
 {
     /** Default function of the faders. */
-    public static final Integer    FADER_CTRL         = Integer.valueOf (30);
+    public static final Integer    FADER_CTRL         = Integer.valueOf (50);
     /** Default function of the track buttons. */
-    public static final Integer    SOFT_KEYS          = Integer.valueOf (31);
+    public static final Integer    SOFT_KEYS          = Integer.valueOf (51);
 
     private static final String [] FADER_CTRL_OPTIONS =
     {

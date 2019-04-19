@@ -19,11 +19,11 @@ import de.mossgrabers.framework.daw.IHost;
 public abstract class AbstractOpenSoundControlConfiguration extends AbstractConfiguration implements IOpenSoundControlConfiguration
 {
     /** ID for logging input commands option. */
-    public static final Integer   LOG_INPUT_COMMANDS        = Integer.valueOf (40);
+    public static final Integer   LOG_INPUT_COMMANDS        = Integer.valueOf (50);
     /** ID for logging output commands option. */
-    public static final Integer   LOG_OUTPUT_COMMANDS       = Integer.valueOf (41);
+    public static final Integer   LOG_OUTPUT_COMMANDS       = Integer.valueOf (51);
     /** ID for filtering heartbeat OSC messages from logging. */
-    public static final Integer   FILTER_HEARTBEAT_COMMANDS = Integer.valueOf (42);
+    public static final Integer   FILTER_HEARTBEAT_COMMANDS = Integer.valueOf (52);
 
     protected static final String DEFAULT_SERVER            = "127.0.0.1";
 

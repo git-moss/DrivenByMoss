@@ -19,7 +19,7 @@ import de.mossgrabers.framework.daw.IHost;
 public class MaschineMikroMk3Configuration extends AbstractConfiguration
 {
     /** Setting for the ribbon mode. */
-    public static final Integer   RIBBON_MODE               = Integer.valueOf (30);
+    public static final Integer   RIBBON_MODE               = Integer.valueOf (50);
 
     /** Use ribbon for pitch bend down. */
     public static final int       RIBBON_MODE_PITCH_DOWN    = 0;

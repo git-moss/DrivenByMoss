@@ -19,9 +19,9 @@ import de.mossgrabers.framework.daw.IHost;
 public class SLConfiguration extends AbstractConfiguration
 {
     /** Touchpad mode. */
-    public static final Integer    TOUCHPAD_MODE              = Integer.valueOf (30);
+    public static final Integer    TOUCHPAD_MODE              = Integer.valueOf (50);
     /** Use drum pads for mode selection. */
-    public static final Integer    DRUMPADS_AS_MODE_SELECTION = Integer.valueOf (31);
+    public static final Integer    DRUMPADS_AS_MODE_SELECTION = Integer.valueOf (51);
 
     /** Touchpad mode: Use as the crossfader. */
     public static final String     TOUCHPAD_MODE_CROSSFADER   = "Crossfader";

@@ -21,17 +21,17 @@ import java.util.Arrays;
 public class HUIConfiguration extends AbstractConfiguration
 {
     /** Zoom state. */
-    public static final Integer    ZOOM_STATE              = Integer.valueOf (30);
+    public static final Integer    ZOOM_STATE              = Integer.valueOf (50);
     /** Has a display. */
-    public static final Integer    HAS_DISPLAY1            = Integer.valueOf (31);
+    public static final Integer    HAS_DISPLAY1            = Integer.valueOf (51);
     /** Has a second display. */
-    public static final Integer    HAS_DISPLAY2            = Integer.valueOf (32);
+    public static final Integer    HAS_DISPLAY2            = Integer.valueOf (52);
     /** Has a segment display. */
-    public static final Integer    HAS_SEGMENT_DISPLAY     = Integer.valueOf (33);
+    public static final Integer    HAS_SEGMENT_DISPLAY     = Integer.valueOf (53);
     /** Has motor faders. */
-    public static final Integer    HAS_MOTOR_FADERS        = Integer.valueOf (34);
+    public static final Integer    HAS_MOTOR_FADERS        = Integer.valueOf (54);
     /** Select the channel when touching it's fader. */
-    private static final Integer   TOUCH_CHANNEL           = Integer.valueOf (35);
+    private static final Integer   TOUCH_CHANNEL           = Integer.valueOf (55);
 
     /** Use a Function button to switch to previous mode. */
     public static final int        FOOTSWITCH_2_PREV_MODE  = 15;

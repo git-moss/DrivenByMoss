@@ -266,4 +266,20 @@ public interface Configuration
      * @return The functionality of the footswitch 2.
      */
     int getFootswitch2 ();
+
+
+    /**
+     * Get the change value for normal knob speed.
+     *
+     * @return The value
+     */
+    int getKnobSpeedNormal ();
+
+
+    /**
+     * Get the change value for slow knob speed.
+     *
+     * @return The value
+     */
+    int getKnobSpeedSlow ();
 }

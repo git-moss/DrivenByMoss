@@ -81,4 +81,13 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
         this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, green);
         this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, green);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void drawGrid ()
+    {
+        // No birds eye view, since Shift is used for view changes...
+        this.drawSessionGrid ();
+    }
 }

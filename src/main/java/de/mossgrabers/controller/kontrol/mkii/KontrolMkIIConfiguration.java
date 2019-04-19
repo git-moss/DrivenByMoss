@@ -18,6 +18,9 @@ import de.mossgrabers.framework.daw.IHost;
  */
 public class KontrolMkIIConfiguration extends AbstractConfiguration
 {
+    private static final Integer   RECORD_BUTTON_FUNCTION         = Integer.valueOf (50);
+    private static final Integer   SHIFTED_RECORD_BUTTON_FUNCTION = Integer.valueOf (51);
+
     /** Record in arranger. */
     public static final int        RECORD_ARRANGER                = 0;
     /** Record in clip. */
@@ -37,9 +40,6 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
         "Toggle arranger overdub",
         "Toggle clip overdub",
     };
-
-    private static final Integer   RECORD_BUTTON_FUNCTION         = Integer.valueOf (50);
-    private static final Integer   SHIFTED_RECORD_BUTTON_FUNCTION = Integer.valueOf (51);
 
     private int                    recordButtonFunction           = 0;
     private int                    shiftedRecordButtonFunction    = 1;

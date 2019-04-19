@@ -19,7 +19,7 @@ import de.mossgrabers.framework.daw.IHost;
 public class Kontrol1Configuration extends AbstractConfiguration
 {
     /** ID for enable scale setting. */
-    public static final Integer SCALE_IS_ACTIVE = Integer.valueOf (40);
+    public static final Integer SCALE_IS_ACTIVE = Integer.valueOf (50);
 
     private IEnumSetting        scaleIsActiveSetting;
     private boolean             scaleIsActive;

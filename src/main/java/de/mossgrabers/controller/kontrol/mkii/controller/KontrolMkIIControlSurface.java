@@ -25,6 +25,9 @@ import java.util.List;
  */
 public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkIIConfiguration>
 {
+    /** The maximal NIHIA protocol version which is supported by this extension. */
+    public static final int     MAX_VERSION                          = 2;
+
     /** Command to initialise the protocol handshake (and acknowledge). */
     public static final int     CMD_HELLO                            = 0x01;
     /** Command to stop the protocol. */
@@ -193,6 +196,15 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
         {
             return this.isConnectedToNIHIA;
         }
+    }
+
+
+    /**
+     * Initialise the handshake with the NIHIA.
+     */
+    public void initHandshake ()
+    {
+        this.sendCommand (CMD_HELLO, MAX_VERSION);
     }
 
 

@@ -40,58 +40,58 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     }
 
     /** Setting for the ribbon mode. */
-    public static final Integer       RIBBON_MODE                     = Integer.valueOf (30);
+    public static final Integer       RIBBON_MODE                     = Integer.valueOf (50);
     /** Setting for the ribbon mode midi CC. */
-    public static final Integer       RIBBON_MODE_CC_VAL              = Integer.valueOf (31);
+    public static final Integer       RIBBON_MODE_CC_VAL              = Integer.valueOf (51);
     /** Setting for the velocity curve. */
-    public static final Integer       VELOCITY_CURVE                  = Integer.valueOf (32);
+    public static final Integer       VELOCITY_CURVE                  = Integer.valueOf (52);
     /** Setting for the pad threshold. */
-    public static final Integer       PAD_THRESHOLD                   = Integer.valueOf (33);
+    public static final Integer       PAD_THRESHOLD                   = Integer.valueOf (53);
 
     /** Setting for the display brightness. */
-    public static final Integer       DISPLAY_BRIGHTNESS              = Integer.valueOf (34);
+    public static final Integer       DISPLAY_BRIGHTNESS              = Integer.valueOf (54);
     /** Setting for the pad LED brightness. */
-    public static final Integer       LED_BRIGHTNESS                  = Integer.valueOf (35);
+    public static final Integer       LED_BRIGHTNESS                  = Integer.valueOf (55);
     /** Setting for the pad sensitivity. */
-    public static final Integer       PAD_SENSITIVITY                 = Integer.valueOf (36);
+    public static final Integer       PAD_SENSITIVITY                 = Integer.valueOf (56);
     /** Setting for the pad gain. */
-    public static final Integer       PAD_GAIN                        = Integer.valueOf (37);
+    public static final Integer       PAD_GAIN                        = Integer.valueOf (57);
     /** Setting for the pad dynamics. */
-    public static final Integer       PAD_DYNAMICS                    = Integer.valueOf (38);
+    public static final Integer       PAD_DYNAMICS                    = Integer.valueOf (58);
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer       STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (39);
+    public static final Integer       STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (59);
     /** Setting for the default note view. */
-    public static final Integer       DEFAULT_NOTE_VIEW               = Integer.valueOf (40);
+    public static final Integer       DEFAULT_NOTE_VIEW               = Integer.valueOf (60);
     /** Mode debug. */
-    public static final Integer       DEBUG_MODE                      = Integer.valueOf (41);
+    public static final Integer       DEBUG_MODE                      = Integer.valueOf (61);
     /** Push 2 display debug window. */
-    public static final Integer       DEBUG_WINDOW                    = Integer.valueOf (42);
+    public static final Integer       DEBUG_WINDOW                    = Integer.valueOf (62);
     /** Background color of an element. */
-    public static final Integer       COLOR_BACKGROUND                = Integer.valueOf (50);
+    public static final Integer       COLOR_BACKGROUND                = Integer.valueOf (70);
     /** Border color of an element. */
-    public static final Integer       COLOR_BORDER                    = Integer.valueOf (51);
+    public static final Integer       COLOR_BORDER                    = Integer.valueOf (71);
     /** Text color of an element. */
-    public static final Integer       COLOR_TEXT                      = Integer.valueOf (52);
+    public static final Integer       COLOR_TEXT                      = Integer.valueOf (72);
     /** Fader color of an element. */
-    public static final Integer       COLOR_FADER                     = Integer.valueOf (53);
+    public static final Integer       COLOR_FADER                     = Integer.valueOf (73);
     /** VU color of an element. */
-    public static final Integer       COLOR_VU                        = Integer.valueOf (54);
+    public static final Integer       COLOR_VU                        = Integer.valueOf (74);
     /** Edit color of an element. */
-    public static final Integer       COLOR_EDIT                      = Integer.valueOf (55);
+    public static final Integer       COLOR_EDIT                      = Integer.valueOf (75);
     /** Record color of an element. */
-    public static final Integer       COLOR_RECORD                    = Integer.valueOf (56);
+    public static final Integer       COLOR_RECORD                    = Integer.valueOf (76);
     /** Solo color of an element. */
-    public static final Integer       COLOR_SOLO                      = Integer.valueOf (57);
+    public static final Integer       COLOR_SOLO                      = Integer.valueOf (77);
     /** Mute color of an element. */
-    public static final Integer       COLOR_MUTE                      = Integer.valueOf (58);
+    public static final Integer       COLOR_MUTE                      = Integer.valueOf (78);
     /** Background color darker of an element. */
-    public static final Integer       COLOR_BACKGROUND_DARKER         = Integer.valueOf (59);
+    public static final Integer       COLOR_BACKGROUND_DARKER         = Integer.valueOf (79);
     /** Background color lighter of an element. */
-    public static final Integer       COLOR_BACKGROUND_LIGHTER        = Integer.valueOf (60);
+    public static final Integer       COLOR_BACKGROUND_LIGHTER        = Integer.valueOf (80);
     /** Session view options. */
-    public static final Integer       SESSION_VIEW                    = Integer.valueOf (61);
+    public static final Integer       SESSION_VIEW                    = Integer.valueOf (81);
     /** Display scenes or clips. */
-    public static final Integer       DISPLAY_SCENES_CLIPS            = Integer.valueOf (62);
+    public static final Integer       DISPLAY_SCENES_CLIPS            = Integer.valueOf (82);
 
     /** Use ribbon for pitch bend. */
     public static final int           RIBBON_MODE_PITCH               = 0;
@@ -318,6 +318,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.activateFootswitchSetting (settingsUI);
         this.activateStopAutomationOnKnobReleaseSetting (settingsUI);
         this.activateNewClipLengthSetting (settingsUI);
+        this.activateKnobSpeedSetting (settingsUI);
 
         ///////////////////////////
         // Ribbon

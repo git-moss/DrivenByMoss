@@ -502,20 +502,17 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     @Override
     protected void updateIndication (final Integer mode)
     {
-        if (this.currentMode != null && this.currentMode.equals (mode))
-            return;
-        this.currentMode = mode;
-
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final APCControlSurface surface = this.getSurface ();
         final boolean isSession = surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isPan = Modes.MODE_PAN.equals (mode);
+        final boolean isShift = surface.isShiftPressed ();
 
-        tb.setIndication (!isEffect && isSession);
+        tb.setIndication (!isEffect && (isSession || isShift));
         if (tbe != null)
-            tbe.setIndication (isEffect && isSession);
+            tbe.setIndication (isEffect && (isSession || isShift));
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();

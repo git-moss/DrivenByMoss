@@ -84,6 +84,12 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer    BROWSER_DISPLAY_FILTER7           = Integer.valueOf (27);
     /** Setting for displaying browser column 8. */
     public static final Integer    BROWSER_DISPLAY_FILTER8           = Integer.valueOf (28);
+    /** The speed of a knob. */
+    public static final Integer    KNOB_SPEED_NORMAL                 = Integer.valueOf (29);
+    /** The speed of a knob in slow mode. */
+    public static final Integer    KNOB_SPEED_SLOW                   = Integer.valueOf (30);
+
+    // Implementation IDs start at 50
 
     protected static final String  CATEGORY_DRUMS                    = "Drum Sequencer";
     protected static final String  CATEGORY_SCALES                   = "Scales";
@@ -284,6 +290,8 @@ public abstract class AbstractConfiguration implements Configuration
         true,
         true
     };
+    private int                                      knobSpeedNormal             = 10;
+    private int                                      knobSpeedSlow               = 1;
 
 
     /**
@@ -627,6 +635,22 @@ public abstract class AbstractConfiguration implements Configuration
     public boolean [] getBrowserDisplayFilter ()
     {
         return this.browserDisplayFilter;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getKnobSpeedNormal ()
+    {
+        return this.knobSpeedNormal;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getKnobSpeedSlow ()
+    {
+        return this.knobSpeedSlow;
     }
 
 
@@ -983,6 +1007,26 @@ public abstract class AbstractConfiguration implements Configuration
                 this.notifyObservers (Integer.valueOf (BROWSER_DISPLAY_FILTER1.intValue () + index));
             });
         }
+    }
+
+
+    /**
+     * Activate the knob speed settings.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateKnobSpeedSetting (final ISettingsUI settingsUI)
+    {
+        final IIntegerSetting knobSpeedNormalSetting = settingsUI.getRangeSetting ("Knob Speed Normal", CATEGORY_WORKFLOW, 1, 100, 1, "%", 10);
+        knobSpeedNormalSetting.addValueObserver (value -> {
+            this.knobSpeedNormal = value.intValue () + 1;
+            this.notifyObservers (AbstractConfiguration.KNOB_SPEED_NORMAL);
+        });
+        final IIntegerSetting knobSpeedSlowSetting = settingsUI.getRangeSetting ("Knob Speed Slow", CATEGORY_WORKFLOW, 1, 100, 1, "%", 1);
+        knobSpeedSlowSetting.addValueObserver (value -> {
+            this.knobSpeedSlow = value.intValue () + 1;
+            this.notifyObservers (AbstractConfiguration.KNOB_SPEED_SLOW);
+        });
     }
 
 

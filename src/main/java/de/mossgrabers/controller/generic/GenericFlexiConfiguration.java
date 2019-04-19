@@ -43,6 +43,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class GenericFlexiConfiguration extends AbstractConfiguration
 {
+    /** Export signal. */
+    public static final Integer    BUTTON_EXPORT        = Integer.valueOf (50);
+    /** Import signal. */
+    public static final Integer    BUTTON_IMPORT        = Integer.valueOf (51);
+    /** Enable MMC. */
+    public static final Integer    ENABLE_MMC           = Integer.valueOf (52);
+
     private static final String [] NAMES                = FlexiCommand.getNames ();
 
     private static final String [] OPTIONS_KNOBMODE     = new String []
@@ -204,13 +211,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         for (int i = 0; i < OPTIONS_MIDI_CHANNEL.length; i++)
             OPTIONS_MIDI_CHANNEL[i] = Integer.toString (i + 1);
     }
-
-    /** Export signal. */
-    public static final Integer                      BUTTON_EXPORT         = Integer.valueOf (50);
-    /** Import signal. */
-    public static final Integer                      BUTTON_IMPORT         = Integer.valueOf (51);
-    /** Enable MMC. */
-    public static final Integer                      ENABLE_MMC            = Integer.valueOf (52);
 
     /** A setting of a slot has changed. */
     static final Integer                             SLOT_CHANGE           = Integer.valueOf (1000);

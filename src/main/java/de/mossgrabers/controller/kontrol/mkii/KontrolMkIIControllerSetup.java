@@ -272,7 +272,7 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         final IControlSurface<KontrolMkIIConfiguration> surface = this.getSurface ();
         surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
 
-        this.getSurface ().sendCommand (KontrolMkIIControlSurface.CMD_HELLO, 0);
+        this.getSurface ().initHandshake ();
     }
 
 

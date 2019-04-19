@@ -281,6 +281,17 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
                 this.log (status, data1, data2, channel, "Pitchbend");
                 break;
 
+            // System Realtime - Active Sense
+            case 0xF0:
+                if (!this.configuration.isFilterSystemRealtimeEnabled ())
+                {
+                    if (channel == 14)
+                        this.log (status, data1, data2, channel, "System Realtime - Active Sense");
+                    else
+                        this.log (status, data1, data2, channel, "System Realtime");
+                }
+                break;
+
             default:
                 this.host.println ("Unhandled midi status: " + status);
                 break;
