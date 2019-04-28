@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.kontrol.mkii;
 
 import de.mossgrabers.controller.kontrol.mkii.command.trigger.KontrolRecordCommand;
+import de.mossgrabers.controller.kontrol.mkii.command.trigger.StartClipOrSceneCommand;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolMkIIColors;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolMkIIControlSurface;
 import de.mossgrabers.controller.kontrol.mkii.controller.SlowValueChanger;
@@ -15,7 +16,6 @@ import de.mossgrabers.framework.command.trigger.application.RedoCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
-import de.mossgrabers.framework.command.trigger.clip.StartClipCommand;
 import de.mossgrabers.framework.command.trigger.clip.StartSceneCommand;
 import de.mossgrabers.framework.command.trigger.clip.StopClipCommand;
 import de.mossgrabers.framework.command.trigger.track.MuteCommand;
@@ -185,7 +185,7 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
 
         if (this.host.hasClips ())
         {
-            this.addTriggerCommand (Commands.COMMAND_CLIP, KontrolMkIIControlSurface.KONTROL_PLAY_SELECTED_CLIP, 15, new StartClipCommand<> (this.model, surface));
+            this.addTriggerCommand (Commands.COMMAND_CLIP, KontrolMkIIControlSurface.KONTROL_PLAY_SELECTED_CLIP, 15, new StartClipOrSceneCommand (this.model, surface));
             this.addTriggerCommand (Commands.COMMAND_STOP_CLIP, KontrolMkIIControlSurface.KONTROL_STOP_CLIP, 15, new StopClipCommand<> (this.model, surface));
             // Not implemented in NIHIA
             this.addTriggerCommand (Commands.COMMAND_SCENE1, KontrolMkIIControlSurface.KONTROL_PLAY_SCENE, 15, new StartSceneCommand<> (this.model, surface));
@@ -206,13 +206,6 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
 
         this.addContinuousCommand (CONT_COMMAND_HELLO, KontrolMkIIControlSurface.CMD_HELLO, 15, surface::handshakeSuccess);
 
-        this.addContinuousCommand (CONT_COMMAND_MOVE_TRACK, KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, 15, value -> {
-            if (value == 1)
-                this.model.getTrackBank ().selectNextItem ();
-            else
-                this.model.getTrackBank ().selectPreviousItem ();
-        });
-
         this.addContinuousCommand (CONT_COMMAND_MOVE_TRACK_BANK, KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, 15, value -> {
             if (value == 1)
                 this.model.getTrackBank ().selectNextPage ();
@@ -220,28 +213,40 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
                 this.model.getTrackBank ().selectPreviousPage ();
         });
 
+        this.addContinuousCommand (CONT_COMMAND_MOVE_TRACK, KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, 15, value -> {
+            if (this.configuration.isFlipTrackClipNavigation ())
+            {
+                if (this.configuration.isFlipClipSceneNavigation ())
+                    this.navigateScenes (value);
+                else
+                    this.navigateClips (value);
+            }
+            else
+                this.navigateTracks (value);
+        });
+
         this.addContinuousCommand (CONT_COMMAND_NAVIGATE_CLIPS, KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, 15, value -> {
-            if (!this.host.hasClips ())
-                return;
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack == null)
-                return;
-            if (value == 1)
-                selectedTrack.getSlotBank ().selectPreviousItem ();
-            else if (value == 127)
-                selectedTrack.getSlotBank ().selectNextItem ();
+            if (this.configuration.isFlipTrackClipNavigation ())
+                this.navigateTracks (value);
+            else
+            {
+                if (this.configuration.isFlipClipSceneNavigation ())
+                    this.navigateScenes (value);
+                else
+                    this.navigateClips (value);
+            }
         });
 
         this.addContinuousCommand (CONT_COMMAND_NAVIGATE_SCENES, KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, 15, value -> {
-            if (!this.host.hasClips ())
-                return;
-            final ISceneBank sceneBank = this.model.getSceneBank ();
-            if (sceneBank == null)
-                return;
-            if (value == 1)
-                sceneBank.selectPreviousItem ();
-            else if (value == 127)
-                sceneBank.selectNextItem ();
+            if (this.configuration.isFlipTrackClipNavigation ())
+                this.navigateTracks (value);
+            else
+            {
+                if (this.configuration.isFlipClipSceneNavigation ())
+                    this.navigateClips (value);
+                else
+                    this.navigateScenes (value);
+            }
         });
 
         this.addContinuousCommand (CONT_COMMAND_MOVE_TRANSPORT, KontrolMkIIControlSurface.KONTROL_NAVIGATE_MOVE_TRANSPORT, 15, value -> this.changeTransportPosition (value, 0));
@@ -336,25 +341,26 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
         surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_INSTANCE, 0, 0, this.getKompleteInstance ());
 
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, (trackBank.canScrollBackwards () ? 1 : 0) + (trackBank.canScrollForwards () ? 2 : 0));
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, (trackBank.canScrollPageBackwards () ? 1 : 0) + (trackBank.canScrollPageForwards () ? 2 : 0));
-
         final ITrack selectedTrack = trackBank.getSelectedItem ();
+        final int scrollTracksState = (trackBank.canScrollBackwards () ? 1 : 0) + (trackBank.canScrollForwards () ? 2 : 0);
+        int scrollClipsState = 0;
+        if (selectedTrack != null)
+        {
+            final ISlotBank slotBank = selectedTrack.getSlotBank ();
+            scrollClipsState = (slotBank.canScrollBackwards () ? 1 : 0) + (slotBank.canScrollForwards () ? 2 : 0);
+        }
+        final ISceneBank sceneBank = trackBank.getSceneBank ();
+        final int scrollScenesState = (sceneBank.canScrollBackwards () ? 1 : 0) + (sceneBank.canScrollForwards () ? 2 : 0);
+
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, (trackBank.canScrollPageBackwards () ? 1 : 0) + (trackBank.canScrollPageForwards () ? 2 : 0));
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, this.configuration.isFlipTrackClipNavigation () ? (this.configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState) : scrollTracksState);
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, this.configuration.isFlipTrackClipNavigation () ? scrollTracksState : (this.configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState));
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, this.configuration.isFlipTrackClipNavigation () ? scrollTracksState : (this.configuration.isFlipClipSceneNavigation () ? scrollClipsState : scrollScenesState));
+
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_MUTE, selectedTrack != null && selectedTrack.isMute () ? 1 : 0);
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_SOLO, selectedTrack != null && selectedTrack.isSolo () ? 1 : 0);
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_AVAILABLE, selectedTrack != null ? TrackType.toTrackType (selectedTrack.getType ()) : 0);
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_MUTED_BY_SOLO, selectedTrack != null && !selectedTrack.isSolo () && hasSolo ? 1 : 0);
-
-        int value = 0;
-        if (selectedTrack != null)
-        {
-            final ISlotBank slotBank = selectedTrack.getSlotBank ();
-            value = (slotBank.canScrollForwards () ? 1 : 0) + (slotBank.canScrollBackwards () ? 2 : 0);
-        }
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, value);
-
-        final ISceneBank sceneBank = trackBank.getSceneBank ();
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, (sceneBank.canScrollForwards () ? 1 : 0) + (sceneBank.canScrollBackwards () ? 2 : 0));
     }
 
 
@@ -373,6 +379,58 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
             return instrumentDevice.getParameterBank ().getItem (0).getName ();
         return "";
+    }
+
+
+    /**
+     * Navigate to the previous or next scene (if any).
+     *
+     * @param value 1 to move left, 127 to move right
+     */
+    private void navigateScenes (final int value)
+    {
+        if (!this.host.hasClips ())
+            return;
+        final ISceneBank sceneBank = this.model.getSceneBank ();
+        if (sceneBank == null)
+            return;
+        if (value == 1)
+            sceneBank.selectNextItem ();
+        else if (value == 127)
+            sceneBank.selectPreviousItem ();
+    }
+
+
+    /**
+     * Navigate to the previous or next clip of the selected track (if any).
+     *
+     * @param value 1 to move left, 127 to move right
+     */
+    private void navigateClips (final int value)
+    {
+        if (!this.host.hasClips ())
+            return;
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        if (selectedTrack == null)
+            return;
+        if (value == 1)
+            selectedTrack.getSlotBank ().selectNextItem ();
+        else if (value == 127)
+            selectedTrack.getSlotBank ().selectPreviousItem ();
+    }
+
+
+    /**
+     * Navigate to the previous or next track (if any).
+     *
+     * @param value 1 to move left else move right
+     */
+    private void navigateTracks (final int value)
+    {
+        if (value == 1)
+            this.model.getTrackBank ().selectNextItem ();
+        else
+            this.model.getTrackBank ().selectPreviousItem ();
     }
 
 

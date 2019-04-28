@@ -33,7 +33,7 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
      */
     public KontrolMkIIControllerDefinition ()
     {
-        super (EXTENSION_ID, "Komplete Kontrol A / MkII", "Native Instruments", 2, 2);
+        super (EXTENSION_ID, "Komplete Kontrol A / M32 / S mkII", "Native Instruments", 2, 2);
     }
 
 

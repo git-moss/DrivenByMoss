@@ -20,6 +20,8 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
 {
     private static final Integer   RECORD_BUTTON_FUNCTION         = Integer.valueOf (50);
     private static final Integer   SHIFTED_RECORD_BUTTON_FUNCTION = Integer.valueOf (51);
+    private static final Integer   FLIP_TRACK_CLIP_NAVIGATION     = Integer.valueOf (52);
+    private static final Integer   FLIP_CLIP_SCENE_NAVIGATION     = Integer.valueOf (53);
 
     /** Record in arranger. */
     public static final int        RECORD_ARRANGER                = 0;
@@ -32,6 +34,8 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
     /** Toggle clip overdub. */
     public static final int        TOGGLE_CLIP_OVERDUB            = 4;
 
+    private static final String    CATEGORY_NAVIGATION            = "Navigation";
+
     private static final String [] RECORD_OPTIONS                 = new String []
     {
         "Record arranger",
@@ -43,6 +47,8 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
 
     private int                    recordButtonFunction           = 0;
     private int                    shiftedRecordButtonFunction    = 1;
+    private boolean                flipTrackClipNavigation        = false;
+    private boolean                flipClipSceneNavigation        = false;
 
 
     /**
@@ -61,6 +67,11 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
     @Override
     public void init (final ISettingsUI settingsUI)
     {
+        ///////////////////////////
+        // Transport
+
+        this.activateBehaviourOnStopSetting (settingsUI);
+
         final IEnumSetting recordButtonSetting = settingsUI.getEnumSetting ("Record button", CATEGORY_TRANSPORT, RECORD_OPTIONS, RECORD_OPTIONS[1]);
         recordButtonSetting.addValueObserver (value -> {
             for (int i = 0; i < RECORD_OPTIONS.length; i++)
@@ -80,6 +91,26 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
             }
             this.notifyObservers (SHIFTED_RECORD_BUTTON_FUNCTION);
         });
+
+        ///////////////////////////
+        // Navigation
+
+        final IEnumSetting flipTrackClipNavigationSetting = settingsUI.getEnumSetting ("Flip track/clip navigation", CATEGORY_NAVIGATION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        flipTrackClipNavigationSetting.addValueObserver (value -> {
+            this.flipTrackClipNavigation = ON_OFF_OPTIONS[1].equals (value);
+            this.notifyObservers (FLIP_TRACK_CLIP_NAVIGATION);
+        });
+
+        final IEnumSetting flipClipSceneNavigationSetting = settingsUI.getEnumSetting ("Flip clip/scene navigation", CATEGORY_NAVIGATION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        flipClipSceneNavigationSetting.addValueObserver (value -> {
+            this.flipClipSceneNavigation = ON_OFF_OPTIONS[1].equals (value);
+            this.notifyObservers (FLIP_CLIP_SCENE_NAVIGATION);
+        });
+
+        ///////////////////////////
+        // Workflow
+
+        this.activateNewClipLengthSetting (settingsUI);
     }
 
 
@@ -102,5 +133,27 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
     public int getShiftedRecordButtonFunction ()
     {
         return this.shiftedRecordButtonFunction;
+    }
+
+
+    /**
+     * Returns true if track and clip navigation should be flipped
+     *
+     * @return True if track and clip navigation should be flipped
+     */
+    public boolean isFlipTrackClipNavigation ()
+    {
+        return this.flipTrackClipNavigation;
+    }
+
+
+    /**
+     * Returns true if clip and scene navigation should be flipped
+     *
+     * @return True if clip and scene navigation should be flipped
+     */
+    public boolean isFlipClipSceneNavigation ()
+    {
+        return this.flipClipSceneNavigation;
     }
 }
