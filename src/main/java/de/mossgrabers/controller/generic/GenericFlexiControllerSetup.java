@@ -121,22 +121,11 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
     /** {@inheritDoc} */
     @Override
-    public void startup ()
-    {
-        this.host.scheduleTask ( () -> {
-            final GenericFlexiControlSurface surface = this.getSurface ();
-            surface.getConfiguration ().clearNoteMap ();
-            surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
-        }, 2000);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void createObservers ()
     {
         final GenericFlexiControlSurface surface = this.getSurface ();
         this.configuration.addSettingObserver (GenericFlexiConfiguration.SLOT_CHANGE, surface::updateKeyTranslation);
+        this.configuration.addSettingObserver (GenericFlexiConfiguration.SELECTED_MODE, this::selectMode);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver ( (index, selected) -> this.handleTrackChange (selected));
@@ -145,6 +134,17 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
             effectTrackBank.addSelectionObserver ( (index, selected) -> this.handleTrackChange (selected));
 
         surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void startup ()
+    {
+        this.host.scheduleTask ( () -> {
+            this.configuration.clearNoteMap ();
+            this.getSurface ().getModeManager ().setActiveMode (Modes.MODE_TRACK);
+        }, 2000);
     }
 
 
@@ -165,6 +165,18 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     public void update (final FlexiCommand value)
     {
         this.updateIndication (null);
+    }
+
+
+    private void selectMode ()
+    {
+        final String selectedModeName = this.configuration.getSelectedModeName ();
+        if (selectedModeName == null)
+            return;
+        final GenericFlexiControlSurface surface = this.getSurface ();
+        final Integer modeID = surface.getModeManager ().getMode (selectedModeName);
+        if (modeID != null)
+            surface.activateMode (modeID);
     }
 
 

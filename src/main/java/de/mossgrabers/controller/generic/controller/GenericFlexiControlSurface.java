@@ -1612,6 +1612,137 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                     this.host.scheduleTask ( () -> this.activateMode (Modes.MODE_BROWSER), 500);
                 }
                 break;
+
+            case MODES_MIDI_CC_0:
+            case MODES_MIDI_CC_1:
+            case MODES_MIDI_CC_2:
+            case MODES_MIDI_CC_3:
+            case MODES_MIDI_CC_4:
+            case MODES_MIDI_CC_5:
+            case MODES_MIDI_CC_6:
+            case MODES_MIDI_CC_7:
+            case MODES_MIDI_CC_8:
+            case MODES_MIDI_CC_9:
+            case MODES_MIDI_CC_10:
+            case MODES_MIDI_CC_11:
+            case MODES_MIDI_CC_12:
+            case MODES_MIDI_CC_13:
+            case MODES_MIDI_CC_14:
+            case MODES_MIDI_CC_15:
+            case MODES_MIDI_CC_16:
+            case MODES_MIDI_CC_17:
+            case MODES_MIDI_CC_18:
+            case MODES_MIDI_CC_19:
+            case MODES_MIDI_CC_20:
+            case MODES_MIDI_CC_21:
+            case MODES_MIDI_CC_22:
+            case MODES_MIDI_CC_23:
+            case MODES_MIDI_CC_24:
+            case MODES_MIDI_CC_25:
+            case MODES_MIDI_CC_26:
+            case MODES_MIDI_CC_27:
+            case MODES_MIDI_CC_28:
+            case MODES_MIDI_CC_29:
+            case MODES_MIDI_CC_30:
+            case MODES_MIDI_CC_31:
+            case MODES_MIDI_CC_32:
+            case MODES_MIDI_CC_33:
+            case MODES_MIDI_CC_34:
+            case MODES_MIDI_CC_35:
+            case MODES_MIDI_CC_36:
+            case MODES_MIDI_CC_37:
+            case MODES_MIDI_CC_38:
+            case MODES_MIDI_CC_39:
+            case MODES_MIDI_CC_40:
+            case MODES_MIDI_CC_41:
+            case MODES_MIDI_CC_42:
+            case MODES_MIDI_CC_43:
+            case MODES_MIDI_CC_44:
+            case MODES_MIDI_CC_45:
+            case MODES_MIDI_CC_46:
+            case MODES_MIDI_CC_47:
+            case MODES_MIDI_CC_48:
+            case MODES_MIDI_CC_49:
+            case MODES_MIDI_CC_50:
+            case MODES_MIDI_CC_51:
+            case MODES_MIDI_CC_52:
+            case MODES_MIDI_CC_53:
+            case MODES_MIDI_CC_54:
+            case MODES_MIDI_CC_55:
+            case MODES_MIDI_CC_56:
+            case MODES_MIDI_CC_57:
+            case MODES_MIDI_CC_58:
+            case MODES_MIDI_CC_59:
+            case MODES_MIDI_CC_60:
+            case MODES_MIDI_CC_61:
+            case MODES_MIDI_CC_62:
+            case MODES_MIDI_CC_63:
+            case MODES_MIDI_CC_64:
+            case MODES_MIDI_CC_65:
+            case MODES_MIDI_CC_66:
+            case MODES_MIDI_CC_67:
+            case MODES_MIDI_CC_68:
+            case MODES_MIDI_CC_69:
+            case MODES_MIDI_CC_70:
+            case MODES_MIDI_CC_71:
+            case MODES_MIDI_CC_72:
+            case MODES_MIDI_CC_73:
+            case MODES_MIDI_CC_74:
+            case MODES_MIDI_CC_75:
+            case MODES_MIDI_CC_76:
+            case MODES_MIDI_CC_77:
+            case MODES_MIDI_CC_78:
+            case MODES_MIDI_CC_79:
+            case MODES_MIDI_CC_80:
+            case MODES_MIDI_CC_81:
+            case MODES_MIDI_CC_82:
+            case MODES_MIDI_CC_83:
+            case MODES_MIDI_CC_84:
+            case MODES_MIDI_CC_85:
+            case MODES_MIDI_CC_86:
+            case MODES_MIDI_CC_87:
+            case MODES_MIDI_CC_88:
+            case MODES_MIDI_CC_89:
+            case MODES_MIDI_CC_90:
+            case MODES_MIDI_CC_91:
+            case MODES_MIDI_CC_92:
+            case MODES_MIDI_CC_93:
+            case MODES_MIDI_CC_94:
+            case MODES_MIDI_CC_95:
+            case MODES_MIDI_CC_96:
+            case MODES_MIDI_CC_97:
+            case MODES_MIDI_CC_98:
+            case MODES_MIDI_CC_99:
+            case MODES_MIDI_CC_100:
+            case MODES_MIDI_CC_101:
+            case MODES_MIDI_CC_102:
+            case MODES_MIDI_CC_103:
+            case MODES_MIDI_CC_104:
+            case MODES_MIDI_CC_105:
+            case MODES_MIDI_CC_106:
+            case MODES_MIDI_CC_107:
+            case MODES_MIDI_CC_108:
+            case MODES_MIDI_CC_109:
+            case MODES_MIDI_CC_110:
+            case MODES_MIDI_CC_111:
+            case MODES_MIDI_CC_112:
+            case MODES_MIDI_CC_113:
+            case MODES_MIDI_CC_114:
+            case MODES_MIDI_CC_115:
+            case MODES_MIDI_CC_116:
+            case MODES_MIDI_CC_117:
+            case MODES_MIDI_CC_118:
+            case MODES_MIDI_CC_119:
+            case MODES_MIDI_CC_120:
+            case MODES_MIDI_CC_121:
+            case MODES_MIDI_CC_122:
+            case MODES_MIDI_CC_123:
+            case MODES_MIDI_CC_124:
+            case MODES_MIDI_CC_125:
+            case MODES_MIDI_CC_126:
+            case MODES_MIDI_CC_127:
+                this.input.sendRawMidiEvent (0xB0, command.ordinal () - FlexiCommand.MODES_MIDI_CC_0.ordinal (), value);
+                break;
         }
 
         this.host.scheduleTask ( () -> {
@@ -1628,10 +1759,22 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     }
 
 
-    private void activateMode (final Integer modeID)
+    /**
+     * Activate a new mode.
+     *
+     * @param modeID The ID of the new mode
+     */
+    public void activateMode (final Integer modeID)
     {
-        this.modeManager.setActiveMode (modeID);
-        this.host.showNotification (this.modeManager.getMode (modeID).getName ());
+        final String modeName = this.modeManager.getMode (modeID).getName ();
+
+        if (!this.modeManager.isActiveMode (modeID))
+        {
+            this.modeManager.setActiveMode (modeID);
+            this.host.showNotification (modeName);
+        }
+        if (!modeName.equals (this.configuration.getSelectedModeName ()))
+            this.configuration.setSelectedMode (modeName);
     }
 
 

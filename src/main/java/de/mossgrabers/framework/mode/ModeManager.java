@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 
 /**
@@ -47,6 +48,21 @@ public class ModeManager
     public Mode getMode (final Integer modeId)
     {
         return this.modes.get (modeId);
+    }
+
+
+    /**
+     * Get the mode with the given name.
+     *
+     * @param modeName The name of a mode
+     * @return The mode or null if no mode with that name is registered
+     */
+    public Integer getMode (final String modeName)
+    {
+        for (Entry<Integer, Mode> entry: this.modes.entrySet ())
+            if (modeName.equals (entry.getValue ().getName ()))
+                return entry.getKey ();
+        return null;
     }
 
 

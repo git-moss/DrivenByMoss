@@ -19,6 +19,7 @@ public enum CommandCategory
     LAYOUT("Layout"),
     MARKER("Marker"),
     MASTER("Master"),
+    MIDI_CC("MIDI CC"),
     MODES("Modes"),
     SCENE("Scene"),
     TRACK("Track"),

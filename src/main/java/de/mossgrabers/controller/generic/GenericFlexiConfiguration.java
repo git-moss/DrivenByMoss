@@ -49,6 +49,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public static final Integer    BUTTON_IMPORT        = Integer.valueOf (51);
     /** Enable MMC. */
     public static final Integer    ENABLE_MMC           = Integer.valueOf (52);
+    /** The selected mode. */
+    public static final Integer    SELECTED_MODE        = Integer.valueOf (53);
 
     private static final String [] NAMES                = FlexiCommand.getNames ();
 
@@ -206,6 +208,22 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     /** The midi channel options. */
     private static final String [] OPTIONS_MIDI_CHANNEL = new String [16];
+    private static final String [] MODES                = new String []
+    {
+        "Track",
+        "Volume",
+        "Panorama",
+        "Send 1",
+        "Send 2",
+        "Send 3",
+        "Send 4",
+        "Send 5",
+        "Send 6",
+        "Send 7",
+        "Send 8",
+        "Parameters"
+    };
+
     static
     {
         for (int i = 0; i < OPTIONS_MIDI_CHANNEL.length; i++)
@@ -229,6 +247,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private IEnumSetting                             learnTypeSetting;
     private IEnumSetting                             learnNumberSetting;
     private IEnumSetting                             learnMidiChannelSetting;
+    private IEnumSetting                             selectedModeSetting;
 
     private CommandSlot []                           commandSlots          = new CommandSlot [NUM_SLOTS];
 
@@ -242,6 +261,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private String                                   learnMidiChannelValue = null;
     private AtomicBoolean                            doNotFire             = new AtomicBoolean (false);
     private AtomicBoolean                            commandIsUpdating     = new AtomicBoolean (false);
+
+    private String                                   selectedMode          = MODES[0];
 
     private NativeFileDialogs                        dialogs;
 
@@ -283,6 +304,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.slotSelectionSetting = settingsUI.getEnumSetting ("Selected:", category, slotEntries, slotEntries[0]);
         this.slotSelectionSetting.addValueObserver (this::selectSlot);
 
+        ///////////////////////////////////////////////
         // Selected Slot - MIDI trigger
 
         category = "Selected Slot - MIDI trigger";
@@ -293,6 +315,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.knobModeSetting = settingsUI.getEnumSetting ("Knob Mode:", category, OPTIONS_KNOBMODE, OPTIONS_KNOBMODE[0]);
         this.sendValueSetting = settingsUI.getEnumSetting ("Send value to device:", category, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
 
+        ///////////////////////////////////////////////
         // Selected Slot - Function
 
         category = "Selected Slot - Function";
@@ -306,6 +329,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             fs.addValueObserver (this::handleFunctionChange);
         }
 
+        ///////////////////////////////////////////////
         // The MIDI learn section
 
         category = "Use a knob/fader/button then click Set...";
@@ -325,6 +349,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             this.midiChannelSetting.set (this.learnMidiChannelValue);
         });
 
+        ///////////////////////////////////////////////
         // Ex-/Import section
 
         category = "Ex-/Import";
@@ -380,6 +405,17 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             this.fixKnobMode ();
         });
         this.sendValueSetting.addValueObserver (value -> this.getSelectedSlot ().setSendValue (AbstractConfiguration.lookupIndex (AbstractConfiguration.ON_OFF_OPTIONS, value) > 0));
+
+        ///////////////////////////////////////////////
+        // Options
+
+        this.selectedModeSetting = settingsUI.getEnumSetting ("Selected Mode", "Options", MODES, MODES[0]);
+        this.selectedModeSetting.addValueObserver (value -> {
+            this.selectedMode = value;
+            this.notifyObservers (SELECTED_MODE);
+        });
+
+        // Load last configuration
 
         this.host.scheduleTask ( () -> {
             if (this.filename == null || this.filename.isEmpty ())
@@ -653,6 +689,28 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public void setCommandObserver (final IValueObserver<FlexiCommand> observer)
     {
         this.commandObserver = observer;
+    }
+
+
+    /**
+     * Get the selected mode.
+     *
+     * @return The ID of the selected mode
+     */
+    public String getSelectedModeName ()
+    {
+        return this.selectedMode;
+    }
+
+
+    /**
+     * Set the selected mode.
+     *
+     * @param selectedModeName The name of the selected mode
+     */
+    public void setSelectedMode (final String selectedModeName)
+    {
+        this.selectedModeSetting.set (selectedModeName);
     }
 
 
