@@ -376,8 +376,12 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     private String getKompleteInstance ()
     {
         final ICursorDevice instrumentDevice = this.model.getInstrumentDevice ();
-        if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
-            return instrumentDevice.getParameterBank ().getItem (0).getName ();
+        if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol")) {
+            final String name = instrumentDevice.getParameterBank().getItem(0).getName();
+            if (name.isEmpty())
+                host.showNotification("You need to map the first parameter of the Komplete plugin to the first page parameter of the Bitwig remote ");
+            return name;
+        }
         return "";
     }
 
