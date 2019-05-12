@@ -59,6 +59,18 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
                         "KOMPLETE KONTROL - " + i
                     }));
                 }
+                for (int i = 1; i <= 16; i++)
+                {
+                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                    {
+                        "Komplete Kontrol DAW - " + i,
+                        "KOMPLETE KONTROL S49 MK2 Port 1"
+                    }, new String []
+                    {
+                        "Komplete Kontrol DAW - " + i,
+                        "KOMPLETE KONTROL S49 MK2 Port 1"
+                    }));
+                }
                 for (final String element: A_SERIES)
                 {
                     midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
