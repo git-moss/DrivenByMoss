@@ -19,9 +19,17 @@ import java.util.UUID;
  */
 public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID         EXTENSION_ID  = UUID.fromString ("E39043C6-301A-448B-879D-B0308C484265");
+    private static final UUID         EXTENSION_ID   = UUID.fromString ("E39043C6-301A-448B-879D-B0308C484265");
 
-    private static final String [] [] PORTS_WINDOWS = new String [] []
+    private static final String []    WINDOWS_STARTS =
+    {
+        "",
+        "2- ",
+        "3- ",
+        "4- "
+    };
+
+    private static final String [] [] PORTS_WINDOWS  = new String [] []
     {
         new String []
         {
@@ -50,7 +58,7 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
         }
     };
 
-    private static final String [] [] PORTS_MACOS   = new String [] []
+    private static final String [] [] PORTS_MACOS    = new String [] []
     {
         new String []
         {
@@ -107,8 +115,18 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
                 break;
 
             case WINDOWS:
-                for (final String [] ports: PORTS_WINDOWS)
-                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (ports, ports));
+                for (final String start: WINDOWS_STARTS)
+                {
+                    for (final String [] ports: PORTS_WINDOWS)
+                    {
+                        final String [] ps =
+                        {
+                            ports[0],
+                            start + ports[1]
+                        };
+                        midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (ps, ps));
+                    }
+                }
                 break;
 
             case LINUX:
