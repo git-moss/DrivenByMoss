@@ -59,6 +59,11 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
         },
         new String []
         {
+            "Komplete Kontrol DAW - 1",
+            "KOMPLETE KONTROL S49 MK2 Anschluss 1"
+        },
+        new String []
+        {
             "Komplete Kontrol A DAW",
             "KOMPLETE KONTROL A25 MIDI",
         },
