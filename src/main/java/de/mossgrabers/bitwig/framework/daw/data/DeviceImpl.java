@@ -10,6 +10,9 @@ import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.Device;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Encapsulates the data of a device.
@@ -18,7 +21,10 @@ import com.bitwig.extension.controller.api.Device;
  */
 public class DeviceImpl extends AbstractItemImpl implements IDevice
 {
-    private final Device device;
+    private final Device        device;
+
+    private String []           directParameterIds;
+    private Map<String, String> directParameterNames = new HashMap<> ();
 
 
     /**
@@ -36,6 +42,9 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
         device.exists ().markInterested ();
         device.position ().markInterested ();
         device.name ().markInterested ();
+
+        device.addDirectParameterIdObserver (value -> this.directParameterIds = value);
+        device.addDirectParameterNameObserver (1024, (String id, String name) -> this.directParameterNames.put (id, name));
     }
 
 
@@ -62,6 +71,18 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
     public int getPosition ()
     {
         return this.device.position ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getID ()
+    {
+        if (this.directParameterIds.length == 0)
+            return "";
+        // Get the name of the first parameter. Currently, only works for Komplete Kontrol plugin
+        final String id = this.directParameterNames.get (this.directParameterIds[0]);
+        return id == null ? "" : id;
     }
 
 

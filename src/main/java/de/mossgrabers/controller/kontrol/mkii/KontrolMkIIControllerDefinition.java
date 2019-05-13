@@ -19,12 +19,64 @@ import java.util.UUID;
  */
 public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID      EXTENSION_ID = UUID.fromString ("E39043C6-301A-448B-879D-B0308C484265");
-    private static final String [] A_SERIES     =
+    private static final UUID         EXTENSION_ID  = UUID.fromString ("E39043C6-301A-448B-879D-B0308C484265");
+
+    private static final String [] [] PORTS_WINDOWS = new String [] []
     {
-        "KOMPLETE KONTROL A25 MIDI",
-        "KOMPLETE KONTROL A49 MIDI",
-        "KOMPLETE KONTROL A61 MIDI"
+        new String []
+        {
+            "Komplete Kontrol DAW - 1",
+            "KOMPLETE KONTROL - 1"
+        },
+        new String []
+        {
+            "Komplete Kontrol A DAW",
+            "KOMPLETE KONTROL A25 MIDI",
+        },
+        new String []
+        {
+            "Komplete Kontrol A DAW",
+            "KOMPLETE KONTROL A49 MIDI",
+        },
+        new String []
+        {
+            "Komplete Kontrol A DAW",
+            "KOMPLETE KONTROL A61 MIDI",
+        },
+        new String []
+        {
+            "Komplete Kontrol M DAW",
+            "KOMPLETE KONTROL M32 MIDI"
+        }
+    };
+
+    private static final String [] [] PORTS_MACOS   = new String [] []
+    {
+        new String []
+        {
+            "Komplete Kontrol DAW - 1",
+            "KOMPLETE KONTROL S49 MK2 Port 1"
+        },
+        new String []
+        {
+            "Komplete Kontrol A DAW",
+            "KOMPLETE KONTROL A25 MIDI",
+        },
+        new String []
+        {
+            "Komplete Kontrol A DAW",
+            "KOMPLETE KONTROL A49 MIDI",
+        },
+        new String []
+        {
+            "Komplete Kontrol A DAW",
+            "KOMPLETE KONTROL A61 MIDI",
+        },
+        new String []
+        {
+            "Komplete Kontrol M DAW",
+            "KOMPLETE KONTROL M32 MIDI"
+        }
     };
 
 
@@ -44,54 +96,14 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
         final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
         switch (os)
         {
-            // TODO Bugfix required: Lookup with "-" seems to be broken
             case MAC:
+                for (final String [] ports: PORTS_MACOS)
+                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (ports, ports));
+                break;
+
             case WINDOWS:
-                for (int i = 1; i <= 16; i++)
-                {
-                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-                    {
-                        "Komplete Kontrol DAW - " + i,
-                        "KOMPLETE KONTROL - " + i
-                    }, new String []
-                    {
-                        "Komplete Kontrol DAW - " + i,
-                        "KOMPLETE KONTROL - " + i
-                    }));
-                }
-                for (int i = 1; i <= 16; i++)
-                {
-                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-                    {
-                        "Komplete Kontrol DAW - " + i,
-                        "KOMPLETE KONTROL S49 MK2 Port 1"
-                    }, new String []
-                    {
-                        "Komplete Kontrol DAW - " + i,
-                        "KOMPLETE KONTROL S49 MK2 Port 1"
-                    }));
-                }
-                for (final String element: A_SERIES)
-                {
-                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-                    {
-                        "Komplete Kontrol A DAW",
-                        element
-                    }, new String []
-                    {
-                        "Komplete Kontrol A DAW",
-                        element
-                    }));
-                }
-                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-                {
-                    "Komplete Kontrol M DAW",
-                    "KOMPLETE KONTROL M32 MIDI"
-                }, new String []
-                {
-                    "Komplete Kontrol M DAW",
-                    "KOMPLETE KONTROL M32 MIDI"
-                }));
+                for (final String [] ports: PORTS_WINDOWS)
+                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (ports, ports));
                 break;
 
             case LINUX:
