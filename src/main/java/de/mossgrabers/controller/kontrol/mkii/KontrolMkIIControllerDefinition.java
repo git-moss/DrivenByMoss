@@ -73,22 +73,22 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
         new String []
         {
             "Komplete Kontrol A DAW",
-            "KOMPLETE KONTROL A25 MIDI",
+            "KOMPLETE KONTROL A25",
         },
         new String []
         {
             "Komplete Kontrol A DAW",
-            "KOMPLETE KONTROL A49 MIDI",
+            "KOMPLETE KONTROL A49",
         },
         new String []
         {
             "Komplete Kontrol A DAW",
-            "KOMPLETE KONTROL A61 MIDI",
+            "KOMPLETE KONTROL A61",
         },
         new String []
         {
             "Komplete Kontrol M DAW",
-            "KOMPLETE KONTROL M32 MIDI"
+            "KOMPLETE KONTROL M32"
         }
     };
 
