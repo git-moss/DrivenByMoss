@@ -15,6 +15,14 @@ import de.mossgrabers.framework.daw.data.IDevice;
 public interface ICursorDevice extends IDevice
 {
     /**
+     * Get the identifier of the device if any.
+     *
+     * @return The identifier, returns an empty string if none, never null
+     */
+    String getID ();
+
+
+    /**
      * Start the browser to replace a device.
      */
     void browseToReplaceDevice ();

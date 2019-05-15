@@ -271,7 +271,7 @@ public interface Configuration
     /**
      * Get the change value for normal knob speed.
      *
-     * @return The value
+     * @return The value in the range of 1-100%
      */
     int getKnobSpeedNormal ();
 
@@ -279,7 +279,7 @@ public interface Configuration
     /**
      * Get the change value for slow knob speed.
      *
-     * @return The value
+     * @return The value in the range of 1-100%
      */
     int getKnobSpeedSlow ();
 }

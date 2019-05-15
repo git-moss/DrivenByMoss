@@ -318,7 +318,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.activateFootswitchSetting (settingsUI);
         this.activateStopAutomationOnKnobReleaseSetting (settingsUI);
         this.activateNewClipLengthSetting (settingsUI);
-        this.activateKnobSpeedSetting (settingsUI);
+        this.activateKnobSpeedSetting (settingsUI, 10);
 
         ///////////////////////////
         // Ribbon

@@ -1014,10 +1014,11 @@ public abstract class AbstractConfiguration implements Configuration
      * Activate the knob speed settings.
      *
      * @param settingsUI The settings
+     * @param defaultFastSpeed The default value for the fast speed (1-100)
      */
-    protected void activateKnobSpeedSetting (final ISettingsUI settingsUI)
+    protected void activateKnobSpeedSetting (final ISettingsUI settingsUI, final int defaultFastSpeed)
     {
-        final IIntegerSetting knobSpeedNormalSetting = settingsUI.getRangeSetting ("Knob Speed Normal", CATEGORY_WORKFLOW, 1, 100, 1, "%", 10);
+        final IIntegerSetting knobSpeedNormalSetting = settingsUI.getRangeSetting ("Knob Speed Normal", CATEGORY_WORKFLOW, 1, 100, 1, "%", defaultFastSpeed);
         knobSpeedNormalSetting.addValueObserver (value -> {
             this.knobSpeedNormal = value.intValue () + 1;
             this.notifyObservers (AbstractConfiguration.KNOB_SPEED_NORMAL);

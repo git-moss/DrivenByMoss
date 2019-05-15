@@ -12,14 +12,6 @@ package de.mossgrabers.framework.daw.data;
 public interface IDevice extends IItem
 {
     /**
-     * Get the identifier of the device if any.
-     *
-     * @return The identifier, returns an empty string if none, never null
-     */
-    String getID ();
-
-
-    /**
      * Delete the channel.
      */
     void remove ();

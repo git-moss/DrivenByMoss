@@ -415,6 +415,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             this.notifyObservers (SELECTED_MODE);
         });
 
+        this.activateKnobSpeedSetting (settingsUI, 6);
+
         // Load last configuration
 
         this.host.scheduleTask ( () -> {

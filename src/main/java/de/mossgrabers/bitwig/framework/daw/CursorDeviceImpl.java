@@ -20,6 +20,9 @@ import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Proxy to the Bitwig Cursor device.
@@ -30,6 +33,9 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 {
     private final PinnableCursorDevice cursorDevice;
     private final CursorDeviceLayer    cursorDeviceLayer;
+
+    private String []                  directParameterIds;
+    private Map<String, String>        directParameterNames = new HashMap<> ();
 
     private final IDeviceBank          deviceBank;
     private final IParameterPageBank   parameterPageBank;
@@ -73,6 +79,9 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
         this.cursorDevice.hasLayers ().markInterested ();
         this.cursorDevice.hasSlots ().markInterested ();
         this.cursorDevice.isPinned ().markInterested ();
+
+        this.cursorDevice.addDirectParameterIdObserver (value -> this.directParameterIds = value);
+        this.cursorDevice.addDirectParameterNameObserver (1024, (String id, String name) -> this.directParameterNames.put (id, name));
 
         this.cursorDeviceLayer = this.cursorDevice.createCursorLayer ();
         this.cursorDeviceLayer.hasPrevious ().markInterested ();
@@ -136,6 +145,18 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 
         this.layerBank.enableObservers (enable);
         this.drumPadBank.enableObservers (enable);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getID ()
+    {
+        if (this.directParameterIds.length == 0)
+            return "";
+        // Get the name of the first parameter. Currently, only works for Komplete Kontrol plugin
+        final String id = this.directParameterNames.get (this.directParameterIds[0]);
+        return id == null ? "" : id;
     }
 
 

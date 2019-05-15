@@ -6,9 +6,11 @@ package de.mossgrabers.controller.generic.controller;
 
 import de.mossgrabers.controller.generic.CommandSlot;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
+import de.mossgrabers.controller.generic.command.trigger.ToggleKnobSpeedCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.WindCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
@@ -51,26 +53,29 @@ import java.util.List;
  */
 public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFlexiConfiguration>
 {
-    private static final int                                                         KNOB_MODE_ABSOLUTE        = 0;
-    private static final int                                                         KNOB_MODE_RELATIVE1       = 1;
-    private static final int                                                         KNOB_MODE_RELATIVE2       = 2;
-    private static final int                                                         KNOB_MODE_RELATIVE3       = 3;
-    private static final int                                                         KNOB_MODE_ABSOLUTE_TOGGLE = 4;
+    private static final int                                                                    KNOB_MODE_ABSOLUTE        = 0;
+    private static final int                                                                    KNOB_MODE_RELATIVE1       = 1;
+    private static final int                                                                    KNOB_MODE_RELATIVE2       = 2;
+    private static final int                                                                    KNOB_MODE_RELATIVE3       = 3;
+    private static final int                                                                    KNOB_MODE_ABSOLUTE_TOGGLE = 4;
 
-    protected static final int                                                       SCROLL_RATE               = 6;
-    private static final List<Integer>                                               MODE_IDS                  = new ArrayList<> ();
+    protected static final int                                                                  SCROLL_RATE               = 6;
+    private static final List<Integer>                                                          MODE_IDS                  = new ArrayList<> ();
 
-    private int                                                                      movementCounter           = 0;
+    private int                                                                                 movementCounter           = 0;
+    private boolean                                                                             isShiftButtonPressed      = false;
 
-    private final IModel                                                             model;
-    private final IValueChanger                                                      relative2ValueChanger     = new Relative2ValueChanger (128, 1, 0.5);
-    private final IValueChanger                                                      relative3ValueChanger     = new Relative3ValueChanger (128, 1, 0.5);
-    private final int []                                                             valueCache                = new int [GenericFlexiConfiguration.NUM_SLOTS];
-    private boolean                                                                  isUpdatingValue           = false;
-    private final TriggerCommand                                                     toggleTrackBankCommand;
+    private final IModel                                                                        model;
+    private final IValueChanger                                                                 relative2ValueChanger     = new Relative2ValueChanger (128, 6, 1);
+    private final IValueChanger                                                                 relative3ValueChanger     = new Relative3ValueChanger (128, 6, 1);
+    private final int []                                                                        valueCache                = new int [GenericFlexiConfiguration.NUM_SLOTS];
+    private boolean                                                                             isUpdatingValue           = false;
+    private final TriggerCommand                                                                toggleTrackBankCommand;
 
-    private final WindCommand<GenericFlexiControlSurface, GenericFlexiConfiguration> rwdCommand;
-    private final WindCommand<GenericFlexiControlSurface, GenericFlexiConfiguration> ffwdCommand;
+    private final WindCommand<GenericFlexiControlSurface, GenericFlexiConfiguration>            rwdCommand;
+    private final WindCommand<GenericFlexiControlSurface, GenericFlexiConfiguration>            ffwdCommand;
+    private final PlayCommand<GenericFlexiControlSurface, GenericFlexiConfiguration>            playCommand;
+    private final ToggleKnobSpeedCommand<GenericFlexiControlSurface, GenericFlexiConfiguration> knobSpeedCommand;
 
     static
     {
@@ -113,8 +118,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
         this.rwdCommand = new WindCommand<> (this.model, this, false);
         this.ffwdCommand = new WindCommand<> (this.model, this, true);
+        this.playCommand = new PlayCommand<> (this.model, this);
+        this.knobSpeedCommand = new ToggleKnobSpeedCommand<> (this.model, this);
 
         this.input.setSysexCallback (this::handleSysEx);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isShiftPressed ()
+    {
+        return this.isShiftButtonPressed;
     }
 
 
@@ -233,6 +248,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         {
             case GLOBAL_TOGGLE_AUDIO_ENGINE:
                 return this.model.getApplication ().isEngineActive () ? 127 : 0;
+
+            case GLOBAL_SHIFT_BUTTON:
+                return this.isShiftPressed () ? 127 : 0;
 
             case TRANSPORT_PLAY:
                 return this.model.getTransport ().isPlaying () ? 127 : 0;
@@ -660,11 +678,15 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (isButtonPressed)
                     this.model.getApplication ().toggleEngineActive ();
                 break;
+            // Global: Shift Button
+            case GLOBAL_SHIFT_BUTTON:
+                this.isShiftButtonPressed = isButtonPressed;
+                this.knobSpeedCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP);
+                break;
 
             // Transport: Play
             case TRANSPORT_PLAY:
-                if (isButtonPressed)
-                    this.model.getTransport ().play ();
+                this.playCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP);
                 break;
             // Transport: Stop
             case TRANSPORT_STOP:
@@ -2224,5 +2246,35 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     public static boolean isAbsolute (final int knobMode)
     {
         return knobMode == KNOB_MODE_ABSOLUTE || knobMode == KNOB_MODE_ABSOLUTE_TOGGLE;
+    }
+
+
+    /**
+     * Update all knob speeds from the configuration settings.
+     */
+    public void updateKnobSpeeds ()
+    {
+        final double fraction = (128 * this.configuration.getKnobSpeedNormal ()) / 100.0;
+        this.model.getValueChanger ().setFractionValue (fraction);
+        this.relative2ValueChanger.setFractionValue (fraction);
+        this.relative3ValueChanger.setFractionValue (fraction);
+
+        final double slowFraction = (128 * this.configuration.getKnobSpeedSlow ()) / 100.0;
+        this.model.getValueChanger ().setSlowFractionValue (slowFraction);
+        this.relative2ValueChanger.setSlowFractionValue (slowFraction);
+        this.relative3ValueChanger.setSlowFractionValue (slowFraction);
+    }
+
+
+    /**
+     * Set the knob speed on all value changers.
+     *
+     * @param isSlow True to set to slow otherwise fast
+     */
+    public void setKnobSpeed (final boolean isSlow)
+    {
+        this.model.getValueChanger ().setSpeed (isSlow);
+        this.relative2ValueChanger.setSpeed (isSlow);
+        this.relative3ValueChanger.setSpeed (isSlow);
     }
 }

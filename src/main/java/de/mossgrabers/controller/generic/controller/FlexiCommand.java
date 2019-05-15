@@ -23,6 +23,7 @@ public enum FlexiCommand
     GLOBAL_PREVIOUS_PROJECT(CommandCategory.GLOBAL, "Global: Previous Project", true),
     GLOBAL_NEXT_PROJECT(CommandCategory.GLOBAL, "Global: Next Project", true),
     GLOBAL_TOGGLE_AUDIO_ENGINE(CommandCategory.GLOBAL, "Global: Toggle Audio Engine", true),
+    GLOBAL_SHIFT_BUTTON(CommandCategory.GLOBAL, "Global: Shift Button", true),
 
     TRANSPORT_PLAY(CommandCategory.TRANSPORT, "Transport: Play", true),
     TRANSPORT_STOP(CommandCategory.TRANSPORT, "Transport: Stop", true),

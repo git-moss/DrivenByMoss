@@ -6,6 +6,7 @@ package de.mossgrabers.controller.generic;
 
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
@@ -54,7 +55,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     {
         super (factory, host, settings);
         this.colorManager = new ColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
+        this.valueChanger = new DefaultValueChanger (128, 6, 1);
         this.configuration = new GenericFlexiConfiguration (host, this.valueChanger);
     }
 
@@ -126,6 +127,9 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final GenericFlexiControlSurface surface = this.getSurface ();
         this.configuration.addSettingObserver (GenericFlexiConfiguration.SLOT_CHANGE, surface::updateKeyTranslation);
         this.configuration.addSettingObserver (GenericFlexiConfiguration.SELECTED_MODE, this::selectMode);
+
+        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, this.getSurface ()::updateKnobSpeeds);
+        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, this.getSurface ()::updateKnobSpeeds);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver ( (index, selected) -> this.handleTrackChange (selected));
