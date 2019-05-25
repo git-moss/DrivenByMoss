@@ -7,6 +7,7 @@ package de.mossgrabers.framework.daw;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
+import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.usb.IUsbDevice;
@@ -127,16 +128,16 @@ public interface IHost
      * @param serverPort The port of the server
      * @return Interface for interacting with the server
      */
-    IOpenSoundControlServer connectToOSCServer (String serverAddress, int serverPort);
+    IOpenSoundControlClient connectToOSCServer (String serverAddress, int serverPort);
 
 
     /**
      * Create an OSC server.
      *
      * @param callback The callback method to handle received messages
-     * @param port The port to listen on
+     * @return The created server
      */
-    void createOSCServer (IOpenSoundControlCallback callback, int port);
+    IOpenSoundControlServer createOSCServer (IOpenSoundControlCallback callback);
 
 
     /**

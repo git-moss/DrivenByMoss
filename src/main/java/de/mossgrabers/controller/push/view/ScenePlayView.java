@@ -97,6 +97,13 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
             return;
         }
 
+        if (this.surface.isDeletePressed ())
+        {
+            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            scene.remove ();
+            return;
+        }
+
         scene.launch ();
         scene.select ();
     }

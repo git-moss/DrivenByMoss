@@ -144,7 +144,7 @@ public class DeviceParamsMode extends BaseMode
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DELETE))
             {
                 this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
-                cd.remove ();
+                cd.getDeviceBank ().getItem (index).remove ();
                 return;
             }
 

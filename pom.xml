@@ -6,7 +6,7 @@
 	<artifactId>DrivenByMoss</artifactId>
 	<packaging>jar</packaging>
 	<name>DrivenByMoss</name>
-	<version>6.4</version>
+	<version>7.0</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>com.bitwig</groupId>
 			<artifactId>extension-api</artifactId>
-			<version>7</version>
+			<version>9</version>
 		</dependency>
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>

@@ -27,7 +27,7 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
     protected final IModel                         model;
     protected final IOpenSoundControlConfiguration configuration;
 
-    protected final IOpenSoundControlServer        oscServer;
+    protected final IOpenSoundControlClient        oscClient;
     protected final Map<String, Object>            oldValues = new HashMap<> ();
 
     private final List<IOpenSoundControlMessage>   messages  = new ArrayList<> ();
@@ -38,14 +38,14 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
      *
      * @param host The host
      * @param model The model
-     * @param oscServer The OSC server to write to
+     * @param oscClient The OSC client to write to
      * @param configuration The OSC configuration
      */
-    protected AbstractOpenSoundControlWriter (final IHost host, final IModel model, final IOpenSoundControlServer oscServer, final IOpenSoundControlConfiguration configuration)
+    protected AbstractOpenSoundControlWriter (final IHost host, final IModel model, final IOpenSoundControlClient oscClient, final IOpenSoundControlConfiguration configuration)
     {
         this.host = host;
         this.model = model;
-        this.oscServer = oscServer;
+        this.oscClient = oscClient;
         this.configuration = configuration;
     }
 
@@ -60,7 +60,7 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
             try
             {
                 this.logMessages (this.messages);
-                this.oscServer.sendBundle (this.messages);
+                this.oscClient.sendBundle (this.messages);
             }
             catch (final IOException ex)
             {
@@ -165,7 +165,7 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
 
     protected boolean isConnected ()
     {
-        return this.oscServer != null;
+        return this.oscClient != null;
     }
 
 

@@ -172,7 +172,16 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     {
         if (event != ButtonEvent.DOWN)
             return;
+
         final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (sceneIndex);
+
+        if (this.surface.isDeletePressed ())
+        {
+            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            scene.remove ();
+            return;
+        }
+
         scene.select ();
         scene.launch ();
     }

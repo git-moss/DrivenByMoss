@@ -23,6 +23,8 @@ import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.MasterTrack;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
+import com.bitwig.extension.controller.api.Project;
+import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 
 import java.util.HashMap;
@@ -44,6 +46,8 @@ public class ModelImpl extends AbstractModel
     private final Map<Integer, ISceneBank> sceneBanks = new HashMap<> (1);
     private final TrackBank                muteSoloTrackBank;
 
+    private Track                          rootTrackGroup;
+
 
     /**
      * Constructor.
@@ -63,7 +67,8 @@ public class ModelImpl extends AbstractModel
 
         final Application app = controllerHost.createApplication ();
         this.application = new ApplicationImpl (app);
-        this.project = new ProjectImpl (controllerHost.getProject (), app);
+        final Project proj = controllerHost.getProject ();
+        this.project = new ProjectImpl (proj, app);
 
         final Arranger bwArranger = controllerHost.createArranger ();
         this.arranger = new ArrangerImpl (bwArranger);
@@ -95,7 +100,8 @@ public class ModelImpl extends AbstractModel
         else
             tb = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
 
-        this.trackBank = new TrackBankImpl (this.host, valueChanger, tb, this.cursorTrack, numTracks, numScenes, numSends);
+        this.rootTrackGroup = proj.getRootTrackGroup ();
+        this.trackBank = new TrackBankImpl (this.host, valueChanger, tb, this.cursorTrack, this.rootTrackGroup, numTracks, numScenes, numSends);
         final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numTracks, numScenes);
         this.effectTrackBank = new EffectTrackBankImpl (this.host, valueChanger, this.cursorTrack, effectTrackBank, numTracks, numScenes, this.trackBank);
 
@@ -133,7 +139,7 @@ public class ModelImpl extends AbstractModel
         return this.sceneBanks.computeIfAbsent (Integer.valueOf (numScenes), key -> {
             final TrackBank tb = this.controllerHost.createMainTrackBank (1, this.modelSetup.getNumSends (), numScenes);
             tb.followCursorTrack (this.cursorTrack);
-            return new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, 1, numScenes, 0).getSceneBank ();
+            return new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, this.rootTrackGroup, 1, numScenes, 0).getSceneBank ();
         });
     }
 

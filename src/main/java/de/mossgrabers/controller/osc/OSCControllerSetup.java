@@ -17,9 +17,12 @@ import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.KeyManager;
+
+import java.io.IOException;
 
 
 /**
@@ -29,8 +32,9 @@ import de.mossgrabers.framework.utils.KeyManager;
  */
 public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<OSCConfiguration>, OSCConfiguration>
 {
-    private OSCWriter  writer;
-    private KeyManager keyManager;
+    private OSCWriter               writer;
+    private KeyManager              keyManager;
+    private IOpenSoundControlServer oscServer;
 
 
     /**
@@ -82,6 +86,19 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     @Override
     protected void createObservers ()
     {
+        this.configuration.addSettingObserver (OSCConfiguration.RECEIVE_PORT, () -> {
+            try
+            {
+                final int receivePort = this.configuration.getReceivePort ();
+                this.oscServer.start (receivePort);
+                this.host.println ("Started OSC server on port " + receivePort + ".");
+            }
+            catch (final IOException ex)
+            {
+                this.host.error ("Could not start OSC server.", ex);
+            }
+        });
+
         final ITrackBank tb = this.model.getTrackBank ();
         for (int i = 0; i < tb.getPageSize (); i++)
             tb.getItem (i).addNoteObserver (this.keyManager);
@@ -122,11 +139,12 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         this.keyManager = new KeyManager (this.model, surface.getPadGrid ());
 
         // Send OSC messages
-        final IOpenSoundControlServer oscServer = this.host.connectToOSCServer (this.configuration.getSendHost (), this.configuration.getSendPort ());
-        this.writer = new OSCWriter (this.host, this.model, oscServer, this.keyManager, this.configuration);
+        final IOpenSoundControlClient oscClient = this.host.connectToOSCServer (this.configuration.getSendHost (), this.configuration.getSendPort ());
+        this.writer = new OSCWriter (this.host, this.model, oscClient, this.keyManager, this.configuration);
 
         // Receive OSC messages
-        this.host.createOSCServer (new OSCParser (this.host, surface, this.model, this.configuration, this.writer, input, this.keyManager), this.configuration.getReceivePort ());
+        final OSCParser parser = new OSCParser (this.host, surface, this.model, this.configuration, this.writer, input, this.keyManager);
+        this.oscServer = this.host.createOSCServer (parser);
     }
 
 

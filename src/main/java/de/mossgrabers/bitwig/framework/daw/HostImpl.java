@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.graphics.BitmapImpl;
 import de.mossgrabers.bitwig.framework.graphics.ImageImpl;
+import de.mossgrabers.bitwig.framework.osc.OpenSoundControlClientImpl;
 import de.mossgrabers.bitwig.framework.osc.OpenSoundControlMessageImpl;
 import de.mossgrabers.bitwig.framework.osc.OpenSoundControlServerImpl;
 import de.mossgrabers.bitwig.framework.usb.UsbDeviceImpl;
@@ -14,6 +15,7 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
+import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.usb.IUsbDevice;
@@ -157,23 +159,23 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public IOpenSoundControlServer connectToOSCServer (final String serverAddress, final int serverPort)
+    public IOpenSoundControlClient connectToOSCServer (final String serverAddress, final int serverPort)
     {
         // TODO Bugfix required: Can only be called in init but needs to listen to host and port
         // changes - https://github.com/teotigraphix/Framework4Bitwig/issues/208
         final OscModule oscModule = this.host.getOscModule ();
-        return new OpenSoundControlServerImpl (oscModule.connectToUdpServer (serverAddress, serverPort, oscModule.createAddressSpace ()));
+        return new OpenSoundControlClientImpl (oscModule.connectToUdpServer (serverAddress, serverPort, oscModule.createAddressSpace ()));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void createOSCServer (final IOpenSoundControlCallback callback, final int port)
+    public IOpenSoundControlServer createOSCServer (final IOpenSoundControlCallback callback)
     {
         final OscModule oscModule = this.host.getOscModule ();
         final OscAddressSpace addressSpace = oscModule.createAddressSpace ();
         addressSpace.registerDefaultMethod ( (source, message) -> callback.handle (new OpenSoundControlMessageImpl (message)));
-        oscModule.createUdpServer (port, addressSpace);
+        return new OpenSoundControlServerImpl (oscModule.createUdpServer2 (addressSpace));
     }
 
 

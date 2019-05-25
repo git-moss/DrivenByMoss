@@ -7,7 +7,9 @@ package de.mossgrabers.bitwig.framework.daw;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 
+import com.bitwig.extension.controller.api.BooleanValue;
 import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 
 
@@ -18,6 +20,9 @@ import com.bitwig.extension.controller.api.TrackBank;
  */
 public class TrackBankImpl extends AbstractTrackBankImpl
 {
+    private BooleanValue isTopGroup;
+
+
     /**
      * Constructor.
      *
@@ -25,13 +30,17 @@ public class TrackBankImpl extends AbstractTrackBankImpl
      * @param valueChanger The value changer
      * @param bank The Bitwig track bank
      * @param cursorTrack The cursor track
+     * @param rootGroup The root track
      * @param numTracks The number of tracks in a bank page
      * @param numScenes The number of scenes in a bank page
      * @param numSends The number of sends in a bank page
      */
-    public TrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final CursorTrack cursorTrack, final int numTracks, final int numScenes, final int numSends)
+    public TrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final CursorTrack cursorTrack, final Track rootGroup, final int numTracks, final int numScenes, final int numSends)
     {
         super (host, valueChanger, cursorTrack, bank, numTracks, numScenes, numSends);
+
+        this.isTopGroup = this.bank.getItemAt (0).createParentTrack (0, 0).createEqualsValue (rootGroup);
+        this.isTopGroup.markInterested ();
     }
 
 
@@ -47,8 +56,7 @@ public class TrackBankImpl extends AbstractTrackBankImpl
     @Override
     public boolean hasParent ()
     {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/205
-        return true;
+        return !this.isTopGroup.get ();
     }
 
 

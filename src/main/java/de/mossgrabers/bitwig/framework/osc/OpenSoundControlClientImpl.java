@@ -4,8 +4,8 @@
 
 package de.mossgrabers.bitwig.framework.osc;
 
+import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
-import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 
 import com.bitwig.extension.api.opensoundcontrol.OscConnection;
 
@@ -14,11 +14,11 @@ import java.util.List;
 
 
 /**
- * Implementation of a OSC server connection.
+ * Implementation of an OSC server connection (the client).
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class OpenSoundControlServerImpl implements IOpenSoundControlServer
+public class OpenSoundControlClientImpl implements IOpenSoundControlClient
 {
     private OscConnection connection;
 
@@ -28,7 +28,7 @@ public class OpenSoundControlServerImpl implements IOpenSoundControlServer
      *
      * @param connection The OSC connection
      */
-    public OpenSoundControlServerImpl (final OscConnection connection)
+    public OpenSoundControlClientImpl (final OscConnection connection)
     {
         this.connection = connection;
     }

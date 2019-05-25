@@ -370,7 +370,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     @Override
     public void remove ()
     {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/180
+        // Only available for track
     }
 
 

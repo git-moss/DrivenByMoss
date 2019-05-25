@@ -5,7 +5,6 @@
 package de.mossgrabers.framework.osc;
 
 import java.io.IOException;
-import java.util.List;
 
 
 /**
@@ -16,19 +15,10 @@ import java.util.List;
 public interface IOpenSoundControlServer
 {
     /**
-     * Send a message to the server.
-     *
-     * @param message The message to send
-     * @throws IOException Could not send the message
+     * Starts the server on the given port. If it was already running it is restarted.
+     * 
+     * @param port The port to start the server on
+     * @throws IOException Could not start the server
      */
-    void sendMessage (IOpenSoundControlMessage message) throws IOException;
-
-
-    /**
-     * Send several messages to the server as an OSC bundle.
-     *
-     * @param messages The messages to send
-     * @throws IOException Could not send the messages
-     */
-    void sendBundle (List<IOpenSoundControlMessage> messages) throws IOException;
+    void start (int port) throws IOException;
 }

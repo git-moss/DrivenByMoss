@@ -91,7 +91,16 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
     {
         if (event != ButtonEvent.DOWN)
             return;
+
         final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (sceneIndex);
+
+        if (this.surface.isDeletePressed ())
+        {
+            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            scene.remove ();
+            return;
+        }
+
         scene.select ();
         scene.launch ();
     }

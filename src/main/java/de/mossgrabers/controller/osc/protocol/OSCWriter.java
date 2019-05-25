@@ -36,7 +36,7 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.osc.AbstractOpenSoundControlWriter;
-import de.mossgrabers.framework.osc.IOpenSoundControlServer;
+import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.KeyManager;
 
@@ -56,13 +56,13 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
      *
      * @param host The host
      * @param model The model
-     * @param oscServer The OSC server to write to
+     * @param oscClient The OSC client to write to
      * @param keyManager The model
      * @param configuration The configuration
      */
-    public OSCWriter (final IHost host, final IModel model, final IOpenSoundControlServer oscServer, final KeyManager keyManager, final OSCConfiguration configuration)
+    public OSCWriter (final IHost host, final IModel model, final IOpenSoundControlClient oscClient, final KeyManager keyManager, final OSCConfiguration configuration)
     {
-        super (host, model, oscServer, configuration);
+        super (host, model, oscClient, configuration);
         this.keyManager = keyManager;
     }
 

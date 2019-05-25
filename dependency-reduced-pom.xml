@@ -4,7 +4,7 @@
   <groupId>de.mossgrabers</groupId>
   <artifactId>DrivenByMoss</artifactId>
   <name>DrivenByMoss</name>
-  <version>6.4</version>
+  <version>7.0</version>
   <build>
     <plugins>
       <plugin>
@@ -116,7 +116,7 @@
     <dependency>
       <groupId>com.bitwig</groupId>
       <artifactId>extension-api</artifactId>
-      <version>7</version>
+      <version>9</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
