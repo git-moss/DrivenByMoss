@@ -370,7 +370,8 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     @Override
     public void remove ()
     {
-        // Only available for track
+        // TODO Requires API 9
+        // this.deviceChain.removeChannel ();
     }
 
 

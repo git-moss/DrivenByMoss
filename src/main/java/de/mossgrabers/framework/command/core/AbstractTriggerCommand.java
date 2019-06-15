@@ -48,16 +48,22 @@ public abstract class AbstractTriggerCommand<S extends IControlSurface<C>, C ext
     }
 
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Execute normal (without shift pressed).
+     *
+     * @param event The button event
+     */
     public void executeNormal (final ButtonEvent event)
     {
         // Intentionally empty
     }
 
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Execute when shift is pressed.
+     *
+     * @param event The button event
+     */
     public void executeShifted (final ButtonEvent event)
     {
         // Intentionally empty

@@ -22,10 +22,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class TransportMode extends BaseMode
 {
-    private static final int MIN_TEMPO = 20;
-    private static final int MAX_TEMPO = 666;
-
-
     /**
      * Constructor.
      *
@@ -150,7 +146,7 @@ public class TransportMode extends BaseMode
         message.addOptionElement ("", "", false, "", "1 Bar", TransportConstants.PREROLL_1_BAR.equals (preroll), false);
         message.addOptionElement ("", "", false, "", "2 Bars", TransportConstants.PREROLL_2_BARS.equals (preroll), false);
         message.addOptionElement ("", "", false, "", "4 Bars", TransportConstants.PREROLL_4_BARS.equals (preroll), false);
-        message.addParameterElement ("Tempo", (int) this.convertTempo (tempo), transport.formatTempo (tempo), this.isKnobTouched[4], -1);
+        message.addParameterElement ("Tempo", (int) transport.rescaleTempo (tempo, this.model.getValueChanger ().getUpperBound ()), transport.formatTempo (tempo), this.isKnobTouched[4], -1);
         message.addOptionElement ("  Time Sig.", "", false, "       " + transport.getNumerator () + " / " + transport.getDenominator (), "", false, false);
         message.addOptionElement ("        Play Position", "", false, null, "        " + transport.getPositionText (), "", false, null, false, this.isKnobTouched[6]);
         message.addOptionElement ("", "", false, "", "", false, false);
@@ -160,20 +156,13 @@ public class TransportMode extends BaseMode
 
     private static String formatTempoBars (final double value)
     {
-        final double v = value - TransportMode.MIN_TEMPO;
-        final int noOfBars = (int) Math.round (16 * v / (TransportMode.MAX_TEMPO - TransportMode.MIN_TEMPO));
+        final double v = value - TransportConstants.MIN_TEMPO;
+        final int noOfBars = (int) Math.round (16 * v / (TransportConstants.MAX_TEMPO - TransportConstants.MIN_TEMPO));
         final StringBuilder n = new StringBuilder ();
         for (int j = 0; j < noOfBars / 2; j++)
             n.append (PushDisplay.BARS_TWO);
         if (noOfBars % 2 == 1)
             n.append (PushDisplay.BARS_ONE);
         return PushDisplay.pad (n.toString (), 8, PushDisplay.BARS_NON);
-    }
-
-
-    private double convertTempo (final double value)
-    {
-        final double v = value - TransportMode.MIN_TEMPO;
-        return v * (this.model.getValueChanger ().getUpperBound () - 1) / (TransportMode.MAX_TEMPO - TransportMode.MIN_TEMPO);
     }
 }

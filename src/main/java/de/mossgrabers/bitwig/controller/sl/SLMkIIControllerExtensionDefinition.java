@@ -12,8 +12,6 @@ import de.mossgrabers.controller.sl.SLControllerDefinition;
 import de.mossgrabers.controller.sl.SLControllerSetup;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
-import com.bitwig.extension.api.PlatformType;
-import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 
@@ -30,36 +28,6 @@ public class SLMkIIControllerExtensionDefinition extends AbstractControllerExten
     public SLMkIIControllerExtensionDefinition ()
     {
         super (new SLControllerDefinition (true));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
-    {
-        if (platformType == PlatformType.MAC)
-        {
-            list.add (new String []
-            {
-                "SL MkII MIDI 2",
-                "SL MkII MIDI 1"
-            }, new String []
-            {
-                "SL MkII MIDI 2"
-            });
-        }
-        else
-        {
-            // WINDOWS + MAC
-            list.add (new String []
-            {
-                "MIDIIN2 (SL MkII)",
-                "SL MkII"
-            }, new String []
-            {
-                "MIDIOUT2 (SL MkII)"
-            });
-        }
     }
 
 

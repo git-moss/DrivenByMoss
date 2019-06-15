@@ -392,6 +392,16 @@ public interface ITransport extends ObserverManagement
 
 
     /**
+     * Rescale the tempo (in the range from MIN_TEMPO and MAX_TEMPO to the range of 0 to maxValue.
+     *
+     * @param tempo The tempo to rescale
+     * @param maxValue The upper bound
+     * @return The rescaled tempo
+     */
+    double rescaleTempo (final double tempo, final int maxValue);
+
+
+    /**
      * Specifies if this value should be indicated as mapped.
      *
      * @param isTouched True if touched

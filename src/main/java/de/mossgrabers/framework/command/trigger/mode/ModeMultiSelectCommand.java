@@ -32,6 +32,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
     private final ModeManager   modeManager;
     private final List<Integer> modeIds = new ArrayList<> ();
     private final int           send1;
+    private Integer             currentModeID;
 
 
     /**
@@ -48,6 +49,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         this.modeManager = this.surface.getModeManager ();
         this.modeIds.addAll (Arrays.asList (modeIds));
         this.send1 = Modes.MODE_SEND1.intValue ();
+        this.currentModeID = this.modeIds.get (0);
     }
 
 
@@ -58,18 +60,23 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         if (event != ButtonEvent.DOWN)
             return;
 
-        final ITrackBank trackBank = this.model.getTrackBank ();
         final Integer activeModeId = this.modeManager.getActiveModeId ();
-        int index = this.modeIds.indexOf (activeModeId);
-        Integer newMode;
-        // If a send mode is selected check if the according send exists
-        do
+        Integer newMode = this.currentModeID;
+
+        // If coming from a mode not on the list, activate the last one
+        if (this.currentModeID.equals (activeModeId))
         {
-            index--;
-            if (index < 0 || index >= this.modeIds.size ())
-                index = this.modeIds.size () - 1;
-            newMode = this.modeIds.get (index);
-        } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.intValue () - this.send1));
+            final ITrackBank trackBank = this.model.getTrackBank ();
+            int index = this.modeIds.indexOf (activeModeId);
+            // If a send mode is selected check if the according send exists
+            do
+            {
+                index--;
+                if (index < 0 || index >= this.modeIds.size ())
+                    index = this.modeIds.size () - 1;
+                newMode = this.modeIds.get (index);
+            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.intValue () - this.send1));
+        }
 
         this.activateMode (newMode);
     }
@@ -82,18 +89,23 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         if (event != ButtonEvent.DOWN)
             return;
 
-        final ITrackBank trackBank = this.model.getTrackBank ();
         final Integer activeModeId = this.modeManager.getActiveModeId ();
-        int index = this.modeIds.indexOf (activeModeId);
-        Integer newMode;
-        // If a send mode is selected check if the according send exists
-        do
+        Integer newMode = this.currentModeID;
+
+        // If coming from a mode not on the list, activate the last one
+        if (this.currentModeID.equals (activeModeId))
         {
-            index++;
-            if (index < 0 || index >= this.modeIds.size ())
-                index = 0;
-            newMode = this.modeIds.get (index);
-        } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.intValue () - this.send1));
+            final ITrackBank trackBank = this.model.getTrackBank ();
+            int index = this.modeIds.indexOf (activeModeId);
+            // If a send mode is selected check if the according send exists
+            do
+            {
+                index++;
+                if (index < 0 || index >= this.modeIds.size ())
+                    index = 0;
+                newMode = this.modeIds.get (index);
+            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.intValue () - this.send1));
+        }
 
         this.activateMode (newMode);
     }
@@ -101,6 +113,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
 
     private void activateMode (final Integer modeID)
     {
+        this.currentModeID = modeID;
         this.modeManager.setActiveMode (modeID);
 
         String modeName = this.modeManager.getMode (modeID).getName ();

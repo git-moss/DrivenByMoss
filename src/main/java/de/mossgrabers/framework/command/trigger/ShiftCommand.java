@@ -2,11 +2,11 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mcu.command.trigger;
+package de.mossgrabers.framework.command.trigger;
 
-import de.mossgrabers.controller.mcu.MCUConfiguration;
-import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -14,9 +14,12 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to handle the shift button.
  *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ShiftCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
+public class ShiftCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -24,7 +27,7 @@ public class ShiftCommand extends AbstractTriggerCommand<MCUControlSurface, MCUC
      * @param model The model
      * @param surface The surface
      */
-    public ShiftCommand (final IModel model, final MCUControlSurface surface)
+    public ShiftCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }

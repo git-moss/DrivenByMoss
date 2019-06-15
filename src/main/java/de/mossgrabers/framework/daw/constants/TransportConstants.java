@@ -36,6 +36,11 @@ public class TransportConstants
     /** 4 bar preroll. */
     public static final String       PREROLL_4_BARS          = "four_bars";
 
+    /** The minimum tempo in BPM. */
+    public static final int          MIN_TEMPO               = 20;
+    /** The maximum tempo in BPM. */
+    public static final int          MAX_TEMPO               = 666;
+
 
     /**
      * Helper class constructor.

@@ -6,7 +6,8 @@ package de.mossgrabers.bitwig.framework.osc;
 
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 
-import com.bitwig.extension.api.opensoundcontrol.OscServer;
+// Requires API 9
+// import com.bitwig.extension.api.opensoundcontrol.OscServer;
 
 import java.io.IOException;
 
@@ -18,17 +19,18 @@ import java.io.IOException;
  */
 public class OpenSoundControlServerImpl implements IOpenSoundControlServer
 {
-    private final OscServer server;
-
+    // TODO Requires API 9
+    // private final OscServer server;
 
     /**
      * Constructor.
      * 
      * @param server The Bitwig OSC server implementation
      */
-    public OpenSoundControlServerImpl (final OscServer server)
+    public OpenSoundControlServerImpl (/* final OscServer server */)
     {
-        this.server = server;
+        // TODO Requires API 9
+        // this.server = server;
     }
 
 
@@ -36,6 +38,7 @@ public class OpenSoundControlServerImpl implements IOpenSoundControlServer
     @Override
     public void start (final int port) throws IOException
     {
-        this.server.start (port);
+        // TODO Requires API 9
+        // this.server.start (port);
     }
 }

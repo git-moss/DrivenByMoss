@@ -175,7 +175,10 @@ public class HostImpl implements IHost
         final OscModule oscModule = this.host.getOscModule ();
         final OscAddressSpace addressSpace = oscModule.createAddressSpace ();
         addressSpace.registerDefaultMethod ( (source, message) -> callback.handle (new OpenSoundControlMessageImpl (message)));
-        return new OpenSoundControlServerImpl (oscModule.createUdpServer2 (addressSpace));
+        // Requires API 9
+        // return new OpenSoundControlServerImpl (oscModule.createUdpServer2 (addressSpace));
+        oscModule.createUdpServer (8000, addressSpace);
+        return new OpenSoundControlServerImpl ();
     }
 
 

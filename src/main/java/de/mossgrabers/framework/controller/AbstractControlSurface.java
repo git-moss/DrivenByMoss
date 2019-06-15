@@ -958,8 +958,15 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         final View view = this.viewManager.getActiveView ();
         if (view != null)
             view.updateControlSurface ();
-        if (this.display != null)
-            this.display.flush ();
+        try
+        {
+            if (this.display != null)
+                this.display.flush ();
+        }
+        catch (NullPointerException ex)
+        {
+            ex.printStackTrace ();
+        }
     }
 
 

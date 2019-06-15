@@ -104,22 +104,6 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void executeNormal (final ButtonEvent event)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void executeShifted (final ButtonEvent event)
-    {
-        // Intentionally empty
-    }
-
-
     /**
      * Get the configuration setting.
      *

@@ -12,8 +12,6 @@ import de.mossgrabers.controller.sl.SLControllerDefinition;
 import de.mossgrabers.controller.sl.SLControllerSetup;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
-import com.bitwig.extension.api.PlatformType;
-import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 
@@ -30,21 +28,6 @@ public class SLMkIControllerExtensionDefinition extends AbstractControllerExtens
     public SLMkIControllerExtensionDefinition ()
     {
         super (new SLControllerDefinition (false));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
-    {
-        list.add (new String []
-        {
-            "ReMOTE SL Port 2",
-            "ReMOTE SL Port 1"
-        }, new String []
-        {
-            "ReMOTE SL Port 2"
-        });
     }
 
 

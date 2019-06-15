@@ -101,7 +101,8 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public int getRequiredAPIVersion ()
     {
-        return 9;
+        // TODO Requires API 9
+        return 7;
     }
 
 

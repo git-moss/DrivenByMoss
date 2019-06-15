@@ -527,6 +527,15 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
+    public double rescaleTempo (final double tempo, final int maxValue)
+    {
+        final double v = tempo - TransportConstants.MIN_TEMPO;
+        return v * (maxValue - 1) / (TransportConstants.MAX_TEMPO - TransportConstants.MIN_TEMPO);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void setTempoIndication (final boolean isTouched)
     {
         this.transport.tempo ().setIndication (isTouched);

@@ -294,7 +294,7 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         final ITransport t = this.model.getTransport ();
         final IControlSurface<KontrolMkIIConfiguration> surface = this.getSurface ();
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_PLAY, t.isPlaying () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_RECORD, t.isRecording () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_RECORD, this.model.hasRecordingState () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_COUNT_IN, t.isRecording () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_STOP, !t.isPlaying () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_CLEAR, ColorManager.BUTTON_STATE_HI);
@@ -325,8 +325,8 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
             surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_MUTE, track.isMute () ? 1 : 0, i);
             surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_SOLO, track.isSolo () ? 1 : 0, i);
             surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_RECARM, track.isRecArm () ? 1 : 0, i);
-            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, track.getVolumeStr ());
-            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, track.getPanStr ());
+            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, track.getVolumeStr (8));
+            surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, track.getPanStr (8));
             surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_NAME, 0, i, track.getName ());
             surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_MUTED_BY_SOLO, !track.isSolo () && hasSolo ? 1 : 0, i);
 

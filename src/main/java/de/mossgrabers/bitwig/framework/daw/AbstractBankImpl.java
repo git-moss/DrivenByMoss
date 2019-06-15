@@ -82,7 +82,7 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
     @Override
     public int getItemCount ()
     {
-        return this.bank.itemCount ().get ();
+        return this.bank == null ? 0 : this.bank.itemCount ().get ();
     }
 
 

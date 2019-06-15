@@ -8,6 +8,7 @@ import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -187,8 +188,6 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
 
     private void handleFunctions (final int note)
     {
-        final View view = this.surface.getViewManager ().getActiveView ();
-
         switch (note)
         {
             case 97:
@@ -211,40 +210,40 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         switch (note)
         {
             case 92:
-                view.getTriggerCommand (Commands.COMMAND_METRONOME).executeNormal (ButtonEvent.DOWN);
+                executeNormal (Commands.COMMAND_METRONOME, ButtonEvent.DOWN);
                 break;
             case 93:
-                view.getTriggerCommand (Commands.COMMAND_METRONOME).executeShifted (ButtonEvent.DOWN);
+                executeShifted (Commands.COMMAND_METRONOME, ButtonEvent.DOWN);
                 break;
             case 84:
-                view.getTriggerCommand (Commands.COMMAND_UNDO).executeNormal (ButtonEvent.DOWN);
+                executeNormal (Commands.COMMAND_UNDO, ButtonEvent.DOWN);
                 break;
             case 85:
-                view.getTriggerCommand (Commands.COMMAND_UNDO).executeShifted (ButtonEvent.DOWN);
+                executeShifted (Commands.COMMAND_UNDO, ButtonEvent.DOWN);
                 break;
             case 76:
-                view.getTriggerCommand (Commands.COMMAND_DELETE).executeNormal (ButtonEvent.UP);
+                executeNormal (Commands.COMMAND_DELETE, ButtonEvent.UP);
                 break;
             case 68:
-                view.getTriggerCommand (Commands.COMMAND_QUANTIZE).executeNormal (ButtonEvent.DOWN);
+                executeNormal (Commands.COMMAND_QUANTIZE, ButtonEvent.DOWN);
                 break;
             case 60:
-                view.getTriggerCommand (Commands.COMMAND_DUPLICATE).executeNormal (ButtonEvent.DOWN);
+                executeNormal (Commands.COMMAND_DUPLICATE, ButtonEvent.DOWN);
                 break;
             case 61:
-                view.getTriggerCommand (Commands.COMMAND_DUPLICATE).executeShifted (ButtonEvent.DOWN);
+                executeShifted (Commands.COMMAND_DUPLICATE, ButtonEvent.DOWN);
                 break;
             case 52:
-                view.getTriggerCommand (Commands.COMMAND_NEW).execute (ButtonEvent.DOWN);
+                this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_NEW).execute (ButtonEvent.DOWN);
                 break;
             case 53:
-                view.getTriggerCommand (Commands.COMMAND_PLAY).execute (ButtonEvent.DOWN);
+                this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_PLAY).execute (ButtonEvent.DOWN);
                 break;
             case 44:
-                view.getTriggerCommand (Commands.COMMAND_RECORD).executeNormal (ButtonEvent.UP);
+                executeNormal (Commands.COMMAND_RECORD, ButtonEvent.UP);
                 break;
             case 45:
-                view.getTriggerCommand (Commands.COMMAND_RECORD).executeShifted (ButtonEvent.UP);
+                executeShifted (Commands.COMMAND_RECORD, ButtonEvent.UP);
                 break;
             case 51:
                 this.model.getCurrentTrackBank ().stop ();
@@ -293,5 +292,19 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 // Not used
                 break;
         }
+    }
+
+
+    @SuppressWarnings("rawtypes")
+    private void executeNormal (final Integer commandID, final ButtonEvent event)
+    {
+        ((AbstractTriggerCommand) this.surface.getViewManager ().getActiveView ().getTriggerCommand (commandID)).executeNormal (event);
+    }
+
+
+    @SuppressWarnings("rawtypes")
+    private void executeShifted (final Integer commandID, final ButtonEvent event)
+    {
+        ((AbstractTriggerCommand) this.surface.getViewManager ().getActiveView ().getTriggerCommand (commandID)).executeShifted (event);
     }
 }

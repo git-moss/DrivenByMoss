@@ -96,10 +96,22 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
     {
         final int buttonOnColor = this.getButtonOnColor ();
         final int buttonOffColor = this.getButtonOffColor ();
-        this.surface.updateButton (this.surface.getLeftButtonId (), this.canScrollLeft ? buttonOnColor : buttonOffColor);
-        this.surface.updateButton (this.surface.getRightButtonId (), this.canScrollRight ? buttonOnColor : buttonOffColor);
-        this.surface.updateButton (this.surface.getUpButtonId (), this.canScrollUp ? buttonOnColor : buttonOffColor);
-        this.surface.updateButton (this.surface.getDownButtonId (), this.canScrollDown ? buttonOnColor : buttonOffColor);
+
+        int leftButtonId = this.surface.getLeftButtonId ();
+        if (leftButtonId >= 0)
+            this.surface.updateButton (leftButtonId, this.canScrollLeft ? buttonOnColor : buttonOffColor);
+
+        int rightButtonId = this.surface.getRightButtonId ();
+        if (rightButtonId >= 0)
+            this.surface.updateButton (rightButtonId, this.canScrollRight ? buttonOnColor : buttonOffColor);
+
+        final int upButtonId = this.surface.getUpButtonId ();
+        if (upButtonId >= 0)
+            this.surface.updateButton (upButtonId, this.canScrollUp ? buttonOnColor : buttonOffColor);
+
+        final int downButtonId = this.surface.getDownButtonId ();
+        if (downButtonId >= 0)
+            this.surface.updateButton (downButtonId, this.canScrollDown ? buttonOnColor : buttonOffColor);
     }
 
 

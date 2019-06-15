@@ -24,8 +24,10 @@ public class CursorClipImpl implements INoteClip
     private int             numSteps;
     private int             numRows;
 
-    private final int [] [] data;
-    private Clip            clip;
+    private final int [] [] launcherData;
+    private final int [] [] arrangerData;
+    private Clip            launcherClip;
+    private Clip            arrangerClip;
     private IValueChanger   valueChanger;
     private int             editPage = 0;
     private double          stepLength;
@@ -47,29 +49,53 @@ public class CursorClipImpl implements INoteClip
         this.numRows = numRows;
         this.stepLength = 1.0 / 4.0; // 16th
 
-        this.data = new int [this.numSteps] [];
+        this.launcherData = new int [this.numSteps] [];
         for (int step = 0; step < this.numSteps; step++)
         {
-            this.data[step] = new int [this.numRows];
-            Arrays.fill (this.data[step], 0);
+            this.launcherData[step] = new int [this.numRows];
+            Arrays.fill (this.launcherData[step], 0);
+        }
+
+        this.arrangerData = new int [this.numSteps] [];
+        for (int step = 0; step < this.numSteps; step++)
+        {
+            this.arrangerData[step] = new int [this.numRows];
+            Arrays.fill (this.arrangerData[step], 0);
         }
 
         // TODO Bugfix required: https://github.com/teotigraphix/Framework4Bitwig/issues/140
-        this.clip = host.createLauncherCursorClip (this.numSteps, this.numRows);
+        this.launcherClip = host.createLauncherCursorClip (this.numSteps, this.numRows);
+        this.launcherClip.exists ().markInterested ();
 
-        this.clip.playingStep ().markInterested ();
-        this.clip.addStepDataObserver (this::handleStepData);
+        this.launcherClip.addStepDataObserver (this::handleStepData);
 
-        this.clip.getPlayStart ().markInterested ();
-        this.clip.getPlayStop ().markInterested ();
-        this.clip.getLoopStart ().markInterested ();
-        this.clip.getLoopLength ().markInterested ();
-        this.clip.isLoopEnabled ().markInterested ();
-        this.clip.getShuffle ().markInterested ();
-        this.clip.getAccent ().markInterested ();
-        this.clip.canScrollStepsBackwards ().markInterested ();
-        this.clip.canScrollStepsForwards ().markInterested ();
-        this.clip.color ().markInterested ();
+        this.launcherClip.playingStep ().markInterested ();
+        this.launcherClip.getPlayStart ().markInterested ();
+        this.launcherClip.getPlayStop ().markInterested ();
+        this.launcherClip.getLoopStart ().markInterested ();
+        this.launcherClip.getLoopLength ().markInterested ();
+        this.launcherClip.isLoopEnabled ().markInterested ();
+        this.launcherClip.getShuffle ().markInterested ();
+        this.launcherClip.getAccent ().markInterested ();
+        this.launcherClip.canScrollStepsBackwards ().markInterested ();
+        this.launcherClip.canScrollStepsForwards ().markInterested ();
+        this.launcherClip.color ().markInterested ();
+
+        this.arrangerClip = host.createLauncherCursorClip (this.numSteps, this.numRows);
+
+        this.arrangerClip.addStepDataObserver (this::handleStepData);
+
+        this.arrangerClip.playingStep ().markInterested ();
+        this.arrangerClip.getPlayStart ().markInterested ();
+        this.arrangerClip.getPlayStop ().markInterested ();
+        this.arrangerClip.getLoopStart ().markInterested ();
+        this.arrangerClip.getLoopLength ().markInterested ();
+        this.arrangerClip.isLoopEnabled ().markInterested ();
+        this.arrangerClip.getShuffle ().markInterested ();
+        this.arrangerClip.getAccent ().markInterested ();
+        this.arrangerClip.canScrollStepsBackwards ().markInterested ();
+        this.arrangerClip.canScrollStepsForwards ().markInterested ();
+        this.arrangerClip.color ().markInterested ();
     }
 
 
@@ -77,17 +103,31 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.clip.playingStep ().setIsSubscribed (enable);
-        this.clip.getPlayStart ().setIsSubscribed (enable);
-        this.clip.getPlayStop ().setIsSubscribed (enable);
-        this.clip.getLoopStart ().setIsSubscribed (enable);
-        this.clip.getLoopLength ().setIsSubscribed (enable);
-        this.clip.isLoopEnabled ().setIsSubscribed (enable);
-        this.clip.getShuffle ().setIsSubscribed (enable);
-        this.clip.getAccent ().setIsSubscribed (enable);
-        this.clip.canScrollStepsBackwards ().setIsSubscribed (enable);
-        this.clip.canScrollStepsForwards ().setIsSubscribed (enable);
-        this.clip.color ().setIsSubscribed (enable);
+        this.launcherClip.exists ().setIsSubscribed (enable);
+
+        this.launcherClip.playingStep ().setIsSubscribed (enable);
+        this.launcherClip.getPlayStart ().setIsSubscribed (enable);
+        this.launcherClip.getPlayStop ().setIsSubscribed (enable);
+        this.launcherClip.getLoopStart ().setIsSubscribed (enable);
+        this.launcherClip.getLoopLength ().setIsSubscribed (enable);
+        this.launcherClip.isLoopEnabled ().setIsSubscribed (enable);
+        this.launcherClip.getShuffle ().setIsSubscribed (enable);
+        this.launcherClip.getAccent ().setIsSubscribed (enable);
+        this.launcherClip.canScrollStepsBackwards ().setIsSubscribed (enable);
+        this.launcherClip.canScrollStepsForwards ().setIsSubscribed (enable);
+        this.launcherClip.color ().setIsSubscribed (enable);
+
+        this.arrangerClip.playingStep ().setIsSubscribed (enable);
+        this.arrangerClip.getPlayStart ().setIsSubscribed (enable);
+        this.arrangerClip.getPlayStop ().setIsSubscribed (enable);
+        this.arrangerClip.getLoopStart ().setIsSubscribed (enable);
+        this.arrangerClip.getLoopLength ().setIsSubscribed (enable);
+        this.arrangerClip.isLoopEnabled ().setIsSubscribed (enable);
+        this.arrangerClip.getShuffle ().setIsSubscribed (enable);
+        this.arrangerClip.getAccent ().setIsSubscribed (enable);
+        this.arrangerClip.canScrollStepsBackwards ().setIsSubscribed (enable);
+        this.arrangerClip.canScrollStepsForwards ().setIsSubscribed (enable);
+        this.arrangerClip.color ().setIsSubscribed (enable);
     }
 
 
@@ -95,7 +135,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void setColor (final double red, final double green, final double blue)
     {
-        this.clip.color ().set ((float) red, (float) green, (float) blue);
+        this.getClip ().color ().set ((float) red, (float) green, (float) blue);
     }
 
 
@@ -103,7 +143,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public double [] getColor ()
     {
-        final SettableColorValue color = this.clip.color ();
+        final SettableColorValue color = this.getClip ().color ();
         return new double []
         {
             color.red (),
@@ -117,7 +157,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public double getPlayStart ()
     {
-        return this.clip.getPlayStart ().get ();
+        return this.getClip ().getPlayStart ().get ();
     }
 
 
@@ -125,7 +165,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void setPlayStart (final double start)
     {
-        this.clip.getPlayStart ().set (start);
+        this.getClip ().getPlayStart ().set (start);
     }
 
 
@@ -133,7 +173,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void changePlayStart (final int control)
     {
-        this.clip.getPlayStart ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
+        this.getClip ().getPlayStart ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
     }
 
 
@@ -141,7 +181,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public double getPlayEnd ()
     {
-        return this.clip.getPlayStop ().get ();
+        return this.getClip ().getPlayStop ().get ();
     }
 
 
@@ -149,7 +189,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void setPlayEnd (final double end)
     {
-        this.clip.getPlayStop ().set (end);
+        this.getClip ().getPlayStop ().set (end);
     }
 
 
@@ -157,7 +197,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void changePlayEnd (final int control)
     {
-        this.clip.getPlayStop ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
+        this.getClip ().getPlayStop ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
     }
 
 
@@ -184,7 +224,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public double getLoopStart ()
     {
-        return this.clip.getLoopStart ().get ();
+        return this.getClip ().getLoopStart ().get ();
     }
 
 
@@ -192,7 +232,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void setLoopStart (final double start)
     {
-        this.clip.getLoopStart ().set (start);
+        this.getClip ().getLoopStart ().set (start);
     }
 
 
@@ -200,7 +240,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void changeLoopStart (final int control)
     {
-        this.clip.getLoopStart ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
+        this.getClip ().getLoopStart ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
     }
 
 
@@ -208,7 +248,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public double getLoopLength ()
     {
-        return this.clip.getLoopLength ().get ();
+        return this.getClip ().getLoopLength ().get ();
     }
 
 
@@ -216,7 +256,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void setLoopLength (final int length)
     {
-        this.clip.getLoopLength ().set (length);
+        this.getClip ().getLoopLength ().set (length);
     }
 
 
@@ -224,7 +264,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void changeLoopLength (final int control)
     {
-        this.clip.getLoopLength ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
+        this.getClip ().getLoopLength ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
     }
 
 
@@ -232,7 +272,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public boolean isLoopEnabled ()
     {
-        return this.clip.isLoopEnabled ().get ();
+        return this.getClip ().isLoopEnabled ().get ();
     }
 
 
@@ -240,7 +280,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void setLoopEnabled (final boolean enable)
     {
-        this.clip.isLoopEnabled ().set (enable);
+        this.getClip ().isLoopEnabled ().set (enable);
     }
 
 
@@ -248,7 +288,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public boolean isShuffleEnabled ()
     {
-        return this.clip.getShuffle ().get ();
+        return this.getClip ().getShuffle ().get ();
     }
 
 
@@ -256,7 +296,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void setShuffleEnabled (final boolean enable)
     {
-        this.clip.getShuffle ().set (enable);
+        this.getClip ().getShuffle ().set (enable);
     }
 
 
@@ -272,7 +312,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public double getAccent ()
     {
-        return this.clip.getAccent ().get ();
+        return this.getClip ().getAccent ().get ();
     }
 
 
@@ -280,7 +320,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void resetAccent ()
     {
-        this.clip.getAccent ().setImmediately (0.5);
+        this.getClip ().getAccent ().setImmediately (0.5);
     }
 
 
@@ -289,7 +329,7 @@ public class CursorClipImpl implements INoteClip
     public void changeAccent (final int control)
     {
         final double speed = this.valueChanger.calcKnobSpeed (control, this.valueChanger.getFractionValue () / 100.0);
-        this.clip.getAccent ().inc (speed);
+        this.getClip ().getAccent ().inc (speed);
     }
 
 
@@ -313,7 +353,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public int getCurrentStep ()
     {
-        return this.clip.playingStep ().get ();
+        return this.getClip ().playingStep ().get ();
     }
 
 
@@ -321,7 +361,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public int getStep (final int step, final int row)
     {
-        return row < 0 ? 0 : this.data[step][row];
+        return row < 0 ? 0 : this.getData ()[step][row];
     }
 
 
@@ -329,7 +369,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void toggleStep (final int step, final int row, final int velocity)
     {
-        this.clip.toggleStep (step, row, velocity);
+        this.getClip ().toggleStep (step, row, velocity);
     }
 
 
@@ -337,7 +377,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void setStep (final int step, final int row, final int velocity, final double duration)
     {
-        this.clip.setStep (step, row, velocity, duration);
+        this.getClip ().setStep (step, row, velocity, duration);
     }
 
 
@@ -345,7 +385,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void clearStep (final int step, final int row)
     {
-        this.clip.clearStep (step, row);
+        this.getClip ().clearStep (step, row);
     }
 
 
@@ -353,7 +393,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void clearRow (final int row)
     {
-        this.clip.clearSteps (row);
+        this.getClip ().clearSteps (row);
     }
 
 
@@ -361,9 +401,12 @@ public class CursorClipImpl implements INoteClip
     @Override
     public boolean hasRowData (final int row)
     {
+        final int [] [] data = this.getData ();
         for (int step = 0; step < this.numSteps; step++)
-            if (this.data[step][row] > 0)
+        {
+            if (data[step][row] > 0)
                 return true;
+        }
         return false;
     }
 
@@ -395,7 +438,7 @@ public class CursorClipImpl implements INoteClip
     public void setStepLength (final double length)
     {
         this.stepLength = length;
-        this.clip.setStepSize (length);
+        this.getClip ().setStepSize (length);
     }
 
 
@@ -411,7 +454,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void scrollToPage (final int page)
     {
-        this.clip.scrollToStep (page * this.numSteps);
+        this.getClip ().scrollToStep (page * this.numSteps);
         this.editPage = page;
     }
 
@@ -430,7 +473,7 @@ public class CursorClipImpl implements INoteClip
     {
         if (this.editPage <= 0)
             return;
-        this.clip.scrollStepsPageBackwards ();
+        this.getClip ().scrollStepsPageBackwards ();
         this.editPage--;
     }
 
@@ -439,7 +482,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void scrollStepsPageForward ()
     {
-        this.clip.scrollStepsPageForward ();
+        this.getClip ().scrollStepsPageForward ();
         this.editPage++;
     }
 
@@ -466,7 +509,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void duplicate ()
     {
-        this.clip.duplicate ();
+        this.getClip ().duplicate ();
     }
 
 
@@ -474,7 +517,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void duplicateContent ()
     {
-        this.clip.duplicateContent ();
+        this.getClip ().duplicateContent ();
     }
 
 
@@ -484,7 +527,7 @@ public class CursorClipImpl implements INoteClip
     {
         if (amount < 0.000001 || amount > 1)
             return;
-        this.clip.quantize (amount);
+        this.getClip ().quantize (amount);
     }
 
 
@@ -492,13 +535,25 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void transpose (final int semitones)
     {
-        this.clip.transpose (semitones);
+        this.getClip ().transpose (semitones);
     }
 
 
     private void handleStepData (final int col, final int row, final int state)
     {
         // state: step is empty (0) or a note continues playing (1) or starts playing (2)
-        this.data[col][row] = state;
+        this.getData ()[col][row] = state;
+    }
+
+
+    private Clip getClip ()
+    {
+        return this.launcherClip.exists ().get () ? this.launcherClip : this.arrangerClip;
+    }
+
+
+    private int [] [] getData ()
+    {
+        return this.launcherClip.exists ().get () ? this.launcherData : this.arrangerData;
     }
 }

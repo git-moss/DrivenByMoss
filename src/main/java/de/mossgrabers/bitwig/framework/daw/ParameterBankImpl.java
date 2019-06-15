@@ -50,6 +50,8 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
 
         this.remoteControls.hasPrevious ().markInterested ();
         this.remoteControls.hasNext ().markInterested ();
+        this.remoteControls.selectedPageIndex ().markInterested ();
+        this.remoteControls.pageCount ().markInterested ();
     }
 
 
@@ -71,6 +73,8 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
 
         this.remoteControls.hasPrevious ().setIsSubscribed (enable);
         this.remoteControls.hasNext ().setIsSubscribed (enable);
+        this.remoteControls.selectedPageIndex ().setIsSubscribed (enable);
+        this.remoteControls.pageCount ().setIsSubscribed (enable);
     }
 
 
@@ -102,7 +106,7 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
     @Override
     public void scrollBackwards ()
     {
-        this.remoteControls.selectPreviousPage (true);
+        this.remoteControls.selectPreviousPage (false);
     }
 
 
@@ -110,7 +114,7 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
     @Override
     public void scrollForwards ()
     {
-        this.remoteControls.selectNextPage (true);
+        this.remoteControls.selectNextPage (false);
     }
 
 
@@ -118,7 +122,10 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
     @Override
     public void selectPreviousPage ()
     {
-        this.remoteControls.selectPreviousPage (false);
+        int pos = this.remoteControls.selectedPageIndex ().get ();
+        pos = Math.max (0, pos - this.getPageSize ());
+        if (pos >= 0)
+            this.remoteControls.selectedPageIndex ().set (pos);
     }
 
 
@@ -126,7 +133,11 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
     @Override
     public void selectNextPage ()
     {
-        this.remoteControls.selectNextPage (false);
+        final int maxPages = this.remoteControls.pageCount ().get ();
+        int pos = this.remoteControls.selectedPageIndex ().get ();
+        pos = Math.min (maxPages - 1, pos + this.getPageSize ());
+        if (pos >= 0)
+            this.remoteControls.selectedPageIndex ().set (pos);
     }
 
 

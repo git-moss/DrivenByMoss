@@ -12,6 +12,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
+@FunctionalInterface
 public interface TriggerCommand
 {
     /**
@@ -20,20 +21,4 @@ public interface TriggerCommand
      * @param event The button event that initiated the command
      */
     void execute (ButtonEvent event);
-
-
-    /**
-     * Execute normal (without shift pressed).
-     *
-     * @param event The button event
-     */
-    void executeNormal (ButtonEvent event);
-
-
-    /**
-     * Execute when shift is pressed.
-     *
-     * @param event The button event
-     */
-    void executeShifted (ButtonEvent event);
 }

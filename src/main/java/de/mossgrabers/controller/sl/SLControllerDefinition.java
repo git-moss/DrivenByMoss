@@ -22,6 +22,8 @@ public class SLControllerDefinition extends DefaultControllerDefinition
     private static final UUID EXTENSION_ID_MK_I  = UUID.fromString ("A9041F50-0407-11E5-B939-0800200C9A66");
     private static final UUID EXTENSION_ID_MK_II = UUID.fromString ("D1CEE920-1E51-11E4-8C21-0800200C9A66");
 
+    private final boolean     isMkII;
+
 
     /**
      * Constructor.
@@ -31,6 +33,7 @@ public class SLControllerDefinition extends DefaultControllerDefinition
     public SLControllerDefinition (final boolean isMkII)
     {
         super (isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "SL MkII" : "SL MkI", "Novation", 2, 1);
+        this.isMkII = isMkII;
     }
 
 
@@ -39,14 +42,43 @@ public class SLControllerDefinition extends DefaultControllerDefinition
     public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
     {
         final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
-        midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+        if (this.isMkII)
         {
-            "ReMOTE SL Port 2",
-            "ReMOTE SL Port 1"
-        }, new String []
+            if (os == OperatingSystem.MAC)
+            {
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "SL MkII MIDI 2",
+                    "SL MkII MIDI 1"
+                }, new String []
+                {
+                    "SL MkII MIDI 2"
+                }));
+            }
+            else
+            {
+                // WINDOWS + Linux
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "MIDIIN2 (SL MkII)",
+                    "SL MkII"
+                }, new String []
+                {
+                    "MIDIOUT2 (SL MkII)"
+                }));
+            }
+        }
+        else
         {
-            "ReMOTE SL Port 2"
-        }));
+            midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+            {
+                "ReMOTE SL Port 2",
+                "ReMOTE SL Port 1"
+            }, new String []
+            {
+                "ReMOTE SL Port 2"
+            }));
+        }
         return midiDiscoveryPairs;
     }
 }

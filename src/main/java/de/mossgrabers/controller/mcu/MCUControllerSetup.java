@@ -18,7 +18,6 @@ import de.mossgrabers.controller.mcu.command.trigger.OverdubCommand;
 import de.mossgrabers.controller.mcu.command.trigger.ScrubCommand;
 import de.mossgrabers.controller.mcu.command.trigger.SelectCommand;
 import de.mossgrabers.controller.mcu.command.trigger.SendSelectCommand;
-import de.mossgrabers.controller.mcu.command.trigger.ShiftCommand;
 import de.mossgrabers.controller.mcu.command.trigger.TempoTicksCommand;
 import de.mossgrabers.controller.mcu.command.trigger.ToggleDisplayCommand;
 import de.mossgrabers.controller.mcu.command.trigger.TracksCommand;
@@ -40,6 +39,7 @@ import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.AutomationCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.MarkerCommand;
+import de.mossgrabers.framework.command.trigger.ShiftCommand;
 import de.mossgrabers.framework.command.trigger.application.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.application.LayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
@@ -348,7 +348,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.addTriggerCommand (COMMAND_TEMPO_TICKS, MCUControlSurface.MCU_SMPTE_BEATS, new TempoTicksCommand (this.model, surface));
 
         // Functions
-        this.addTriggerCommand (Commands.COMMAND_SHIFT, MCUControlSurface.MCU_SHIFT, new ShiftCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_SHIFT, MCUControlSurface.MCU_SHIFT, new ShiftCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_SELECT, MCUControlSurface.MCU_OPTION, new NopCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_PUNCH_IN, MCUControlSurface.MCU_F6, new PunchInCommand<> (this.model, surface));
         this.addTriggerCommand (Commands.COMMAND_PUNCH_OUT, MCUControlSurface.MCU_F7, new PunchOutCommand<> (this.model, surface));

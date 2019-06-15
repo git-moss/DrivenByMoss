@@ -135,7 +135,8 @@ public class SceneImpl extends AbstractItemImpl implements IScene
     @Override
     public void remove ()
     {
-        this.scene.removeTopLevelScene ();
+        // TODO Requires API 9
+        // this.scene.removeTopLevelScene ();
     }
 
 

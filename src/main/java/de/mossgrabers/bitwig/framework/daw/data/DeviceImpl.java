@@ -101,7 +101,8 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
     @Override
     public void remove ()
     {
-        this.device.removeDevice ();
+        // TODO Requires API 9
+        // this.device.removeDevice ();
     }
 
 

@@ -44,9 +44,10 @@ public class StopAllClipsOrBrowseCommand<S extends IControlSurface<C>, C extends
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings("rawtypes")
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_BROWSE).executeNormal (event);
+        ((AbstractTriggerCommand) this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_BROWSE)).executeNormal (event);
     }
 }

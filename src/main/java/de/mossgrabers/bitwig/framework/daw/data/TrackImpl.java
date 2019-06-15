@@ -110,14 +110,6 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void remove ()
-    {
-        this.track.removeTrack ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void enter ()
     {
         // Only group tracks can be entered
