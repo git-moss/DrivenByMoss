@@ -46,7 +46,7 @@ public class SceneCommand<S extends IControlSurface<C>, C extends Configuration>
     {
         final SceneView view = (SceneView) this.surface.getViewManager ().getActiveView ();
         if (view != null)
-            view.onScene (7 - this.scene, event);
+            view.onScene (this.scene, event);
     }
 
 

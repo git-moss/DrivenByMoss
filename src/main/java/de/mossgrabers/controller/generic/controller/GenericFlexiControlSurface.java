@@ -2254,12 +2254,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     public void updateKnobSpeeds ()
     {
-        final double fraction = (128 * this.configuration.getKnobSpeedNormal ()) / 100.0;
+        final double fraction = 128 * this.configuration.getKnobSpeedNormal () / 100.0;
         this.model.getValueChanger ().setFractionValue (fraction);
         this.relative2ValueChanger.setFractionValue (fraction);
         this.relative3ValueChanger.setFractionValue (fraction);
 
-        final double slowFraction = (128 * this.configuration.getKnobSpeedSlow ()) / 100.0;
+        final double slowFraction = 128 * this.configuration.getKnobSpeedSlow () / 100.0;
         this.model.getValueChanger ().setSlowFractionValue (slowFraction);
         this.relative2ValueChanger.setSlowFractionValue (slowFraction);
         this.relative3ValueChanger.setSlowFractionValue (slowFraction);

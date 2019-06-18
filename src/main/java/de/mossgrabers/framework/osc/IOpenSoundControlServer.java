@@ -16,7 +16,7 @@ public interface IOpenSoundControlServer
 {
     /**
      * Starts the server on the given port. If it was already running it is restarted.
-     * 
+     *
      * @param port The port to start the server on
      * @throws IOException Could not start the server
      */

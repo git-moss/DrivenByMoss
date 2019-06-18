@@ -30,7 +30,31 @@ import java.util.List;
  */
 public abstract class AbstractTrackMode extends BaseMode
 {
-    protected final List<Pair<String, Boolean>> menu = new ArrayList<> ();
+    protected final List<Pair<String, Boolean>> menu      = new ArrayList<> ();
+
+    private static final String []              MODE_MENU = new String []
+    {
+        "Track",
+        "Volume",
+        "Pan",
+        "Send 1",
+        "Send 2",
+        "Send 3",
+        "Send 4",
+        "Send 5"
+    };
+
+    private static final Integer []             MODES     = new Integer []
+    {
+        Modes.MODE_TRACK,
+        Modes.MODE_VOLUME,
+        Modes.MODE_PAN,
+        Modes.MODE_SEND1,
+        Modes.MODE_SEND2,
+        Modes.MODE_SEND3,
+        Modes.MODE_SEND4,
+        Modes.MODE_SEND5
+    };
 
 
     /**
@@ -57,7 +81,7 @@ public abstract class AbstractTrackMode extends BaseMode
         if (row != 0)
             return;
 
-        if (event == ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
@@ -92,6 +116,13 @@ public abstract class AbstractTrackMode extends BaseMode
                         break;
                 }
             }
+            return;
+        }
+
+        if (this.surface.isLongPressed (SLMkIIIControlSurface.MKIII_DISPLAY_DOWN))
+        {
+            this.surface.getModeManager ().setActiveMode (MODES[index]);
+            this.surface.setButtonConsumed (SLMkIIIControlSurface.MKIII_DISPLAY_DOWN);
             return;
         }
 
@@ -162,6 +193,14 @@ public abstract class AbstractTrackMode extends BaseMode
             this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_6, SLMkIIIColors.SLMKIII_RED_HALF);
             this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_7, SLMkIIIColors.SLMKIII_RED_HALF);
             this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_8, SLMkIIIColors.SLMKIII_RED_HALF);
+            return;
+        }
+
+        if (this.surface.isLongPressed (SLMkIIIControlSurface.MKIII_DISPLAY_DOWN))
+        {
+            final ModeManager modeManager = this.surface.getModeManager ();
+            for (int i = 0; i < 8; i++)
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, modeManager.isActiveMode (MODES[i]) ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_GREEN_HALF);
             return;
         }
 
@@ -242,6 +281,18 @@ public abstract class AbstractTrackMode extends BaseMode
             return;
         }
 
+        if (this.surface.isLongPressed (SLMkIIIControlSurface.MKIII_DISPLAY_DOWN))
+        {
+            final ModeManager modeManager = this.surface.getModeManager ();
+            for (int i = 0; i < 8; i++)
+            {
+                d.setCell (3, i, MODE_MENU[i]);
+                d.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_GREEN);
+                d.setPropertyValue (i, 1, modeManager.isActiveMode (MODES[i]) ? 1 : 0);
+            }
+            return;
+        }
+
         // Format track names
         for (int i = 0; i < 8; i++)
         {
@@ -273,7 +324,7 @@ public abstract class AbstractTrackMode extends BaseMode
     }
 
 
-    protected void setColumnColors (final SLMkIIIDisplay display, int column, final ITrack track, final int knobColorIndex)
+    protected void setColumnColors (final SLMkIIIDisplay display, final int column, final ITrack track, final int knobColorIndex)
     {
         int color = track.doesExist () ? knobColorIndex : SLMkIIIColors.SLMKIII_BLACK;
         display.setPropertyColor (column, 1, track.isActivated () ? color : SLMkIIIColors.SLMKIII_DARK_GREY);

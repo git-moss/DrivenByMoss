@@ -59,7 +59,7 @@ public class ModeManager
      */
     public Integer getMode (final String modeName)
     {
-        for (Entry<Integer, Mode> entry: this.modes.entrySet ())
+        for (final Entry<Integer, Mode> entry: this.modes.entrySet ())
             if (modeName.equals (entry.getValue ().getName ()))
                 return entry.getKey ();
         return null;

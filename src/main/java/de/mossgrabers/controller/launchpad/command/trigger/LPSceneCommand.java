@@ -38,9 +38,8 @@ public class LPSceneCommand extends SceneCommand<LaunchpadControlSurface, Launch
     {
         if (this.surface.isShiftPressed ())
         {
-            final int index = 7 - this.scene;
-            this.surface.getConfiguration ().setNewClipLength (index);
-            this.surface.getDisplay ().notify (AbstractConfiguration.getNewClipLengthValue (index));
+            this.surface.getConfiguration ().setNewClipLength (this.scene);
+            this.surface.getDisplay ().notify (AbstractConfiguration.getNewClipLengthValue (this.scene));
             return;
         }
 

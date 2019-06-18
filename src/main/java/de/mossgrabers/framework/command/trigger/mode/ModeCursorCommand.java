@@ -97,11 +97,11 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
         final int buttonOnColor = this.getButtonOnColor ();
         final int buttonOffColor = this.getButtonOffColor ();
 
-        int leftButtonId = this.surface.getLeftButtonId ();
+        final int leftButtonId = this.surface.getLeftButtonId ();
         if (leftButtonId >= 0)
             this.surface.updateButton (leftButtonId, this.canScrollLeft ? buttonOnColor : buttonOffColor);
 
-        int rightButtonId = this.surface.getRightButtonId ();
+        final int rightButtonId = this.surface.getRightButtonId ();
         if (rightButtonId >= 0)
             this.surface.updateButton (rightButtonId, this.canScrollRight ? buttonOnColor : buttonOffColor);
 

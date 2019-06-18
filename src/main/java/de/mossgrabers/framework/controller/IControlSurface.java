@@ -352,6 +352,15 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
+     * Test if the button with the given midi cc is long pressed.
+     *
+     * @param button The button to test
+     * @return True if long pressed
+     */
+    boolean isLongPressed (int button);
+
+
+    /**
      * Sets a button as consumed which prevents LONG and UP events following a DOWN event for a
      * button.
      *
@@ -454,7 +463,7 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Clear the cached lighting state of a button.
+     * Clear the cached lighting state of a button of MIDI channel 1.
      *
      * @param button The button
      */
@@ -462,9 +471,26 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Clear the cached lighting state of all buttons.
+     * Clear the cached lighting state of all buttons of MIDI channel 1.
+     *
+     * @param channel The midi channel
      */
-    void clearButtonCache ();
+    void clearFullButtonCache (int channel);
+
+
+    /**
+     * Clear the cached lighting state of a button of the given MIDI channel.
+     *
+     * @param channel The midi channel
+     * @param button The button
+     */
+    void clearButtonCache (int channel, int button);
+
+
+    /**
+     * Clear the cached lighting state of all buttons (of MIDI channel 1).
+     */
+    void clearFullButtonCache ();
 
 
     /**

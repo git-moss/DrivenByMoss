@@ -177,12 +177,4 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
     {
         this.output.sendCCEx (channel, button, state);
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void handleGridNote (final int note, final int velocity)
-    {
-        super.handleGridNote (this.pads.translateToGrid (note), velocity);
-    }
 }

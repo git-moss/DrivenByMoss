@@ -28,7 +28,7 @@ public class SLMkIIICursorCommand extends CursorCommand<SLMkIIIControlSurface, S
      * @param model The model
      * @param surface The surface
      */
-    public SLMkIIICursorCommand (Direction direction, IModel model, SLMkIIIControlSurface surface)
+    public SLMkIIICursorCommand (final Direction direction, final IModel model, final SLMkIIIControlSurface surface)
     {
         super (direction, model, surface);
     }

@@ -63,7 +63,7 @@ public class PadGridImpl implements PadGrid
         this.rows = rows;
         this.cols = cols;
         this.startNote = startNote;
-        this.endNote = this.startNote + this.rows * this.cols;
+        this.endNote = this.startNote + this.rows * this.cols - 1;
 
         // Note: The grid contains only 64 pads but is more efficient to use
         // the 128 note values the pads understand
@@ -113,7 +113,8 @@ public class PadGridImpl implements PadGrid
     @Override
     public void lightEx (final int x, final int y, final int color, final int blinkColor, final boolean fast)
     {
-        this.setLight (92 + x - this.cols * y, color, blinkColor, fast);
+        final int off = (this.rows - 1) * this.cols + this.startNote;
+        this.setLight (off + x - this.cols * y, color, blinkColor, fast);
     }
 
 
@@ -187,7 +188,7 @@ public class PadGridImpl implements PadGrid
     @Override
     public void forceFlush ()
     {
-        for (int i = this.startNote; i < this.endNote; i++)
+        for (int i = this.startNote; i <= this.endNote; i++)
         {
             this.currentButtonColors[i] = -1;
             this.currentBlinkColors[i] = -1;
@@ -200,7 +201,7 @@ public class PadGridImpl implements PadGrid
     @Override
     public void flush ()
     {
-        for (int i = this.startNote; i < this.endNote; i++)
+        for (int i = this.startNote; i <= this.endNote; i++)
         {
             final int note = this.translateToController (i);
 
@@ -255,7 +256,7 @@ public class PadGridImpl implements PadGrid
     public void turnOff ()
     {
         final int color = this.colorManager.getColor (GRID_OFF);
-        for (int i = this.startNote; i < this.endNote; i++)
+        for (int i = this.startNote; i <= this.endNote; i++)
             this.light (i, color, -1, false);
         this.flush ();
     }
@@ -298,5 +299,14 @@ public class PadGridImpl implements PadGrid
     public int getStartNote ()
     {
         return this.startNote;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isGridNote (int note)
+    {
+        final int gridNote = this.translateToGrid (note);
+        return gridNote >= this.startNote && gridNote <= this.endNote;
     }
 }

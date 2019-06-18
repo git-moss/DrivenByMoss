@@ -81,7 +81,7 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
         this.cursorDevice.isPinned ().markInterested ();
 
         this.cursorDevice.addDirectParameterIdObserver (value -> this.directParameterIds = value);
-        this.cursorDevice.addDirectParameterNameObserver (1024, (String id, String name) -> this.directParameterNames.put (id, name));
+        this.cursorDevice.addDirectParameterNameObserver (1024, (final String id, final String name) -> this.directParameterNames.put (id, name));
 
         this.cursorDeviceLayer = this.cursorDevice.createCursorLayer ();
         this.cursorDeviceLayer.hasPrevious ().markInterested ();

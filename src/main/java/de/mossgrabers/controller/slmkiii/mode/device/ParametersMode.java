@@ -50,7 +50,7 @@ public class ParametersMode extends BaseMode
         this.isTemporary = false;
         this.showDevices = true;
 
-        this.browserCommand = new BrowserCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> (Modes.MODE_BROWSER, model, surface);
+        this.browserCommand = new BrowserCommand<> (Modes.MODE_BROWSER, model, surface);
     }
 
 
@@ -248,7 +248,7 @@ public class ParametersMode extends BaseMode
 
                 this.surface.updateButtonEx (SLMkIIIControlSurface.MKIII_KNOB_1 + i, 15, valueChanger.toMidiValue (param.getValue ()));
 
-                int color = param.doesExist () ? SLMkIIIColors.SLMKIII_PURPLE : SLMkIIIColors.SLMKIII_BLACK;
+                final int color = param.doesExist () ? SLMkIIIColors.SLMKIII_PURPLE : SLMkIIIColors.SLMKIII_BLACK;
                 d.setPropertyColor (i, 0, color);
                 d.setPropertyColor (i, 1, color);
             }

@@ -53,13 +53,13 @@ public class ButtonArea
             final boolean exists = track.doesExist ();
             if (this.isMuteSolo)
             {
-                color1 = exists ? (track.isMute () ? SLMkIIIColors.SLMKIII_ORANGE : SLMkIIIColors.SLMKIII_ORANGE_HALF) : SLMkIIIColors.SLMKIII_BLACK;
-                color2 = exists ? (track.isSolo () ? SLMkIIIColors.SLMKIII_YELLOW : SLMkIIIColors.SLMKIII_YELLOW_HALF) : SLMkIIIColors.SLMKIII_BLACK;
+                color1 = exists ? track.isMute () ? SLMkIIIColors.SLMKIII_ORANGE : SLMkIIIColors.SLMKIII_ORANGE_HALF : SLMkIIIColors.SLMKIII_BLACK;
+                color2 = exists ? track.isSolo () ? SLMkIIIColors.SLMKIII_YELLOW : SLMkIIIColors.SLMKIII_YELLOW_HALF : SLMkIIIColors.SLMKIII_BLACK;
             }
             else
             {
-                color1 = exists ? (track.isMonitor () ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_GREEN_HALF) : SLMkIIIColors.SLMKIII_BLACK;
-                color2 = exists ? (track.isRecArm () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF) : SLMkIIIColors.SLMKIII_BLACK;
+                color1 = exists ? track.isMonitor () ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_GREEN_HALF : SLMkIIIColors.SLMKIII_BLACK;
+                color2 = exists ? track.isRecArm () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF : SLMkIIIColors.SLMKIII_BLACK;
             }
 
             this.surface.updateButton (SLMkIIIControlSurface.MKIII_BUTTON_ROW1_1 + i, color1);

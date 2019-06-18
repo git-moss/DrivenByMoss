@@ -92,9 +92,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     public void onActivate ()
     {
         super.onActivate ();
-
-        final ICursorDevice primary = this.model.getInstrumentDevice ();
-        primary.getDrumPadBank ().setIndication (true);
+        this.model.getInstrumentDevice ().getDrumPadBank ().setIndication (true);
     }
 
 
@@ -103,9 +101,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     public void onDeactivate ()
     {
         super.onDeactivate ();
-
-        final ICursorDevice primary = this.model.getInstrumentDevice ();
-        primary.getDrumPadBank ().setIndication (false);
+        this.model.getInstrumentDevice ().getDrumPadBank ().setIndication (false);
     }
 
 

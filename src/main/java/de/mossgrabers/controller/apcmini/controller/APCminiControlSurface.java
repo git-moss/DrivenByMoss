@@ -98,9 +98,6 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
         super (host, configuration, colorManager, output, input, new APCminiPadGrid (colorManager, output), APC_BUTTONS_ALL);
 
         this.shiftButtonId = APC_BUTTON_SHIFT;
-
-        for (int i = 0; i < 64; i++)
-            this.gridNotes[i] = i;
     }
 
 
@@ -117,14 +114,6 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
     public void setButtonEx (final int button, final int channel, final int state)
     {
         this.output.sendNoteEx (channel, button, state);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void handleGridNote (final int note, final int velocity)
-    {
-        super.handleGridNote (this.pads.translateToGrid (note), velocity);
     }
 
 

@@ -57,13 +57,11 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     protected int                                       downButtonId          = -1;
 
     private final int []                                buttons;
+    protected final boolean []                          buttonConsumed;
     protected final ButtonEvent []                      buttonStates;
     private final int []                                noteVelocities;
-    protected final boolean []                          buttonConsumed;
 
     private final List<int []>                          buttonCache;
-
-    protected final int []                              gridNotes;
 
     protected Display                                   display;
     protected final PadGrid                             pads;
@@ -102,8 +100,6 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         if (this.input != null)
             this.input.setMidiCallback (this::handleMidi);
 
-        this.gridNotes = new int [64];
-
         // Button related
         this.buttons = buttons;
         this.buttonStates = new ButtonEvent [NUM_BUTTONS];
@@ -138,7 +134,6 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         this.gridNoteVelocities = new int [NUM_NOTES];
         for (int i = 0; i < size; i++)
         {
-            this.gridNotes[i] = 36 + i;
             this.gridNoteStates[i] = ButtonEvent.UP;
             this.gridNoteVelocities[i] = 0;
         }
@@ -312,9 +307,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public boolean isGridNote (final int note)
     {
-        if (this.gridNotes.length > 0)
-            return note >= this.gridNotes[0] && note <= this.gridNotes[this.gridNotes.length - 1];
-        return false;
+        return this.pads != null && this.pads.isGridNote (note);
     }
 
 
@@ -412,6 +405,21 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             default:
                 return false;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isLongPressed (final int button)
+    {
+        if (button == -1)
+            return false;
+        if (this.buttonStates[button] == null)
+        {
+            this.errorln ("Unregistered button: " + button);
+            return false;
+        }
+        return this.buttonStates[button] == ButtonEvent.LONG;
     }
 
 
@@ -569,16 +577,32 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void clearButtonCache (final int button)
     {
-        this.buttonCache.get (button)[0] = -1;
+        this.clearButtonCache (0, button);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void clearButtonCache ()
+    public void clearButtonCache (final int channel, final int button)
+    {
+        this.buttonCache.get (button)[channel] = -1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearFullButtonCache ()
+    {
+        this.clearFullButtonCache (0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearFullButtonCache (final int channel)
     {
         for (int i = 0; i < NUM_BUTTONS; i++)
-            this.buttonCache.get (i)[0] = -1;
+            this.buttonCache.get (i)[channel] = -1;
     }
 
 
@@ -798,22 +822,24 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      */
     protected void handleGridNote (final int note, final int velocity)
     {
-        this.gridNoteStates[note] = velocity > 0 ? ButtonEvent.DOWN : ButtonEvent.UP;
+        final int gridNote = this.pads.translateToGrid (note);
+
+        this.gridNoteStates[gridNote] = velocity > 0 ? ButtonEvent.DOWN : ButtonEvent.UP;
         if (velocity > 0)
-            this.gridNoteVelocities[note] = velocity;
-        if (this.gridNoteStates[note] == ButtonEvent.DOWN)
-            this.scheduleTask ( () -> this.checkGridNoteState (note), AbstractControlSurface.BUTTON_STATE_INTERVAL);
+            this.gridNoteVelocities[gridNote] = velocity;
+        if (this.gridNoteStates[gridNote] == ButtonEvent.DOWN)
+            this.scheduleTask ( () -> this.checkGridNoteState (gridNote), AbstractControlSurface.BUTTON_STATE_INTERVAL);
 
         // If consumed flag is set ignore the UP event
-        if (this.gridNoteStates[note] == ButtonEvent.UP && this.gridNoteConsumed[note])
+        if (this.gridNoteStates[gridNote] == ButtonEvent.UP && this.gridNoteConsumed[gridNote])
         {
-            this.gridNoteConsumed[note] = false;
+            this.gridNoteConsumed[gridNote] = false;
             return;
         }
 
         final View view = this.viewManager.getActiveView ();
         if (view != null)
-            view.onGridNote (note, velocity);
+            view.onGridNote (gridNote, velocity);
     }
 
 
@@ -963,7 +989,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             if (this.display != null)
                 this.display.flush ();
         }
-        catch (NullPointerException ex)
+        catch (final NullPointerException ex)
         {
             ex.printStackTrace ();
         }

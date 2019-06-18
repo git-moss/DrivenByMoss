@@ -416,22 +416,6 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    protected void handleGridNote (final int note, final int velocity)
-    {
-        super.handleGridNote (this.pads.translateToGrid (note), velocity);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isGridNote (final int note)
-    {
-        return super.isGridNote (this.pads.translateToGrid (note));
-    }
-
-
     /**
      * Returns true if it is the Launchpad Pro other wise MkII.
      *

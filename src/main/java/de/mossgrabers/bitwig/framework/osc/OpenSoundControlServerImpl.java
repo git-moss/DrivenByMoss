@@ -24,8 +24,8 @@ public class OpenSoundControlServerImpl implements IOpenSoundControlServer
 
     /**
      * Constructor.
-     * 
-     * @param server The Bitwig OSC server implementation
+     *
+     * @par am server The Bitwig OSC server implementation
      */
     public OpenSoundControlServerImpl (/* final OscServer server */)
     {

@@ -23,6 +23,7 @@ public class SLMkIIIDisplay extends AbstractDisplay
     private static final String    MKIII_SYSEX_LAYOUT_COMMAND       = MKIII_SYSEX_HEADER + "01 %02d F7";
     private static final String    MKIII_SYSEX_PROPERTY_COMMAND     = MKIII_SYSEX_HEADER + "02 %02d %02d %02d %s F7";
     private static final String    MKIII_SYSEX_LED_COMMAND          = MKIII_SYSEX_HEADER + "03 %02X 01 %02X %02X %02X F7";
+    @SuppressWarnings("unused")
     private static final String    MKIII_SYSEX_NOTIFICATION_COMMAND = MKIII_SYSEX_HEADER + "04 %s F7";
 
     /** The empty layout. */
@@ -67,21 +68,13 @@ public class SLMkIIIDisplay extends AbstractDisplay
      * @param host The host
      * @param output The output to which the display is connected
      */
-    public SLMkIIIDisplay (final IHost host, IMidiOutput output)
+    public SLMkIIIDisplay (final IHost host, final IMidiOutput output)
     {
         super (host, output, 4 /* No of rows */, 9 /* No of cells */, 9 * 9 /* No of characters */);
 
         for (int i = 0; i < 8; i++)
             this.ledCache[i] = "";
         this.clearDisplayCache ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void shutdown ()
-    {
-        // TODO
     }
 
 
@@ -147,7 +140,7 @@ public class SLMkIIIDisplay extends AbstractDisplay
     {
         for (int i = 0; i < this.noOfCells; i++)
         {
-            int pos = 9 * i;
+            final int pos = 9 * i;
             final String cellText = text.substring (pos, pos + 9).trim ();
             this.setPropertyText (i, row, cellText);
         }
@@ -167,6 +160,9 @@ public class SLMkIIIDisplay extends AbstractDisplay
     }
 
 
+    /**
+     * Hide all knob ellements.
+     */
     public void hideAllElements ()
     {
         for (int i = 0; i < 8; i++)
@@ -197,14 +193,6 @@ public class SLMkIIIDisplay extends AbstractDisplay
 
         final String msg = String.format (MKIII_SYSEX_LED_COMMAND, Integer.valueOf (led), redHue, greenHue, blueHue);
         this.output.sendSysex (msg);
-    }
-
-
-    public void setDisplayNotification (final String message)
-    {
-        final String msg = String.format (MKIII_SYSEX_NOTIFICATION_COMMAND, prepareString (message));
-        this.output.sendSysex (msg);
-
     }
 
 
@@ -294,19 +282,7 @@ public class SLMkIIIDisplay extends AbstractDisplay
     @Override
     protected void notifyOnDisplay (final String message)
     {
-        // TODO
-
-        // this.isNotificationActive = true;
-        // this.clear ();
-        // final int padLength = (this.noOfCharacters - message.length ()) / 2;
-        // final String padding = padLength > 0 ? this.emptyLine.substring (0, padLength) : "";
-        // this.notificationMessage = (padding + message + padding + " ").substring (0,
-        // this.noOfCharacters);
-        // this.flush ();
-        // this.host.scheduleTask ( () -> {
-        // this.isNotificationActive = false;
-        // this.forceFlush ();
-        // }, AbstractDisplay.NOTIFICATION_TIME);
+        // Not supported
     }
 
 
@@ -336,5 +312,24 @@ public class SLMkIIIDisplay extends AbstractDisplay
     {
         final String ascii = StringUtils.fixASCII (text);
         return StringUtils.toHexStr (ascii.getBytes ()) + "00";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void shutdown ()
+    {
+        this.hideAllElements ();
+        this.setPropertyColor (8, 0, SLMkIIIColors.SLMKIII_BLACK);
+        this.setPropertyColor (8, 1, SLMkIIIColors.SLMKIII_BLACK);
+
+        for (int i = 0; i < 9; i++)
+        {
+            this.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_BLACK);
+            this.setPropertyValue (i, 1, 0);
+        }
+
+        this.clear ().setCell (1, 2, "Please").setCell (1, 3, "start").setCell (1, 4, "Bitwig...").allDone ();
+        this.flush ();
     }
 }

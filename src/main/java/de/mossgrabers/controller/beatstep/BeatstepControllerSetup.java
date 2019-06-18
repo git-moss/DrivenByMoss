@@ -49,73 +49,19 @@ import de.mossgrabers.framework.view.Views;
  */
 public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepControlSurface, BeatstepConfiguration>
 {
+    // @formatter:off
     private static final int [] DRUM_MATRIX =
     {
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1
+        0,  1,  2,  3,  4,  5,  6,  7,
+        8,  9, 10, 11, 12, 13, 14, 15,
+       -1, -1, -1, -1, -1, -1, -1, -1,
+       -1, -1, -1, -1, -1, -1, -1, -1,
+       -1, -1, -1, -1, -1, -1, -1, -1,
+       -1, -1, -1, -1, -1, -1, -1, -1,
+       -1, -1, -1, -1, -1, -1, -1, -1,
+       -1, -1, -1, -1, -1, -1, -1, -1
     };
+    // @formatter:on
 
     private final boolean       isPro;
 
@@ -131,6 +77,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     public BeatstepControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings, final boolean isPro)
     {
         super (factory, host, settings);
+
         this.isPro = isPro;
         this.colorManager = new ColorManager ();
         BeatstepColors.addColors (this.colorManager);

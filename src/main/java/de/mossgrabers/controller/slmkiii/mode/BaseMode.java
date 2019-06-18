@@ -44,6 +44,7 @@ public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkI
     public void onActivate ()
     {
         this.surface.getDisplay ().setDisplayLayout (SLMkIIIDisplay.SCREEN_LAYOUT_KNOB);
+        this.surface.clearKnobCache ();
     }
 
 

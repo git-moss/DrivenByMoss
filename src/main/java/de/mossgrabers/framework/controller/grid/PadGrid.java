@@ -165,4 +165,13 @@ public interface PadGrid
      * @return The start note of the grid
      */
     int getStartNote ();
+
+
+    /**
+     * Check if a given note belongs to the grid.
+     *
+     * @param note The note to check
+     * @return True if the note belongs to the grid
+     */
+    boolean isGridNote (int note);
 }

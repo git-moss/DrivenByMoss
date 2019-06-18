@@ -164,8 +164,7 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
      */
     public SLMkIIIControlSurface (final IHost host, final ColorManager colorManager, final SLMkIIIConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        // TODO add padgrid
-        super (host, configuration, colorManager, output, input, null, BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, new SLMkIIIPadGrid (colorManager, output), BUTTONS_ALL);
 
         this.shiftButtonId = MKIII_SHIFT;
         this.deleteButtonId = MKIII_CLEAR;
@@ -196,17 +195,28 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
     @Override
     public void shutdown ()
     {
-        // TODO "Please start Bitwig..."
-        // this.display.clear ();
         this.turnOffAllLEDs ();
-
         super.shutdown ();
+    }
+
+
+    public void clearKnobCache ()
+    {
+        for (int i = 0; i < 8; i++)
+            this.clearButtonCache (15, MKIII_KNOB_1 + i);
     }
 
 
     public void turnOffAllLEDs ()
     {
-        // TODO turn off volume LEDs
+        for (int i = 0; i < 8; i++)
+            this.getDisplay ().setFaderLEDColor (MKIII_FADER_LED_1 + i, 0, new double []
+            {
+                0,
+                0,
+                0
+            });
+
         for (final int button: this.getButtons ())
             this.setButton (button, 0);
     }

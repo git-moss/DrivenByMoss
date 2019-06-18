@@ -282,7 +282,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
         synchronized (this.cacheLock)
         {
             this.valueCache.clearCache ();
-            this.clearButtonCache ();
+            this.clearButtonCache (15);
         }
     }
 

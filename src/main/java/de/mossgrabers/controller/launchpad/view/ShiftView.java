@@ -210,28 +210,28 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         switch (note)
         {
             case 92:
-                executeNormal (Commands.COMMAND_METRONOME, ButtonEvent.DOWN);
+                this.executeNormal (Commands.COMMAND_METRONOME, ButtonEvent.DOWN);
                 break;
             case 93:
-                executeShifted (Commands.COMMAND_METRONOME, ButtonEvent.DOWN);
+                this.executeShifted (Commands.COMMAND_METRONOME, ButtonEvent.DOWN);
                 break;
             case 84:
-                executeNormal (Commands.COMMAND_UNDO, ButtonEvent.DOWN);
+                this.executeNormal (Commands.COMMAND_UNDO, ButtonEvent.DOWN);
                 break;
             case 85:
-                executeShifted (Commands.COMMAND_UNDO, ButtonEvent.DOWN);
+                this.executeShifted (Commands.COMMAND_UNDO, ButtonEvent.DOWN);
                 break;
             case 76:
-                executeNormal (Commands.COMMAND_DELETE, ButtonEvent.UP);
+                this.executeNormal (Commands.COMMAND_DELETE, ButtonEvent.UP);
                 break;
             case 68:
-                executeNormal (Commands.COMMAND_QUANTIZE, ButtonEvent.DOWN);
+                this.executeNormal (Commands.COMMAND_QUANTIZE, ButtonEvent.DOWN);
                 break;
             case 60:
-                executeNormal (Commands.COMMAND_DUPLICATE, ButtonEvent.DOWN);
+                this.executeNormal (Commands.COMMAND_DUPLICATE, ButtonEvent.DOWN);
                 break;
             case 61:
-                executeShifted (Commands.COMMAND_DUPLICATE, ButtonEvent.DOWN);
+                this.executeShifted (Commands.COMMAND_DUPLICATE, ButtonEvent.DOWN);
                 break;
             case 52:
                 this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_NEW).execute (ButtonEvent.DOWN);
@@ -240,10 +240,10 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_PLAY).execute (ButtonEvent.DOWN);
                 break;
             case 44:
-                executeNormal (Commands.COMMAND_RECORD, ButtonEvent.UP);
+                this.executeNormal (Commands.COMMAND_RECORD, ButtonEvent.UP);
                 break;
             case 45:
-                executeShifted (Commands.COMMAND_RECORD, ButtonEvent.UP);
+                this.executeShifted (Commands.COMMAND_RECORD, ButtonEvent.UP);
                 break;
             case 51:
                 this.model.getCurrentTrackBank ().stop ();

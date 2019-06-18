@@ -35,14 +35,6 @@ public class APCPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    public void lightEx (final int x, final int y, final int color, final int blinkColor, final boolean fast)
-    {
-        this.setLight (68 + x - 8 * y, color, blinkColor, fast);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void sendNoteState (final int note, final int color)
     {
         final int i = note - 36;

@@ -107,7 +107,7 @@ public class Scales
         36, 38, 40, 41, 43, 45, 47, 48,
         -1, 37, 39, -1, 42, 44, 46, -1
     };
-    // @formatter:off
+    // @formatter:on
 
     /** Color index when the pad is turned off. */
     public static final String          SCALE_COLOR_OFF          = "SCALE_COLOR_OFF";
@@ -282,8 +282,6 @@ public class Scales
     {
         return this.scaleOffset < Scales.OFFSETS.length - 1;
     }
-
-
 
 
     /**
@@ -692,8 +690,7 @@ public class Scales
     }
 
 
-
-   /**
+    /**
      * Test if the note is part of the selected scale.
      *
      * @param note The note to test (0-11)

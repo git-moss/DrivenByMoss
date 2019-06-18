@@ -27,7 +27,7 @@ public class SendMode extends AbstractTrackMode
 
     /**
      * Constructor.
-     * 
+     *
      * @param sendIndex The index of the send
      * @param surface The control surface
      * @param model The model

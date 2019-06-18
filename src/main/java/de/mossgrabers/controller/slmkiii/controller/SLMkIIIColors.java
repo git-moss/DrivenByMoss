@@ -5,9 +5,12 @@
 package de.mossgrabers.controller.slmkiii.controller;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.view.AbstractDrumView;
+import de.mossgrabers.framework.view.AbstractSessionView;
 
 
 /**
@@ -119,37 +122,20 @@ public class SLMkIIIColors
         // colorManager.registerColor (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED,
         // SLMkIIIColors.PUSH2_COLOR_SCENE_YELLOW_HI : SLMkIIIColors.PUSH1_COLOR_SCENE_YELLOW_HI);
 
-        // colorManager.registerColor (AbstractDrumView.COLOR_PAD_OFF, SLMKIII_BLACK);
-        // colorManager.registerColor (AbstractDrumView.COLOR_PAD_RECORD, PUSH2_COLOR2_RED_HI :
-        // PUSH1_COLOR2_RED_HI);
-        // colorManager.registerColor (AbstractDrumView.COLOR_PAD_PLAY, PUSH2_COLOR2_GREEN_HI :
-        // PUSH1_COLOR2_GREEN_HI);
-        // colorManager.registerColor (AbstractDrumView.COLOR_PAD_SELECTED, PUSH2_COLOR2_BLUE_HI :
-        // PUSH1_COLOR2_BLUE_HI);
-        // colorManager.registerColor (AbstractDrumView.COLOR_PAD_MUTED, PUSH2_COLOR2_AMBER_LO :
-        // PUSH1_COLOR2_AMBER_LO);
-        // colorManager.registerColor (AbstractDrumView.COLOR_PAD_HAS_CONTENT,
-        // PUSH2_COLOR2_YELLOW_HI : PUSH1_COLOR2_YELLOW_HI);
-        // colorManager.registerColor (AbstractDrumView.COLOR_PAD_NO_CONTENT, PUSH2_COLOR2_YELLOW_LO
-        // : PUSH1_COLOR2_YELLOW_LO);
-        //
-        // colorManager.registerColor (AbstractPlayView.COLOR_PLAY, PUSH2_COLOR2_GREEN_HI :
-        // PUSH1_COLOR2_GREEN_HI);
-        // colorManager.registerColor (AbstractPlayView.COLOR_RECORD, PUSH2_COLOR2_RED_HI :
-        // PUSH1_COLOR2_RED_HI);
-        // colorManager.registerColor (AbstractPlayView.COLOR_OFF, SLMKIII_BLACK :
-        // PUSH1_COLOR2_BLACK);
-        //
-        // colorManager.registerColor (AbstractSessionView.COLOR_SCENE,
-        // SLMkIIIColors.PUSH2_COLOR_SCENE_GREEN : SLMkIIIColors.PUSH1_COLOR_SCENE_GREEN);
-        // colorManager.registerColor (AbstractSessionView.COLOR_SELECTED_SCENE,
-        // SLMkIIIColors.PUSH2_COLOR_SCENE_GREEN_HI : SLMkIIIColors.PUSH1_COLOR_SCENE_GREEN_HI);
-        // colorManager.registerColor (AbstractSessionView.COLOR_SCENE_OFF, SLMKIII_BLACK :
-        // PUSH1_COLOR2_BLACK);
-        //
-        // colorManager.registerColor (PadGrid.GRID_OFF, SLMKIII_BLACK : PUSH1_COLOR2_BLACK);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_OFF, SLMKIII_BLACK);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_RECORD, SLMKIII_RED);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_PLAY, SLMKIII_GREEN);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_SELECTED, SLMKIII_BLUE);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_MUTED, SLMKIII_AMBER_HALF);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_HAS_CONTENT, SLMKIII_YELLOW);
+        colorManager.registerColor (AbstractDrumView.COLOR_PAD_NO_CONTENT, SLMKIII_YELLOW_HALF);
 
-        // TODO
+        colorManager.registerColor (AbstractSessionView.COLOR_SCENE, SLMKIII_GREEN_LIGHT);
+        colorManager.registerColor (AbstractSessionView.COLOR_SELECTED_SCENE, SLMKIII_GREEN);
+        colorManager.registerColor (AbstractSessionView.COLOR_SCENE_OFF, SLMKIII_BLACK);
+
+        colorManager.registerColor (PadGrid.GRID_OFF, SLMKIII_BLACK);
+
         colorManager.registerColor (DAWColors.COLOR_OFF, SLMKIII_BLACK);
         colorManager.registerColor (DAWColors.DAW_COLOR_GRAY_HALF, SLMKIII_BLACK);
 

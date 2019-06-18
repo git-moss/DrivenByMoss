@@ -353,9 +353,9 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         final int scrollScenesState = (sceneBank.canScrollBackwards () ? 1 : 0) + (sceneBank.canScrollForwards () ? 2 : 0);
 
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, (trackBank.canScrollPageBackwards () ? 1 : 0) + (trackBank.canScrollPageForwards () ? 2 : 0));
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, this.configuration.isFlipTrackClipNavigation () ? (this.configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState) : scrollTracksState);
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, this.configuration.isFlipTrackClipNavigation () ? scrollTracksState : (this.configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState));
-        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, this.configuration.isFlipTrackClipNavigation () ? scrollTracksState : (this.configuration.isFlipClipSceneNavigation () ? scrollClipsState : scrollScenesState));
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, this.configuration.isFlipTrackClipNavigation () ? this.configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState : scrollTracksState);
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, this.configuration.isFlipTrackClipNavigation () ? scrollTracksState : this.configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState);
+        surface.updateButton (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, this.configuration.isFlipTrackClipNavigation () ? scrollTracksState : this.configuration.isFlipClipSceneNavigation () ? scrollClipsState : scrollScenesState);
 
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_MUTE, selectedTrack != null && selectedTrack.isMute () ? 1 : 0);
         surface.updateButton (KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_SOLO, selectedTrack != null && selectedTrack.isSolo () ? 1 : 0);
