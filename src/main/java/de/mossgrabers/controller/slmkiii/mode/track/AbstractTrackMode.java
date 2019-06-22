@@ -18,6 +18,7 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +101,7 @@ public abstract class AbstractTrackMode extends BaseMode
                         this.model.toggleCursorTrackPinned ();
                         break;
                     case 2:
-                        // TODO implement Color select view
+                        this.surface.getViewManager ().setActiveView (Views.VIEW_COLOR);
                         break;
                     case 5:
                         this.model.getApplication ().addInstrumentTrack ();
@@ -301,7 +302,7 @@ public abstract class AbstractTrackMode extends BaseMode
 
             final boolean exists = t.doesExist ();
 
-            int color = SLMkIIIColors.SLMKIII_BLACK;
+            int color;
             if (t.isActivated ())
             {
                 final String colorIndex = DAWColors.getColorIndex (t.getColor ());

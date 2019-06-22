@@ -299,6 +299,14 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void setButtonEx (int button, int channel, int value)
+    {
+        // Intentionally empty
+    }
+
+
     private void handleSysEx (final String dataStr)
     {
         if (this.printSysexHeader)

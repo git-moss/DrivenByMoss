@@ -106,8 +106,6 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
         if (y >= this.numSequencerRows)
             return;
 
-        // TODO Bugfix required: setStep makes Bitwig hang
-        // https://github.com/teotigraphix/Framework4Bitwig/issues/124
         final int x = index % 8;
         final INoteClip cursorClip = this.getClip ();
         final int mappedNote = this.keyManager.map (y);

@@ -22,20 +22,37 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private Integer modeId;
+    private final Integer modeId;
+    private final boolean toggle;
 
 
     /**
      * Constructor.
-     *
-     * @param modeId The ID of the mode to select
+     * 
      * @param model The model
      * @param surface The surface
+     * @param modeId The ID of the mode to select
      */
-    public ModeSelectCommand (final Integer modeId, final IModel model, final S surface)
+    public ModeSelectCommand (final IModel model, final S surface, final Integer modeId)
+    {
+        this (model, surface, modeId, false);
+    }
+
+
+    /**
+     * Constructor.
+     * 
+     * @param model The model
+     * @param surface The surface
+     * @param modeId The ID of the mode to select
+     * @param toggle Activates the previous mode if the mode is already active and this flag is set
+     *            to true
+     */
+    public ModeSelectCommand (final IModel model, final S surface, final Integer modeId, final boolean toggle)
     {
         super (model, surface);
         this.modeId = modeId;
+        this.toggle = toggle;
     }
 
 
@@ -46,7 +63,14 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
         if (event != ButtonEvent.DOWN)
             return;
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (this.modeId);
+        if (modeManager.isActiveOrTempMode (this.modeId))
+        {
+            if (!this.toggle)
+                return;
+            modeManager.restoreMode ();
+        }
+        else
+            modeManager.setActiveMode (this.modeId);
         this.model.getHost ().showNotification (modeManager.getActiveOrTempMode ().getName ());
     }
 }

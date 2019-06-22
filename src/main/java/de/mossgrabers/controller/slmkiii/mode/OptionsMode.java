@@ -76,11 +76,23 @@ public class OptionsMode extends BaseMode
             case 1:
                 this.model.getApplication ().redo ();
                 break;
+            case 2:
+                this.model.getProject ().previous ();
+                break;
+            case 3:
+                this.model.getProject ().next ();
+                break;
             case 4:
                 this.model.getTransport ().tapTempo ();
                 break;
             case 5:
                 this.model.getTransport ().toggleMetronome ();
+                break;
+            case 6:
+                this.model.getApplication ().toggleEngineActive ();
+                break;
+            case 7:
+                this.model.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
                 break;
             default:
                 // Not used
@@ -95,12 +107,12 @@ public class OptionsMode extends BaseMode
     {
         this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1, SLMkIIIColors.SLMKIII_BROWN_DARK);
         this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_2, SLMkIIIColors.SLMKIII_BROWN_DARK);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_3, SLMkIIIColors.SLMKIII_BLACK);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_4, SLMkIIIColors.SLMKIII_BLACK);
+        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_3, SLMkIIIColors.SLMKIII_BROWN_DARK);
+        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_4, SLMkIIIColors.SLMKIII_BROWN_DARK);
         this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_5, SLMkIIIColors.SLMKIII_BROWN_DARK);
         this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_6, this.model.getTransport ().isMetronomeOn () ? SLMkIIIColors.SLMKIII_BROWN : SLMkIIIColors.SLMKIII_BROWN_DARK);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_7, SLMkIIIColors.SLMKIII_BLACK);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_8, SLMkIIIColors.SLMKIII_BLACK);
+        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_7, this.model.getApplication ().isEngineActive () ? SLMkIIIColors.SLMKIII_BROWN : SLMkIIIColors.SLMKIII_BROWN_DARK);
+        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_8, SLMkIIIColors.SLMKIII_BROWN_DARK);
     }
 
 
@@ -122,12 +134,12 @@ public class OptionsMode extends BaseMode
         d.setPropertyColor (1, 2, SLMkIIIColors.SLMKIII_BROWN);
         d.setPropertyValue (1, 1, 0);
 
-        d.setCell (3, 2, "");
-        d.setPropertyColor (2, 2, SLMkIIIColors.SLMKIII_BLACK);
+        d.setCell (3, 2, "<< Project");
+        d.setPropertyColor (2, 2, SLMkIIIColors.SLMKIII_BROWN);
         d.setPropertyValue (2, 1, 0);
 
-        d.setCell (3, 3, "");
-        d.setPropertyColor (3, 2, SLMkIIIColors.SLMKIII_BLACK);
+        d.setCell (3, 3, "Project >>");
+        d.setPropertyColor (3, 2, SLMkIIIColors.SLMKIII_BROWN);
         d.setPropertyValue (3, 1, 0);
 
         d.setCell (3, 4, "Tap");
@@ -138,12 +150,12 @@ public class OptionsMode extends BaseMode
         d.setPropertyColor (5, 2, SLMkIIIColors.SLMKIII_BROWN);
         d.setPropertyValue (5, 1, transport.isMetronomeOn () ? 1 : 0);
 
-        d.setCell (3, 6, "");
-        d.setPropertyColor (6, 2, SLMkIIIColors.SLMKIII_BLACK);
-        d.setPropertyValue (6, 1, 0);
+        d.setCell (3, 6, "Engine");
+        d.setPropertyColor (6, 2, SLMkIIIColors.SLMKIII_BROWN);
+        d.setPropertyValue (6, 1, this.model.getApplication ().isEngineActive () ? 1 : 0);
 
-        d.setCell (3, 7, "");
-        d.setPropertyColor (7, 2, SLMkIIIColors.SLMKIII_BLACK);
+        d.setCell (3, 7, "Quantize");
+        d.setPropertyColor (7, 2, SLMkIIIColors.SLMKIII_BROWN);
         d.setPropertyValue (7, 1, 0);
 
         final IMasterTrack master = this.model.getMasterTrack ();
@@ -166,6 +178,11 @@ public class OptionsMode extends BaseMode
         this.surface.updateButtonEx (SLMkIIIControlSurface.MKIII_KNOB_6, 15, valueChanger.toMidiValue (transport.getMetronomeVolume ()));
         d.setPropertyColor (5, 0, SLMkIIIColors.SLMKIII_BROWN);
         d.setPropertyColor (5, 1, SLMkIIIColors.SLMKIII_BROWN);
+
+        d.setCell (0, 8, "Master");
+        d.setPropertyColor (8, 0, SLMkIIIColors.SLMKIII_BROWN);
+
+        this.setButtonInfo (d);
 
         d.allDone ();
     }

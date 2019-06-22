@@ -36,7 +36,8 @@ public class SelectionGridElement extends AbstractGridElement
         ICONS.put (ChannelType.LAYER, "track/multi_layer.svg");
     }
 
-    private final ChannelType type;
+    protected final ChannelType type;
+    protected final boolean     isActive;
 
 
     /**
@@ -47,12 +48,14 @@ public class SelectionGridElement extends AbstractGridElement
      * @param name The of the grid element (track name, parameter name, etc.)
      * @param color The color to use for the header, may be null
      * @param isSelected True if the grid element is selected
+     * @param isActive True if channel is activated
      * @param type The type of the track
      */
-    public SelectionGridElement (final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type)
+    public SelectionGridElement (final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final boolean isActive, final ChannelType type)
     {
         super (menuName, isMenuSelected, null, name, color, isSelected);
         this.type = type;
+        this.isActive = isActive;
     }
 
 
@@ -113,8 +116,8 @@ public class SelectionGridElement extends AbstractGridElement
         final double doubleUnit = dimensions.getDoubleUnit ();
 
         // Draw the background
-        final ColorEx backgroundColor = configuration.getColorBackground ();
-        gc.fillRectangle (left, trackRowTop + 1, width, height - unit - 1, this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
+        final ColorEx backgroundColor = SelectionGridElement.modifyIfOff (configuration.getColorBackground (), this.isActive);
+        gc.fillRectangle (left, trackRowTop + 1, width, height - unit - 1, this.isSelected () ? SelectionGridElement.modifyIfOff (configuration.getColorBackgroundLighter (), this.isActive) : backgroundColor);
 
         // The tracks icon and name
         final String iconName = this.getIcon ();
@@ -123,17 +126,37 @@ public class SelectionGridElement extends AbstractGridElement
         if (iconName != null)
         {
             final IImage icon = ResourceHandler.getSVGImage (iconName);
-            final ColorEx maskColor = this.getMaskColor (configuration);
+            final ColorEx maskColor = SelectionGridElement.modifyIfOff (this.getMaskColor (configuration), this.isActive);
             if (maskColor == null)
                 gc.drawImage (icon, left + (doubleUnit - icon.getWidth ()) / 2, height - trackRowHeight - unit + (trackRowHeight - icon.getHeight ()) / 2.0);
             else
                 gc.maskImage (icon, left + (doubleUnit - icon.getWidth ()) / 2, height - trackRowHeight - unit + (trackRowHeight - icon.getHeight ()) / 2.0, maskColor);
         }
 
-        gc.drawTextInBounds (name, left + doubleUnit, height - trackRowHeight - unit, width - doubleUnit, trackRowHeight, Align.LEFT, configuration.getColorText (), 1.2 * unit);
+        gc.drawTextInBounds (name, left + doubleUnit, height - trackRowHeight - unit, width - doubleUnit, trackRowHeight, Align.LEFT, SelectionGridElement.modifyIfOff (configuration.getColorText (), this.isActive), 1.2 * unit);
 
         // The track color section
-        gc.fillRectangle (left, height - unit, width, unit, this.getColor ());
+        final ColorEx infoColor = this.getColor ();
+        gc.fillRectangle (left, height - unit, width, unit, this.isActive ? infoColor : ColorEx.evenDarker (infoColor));
+    }
+
+
+    protected static ColorEx modifyIfOff (final ColorEx color, final boolean isActive)
+    {
+        if (isActive)
+            return color;
+
+        final double red = color.getRed ();
+        final double green = color.getGreen ();
+        final double blue = color.getBlue ();
+
+        if (red != green || green != blue)
+        {
+            final double v = (red + green + blue) / 3.0;
+            return ColorEx.evenDarker (new ColorEx (v, v, v));
+        }
+
+        return ColorEx.evenDarker (color);
     }
 
 

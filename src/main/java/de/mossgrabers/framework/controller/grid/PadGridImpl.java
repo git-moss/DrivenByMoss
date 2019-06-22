@@ -75,11 +75,10 @@ public class PadGridImpl implements PadGrid
         this.currentBlinkFast = new boolean [NUM_NOTES];
         this.blinkFast = new boolean [NUM_NOTES];
 
-        final int color = colorManager.getColor (GRID_OFF);
-        Arrays.fill (this.currentButtonColors, color);
-        Arrays.fill (this.buttonColors, color);
-        Arrays.fill (this.currentBlinkColors, color);
-        Arrays.fill (this.blinkColors, color);
+        Arrays.fill (this.currentButtonColors, -1);
+        Arrays.fill (this.buttonColors, -1);
+        Arrays.fill (this.currentBlinkColors, -1);
+        Arrays.fill (this.blinkColors, -1);
         Arrays.fill (this.currentBlinkFast, false);
         Arrays.fill (this.blinkFast, false);
     }

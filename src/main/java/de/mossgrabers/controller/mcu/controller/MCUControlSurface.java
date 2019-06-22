@@ -374,9 +374,9 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setButton (final int button, final int state)
+    public void setButtonEx (int button, int channel, int value)
     {
-        this.output.sendNote (button, state);
+        this.output.sendNoteEx (channel, button, value);
     }
 
 

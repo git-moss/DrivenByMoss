@@ -202,9 +202,9 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
 
     /** {@inheritDoc} */
     @Override
-    public void setButton (final int button, final int state)
+    public void setButtonEx (int button, int channel, int value)
     {
-        this.usbDevice.setButtonLED (button, state);
+        this.usbDevice.setButtonLED (button, value);
     }
 
 

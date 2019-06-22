@@ -258,12 +258,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         // Assignment (mode selection)
         // HUI_ASSIGN1_OUTPUT, not supported
         // HUI_ASSIGN1_INPUT, not supported
-        this.addTriggerCommand (Commands.COMMAND_PAN_SEND, HUIControlSurface.HUI_ASSIGN1_PAN, new ModeSelectCommand<> (Modes.MODE_PAN, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_SEND1, HUIControlSurface.HUI_ASSIGN1_SEND_A, new ModeSelectCommand<> (Modes.MODE_SEND1, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_SEND2, HUIControlSurface.HUI_ASSIGN1_SEND_B, new ModeSelectCommand<> (Modes.MODE_SEND2, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_SEND3, HUIControlSurface.HUI_ASSIGN1_SEND_C, new ModeSelectCommand<> (Modes.MODE_SEND3, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_SEND4, HUIControlSurface.HUI_ASSIGN1_SEND_D, new ModeSelectCommand<> (Modes.MODE_SEND4, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_SEND5, HUIControlSurface.HUI_ASSIGN1_SEND_E, new ModeSelectCommand<> (Modes.MODE_SEND5, this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_PAN_SEND, HUIControlSurface.HUI_ASSIGN1_PAN, new ModeSelectCommand<> (this.model, surface, Modes.MODE_PAN));
+        this.addTriggerCommand (Commands.COMMAND_SEND1, HUIControlSurface.HUI_ASSIGN1_SEND_A, new ModeSelectCommand<> (this.model, surface, Modes.MODE_SEND1));
+        this.addTriggerCommand (Commands.COMMAND_SEND2, HUIControlSurface.HUI_ASSIGN1_SEND_B, new ModeSelectCommand<> (this.model, surface, Modes.MODE_SEND2));
+        this.addTriggerCommand (Commands.COMMAND_SEND3, HUIControlSurface.HUI_ASSIGN1_SEND_C, new ModeSelectCommand<> (this.model, surface, Modes.MODE_SEND3));
+        this.addTriggerCommand (Commands.COMMAND_SEND4, HUIControlSurface.HUI_ASSIGN1_SEND_D, new ModeSelectCommand<> (this.model, surface, Modes.MODE_SEND4));
+        this.addTriggerCommand (Commands.COMMAND_SEND5, HUIControlSurface.HUI_ASSIGN1_SEND_E, new ModeSelectCommand<> (this.model, surface, Modes.MODE_SEND5));
 
         // Assignment 2
         // HUI_ASSIGN2_ASSIGN, not supported

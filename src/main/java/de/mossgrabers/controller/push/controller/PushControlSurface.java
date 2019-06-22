@@ -618,9 +618,9 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void setButton (final int button, final int state)
+    public void setButtonEx (int button, int channel, int value)
     {
-        this.output.sendCC (button, state);
+        this.output.sendCCEx (channel, button, value);
     }
 
 

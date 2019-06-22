@@ -229,9 +229,9 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
 
     /** {@inheritDoc} */
     @Override
-    public void setButton (final int button, final int state)
+    public void setButtonEx (int button, int channel, int value)
     {
-        this.sendCommand (button, state);
+        this.sendCommand (button, value);
     }
 
 

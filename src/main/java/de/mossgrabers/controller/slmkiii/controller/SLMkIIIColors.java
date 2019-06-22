@@ -10,6 +10,7 @@ import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
+import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
 
@@ -93,34 +94,9 @@ public class SLMkIIIColors
         colorManager.registerColor (AbstractMode.BUTTON_COLOR_ON, SLMKIII_WHITE);
         colorManager.registerColor (AbstractMode.BUTTON_COLOR_HI, SLMKIII_WHITE_HALF);
 
-        // TODO
-
-        // colorManager.registerColor (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT,
-        // PUSH2_COLOR2_GREEN_LO : PUSH1_COLOR2_GREEN_LO);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT,
-        // PUSH2_COLOR2_GREEN_HI : PUSH1_COLOR2_GREEN_HI);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_NO_CONTENT, SLMKIII_BLACK :
-        // PUSH1_COLOR2_BLACK);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_CONTENT, PUSH2_COLOR2_BLUE_HI :
-        // PUSH1_COLOR2_BLUE_HI);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_CONTENT_CONT,
-        // PUSH2_COLOR2_BLUE_LO : PUSH1_COLOR2_BLUE_LO);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_PAGE, PUSH2_COLOR2_WHITE :
-        // PUSH1_COLOR2_WHITE);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_ACTIVE_PAGE, PUSH2_COLOR2_GREEN :
-        // PUSH1_COLOR2_GREEN);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_SELECTED_PAGE,
-        // PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION,
-        // SLMkIIIColors.PUSH2_COLOR_SCENE_ORANGE : SLMkIIIColors.PUSH1_COLOR_SCENE_ORANGE);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED,
-        // SLMkIIIColors.PUSH2_COLOR_SCENE_ORANGE_HI : SLMkIIIColors.PUSH1_COLOR_SCENE_ORANGE_HI);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION_OFF, SLMKIII_BLACK :
-        // PUSH1_COLOR2_BLACK);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_TRANSPOSE,
-        // SLMkIIIColors.PUSH2_COLOR_SCENE_WHITE : SLMkIIIColors.PUSH1_COLOR_SCENE_YELLOW);
-        // colorManager.registerColor (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED,
-        // SLMkIIIColors.PUSH2_COLOR_SCENE_YELLOW_HI : SLMkIIIColors.PUSH1_COLOR_SCENE_YELLOW_HI);
+        colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION, SLMkIIIColors.SLMKIII_ORANGE_HALF);
+        colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, SLMkIIIColors.SLMKIII_ORANGE);
+        colorManager.registerColor (AbstractSequencerView.COLOR_RESOLUTION_OFF, SLMKIII_BLACK);
 
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_OFF, SLMKIII_BLACK);
         colorManager.registerColor (AbstractDrumView.COLOR_PAD_RECORD, SLMKIII_RED);

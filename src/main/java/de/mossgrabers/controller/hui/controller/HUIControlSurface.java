@@ -522,12 +522,12 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setButton (final int button, final int state)
+    public void setButtonEx (int button, int channel, int value)
     {
         // Select the zone
         this.output.sendCC (0x0C, button / 8);
         // Turn on / off button
-        this.output.sendCC (0x2C, (state > 0 ? 0x40 : 0x00) + button % 8);
+        this.output.sendCC (0x2C, (value > 0 ? 0x40 : 0x00) + button % 8);
     }
 
 

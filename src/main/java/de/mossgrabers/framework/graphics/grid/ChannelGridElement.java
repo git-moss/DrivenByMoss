@@ -66,11 +66,12 @@ public class ChannelGridElement extends SelectionGridElement
      * @param isMute True if muted
      * @param isSolo True if soloed
      * @param isArm True if recording is armed
+     * @param isActive True if channel is activated
      * @param crossfadeMode The crossfader mode: 0 = A, 1 = AB, B = 2, -1 turns it off
      */
-    public ChannelGridElement (final double editType, final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type, final double volumeValue, final double modulatedVolumeValue, final String volumeText, final double panValue, final double modulatedPanValue, final String panText, final double vuValueLeft, final double vuValueRight, final boolean isMute, final boolean isSolo, final boolean isArm, final double crossfadeMode)
+    public ChannelGridElement (final double editType, final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type, final double volumeValue, final double modulatedVolumeValue, final String volumeText, final double panValue, final double modulatedPanValue, final String panText, final double vuValueLeft, final double vuValueRight, final boolean isMute, final boolean isSolo, final boolean isArm, final boolean isActive, final double crossfadeMode)
     {
-        super (menuName, isMenuSelected, name, color, isSelected, type);
+        super (menuName, isMenuSelected, name, color, isSelected, isActive, type);
 
         this.editType = editType;
         this.volumeValue = volumeValue;
@@ -129,7 +130,7 @@ public class ChannelGridElement extends SelectionGridElement
         // Drawing
         //
 
-        final ColorEx textColor = configuration.getColorText ();
+        final ColorEx textColor = SelectionGridElement.modifyIfOff (configuration.getColorText (), this.isActive);
         this.drawMenu (gc, configuration, dimensions, left, width);
 
         final String name = this.getName ();
@@ -137,19 +138,19 @@ public class ChannelGridElement extends SelectionGridElement
         if (name == null || name.length () == 0)
             return;
 
-        final ColorEx backgroundColor = configuration.getColorBackground ();
+        final ColorEx backgroundColor = SelectionGridElement.modifyIfOff (configuration.getColorBackground (), this.isActive);
         this.drawTrackInfo (gc, configuration, dimensions, left, width, height, trackRowTop, name);
 
         // Draw the background
-        gc.fillRectangle (left, menuHeight + 1, width, trackRowTop - (menuHeight + 1), this.isSelected () ? configuration.getColorBackgroundLighter () : backgroundColor);
+        gc.fillRectangle (left, menuHeight + 1, width, trackRowTop - (menuHeight + 1), this.isSelected () ? SelectionGridElement.modifyIfOff (configuration.getColorBackgroundLighter (), this.isActive) : backgroundColor);
 
         // Background of pan and slider area
-        final ColorEx borderColor = configuration.getColorBorder ();
+        final ColorEx borderColor = SelectionGridElement.modifyIfOff (configuration.getColorBorder (), this.isActive);
         gc.fillRectangle (controlStart, controlsTop, halfWidth - unit + halfUnit / 2, unit, borderColor);
         gc.fillRectangle (controlStart, faderTop, controlWidth, faderHeight, borderColor);
 
-        final ColorEx backgroundDarker = configuration.getColorBackgroundDarker ();
-        final ColorEx editColor = configuration.getColorEdit ();
+        final ColorEx backgroundDarker = SelectionGridElement.modifyIfOff (configuration.getColorBackgroundDarker (), this.isActive);
+        final ColorEx editColor = SelectionGridElement.modifyIfOff (configuration.getColorEdit (), this.isActive);
 
         final ChannelType type = this.getType ();
         if (type != ChannelType.MASTER && type != ChannelType.LAYER && this.crossfadeMode != -1)
@@ -185,7 +186,7 @@ public class ChannelGridElement extends SelectionGridElement
         final boolean isPanModulated = this.modulatedPanValue != -1;
         final double vMod = isPanModulated ? isModulatedRight ? (this.modulatedPanValue - halfMax) * panRange / halfMax : panRange - this.modulatedPanValue * panRange / halfMax : v;
 
-        final ColorEx faderColor = configuration.getColorFader ();
+        final ColorEx faderColor = SelectionGridElement.modifyIfOff (configuration.getColorFader (), this.isActive);
         gc.fillRectangle ((isPanModulated ? isModulatedRight : isRight) ? panMiddle + 1 : panMiddle - vMod, controlsTop + 1, vMod, panHeight, faderColor);
 
         if (this.editType == EDIT_TYPE_PAN || this.editType == EDIT_TYPE_ALL)
@@ -220,7 +221,7 @@ public class ChannelGridElement extends SelectionGridElement
         final double vuOffsetRight = faderInnerHeight - vuHeightRight;
         final double vuWidth = faderOffset - separatorSize;
         gc.fillRectangle (vuX, faderTop + separatorSize, vuWidth + 1, faderInnerHeight, backgroundDarker);
-        final ColorEx colorVu = configuration.getColorVu ();
+        final ColorEx colorVu = SelectionGridElement.modifyIfOff (configuration.getColorVu (), this.isActive);
         gc.fillRectangle (vuX, faderTop + separatorSize + vuOffsetLeft, vuWidth / 2, vuHeightLeft, colorVu);
         gc.fillRectangle (vuX + vuWidth / 2, faderTop + separatorSize + vuOffsetRight, vuWidth / 2, vuHeightRight, colorVu);
 
@@ -229,16 +230,16 @@ public class ChannelGridElement extends SelectionGridElement
         if (type != ChannelType.LAYER)
         {
             // Rec Arm
-            drawButton (gc, left + inset - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, configuration.getColorRecord (), textColor, this.isArm, "channel/record_arm.svg", configuration);
+            this.drawButton (gc, left + inset - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, SelectionGridElement.modifyIfOff (configuration.getColorRecord (), this.isActive), textColor, this.isArm, "channel/record_arm.svg", configuration);
         }
 
         // Solo
         buttonTop += buttonHeight + 2 * separatorSize;
-        drawButton (gc, left + inset - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, configuration.getColorSolo (), textColor, this.isSolo, "channel/solo.svg", configuration);
+        this.drawButton (gc, left + inset - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, SelectionGridElement.modifyIfOff (configuration.getColorSolo (), this.isActive), textColor, this.isSolo, "channel/solo.svg", configuration);
 
         // Mute
         buttonTop += buttonHeight + 2 * separatorSize;
-        drawButton (gc, left + inset - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, configuration.getColorMute (), textColor, this.isMute, "channel/mute.svg", configuration);
+        this.drawButton (gc, left + inset - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, SelectionGridElement.modifyIfOff (configuration.getColorMute (), this.isActive), textColor, this.isMute, "channel/mute.svg", configuration);
 
         // Draw panorama text on top if set
         if (isPanTouched)
@@ -274,9 +275,9 @@ public class ChannelGridElement extends SelectionGridElement
      * @param iconName The name of the buttons icon
      * @param configuration The layout settings
      */
-    private static void drawButton (final IGraphicsContext gc, final double left, final double top, final double width, final double height, final ColorEx backgroundColor, final ColorEx isOnColor, final ColorEx textColor, final boolean isOn, final String iconName, final IGraphicsConfiguration configuration)
+    private void drawButton (final IGraphicsContext gc, final double left, final double top, final double width, final double height, final ColorEx backgroundColor, final ColorEx isOnColor, final ColorEx textColor, final boolean isOn, final String iconName, final IGraphicsConfiguration configuration)
     {
-        final ColorEx borderColor = configuration.getColorBorder ();
+        final ColorEx borderColor = SelectionGridElement.modifyIfOff (configuration.getColorBorder (), this.isActive);
         final double radius = 2.0;
 
         gc.fillRoundedRectangle (left, top, width, height, radius, borderColor);

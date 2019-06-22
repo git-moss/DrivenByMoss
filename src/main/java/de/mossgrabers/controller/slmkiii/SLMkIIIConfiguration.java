@@ -37,5 +37,15 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
         // Workflow
 
         this.activateBehaviourOnStopSetting (settingsUI);
+        this.activateNewClipLengthSetting (settingsUI);
+
+        ///////////////////////////
+        // Session
+        if (this.host.hasClips ())
+        {
+            this.activateSelectClipOnLaunchSetting (settingsUI);
+            this.activateDrawRecordStripeSetting (settingsUI);
+            this.activateActionForRecArmedPad (settingsUI);
+        }
     }
 }

@@ -20,6 +20,7 @@ public abstract class AbstractBrowser implements IBrowser
     protected final ICursorDevice   cursorDevice;
     protected IBrowserColumnItem [] resultData;
     protected IBrowserColumn []     columnData;
+    protected int                   selectedFilterColumn = 0;
 
 
     /**
@@ -101,6 +102,32 @@ public abstract class AbstractBrowser implements IBrowser
     public void selectPreviousFilterItem (final int columnIndex)
     {
         this.columnData[columnIndex].selectPreviousItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IBrowserColumn getSelectedFilterColumn ()
+    {
+        return this.columnData[this.selectedFilterColumn];
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousFilterColumn ()
+    {
+        if (this.selectedFilterColumn > 0)
+            this.selectedFilterColumn--;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextFilterColumn ()
+    {
+        if (this.selectedFilterColumn < this.columnData.length)
+            this.selectedFilterColumn++;
     }
 
 

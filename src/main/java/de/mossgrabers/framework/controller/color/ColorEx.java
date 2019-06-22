@@ -29,6 +29,7 @@ public class ColorEx
     public static final ColorEx YELLOW     = ColorEx.fromRGB (255, 255, 0);
 
     private static final double FACTOR     = 0.7;
+    private static final double FACTOR2    = 0.4;
 
     private final double        redValue;
     private final double        greenValue;
@@ -114,11 +115,23 @@ public class ColorEx
      * Calculates a darker version of the given color.
      *
      * @param c A color
-     * @return The brighter version
+     * @return The darker version
      */
     public static ColorEx darker (final ColorEx c)
     {
         return new ColorEx (Math.max (c.getRed () * FACTOR, 0), Math.max (c.getGreen () * FACTOR, 0), Math.max (c.getBlue () * FACTOR, 0));
+    }
+
+
+    /**
+     * Calculates a even more darker version of the given color.
+     *
+     * @param c A color
+     * @return The even more darker version
+     */
+    public static ColorEx evenDarker (final ColorEx c)
+    {
+        return new ColorEx (Math.max (c.getRed () * FACTOR2, 0), Math.max (c.getGreen () * FACTOR2, 0), Math.max (c.getBlue () * FACTOR2, 0));
     }
 
 

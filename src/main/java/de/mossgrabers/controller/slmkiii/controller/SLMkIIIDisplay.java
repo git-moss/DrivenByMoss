@@ -329,7 +329,7 @@ public class SLMkIIIDisplay extends AbstractDisplay
             this.setPropertyValue (i, 1, 0);
         }
 
-        this.clear ().setCell (1, 2, "Please").setCell (1, 3, "start").setCell (1, 4, "Bitwig...").allDone ();
+        this.clear ().setCell (1, 2, "Please").setCell (1, 3, "start").setCell (1, 4, this.host.getName () + "...").allDone ();
         this.flush ();
     }
 }

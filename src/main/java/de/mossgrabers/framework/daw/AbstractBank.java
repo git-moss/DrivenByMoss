@@ -196,6 +196,6 @@ public abstract class AbstractBank<T extends IItem> implements IBank<T>
     {
         final IItem sel = this.getSelectedItem ();
         final int selIndex = sel != null ? sel.getIndex () : -1;
-        return selIndex >= 0 && selIndex < 7 && this.getItem (selIndex + 1).doesExist () || this.canScrollPageForwards ();
+        return selIndex >= 0 && selIndex < this.pageSize - 1 && this.getItem (selIndex + 1).doesExist () || this.canScrollPageForwards ();
     }
 }

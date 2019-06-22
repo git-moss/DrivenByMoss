@@ -12,12 +12,11 @@ import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
-import de.mossgrabers.framework.view.AbstractSequencerView;
 
 
 /**
@@ -25,11 +24,10 @@ import de.mossgrabers.framework.view.AbstractSequencerView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView extends AbstractSequencerView<SLMkIIIControlSurface, SLMkIIIConfiguration>
+public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIIConfiguration>
 {
     private static final int NUM_DISPLAY_COLS = 16;
 
-    private int              selectedPad;
     private boolean          isPlayMode       = true;
 
 
@@ -41,13 +39,7 @@ public class DrumView extends AbstractSequencerView<SLMkIIIControlSurface, SLMkI
      */
     public DrumView (final SLMkIIIControlSurface surface, final IModel model)
     {
-        super ("Drum", surface, model, 128, DrumView.NUM_DISPLAY_COLS);
-
-        final ITrackBank tb = model.getTrackBank ();
-        // Light notes send from the sequencer
-        for (int i = 0; i < tb.getPageSize (); i++)
-            tb.getItem (i).addNoteObserver (this::updateNote);
-        tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
+        super ("Drum", surface, model, 2, DrumView.NUM_DISPLAY_COLS);
     }
 
 
@@ -126,14 +118,14 @@ public class DrumView extends AbstractSequencerView<SLMkIIIControlSurface, SLMkI
         final INoteClip clip = this.getClip ();
         final int step = clip.getCurrentStep ();
         final int stepColor = getStepColor (primary);
-        final int hiStep = this.isInXRange (step) ? step % DrumView.NUM_DISPLAY_COLS : -1;
+        final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
         final int offsetY = this.scales.getDrumOffset ();
         for (int col = 0; col < DrumView.NUM_DISPLAY_COLS; col++)
         {
             final int isSet = clip.getStep (col, offsetY + this.selectedPad);
             final boolean hilite = col == hiStep;
-            final int x = col % 8;
-            final int y = col / 8;
+            final int x = col % GRID_COLUMNS;
+            final int y = col / GRID_COLUMNS;
             padGrid.lightEx (x, y, getSequencerPadColor (isSet, hilite, stepColor));
         }
     }
@@ -143,6 +135,10 @@ public class DrumView extends AbstractSequencerView<SLMkIIIControlSurface, SLMkI
     {
         if (this.selectedPad < 0)
             return SLMkIIIColors.SLMKIII_BLACK;
+
+        // If we cannot get the color from the drum pads use a default color
+        if (!primary.getName ().equals ("Drum Machine"))
+            return SLMkIIIColors.SLMKIII_BLUE;
 
         // Exists and active?
         final IChannel drumPad = primary.getDrumPadBank ().getItem (this.selectedPad);
@@ -161,54 +157,12 @@ public class DrumView extends AbstractSequencerView<SLMkIIIControlSurface, SLMkI
     }
 
 
-    protected String getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed, final boolean isRecording)
-    {
-        final int offsetY = this.scales.getDrumOffset ();
-
-        // Playing note?
-        if (this.keyManager.isKeyPressed (offsetY + index))
-            return isRecording ? AbstractDrumView.COLOR_PAD_RECORD : AbstractDrumView.COLOR_PAD_PLAY;
-        // Selected?
-        if (this.selectedPad == index)
-            return AbstractDrumView.COLOR_PAD_SELECTED;
-        // Exists and active?
-        final IChannel drumPad = primary.getDrumPadBank ().getItem (index);
-        if (!drumPad.doesExist () || !drumPad.isActivated ())
-            return this.surface.getConfiguration ().isTurnOffEmptyDrumPads () ? AbstractDrumView.COLOR_PAD_OFF : AbstractDrumView.COLOR_PAD_NO_CONTENT;
-        // Muted or soloed?
-        if (drumPad.isMute () || isSoloed && !drumPad.isSolo ())
-            return AbstractDrumView.COLOR_PAD_MUTED;
-        return this.getPadContentColor (drumPad);
-    }
-
-
-    protected String getPadContentColor (final IChannel drumPad)
-    {
-        return DAWColors.getColorIndex (drumPad.getColor ());
-    }
-
-
-    /**
-     * The callback function for playing note changes.
-     *
-     * @param trackIndex The index of the track on which the note is playing
-     * @param note The played note
-     * @param velocity The played velocity
-     */
-    private void updateNote (final int trackIndex, final int note, final int velocity)
-    {
-        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (sel != null && sel.getIndex () == trackIndex)
-            this.keyManager.setKeyPressed (note, velocity);
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public void updateSceneButtons ()
     {
         this.surface.updateButton (SLMkIIIControlSurface.MKIII_SCENE_1, this.isPlayMode ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_BLUE);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_SCENE_2, SLMkIIIColors.SLMKIII_BLACK);
+        this.surface.updateButton (SLMkIIIControlSurface.MKIII_SCENE_2, this.surface.getModeManager ().isActiveOrTempMode (Modes.MODE_GROOVE) ? SLMkIIIColors.SLMKIII_PINK : SLMkIIIColors.SLMKIII_DARK_GREY);
     }
 
 
@@ -221,41 +175,27 @@ public class DrumView extends AbstractSequencerView<SLMkIIIControlSurface, SLMkI
         if (index == 0)
         {
             this.isPlayMode = !this.isPlayMode;
+            this.updateNoteMapping ();
             this.surface.getDisplay ().notify (this.isPlayMode ? "Play / Select" : "Steps");
+        }
+        else
+        {
+            final ModeManager modeManager = this.surface.getModeManager ();
+            if (modeManager.isActiveOrTempMode (Modes.MODE_GROOVE))
+                modeManager.restoreMode ();
+            else
+                modeManager.setActiveMode (Modes.MODE_GROOVE);
         }
     }
 
 
-    public void onOctaveDown (final ButtonEvent event)
-    {
-        this.changeOctave (event, false, this.surface.isShiftPressed () ? 4 : this.scales.getDrumDefaultOffset ());
-    }
-
-
-    public void onOctaveUp (final ButtonEvent event)
-    {
-        this.changeOctave (event, true, this.surface.isShiftPressed () ? 4 : this.scales.getDrumDefaultOffset ());
-    }
-
-
     /**
-     * Switch the drum octave up or down.
+     * Check if play mode is active.
      *
-     * @param event The button press event
-     * @param isUp Move up if true otherwise down
-     * @param offset The offset to move up or down
+     * @return True if play mode is active otherwise the sequencer steps of a note a shown.
      */
-    protected void changeOctave (final ButtonEvent event, final boolean isUp, final int offset)
+    public boolean isPlayMode ()
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        this.keyManager.clearPressedKeys ();
-        if (isUp)
-            this.scales.incDrumOffset (offset);
-        else
-            this.scales.decDrumOffset (offset);
-        this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
-        this.model.getInstrumentDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), false);
+        return this.isPlayMode;
     }
 }

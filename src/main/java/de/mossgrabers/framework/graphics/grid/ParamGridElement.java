@@ -90,7 +90,7 @@ public class ParamGridElement extends SelectionGridElement
      */
     private ParamGridElement (final String menuName, final boolean isMenuSelected, final String name, final String deviceName, final ChannelType type, final ColorEx color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
     {
-        super (menuName, isMenuSelected, name, color, isSelected, type);
+        super (menuName, isMenuSelected, name, color, isSelected, true, type);
 
         this.deviceName = deviceName;
         this.paramName = paramName;

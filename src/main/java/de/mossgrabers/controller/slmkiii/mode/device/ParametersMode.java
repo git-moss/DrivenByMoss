@@ -94,33 +94,38 @@ public class ParametersMode extends BaseMode
             return;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
-            return;
 
         if (this.surface.isShiftPressed ())
         {
             switch (index)
             {
                 case 0:
-                    cd.toggleEnabledState ();
+                    if (cd.doesExist ())
+                        cd.toggleEnabledState ();
                     break;
                 case 1:
-                    cd.toggleParameterPageSectionVisible ();
+                    if (cd.doesExist ())
+                        cd.toggleParameterPageSectionVisible ();
                     break;
                 case 2:
-                    cd.toggleExpanded ();
+                    if (cd.doesExist ())
+                        cd.toggleExpanded ();
                     break;
                 case 3:
-                    cd.toggleWindowOpen ();
+                    if (cd.doesExist ())
+                        cd.toggleWindowOpen ();
                     break;
                 case 4:
-                    cd.togglePinned ();
+                    if (cd.doesExist ())
+                        cd.togglePinned ();
                     break;
                 case 5:
-                    this.browserCommand.startBrowser (true, true);
+                    if (cd.doesExist ())
+                        this.browserCommand.startBrowser (true, true);
                     break;
                 case 6:
-                    this.browserCommand.startBrowser (false, false);
+                    if (cd.doesExist ())
+                        this.browserCommand.startBrowser (false, false);
                     break;
                 case 7:
                     this.browserCommand.startBrowser (true, false);
@@ -131,6 +136,9 @@ public class ParametersMode extends BaseMode
             }
             return;
         }
+
+        if (!cd.doesExist ())
+            return;
 
         if (!this.showDevices)
         {
@@ -168,22 +176,31 @@ public class ParametersMode extends BaseMode
     public void updateFirstRow ()
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
-        {
-            this.disableFirstRow ();
-            return;
-        }
 
         if (this.surface.isShiftPressed ())
         {
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1, cd.isEnabled () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_2, cd.isParameterPageSectionVisible () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_3, cd.isExpanded () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_4, cd.isWindowOpen () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_5, cd.isPinned () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_6, SLMkIIIColors.SLMKIII_RED_HALF);
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_7, SLMkIIIColors.SLMKIII_RED_HALF);
+            if (!cd.doesExist ())
+            {
+                for (int i = 0; i < 7; i++)
+                    this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, SLMkIIIColors.SLMKIII_BLACK);
+            }
+            else
+            {
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1, cd.isEnabled () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_2, cd.isParameterPageSectionVisible () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_3, cd.isExpanded () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_4, cd.isWindowOpen () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_5, cd.isPinned () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_6, SLMkIIIColors.SLMKIII_RED_HALF);
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_7, SLMkIIIColors.SLMKIII_RED_HALF);
+            }
             this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_8, SLMkIIIColors.SLMKIII_RED_HALF);
+            return;
+        }
+
+        if (!cd.doesExist ())
+        {
+            this.disableFirstRow ();
             return;
         }
 
@@ -231,6 +248,9 @@ public class ParametersMode extends BaseMode
             d.setCell (0, 8, "No device");
 
             d.hideAllElements ();
+
+            // Row 4
+            this.drawRow4 (d, cd, null);
         }
         else
         {
@@ -266,47 +286,61 @@ public class ParametersMode extends BaseMode
 
     private void drawRow4 (final SLMkIIIDisplay d, final ICursorDevice cd, final IParameterPageBank parameterPageBank)
     {
-        if (!cd.doesExist ())
-        {
-            for (int i = 0; i < 8; i++)
-                d.setPropertyValue (i, 1, 0);
-            return;
-        }
-
         if (this.surface.isShiftPressed ())
         {
-            d.setCell (3, 0, "On/Off");
-            d.setPropertyColor (0, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (0, 1, cd.isEnabled () ? 1 : 0);
+            if (cd.doesExist ())
+            {
+                d.setCell (3, 0, "On/Off");
+                d.setPropertyColor (0, 2, SLMkIIIColors.SLMKIII_RED);
+                d.setPropertyValue (0, 1, cd.isEnabled () ? 1 : 0);
 
-            d.setCell (3, 1, "Params");
-            d.setPropertyColor (1, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (1, 1, cd.isParameterPageSectionVisible () ? 1 : 0);
+                d.setCell (3, 1, "Params");
+                d.setPropertyColor (1, 2, SLMkIIIColors.SLMKIII_RED);
+                d.setPropertyValue (1, 1, cd.isParameterPageSectionVisible () ? 1 : 0);
 
-            d.setCell (3, 2, "Expanded");
-            d.setPropertyColor (2, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (2, 1, cd.isExpanded () ? 1 : 0);
+                d.setCell (3, 2, "Expanded");
+                d.setPropertyColor (2, 2, SLMkIIIColors.SLMKIII_RED);
+                d.setPropertyValue (2, 1, cd.isExpanded () ? 1 : 0);
 
-            d.setCell (3, 3, "Window");
-            d.setPropertyColor (3, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (3, 1, cd.isWindowOpen () ? 1 : 0);
+                d.setCell (3, 3, "Window");
+                d.setPropertyColor (3, 2, SLMkIIIColors.SLMKIII_RED);
+                d.setPropertyValue (3, 1, cd.isWindowOpen () ? 1 : 0);
 
-            d.setCell (3, 4, "Pin");
-            d.setPropertyColor (4, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (4, 1, cd.isPinned () ? 1 : 0);
+                d.setCell (3, 4, "Pin");
+                d.setPropertyColor (4, 2, SLMkIIIColors.SLMKIII_RED);
+                d.setPropertyValue (4, 1, cd.isPinned () ? 1 : 0);
 
-            d.setCell (3, 5, "<< Insert");
-            d.setPropertyColor (5, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (5, 1, 0);
+                d.setCell (3, 5, "<< Insert");
+                d.setPropertyColor (5, 2, SLMkIIIColors.SLMKIII_RED);
+                d.setPropertyValue (5, 1, 0);
 
-            d.setCell (3, 6, "Replace");
-            d.setPropertyColor (6, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (6, 1, 0);
+                d.setCell (3, 6, "Replace");
+                d.setPropertyColor (6, 2, SLMkIIIColors.SLMKIII_RED);
+                d.setPropertyValue (6, 1, 0);
+            }
+            else
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    d.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_BLACK);
+                    d.setPropertyValue (i, 1, 0);
+                }
+            }
 
             d.setCell (3, 7, "Insert >>");
             d.setPropertyColor (7, 2, SLMkIIIColors.SLMKIII_RED);
             d.setPropertyValue (7, 1, 0);
 
+            return;
+        }
+
+        if (!cd.doesExist ())
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                d.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_BLACK);
+                d.setPropertyValue (i, 1, 0);
+            }
             return;
         }
 

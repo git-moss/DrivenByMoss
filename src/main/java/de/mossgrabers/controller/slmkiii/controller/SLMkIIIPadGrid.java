@@ -63,7 +63,6 @@ public class SLMkIIIPadGrid extends PadGridImpl
     @Override
     protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
     {
-        // TODO
-        this.output.sendNoteEx (14, note, blinkColor);
+        this.output.sendNoteEx (fast ? 1 : 2, note, blinkColor);
     }
 }

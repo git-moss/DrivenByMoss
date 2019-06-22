@@ -82,10 +82,6 @@ public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Config
     }
 
 
-    /**
-     *
-     * @param bank
-     */
     private void handleBankMovement (final IBank<?> bank)
     {
         if (this.moveBy1)

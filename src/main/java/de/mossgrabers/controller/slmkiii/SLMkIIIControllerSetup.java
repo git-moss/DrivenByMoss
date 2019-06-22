@@ -6,18 +6,21 @@ package de.mossgrabers.controller.slmkiii;
 
 import de.mossgrabers.controller.slmkiii.command.continuous.VolumeFaderCommand;
 import de.mossgrabers.controller.slmkiii.command.trigger.ButtonAreaCommand;
-import de.mossgrabers.controller.slmkiii.command.trigger.OptionsCommand;
 import de.mossgrabers.controller.slmkiii.command.trigger.SLMkIIICursorCommand;
 import de.mossgrabers.controller.slmkiii.command.trigger.TrackModeCommand;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColors;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
+import de.mossgrabers.controller.slmkiii.controller.SLMkIIIScales;
+import de.mossgrabers.controller.slmkiii.mode.BrowserMode;
 import de.mossgrabers.controller.slmkiii.mode.OptionsMode;
+import de.mossgrabers.controller.slmkiii.mode.SequencerResolutionMode;
 import de.mossgrabers.controller.slmkiii.mode.device.ParametersMode;
 import de.mossgrabers.controller.slmkiii.mode.track.PanMode;
 import de.mossgrabers.controller.slmkiii.mode.track.SendMode;
 import de.mossgrabers.controller.slmkiii.mode.track.TrackMode;
 import de.mossgrabers.controller.slmkiii.mode.track.VolumeMode;
+import de.mossgrabers.controller.slmkiii.view.ColorView;
 import de.mossgrabers.controller.slmkiii.view.DrumView;
 import de.mossgrabers.controller.slmkiii.view.SessionView;
 import de.mossgrabers.framework.command.Commands;
@@ -38,6 +41,7 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -50,7 +54,6 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
@@ -78,8 +81,6 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
        -1, -1, -1, -1, -1, -1, -1, -1
     };
     // @formatter:on
-
-    private ButtonArea          buttonArea;
 
 
     /**
@@ -114,7 +115,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
     @Override
     protected void createScales ()
     {
-        this.scales = new Scales (this.valueChanger, 36, 52, 8, 2);
+        this.scales = new SLMkIIIScales (this.valueChanger, 36, 52, 8, 2);
         this.scales.setDrumMatrix (DRUM_MATRIX);
         this.scales.setDrumNoteEnd (52);
     }
@@ -168,10 +169,10 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         for (int i = 0; i < 8; i++)
             modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode (i, surface, this.model));
         modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new ParametersMode (surface, this.model));
+        modeManager.registerMode (Modes.MODE_BROWSER, new BrowserMode (surface, this.model));
 
         modeManager.registerMode (Modes.MODE_FUNCTIONS, new OptionsMode (surface, this.model));
-
-        this.buttonArea = new ButtonArea (surface, this.model);
+        modeManager.registerMode (Modes.MODE_GROOVE, new SequencerResolutionMode (surface, this.model));
     }
 
 
@@ -184,6 +185,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
 
         viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
         viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
+        viewManager.registerView (Views.VIEW_COLOR, new ColorView (surface, this.model));
     }
 
 
@@ -203,14 +205,17 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         for (int i = 0; i < 8; i++)
         {
             this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, 15, new ButtonRowModeCommand<> (0, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), SLMkIIIControlSurface.MKIII_BUTTON_ROW1_1 + i, 15, new ButtonAreaCommand (this.buttonArea, 0, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i), SLMkIIIControlSurface.MKIII_BUTTON_ROW2_1 + i, 15, new ButtonAreaCommand (this.buttonArea, 1, i, this.model, surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), SLMkIIIControlSurface.MKIII_BUTTON_ROW1_1 + i, 15, new ButtonAreaCommand (0, i, this.model, surface));
+            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i), SLMkIIIControlSurface.MKIII_BUTTON_ROW2_1 + i, 15, new ButtonAreaCommand (1, i, this.model, surface));
         }
 
-        final ModeSelectCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> deviceModeSelectCommand = new ModeSelectCommand<> (Modes.MODE_DEVICE_PARAMS, this.model, surface);
+        final ModeSelectCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> deviceModeSelectCommand = new ModeSelectCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS);
         this.addTriggerCommand (Commands.COMMAND_ARROW_UP, SLMkIIIControlSurface.MKIII_DISPLAY_UP, 15, event -> {
             if (event != ButtonEvent.DOWN)
                 return;
+            final IBrowser browser = this.model.getBrowser ();
+            if (browser != null && browser.isActive ())
+                browser.stopBrowsing (!this.getSurface ().isShiftPressed ());
             final ModeManager modeManager = this.getSurface ().getModeManager ();
             if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
                 ((ParametersMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).toggleShowDevices ();
@@ -221,15 +226,15 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, SLMkIIIControlSurface.MKIII_DISPLAY_DOWN, 15, new TrackModeCommand (this.model, surface));
 
         this.addTriggerCommand (Commands.COMMAND_SHIFT, SLMkIIIControlSurface.MKIII_SHIFT, 15, new ShiftCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_USER, SLMkIIIControlSurface.MKIII_OPTIONS, 15, new OptionsCommand (this.model, surface));
+        this.addTriggerCommand (Commands.COMMAND_USER, SLMkIIIControlSurface.MKIII_OPTIONS, 15, new ModeSelectCommand<> (this.model, surface, Modes.MODE_FUNCTIONS, true));
 
         this.addTriggerCommand (Commands.COMMAND_OCTAVE_UP, SLMkIIIControlSurface.MKIII_BUTTONS_UP, 15, event -> {
             if (event == ButtonEvent.UP)
-                this.buttonArea.toggleMuteSolo ();
+                surface.toggleMuteSolo ();
         });
         this.addTriggerCommand (Commands.COMMAND_OCTAVE_DOWN, SLMkIIIControlSurface.MKIII_BUTTONS_DOWN, 15, event -> {
             if (event == ButtonEvent.UP)
-                this.buttonArea.toggleMuteSolo ();
+                surface.toggleMuteSolo ();
         });
 
         this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, SLMkIIIControlSurface.MKIII_TRACK_LEFT, 15, new SLMkIIICursorCommand (Direction.LEFT, this.model, surface));
@@ -241,11 +246,19 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         this.addTriggerCommand (Commands.COMMAND_SCENE7, SLMkIIIControlSurface.MKIII_SCENE_UP, 15, event -> {
             if (event != ButtonEvent.DOWN)
                 return;
-            if (this.getSurface ().getViewManager ().isActiveView (Views.VIEW_SESSION))
+            final ViewManager viewManager = this.getSurface ().getViewManager ();
+            if (viewManager.isActiveView (Views.VIEW_SESSION))
                 this.model.getSceneBank ().scrollBackwards ();
-            else
-                ((DrumView) this.getSurface ().getViewManager ().getView (Views.VIEW_DRUM)).onOctaveUp (ButtonEvent.DOWN);
-
+            else if (viewManager.isActiveView (Views.VIEW_DRUM))
+            {
+                final DrumView drumView = (DrumView) viewManager.getView (Views.VIEW_DRUM);
+                if (drumView.isPlayMode ())
+                    drumView.onOctaveUp (ButtonEvent.DOWN);
+                else
+                    drumView.onLeft (ButtonEvent.DOWN);
+            }
+            else if (viewManager.isActiveView (Views.VIEW_COLOR))
+                ((ColorView) viewManager.getView (Views.VIEW_COLOR)).setFlip (false);
         });
         this.addTriggerCommand (Commands.COMMAND_SCENE8, SLMkIIIControlSurface.MKIII_SCENE_DOWN, 15, event -> {
             if (event != ButtonEvent.DOWN)
@@ -253,8 +266,16 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
             final ViewManager viewManager = this.getSurface ().getViewManager ();
             if (viewManager.isActiveView (Views.VIEW_SESSION))
                 this.model.getSceneBank ().scrollForwards ();
-            else
-                ((DrumView) this.getSurface ().getViewManager ().getView (Views.VIEW_DRUM)).onOctaveDown (ButtonEvent.DOWN);
+            else if (viewManager.isActiveView (Views.VIEW_DRUM))
+            {
+                final DrumView drumView = (DrumView) viewManager.getView (Views.VIEW_DRUM);
+                if (drumView.isPlayMode ())
+                    drumView.onOctaveDown (ButtonEvent.DOWN);
+                else
+                    drumView.onRight (ButtonEvent.DOWN);
+            }
+            else if (viewManager.isActiveView (Views.VIEW_COLOR))
+                ((ColorView) viewManager.getView (Views.VIEW_COLOR)).setFlip (true);
         });
 
         this.addTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW, SLMkIIIControlSurface.MKIII_GRID, 15, event -> {
@@ -316,8 +337,8 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_UP, getDeviceModeColor (modeManager));
         surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_DOWN, getTrackModeColor (modeManager));
 
-        surface.updateButton (SLMkIIIControlSurface.MKIII_BUTTONS_UP, this.buttonArea.isMuteSolo () ? SLMkIIIColors.SLMKIII_ORANGE : SLMkIIIColors.SLMKIII_ORANGE_HALF);
-        surface.updateButton (SLMkIIIControlSurface.MKIII_BUTTONS_DOWN, !this.buttonArea.isMuteSolo () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
+        surface.updateButton (SLMkIIIControlSurface.MKIII_BUTTONS_UP, surface.isMuteSolo () ? SLMkIIIColors.SLMKIII_ORANGE : SLMkIIIColors.SLMKIII_ORANGE_HALF);
+        surface.updateButton (SLMkIIIControlSurface.MKIII_BUTTONS_DOWN, !surface.isMuteSolo () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
 
         surface.updateButton (SLMkIIIControlSurface.MKIII_DUPLICATE, surface.isPressed (SLMkIIIControlSurface.MKIII_DUPLICATE) ? SLMkIIIColors.SLMKIII_AMBER : SLMkIIIColors.SLMKIII_AMBER_HALF);
         surface.updateButton (SLMkIIIControlSurface.MKIII_CLEAR, surface.isPressed (SLMkIIIControlSurface.MKIII_CLEAR) ? SLMkIIIColors.SLMKIII_AMBER : SLMkIIIColors.SLMKIII_AMBER_HALF);
@@ -326,6 +347,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         surface.updateButton (SLMkIIIControlSurface.MKIII_SCENE_DOWN, getSceneDownColor ());
 
         surface.updateButton (SLMkIIIControlSurface.MKIII_GRID, viewManager.isActiveView (Views.VIEW_SESSION) ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_BLUE);
+        surface.updateButton (SLMkIIIControlSurface.MKIII_OPTIONS, modeManager.isActiveOrTempMode (Modes.MODE_FUNCTIONS) ? SLMkIIIColors.SLMKIII_BROWN_DARK : SLMkIIIColors.SLMKIII_DARK_GREY);
 
         final SLMkIIIDisplay display = surface.getDisplay ();
         final ITrackBank tb = this.model.getTrackBank ();
@@ -345,7 +367,39 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
                 ((SceneView) activeView).updateSceneButtons ();
         }
 
-        this.buttonArea.updateButtons ();
+        this.updateSoloMuteButtons ();
+    }
+
+
+    /**
+     * Update the 16 button LEDs.
+     */
+    public void updateSoloMuteButtons ()
+    {
+        SLMkIIIControlSurface surface = this.getSurface ();
+        final ITrackBank tb = this.model.getTrackBank ();
+        for (int i = 0; i < 8; i++)
+        {
+            final ITrack track = tb.getItem (i);
+
+            int color1;
+            int color2;
+
+            final boolean exists = track.doesExist ();
+            if (surface.isMuteSolo ())
+            {
+                color1 = exists ? track.isMute () ? SLMkIIIColors.SLMKIII_ORANGE : SLMkIIIColors.SLMKIII_ORANGE_HALF : SLMkIIIColors.SLMKIII_BLACK;
+                color2 = exists ? track.isSolo () ? SLMkIIIColors.SLMKIII_YELLOW : SLMkIIIColors.SLMKIII_YELLOW_HALF : SLMkIIIColors.SLMKIII_BLACK;
+            }
+            else
+            {
+                color1 = exists ? track.isMonitor () ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_GREEN_HALF : SLMkIIIColors.SLMKIII_BLACK;
+                color2 = exists ? track.isRecArm () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF : SLMkIIIColors.SLMKIII_BLACK;
+            }
+
+            surface.updateButton (SLMkIIIControlSurface.MKIII_BUTTON_ROW1_1 + i, color1);
+            surface.updateButton (SLMkIIIControlSurface.MKIII_BUTTON_ROW2_1 + i, color2);
+        }
     }
 
 
@@ -354,7 +408,11 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         final ViewManager viewManager = this.getSurface ().getViewManager ();
         if (viewManager.isActiveView (Views.VIEW_SESSION))
             return this.model.getSceneBank ().canScrollForwards () ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_BLACK;
-        return SLMkIIIColors.SLMKIII_BLUE;
+        else if (viewManager.isActiveView (Views.VIEW_DRUM))
+            return ((DrumView) viewManager.getView (Views.VIEW_DRUM)).isPlayMode () ? SLMkIIIColors.SLMKIII_BLUE : SLMkIIIColors.SLMKIII_SKY_BLUE;
+        else if (viewManager.isActiveView (Views.VIEW_COLOR))
+            return !((ColorView) viewManager.getView (Views.VIEW_COLOR)).isFlip () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_BLACK;
+        return SLMkIIIColors.SLMKIII_BLACK;
     }
 
 
@@ -363,7 +421,11 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         final ViewManager viewManager = this.getSurface ().getViewManager ();
         if (viewManager.isActiveView (Views.VIEW_SESSION))
             return this.model.getSceneBank ().canScrollBackwards () ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_BLACK;
-        return SLMkIIIColors.SLMKIII_BLUE;
+        else if (viewManager.isActiveView (Views.VIEW_DRUM))
+            return ((DrumView) viewManager.getView (Views.VIEW_DRUM)).isPlayMode () ? SLMkIIIColors.SLMKIII_BLUE : SLMkIIIColors.SLMKIII_SKY_BLUE;
+        else if (viewManager.isActiveView (Views.VIEW_COLOR))
+            return ((ColorView) viewManager.getView (Views.VIEW_COLOR)).isFlip () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_BLACK;
+        return SLMkIIIColors.SLMKIII_BLACK;
     }
 
 

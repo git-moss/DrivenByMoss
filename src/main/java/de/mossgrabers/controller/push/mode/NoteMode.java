@@ -105,6 +105,8 @@ public class NoteMode extends BaseMode
         synchronized (this.updateLock)
         {
             this.clip.clearStep (this.step, this.note);
+            // TODO Bugfix required: setStep makes Bitwig hang
+            // https://github.com/teotigraphix/Framework4Bitwig/issues/124
             this.clip.setStep (this.step, this.note, this.noteVelocity, this.noteLength);
             this.isDirty = false;
         }

@@ -2277,4 +2277,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         this.relative2ValueChanger.setSpeed (isSlow);
         this.relative3ValueChanger.setSpeed (isSlow);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setButtonEx (int button, int channel, int value)
+    {
+        // Intentionally empty
+    }
 }

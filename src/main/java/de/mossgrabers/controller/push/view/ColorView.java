@@ -86,8 +86,9 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     @Override
     public void drawGrid ()
     {
+        final PadGrid padGrid = this.surface.getPadGrid ();
         for (int i = 0; i < 64; i++)
-            this.surface.getPadGrid ().light (36 + i, i < DAWColors.DAW_COLORS.length ? DAWColors.DAW_COLORS[i] : PadGrid.GRID_OFF);
+            padGrid.light (36 + i, i < DAWColors.DAW_COLORS.length ? DAWColors.DAW_COLORS[i] : PadGrid.GRID_OFF);
     }
 
 

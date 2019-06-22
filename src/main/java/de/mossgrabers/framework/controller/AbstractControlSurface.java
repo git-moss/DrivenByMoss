@@ -507,10 +507,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void updateButton (final int button, final int value)
     {
-        if (this.buttonCache.get (button)[0] == value)
-            return;
-        this.setButton (button, value);
-        this.buttonCache.get (button)[0] = value;
+        this.updateButtonEx (button, 0, value);
     }
 
 
@@ -562,14 +559,6 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     public void setButtonEx (final int button, final int channel, final String colorID)
     {
         this.setButtonEx (button, channel, this.colorManager.getColor (colorID));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setButtonEx (final int button, final int channel, final int state)
-    {
-        // Intentionally empty
     }
 
 

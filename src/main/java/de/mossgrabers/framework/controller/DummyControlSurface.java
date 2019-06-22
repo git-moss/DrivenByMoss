@@ -32,4 +32,12 @@ public class DummyControlSurface<C extends Configuration> extends AbstractContro
 
         this.setDisplay (new DummyDisplay (this.host));
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setButtonEx (int button, int channel, int value)
+    {
+        // Intentionally empty
+    }
 }

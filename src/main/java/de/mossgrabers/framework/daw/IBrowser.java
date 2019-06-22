@@ -128,6 +128,14 @@ public interface IBrowser extends ObserverManagement
 
 
     /**
+     * Get selected filter column.
+     *
+     * @return The column
+     */
+    IBrowserColumn getSelectedFilterColumn ();
+
+
+    /**
      * Get the number of filter columns.
      *
      * @return The number of filter columns
@@ -149,6 +157,18 @@ public interface IBrowser extends ObserverManagement
      * @return The item data
      */
     IBrowserColumnItem [] getResultColumnItems ();
+
+
+    /**
+     * Select the previous filter column.
+     */
+    void selectPreviousFilterColumn ();
+
+
+    /**
+     * Select the next filter column.
+     */
+    void selectNextFilterColumn ();
 
 
     /**

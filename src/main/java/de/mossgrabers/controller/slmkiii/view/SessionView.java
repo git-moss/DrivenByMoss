@@ -36,8 +36,8 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
 
         final SessionColor isRecording = new SessionColor (SLMkIIIColors.SLMKIII_RED, SLMkIIIColors.SLMKIII_RED, false);
         final SessionColor isRecordingQueued = new SessionColor (SLMkIIIColors.SLMKIII_RED_HALF, SLMkIIIColors.SLMKIII_RED_HALF, true);
-        final SessionColor isPlaying = new SessionColor (SLMkIIIColors.SLMKIII_GREEN, SLMkIIIColors.SLMKIII_BLACK, false);
-        final SessionColor isPlayingQueued = new SessionColor (SLMkIIIColors.SLMKIII_GREEN, SLMkIIIColors.SLMKIII_BLACK, true);
+        final SessionColor isPlaying = new SessionColor (SLMkIIIColors.SLMKIII_GREEN_GRASS, SLMkIIIColors.SLMKIII_GREEN, false);
+        final SessionColor isPlayingQueued = new SessionColor (SLMkIIIColors.SLMKIII_GREEN_GRASS, SLMkIIIColors.SLMKIII_GREEN, true);
         final SessionColor hasContent = new SessionColor (SLMkIIIColors.SLMKIII_AMBER, -1, false);
         final SessionColor noContent = new SessionColor (SLMkIIIColors.SLMKIII_BLACK, -1, false);
         final SessionColor recArmed = new SessionColor (SLMkIIIColors.SLMKIII_RED_HALF, -1, false);

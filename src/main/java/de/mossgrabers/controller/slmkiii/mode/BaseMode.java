@@ -72,7 +72,7 @@ public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkI
     {
         final ColorManager colorManager = this.model.getColorManager ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (20 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
+            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
     }
 
 
@@ -93,9 +93,17 @@ public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkI
 
     protected void setButtonInfo (final SLMkIIIDisplay display)
     {
-        display.setCell (2, 8, "Mute").setCell (3, 8, "Solo");
-
-        display.setPropertyColor (8, 1, SLMkIIIColors.SLMKIII_AMBER);
-        display.setPropertyColor (8, 2, SLMkIIIColors.SLMKIII_YELLOW);
+        if (this.surface.isMuteSolo ())
+        {
+            display.setCell (2, 8, "Mute").setCell (3, 8, "Solo");
+            display.setPropertyColor (8, 1, SLMkIIIColors.SLMKIII_AMBER);
+            display.setPropertyColor (8, 2, SLMkIIIColors.SLMKIII_YELLOW);
+        }
+        else
+        {
+            display.setCell (2, 8, "Monitor").setCell (3, 8, "Arm");
+            display.setPropertyColor (8, 1, SLMkIIIColors.SLMKIII_GREEN);
+            display.setPropertyColor (8, 2, SLMkIIIColors.SLMKIII_RED);
+        }
     }
 }

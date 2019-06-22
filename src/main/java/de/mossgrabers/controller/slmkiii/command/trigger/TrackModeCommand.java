@@ -8,6 +8,7 @@ import de.mossgrabers.controller.slmkiii.SLMkIIIConfiguration;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -41,8 +42,13 @@ public class TrackModeCommand extends AbstractTriggerCommand<SLMkIIIControlSurfa
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (event == ButtonEvent.UP)
-            this.modeSelectCommand.execute (ButtonEvent.DOWN);
+        if (event != ButtonEvent.UP)
+            return;
 
+        final IBrowser browser = this.model.getBrowser ();
+        if (browser != null && browser.isActive ())
+            browser.stopBrowsing (!this.surface.isShiftPressed ());
+
+        this.modeSelectCommand.execute (ButtonEvent.DOWN);
     }
 }

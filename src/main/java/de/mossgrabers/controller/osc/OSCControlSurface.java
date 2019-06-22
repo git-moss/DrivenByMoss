@@ -25,4 +25,12 @@ public class OSCControlSurface extends AbstractControlSurface<OSCConfiguration>
     {
         super (host, configuration, colorManager, null, null, null, new int [0]);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setButtonEx (int button, int channel, int value)
+    {
+        // Intentionally empty
+    }
 }
