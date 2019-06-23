@@ -171,7 +171,10 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
     {
         // Shift button pressed?
         if (note != 7)
+        {
+            this.errorln ("Pad is outside of note range, make sure that you did not accidently transpose the pads (Shift+Wheel)");
             return;
+        }
 
         this.isShift = velocity == 127;
         if (this.isShift)

@@ -17,9 +17,6 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class BeatstepPadGrid extends PadGridImpl
 {
-    private int columns;
-
-
     /**
      * Constructor.
      *
@@ -28,9 +25,7 @@ public class BeatstepPadGrid extends PadGridImpl
      */
     public BeatstepPadGrid (final ColorManager colorManager, final IMidiOutput output)
     {
-        super (colorManager, output);
-
-        this.columns = 8;
+        super (colorManager, output, 2, 8, 36);
     }
 
 
@@ -47,7 +42,7 @@ public class BeatstepPadGrid extends PadGridImpl
     protected void sendNoteState (final int note, final int color)
     {
         final int n = note - 36;
-        final int pad = n < this.columns ? BeatstepControlSurface.BEATSTEP_PAD_9 + n : BeatstepControlSurface.BEATSTEP_PAD_1 + n - this.columns;
+        final int pad = n < this.cols ? BeatstepControlSurface.BEATSTEP_PAD_9 + n : BeatstepControlSurface.BEATSTEP_PAD_1 + n - this.cols;
         final String data = BeatstepControlSurface.SYSEX_HEADER + StringUtils.toHexStr (new int []
         {
             pad,

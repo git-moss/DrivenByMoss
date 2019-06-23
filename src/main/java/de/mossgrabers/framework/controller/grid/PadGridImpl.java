@@ -29,10 +29,10 @@ public class PadGridImpl implements PadGrid
     protected final boolean []   currentBlinkFast;
     protected final boolean []   blinkFast;
 
-    private final int            rows;
-    private final int            cols;
-    private final int            startNote;
-    private final int            endNote;
+    protected final int          rows;
+    protected final int          cols;
+    protected final int          startNote;
+    protected final int          endNote;
 
 
     /**
