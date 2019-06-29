@@ -139,7 +139,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         if (data.length != 6 || data[0] != 0xF0 || data[1] != 0x7F || data[3] != 0x06 || data[5] != 0xF7)
             return;
 
-        final int channel = data[2];
+        // This is not (fully) correct but at least supports 16 device IDs (and 7F for ignore)
+        final int channel = data[2] % 16;
         final int number = data[4];
 
         this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_MMC + 1], number, channel);

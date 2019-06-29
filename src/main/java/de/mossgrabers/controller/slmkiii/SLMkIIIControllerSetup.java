@@ -140,7 +140,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
-        midiAccess.createInput (1, "Keyboard", "80????", "90????", "B0????", "D0????", "E0????");
+        midiAccess.createInput (1, "Keyboard", "8?????", "9?????", "B?????", "D?????", "E?????");
         final IHost hostProxy = this.model.getHost ();
         final SLMkIIIControlSurface surface = new SLMkIIIControlSurface (hostProxy, this.colorManager, this.configuration, output, midiAccess.createInput ("Pads", "8?????", "9?????"));
         this.surfaces.add (surface);
