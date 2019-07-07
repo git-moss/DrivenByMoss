@@ -51,6 +51,7 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -142,8 +143,8 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         final IMidiOutput output = midiAccess.createOutput ();
         midiAccess.createInput (1, "Keyboard", "8?????", "9?????", "B?????", "D?????", "E?????");
         final IHost hostProxy = this.model.getHost ();
-        final SLMkIIIControlSurface surface = new SLMkIIIControlSurface (hostProxy, this.colorManager, this.configuration, output, midiAccess.createInput ("Pads", "8?????", "9?????"));
-        this.surfaces.add (surface);
+        final IMidiInput input = midiAccess.createInput ("Pads", "8?????", "9?????");
+        this.surfaces.add (new SLMkIIIControlSurface (hostProxy, this.colorManager, this.configuration, output, input));
     }
 
 

@@ -7,6 +7,7 @@ package de.mossgrabers.controller.sl.controller;
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -185,7 +186,15 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
      */
     public SLControlSurface (final IHost host, final ColorManager colorManager, final SLConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isMkII)
     {
-        super (host, configuration, colorManager, output, input, null, SL_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output, 1, 8, 36)
+        {
+            /** {@inheritDoc} */
+            @Override
+            public void flush ()
+            {
+                // The drum pads do not have LEDs
+            }
+        }, SL_BUTTONS_ALL);
 
         this.isMkII = isMkII;
 

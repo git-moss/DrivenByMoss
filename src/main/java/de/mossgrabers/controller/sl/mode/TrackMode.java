@@ -8,7 +8,7 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.track.AbstractTrackMode;
@@ -39,11 +39,11 @@ public class TrackMode extends AbstractTrackMode<SLControlSurface, SLConfigurati
     public void updateDisplay ()
     {
         final ITrack t = this.model.getSelectedTrack ();
-        final Display d = this.surface.getDisplay ();
+        final Display d = this.surface.getDisplay ().clearRow (0).clearRow (2);
 
         if (t == null)
         {
-            d.setRow (0, "                        Please select a track...                       ").clearRow (2).done (2);
+            d.setRow (0, "                        Please select a track...                       ").done (2);
             return;
         }
 
@@ -59,28 +59,14 @@ public class TrackMode extends AbstractTrackMode<SLControlSurface, SLConfigurati
             d.setCell (0, 2, "Crossfdr").setCell (2, 2, "A".equals (crossfadeMode) ? "A" : "B".equals (crossfadeMode) ? "       B" : "   <> ");
         }
 
-        final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
         int pos;
-        if (fxTrackBank != null)
-        {
-            final boolean isFX = this.model.isEffectTrackBankActive ();
-            for (int i = 0; i < sendCount; i++)
-            {
-                final ITrack fxTrack = fxTrackBank.getItem (i);
-                final boolean isEmpty = isFX || !fxTrack.doesExist ();
-                pos = sendStart + i;
-                d.setCell (0, pos, isEmpty ? "" : fxTrack.getName ()).setCell (2, pos, isEmpty ? "" : t.getSendBank ().getItem (i).getDisplayedValue (8));
-            }
-
-            if (isFX)
-                d.setCell (0, 7, t.getName ());
-        }
-        else
+        final ISendBank sendBank = t.getSendBank ();
+        if (!this.model.isEffectTrackBankActive () && sendBank.getPageSize () > 0)
         {
             for (int i = 0; i < sendCount; i++)
             {
                 pos = sendStart + i;
-                final ISend send = t.getSendBank ().getItem (i);
+                final ISend send = sendBank.getItem (i);
                 d.setCell (0, pos, send.getName (8)).setCell (2, pos, send.getDisplayedValue (8));
             }
         }
