@@ -21,6 +21,8 @@ import com.bitwig.extension.api.graphics.GraphicsOutput.AntialiasMode;
  */
 public class GraphicsContextImpl implements IGraphicsContext
 {
+    private static final Object locker = new Object();
+
     private GraphicsOutput gc;
 
 
@@ -31,7 +33,9 @@ public class GraphicsContextImpl implements IGraphicsContext
      */
     public GraphicsContextImpl (final GraphicsOutput gc)
     {
-        gc.setAntialias (AntialiasMode.BEST);
+        synchronized (locker) {
+            gc.setAntialias(AntialiasMode.BEST);
+        }
         this.gc = gc;
     }
 
@@ -41,9 +45,11 @@ public class GraphicsContextImpl implements IGraphicsContext
     public void drawLine (final double x1, final double y1, final double x2, final double y2, final ColorEx color)
     {
         this.setColor (color);
-        this.gc.moveTo (x1, y1);
-        this.gc.lineTo (x2, y2);
-        this.gc.stroke ();
+        synchronized (locker) {
+            this.gc.moveTo(x1, y1);
+            this.gc.lineTo(x2, y2);
+            this.gc.stroke();
+        }
     }
 
 
@@ -52,8 +58,10 @@ public class GraphicsContextImpl implements IGraphicsContext
     public void fillRectangle (final double x, final double y, final double width, final double height, final ColorEx color)
     {
         this.setColor (color);
-        this.gc.rectangle (x, y, Math.max (0, width), Math.max (0, height));
-        this.gc.fill ();
+        synchronized (locker) {
+            this.gc.rectangle(x, y, Math.max(0, width), Math.max(0, height));
+            this.gc.fill();
+        }
     }
 
 
@@ -69,13 +77,15 @@ public class GraphicsContextImpl implements IGraphicsContext
     @Override
     public void strokeRectangle (final double left, final double top, final double width, final double height, final ColorEx color, final double lineWidth)
     {
-        // Turn off antialias or otherwise we do not get a single line
-        this.gc.setAntialias (AntialiasMode.OFF);
-        this.setColor (color);
-        this.gc.setLineWidth (lineWidth);
-        this.gc.rectangle (left, top, width, height);
-        this.gc.stroke ();
-        this.gc.setAntialias (AntialiasMode.BEST);
+        synchronized (locker) {
+            // Turn off antialias or otherwise we do not get a single line
+            this.gc.setAntialias(AntialiasMode.OFF);
+            this.setColor(color);
+            this.gc.setLineWidth(lineWidth);
+            this.gc.rectangle(left, top, width, height);
+            this.gc.stroke();
+            this.gc.setAntialias(AntialiasMode.BEST);
+        }
     }
 
 
@@ -95,7 +105,9 @@ public class GraphicsContextImpl implements IGraphicsContext
         final GradientPattern linearGradient = this.gc.createLinearGradient (left, top, left, top + height);
         linearGradient.addColorStop (0, color1.getRed (), color1.getGreen (), color1.getBlue ());
         linearGradient.addColorStop (1, color2.getRed (), color2.getGreen (), color2.getBlue ());
-        this.gc.setPattern (linearGradient);
+        synchronized (locker) {
+            this.gc.setPattern(linearGradient);
+        }
         this.drawRoundedRectInternal (left, top, width, height, radius);
     }
 
@@ -103,13 +115,15 @@ public class GraphicsContextImpl implements IGraphicsContext
     private void drawRoundedRectInternal (final double left, final double top, final double width, final double height, final double radius)
     {
         final double degrees = Math.PI / 180.0;
-        this.gc.newSubPath ();
-        this.gc.arc (left + width - radius, top + radius, radius, -90 * degrees, 0 * degrees);
-        this.gc.arc (left + width - radius, top + height - radius, radius, 0 * degrees, 90 * degrees);
-        this.gc.arc (left + radius, top + height - radius, radius, 90 * degrees, 180 * degrees);
-        this.gc.arc (left + radius, top + radius, radius, 180 * degrees, 270 * degrees);
-        this.gc.closePath ();
-        this.gc.fill ();
+        synchronized (locker) {
+            this.gc.newSubPath();
+            this.gc.arc(left + width - radius, top + radius, radius, -90 * degrees, 0 * degrees);
+            this.gc.arc(left + width - radius, top + height - radius, radius, 0 * degrees, 90 * degrees);
+            this.gc.arc(left + radius, top + height - radius, radius, 90 * degrees, 180 * degrees);
+            this.gc.arc(left + radius, top + radius, radius, 180 * degrees, 270 * degrees);
+            this.gc.closePath();
+            this.gc.fill();
+        }
     }
 
 
@@ -118,11 +132,13 @@ public class GraphicsContextImpl implements IGraphicsContext
     public void fillTriangle (final double x1, final double y1, final double x2, final double y2, final double x3, final double y3, final ColorEx lineColor)
     {
         this.setColor (lineColor);
-        this.gc.moveTo (x1, y1);
-        this.gc.lineTo (x2, y2);
-        this.gc.lineTo (x3, y3);
-        this.gc.lineTo (x1, y1);
-        this.gc.fill ();
+        synchronized (locker) {
+            this.gc.moveTo(x1, y1);
+            this.gc.lineTo(x2, y2);
+            this.gc.lineTo(x3, y3);
+            this.gc.lineTo(x1, y1);
+            this.gc.fill();
+        }
     }
 
 
@@ -131,8 +147,10 @@ public class GraphicsContextImpl implements IGraphicsContext
     public void fillCircle (final double x, final double y, final double radius, final ColorEx fillColor)
     {
         this.setColor (fillColor);
-        this.gc.circle (x, y, Math.max (0, radius));
-        this.gc.fill ();
+        synchronized (locker) {
+            this.gc.circle(x, y, Math.max(0, radius));
+            this.gc.fill();
+        }
     }
 
 
@@ -151,19 +169,24 @@ public class GraphicsContextImpl implements IGraphicsContext
         if (text == null || text.length () == 0)
             return;
 
-        this.gc.save ();
-        this.gc.setFontSize (fontSize);
-
+        synchronized (locker) {
+            this.gc.save();
+            this.gc.setFontSize(fontSize);
+        }
         // We need to calculate the text height from a character which has no ascent, since showText
         // always draws the text on the baseline of the font!
-        final double h = this.gc.getTextExtents ("T").getHeight ();
-        final double w = this.gc.getTextExtents (text).getWidth ();
+        final double h;
+        final double w;
+        synchronized (locker) {
+            h = this.gc.getTextExtents("T").getHeight();
+            w = this.gc.getTextExtents(text).getWidth();
+        }
         final double posX = alignment == Align.CENTER ? x + (width - w) / 2.0 : x;
         final double posY = y + (height + h) / 2;
-
-        this.gc.rectangle (x, y, width, height);
-        this.gc.clip ();
-
+        synchronized (locker) {
+            this.gc.rectangle(x, y, width, height);
+            this.gc.clip();
+        }
         if (backgroundColor != null)
         {
             final double inset = 12.0;
@@ -171,10 +194,13 @@ public class GraphicsContextImpl implements IGraphicsContext
         }
 
         this.setColor (color);
-        this.gc.moveTo (posX, posY);
-        this.gc.showText (text);
-        this.gc.resetClip ();
-        this.gc.restore ();
+
+        synchronized (locker) {
+            this.gc.moveTo(posX, posY);
+            this.gc.showText(text);
+            this.gc.resetClip();
+            this.gc.restore();
+        }
     }
 
 
@@ -188,13 +214,15 @@ public class GraphicsContextImpl implements IGraphicsContext
 
     /** {@inheritDoc} */
     @Override
-    public void drawTextInHeight (final String text, final double x, final double y, final double height, final ColorEx color, final ColorEx backgroundColor, final double fontSize)
+    public void drawTextInHeight (String text, double x, double y, double height, ColorEx color, ColorEx backgroundColor, double fontSize)
     {
         if (text == null || text.length () == 0)
             return;
 
-        this.gc.save ();
-        this.gc.setFontSize (fontSize);
+        synchronized (locker) {
+            this.gc.save();
+            this.gc.setFontSize(fontSize);
+        }
 
         // We need to calculate the text height from a character which has no ascent, since showText
         // always draws the text on the baseline of the font!
@@ -209,9 +237,12 @@ public class GraphicsContextImpl implements IGraphicsContext
         }
 
         this.setColor (color);
-        this.gc.moveTo (x, posY);
-        this.gc.showText (text);
-        this.gc.restore ();
+
+        synchronized (locker) {
+            this.gc.moveTo(x, posY);
+            this.gc.showText(text);
+            this.gc.restore();
+        }
     }
 
 
@@ -219,7 +250,9 @@ public class GraphicsContextImpl implements IGraphicsContext
     @Override
     public void drawImage (final IImage icon, final double x, final double y)
     {
-        this.gc.drawImage (((ImageImpl) icon).getImage (), x, y);
+        synchronized (locker) {
+            this.gc.drawImage(((ImageImpl) icon).getImage(), x, y);
+        }
     }
 
 
@@ -228,8 +261,11 @@ public class GraphicsContextImpl implements IGraphicsContext
     public void maskImage (final IImage icon, final double x, final double y, final ColorEx maskColor)
     {
         this.setColor (maskColor);
-        this.gc.mask (((ImageImpl) icon).getImage (), x, y);
-        this.gc.fill ();
+
+        synchronized (locker) {
+            this.gc.mask(((ImageImpl) icon).getImage(), x, y);
+            this.gc.fill();
+        }
     }
 
 
@@ -257,6 +293,8 @@ public class GraphicsContextImpl implements IGraphicsContext
 
     protected void setColor (final ColorEx color)
     {
-        this.gc.setColor (color.getRed (), color.getGreen (), color.getBlue ());
+        synchronized (locker) {
+            this.gc.setColor(color.getRed(), color.getGreen(), color.getBlue());
+        }
     }
 }
