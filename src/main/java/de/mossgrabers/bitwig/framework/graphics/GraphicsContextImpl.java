@@ -222,23 +222,22 @@ public class GraphicsContextImpl implements IGraphicsContext
         synchronized (locker) {
             this.gc.save();
             this.gc.setFontSize(fontSize);
-        }
 
-        // We need to calculate the text height from a character which has no ascent, since showText
-        // always draws the text on the baseline of the font!
-        final double h = this.gc.getTextExtents ("T").getHeight ();
-        final double posY = y + (height + h) / 2;
+            // We need to calculate the text height from a character which has no ascent, since showText
+            // always draws the text on the baseline of the font!
+            final double h = this.gc.getTextExtents ("T").getHeight ();
+            final double posY = y + (height + h) / 2;
 
-        if (backgroundColor != null)
-        {
-            final double w = this.gc.getTextExtents (text).getWidth ();
-            final double inset = 12.0;
-            this.fillRoundedRectangle (x + inset, posY - h - inset, w + 2 * inset, h + 2 * inset, inset, backgroundColor);
-        }
+            if (backgroundColor != null)
+            {
+                final double w = this.gc.getTextExtents (text).getWidth ();
+                final double inset = 12.0;
+                this.fillRoundedRectangle (x + inset, posY - h - inset, w + 2 * inset, h + 2 * inset, inset, backgroundColor);
+            }
 
-        this.setColor (color);
+            this.setColor (color);
 
-        synchronized (locker) {
+
             this.gc.moveTo(x, posY);
             this.gc.showText(text);
             this.gc.restore();
@@ -273,21 +272,22 @@ public class GraphicsContextImpl implements IGraphicsContext
     @Override
     public double calculateFontSize (final double maxHeight, final double maxWidth)
     {
-        final String maxString = "G#5";
-        final double minSize = 12.0;
+        synchronized (locker) {
+            final String maxString = "G#5";
+            final double minSize = 12.0;
 
-        double size = minSize;
-        double fittingSize = -1;
-        while (size < maxHeight)
-        {
-            this.gc.setFontSize (size);
-            final double width = this.gc.getTextExtents (maxString).getWidth ();
-            if (width > maxWidth)
-                break;
-            fittingSize = size;
-            size += 1.0;
+            double size = minSize;
+            double fittingSize = -1;
+            while (size < maxHeight) {
+                this.gc.setFontSize(size);
+                final double width = this.gc.getTextExtents(maxString).getWidth();
+                if (width > maxWidth)
+                    break;
+                fittingSize = size;
+                size += 1.0;
+            }
+            return fittingSize;
         }
-        return fittingSize;
     }
 
 
