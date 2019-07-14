@@ -101,16 +101,13 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             this.input.setMidiCallback (this::handleMidi);
 
         // Button related
-        this.buttons = buttons;
+        this.buttons = buttons == null ? new int [0] : buttons;
         this.buttonStates = new ButtonEvent [NUM_BUTTONS];
         this.buttonConsumed = new boolean [NUM_BUTTONS];
-        if (this.buttons != null)
+        for (final int button: this.buttons)
         {
-            for (final int button: this.buttons)
-            {
-                this.buttonStates[button] = ButtonEvent.UP;
-                this.buttonConsumed[button] = false;
-            }
+            this.buttonStates[button] = ButtonEvent.UP;
+            this.buttonConsumed[button] = false;
         }
 
         // Optimisation for button LED updates, cache 128 possible note values on
@@ -161,7 +158,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      *
      * @return The button midi CCs
      */
-    public int [] getButtons ()
+    public final int [] getButtons ()
     {
         return this.buttons;
     }
