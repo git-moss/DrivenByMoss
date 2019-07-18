@@ -90,32 +90,32 @@ public abstract class AbstractTrackMode extends BaseMode
 
         if (this.surface.isShiftPressed ())
         {
-            if (selectedTrack != null)
+            switch (index)
             {
-                switch (index)
-                {
-                    case 0:
+                case 0:
+                    if (selectedTrack != null)
                         selectedTrack.toggleIsActivated ();
-                        break;
-                    case 1:
+                    break;
+                case 1:
+                    if (selectedTrack != null)
                         this.model.toggleCursorTrackPinned ();
-                        break;
-                    case 2:
+                    break;
+                case 2:
+                    if (selectedTrack != null)
                         this.surface.getViewManager ().setActiveView (Views.VIEW_COLOR);
-                        break;
-                    case 5:
-                        this.model.getApplication ().addInstrumentTrack ();
-                        break;
-                    case 6:
-                        this.model.getApplication ().addAudioTrack ();
-                        break;
-                    case 7:
-                        this.model.getApplication ().addEffectTrack ();
-                        break;
-                    default:
-                        // Not used
-                        break;
-                }
+                    break;
+                case 5:
+                    this.model.getApplication ().addInstrumentTrack ();
+                    break;
+                case 6:
+                    this.model.getApplication ().addAudioTrack ();
+                    break;
+                case 7:
+                    this.model.getApplication ().addEffectTrack ();
+                    break;
+                default:
+                    // Not used
+                    break;
             }
             return;
         }
@@ -235,29 +235,30 @@ public abstract class AbstractTrackMode extends BaseMode
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack selectedTrack = tb.getSelectedItem ();
 
-        if (selectedTrack == null)
-        {
-            for (int i = 0; i < 8; i++)
-            {
-                d.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_BLACK);
-                d.setPropertyValue (i, 1, 0);
-            }
-            return;
-        }
-
         if (this.surface.isShiftPressed ())
         {
-            d.setCell (3, 0, "On/Off");
-            d.setPropertyColor (0, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (0, 1, selectedTrack.isActivated () ? 1 : 0);
+            if (selectedTrack == null)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    d.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_BLACK);
+                    d.setPropertyValue (i, 1, 0);
+                }
+            }
+            else
+            {
+                d.setCell (3, 0, "On/Off");
+                d.setPropertyColor (0, 2, SLMkIIIColors.SLMKIII_RED);
+                d.setPropertyValue (0, 1, selectedTrack.isActivated () ? 1 : 0);
 
-            d.setCell (3, 1, "Pin");
-            d.setPropertyColor (1, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (1, 1, this.model.isCursorTrackPinned () ? 1 : 0);
+                d.setCell (3, 1, "Pin");
+                d.setPropertyColor (1, 2, SLMkIIIColors.SLMKIII_RED);
+                d.setPropertyValue (1, 1, this.model.isCursorTrackPinned () ? 1 : 0);
 
-            d.setCell (3, 2, "Color");
-            d.setPropertyColor (2, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (2, 1, 0);
+                d.setCell (3, 2, "Color");
+                d.setPropertyColor (2, 2, SLMkIIIColors.SLMKIII_RED);
+                d.setPropertyValue (2, 1, 0);
+            }
 
             d.setCell (3, 3, "");
             d.setPropertyColor (3, 2, SLMkIIIColors.SLMKIII_BLACK);

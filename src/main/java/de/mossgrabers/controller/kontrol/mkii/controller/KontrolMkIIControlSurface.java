@@ -335,7 +335,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
 
     /** {@inheritDoc} */
     @Override
-    protected void checkButtonState (final int buttonID)
+    protected void checkButtonState (final int channel, final int buttonID)
     {
         // No long presses on the Komplete Kontrol MkII
     }

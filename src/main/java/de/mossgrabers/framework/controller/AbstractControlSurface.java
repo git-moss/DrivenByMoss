@@ -891,7 +891,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             this.buttonStates[cc] = value > 0 ? ButtonEvent.DOWN : ButtonEvent.UP;
 
             if (this.buttonStates[cc] == ButtonEvent.DOWN)
-                this.scheduleTask ( () -> this.checkButtonState (cc), AbstractControlSurface.BUTTON_STATE_INTERVAL);
+                this.scheduleTask ( () -> this.checkButtonState (channel, cc), AbstractControlSurface.BUTTON_STATE_INTERVAL);
 
             // If consumed flag is set ignore the UP event
             if (this.buttonStates[cc] == ButtonEvent.UP && this.buttonConsumed[cc])
@@ -999,15 +999,16 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     /**
      * If the state of the given button is still down, the state is set to long and an event gets
      * fired.
-     *
+     * 
+     * @param channel The MIDI channel
      * @param buttonID The button CC to check
      */
-    protected void checkButtonState (final int buttonID)
+    protected void checkButtonState (final int channel, final int buttonID)
     {
         if (this.buttonStates[buttonID] != ButtonEvent.DOWN)
             return;
 
         this.buttonStates[buttonID] = ButtonEvent.LONG;
-        this.handleCCEvent (0, buttonID, 127);
+        this.handleCCEvent (channel, buttonID, 127);
     }
 }
