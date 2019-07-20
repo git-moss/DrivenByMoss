@@ -8,7 +8,6 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -73,10 +72,6 @@ public class AutomationCommand extends AbstractTriggerCommand<PushControlSurface
         if (isShift && !flipRecord || !isShift && flipRecord)
             this.model.getTransport ().toggleWriteClipLauncherAutomation ();
         else
-        {
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack != null)
-                this.model.getTransport ().toggleWriteArrangerAutomation ();
-        }
+            this.model.getTransport ().toggleWriteArrangerAutomation ();
     }
 }

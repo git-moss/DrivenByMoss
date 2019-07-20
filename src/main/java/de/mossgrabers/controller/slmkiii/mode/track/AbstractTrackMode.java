@@ -129,28 +129,25 @@ public abstract class AbstractTrackMode extends BaseMode
 
         final ITrack track = tb.getItem (index);
 
-        if (event == ButtonEvent.UP)
+        if (this.surface.isPressed (SLMkIIIControlSurface.MKIII_DUPLICATE))
         {
-            if (this.surface.isPressed (SLMkIIIControlSurface.MKIII_DUPLICATE))
-            {
-                this.surface.setButtonConsumed (SLMkIIIControlSurface.MKIII_DUPLICATE);
-                track.duplicate ();
-                return;
-            }
-
-            if (this.surface.isPressed (SLMkIIIControlSurface.MKIII_CLEAR))
-            {
-                this.surface.setButtonConsumed (SLMkIIIControlSurface.MKIII_CLEAR);
-                track.remove ();
-                return;
-            }
-
-            final ITrack selTrack = tb.getSelectedItem ();
-            if (selTrack != null && selTrack.getIndex () == index)
-                this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_DEVICE, ButtonEvent.DOWN);
-            else
-                track.select ();
+            this.surface.setButtonConsumed (SLMkIIIControlSurface.MKIII_DUPLICATE);
+            track.duplicate ();
+            return;
         }
+
+        if (this.surface.isPressed (SLMkIIIControlSurface.MKIII_CLEAR))
+        {
+            this.surface.setButtonConsumed (SLMkIIIControlSurface.MKIII_CLEAR);
+            track.remove ();
+            return;
+        }
+
+        final ITrack selTrack = tb.getSelectedItem ();
+        if (selTrack != null && selTrack.getIndex () == index)
+            this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_DEVICE, ButtonEvent.DOWN);
+        else
+            track.select ();
     }
 
 
@@ -181,16 +178,17 @@ public abstract class AbstractTrackMode extends BaseMode
         {
             if (selectedTrack == null)
             {
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < 5; i++)
                     this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, SLMkIIIColors.SLMKIII_BLACK);
-                return;
             }
-
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1, selectedTrack.isActivated () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_2, this.model.isCursorTrackPinned () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_3, SLMkIIIColors.SLMKIII_RED_HALF);
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_4, SLMkIIIColors.SLMKIII_BLACK);
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_5, SLMkIIIColors.SLMKIII_BLACK);
+            else
+            {
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1, selectedTrack.isActivated () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_2, this.model.isCursorTrackPinned () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_3, SLMkIIIColors.SLMKIII_RED_HALF);
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_4, SLMkIIIColors.SLMKIII_BLACK);
+                this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_5, SLMkIIIColors.SLMKIII_BLACK);
+            }
             this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_6, SLMkIIIColors.SLMKIII_RED_HALF);
             this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_7, SLMkIIIColors.SLMKIII_RED_HALF);
             this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_8, SLMkIIIColors.SLMKIII_RED_HALF);
@@ -237,49 +235,7 @@ public abstract class AbstractTrackMode extends BaseMode
 
         if (this.surface.isShiftPressed ())
         {
-            if (selectedTrack == null)
-            {
-                for (int i = 0; i < 2; i++)
-                {
-                    d.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_BLACK);
-                    d.setPropertyValue (i, 1, 0);
-                }
-            }
-            else
-            {
-                d.setCell (3, 0, "On/Off");
-                d.setPropertyColor (0, 2, SLMkIIIColors.SLMKIII_RED);
-                d.setPropertyValue (0, 1, selectedTrack.isActivated () ? 1 : 0);
-
-                d.setCell (3, 1, "Pin");
-                d.setPropertyColor (1, 2, SLMkIIIColors.SLMKIII_RED);
-                d.setPropertyValue (1, 1, this.model.isCursorTrackPinned () ? 1 : 0);
-
-                d.setCell (3, 2, "Color");
-                d.setPropertyColor (2, 2, SLMkIIIColors.SLMKIII_RED);
-                d.setPropertyValue (2, 1, 0);
-            }
-
-            d.setCell (3, 3, "");
-            d.setPropertyColor (3, 2, SLMkIIIColors.SLMKIII_BLACK);
-            d.setPropertyValue (3, 1, 0);
-
-            d.setCell (3, 4, "");
-            d.setPropertyColor (4, 2, SLMkIIIColors.SLMKIII_BLACK);
-            d.setPropertyValue (4, 1, 0);
-
-            d.setCell (3, 5, "Add Instr");
-            d.setPropertyColor (5, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (5, 1, 0);
-
-            d.setCell (3, 6, "Add Audio");
-            d.setPropertyColor (6, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (6, 1, 0);
-
-            d.setCell (3, 7, "Add FX");
-            d.setPropertyColor (7, 2, SLMkIIIColors.SLMKIII_RED);
-            d.setPropertyValue (7, 1, 0);
-
+            this.drawRow4Shifted (d, selectedTrack);
             return;
         }
 
@@ -315,6 +271,53 @@ public abstract class AbstractTrackMode extends BaseMode
             d.setPropertyColor (i, 2, color);
             d.setPropertyValue (i, 1, exists && t.isSelected () ? 1 : 0);
         }
+    }
+
+
+    private void drawRow4Shifted (final SLMkIIIDisplay d, final ITrack selectedTrack)
+    {
+        if (selectedTrack == null)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                d.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_BLACK);
+                d.setPropertyValue (i, 1, 0);
+            }
+        }
+        else
+        {
+            d.setCell (3, 0, "On/Off");
+            d.setPropertyColor (0, 2, SLMkIIIColors.SLMKIII_RED);
+            d.setPropertyValue (0, 1, selectedTrack.isActivated () ? 1 : 0);
+
+            d.setCell (3, 1, "Pin");
+            d.setPropertyColor (1, 2, SLMkIIIColors.SLMKIII_RED);
+            d.setPropertyValue (1, 1, this.model.isCursorTrackPinned () ? 1 : 0);
+
+            d.setCell (3, 2, "Color");
+            d.setPropertyColor (2, 2, SLMkIIIColors.SLMKIII_RED);
+            d.setPropertyValue (2, 1, 0);
+        }
+
+        d.setCell (3, 3, "");
+        d.setPropertyColor (3, 2, SLMkIIIColors.SLMKIII_BLACK);
+        d.setPropertyValue (3, 1, 0);
+
+        d.setCell (3, 4, "");
+        d.setPropertyColor (4, 2, SLMkIIIColors.SLMKIII_BLACK);
+        d.setPropertyValue (4, 1, 0);
+
+        d.setCell (3, 5, "Add Instr");
+        d.setPropertyColor (5, 2, SLMkIIIColors.SLMKIII_RED);
+        d.setPropertyValue (5, 1, 0);
+
+        d.setCell (3, 6, "Add Audio");
+        d.setPropertyColor (6, 2, SLMkIIIColors.SLMKIII_RED);
+        d.setPropertyValue (6, 1, 0);
+
+        d.setCell (3, 7, "Add FX");
+        d.setPropertyColor (7, 2, SLMkIIIColors.SLMKIII_RED);
+        d.setPropertyValue (7, 1, 0);
     }
 
 
