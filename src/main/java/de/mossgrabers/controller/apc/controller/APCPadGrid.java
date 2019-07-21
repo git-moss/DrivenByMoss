@@ -28,7 +28,7 @@ public class APCPadGrid extends PadGridImpl
      */
     public APCPadGrid (final ColorManager colorManager, final IMidiOutput output, final boolean isMkII)
     {
-        super (colorManager, output);
+        super (colorManager, output, 5, 8, 36);
         this.isMkII = isMkII;
     }
 
