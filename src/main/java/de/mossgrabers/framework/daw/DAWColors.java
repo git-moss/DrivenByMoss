@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.daw;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -355,7 +357,7 @@ public class DAWColors
 
 
     /**
-     * Get the color ID that is assigned to the given RGB values.
+     * Get the color ID that is assigned to the closest given RGB values.
      *
      * @param red The red value
      * @param green The green value
@@ -365,10 +367,16 @@ public class DAWColors
     public static String getColorIndex (final double red, final double green, final double blue)
     {
         String cid = COLOR_OFF;
-        double minError = 1.0;
+        double minError = 5.0;
+        final double [] color =
+        {
+            red,
+            green,
+            blue
+        };
         for (int i = 0; i < COLORS.length; i++)
         {
-            final double error = Math.pow (COLORS[i][0] - red, 2.0) + Math.pow (COLORS[i][1] - green, 2.0) + Math.pow (COLORS[i][2] - blue, 2.0);
+            final double error = ColorEx.calcDistance (COLORS[i], color);
             if (error < minError)
             {
                 cid = DAW_COLORS[i];

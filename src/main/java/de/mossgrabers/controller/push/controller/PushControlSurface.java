@@ -8,6 +8,7 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
+import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -358,18 +359,18 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     }
 
     /** The midi note which is sent when touching the ribbon. */
-    public static final int        PUSH_RIBBON_TOUCH             = 12;
+    public static final int          PUSH_RIBBON_TOUCH             = 12;
 
     /** Configure Ribbon as pitchbend. */
-    public static final int        PUSH_RIBBON_PITCHBEND         = 0;
+    public static final int          PUSH_RIBBON_PITCHBEND         = 0;
     /** Configure Ribbon as volume slider. */
-    public static final int        PUSH_RIBBON_VOLUME            = 1;
+    public static final int          PUSH_RIBBON_VOLUME            = 1;
     /** Configure Ribbon as panorama. */
-    public static final int        PUSH_RIBBON_PAN               = 2;
+    public static final int          PUSH_RIBBON_PAN               = 2;
     /** Configure Ribbon discrete values. */
-    public static final int        PUSH_RIBBON_DISCRETE          = 3;
+    public static final int          PUSH_RIBBON_DISCRETE          = 3;
 
-    private static final String [] PUSH_PAD_CURVES_DATA          =
+    private static final String []   PUSH_PAD_CURVES_DATA          =
     {
         "00 00 00 01 08 06 0A 00 00 00 00 00 0A 0F 0C 08 00 00 00 00 00 00 00 00",
         "00 00 00 01 04 0C 00 08 00 00 00 01 0D 04 0C 00 00 00 00 00 0E 0A 06 00",
@@ -379,7 +380,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         "00 00 00 02 02 02 0E 00 00 00 00 01 0D 04 0C 00 00 00 00 00 00 00 00 00"
     };
 
-    private static final String [] PUSH_PAD_THRESHOLDS_DATA      =
+    private static final String []   PUSH_PAD_THRESHOLDS_DATA      =
     {
         // 4 Byte: peak_sampling_time, 4 Byte: aftertouch_gate_time
         "00 00 00 0A 00 00 00 0A",
@@ -425,7 +426,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         "00 01 07 02 00 01 09 0A"
     };
 
-    private static final int []    MAXW                          =
+    private static final int []      MAXW                          =
     {
         1700,
         1660,
@@ -439,7 +440,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         640,
         400
     };
-    private static final int []    PUSH2_CPMIN                   =
+    private static final int []      PUSH2_CPMIN                   =
     {
         1650,
         1580,
@@ -453,7 +454,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         800,
         700
     };
-    private static final int []    PUSH2_CPMAX                   =
+    private static final int []      PUSH2_CPMAX                   =
     {
         2050,
         1950,
@@ -467,7 +468,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         1240,
         1180
     };
-    private static final double [] GAMMA                         =
+    private static final double []   GAMMA                         =
     {
         0.7,
         0.64,
@@ -481,7 +482,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         0.32,
         0.25
     };
-    private static final int []    MINV                          =
+    private static final int []      MINV                          =
     {
         1,
         1,
@@ -495,7 +496,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         24,
         36
     };
-    private static final int []    MAXV                          =
+    private static final int []      MAXV                          =
     {
         96,
         102,
@@ -509,7 +510,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         127,
         127
     };
-    private static final int []    ALPHA                         =
+    private static final int []      ALPHA                         =
     {
         90,
         70,
@@ -524,17 +525,664 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         -90
     };
 
-    private static final int       PAD_VELOCITY_CURVE_CHUNK_SIZE = 16;
-    private static final int       NUM_VELOCITY_CURVE_ENTRIES    = 128;
+    /** The default color palette (like fixed on Push 1) */
+    protected static final int [] [] DEFAULT_PALETTE               =
+    {
+        {
+            0x00,
+            0x00,
+            0x00
+        },
+        {
+            0x1E,
+            0x1E,
+            0x1E
+        },
+        {
+            0x7F,
+            0x7F,
+            0x7F
+        },
+        {
+            0xFF,
+            0xFF,
+            0xFF
+        },
+        {
+            0xFF,
+            0x4C,
+            0x4C
+        },
+        {
+            0xFF,
+            0x00,
+            0x00
+        },
+        {
+            0x59,
+            0x00,
+            0x00
+        },
+        {
+            0x19,
+            0x00,
+            0x00
+        },
+        {
+            0xFF,
+            0xBD,
+            0x6C
+        },
+        {
+            0xFF,
+            0x54,
+            0x00
+        },
+        {
+            0x59,
+            0x1D,
+            0x00
+        },
+        {
+            0x27,
+            0x1B,
+            0x00
+        },
+        {
+            0xFF,
+            0xFF,
+            0x4C
+        },
+        {
+            0xFF,
+            0xFF,
+            0x00
+        },
+        {
+            0x59,
+            0x59,
+            0x00
+        },
+        {
+            0x19,
+            0x19,
+            0x00
+        },
+        {
+            0x88,
+            0xFF,
+            0x4C
+        },
+        {
+            0x54,
+            0xFF,
+            0x00
+        },
+        {
+            0x1D,
+            0x59,
+            0x00
+        },
+        {
+            0x14,
+            0x2B,
+            0x00
+        },
+        {
+            0x4C,
+            0xFF,
+            0x4C
+        },
+        {
+            0x00,
+            0xFF,
+            0x00
+        },
+        {
+            0x00,
+            0x59,
+            0x00
+        },
+        {
+            0x00,
+            0x19,
+            0x00
+        },
+        {
+            0x4C,
+            0xFF,
+            0x5E
+        },
+        {
+            0x00,
+            0xFF,
+            0x19
+        },
+        {
+            0x00,
+            0x59,
+            0x0D
+        },
+        {
+            0x00,
+            0x19,
+            0x02
+        },
+        {
+            0x4C,
+            0xFF,
+            0x88
+        },
+        {
+            0x00,
+            0xFF,
+            0x55
+        },
+        {
+            0x00,
+            0x59,
+            0x1D
+        },
+        {
+            0x00,
+            0x1F,
+            0x12
+        },
+        {
+            0x4C,
+            0xFF,
+            0xB7
+        },
+        {
+            0x00,
+            0xFF,
+            0x99
+        },
+        {
+            0x00,
+            0x59,
+            0x35
+        },
+        {
+            0x00,
+            0x19,
+            0x12
+        },
+        {
+            0x4C,
+            0xC3,
+            0xFF
+        },
+        {
+            0x00,
+            0xA9,
+            0xFF
+        },
+        {
+            0x00,
+            0x41,
+            0x52
+        },
+        {
+            0x00,
+            0x10,
+            0x19
+        },
+        {
+            0x4C,
+            0x88,
+            0xFF
+        },
+        {
+            0x00,
+            0x55,
+            0xFF
+        },
+        {
+            0x00,
+            0x1D,
+            0x59
+        },
+        {
+            0x00,
+            0x08,
+            0x19
+        },
+        {
+            0x4C,
+            0x4C,
+            0xFF
+        },
+        {
+            0x00,
+            0x00,
+            0xFF
+        },
+        {
+            0x00,
+            0x00,
+            0x59
+        },
+        {
+            0x00,
+            0x00,
+            0x19
+        },
+        {
+            0x87,
+            0x4C,
+            0xFF
+        },
+        {
+            0x54,
+            0x00,
+            0xFF
+        },
+        {
+            0x19,
+            0x00,
+            0x64
+        },
+        {
+            0x0F,
+            0x00,
+            0x30
+        },
+        {
+            0xFF,
+            0x4C,
+            0xFF
+        },
+        {
+            0xFF,
+            0x00,
+            0xFF
+        },
+        {
+            0x59,
+            0x00,
+            0x59
+        },
+        {
+            0x19,
+            0x00,
+            0x19
+        },
+        {
+            0xFF,
+            0x4C,
+            0x87
+        },
+        {
+            0xFF,
+            0x00,
+            0x54
+        },
+        {
+            0x59,
+            0x00,
+            0x1D
+        },
+        {
+            0x22,
+            0x00,
+            0x13
+        },
+        {
+            0xFF,
+            0x15,
+            0x00
+        },
+        {
+            0x99,
+            0x35,
+            0x00
+        },
+        {
+            0x79,
+            0x51,
+            0x00
+        },
+        {
+            0x43,
+            0x64,
+            0x00
+        },
+        {
+            0x03,
+            0x39,
+            0x00
+        },
+        {
+            0x00,
+            0x57,
+            0x35
+        },
+        {
+            0x00,
+            0x54,
+            0x7F
+        },
+        {
+            0x00,
+            0x00,
+            0xFF
+        },
+        {
+            0x00,
+            0x45,
+            0x4F
+        },
+        {
+            0x25,
+            0x00,
+            0xCC
+        },
+        {
+            0x7F,
+            0x7F,
+            0x7F
+        },
+        {
+            0x20,
+            0x20,
+            0x20
+        },
+        {
+            0xFF,
+            0x00,
+            0x00
+        },
+        {
+            0xBD,
+            0xFF,
+            0x2D
+        },
+        {
+            0xAF,
+            0xED,
+            0x06
+        },
+        {
+            0x64,
+            0xFF,
+            0x09
+        },
+        {
+            0x10,
+            0x8B,
+            0x00
+        },
+        {
+            0x00,
+            0xFF,
+            0x87
+        },
+        {
+            0x00,
+            0xA9,
+            0xFF
+        },
+        {
+            0x00,
+            0x2A,
+            0xFF
+        },
+        {
+            0x3F,
+            0x00,
+            0xFF
+        },
+        {
+            0x7A,
+            0x00,
+            0xFF
+        },
+        {
+            0xB2,
+            0x1A,
+            0x7D
+        },
+        {
+            0x40,
+            0x21,
+            0x00
+        },
+        {
+            0xFF,
+            0x4A,
+            0x00
+        },
+        {
+            0x88,
+            0xE1,
+            0x06
+        },
+        {
+            0x72,
+            0xFF,
+            0x15
+        },
+        {
+            0x00,
+            0xFF,
+            0x00
+        },
+        {
+            0x3B,
+            0xFF,
+            0x26
+        },
+        {
+            0x59,
+            0xFF,
+            0x71
+        },
+        {
+            0x38,
+            0xFF,
+            0xCC
+        },
+        {
+            0x5B,
+            0x8A,
+            0xFF
+        },
+        {
+            0x31,
+            0x51,
+            0xC6
+        },
+        {
+            0x87,
+            0x7F,
+            0xE9
+        },
+        {
+            0xD3,
+            0x1D,
+            0xFF
+        },
+        {
+            0xFF,
+            0x00,
+            0x5D
+        },
+        {
+            0xFF,
+            0x7F,
+            0x00
+        },
+        {
+            0xB9,
+            0xB0,
+            0x00
+        },
+        {
+            0x90,
+            0xFF,
+            0x00
+        },
+        {
+            0x83,
+            0x5D,
+            0x07
+        },
+        {
+            0x39,
+            0x2B,
+            0x00
+        },
+        {
+            0x14,
+            0x4C,
+            0x10
+        },
+        {
+            0x0D,
+            0x50,
+            0x38
+        },
+        {
+            0x15,
+            0x15,
+            0x2A
+        },
+        {
+            0x16,
+            0x20,
+            0x5A
+        },
+        {
+            0x69,
+            0x3C,
+            0x1C
+        },
+        {
+            0xA8,
+            0x00,
+            0x0A
+        },
+        {
+            0xDE,
+            0x51,
+            0x3D
+        },
+        {
+            0xD8,
+            0x6A,
+            0x1C
+        },
+        {
+            0xFF,
+            0xE1,
+            0x26
+        },
+        {
+            0x9E,
+            0xE1,
+            0x2F
+        },
+        {
+            0x67,
+            0xB5,
+            0x0F
+        },
+        {
+            0x1E,
+            0x1E,
+            0x30
+        },
+        {
+            0xDC,
+            0xFF,
+            0x6B
+        },
+        {
+            0x80,
+            0xFF,
+            0xBD
+        },
+        {
+            0x9A,
+            0x99,
+            0xFF
+        },
+        {
+            0x8E,
+            0x66,
+            0xFF
+        },
+        {
+            0x40,
+            0x40,
+            0x40
+        },
+        {
+            0x75,
+            0x75,
+            0x75
+        },
+        {
+            0xE0,
+            0xFF,
+            0xFF
+        },
+        {
+            0xA0,
+            0x00,
+            0x00
+        },
+        {
+            0x35,
+            0x00,
+            0x00
+        },
+        {
+            0x1A,
+            0xD0,
+            0x00
+        },
+        {
+            0x07,
+            0x42,
+            0x00
+        },
+        {
+            0xB9,
+            0xB0,
+            0x00
+        },
+        {
+            0x3F,
+            0x31,
+            0x00
+        },
+        {
+            0xB3,
+            0x5F,
+            0x00
+        },
+        {
+            0x4B,
+            0x15,
+            0x02
+        }
+    };
 
-    private int                    ribbonMode                    = -1;
-    private int                    ribbonValue                   = -1;
+    private static final int         PAD_VELOCITY_CURVE_CHUNK_SIZE = 16;
+    private static final int         NUM_VELOCITY_CURVE_ENTRIES    = 128;
 
-    private int                    majorVersion                  = -1;
-    private int                    minorVersion                  = -1;
-    private int                    buildNumber                   = -1;
-    private int                    serialNumber                  = -1;
-    private int                    boardRevision                 = -1;
+    private int []                   whiteMap                      = new int [128];
+
+    private int                      ribbonMode                    = -1;
+    private int                      ribbonValue                   = -1;
+
+    private int                      majorVersion                  = -1;
+    private int                      minorVersion                  = -1;
+    private int                      buildNumber                   = -1;
+    private int                      serialNumber                  = -1;
+    private int                      boardRevision                 = -1;
 
 
     /**
@@ -561,6 +1209,8 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         this.downButtonId = PUSH_BUTTON_DOWN;
 
         this.input.setSysexCallback (this::handleSysEx);
+
+        Arrays.fill (this.whiteMap, -1);
     }
 
 
@@ -895,12 +1545,95 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     }
 
 
+    /**
+     * Handle incoming sysexc data.
+     *
+     * @param data The data
+     */
     private void handleSysEx (final String data)
     {
-        final DeviceInquiry deviceInquiry = new DeviceInquiry (StringUtils.fromHexStr (data));
-        if (!deviceInquiry.isValid ())
+        final int [] byteData = StringUtils.fromHexStr (data);
+        final DeviceInquiry deviceInquiry = new DeviceInquiry (byteData);
+        if (deviceInquiry.isValid ())
+        {
+            this.handleDeviceInquiryResponse (deviceInquiry);
+            return;
+        }
+
+        if (!this.configuration.isPush2 ())
             return;
 
+        // Color palette entry message
+        if (byteData[6] == 0x04)
+        {
+            // Keep the white calibration value
+            final int index = byteData[7];
+            this.whiteMap[index] = byteData[14] + (byteData[15] << 7);
+
+            // Request the next color entry ...
+            for (int i = 0; i < 128; i++)
+            {
+                if (this.whiteMap[i] == -1)
+                {
+                    this.sendColorPaletteRequest (i);
+                    return;
+                }
+            }
+
+            this.setDefaultColorPalette ();
+        }
+    }
+
+
+    /**
+     * Set the default color palette on the Push 2 using the retrieved white calibration values.
+     */
+    private void setDefaultColorPalette ()
+    {
+        final int [] data = new int [10];
+
+        for (int i = 0; i < 128; i++)
+        {
+            int [] color;
+            if (i >= 70 && i <= 96)
+            {
+                double [] colorEntry = DAWColors.getColorEntry (i - 70);
+                color = new int []
+                {
+                    (int) Math.round (colorEntry[0] * 255.0),
+                    (int) Math.round (colorEntry[1] * 255.0),
+                    (int) Math.round (colorEntry[2] * 255.0)
+                };
+            }
+            else
+                color = DEFAULT_PALETTE[i];
+
+            data[0] = 0x03;
+            data[1] = i;
+            data[2] = color[0] % 128;
+            data[3] = color[0] / 128;
+            data[4] = color[1] % 128;
+            data[5] = color[1] / 128;
+            data[6] = color[2] % 128;
+            data[7] = color[2] / 128;
+            data[8] = this.whiteMap[i] % 128;
+            data[9] = this.whiteMap[i] / 128;
+
+            this.sendPush2SysEx (data);
+        }
+
+        // Re-apply the color palette
+        this.output.sendSysex ("F0 00 21 1D 01 01 05 F7");
+    }
+
+
+    /**
+     * Handle the response of a device inquiry.
+     *
+     * @param deviceInquiry The parsed response
+     */
+    private void handleDeviceInquiryResponse (final DeviceInquiry deviceInquiry)
+    {
         final int [] revisionLevel = deviceInquiry.getRevisionLevel ();
 
         if (this.configuration.isPush2 ())
@@ -1002,6 +1735,31 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     public int getSerialNumber ()
     {
         return this.serialNumber;
+    }
+
+
+    /**
+     * Request the full color palette.
+     */
+    public void requestColorPalette ()
+    {
+        // Retrieve the first, all others are requested after the previous one was received
+        sendColorPaletteRequest (0);
+    }
+
+
+    /**
+     * Send a request to the Push 2 to send the values of an entry of the current color palette.
+     *
+     * @param paletteEntry The index of the entry 0-127
+     */
+    private void sendColorPaletteRequest (final int paletteEntry)
+    {
+        this.sendPush2SysEx (new int []
+        {
+            0x04,
+            paletteEntry
+        });
     }
 
 
