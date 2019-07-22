@@ -783,6 +783,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 break;
             }
 
+            case "select":
             case "selected":
                 final ITrack selectedTrack = tb.getSelectedItem ();
                 if (selectedTrack != null)
@@ -932,6 +933,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
             switch (clipCommand)
             {
                 case "select":
+                case "selected":
                     slot.select ();
                     break;
                 case "launch":
@@ -1031,6 +1033,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 final String subCommand = oscParts.removeFirst ();
                 switch (subCommand)
                 {
+                    case "select":
                     case "selected":
                         if (numValue > 0)
                             cursorDevice.getParameterPageBank ().selectPage (bankNo - 1);
@@ -1052,6 +1055,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                 final String subCommand2 = oscParts.removeFirst ();
                 switch (subCommand2)
                 {
+                    case "select":
                     case "selected":
                         if (numValue > 0)
                             deviceBank.getItem (siblingNo - 1).select ();
@@ -1217,7 +1221,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
         try
         {
             final int layerNo;
-            if ("selected".equals (command))
+            if ("selected".equals (command) || "select".equals (command))
             {
                 final IChannel selectedLayerOrDrumPad = cursorDevice.getLayerOrDrumPadBank ().getSelectedItem ();
                 layerNo = selectedLayerOrDrumPad == null ? -1 : selectedLayerOrDrumPad.getIndex ();
@@ -1261,7 +1265,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
                     break;
 
                 default:
-                    this.host.println ("Unknown Layour/Drum command: " + command);
+                    this.host.println ("Unknown Layer/Drum command: " + command);
                     break;
             }
         }
@@ -1440,12 +1444,15 @@ public class OSCParser extends AbstractOpenSoundControlParser
         switch (command)
         {
             case "select":
+            case "selected":
                 layerOrDrumPadBank.getItem (layerIndex).select ();
                 break;
 
             case PART_VOLUME:
                 if (parts.isEmpty ())
                     layer.setVolume (numValue);
+                else if (PART_INDICATE.equals (parts.get (0)))
+                    layer.setVolumeIndication (numValue > 0);
                 else if (PART_TOUCH.equals (parts.get (0)))
                     layer.touchVolume (numValue > 0);
                 break;
@@ -1453,6 +1460,8 @@ public class OSCParser extends AbstractOpenSoundControlParser
             case "pan":
                 if (parts.isEmpty ())
                     layer.setPan (numValue);
+                else if (PART_INDICATE.equals (parts.get (0)))
+                    layer.setPanIndication (numValue > 0);
                 else if (PART_TOUCH.equals (parts.get (0)))
                     layer.touchPan (numValue > 0);
                 break;
@@ -1477,10 +1486,13 @@ public class OSCParser extends AbstractOpenSoundControlParser
                     return;
                 if (!PART_VOLUME.equals (parts.removeFirst ()))
                     return;
+                final ISend send = layer.getSendBank ().getItem (sendNo);
                 if (parts.isEmpty ())
-                    layer.getSendBank ().getItem (sendNo).setValue (numValue);
+                    send.setValue (numValue);
+                else if (PART_INDICATE.equals (parts.get (0)))
+                    send.setIndication (numValue > 0);
                 else if (PART_TOUCH.equals (parts.get (0)))
-                    layer.getSendBank ().getItem (sendNo).touchValue (numValue > 0);
+                    send.touchValue (numValue > 0);
                 break;
 
             case "enter":

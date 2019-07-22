@@ -167,7 +167,7 @@ public class BrowserMode extends BaseMode
         d.setPropertyValue (1, 1, 0);
 
         final IBrowserColumn selectedFilterColumn = browser.getSelectedFilterColumn ();
-        d.setCell (0, 2, StringUtils.fixASCII (selectedFilterColumn.getName ()));
+        d.setCell (0, 2, selectedFilterColumn.doesExist () ? StringUtils.fixASCII (selectedFilterColumn.getName ()) : "-");
         d.setPropertyColor (2, 0, SLMkIIIColors.SLMKIII_DARK_GREEN_HALF);
         d.setCell (3, 2, "<< Filter");
         d.setPropertyColor (2, 2, SLMkIIIColors.SLMKIII_DARK_GREEN_HALF);
@@ -178,7 +178,7 @@ public class BrowserMode extends BaseMode
         d.setPropertyColor (3, 2, SLMkIIIColors.SLMKIII_DARK_GREEN_HALF);
         d.setPropertyValue (3, 1, 0);
 
-        d.setCell (0, 4, StringUtils.fixASCII (selectedFilterColumn.getCursorName ()));
+        d.setCell (0, 4, selectedFilterColumn.doesExist () ? StringUtils.fixASCII (selectedFilterColumn.getCursorName ()) : "-");
         d.setPropertyColor (4, 0, SLMkIIIColors.SLMKIII_GREEN_LIGHT);
         d.setCell (3, 4, "<< F-Sel");
         d.setPropertyColor (4, 2, SLMkIIIColors.SLMKIII_GREEN_LIGHT);
@@ -189,12 +189,17 @@ public class BrowserMode extends BaseMode
         d.setPropertyColor (5, 2, SLMkIIIColors.SLMKIII_GREEN_LIGHT);
         d.setPropertyValue (5, 1, 0);
 
-        d.setCell (0, 6, StringUtils.fixASCII (browser.getSelectedResult ()));
+        final String resultName = StringUtils.pad (StringUtils.fixASCII (browser.getSelectedResult ()), 18, ' ');
+        final String name1 = resultName.substring (0, 9);
+        final String name2 = resultName.substring (9, 18);
+
+        d.setCell (0, 6, name1);
         d.setPropertyColor (6, 0, SLMkIIIColors.SLMKIII_GREEN_GRASS);
         d.setCell (3, 6, "<< Result");
         d.setPropertyColor (6, 2, SLMkIIIColors.SLMKIII_GREEN_GRASS);
         d.setPropertyValue (6, 1, 0);
 
+        d.setCell (0, 7, name2);
         d.setPropertyColor (7, 0, SLMkIIIColors.SLMKIII_GREEN_GRASS);
         d.setCell (3, 7, "Result >>");
         d.setPropertyColor (7, 2, SLMkIIIColors.SLMKIII_GREEN_GRASS);

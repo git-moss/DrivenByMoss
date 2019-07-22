@@ -101,16 +101,13 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             this.input.setMidiCallback (this::handleMidi);
 
         // Button related
-        this.buttons = buttons;
+        this.buttons = buttons == null ? new int [0] : buttons;
         this.buttonStates = new ButtonEvent [NUM_BUTTONS];
         this.buttonConsumed = new boolean [NUM_BUTTONS];
-        if (this.buttons != null)
+        for (final int button: this.buttons)
         {
-            for (final int button: this.buttons)
-            {
-                this.buttonStates[button] = ButtonEvent.UP;
-                this.buttonConsumed[button] = false;
-            }
+            this.buttonStates[button] = ButtonEvent.UP;
+            this.buttonConsumed[button] = false;
         }
 
         // Optimisation for button LED updates, cache 128 possible note values on
@@ -161,7 +158,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      *
      * @return The button midi CCs
      */
-    public int [] getButtons ()
+    public final int [] getButtons ()
     {
         return this.buttons;
     }
@@ -894,7 +891,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             this.buttonStates[cc] = value > 0 ? ButtonEvent.DOWN : ButtonEvent.UP;
 
             if (this.buttonStates[cc] == ButtonEvent.DOWN)
-                this.scheduleTask ( () -> this.checkButtonState (cc), AbstractControlSurface.BUTTON_STATE_INTERVAL);
+                this.scheduleTask ( () -> this.checkButtonState (channel, cc), AbstractControlSurface.BUTTON_STATE_INTERVAL);
 
             // If consumed flag is set ignore the UP event
             if (this.buttonStates[cc] == ButtonEvent.UP && this.buttonConsumed[cc])
@@ -1002,15 +999,16 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     /**
      * If the state of the given button is still down, the state is set to long and an event gets
      * fired.
-     *
+     * 
+     * @param channel The MIDI channel
      * @param buttonID The button CC to check
      */
-    protected void checkButtonState (final int buttonID)
+    protected void checkButtonState (final int channel, final int buttonID)
     {
         if (this.buttonStates[buttonID] != ButtonEvent.DOWN)
             return;
 
         this.buttonStates[buttonID] = ButtonEvent.LONG;
-        this.handleCCEvent (0, buttonID, 127);
+        this.handleCCEvent (channel, buttonID, 127);
     }
 }

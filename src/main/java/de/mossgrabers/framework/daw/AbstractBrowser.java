@@ -126,7 +126,7 @@ public abstract class AbstractBrowser implements IBrowser
     @Override
     public void selectNextFilterColumn ()
     {
-        if (this.selectedFilterColumn < this.columnData.length)
+        if (this.selectedFilterColumn < this.columnData.length - 1)
             this.selectedFilterColumn++;
     }
 

@@ -35,6 +35,31 @@ public class StringUtils
 
 
     /**
+     * Pad the given text with the given character until it reaches the given length.
+     *
+     * @param str The text to pad
+     * @param length The maximum length
+     * @param character The character to use for padding
+     * @return The padded text
+     */
+    public static String pad (final String str, final int length, final char character)
+    {
+        final String text = str == null ? "" : str;
+        final int diff = length - text.length ();
+        if (diff < 0)
+            return text.substring (0, length);
+        if (diff > 0)
+        {
+            final StringBuilder sb = new StringBuilder (text.length () + diff).append (text);
+            for (int i = 0; i < diff; i++)
+                sb.append (character);
+            return sb.toString ();
+        }
+        return text;
+    }
+
+
+    /**
      * First replaces umlauts with alternative writing, then shortens a text to the given length.
      *
      * @param text The text to shorten

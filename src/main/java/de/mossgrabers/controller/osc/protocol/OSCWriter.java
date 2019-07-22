@@ -24,10 +24,12 @@ import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.EmptyLayerData;
 import de.mossgrabers.framework.daw.data.EmptyTrackData;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.IMarker;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.IScene;
@@ -168,11 +170,14 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         {
             final IDrumPadBank drumPadBank = cd.getDrumPadBank ();
             for (int i = 0; i < drumPadBank.getPageSize (); i++)
-                this.flushDeviceLayers ("/device/drumpad/" + (i + 1) + "/", drumPadBank.getItem (i), dump);
+                this.flushDeviceLayer ("/device/drumpad/" + (i + 1) + "/", drumPadBank.getItem (i), dump);
         }
         final ILayerBank layerBank = cd.getLayerBank ();
         for (int i = 0; i < layerBank.getPageSize (); i++)
-            this.flushDeviceLayers ("/device/layer/" + (i + 1) + "/", layerBank.getItem (i), dump);
+            this.flushDeviceLayer ("/device/layer/" + (i + 1) + "/", layerBank.getItem (i), dump);
+        final ILayer selectedLayer = layerBank.getSelectedItem ();
+        this.flushDeviceLayer ("/device/layer/selected/", selectedLayer == null ? EmptyLayerData.INSTANCE : selectedLayer, dump);
+
         this.flushDevice ("/primary/", this.model.getInstrumentDevice (), dump);
 
         //
@@ -378,7 +383,7 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
      * @param channel The channel of the layer
      * @param dump Forces a flush if true otherwise only changed values are flushed
      */
-    private void flushDeviceLayers (final String deviceAddress, final IChannel channel, final boolean dump)
+    private void flushDeviceLayer (final String deviceAddress, final IChannel channel, final boolean dump)
     {
         if (channel == null)
             return;

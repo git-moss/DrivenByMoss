@@ -223,7 +223,11 @@ public class SLMkIIIDisplay extends AbstractDisplay
      */
     private void setPropertyText (final int hPosition, final int vPosition, final String text)
     {
-        this.setProperty (PROPERTY_TEXT, hPosition, vPosition, prepareString (text));
+        String ascii = StringUtils.fixASCII (text);
+        if (ascii.length () > 9)
+            ascii = ascii.substring (0, 9);
+        final String value = StringUtils.toHexStr (ascii.getBytes ()) + "00";
+        this.setProperty (PROPERTY_TEXT, hPosition, vPosition, value);
     }
 
 
@@ -299,19 +303,6 @@ public class SLMkIIIDisplay extends AbstractDisplay
                 this.displayValueCache[i][j] = -1;
             }
         }
-    }
-
-
-    /**
-     * Prepare a text to transmit it to the device.
-     *
-     * @param text The text to prepare
-     * @return The text formatted as SysEx containing only ASCII characters
-     */
-    private static String prepareString (final String text)
-    {
-        final String ascii = StringUtils.fixASCII (text);
-        return StringUtils.toHexStr (ascii.getBytes ()) + "00";
     }
 
 
