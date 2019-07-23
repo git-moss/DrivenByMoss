@@ -49,16 +49,7 @@ public class VirtualDisplay
         this.image = host.createBitmap (dimensions.getWidth (), dimensions.getHeight ());
         this.image.setDisplayWindowTitle (windowTitle);
 
-        this.model.addGridElementChangeListener (this::redrawGrid);
-    }
-
-
-    /**
-     * Redraw the display.
-     */
-    public void redrawGrid ()
-    {
-        this.drawGrid (this.image);
+        this.model.addGridElementChangeListener (this::drawGrid);
     }
 
 
@@ -75,12 +66,10 @@ public class VirtualDisplay
 
     /**
      * Draws the N grid elements of the grid.
-     *
-     * @param bitmap The bitmap to draw to
      */
-    private void drawGrid (final IBitmap bitmap)
+    private void drawGrid ()
     {
-        bitmap.render (gc -> {
+        this.image.render (gc -> {
             final int width = this.dimensions.getWidth ();
             final int height = this.dimensions.getHeight ();
             final double separatorSize = this.dimensions.getSeparatorSize ();

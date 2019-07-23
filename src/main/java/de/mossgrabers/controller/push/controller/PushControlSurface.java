@@ -1173,6 +1173,19 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     private static final int         PAD_VELOCITY_CURVE_CHUNK_SIZE = 16;
     private static final int         NUM_VELOCITY_CURVE_ENTRIES    = 128;
 
+    private static final int []      SYSEX_HEADER                  =
+    {
+        0xF0,
+        0x00,
+        0x21,
+        0x1D,
+        0x01,
+        0x01
+    };
+
+    private int []                   redMap                        = new int [128];
+    private int []                   greenMap                      = new int [128];
+    private int []                   blueMap                       = new int [128];
     private int []                   whiteMap                      = new int [128];
 
     private int                      ribbonMode                    = -1;
@@ -1210,6 +1223,9 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
         this.input.setSysexCallback (this::handleSysEx);
 
+        Arrays.fill (this.redMap, -1);
+        Arrays.fill (this.greenMap, -1);
+        Arrays.fill (this.blueMap, -1);
         Arrays.fill (this.whiteMap, -1);
     }
 
@@ -1560,28 +1576,46 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             return;
         }
 
-        if (!this.configuration.isPush2 ())
+        if (!this.configuration.isPush2 () || !isPush2Data (byteData))
             return;
 
-        // Color palette entry message
-        if (byteData[6] == 0x04)
+        // Color palette entry message?
+        if (byteData.length != 17 || byteData[6] != 0x04)
+            return;
+
+        // Store the color and the white calibration values
+        final int index = byteData[7];
+        this.redMap[index] = byteData[8] + (byteData[9] << 7);
+        this.greenMap[index] = byteData[10] + (byteData[11] << 7);
+        this.blueMap[index] = byteData[12] + (byteData[13] << 7);
+        this.whiteMap[index] = byteData[14] + (byteData[15] << 7);
+
+        // Request the next color entry ...
+        for (int i = 0; i < 128; i++)
         {
-            // Keep the white calibration value
-            final int index = byteData[7];
-            this.whiteMap[index] = byteData[14] + (byteData[15] << 7);
-
-            // Request the next color entry ...
-            for (int i = 0; i < 128; i++)
+            if (this.whiteMap[i] == -1)
             {
-                if (this.whiteMap[i] == -1)
-                {
-                    this.sendColorPaletteRequest (i);
-                    return;
-                }
+                this.sendColorPaletteRequest (i);
+                return;
             }
-
-            this.setDefaultColorPalette ();
         }
+
+        this.setDefaultColorPalette ();
+    }
+
+
+    private static boolean isPush2Data (final int [] data)
+    {
+        if (data.length + 1 < SYSEX_HEADER.length)
+            return false;
+
+        for (int i = 0; i < SYSEX_HEADER.length; i++)
+        {
+            if (SYSEX_HEADER[i] != data[i])
+                return false;
+        }
+
+        return data[data.length - 1] == 0xF7;
     }
 
 
@@ -1592,21 +1626,15 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     {
         final int [] data = new int [10];
 
+        boolean reapply = false;
+
         for (int i = 0; i < 128; i++)
         {
-            int [] color;
-            if (i >= 70 && i <= 96)
-            {
-                double [] colorEntry = DAWColors.getColorEntry (i - 70);
-                color = new int []
-                {
-                    (int) Math.round (colorEntry[0] * 255.0),
-                    (int) Math.round (colorEntry[1] * 255.0),
-                    (int) Math.round (colorEntry[2] * 255.0)
-                };
-            }
-            else
-                color = DEFAULT_PALETTE[i];
+            int [] color = getPaletteColor (i);
+
+            // Already set?
+            if (color[0] == this.redMap[i] && color[1] == this.greenMap[i] && color[2] == this.blueMap[i])
+                continue;
 
             data[0] = 0x03;
             data[1] = i;
@@ -1620,10 +1648,29 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             data[9] = this.whiteMap[i] / 128;
 
             this.sendPush2SysEx (data);
+
+            reapply = true;
         }
 
         // Re-apply the color palette
-        this.output.sendSysex ("F0 00 21 1D 01 01 05 F7");
+        if (reapply)
+            this.output.sendSysex ("F0 00 21 1D 01 01 05 F7");
+    }
+
+
+    private static int [] getPaletteColor (final int index)
+    {
+        if (index >= 70 && index <= 96)
+        {
+            double [] colorEntry = DAWColors.getColorEntry (index - 70);
+            return new int []
+            {
+                (int) Math.round (colorEntry[0] * 255.0),
+                (int) Math.round (colorEntry[1] * 255.0),
+                (int) Math.round (colorEntry[2] * 255.0)
+            };
+        }
+        return DEFAULT_PALETTE[index];
     }
 
 

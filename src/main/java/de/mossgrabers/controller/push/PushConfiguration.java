@@ -1093,7 +1093,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private void activateDefaultNoteViewSetting (final ISettingsUI settingsUI)
     {
         final String [] noteViewNames = Views.getNoteViewNames ();
-        final IEnumSetting defaultNoteViewSetting = settingsUI.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, noteViewNames, noteViewNames[0]);
+        final IEnumSetting defaultNoteViewSetting = settingsUI.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, noteViewNames, Views.VIEW_NAME_PLAY);
         defaultNoteViewSetting.addValueObserver (value -> {
             this.defaultNoteView = Views.getNoteView (value);
             this.notifyObservers (DEFAULT_NOTE_VIEW);

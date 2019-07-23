@@ -143,16 +143,16 @@ public class PushColors
     public static final int    PUSH2_COLOR_GREEN_HI_FBLINK            = 24;
 
     // Scene button colors
-    public static final int    PUSH2_COLOR_SCENE_RED                  = 65;
+    public static final int    PUSH2_COLOR_SCENE_RED                  = PUSH2_COLOR2_RED;
     public static final int    PUSH2_COLOR_SCENE_RED_BLINK            = 2;
     public static final int    PUSH2_COLOR_SCENE_RED_BLINK_FAST       = 3;
     public static final int    PUSH2_COLOR_SCENE_RED_HI               = PUSH2_COLOR2_RED_HI;
     public static final int    PUSH2_COLOR_SCENE_RED_HI_BLINK         = 5;
     public static final int    PUSH2_COLOR_SCENE_RED_HI_BLINK_FAST    = 6;
-    public static final int    PUSH2_COLOR_SCENE_ORANGE               = 70;
+    public static final int    PUSH2_COLOR_SCENE_ORANGE               = PUSH2_COLOR2_AMBER;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_BLINK         = 8;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_BLINK_FAST    = 9;
-    public static final int    PUSH2_COLOR_SCENE_ORANGE_HI            = 69;
+    public static final int    PUSH2_COLOR_SCENE_ORANGE_HI            = PUSH2_COLOR2_AMBER_HI;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_HI_BLINK      = 11;
     public static final int    PUSH2_COLOR_SCENE_ORANGE_HI_BLINK_FAST = 12;
     public static final int    PUSH2_COLOR_SCENE_YELLOW               = PUSH2_COLOR2_YELLOW;
@@ -386,7 +386,7 @@ public class PushColors
         colorManager.registerColor (PUSH_BUTTON_STATE_REC_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
         colorManager.registerColor (PUSH_BUTTON_STATE_REC_HI, isPush2 ? PUSH2_COLOR2_RED_HI : 4);
         colorManager.registerColor (PUSH_BUTTON_STATE_OVR_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
-        colorManager.registerColor (PUSH_BUTTON_STATE_OVR_HI, isPush2 ? PUSH2_COLOR2_RED_AMBER : 2);
+        colorManager.registerColor (PUSH_BUTTON_STATE_OVR_HI, isPush2 ? PUSH2_COLOR2_AMBER : 2);
         colorManager.registerColor (PUSH_BUTTON_STATE_PLAY_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
         colorManager.registerColor (PUSH_BUTTON_STATE_PLAY_HI, isPush2 ? PUSH2_COLOR2_GREEN_HI : 4);
         colorManager.registerColor (PUSH_BUTTON_STATE_MUTE_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
