@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.command.ContinuousCommandID;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.core.AftertouchCommand;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
@@ -11,6 +13,7 @@ import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.utils.FrameworkException;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +26,12 @@ import java.util.Map;
  */
 public class ViewManager
 {
-    private final Map<Integer, View>       views               = new HashMap<> ();
+    private final Map<Views, View>         views               = new EnumMap<> (Views.class);
     private final List<ViewChangeListener> viewChangeListeners = new ArrayList<> ();
-    private final Map<Integer, Integer>    preferredViews      = new HashMap<> ();
+    private final Map<Integer, Views>      preferredViews      = new HashMap<> ();
 
-    private Integer                        activeViewId        = Integer.valueOf (-1);
-    private Integer                        previousViewId      = Integer.valueOf (-1);
+    private Views                          activeViewId        = null;
+    private Views                          previousViewId      = null;
 
 
     /**
@@ -37,7 +40,7 @@ public class ViewManager
      * @param viewId The ID of the view to register
      * @param view The view to register
      */
-    public void registerView (final Integer viewId, final View view)
+    public void registerView (final Views viewId, final View view)
     {
         this.views.put (viewId, view);
 
@@ -52,7 +55,7 @@ public class ViewManager
      * @param viewId An ID
      * @return The view or null if no view with that ID is registered
      */
-    public View getView (final Integer viewId)
+    public View getView (final Views viewId)
     {
         return this.views.get (viewId);
     }
@@ -63,7 +66,7 @@ public class ViewManager
      *
      * @param viewId The ID of the view to activate
      */
-    public void setActiveView (final Integer viewId)
+    public void setActiveView (final Views viewId)
     {
         // Deactivate current view
         View view = this.getActiveView ();
@@ -91,7 +94,7 @@ public class ViewManager
      *
      * @return The ID of the active view
      */
-    public Integer getActiveViewId ()
+    public Views getActiveViewId ()
     {
         return this.activeViewId;
     }
@@ -104,7 +107,7 @@ public class ViewManager
      */
     public View getActiveView ()
     {
-        return this.activeViewId.intValue () < 0 ? null : this.getView (this.activeViewId);
+        return this.activeViewId == null ? null : this.getView (this.activeViewId);
     }
 
 
@@ -114,9 +117,9 @@ public class ViewManager
      * @param viewId An ID
      * @return True if active
      */
-    public boolean isActiveView (final Integer viewId)
+    public boolean isActiveView (final Views viewId)
     {
-        return this.activeViewId.equals (viewId);
+        return this.activeViewId == viewId;
     }
 
 
@@ -125,7 +128,7 @@ public class ViewManager
      *
      * @return The ID of the previous view
      */
-    public Integer getPreviousViewId ()
+    public Views getPreviousViewId ()
     {
         return this.previousViewId;
     }
@@ -136,7 +139,7 @@ public class ViewManager
      *
      * @param viewId The ID of the previous view
      */
-    public void setPreviousView (final Integer viewId)
+    public void setPreviousView (final Views viewId)
     {
         this.previousViewId = viewId;
     }
@@ -168,7 +171,7 @@ public class ViewManager
      * @param commandID The ID of the command to register
      * @param command The command to register
      */
-    public void registerTriggerCommand (final Integer commandID, final TriggerCommand command)
+    public void registerTriggerCommand (final TriggerCommandID commandID, final TriggerCommand command)
     {
         this.views.forEach ( (viewID, view) -> view.registerTriggerCommand (commandID, command));
     }
@@ -180,7 +183,7 @@ public class ViewManager
      * @param commandID The ID of the command to register
      * @param command The command to register
      */
-    public void registerContinuousCommand (final Integer commandID, final ContinuousCommand command)
+    public void registerContinuousCommand (final ContinuousCommandID commandID, final ContinuousCommand command)
     {
         this.views.forEach ( (viewID, view) -> view.registerContinuousCommand (commandID, command));
     }
@@ -192,7 +195,7 @@ public class ViewManager
      * @param commandID The ID of the command to register
      * @param command The command to register
      */
-    public void registerNoteCommand (final Integer commandID, final TriggerCommand command)
+    public void registerNoteCommand (final TriggerCommandID commandID, final TriggerCommand command)
     {
         this.views.forEach ( (viewID, view) -> view.registerNoteCommand (commandID, command));
     }
@@ -226,7 +229,7 @@ public class ViewManager
      * @param position The position of track (over all tracks)
      * @param viewID The ID of the view to set
      */
-    public void setPreferredView (final int position, final Integer viewID)
+    public void setPreferredView (final int position, final Views viewID)
     {
         if (position >= 0)
             this.preferredViews.put (Integer.valueOf (position), viewID);
@@ -239,7 +242,7 @@ public class ViewManager
      * @param position The position of track (over all tracks)
      * @return The preferred view or null if none is stored
      */
-    public Integer getPreferredView (final int position)
+    public Views getPreferredView (final int position)
     {
         return position >= 0 ? this.preferredViews.get (Integer.valueOf (position)) : null;
     }

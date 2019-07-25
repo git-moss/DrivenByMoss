@@ -27,7 +27,7 @@ import de.mossgrabers.framework.view.Views;
 public class NoteViewSelectMode extends BaseMode
 {
     /** The views to choose from. */
-    private static final Integer [] VIEWS     =
+    private static final Views [] VIEWS     =
     {
         Views.VIEW_PLAY,
         Views.VIEW_PIANO,
@@ -40,7 +40,7 @@ public class NoteViewSelectMode extends BaseMode
     };
 
     /** More views to choose from. */
-    private static final Integer [] VIEWS_TOP =
+    private static final Views [] VIEWS_TOP =
     {
         Views.VIEW_SEQUENCER,
         Views.VIEW_POLY_SEQUENCER,
@@ -152,7 +152,7 @@ public class NoteViewSelectMode extends BaseMode
         final ColorManager colorManager = this.model.getColorManager ();
         final ViewManager viewManager = this.surface.getViewManager ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (20 + i, colorManager.getColor (VIEWS[i] == null ? AbstractMode.BUTTON_COLOR_OFF : viewManager.isActiveView (VIEWS[i]) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+            this.surface.updateTrigger (20 + i, colorManager.getColor (VIEWS[i] == null ? AbstractMode.BUTTON_COLOR_OFF : viewManager.isActiveView (VIEWS[i]) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
     }
 
 
@@ -163,11 +163,11 @@ public class NoteViewSelectMode extends BaseMode
         final ColorManager colorManager = this.model.getColorManager ();
         final ViewManager viewManager = this.surface.getViewManager ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (102 + i, colorManager.getColor (VIEWS_TOP[i] == null ? AbstractMode.BUTTON_COLOR_OFF : viewManager.isActiveView (VIEWS_TOP[i]) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+            this.surface.updateTrigger (102 + i, colorManager.getColor (VIEWS_TOP[i] == null ? AbstractMode.BUTTON_COLOR_OFF : viewManager.isActiveView (VIEWS_TOP[i]) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
     }
 
 
-    private void activateView (final Integer viewID)
+    private void activateView (final Views viewID)
     {
         if (viewID == null)
             return;

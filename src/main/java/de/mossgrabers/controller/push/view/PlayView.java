@@ -80,8 +80,8 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
     public void updateButtons ()
     {
         final int octave = this.scales.getOctave ();
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, octave < Scales.OCTAVE_RANGE ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, octave > -Scales.OCTAVE_RANGE ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, octave < Scales.OCTAVE_RANGE ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, octave > -Scales.OCTAVE_RANGE ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
     }
 
 
@@ -96,7 +96,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
 
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             scene.remove ();
             return;
         }
@@ -120,7 +120,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
         {
             final IScene scene = sceneBank.getItem (7 - i);
             final int color = scene.doesExist () ? scene.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
+            this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
         }
     }
 
@@ -131,7 +131,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
     {
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             this.model.getNoteClip (8, 128).clearRow (this.keyManager.map (note));
             return;
         }

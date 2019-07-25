@@ -49,7 +49,7 @@ public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlS
 
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
             masterTrack.resetVolume ();
             return;
         }

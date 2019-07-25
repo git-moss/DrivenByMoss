@@ -79,7 +79,7 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
         final ITrack track = tb.getItem (t);
         if (this.surface.isPressed (SLMkIIIControlSurface.MKIII_DUPLICATE))
         {
-            this.surface.setButtonConsumed (SLMkIIIControlSurface.MKIII_DUPLICATE);
+            this.surface.setTriggerConsumed (SLMkIIIControlSurface.MKIII_DUPLICATE);
             if (track.doesExist ())
                 track.getSlotBank ().getItem (s).duplicate ();
             return;
@@ -103,7 +103,7 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
         {
             final IScene scene = sceneBank.getItem (i);
             final int color = scene.doesExist () ? scene.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_SCENE_1 + i, color);
+            this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_1 + i, color);
         }
     }
 }

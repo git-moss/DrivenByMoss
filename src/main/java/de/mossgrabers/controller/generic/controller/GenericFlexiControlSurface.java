@@ -60,7 +60,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private static final int                                                                    KNOB_MODE_ABSOLUTE_TOGGLE = 4;
 
     protected static final int                                                                  SCROLL_RATE               = 6;
-    private static final List<Integer>                                                          MODE_IDS                  = new ArrayList<> ();
+    private static final List<Modes>                                                            MODE_IDS                  = new ArrayList<> ();
 
     private int                                                                                 movementCounter           = 0;
     private boolean                                                                             isShiftButtonPressed      = false;
@@ -106,7 +106,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     public GenericFlexiControlSurface (final IHost host, final IModel model, final ColorManager colorManager, final GenericFlexiConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, null, new int [0]);
+        super (host, configuration, colorManager, output, input, null);
 
         Arrays.fill (this.valueCache, -1);
         this.model = model;
@@ -1787,7 +1787,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      *
      * @param modeID The ID of the new mode
      */
-    public void activateMode (final Integer modeID)
+    public void activateMode (final Modes modeID)
     {
         final String modeName = this.modeManager.getMode (modeID).getName ();
 
@@ -2171,9 +2171,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void selectPreviousMode ()
     {
         final ITrackBank trackBank = this.model.getTrackBank ();
-        final Integer activeModeId = this.modeManager.getActiveModeId ();
+        final Modes activeModeId = this.modeManager.getActiveModeId ();
         int index = MODE_IDS.indexOf (activeModeId);
-        Integer newMode;
+        Modes newMode;
         int newModeID;
         // If a send mode is selected check if the according send exists
         do
@@ -2182,8 +2182,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             if (index < 0 || index >= MODE_IDS.size ())
                 index = MODE_IDS.size () - 1;
             newMode = MODE_IDS.get (index);
-            newModeID = newMode.intValue ();
-        } while (newModeID >= Modes.MODE_SEND1.intValue () && newModeID <= Modes.MODE_SEND8.intValue () && !trackBank.canEditSend (newModeID - Modes.MODE_SEND1.intValue ()));
+            newModeID = newMode.ordinal ();
+        } while (newModeID >= Modes.MODE_SEND1.ordinal () && newModeID <= Modes.MODE_SEND8.ordinal () && !trackBank.canEditSend (newModeID - Modes.MODE_SEND1.ordinal ()));
 
         this.activateMode (newMode);
     }
@@ -2192,9 +2192,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void selectNextMode ()
     {
         final ITrackBank trackBank = this.model.getTrackBank ();
-        final Integer activeModeId = this.modeManager.getActiveModeId ();
+        final Modes activeModeId = this.modeManager.getActiveModeId ();
         int index = MODE_IDS.indexOf (activeModeId);
-        Integer newMode;
+        Modes newMode;
         int newModeID;
         // If a send mode is selected check if the according send exists
         do
@@ -2203,8 +2203,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             if (index < 0 || index >= MODE_IDS.size ())
                 index = 0;
             newMode = MODE_IDS.get (index);
-            newModeID = newMode.intValue ();
-        } while (newModeID >= Modes.MODE_SEND1.intValue () && newModeID <= Modes.MODE_SEND8.intValue () && !trackBank.canEditSend (newModeID - Modes.MODE_SEND1.intValue ()));
+            newModeID = newMode.ordinal ();
+        } while (newModeID >= Modes.MODE_SEND1.ordinal () && newModeID <= Modes.MODE_SEND8.ordinal () && !trackBank.canEditSend (newModeID - Modes.MODE_SEND1.ordinal ()));
 
         this.activateMode (newMode);
     }
@@ -2282,7 +2282,15 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     /** {@inheritDoc} */
     @Override
-    public void setButtonEx (int button, int channel, int value)
+    public void setTrigger (int cc, int channel, int value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setContinuous (int cc, int channel, int value)
     {
         // Intentionally empty
     }

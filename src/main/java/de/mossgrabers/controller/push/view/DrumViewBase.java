@@ -83,8 +83,8 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
     @Override
     public void updateButtons ()
     {
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, this.scales.canScrollDrumOctaveUp () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, this.scales.canScrollDrumOctaveDown () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, this.scales.canScrollDrumOctaveUp () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, this.scales.canScrollDrumOctaveDown () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
     }
 
 
@@ -98,7 +98,7 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
         {
             final int colorOff = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
             for (int i = 4; i < 8; i++)
-                this.surface.updateButton (this.surface.getSceneButton (i), colorOff);
+                this.surface.updateTrigger (this.surface.getSceneTrigger (i), colorOff);
             this.updateLowerSceneButtons ();
             return;
         }
@@ -106,7 +106,7 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
         final int colorResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION);
         final int colorSelectedResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED);
         for (int i = PushControlSurface.PUSH_BUTTON_SCENE1; i <= PushControlSurface.PUSH_BUTTON_SCENE8; i++)
-            this.surface.updateButton (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedIndex ? colorSelectedResolution : colorResolution);
+            this.surface.updateTrigger (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedIndex ? colorSelectedResolution : colorResolution);
     }
 
 
@@ -117,6 +117,6 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
     {
         final int colorOff = this.model.getColorManager ().getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
         for (int i = 0; i < 4; i++)
-            this.surface.updateButton (this.surface.getSceneButton (i), colorOff);
+            this.surface.updateTrigger (this.surface.getSceneTrigger (i), colorOff);
     }
 }

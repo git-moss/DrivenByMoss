@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -22,7 +23,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private final Integer modeId;
+    private final Modes   modeId;
     private final boolean toggle;
 
 
@@ -33,7 +34,7 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
      * @param surface The surface
      * @param modeId The ID of the mode to select
      */
-    public ModeSelectCommand (final IModel model, final S surface, final Integer modeId)
+    public ModeSelectCommand (final IModel model, final S surface, final Modes modeId)
     {
         this (model, surface, modeId, false);
     }
@@ -48,7 +49,7 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
      * @param toggle Activates the previous mode if the mode is already active and this flag is set
      *            to true
      */
-    public ModeSelectCommand (final IModel model, final S surface, final Integer modeId, final boolean toggle)
+    public ModeSelectCommand (final IModel model, final S surface, final Modes modeId, final boolean toggle)
     {
         super (model, surface);
         this.modeId = modeId;

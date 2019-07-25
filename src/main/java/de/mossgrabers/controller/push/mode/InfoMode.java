@@ -47,10 +47,10 @@ public class InfoMode extends BaseMode
     @Override
     public void updateSecondRow ()
     {
-        this.surface.updateButton (102, AbstractMode.BUTTON_COLOR_ON);
-        this.surface.updateButton (103, AbstractMode.BUTTON_COLOR_HI);
+        this.surface.updateTrigger (102, AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateTrigger (103, AbstractMode.BUTTON_COLOR_HI);
         for (int i = 2; i < 8; i++)
-            this.surface.updateButton (102 + i, AbstractMode.BUTTON_COLOR_OFF);
+            this.surface.updateTrigger (102 + i, AbstractMode.BUTTON_COLOR_OFF);
     }
 
 

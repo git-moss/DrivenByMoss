@@ -92,14 +92,14 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
 
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
         {
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
+            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
             scene.duplicate ();
             return;
         }
 
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             scene.remove ();
             return;
         }
@@ -123,6 +123,6 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     {
         final int colorOff = this.model.getColorManager ().getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (this.surface.getSceneButton (i), colorOff);
+            this.surface.updateTrigger (this.surface.getSceneTrigger (i), colorOff);
     }
 }

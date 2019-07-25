@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -24,7 +25,7 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
 {
     private static final int NUMBER_OF_RETRIES = 20;
 
-    protected Integer        browserMode;
+    protected Modes          browserMode;
     protected int            startRetries;
 
 
@@ -35,7 +36,7 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
      * @param model The model
      * @param surface The surface
      */
-    public BrowserCommand (final Integer browserMode, final IModel model, final S surface)
+    public BrowserCommand (final Modes browserMode, final IModel model, final S surface)
     {
         super (model, surface);
 

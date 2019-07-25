@@ -178,121 +178,6 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     public static final int         MCU_SYSEX_CMD_DISPLAY = 0x12;
 
-    private static final int []     MCU_BUTTONS_ALL       =
-    {
-        MCU_ARM1,
-        MCU_ARM2,
-        MCU_ARM3,
-        MCU_ARM4,
-        MCU_ARM5,
-        MCU_ARM6,
-        MCU_ARM7,
-        MCU_ARM8,
-        MCU_SOLO1,
-        MCU_SOLO2,
-        MCU_SOLO3,
-        MCU_SOLO4,
-        MCU_SOLO5,
-        MCU_SOLO6,
-        MCU_SOLO7,
-        MCU_SOLO8,
-        MCU_MUTE1,
-        MCU_MUTE2,
-        MCU_MUTE3,
-        MCU_MUTE4,
-        MCU_MUTE5,
-        MCU_MUTE6,
-        MCU_MUTE7,
-        MCU_MUTE8,
-        MCU_SELECT1,
-        MCU_SELECT2,
-        MCU_SELECT3,
-        MCU_SELECT4,
-        MCU_SELECT5,
-        MCU_SELECT6,
-        MCU_SELECT7,
-        MCU_SELECT8,
-        MCU_VSELECT1,
-        MCU_VSELECT2,
-        MCU_VSELECT3,
-        MCU_VSELECT4,
-        MCU_VSELECT5,
-        MCU_VSELECT6,
-        MCU_VSELECT7,
-        MCU_VSELECT8,
-        MCU_FADER_TOUCH1,
-        MCU_FADER_TOUCH2,
-        MCU_FADER_TOUCH3,
-        MCU_FADER_TOUCH4,
-        MCU_FADER_TOUCH5,
-        MCU_FADER_TOUCH6,
-        MCU_FADER_TOUCH7,
-        MCU_FADER_TOUCH8,
-        MCU_FADER_MASTER,
-        MCU_MODE_IO,
-        MCU_MODE_SENDS,
-        MCU_MODE_PAN,
-        MCU_MODE_PLUGIN,
-        MCU_MODE_EQ,
-        MCU_MODE_DYN,
-        MCU_BANK_LEFT,
-        MCU_BANK_RIGHT,
-        MCU_TRACK_LEFT,
-        MCU_TRACK_RIGHT,
-        MCU_FLIP,
-        MCU_EDIT,
-        MCU_NAME_VALUE,
-        MCU_SMPTE_BEATS,
-        MCU_MIDI_TRACKS,
-        MCU_INPUTS,
-        MCU_AUDIO_TRACKS,
-        MCU_AUDIO_INSTR,
-        MCU_SHIFT,
-        MCU_OPTION,
-        MCU_REWIND,
-        MCU_FORWARD,
-        MCU_STOP,
-        MCU_PLAY,
-        MCU_RECORD,
-        MCU_ARROW_UP,
-        MCU_ARROW_DOWN,
-        MCU_ARROW_LEFT,
-        MCU_ARROW_RIGHT,
-        MCU_ZOOM,
-        MCU_SCRUB,
-        MCU_USER_A,
-        MCU_USER_B,
-        MCU_REPEAT,
-        MCU_READ,
-        MCU_WRITE,
-        MCU_TRIM,
-        MCU_TOUCH,
-        MCU_LATCH,
-        MCU_UNDO,
-        MCU_USER,
-        MCU_CLICK,
-        MCU_SOLO,
-        MCU_REPLACE,
-        MCU_F1,
-        MCU_F2,
-        MCU_F3,
-        MCU_F4,
-        MCU_F5,
-        MCU_F6,
-        MCU_F7,
-        MCU_F8,
-        MCU_CANCEL,
-        MCU_ENTER,
-        MCU_SAVE,
-        MCU_MARKER,
-        MCU_AUX,
-        MCU_BUSSES,
-        MCU_OUTPUTS,
-        MCU_GROUP,
-        MCU_NUDGE,
-        MCU_DROP
-    };
-
     private static final boolean [] MCU_BUTTON_UPDATE;
     static
     {
@@ -334,7 +219,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      */
     public MCUControlSurface (final List<MCUControlSurface> surfaces, final IHost host, final ColorManager colorManager, final MCUConfiguration configuration, final IMidiOutput output, final IMidiInput input, final int extenderOffset, final boolean isMainDevice)
     {
-        super (host, configuration, colorManager, output, input, null, MCU_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, null);
 
         this.surfaces = surfaces;
         this.extenderOffset = extenderOffset;
@@ -374,9 +259,17 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setButtonEx (int button, int channel, int value)
+    public void setTrigger (int cc, int channel, int value)
     {
-        this.output.sendNoteEx (channel, button, value);
+        this.output.sendNoteEx (channel, cc, value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setContinuous (int cc, int channel, int value)
+    {
+        this.output.sendNoteEx (channel, cc, value);
     }
 
 
@@ -574,7 +467,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         // Check on all MSU surfaces for state button presses
 
         for (final MCUControlSurface surface: this.surfaces)
-            if (surface.isSinglePressed (button))
+            if (surface.isTrigger (button) && surface.isSinglePressed (button))
                 return true;
         return false;
     }

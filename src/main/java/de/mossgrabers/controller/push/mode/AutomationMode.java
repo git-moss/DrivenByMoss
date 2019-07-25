@@ -79,8 +79,8 @@ public class AutomationMode extends BaseMode
         final ColorManager colorManager = this.model.getColorManager ();
 
         for (int i = 0; i < TransportConstants.AUTOMATION_MODES_VALUES.length; i++)
-            this.surface.updateButton (20 + i, colorManager.getColor (TransportConstants.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+            this.surface.updateTrigger (20 + i, colorManager.getColor (TransportConstants.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
         for (int i = TransportConstants.AUTOMATION_MODES_VALUES.length; i < 8; i++)
-            this.surface.updateButton (20 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
+            this.surface.updateTrigger (20 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
     }
 }

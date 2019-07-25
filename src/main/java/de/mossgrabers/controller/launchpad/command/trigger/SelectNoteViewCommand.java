@@ -74,7 +74,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         }
         else
         {
-            final Integer viewID = viewManager.getPreferredView (sel.getPosition ());
+            final Views viewID = viewManager.getPreferredView (sel.getPosition ());
             if (viewID == null)
                 this.seqSelect.executeNormal (event);
             else

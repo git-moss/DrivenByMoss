@@ -7,7 +7,7 @@ package de.mossgrabers.controller.push.mode.track;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
@@ -80,7 +80,7 @@ public class MasterMode extends BaseMode
 
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             if (index == 0)
                 this.model.getMasterTrack ().resetVolume ();
             else if (index == 1)
@@ -151,7 +151,7 @@ public class MasterMode extends BaseMode
 
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_RECORD))
         {
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_RECORD);
+            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_RECORD);
             this.model.getMasterTrack ().toggleRecArm ();
             return;
         }
@@ -159,7 +159,7 @@ public class MasterMode extends BaseMode
         switch (index)
         {
             case 0:
-                this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_DEVICE, ButtonEvent.DOWN);
+                this.surface.getViewManager ().getActiveView ().executeTriggerCommand (TriggerCommandID.DEVICE, ButtonEvent.DOWN);
                 break;
 
             case 4:
@@ -186,14 +186,14 @@ public class MasterMode extends BaseMode
     public void updateFirstRow ()
     {
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        this.surface.updateButton (20, this.getTrackButtonColor ());
+        this.surface.updateTrigger (20, this.getTrackButtonColor ());
         for (int i = 1; i < 4; i++)
-            this.surface.updateButton (20 + i, AbstractMode.BUTTON_COLOR_OFF);
+            this.surface.updateTrigger (20 + i, AbstractMode.BUTTON_COLOR_OFF);
         final int red = isPush2 ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH1_COLOR_RED_HI;
-        this.surface.updateButton (24, this.model.getApplication ().isEngineActive () ? this.model.getColorManager ().getColor (AbstractMode.BUTTON_COLOR_ON) : red);
-        this.surface.updateButton (25, AbstractMode.BUTTON_COLOR_OFF);
-        this.surface.updateButton (26, AbstractMode.BUTTON_COLOR_ON);
-        this.surface.updateButton (27, AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateTrigger (24, this.model.getApplication ().isEngineActive () ? this.model.getColorManager ().getColor (AbstractMode.BUTTON_COLOR_ON) : red);
+        this.surface.updateTrigger (25, AbstractMode.BUTTON_COLOR_OFF);
+        this.surface.updateTrigger (26, AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateTrigger (27, AbstractMode.BUTTON_COLOR_ON);
     }
 
 
@@ -226,7 +226,7 @@ public class MasterMode extends BaseMode
         if (this.isPush2)
         {
             for (int i = 0; i < 8; i++)
-                this.surface.updateButton (102 + i, off);
+                this.surface.updateTrigger (102 + i, off);
             return;
         }
 
@@ -243,9 +243,9 @@ public class MasterMode extends BaseMode
         else
             color = master.isSolo () ? PushColors.PUSH1_COLOR2_BLUE_HI : PushColors.PUSH1_COLOR2_GREY_LO;
 
-        this.surface.updateButton (102, color);
+        this.surface.updateTrigger (102, color);
         for (int i = 1; i < 8; i++)
-            this.surface.updateButton (102 + i, off);
+            this.surface.updateTrigger (102 + i, off);
     }
 
 

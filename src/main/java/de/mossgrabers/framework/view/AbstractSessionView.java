@@ -81,7 +81,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             scene.remove ();
             return;
         }
@@ -116,7 +116,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         // Delete selected clip
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             slot.remove ();
             return;
         }

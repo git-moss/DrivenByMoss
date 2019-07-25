@@ -7,7 +7,7 @@ package de.mossgrabers.controller.kontrol.mki.mode.device;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1Colors;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.mki.mode.AbstractKontrol1Mode;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IBrowser;
@@ -261,15 +261,15 @@ public class BrowseMode extends AbstractKontrol1Mode
         final boolean canScrollLeft = browser.hasPreviousContentType ();
         final boolean canScrollRight = browser.hasNextContentType ();
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, Kontrol1Colors.BUTTON_STATE_OFF);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, Kontrol1Colors.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, Kontrol1Colors.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, Kontrol1Colors.BUTTON_STATE_OFF);
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BACK, Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_ENTER, Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_BACK, Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_ENTER, Kontrol1Colors.BUTTON_STATE_ON);
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BROWSE, Kontrol1Colors.BUTTON_STATE_HI);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_BROWSE, Kontrol1Colors.BUTTON_STATE_HI);
     }
 
 
@@ -296,7 +296,7 @@ public class BrowseMode extends AbstractKontrol1Mode
     @Override
     public void onBack ()
     {
-        ((BrowserCommand<?, ?>) this.surface.getViewManager ().getView (Views.VIEW_CONTROL).getTriggerCommand (Commands.COMMAND_BROWSE)).startBrowser (true, true);
+        ((BrowserCommand<?, ?>) this.surface.getViewManager ().getView (Views.VIEW_CONTROL).getTriggerCommand (TriggerCommandID.BROWSE)).startBrowser (true, true);
     }
 
 
@@ -304,7 +304,7 @@ public class BrowseMode extends AbstractKontrol1Mode
     @Override
     public void onEnter ()
     {
-        ((BrowserCommand<?, ?>) this.surface.getViewManager ().getView (Views.VIEW_CONTROL).getTriggerCommand (Commands.COMMAND_BROWSE)).startBrowser (false, false);
+        ((BrowserCommand<?, ?>) this.surface.getViewManager ().getView (Views.VIEW_CONTROL).getTriggerCommand (TriggerCommandID.BROWSE)).startBrowser (false, false);
     }
 
 

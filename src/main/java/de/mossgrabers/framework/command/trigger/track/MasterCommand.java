@@ -55,8 +55,8 @@ public class MasterCommand<S extends IControlSurface<C>, C extends Configuration
         {
             // No Sends on effect tracks
             final ModeManager modeManager = this.surface.getModeManager ();
-            final int mode = modeManager.getActiveOrTempModeId ().intValue ();
-            if (mode >= Modes.MODE_SEND1.intValue () && mode <= Modes.MODE_SEND8.intValue ())
+            final int mode = modeManager.getActiveOrTempModeId ().ordinal ();
+            if (mode >= Modes.MODE_SEND1.ordinal () && mode <= Modes.MODE_SEND8.ordinal ())
                 modeManager.setActiveMode (Modes.MODE_PAN);
         }
 

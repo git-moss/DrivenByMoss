@@ -41,7 +41,7 @@ public class SelectCommand extends AbstractTriggerCommand<PushControlSurface, Pu
         this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
 
         final boolean isUp = event == ButtonEvent.UP;
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SELECT, isUp ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_HI);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SELECT, isUp ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_HI);
 
         final ModeManager modeManager = this.surface.getModeManager ();
         if (event == ButtonEvent.DOWN)

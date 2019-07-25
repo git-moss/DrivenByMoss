@@ -26,128 +26,109 @@ import java.util.List;
 public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkIIConfiguration>
 {
     /** The maximal NIHIA protocol version which is supported by this extension. */
-    public static final int     MAX_VERSION                          = 2;
+    public static final int MAX_VERSION                          = 2;
 
     /** Command to initialise the protocol handshake (and acknowledge). */
-    public static final int     CMD_HELLO                            = 0x01;
+    public static final int CMD_HELLO                            = 0x01;
     /** Command to stop the protocol. */
-    public static final int     CMD_GOODBYE                          = 0x02;
+    public static final int CMD_GOODBYE                          = 0x02;
 
     /** The play button. */
-    public static final int     KONTROL_PLAY                         = 0x10;
+    public static final int KONTROL_PLAY                         = 0x10;
     /** The restart button (Shift+Play). No LED. */
-    public static final int     KONTROL_RESTART                      = 0x11;
+    public static final int KONTROL_RESTART                      = 0x11;
     /** The record button. */
-    public static final int     KONTROL_RECORD                       = 0x12;
+    public static final int KONTROL_RECORD                       = 0x12;
     /** The count-in button (Shift+Rec). */
-    public static final int     KONTROL_COUNT_IN                     = 0x13;
+    public static final int KONTROL_COUNT_IN                     = 0x13;
     /** The stop button. */
-    public static final int     KONTROL_STOP                         = 0x14;
+    public static final int KONTROL_STOP                         = 0x14;
     /** The clear button. */
-    public static final int     KONTROL_CLEAR                        = 0x15;
+    public static final int KONTROL_CLEAR                        = 0x15;
     /** The loop button. */
-    public static final int     KONTROL_LOOP                         = 0x16;
+    public static final int KONTROL_LOOP                         = 0x16;
     /** The metro button. */
-    public static final int     KONTROL_METRO                        = 0x17;
+    public static final int KONTROL_METRO                        = 0x17;
     /** The tempo button. No LED. */
-    public static final int     KONTROL_TEMPO                        = 0x18;
+    public static final int KONTROL_TEMPO                        = 0x18;
 
     /** The undo button. */
-    public static final int     KONTROL_UNDO                         = 0x20;
+    public static final int KONTROL_UNDO                         = 0x20;
     /** The redo button (Shift+Undo). */
-    public static final int     KONTROL_REDO                         = 0x21;
+    public static final int KONTROL_REDO                         = 0x21;
     /** The quantize button. */
-    public static final int     KONTROL_QUANTIZE                     = 0x22;
+    public static final int KONTROL_QUANTIZE                     = 0x22;
     /** The auto button. */
-    public static final int     KONTROL_AUTOMATION                   = 0x23;
+    public static final int KONTROL_AUTOMATION                   = 0x23;
 
     /** Track navigation. */
-    public static final int     KONTROL_NAVIGATE_TRACKS              = 0x30;
+    public static final int KONTROL_NAVIGATE_TRACKS              = 0x30;
     /** Track bank navigation. */
-    public static final int     KONTROL_NAVIGATE_BANKS               = 0x31;
+    public static final int KONTROL_NAVIGATE_BANKS               = 0x31;
     /** Clip navigation. */
-    public static final int     KONTROL_NAVIGATE_CLIPS               = 0x32;
+    public static final int KONTROL_NAVIGATE_CLIPS               = 0x32;
     /** Scene navigation. */
-    public static final int     KONTROL_NAVIGATE_SCENES              = 0x33;
+    public static final int KONTROL_NAVIGATE_SCENES              = 0x33;
 
     /** Transport navigation. */
-    public static final int     KONTROL_NAVIGATE_MOVE_TRANSPORT      = 0x34;
+    public static final int KONTROL_NAVIGATE_MOVE_TRANSPORT      = 0x34;
     /** Loop navigation. */
-    public static final int     KONTROL_NAVIGATE_MOVE_LOOP           = 0x35;
+    public static final int KONTROL_NAVIGATE_MOVE_LOOP           = 0x35;
 
     /** Track available (actually the type the track, see TrackType). */
-    public static final int     KONTROL_TRACK_AVAILABLE              = 0x40;
+    public static final int KONTROL_TRACK_AVAILABLE              = 0x40;
     /** Name of the Komplete plugin ID on the track, if exists. */
-    public static final int     KONTROL_TRACK_INSTANCE               = 0x41;
+    public static final int KONTROL_TRACK_INSTANCE               = 0x41;
     /** Select a track. */
-    public static final int     KONTROL_TRACK_SELECTED               = 0x42;
+    public static final int KONTROL_TRACK_SELECTED               = 0x42;
     /** Mute a track. */
-    public static final int     KONTROL_TRACK_MUTE                   = 0x43;
+    public static final int KONTROL_TRACK_MUTE                   = 0x43;
     /** Solo a track. */
-    public static final int     KONTROL_TRACK_SOLO                   = 0x44;
+    public static final int KONTROL_TRACK_SOLO                   = 0x44;
     /** Arm a track. */
-    public static final int     KONTROL_TRACK_RECARM                 = 0x45;
+    public static final int KONTROL_TRACK_RECARM                 = 0x45;
     /** Volume of a track. */
-    public static final int     KONTROL_TRACK_VOLUME_TEXT            = 0x46;
+    public static final int KONTROL_TRACK_VOLUME_TEXT            = 0x46;
     /** Panorama of a track. */
-    public static final int     KONTROL_TRACK_PAN_TEXT               = 0x47;
+    public static final int KONTROL_TRACK_PAN_TEXT               = 0x47;
     /** Name of a track. */
-    public static final int     KONTROL_TRACK_NAME                   = 0x48;
+    public static final int KONTROL_TRACK_NAME                   = 0x48;
     /** VU of a track. */
-    public static final int     KONTROL_TRACK_VU                     = 0x49;
+    public static final int KONTROL_TRACK_VU                     = 0x49;
     /** Tracl muted by solo. */
-    public static final int     KONTROL_TRACK_MUTED_BY_SOLO          = 0x4A;
+    public static final int KONTROL_TRACK_MUTED_BY_SOLO          = 0x4A;
 
     /** Change the volume of a track 0x50 - 0x57. */
-    public static final int     KONTROL_TRACK_VOLUME                 = 0x50;
+    public static final int KONTROL_TRACK_VOLUME                 = 0x50;
     /** Change the panorama of a track 0x58 - 0x5F. */
-    public static final int     KONTROL_TRACK_PAN                    = 0x58;
+    public static final int KONTROL_TRACK_PAN                    = 0x58;
 
     /** Play the currently selected clip. */
-    public static final int     KONTROL_PLAY_SELECTED_CLIP           = 0x60;
+    public static final int KONTROL_PLAY_SELECTED_CLIP           = 0x60;
     /** Stop the clip playing on the currently selected track. */
-    public static final int     KONTROL_STOP_CLIP                    = 0x61;
+    public static final int KONTROL_STOP_CLIP                    = 0x61;
     /** Start the currently selected scene. */
-    public static final int     KONTROL_PLAY_SCENE                   = 0x62;
+    public static final int KONTROL_PLAY_SCENE                   = 0x62;
     /** Record Session button pressed. */
-    public static final int     KONTROL_RECORD_SESSION               = 0x63;
+    public static final int KONTROL_RECORD_SESSION               = 0x63;
     /** Increase/decrease volume of selected track. */
-    public static final int     KONTROL_CHANGE_SELECTED_TRACK_VOLUME = 0x64;
+    public static final int KONTROL_CHANGE_SELECTED_TRACK_VOLUME = 0x64;
     /** Increase/decrease pan of selected track. */
-    public static final int     KONTROL_CHANGE_SELECTED_TRACK_PAN    = 0x65;
+    public static final int KONTROL_CHANGE_SELECTED_TRACK_PAN    = 0x65;
     /** Toggle mute of the selected track / Selected track muted. */
-    public static final int     KONTROL_SELECTED_TRACK_MUTE          = 0x66;
+    public static final int KONTROL_SELECTED_TRACK_MUTE          = 0x66;
     /** Toggle solo of the selected track / Selected track soloed. */
-    public static final int     KONTROL_SELECTED_TRACK_SOLO          = 0x67;
+    public static final int KONTROL_SELECTED_TRACK_SOLO          = 0x67;
     /** Selected track available. */
-    public static final int     KONTROL_SELECTED_TRACK_AVAILABLE     = 0x68;
+    public static final int KONTROL_SELECTED_TRACK_AVAILABLE     = 0x68;
     /** Selected track muted by solo. */
-    public static final int     KONTROL_SELECTED_TRACK_MUTED_BY_SOLO = 0x69;
+    public static final int KONTROL_SELECTED_TRACK_MUTED_BY_SOLO = 0x69;
 
-    private static final int [] KONTROL_BUTTONS_ALL                  =
-    {
-        KONTROL_PLAY,
-        KONTROL_RESTART,
-        KONTROL_RECORD,
-        KONTROL_COUNT_IN,
-        KONTROL_STOP,
-        KONTROL_CLEAR,
-        KONTROL_LOOP,
-        KONTROL_METRO,
-        KONTROL_TEMPO,
-        KONTROL_UNDO,
-        KONTROL_REDO,
-        KONTROL_QUANTIZE,
-        KONTROL_AUTOMATION,
-        KONTROL_SELECTED_TRACK_MUTE,
-        KONTROL_SELECTED_TRACK_SOLO
-    };
-
-    private int                 protocolVersion                      = 1;
-    private ValueCache          valueCache                           = new ValueCache ();
-    private final Object        cacheLock                            = new Object ();
-    private final Object        handshakeLock                        = new Object ();
-    private boolean             isConnectedToNIHIA                   = false;
+    private int             protocolVersion                      = 1;
+    private ValueCache      valueCache                           = new ValueCache ();
+    private final Object    cacheLock                            = new Object ();
+    private final Object    handshakeLock                        = new Object ();
+    private boolean         isConnectedToNIHIA                   = false;
 
 
     /**
@@ -161,7 +142,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
      */
     public KontrolMkIIControlSurface (final IHost host, final ColorManager colorManager, final KontrolMkIIConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, null, KONTROL_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, null);
     }
 
 
@@ -229,9 +210,17 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
 
     /** {@inheritDoc} */
     @Override
-    public void setButtonEx (int button, int channel, int value)
+    public void setTrigger (int cc, int channel, int value)
     {
-        this.sendCommand (button, value);
+        this.sendCommand (cc, value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setContinuous (int cc, int channel, int value)
+    {
+        this.sendCommand (cc, value);
     }
 
 
@@ -282,7 +271,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
         synchronized (this.cacheLock)
         {
             this.valueCache.clearCache ();
-            this.clearButtonCache (15);
+            this.clearFullTriggerCache (15);
         }
     }
 
@@ -323,7 +312,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
             return;
 
         // Emulate a proper button press, NIHIA only sends value 1
-        if (this.isButton (cc))
+        if (this.isTrigger (cc))
         {
             super.handleCC (channel, cc, 127);
             super.handleCC (channel, cc, 0);

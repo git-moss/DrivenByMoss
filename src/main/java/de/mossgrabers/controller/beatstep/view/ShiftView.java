@@ -25,7 +25,7 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {
-    private static final Integer []                                    VIEWS = new Integer []
+    private static final Views []                                      VIEWS =
     {
         Views.VIEW_TRACK,
         Views.VIEW_DEVICE,
@@ -142,7 +142,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
                     return;
 
                 final ViewManager viewManager = this.surface.getViewManager ();
-                final Integer viewId = VIEWS[viewIndex];
+                final Views viewId = VIEWS[viewIndex];
                 if (this.surface.isPro ())
                     viewManager.setActiveView (viewId);
                 else
@@ -165,7 +165,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
     private void activateBrowserView ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        final Integer previousViewId = viewManager.getPreviousViewId ();
+        final Views previousViewId = viewManager.getPreviousViewId ();
         viewManager.setActiveView (Views.VIEW_BROWSER);
         viewManager.setPreviousView (previousViewId);
     }

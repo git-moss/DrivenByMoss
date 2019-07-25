@@ -65,10 +65,10 @@ public class ScaleLayoutMode extends BaseMode
         final int sl = this.scales.getScaleLayout ().ordinal ();
         final int pos = sl / 2;
         for (int i = 0; i < ScaleLayout.getNames ().length / 2; i++)
-            this.surface.updateButton (20 + i, pos == i ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
-        this.surface.updateButton (25, AbstractMode.BUTTON_COLOR_OFF);
-        this.surface.updateButton (26, AbstractMode.BUTTON_COLOR_OFF);
-        this.surface.updateButton (27, AbstractMode.BUTTON_COLOR_ON);
+            this.surface.updateTrigger (20 + i, pos == i ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateTrigger (25, AbstractMode.BUTTON_COLOR_OFF);
+        this.surface.updateTrigger (26, AbstractMode.BUTTON_COLOR_OFF);
+        this.surface.updateTrigger (27, AbstractMode.BUTTON_COLOR_ON);
     }
 
 

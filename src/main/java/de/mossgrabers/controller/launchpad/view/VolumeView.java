@@ -74,7 +74,7 @@ public class VolumeView extends AbstractFaderView
         for (int i = 0; i < 8; i++)
         {
             final int color = cm.getColor (DAWColors.getColorIndex (track.getColor ()));
-            this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8 + 10 * i, i < sceneMax ? color : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8 + 10 * i, i < sceneMax ? color : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
         }
     }
 

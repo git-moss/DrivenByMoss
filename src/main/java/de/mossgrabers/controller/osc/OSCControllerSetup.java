@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.scale.Scales;
@@ -159,7 +160,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
 
     /** {@inheritDoc} */
     @Override
-    protected void updateIndication (final Integer mode)
+    protected void updateIndication (final Modes mode)
     {
         // Not used
     }

@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,8 +27,8 @@ import java.util.List;
  */
 public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private final List<Integer> viewIds = new ArrayList<> ();
-    private final boolean       displayName;
+    private final List<Views> viewIds = new ArrayList<> ();
+    private final boolean     displayName;
 
 
     /**
@@ -38,7 +39,7 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
      * @param displayName Displays a popup with the views name if true
      * @param viewIds The list with IDs of the views to select
      */
-    public ViewMultiSelectCommand (final IModel model, final S surface, final boolean displayName, final Integer... viewIds)
+    public ViewMultiSelectCommand (final IModel model, final S surface, final boolean displayName, final Views... viewIds)
     {
         super (model, surface);
 
@@ -55,11 +56,11 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        final Integer activeViewId = viewManager.getActiveViewId ();
+        final Views activeViewId = viewManager.getActiveViewId ();
         int index = this.viewIds.indexOf (activeViewId) + 1;
         if (index < 0 || index >= this.viewIds.size ())
             index = 0;
-        final Integer viewId = this.viewIds.get (index);
+        final Views viewId = this.viewIds.get (index);
         if (viewManager.isActiveView (viewId))
             return;
         viewManager.setActiveView (viewId);

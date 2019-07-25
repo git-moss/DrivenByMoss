@@ -88,12 +88,12 @@ public class TrackMode extends AbstractTrackMode
             d.setCell (0, 0, "Volume").setCell (1, 0, t.getVolumeStr (9));
             d.setPropertyColor (0, 0, SLMkIIIColors.SLMKIII_BLUE);
             d.setPropertyColor (0, 1, SLMkIIIColors.SLMKIII_BLUE);
-            this.surface.updateButtonEx (SLMkIIIControlSurface.MKIII_KNOB_1, 15, valueChanger.toMidiValue (t.getVolume ()));
+            this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_KNOB_1, 15, valueChanger.toMidiValue (t.getVolume ()));
 
             d.setCell (0, 1, "Pan").setCell (1, 1, t.getPanStr (9));
             d.setPropertyColor (1, 0, SLMkIIIColors.SLMKIII_ORANGE);
             d.setPropertyColor (1, 1, SLMkIIIColors.SLMKIII_ORANGE);
-            this.surface.updateButtonEx (SLMkIIIControlSurface.MKIII_KNOB_1 + 1, 15, valueChanger.toMidiValue (t.getPan ()));
+            this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_KNOB_1 + 1, 15, valueChanger.toMidiValue (t.getPan ()));
 
             final ISendBank sendBank = t.getSendBank ();
             for (int i = 0; i < 6; i++)
@@ -109,7 +109,7 @@ public class TrackMode extends AbstractTrackMode
                         d.setCell (0, pos, send.getName (9)).setCell (1, pos, send.getDisplayedValue (9));
                         color = SLMkIIIColors.SLMKIII_YELLOW;
 
-                        this.surface.updateButtonEx (SLMkIIIControlSurface.MKIII_KNOB_1 + pos, 15, valueChanger.toMidiValue (send.getValue ()));
+                        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_KNOB_1 + pos, 15, valueChanger.toMidiValue (send.getValue ()));
                     }
                 }
 

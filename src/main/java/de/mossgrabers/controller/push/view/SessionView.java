@@ -8,7 +8,7 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.command.trigger.SelectSessionViewCommand;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
@@ -68,7 +68,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     {
         if (velocity == 0)
         {
-            final TriggerCommand triggerCommand = this.surface.getViewManager ().getView (Views.VIEW_SESSION).getTriggerCommand (Commands.COMMAND_SELECT_SESSION_VIEW);
+            final TriggerCommand triggerCommand = this.surface.getViewManager ().getView (Views.VIEW_SESSION).getTriggerCommand (TriggerCommandID.SELECT_SESSION_VIEW);
             ((SelectSessionViewCommand) triggerCommand).setTemporary ();
             return;
         }
@@ -110,7 +110,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         final ITrack track = tb.getItem (t);
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
         {
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
+            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
             if (track.doesExist ())
                 track.getSlotBank ().getItem (s).duplicate ();
             return;
@@ -119,7 +119,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         // Stop clip
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
         {
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_CLIP_STOP);
+            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_CLIP_STOP);
             track.stop ();
             return;
         }
@@ -127,7 +127,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         // Browse for clips
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_BROWSE))
         {
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
+            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
             if (!track.doesExist ())
                 return;
             track.getSlotBank ().getItem (s).browse ();
@@ -160,8 +160,8 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     @Override
     public void updateButtons ()
     {
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_OFF);
     }
 
 
@@ -179,7 +179,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         {
             final IScene scene = sceneBank.getItem (7 - i);
             final int color = scene.doesExist () ? scene.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
+            this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
         }
     }
 

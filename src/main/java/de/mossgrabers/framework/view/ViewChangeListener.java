@@ -18,5 +18,5 @@ public interface ViewChangeListener
      * @param previousViewId The ID of the previous view
      * @param activeViewId The ID of the newly activated view
      */
-    void call (Integer previousViewId, Integer activeViewId);
+    void call (Views previousViewId, Views activeViewId);
 }

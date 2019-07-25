@@ -71,7 +71,7 @@ public class SetupMode extends BaseMode
         if (!isTouched || !this.surface.isDeletePressed ())
             return;
 
-        this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+        this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
 
         final PushConfiguration config = this.surface.getConfiguration ();
         switch (index)
@@ -102,10 +102,10 @@ public class SetupMode extends BaseMode
     @Override
     public void updateSecondRow ()
     {
-        this.surface.updateButton (102, AbstractMode.BUTTON_COLOR_HI);
-        this.surface.updateButton (103, AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateTrigger (102, AbstractMode.BUTTON_COLOR_HI);
+        this.surface.updateTrigger (103, AbstractMode.BUTTON_COLOR_ON);
         for (int i = 2; i < 8; i++)
-            this.surface.updateButton (102 + i, AbstractMode.BUTTON_COLOR_OFF);
+            this.surface.updateTrigger (102 + i, AbstractMode.BUTTON_COLOR_OFF);
     }
 
 

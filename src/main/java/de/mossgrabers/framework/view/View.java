@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.command.ContinuousCommandID;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.core.AftertouchCommand;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
@@ -45,7 +47,7 @@ public interface View
      * @param commandID The ID of the command
      * @param command The command
      */
-    void registerTriggerCommand (Integer commandID, TriggerCommand command);
+    void registerTriggerCommand (TriggerCommandID commandID, TriggerCommand command);
 
 
     /**
@@ -54,7 +56,7 @@ public interface View
      * @param commandID The ID of the command
      * @param event A button event which triggered the command
      */
-    void executeTriggerCommand (Integer commandID, ButtonEvent event);
+    void executeTriggerCommand (TriggerCommandID commandID, ButtonEvent event);
 
 
     /**
@@ -63,7 +65,7 @@ public interface View
      * @param commandID The ID of the command
      * @return The command or null if not registered
      */
-    TriggerCommand getTriggerCommand (Integer commandID);
+    TriggerCommand getTriggerCommand (TriggerCommandID commandID);
 
 
     /**
@@ -72,7 +74,7 @@ public interface View
      * @param commandID The ID of the command
      * @param command The command
      */
-    void registerContinuousCommand (Integer commandID, ContinuousCommand command);
+    void registerContinuousCommand (ContinuousCommandID commandID, ContinuousCommand command);
 
 
     /**
@@ -81,7 +83,7 @@ public interface View
      * @param commandID The ID of the command.
      * @return The command or null
      */
-    ContinuousCommand getContinuousCommand (Integer commandID);
+    ContinuousCommand getContinuousCommand (ContinuousCommandID commandID);
 
 
     /**
@@ -90,7 +92,7 @@ public interface View
      * @param commandID The ID of the command
      * @param value The updated value
      */
-    void executeContinuousCommand (Integer commandID, int value);
+    void executeContinuousCommand (ContinuousCommandID commandID, int value);
 
 
     /**
@@ -99,7 +101,7 @@ public interface View
      * @param commandID The ID of the command
      * @param command The command
      */
-    void registerNoteCommand (Integer commandID, TriggerCommand command);
+    void registerNoteCommand (TriggerCommandID commandID, TriggerCommand command);
 
 
     /**
@@ -108,7 +110,7 @@ public interface View
      * @param commandID The ID of the command
      * @param value The updated value
      */
-    void executeNoteCommand (Integer commandID, int value);
+    void executeNoteCommand (TriggerCommandID commandID, int value);
 
 
     /**
@@ -117,7 +119,7 @@ public interface View
      * @param commandID The ID of the command
      * @return The command or null if not registered
      */
-    TriggerCommand getNoteCommand (Integer commandID);
+    TriggerCommand getNoteCommand (TriggerCommandID commandID);
 
 
     /**

@@ -49,8 +49,8 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     @Override
     public void updateButtons ()
     {
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, this.drumOctave < 1 ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, this.drumOctave > Scales.DRUM_OCTAVE_LOWER ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, this.drumOctave < 1 ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, this.drumOctave > Scales.DRUM_OCTAVE_LOWER ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
     }
 
 
@@ -70,7 +70,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     {
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_BROWSE))
         {
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
+            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
 
             final ICursorDevice primary = this.model.getDrumDevice64 ();
             if (!primary.hasDrumPads ())
@@ -91,7 +91,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     @Override
     protected void handleDeleteButton (final int playedPad)
     {
-        this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+        this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
         this.model.getNoteClip (8, 128).clearRow (this.offsetY + playedPad);
     }
 
@@ -161,7 +161,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
         {
             final IScene scene = sceneBank.getItem (7 - i);
             final int color = scene.doesExist () ? scene.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
+            this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
         }
     }
 
@@ -177,7 +177,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
 
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             scene.remove ();
             return;
         }

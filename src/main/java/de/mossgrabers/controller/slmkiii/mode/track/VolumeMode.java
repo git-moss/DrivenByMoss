@@ -61,7 +61,7 @@ public class VolumeMode extends AbstractTrackMode
             if (t.doesExist ())
                 d.setCell (0, i, "Volume").setCell (1, i, t.getVolumeStr (9));
 
-            this.surface.updateButtonEx (SLMkIIIControlSurface.MKIII_KNOB_1 + i, 15, valueChanger.toMidiValue (t.getVolume ()));
+            this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_KNOB_1 + i, 15, valueChanger.toMidiValue (t.getVolume ()));
             this.setColumnColors (d, i, t, SLMkIIIColors.SLMKIII_BLUE);
         }
 

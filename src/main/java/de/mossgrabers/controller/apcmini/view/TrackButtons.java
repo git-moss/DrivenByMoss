@@ -47,19 +47,19 @@ public class TrackButtons
             switch (trackState)
             {
                 case APCminiControlSurface.TRACK_STATE_CLIP_STOP:
-                    this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, this.surface.isPressed (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+                    this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, this.surface.isPressed (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
                     break;
                 case APCminiControlSurface.TRACK_STATE_SOLO:
-                    this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getItem (i).isSolo () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+                    this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getItem (i).isSolo () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
                     break;
                 case APCminiControlSurface.TRACK_STATE_REC_ARM:
-                    this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getItem (i).isRecArm () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+                    this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getItem (i).isRecArm () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
                     break;
                 case APCminiControlSurface.TRACK_STATE_MUTE:
-                    this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, !tb.getItem (i).isMute () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+                    this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, !tb.getItem (i).isMute () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
                     break;
                 case APCminiControlSurface.TRACK_STATE_SELECT:
-                    this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getItem (i).isSelected () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+                    this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getItem (i).isSelected () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
                     break;
                 default:
                     // Not used

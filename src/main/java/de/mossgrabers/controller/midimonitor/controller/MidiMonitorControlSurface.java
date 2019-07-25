@@ -231,7 +231,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
      */
     public MidiMonitorControlSurface (final IHost host, final MidiMonitorConfiguration configuration, final IMidiInput input)
     {
-        super (host, configuration, null, null, input, null, null);
+        super (host, configuration, null, null, input, null);
 
         this.input.setSysexCallback (this::handleSysEx);
     }
@@ -301,7 +301,15 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
 
     /** {@inheritDoc} */
     @Override
-    public void setButtonEx (int button, int channel, int value)
+    public void setTrigger (int cc, int channel, int value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setContinuous (int cc, int channel, int value)
     {
         // Intentionally empty
     }

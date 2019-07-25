@@ -72,7 +72,7 @@ public class SendMode extends AbstractTrackMode
                 if (send.doesExist ())
                 {
                     d.setCell (0, i, send.getName (9)).setCell (1, i, send.getDisplayedValue (9));
-                    this.surface.updateButtonEx (SLMkIIIControlSurface.MKIII_KNOB_1 + i, 15, valueChanger.toMidiValue (send.getValue ()));
+                    this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_KNOB_1 + i, 15, valueChanger.toMidiValue (send.getValue ()));
                     color = SLMkIIIColors.SLMKIII_YELLOW;
                 }
             }

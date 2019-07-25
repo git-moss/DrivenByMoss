@@ -57,7 +57,7 @@ public class NoteRepeatMode extends BaseMode
         final ColorManager colorManager = this.model.getColorManager ();
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (20 + i, colorManager.getColor (selectedTrack != null && Math.abs (selectedTrack.getNoteRepeatLength () - AbstractSequencerView.RESOLUTIONS[i]) < 0.001 ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+            this.surface.updateTrigger (20 + i, colorManager.getColor (selectedTrack != null && Math.abs (selectedTrack.getNoteRepeatLength () - AbstractSequencerView.RESOLUTIONS[i]) < 0.001 ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
     }
 
 

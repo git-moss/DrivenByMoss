@@ -9,7 +9,7 @@ import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.controller.push.mode.BaseMode;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
@@ -103,7 +103,7 @@ public class DeviceLayerMode extends BaseMode
             final ISendBank sendBank = channel.getSendBank ();
             if (this.surface.isDeletePressed ())
             {
-                this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+                this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
                 switch (index)
                 {
                     case 0:
@@ -177,7 +177,7 @@ public class DeviceLayerMode extends BaseMode
         }
 
         // LONG press
-        this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_ROW1_1 + index);
+        this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_ROW1_1 + index);
         this.moveUp ();
     }
 
@@ -191,7 +191,7 @@ public class DeviceLayerMode extends BaseMode
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
         {
-            this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
+            this.surface.getViewManager ().getActiveView ().executeTriggerCommand (TriggerCommandID.TRACK, ButtonEvent.DOWN);
             return;
         }
 
@@ -255,7 +255,7 @@ public class DeviceLayerMode extends BaseMode
                 config.setSendsAreToggled (!config.isSendsAreToggled ());
 
                 if (!modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER))
-                    modeManager.setActiveMode (Integer.valueOf (Modes.MODE_DEVICE_LAYER_SEND1.intValue () + (config.isSendsAreToggled () ? 4 : 0)));
+                    modeManager.setActiveMode (Modes.get (Modes.MODE_DEVICE_LAYER_SEND1, config.isSendsAreToggled () ? 4 : 0));
                 break;
 
             case 7:
@@ -284,7 +284,7 @@ public class DeviceLayerMode extends BaseMode
         final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
         if (!fxTrackBank.getItem (sendIndex).doesExist ())
             return;
-        final Integer si = Integer.valueOf (Modes.MODE_DEVICE_LAYER_SEND1.intValue () + sendIndex);
+        final Modes si = Modes.get (Modes.MODE_DEVICE_LAYER_SEND1, sendIndex);
         final ModeManager modeManager = this.surface.getModeManager ();
         modeManager.setActiveMode (modeManager.isActiveOrTempMode (si) ? Modes.MODE_DEVICE_LAYER : si);
     }
@@ -554,7 +554,7 @@ public class DeviceLayerMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final IChannel dl = bank.getItem (offset + i);
-            this.surface.updateButton (20 + i, dl.doesExist () && dl.isActivated () ? dl.isSelected () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_LO : PushColors.PUSH1_COLOR_YELLOW_LO : this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK);
+            this.surface.updateTrigger (20 + i, dl.doesExist () && dl.isActivated () ? dl.isSelected () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_LO : PushColors.PUSH1_COLOR_YELLOW_LO : this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK);
         }
     }
 
@@ -591,27 +591,27 @@ public class DeviceLayerMode extends BaseMode
                             color = PushColors.PUSH2_COLOR2_YELLOW_HI;
                     }
 
-                    this.surface.updateButton (102 + i, color);
+                    this.surface.updateTrigger (102 + i, color);
                 }
                 return;
             }
 
             final ModeManager modeManager = this.surface.getModeManager ();
-            this.surface.updateButton (102, modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_VOLUME) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (103, modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (104, PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (105, PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (106, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND5 : Modes.MODE_DEVICE_LAYER_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (107, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND6 : Modes.MODE_DEVICE_LAYER_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (108, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND7 : Modes.MODE_DEVICE_LAYER_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (109, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND8 : Modes.MODE_DEVICE_LAYER_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (102, modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_VOLUME) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (103, modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (104, PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (105, PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (106, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND5 : Modes.MODE_DEVICE_LAYER_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (107, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND6 : Modes.MODE_DEVICE_LAYER_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (108, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND7 : Modes.MODE_DEVICE_LAYER_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (109, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND8 : Modes.MODE_DEVICE_LAYER_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             return;
         }
 
         if (!cd.hasLayers ())
         {
             this.disableSecondRow ();
-            this.surface.updateButton (109, PushColors.PUSH1_COLOR2_WHITE);
+            this.surface.updateTrigger (109, PushColors.PUSH1_COLOR2_WHITE);
             return;
         }
 
@@ -630,7 +630,7 @@ public class DeviceLayerMode extends BaseMode
                 else
                     color = dl.isSolo () ? PushColors.PUSH1_COLOR2_BLUE_HI : PushColors.PUSH1_COLOR2_GREY_LO;
             }
-            this.surface.updateButton (102 + i, color);
+            this.surface.updateTrigger (102 + i, color);
         }
     }
 

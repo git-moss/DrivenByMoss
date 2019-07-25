@@ -77,15 +77,15 @@ public abstract class DrumViewBase extends AbstractDrumView<LaunchpadControlSurf
         if (this.surface.isShiftPressed ())
         {
             for (int i = 0; i < 4; i++)
-                this.surface.setButton (this.surface.getSceneButton (i), LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+                this.surface.setTrigger (this.surface.getSceneTrigger (i), LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
             this.updateLowerSceneButtons ();
             return;
         }
 
         for (int i = 0; i < 8; i++)
         {
-            final int sceneButton = this.surface.getSceneButton (i);
-            this.surface.setButton (sceneButton, i == 7 - this.selectedIndex ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            final int sceneButton = this.surface.getSceneTrigger (i);
+            this.surface.setTrigger (sceneButton, i == 7 - this.selectedIndex ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
         }
     }
 
@@ -96,6 +96,6 @@ public abstract class DrumViewBase extends AbstractDrumView<LaunchpadControlSurf
     protected void updateLowerSceneButtons ()
     {
         for (int i = 4; i < 8; i++)
-            this.surface.setButton (this.surface.getSceneButton (i), LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+            this.surface.setTrigger (this.surface.getSceneTrigger (i), LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
     }
 }

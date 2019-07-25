@@ -297,14 +297,14 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
 
     protected void handleMuteButton (final int playedPad)
     {
-        this.surface.setButtonConsumed (this.surface.getMuteButtonId ());
+        this.surface.setTriggerConsumed (this.surface.getMuteTriggerId ());
         this.model.getDrumDevice64 ().getDrumPadBank ().getItem (playedPad).toggleMute ();
     }
 
 
     protected void handleSoloButton (final int playedPad)
     {
-        this.surface.setButtonConsumed (this.surface.getSoloButtonId ());
+        this.surface.setTriggerConsumed (this.surface.getSoloTriggerId ());
         this.model.getDrumDevice64 ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
     }
 

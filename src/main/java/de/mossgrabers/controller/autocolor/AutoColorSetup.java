@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -134,7 +135,7 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
 
     /** {@inheritDoc} */
     @Override
-    protected void updateIndication (final Integer mode)
+    protected void updateIndication (final Modes mode)
     {
         // Intentionally empty
     }

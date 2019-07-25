@@ -8,7 +8,7 @@ import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.controller.push.mode.BaseMode;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.DAWColors;
@@ -107,7 +107,7 @@ public class DeviceParamsMode extends BaseMode
         final IParameter param = cd.getParameterBank ().getItem (index);
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             param.resetValue ();
         }
         param.touchValue (isTouched);
@@ -136,14 +136,14 @@ public class DeviceParamsMode extends BaseMode
 
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
             {
-                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
+                this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
                 cd.duplicate ();
                 return;
             }
 
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DELETE))
             {
-                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+                this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
                 cd.getDeviceBank ().getItem (index).remove ();
                 return;
             }
@@ -169,7 +169,7 @@ public class DeviceParamsMode extends BaseMode
         }
 
         // LONG press - move upwards
-        this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_ROW1_1 + index);
+        this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_ROW1_1 + index);
         this.moveUp ();
     }
 
@@ -184,7 +184,7 @@ public class DeviceParamsMode extends BaseMode
         final View activeView = this.surface.getViewManager ().getActiveView ();
         if (!cd.doesExist ())
         {
-            activeView.executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
+            activeView.executeTriggerCommand (TriggerCommandID.TRACK, ButtonEvent.DOWN);
             return;
         }
 
@@ -210,11 +210,11 @@ public class DeviceParamsMode extends BaseMode
         // Move up to the track
         if (this.model.isCursorDeviceOnMasterTrack ())
         {
-            activeView.executeTriggerCommand (Commands.COMMAND_MASTERTRACK, ButtonEvent.DOWN);
-            activeView.executeTriggerCommand (Commands.COMMAND_MASTERTRACK, ButtonEvent.UP);
+            activeView.executeTriggerCommand (TriggerCommandID.MASTERTRACK, ButtonEvent.DOWN);
+            activeView.executeTriggerCommand (TriggerCommandID.MASTERTRACK, ButtonEvent.UP);
         }
         else
-            activeView.executeTriggerCommand (Commands.COMMAND_TRACK, ButtonEvent.DOWN);
+            activeView.executeTriggerCommand (TriggerCommandID.TRACK, ButtonEvent.DOWN);
     }
 
 
@@ -237,14 +237,14 @@ public class DeviceParamsMode extends BaseMode
         {
             final IDeviceBank bank = cd.getDeviceBank ();
             for (int i = 0; i < bank.getPageSize (); i++)
-                this.surface.updateButton (20 + i, bank.getItem (i).doesExist () ? i == cd.getIndex () ? selectedColor : existsColor : offColor);
+                this.surface.updateTrigger (20 + i, bank.getItem (i).doesExist () ? i == cd.getIndex () ? selectedColor : existsColor : offColor);
         }
         else
         {
             final IParameterPageBank bank = cd.getParameterPageBank ();
             final int selectedItemIndex = bank.getSelectedItemIndex ();
             for (int i = 0; i < bank.getPageSize (); i++)
-                this.surface.updateButton (20 + i, !bank.getItem (i).isEmpty () ? i == selectedItemIndex ? selectedColor : existsColor : offColor);
+                this.surface.updateTrigger (20 + i, !bank.getItem (i).isEmpty () ? i == selectedItemIndex ? selectedColor : existsColor : offColor);
         }
     }
 
@@ -302,7 +302,7 @@ public class DeviceParamsMode extends BaseMode
         if (!cd.doesExist ())
         {
             this.disableSecondRow ();
-            this.surface.updateButton (109, white);
+            this.surface.updateTrigger (109, white);
             return;
         }
 
@@ -312,14 +312,14 @@ public class DeviceParamsMode extends BaseMode
         final int off = this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
         final int turquoise = this.isPush2 ? PushColors.PUSH2_COLOR2_TURQUOISE_HI : PushColors.PUSH1_COLOR2_TURQUOISE_HI;
 
-        this.surface.updateButton (102, cd.isEnabled () ? green : grey);
-        this.surface.updateButton (103, cd.isParameterPageSectionVisible () ? orange : white);
-        this.surface.updateButton (104, cd.isExpanded () ? orange : white);
-        this.surface.updateButton (105, off);
-        this.surface.updateButton (106, this.showDevices ? white : orange);
-        this.surface.updateButton (107, this.model.getHost ().hasPinning () ? cd.isPinned () ? turquoise : grey : off);
-        this.surface.updateButton (108, cd.isWindowOpen () ? turquoise : grey);
-        this.surface.updateButton (109, white);
+        this.surface.updateTrigger (102, cd.isEnabled () ? green : grey);
+        this.surface.updateTrigger (103, cd.isParameterPageSectionVisible () ? orange : white);
+        this.surface.updateTrigger (104, cd.isExpanded () ? orange : white);
+        this.surface.updateTrigger (105, off);
+        this.surface.updateTrigger (106, this.showDevices ? white : orange);
+        this.surface.updateTrigger (107, this.model.getHost ().hasPinning () ? cd.isPinned () ? turquoise : grey : off);
+        this.surface.updateTrigger (108, cd.isWindowOpen () ? turquoise : grey);
+        this.surface.updateTrigger (109, white);
     }
 
 

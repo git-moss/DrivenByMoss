@@ -88,7 +88,7 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
     public void updateSceneButtons ()
     {
         for (int i = APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1; i <= APCminiControlSurface.APC_BUTTON_SCENE_BUTTON8; i++)
-            this.surface.updateButton (i, this.surface.getNoteVelocity (i) > 0 ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+            this.surface.updateTrigger (i, this.surface.getNoteVelocity (i) > 0 ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
         this.extensions.updateTrackButtons ();
     }

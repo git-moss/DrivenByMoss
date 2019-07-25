@@ -53,7 +53,7 @@ public class ClipMode extends AbstractTrackMode
 
         if (index == 7 && isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             this.model.getClip ().resetAccent ();
         }
     }
@@ -191,14 +191,14 @@ public class ClipMode extends AbstractTrackMode
     @Override
     public void updateSecondRow ()
     {
-        this.surface.updateButton (102, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateButton (103, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateButton (104, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateButton (105, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateButton (106, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateButton (107, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateButton (108, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateButton (109, this.displayMidiNotes ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH2_COLOR2_WHITE);
+        this.surface.updateTrigger (102, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateTrigger (103, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateTrigger (104, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateTrigger (105, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateTrigger (106, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateTrigger (107, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateTrigger (108, PushColors.PUSH2_COLOR_BLACK);
+        this.surface.updateTrigger (109, this.displayMidiNotes ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH2_COLOR2_WHITE);
     }
 
 

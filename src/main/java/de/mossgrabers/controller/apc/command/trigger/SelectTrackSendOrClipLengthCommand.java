@@ -47,7 +47,7 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
 
         if (this.surface.isPressed (APCControlSurface.APC_BUTTON_SEND_A))
         {
-            this.surface.getModeManager ().setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + this.index));
+            this.surface.getModeManager ().setActiveMode (Modes.get (Modes.MODE_SEND1, this.index));
             this.surface.getDisplay ().notify ("Send " + (this.index + 1));
             return;
         }

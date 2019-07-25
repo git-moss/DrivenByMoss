@@ -41,10 +41,10 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer currentMode = modeManager.getActiveOrTempModeId ();
+        final Modes currentMode = modeManager.getActiveOrTempModeId ();
 
         // Layer mode selection for Push 1
-        Integer mode;
+        Modes mode;
         final PushConfiguration config = this.surface.getConfiguration ();
         if (!config.isPush2 () && this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
         {
@@ -55,13 +55,13 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
             }
             else
             {
-                mode = Integer.valueOf (currentMode.intValue () + 1);
+                mode = Modes.get (currentMode, 1);
                 // Wrap
-                if (mode.intValue () < Modes.MODE_DEVICE_LAYER_PAN.intValue () || mode.intValue () > Modes.MODE_DEVICE_LAYER_SEND8.intValue ())
+                if (mode.ordinal () < Modes.MODE_DEVICE_LAYER_PAN.ordinal () || mode.ordinal () > Modes.MODE_DEVICE_LAYER_SEND8.ordinal ())
                     mode = Modes.MODE_DEVICE_LAYER_PAN;
                 // Check if Send channel exists
                 final ITrackBank tb = this.model.getTrackBank ();
-                if (mode.intValue () < Modes.MODE_DEVICE_LAYER_SEND1.intValue () || mode.intValue () > Modes.MODE_DEVICE_LAYER_SEND8.intValue () || tb.canEditSend (mode.intValue () - Modes.MODE_DEVICE_LAYER_SEND1.intValue ()))
+                if (mode.ordinal () < Modes.MODE_DEVICE_LAYER_SEND1.ordinal () || mode.ordinal () > Modes.MODE_DEVICE_LAYER_SEND8.ordinal () || tb.canEditSend (mode.ordinal () - Modes.MODE_DEVICE_LAYER_SEND1.ordinal ()))
                     mode = Modes.MODE_DEVICE_LAYER_PAN;
             }
             modeManager.setActiveMode (mode);
@@ -75,13 +75,13 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
         }
         else
         {
-            mode = Integer.valueOf (currentMode.intValue () + 1);
+            mode = Modes.get (currentMode, 1);
             // Wrap
-            if (mode.intValue () < Modes.MODE_PAN.intValue () || mode.intValue () > Modes.MODE_SEND8.intValue ())
+            if (mode.ordinal () < Modes.MODE_PAN.ordinal () || mode.ordinal () > Modes.MODE_SEND8.ordinal ())
                 mode = Modes.MODE_PAN;
             // Check if Send channel exists
             final ITrackBank tb = this.model.getTrackBank ();
-            if (mode.intValue () < Modes.MODE_SEND1.intValue () || mode.intValue () > Modes.MODE_SEND8.intValue () || !tb.canEditSend (mode.intValue () - Modes.MODE_SEND1.intValue ()))
+            if (mode.ordinal () < Modes.MODE_SEND1.ordinal () || mode.ordinal () > Modes.MODE_SEND8.ordinal () || !tb.canEditSend (mode.ordinal () - Modes.MODE_SEND1.ordinal ()))
                 mode = Modes.MODE_PAN;
         }
         modeManager.setActiveMode (mode);

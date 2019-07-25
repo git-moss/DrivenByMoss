@@ -57,7 +57,7 @@ public class SendMode extends AbstractTrackMode
         final ISend send = t.getSendBank ().getItem (sendIndex);
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             send.resetValue ();
         }
 
@@ -125,6 +125,6 @@ public class SendMode extends AbstractTrackMode
 
     private int getCurrentSendIndex ()
     {
-        return this.surface.getModeManager ().getActiveOrTempModeId ().intValue () - Modes.MODE_SEND1.intValue ();
+        return this.surface.getModeManager ().getActiveOrTempModeId ().ordinal () - Modes.MODE_SEND1.ordinal ();
     }
 }

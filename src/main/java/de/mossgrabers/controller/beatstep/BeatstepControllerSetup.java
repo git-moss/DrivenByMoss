@@ -16,7 +16,8 @@ import de.mossgrabers.controller.beatstep.view.SequencerView;
 import de.mossgrabers.controller.beatstep.view.SessionView;
 import de.mossgrabers.controller.beatstep.view.ShiftView;
 import de.mossgrabers.controller.beatstep.view.TrackView;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.ContinuousCommandID;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -37,6 +38,7 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -190,7 +192,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
         final BeatstepControlSurface surface = this.getSurface ();
         for (int i = 0; i < 16; i++)
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), BeatstepControlSurface.BEATSTEP_PRO_STEP1 + i, new StepCommand (i, this.model, surface));
+            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW1_1, i), BeatstepControlSurface.BEATSTEP_PRO_STEP1 + i, new StepCommand (i, this.model, surface));
     }
 
 
@@ -202,10 +204,10 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         final ViewManager viewManager = surface.getViewManager ();
         for (int i = 0; i < 8; i++)
         {
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_1 + i, new KnobRowViewCommand (i, this.model, surface));
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i), BeatstepControlSurface.BEATSTEP_KNOB_9 + i, new KnobRowViewCommand (i + 8, this.model, surface));
+            this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.KNOB1, i), BeatstepControlSurface.BEATSTEP_KNOB_1 + i, new KnobRowViewCommand (i, this.model, surface));
+            this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.DEVICE_KNOB1, i), BeatstepControlSurface.BEATSTEP_KNOB_9 + i, new KnobRowViewCommand (i + 8, this.model, surface));
         }
-        this.addContinuousCommand (Commands.CONT_COMMAND_MASTER_KNOB, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, new PlayPositionCommand<> (this.model, surface));
+        this.addContinuousCommand (ContinuousCommandID.MASTER_KNOB, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, new PlayPositionCommand<> (this.model, surface));
         final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);
         playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, surface));
     }
@@ -224,7 +226,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
     /** {@inheritDoc} */
     @Override
-    protected void updateIndication (final Integer mode)
+    protected void updateIndication (final Modes mode)
     {
         final BeatstepControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();

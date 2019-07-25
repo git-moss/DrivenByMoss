@@ -98,7 +98,7 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
             return;
         }
 
-        final Integer activeModeId = this.surface.getModeManager ().getActiveOrTempModeId ();
+        final Modes activeModeId = this.surface.getModeManager ().getActiveOrTempModeId ();
         if (Modes.isLayerMode (activeModeId))
         {
             final ICursorDevice cd = this.model.getCursorDevice ();

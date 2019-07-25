@@ -7,11 +7,12 @@ package de.mossgrabers.controller.launchpad.view;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
@@ -134,14 +135,14 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     public void updateSceneButtons ()
     {
         final boolean isPro = this.surface.isPro ();
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_CYAN);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_SKY);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_ORCHID);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_YELLOW);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_BLUE);
-        this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_RED);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_CYAN);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_SKY);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_ORCHID);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_YELLOW);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_BLUE);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_RED);
     }
 
 
@@ -152,34 +153,34 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         switch (note)
         {
             case 36:
-                view.getTriggerCommand (Commands.COMMAND_REC_ARM).execute (event);
+                view.getTriggerCommand (TriggerCommandID.REC_ARM).execute (event);
                 break;
             case 37:
-                view.getTriggerCommand (Commands.COMMAND_TRACK).execute (event);
+                view.getTriggerCommand (TriggerCommandID.TRACK).execute (event);
                 break;
             case 38:
-                view.getTriggerCommand (Commands.COMMAND_MUTE).execute (event);
+                view.getTriggerCommand (TriggerCommandID.MUTE).execute (event);
                 break;
             case 39:
-                view.getTriggerCommand (Commands.COMMAND_SOLO).execute (event);
+                view.getTriggerCommand (TriggerCommandID.SOLO).execute (event);
                 break;
             case 40:
-                view.getTriggerCommand (Commands.COMMAND_VOLUME).execute (event);
+                view.getTriggerCommand (TriggerCommandID.VOLUME).execute (event);
                 break;
             case 41:
-                view.getTriggerCommand (Commands.COMMAND_PAN_SEND).execute (event);
+                view.getTriggerCommand (TriggerCommandID.PAN_SEND).execute (event);
                 break;
             case 42:
-                view.getTriggerCommand (Commands.COMMAND_SENDS).execute (event);
+                view.getTriggerCommand (TriggerCommandID.SENDS).execute (event);
                 break;
             case 43:
-                view.getTriggerCommand (Commands.COMMAND_STOP_CLIP).execute (event);
+                view.getTriggerCommand (TriggerCommandID.STOP_CLIP).execute (event);
                 break;
             default:
                 return false;
         }
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeOrTempModeId = modeManager.getActiveOrTempModeId ();
+        final Modes activeOrTempModeId = modeManager.getActiveOrTempModeId ();
         if (activeOrTempModeId != null && activeOrTempModeId.equals (modeManager.getPreviousModeId ()))
             modeManager.setActiveMode (null);
         return true;
@@ -210,40 +211,40 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         switch (note)
         {
             case 92:
-                this.executeNormal (Commands.COMMAND_METRONOME, ButtonEvent.DOWN);
+                this.executeNormal (TriggerCommandID.METRONOME, ButtonEvent.DOWN);
                 break;
             case 93:
-                this.executeShifted (Commands.COMMAND_METRONOME, ButtonEvent.DOWN);
+                this.executeShifted (TriggerCommandID.METRONOME, ButtonEvent.DOWN);
                 break;
             case 84:
-                this.executeNormal (Commands.COMMAND_UNDO, ButtonEvent.DOWN);
+                this.executeNormal (TriggerCommandID.UNDO, ButtonEvent.DOWN);
                 break;
             case 85:
-                this.executeShifted (Commands.COMMAND_UNDO, ButtonEvent.DOWN);
+                this.executeShifted (TriggerCommandID.UNDO, ButtonEvent.DOWN);
                 break;
             case 76:
-                this.executeNormal (Commands.COMMAND_DELETE, ButtonEvent.UP);
+                this.executeNormal (TriggerCommandID.DELETE, ButtonEvent.UP);
                 break;
             case 68:
-                this.executeNormal (Commands.COMMAND_QUANTIZE, ButtonEvent.DOWN);
+                this.executeNormal (TriggerCommandID.QUANTIZE, ButtonEvent.DOWN);
                 break;
             case 60:
-                this.executeNormal (Commands.COMMAND_DUPLICATE, ButtonEvent.DOWN);
+                this.executeNormal (TriggerCommandID.DUPLICATE, ButtonEvent.DOWN);
                 break;
             case 61:
-                this.executeShifted (Commands.COMMAND_DUPLICATE, ButtonEvent.DOWN);
+                this.executeShifted (TriggerCommandID.DUPLICATE, ButtonEvent.DOWN);
                 break;
             case 52:
-                this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_NEW).execute (ButtonEvent.DOWN);
+                this.surface.getViewManager ().getActiveView ().getTriggerCommand (TriggerCommandID.NEW).execute (ButtonEvent.DOWN);
                 break;
             case 53:
-                this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_PLAY).execute (ButtonEvent.DOWN);
+                this.surface.getViewManager ().getActiveView ().getTriggerCommand (TriggerCommandID.PLAY).execute (ButtonEvent.DOWN);
                 break;
             case 44:
-                this.executeNormal (Commands.COMMAND_RECORD, ButtonEvent.UP);
+                this.executeNormal (TriggerCommandID.RECORD, ButtonEvent.UP);
                 break;
             case 45:
-                this.executeShifted (Commands.COMMAND_RECORD, ButtonEvent.UP);
+                this.executeShifted (TriggerCommandID.RECORD, ButtonEvent.UP);
                 break;
             case 51:
                 this.model.getCurrentTrackBank ().stop ();
@@ -296,14 +297,14 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
 
 
     @SuppressWarnings("rawtypes")
-    private void executeNormal (final Integer commandID, final ButtonEvent event)
+    private void executeNormal (final TriggerCommandID commandID, final ButtonEvent event)
     {
         ((AbstractTriggerCommand) this.surface.getViewManager ().getActiveView ().getTriggerCommand (commandID)).executeNormal (event);
     }
 
 
     @SuppressWarnings("rawtypes")
-    private void executeShifted (final Integer commandID, final ButtonEvent event)
+    private void executeShifted (final TriggerCommandID commandID, final ButtonEvent event)
     {
         ((AbstractTriggerCommand) this.surface.getViewManager ().getActiveView ().getTriggerCommand (commandID)).executeShifted (event);
     }

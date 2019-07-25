@@ -113,7 +113,7 @@ public class TrackMode extends AbstractTrackMode
         {
             if (isTouched && this.surface.isDeletePressed ())
             {
-                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+                this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
                 switch (index)
                 {
                     case 0:
@@ -159,7 +159,7 @@ public class TrackMode extends AbstractTrackMode
 
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
             switch (index)
             {
                 case 0:

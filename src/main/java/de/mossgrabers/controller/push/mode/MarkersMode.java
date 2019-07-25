@@ -154,7 +154,7 @@ public class MarkersMode extends BaseMode
     {
         final IMarkerBank markerBank = this.model.getMarkerBank ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (20 + i, markerBank.getItem (i).doesExist () ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR_OFF);
+            this.surface.updateTrigger (20 + i, markerBank.getItem (i).doesExist () ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR_OFF);
     }
 
 
@@ -164,7 +164,7 @@ public class MarkersMode extends BaseMode
     {
         final boolean canEditMarkers = this.model.getHost ().canEditMarkers ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (102 + i, canEditMarkers && !EDIT_MENU[i].isEmpty () ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF);
+            this.surface.updateTrigger (102 + i, canEditMarkers && !EDIT_MENU[i].isEmpty () ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF);
     }
 
 

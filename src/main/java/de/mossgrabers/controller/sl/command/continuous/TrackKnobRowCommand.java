@@ -43,7 +43,7 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
     public void execute (final int value)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        Integer cm = modeManager.getActiveOrTempModeId ();
+        Modes cm = modeManager.getActiveOrTempModeId ();
         if (!Modes.MODE_TRACK.equals (cm) && !Modes.MODE_MASTER.equals (cm))
         {
             modeManager.setActiveMode (Modes.MODE_TRACK);

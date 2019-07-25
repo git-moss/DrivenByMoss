@@ -43,9 +43,9 @@ public class RaindropsView extends AbstractRaindropsView<LaunchpadControlSurface
     private void delayedUpdateArrowButtons ()
     {
         final boolean hasClips = this.model.getHost ().hasClips ();
-        this.surface.setButton (this.surface.getSessionButton (), hasClips ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setButton (this.surface.getNoteButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setButton (this.surface.getDeviceButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        this.surface.setTrigger (this.surface.getSessionButton (), hasClips ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setTrigger (this.surface.getNoteButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        this.surface.setTrigger (this.surface.getDeviceButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
     }
 
 
@@ -54,6 +54,6 @@ public class RaindropsView extends AbstractRaindropsView<LaunchpadControlSurface
     public void updateSceneButtons ()
     {
         for (int i = 0; i < 8; i++)
-            this.surface.setButton (this.surface.getSceneButton (i), i == 7 - this.selectedIndex ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            this.surface.setTrigger (this.surface.getSceneTrigger (i), i == 7 - this.selectedIndex ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
     }
 }

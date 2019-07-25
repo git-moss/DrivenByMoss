@@ -146,7 +146,7 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
     {
         final ColorManager colorManager = this.model.getColorManager ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (20 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
+            this.surface.updateTrigger (20 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
     }
 
 
@@ -157,7 +157,7 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
     {
         final ColorManager colorManager = this.model.getColorManager ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (102 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
+            this.surface.updateTrigger (102 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
     }
 
 

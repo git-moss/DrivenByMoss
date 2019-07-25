@@ -107,61 +107,6 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
     public static final int     MKI_BUTTON_TAP_TEMPO       = 94;
     public static final int     MKI_BUTTON_TAP_TEMPO_VALUE = 95;
 
-    private static final int [] SL_BUTTONS_ALL             =
-    {
-        MKII_BUTTON_ROW1_1,
-        MKII_BUTTON_ROW1_2,
-        MKII_BUTTON_ROW1_3,
-        MKII_BUTTON_ROW1_4,
-        MKII_BUTTON_ROW1_5,
-        MKII_BUTTON_ROW1_6,
-        MKII_BUTTON_ROW1_7,
-        MKII_BUTTON_ROW1_8,
-        MKII_BUTTON_ROW2_1,
-        MKII_BUTTON_ROW2_2,
-        MKII_BUTTON_ROW2_3,
-        MKII_BUTTON_ROW2_4,
-        MKII_BUTTON_ROW2_5,
-        MKII_BUTTON_ROW2_6,
-        MKII_BUTTON_ROW2_7,
-        MKII_BUTTON_ROW2_8,
-        MKII_BUTTON_ROW3_1,
-        MKII_BUTTON_ROW3_2,
-        MKII_BUTTON_ROW3_3,
-        MKII_BUTTON_ROW3_4,
-        MKII_BUTTON_ROW3_5,
-        MKII_BUTTON_ROW3_6,
-        MKII_BUTTON_ROW3_7,
-        MKII_BUTTON_ROW3_8,
-        MKII_BUTTON_ROW4_1,
-        MKII_BUTTON_ROW4_2,
-        MKII_BUTTON_ROW4_3,
-        MKII_BUTTON_ROW4_4,
-        MKII_BUTTON_ROW4_5,
-        MKII_BUTTON_ROW4_6,
-        MKII_BUTTON_ROW4_7,
-        MKII_BUTTON_ROW4_8,
-        MKII_BUTTON_REWIND,
-        MKII_BUTTON_FORWARD,
-        MKII_BUTTON_STOP,
-        MKII_BUTTON_PLAY,
-        MKII_BUTTON_LOOP,
-        MKII_BUTTON_RECORD,
-        MKII_BUTTON_TRANSPORT,
-        MKII_BUTTON_ROWSEL1,
-        MKII_BUTTON_ROWSEL2,
-        MKII_BUTTON_ROWSEL3,
-        MKII_BUTTON_ROWSEL4,
-        MKII_BUTTON_ROWSEL5,
-        MKII_BUTTON_ROWSEL6,
-        MKII_BUTTON_ROWSEL7,
-        MKII_BUTTON_ROWSEL8,
-        MKII_BUTTON_P1_UP,
-        MKII_BUTTON_P1_DOWN,
-        MKII_BUTTON_P2_UP,
-        MKII_BUTTON_P2_DOWN
-    };
-
     public static final int     MKII_BUTTON_STATE_OFF      = 0;
     public static final int     MKII_BUTTON_STATE_ON       = 1;
 
@@ -194,7 +139,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
             {
                 // The drum pads do not have LEDs
             }
-        }, SL_BUTTONS_ALL);
+        });
 
         this.isMkII = isMkII;
 
@@ -206,7 +151,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
 
         // Switch to Ableton Automap mode
         this.output.sendSysex (SYSEX_AUTOMAP_ON);
-        this.turnOffAllLEDs ();
+        this.turnOffTriggers ();
 
         // Disable transport mode
         this.turnOffTransport ();
@@ -230,9 +175,17 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setButtonEx (int button, int channel, int value)
+    public void setTrigger (int cc, int channel, int value)
     {
-        this.output.sendCCEx (channel, button, value);
+        this.output.sendCCEx (channel, cc, value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setContinuous (int cc, int channel, int value)
+    {
+        // Intentionally empty
     }
 
 
@@ -241,7 +194,6 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
     public void shutdown ()
     {
         this.display.clear ();
-        this.turnOffAllLEDs ();
         this.output.sendSysex (SYSEX_AUTOMAP_OFF);
 
         super.shutdown ();
@@ -256,11 +208,13 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
     }
 
 
-    public void turnOffAllLEDs ()
+    /** {@inheritDoc} */
+    @Override
+    public void turnOffTriggers ()
     {
         this.output.sendCC (78, 127);
-        for (final int button: this.getButtons ())
-            this.setButton (button, 0);
+
+        super.turnOffTriggers ();
     }
 
 

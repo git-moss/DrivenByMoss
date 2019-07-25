@@ -130,14 +130,14 @@ public class BrowserMode extends BaseMode
     @Override
     public void updateFirstRow ()
     {
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1, SLMkIIIColors.SLMKIII_GREEN);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_2, SLMkIIIColors.SLMKIII_GREEN);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_3, SLMkIIIColors.SLMKIII_DARK_GREEN_HALF);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_4, SLMkIIIColors.SLMKIII_DARK_GREEN_HALF);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_5, SLMkIIIColors.SLMKIII_GREEN_LIGHT);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_6, SLMkIIIColors.SLMKIII_GREEN_LIGHT);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_7, SLMkIIIColors.SLMKIII_GREEN_GRASS);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_8, SLMkIIIColors.SLMKIII_GREEN_GRASS);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1, SLMkIIIColors.SLMKIII_GREEN);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_2, SLMkIIIColors.SLMKIII_GREEN);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_3, SLMkIIIColors.SLMKIII_DARK_GREEN_HALF);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_4, SLMkIIIColors.SLMKIII_DARK_GREEN_HALF);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_5, SLMkIIIColors.SLMKIII_GREEN_LIGHT);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_6, SLMkIIIColors.SLMKIII_GREEN_LIGHT);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_7, SLMkIIIColors.SLMKIII_GREEN_GRASS);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_8, SLMkIIIColors.SLMKIII_GREEN_GRASS);
     }
 
 

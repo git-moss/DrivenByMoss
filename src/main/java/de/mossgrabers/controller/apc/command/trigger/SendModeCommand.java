@@ -63,7 +63,7 @@ public class SendModeCommand extends AbstractTriggerCommand<APCControlSurface, A
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + index));
+        modeManager.setActiveMode (Modes.get (Modes.MODE_SEND1, index));
         this.model.getHost ().showNotification (modeManager.getActiveOrTempMode ().getName ());
     }
 }

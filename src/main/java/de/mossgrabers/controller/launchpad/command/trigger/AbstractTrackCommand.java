@@ -9,6 +9,7 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -37,7 +38,7 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
     }
 
 
-    protected void onModeButton (final ButtonEvent event, final Integer controlMode, final String notification)
+    protected void onModeButton (final ButtonEvent event, final Modes controlMode, final String notification)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         switch (event)
@@ -69,7 +70,7 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
     }
 
 
-    protected void onFaderModeButton (final ButtonEvent event, final Integer view, final String notification)
+    protected void onFaderModeButton (final ButtonEvent event, final Views view, final String notification)
     {
         final ViewManager viewManager = this.surface.getViewManager ();
         switch (event)

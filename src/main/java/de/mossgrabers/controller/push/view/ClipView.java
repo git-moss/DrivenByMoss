@@ -153,9 +153,9 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
         final int colorSelectedResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED);
         final int colorOff = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
         for (int i = 0; i < 3; i++)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, i == this.padResolution ? colorSelectedResolution : colorResolution);
+            this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1 + i, i == this.padResolution ? colorSelectedResolution : colorResolution);
         for (int i = 3; i < 8; i++)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, colorOff);
+            this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1 + i, colorOff);
     }
 
 
@@ -163,8 +163,8 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     @Override
     public void updateButtons ()
     {
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_OFF);
     }
 
 

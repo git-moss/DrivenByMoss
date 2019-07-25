@@ -29,10 +29,10 @@ import java.util.List;
  */
 public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private final ModeManager   modeManager;
-    private final List<Integer> modeIds = new ArrayList<> ();
-    private final int           send1;
-    private Integer             currentModeID;
+    private final ModeManager modeManager;
+    private final List<Modes> modeIds = new ArrayList<> ();
+    private final Modes       send1;
+    private Modes             currentModeID;
 
 
     /**
@@ -42,13 +42,13 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
      * @param surface The surface
      * @param modeIds The list with IDs of the modes to select
      */
-    public ModeMultiSelectCommand (final IModel model, final S surface, final Integer... modeIds)
+    public ModeMultiSelectCommand (final IModel model, final S surface, final Modes... modeIds)
     {
         super (model, surface);
 
         this.modeManager = this.surface.getModeManager ();
         this.modeIds.addAll (Arrays.asList (modeIds));
-        this.send1 = Modes.MODE_SEND1.intValue ();
+        this.send1 = Modes.MODE_SEND1;
         this.currentModeID = this.modeIds.get (0);
     }
 
@@ -60,8 +60,8 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         if (event != ButtonEvent.DOWN)
             return;
 
-        final Integer activeModeId = this.modeManager.getActiveModeId ();
-        Integer newMode = this.currentModeID;
+        final Modes activeModeId = this.modeManager.getActiveModeId ();
+        Modes newMode = this.currentModeID;
 
         // If coming from a mode not on the list, activate the last one
         if (this.currentModeID.equals (activeModeId))
@@ -75,7 +75,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
                 if (index < 0 || index >= this.modeIds.size ())
                     index = this.modeIds.size () - 1;
                 newMode = this.modeIds.get (index);
-            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.intValue () - this.send1));
+            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.ordinal () - this.send1.ordinal ()));
         }
 
         this.activateMode (newMode);
@@ -89,8 +89,8 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         if (event != ButtonEvent.DOWN)
             return;
 
-        final Integer activeModeId = this.modeManager.getActiveModeId ();
-        Integer newMode = this.currentModeID;
+        final Modes activeModeId = this.modeManager.getActiveModeId ();
+        Modes newMode = this.currentModeID;
 
         // If coming from a mode not on the list, activate the last one
         if (this.currentModeID.equals (activeModeId))
@@ -104,14 +104,14 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
                 if (index < 0 || index >= this.modeIds.size ())
                     index = 0;
                 newMode = this.modeIds.get (index);
-            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.intValue () - this.send1));
+            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.ordinal () - this.send1.ordinal ()));
         }
 
         this.activateMode (newMode);
     }
 
 
-    private void activateMode (final Integer modeID)
+    private void activateMode (final Modes modeID)
     {
         this.currentModeID = modeID;
         this.modeManager.setActiveMode (modeID);
@@ -120,7 +120,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
 
         if (Modes.isSendMode (modeID))
         {
-            final int sendIndex = modeID.intValue () - this.send1;
+            final int sendIndex = modeID.ordinal () - this.send1.ordinal ();
             modeName = modeName + " " + (sendIndex + 1);
             final ITrack selectedTrack = this.model.getTrackBank ().getSelectedItem ();
             if (selectedTrack != null)

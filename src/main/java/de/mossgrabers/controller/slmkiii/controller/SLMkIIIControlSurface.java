@@ -93,62 +93,6 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
 
     public static final int        MKIII_FADER_LED_1       = 0x36;
 
-    private static final int []    BUTTONS_ALL             =
-    {
-        MKIII_DISPLAY_BUTTON_1,
-        MKIII_DISPLAY_BUTTON_2,
-        MKIII_DISPLAY_BUTTON_3,
-        MKIII_DISPLAY_BUTTON_4,
-        MKIII_DISPLAY_BUTTON_5,
-        MKIII_DISPLAY_BUTTON_6,
-        MKIII_DISPLAY_BUTTON_7,
-        MKIII_DISPLAY_BUTTON_8,
-
-        MKIII_BUTTON_ROW1_1,
-        MKIII_BUTTON_ROW1_2,
-        MKIII_BUTTON_ROW1_3,
-        MKIII_BUTTON_ROW1_4,
-        MKIII_BUTTON_ROW1_5,
-        MKIII_BUTTON_ROW1_6,
-        MKIII_BUTTON_ROW1_7,
-        MKIII_BUTTON_ROW1_8,
-
-        MKIII_BUTTON_ROW2_1,
-        MKIII_BUTTON_ROW2_2,
-        MKIII_BUTTON_ROW2_3,
-        MKIII_BUTTON_ROW2_4,
-        MKIII_BUTTON_ROW2_5,
-        MKIII_BUTTON_ROW2_6,
-        MKIII_BUTTON_ROW2_7,
-        MKIII_BUTTON_ROW2_8,
-
-        MKIII_DISPLAY_UP,
-        MKIII_DISPLAY_DOWN,
-        MKIII_SCENE_1,
-        MKIII_SCENE_2,
-        MKIII_SCENE_UP,
-        MKIII_SCENE_DOWN,
-
-        MKIII_BUTTONS_UP,
-        MKIII_BUTTONS_DOWN,
-
-        MKIII_GRID,
-        MKIII_OPTIONS,
-        MKIII_SHIFT,
-        MKIII_DUPLICATE,
-        MKIII_CLEAR,
-
-        MKIII_TRACK_LEFT,
-        MKIII_TRACK_RIGHT,
-
-        MKIII_TRANSPORT_REWIND,
-        MKIII_TRANSPORT_FORWARD,
-        MKIII_TRANSPORT_STOP,
-        MKIII_TRANSPORT_PLAY,
-        MKIII_TRANSPORT_LOOP,
-        MKIII_TRANSPORT_RECORD
-    };
-
     public static final int        MKIII_BUTTON_STATE_OFF  = 0;
     public static final int        MKIII_BUTTON_STATE_ON   = 1;
 
@@ -173,7 +117,7 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
      */
     public SLMkIIIControlSurface (final IHost host, final ColorManager colorManager, final SLMkIIIConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, new SLMkIIIPadGrid (colorManager, output), BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, new SLMkIIIPadGrid (colorManager, output));
 
         this.shiftButtonId = MKIII_SHIFT;
         this.deleteButtonId = MKIII_CLEAR;
@@ -186,25 +130,33 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
 
     /** {@inheritDoc} */
     @Override
-    public void updateButton (final int button, final int value)
+    public void updateTrigger (final int button, final int value)
     {
-        this.updateButtonEx (button, 15, value);
+        this.updateTrigger (button, 15, value);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setButton (final int button, final int state)
+    public void setTrigger (final int cc, final int state)
     {
-        this.output.sendCCEx (15, button, state);
+        this.output.sendCCEx (15, cc, state);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setButtonEx (final int button, final int channel, final int state)
+    public void setTrigger (final int cc, final int channel, final int state)
     {
-        this.output.sendCCEx (channel, button, state);
+        this.output.sendCCEx (channel, cc, state);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setContinuous (int cc, int channel, int value)
+    {
+        // Intentionally empty
     }
 
 
@@ -223,7 +175,7 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
     public void clearKnobCache ()
     {
         for (int i = 0; i < 8; i++)
-            this.clearButtonCache (15, MKIII_KNOB_1 + i);
+            this.clearTriggerCache (15, MKIII_KNOB_1 + i);
     }
 
 

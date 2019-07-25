@@ -18,5 +18,5 @@ public interface ModeChangeListener
      * @param previousModeId The ID of the previous mode
      * @param activeModeId The ID of the newly activated mode
      */
-    void call (Integer previousModeId, Integer activeModeId);
+    void call (Modes previousModeId, Modes activeModeId);
 }

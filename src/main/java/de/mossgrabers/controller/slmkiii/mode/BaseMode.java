@@ -72,7 +72,7 @@ public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkI
     {
         final ColorManager colorManager = this.model.getColorManager ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
+            this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
     }
 
 

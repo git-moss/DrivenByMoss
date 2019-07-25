@@ -9,6 +9,7 @@ import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.view.DrumView;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
@@ -27,7 +28,7 @@ public class PushBrowserCommand extends BrowserCommand<PushControlSurface, PushC
      * @param model The model
      * @param surface The surface
      */
-    public PushBrowserCommand (final Integer browserMode, final IModel model, final PushControlSurface surface)
+    public PushBrowserCommand (final Modes browserMode, final IModel model, final PushControlSurface surface)
     {
         super (browserMode, model, surface);
     }

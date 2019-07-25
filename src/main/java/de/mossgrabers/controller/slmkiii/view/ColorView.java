@@ -90,8 +90,8 @@ public class ColorView extends AbstractView<SLMkIIIControlSurface, SLMkIIIConfig
     public void updateSceneButtons ()
     {
         final int colorOff = this.model.getColorManager ().getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_SCENE_1, colorOff);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_SCENE_2, colorOff);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_1, colorOff);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_2, colorOff);
     }
 
 

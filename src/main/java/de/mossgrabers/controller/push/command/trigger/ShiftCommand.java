@@ -38,10 +38,10 @@ public class ShiftCommand extends AbstractTriggerCommand<PushControlSurface, Pus
     public void execute (final ButtonEvent event)
     {
         final boolean isUp = event == ButtonEvent.UP;
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SHIFT, isUp ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_HI);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SHIFT, isUp ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_HI);
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer cm = modeManager.getActiveOrTempModeId ();
+        final Modes cm = modeManager.getActiveOrTempModeId ();
         if (event == ButtonEvent.DOWN && Modes.MODE_SCALES.equals (cm))
             modeManager.setActiveMode (Modes.MODE_SCALE_LAYOUT);
         else if (isUp && Modes.MODE_SCALE_LAYOUT.equals (cm))

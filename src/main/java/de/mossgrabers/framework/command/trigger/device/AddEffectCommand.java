@@ -8,6 +8,7 @@ import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -28,7 +29,7 @@ public class AddEffectCommand<S extends IControlSurface<C>, C extends Configurat
      * @param model The model
      * @param surface The surface
      */
-    public AddEffectCommand (final Integer browserMode, final IModel model, final S surface)
+    public AddEffectCommand (final Modes browserMode, final IModel model, final S surface)
     {
         super (browserMode, model, surface);
     }

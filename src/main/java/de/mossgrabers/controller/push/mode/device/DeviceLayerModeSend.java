@@ -71,7 +71,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
 
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             layer.getSendBank ().getItem (sendIndex).resetValue ();
         }
 
@@ -147,6 +147,6 @@ public class DeviceLayerModeSend extends DeviceLayerMode
 
     private int getCurrentSendIndex ()
     {
-        return this.surface.getModeManager ().getActiveOrTempModeId ().intValue () - Modes.MODE_DEVICE_LAYER_SEND1.intValue ();
+        return this.surface.getModeManager ().getActiveOrTempModeId ().ordinal () - Modes.MODE_DEVICE_LAYER_SEND1.ordinal ();
     }
 }

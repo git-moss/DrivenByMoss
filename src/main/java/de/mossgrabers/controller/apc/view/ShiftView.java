@@ -8,7 +8,7 @@ import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.command.trigger.APCBrowserCommand;
 import de.mossgrabers.controller.apc.controller.APCColors;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -27,7 +27,7 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration> implements SceneView
 {
-    private static final Integer [] VIEW_IDS  = new Integer []
+    private static final Views [] VIEW_IDS  =
     {
         Views.VIEW_SESSION,
         Views.VIEW_PLAY,
@@ -36,7 +36,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         Views.VIEW_RAINDROPS
     };
 
-    private static final int []     TRANSLATE =
+    private static final int []   TRANSLATE =
     {
         0,
         2,
@@ -126,7 +126,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
                     break;
                 case 35:
                 case 36:
-                    final APCBrowserCommand browseCommand = (APCBrowserCommand) this.surface.getViewManager ().getActiveView ().getTriggerCommand (Commands.COMMAND_BROWSE);
+                    final APCBrowserCommand browseCommand = (APCBrowserCommand) this.surface.getViewManager ().getActiveView ().getTriggerCommand (TriggerCommandID.BROWSE);
                     browseCommand.startBrowser (true, index == 35);
                     break;
                 case 38:
@@ -182,19 +182,19 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
     {
         if (!this.model.getHost ().hasClips ())
         {
-            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, APCColors.APC_COLOR_BLACK);
-            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, APCColors.APC_COLOR_BLACK);
-            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, APCColors.APC_COLOR_BLACK);
-            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, APCColors.APC_COLOR_BLACK);
-            this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, APCColors.APC_COLOR_BLACK);
+            this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, APCColors.APC_COLOR_BLACK);
+            this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, APCColors.APC_COLOR_BLACK);
+            this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, APCColors.APC_COLOR_BLACK);
+            this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, APCColors.APC_COLOR_BLACK);
+            this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, APCColors.APC_COLOR_BLACK);
             return;
         }
 
-        final Integer previousViewId = this.surface.getViewManager ().getPreviousViewId ();
-        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, Views.VIEW_SESSION.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, Views.VIEW_PLAY.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, Views.VIEW_DRUM.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, Views.VIEW_SEQUENCER.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateButton (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, Views.VIEW_RAINDROPS.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        final Views previousViewId = this.surface.getViewManager ().getPreviousViewId ();
+        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, Views.VIEW_SESSION.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, Views.VIEW_PLAY.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, Views.VIEW_DRUM.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, Views.VIEW_SEQUENCER.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, Views.VIEW_RAINDROPS.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
     }
 }

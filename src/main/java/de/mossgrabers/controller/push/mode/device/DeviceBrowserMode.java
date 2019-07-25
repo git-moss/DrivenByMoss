@@ -107,7 +107,7 @@ public class DeviceBrowserMode extends BaseMode
         {
             if (this.surface.isDeletePressed ())
             {
-                this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+                this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
                 fc = this.getFilterColumn (index);
                 if (fc != null && fc.doesExist ())
                     this.model.getBrowser ().resetFilterColumn (fc.getIndex ());
@@ -330,9 +330,9 @@ public class DeviceBrowserMode extends BaseMode
         for (int i = 0; i < 7; i++)
         {
             final IBrowserColumn col = this.getFilterColumn (i);
-            this.surface.updateButton (20 + i, col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR_OFF);
+            this.surface.updateTrigger (20 + i, col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR_OFF);
         }
-        this.surface.updateButton (27, AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateTrigger (27, AbstractMode.BUTTON_COLOR_ON);
     }
 
 
@@ -343,9 +343,9 @@ public class DeviceBrowserMode extends BaseMode
         for (int i = 0; i < 7; i++)
         {
             final IBrowserColumn col = this.getFilterColumn (i);
-            this.surface.updateButton (102 + i, col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF);
+            this.surface.updateTrigger (102 + i, col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF);
         }
-        this.surface.updateButton (109, AbstractMode.BUTTON_COLOR2_ON);
+        this.surface.updateTrigger (109, AbstractMode.BUTTON_COLOR2_ON);
     }
 
 

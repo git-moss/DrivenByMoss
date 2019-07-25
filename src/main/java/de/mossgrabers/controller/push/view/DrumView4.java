@@ -107,8 +107,8 @@ public class DrumView4 extends DrumViewBase
     @Override
     public void updateButtons ()
     {
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_ON);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_ON);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_ON);
     }
 
 
@@ -129,9 +129,9 @@ public class DrumView4 extends DrumViewBase
         final ColorManager colorManager = this.model.getColorManager ();
         final int colorTranspose = colorManager.getColor (AbstractSequencerView.COLOR_TRANSPOSE);
         final int colorSelectedTranspose = colorManager.getColor (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1, this.soundOffset == 0 ? colorSelectedTranspose : colorTranspose);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE2, this.soundOffset == 4 ? colorSelectedTranspose : colorTranspose);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE3, this.soundOffset == 8 ? colorSelectedTranspose : colorTranspose);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE4, this.soundOffset == 12 ? colorSelectedTranspose : colorTranspose);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1, this.soundOffset == 0 ? colorSelectedTranspose : colorTranspose);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE2, this.soundOffset == 4 ? colorSelectedTranspose : colorTranspose);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE3, this.soundOffset == 8 ? colorSelectedTranspose : colorTranspose);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE4, this.soundOffset == 12 ? colorSelectedTranspose : colorTranspose);
     }
 }

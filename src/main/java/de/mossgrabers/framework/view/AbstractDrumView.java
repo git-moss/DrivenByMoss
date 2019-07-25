@@ -359,7 +359,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected void handleDeleteButton (final int playedPad)
     {
-        this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+        this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
         this.updateNoteMapping ();
         this.getClip ().clearRow (this.scales.getDrumOffset () + playedPad);
     }
@@ -367,7 +367,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected void handleMuteButton (final int playedPad)
     {
-        this.surface.setButtonConsumed (this.surface.getMuteButtonId ());
+        this.surface.setTriggerConsumed (this.surface.getMuteTriggerId ());
         this.updateNoteMapping ();
         this.model.getInstrumentDevice ().getDrumPadBank ().getItem (playedPad).toggleMute ();
     }
@@ -375,7 +375,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected void handleSoloButton (final int playedPad)
     {
-        this.surface.setButtonConsumed (this.surface.getSoloButtonId ());
+        this.surface.setTriggerConsumed (this.surface.getSoloTriggerId ());
         this.updateNoteMapping ();
         this.model.getInstrumentDevice ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
     }
@@ -397,16 +397,16 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         if (!this.model.canSelectedTrackHoldNotes ())
             return false;
 
-        if (this.surface.isSelectPressed () && !this.surface.isButtonConsumed (this.surface.getSelectButtonId ()))
+        if (this.surface.isSelectPressed () && !this.surface.isTriggerConsumed (this.surface.getSelectTriggerId ()))
             return false;
 
-        if (this.surface.isDeletePressed () && !this.surface.isButtonConsumed (this.surface.getDeleteButtonId ()))
+        if (this.surface.isDeletePressed () && !this.surface.isTriggerConsumed (this.surface.getDeleteTriggerId ()))
             return false;
 
-        if (this.surface.isMutePressed () && !this.surface.isButtonConsumed (this.surface.getMuteButtonId ()))
+        if (this.surface.isMutePressed () && !this.surface.isTriggerConsumed (this.surface.getMuteTriggerId ()))
             return false;
 
-        return !this.surface.isSoloPressed () || this.surface.isButtonConsumed (this.surface.getSoloButtonId ());
+        return !this.surface.isSoloPressed () || this.surface.isTriggerConsumed (this.surface.getSoloTriggerId ());
     }
 
 

@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.command.ContinuousCommandID;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.core.AftertouchCommand;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
@@ -18,7 +20,7 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.KeyManager;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 
@@ -32,26 +34,26 @@ import java.util.Map;
  */
 public abstract class AbstractView<S extends IControlSurface<C>, C extends Configuration> implements View
 {
-    protected static final int []                 EMPTY_TABLE        = Scales.getEmptyMatrix ();
+    protected static final int []                             EMPTY_TABLE        = Scales.getEmptyMatrix ();
 
-    private final String                          name;
+    private final String                                      name;
 
-    protected final S                             surface;
-    protected final IModel                        model;
-    protected final Scales                        scales;
-    protected final KeyManager                    keyManager;
+    protected final S                                         surface;
+    protected final IModel                                    model;
+    protected final Scales                                    scales;
+    protected final KeyManager                                keyManager;
 
-    private AftertouchCommand                     aftertouchCommand;
-    private PitchbendCommand                      pitchbendCommand;
+    private AftertouchCommand                                 aftertouchCommand;
+    private PitchbendCommand                                  pitchbendCommand;
 
-    private final Map<Integer, TriggerCommand>    triggerCommands    = new HashMap<> ();
-    private final Map<Integer, TriggerCommand>    noteCommands       = new HashMap<> ();
-    private final Map<Integer, ContinuousCommand> continuousCommands = new HashMap<> ();
+    private final Map<TriggerCommandID, TriggerCommand>       triggerCommands    = new EnumMap<> (TriggerCommandID.class);
+    private final Map<TriggerCommandID, TriggerCommand>       noteCommands       = new EnumMap<> (TriggerCommandID.class);
+    private final Map<ContinuousCommandID, ContinuousCommand> continuousCommands = new EnumMap<> (ContinuousCommandID.class);
 
-    protected boolean                             canScrollLeft;
-    protected boolean                             canScrollRight;
-    protected boolean                             canScrollUp;
-    protected boolean                             canScrollDown;
+    protected boolean                                         canScrollLeft;
+    protected boolean                                         canScrollRight;
+    protected boolean                                         canScrollUp;
+    protected boolean                                         canScrollDown;
 
 
     /**
@@ -188,7 +190,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public void registerTriggerCommand (final Integer commandID, final TriggerCommand command)
+    public void registerTriggerCommand (final TriggerCommandID commandID, final TriggerCommand command)
     {
         this.triggerCommands.put (commandID, command);
     }
@@ -196,7 +198,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public void executeTriggerCommand (final Integer commandID, final ButtonEvent event)
+    public void executeTriggerCommand (final TriggerCommandID commandID, final ButtonEvent event)
     {
         final TriggerCommand triggerCommand = this.triggerCommands.get (commandID);
         if (triggerCommand != null)
@@ -206,7 +208,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public TriggerCommand getTriggerCommand (final Integer commandID)
+    public TriggerCommand getTriggerCommand (final TriggerCommandID commandID)
     {
         return this.triggerCommands.get (commandID);
     }
@@ -214,7 +216,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public void registerContinuousCommand (final Integer commandID, final ContinuousCommand command)
+    public void registerContinuousCommand (final ContinuousCommandID commandID, final ContinuousCommand command)
     {
         this.continuousCommands.put (commandID, command);
     }
@@ -222,7 +224,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public ContinuousCommand getContinuousCommand (final Integer commandID)
+    public ContinuousCommand getContinuousCommand (final ContinuousCommandID commandID)
     {
         return this.continuousCommands.get (commandID);
     }
@@ -230,7 +232,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public void executeContinuousCommand (final Integer commandID, final int value)
+    public void executeContinuousCommand (final ContinuousCommandID commandID, final int value)
     {
         final ContinuousCommand continuousCommand = this.continuousCommands.get (commandID);
         if (continuousCommand != null)
@@ -240,7 +242,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public void registerNoteCommand (final Integer commandID, final TriggerCommand command)
+    public void registerNoteCommand (final TriggerCommandID commandID, final TriggerCommand command)
     {
         this.noteCommands.put (commandID, command);
     }
@@ -248,7 +250,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public void executeNoteCommand (final Integer commandID, final int value)
+    public void executeNoteCommand (final TriggerCommandID commandID, final int value)
     {
         final TriggerCommand command = this.noteCommands.get (commandID);
         if (command != null)
@@ -258,7 +260,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public TriggerCommand getNoteCommand (final Integer commandID)
+    public TriggerCommand getNoteCommand (final TriggerCommandID commandID)
     {
         return this.noteCommands.get (commandID);
     }

@@ -252,202 +252,6 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
     public static final int         HUI_CLICK                    = 234;
     public static final int         HUI_BEEP                     = 235;
 
-    private static final int []     HUI_BUTTONS_ALL              =
-    {
-        HUI_FADER1,
-        HUI_SELECT1,
-        HUI_MUTE1,
-        HUI_SOLO1,
-        HUI_AUTO1,
-        HUI_VSELECT1,
-        HUI_INSERT1,
-        HUI_ARM1,
-        HUI_FADER2,
-        HUI_SELECT2,
-        HUI_MUTE2,
-        HUI_SOLO2,
-        HUI_AUTO2,
-        HUI_VSELECT2,
-        HUI_INSERT2,
-        HUI_ARM2,
-        HUI_FADER3,
-        HUI_SELECT3,
-        HUI_MUTE3,
-        HUI_SOLO3,
-        HUI_AUTO3,
-        HUI_VSELECT3,
-        HUI_INSERT3,
-        HUI_ARM3,
-        HUI_FADER4,
-        HUI_SELECT4,
-        HUI_MUTE4,
-        HUI_SOLO4,
-        HUI_AUTO4,
-        HUI_VSELECT4,
-        HUI_INSERT4,
-        HUI_ARM4,
-        HUI_FADER5,
-        HUI_SELECT5,
-        HUI_MUTE5,
-        HUI_SOLO5,
-        HUI_AUTO5,
-        HUI_VSELECT5,
-        HUI_INSERT5,
-        HUI_ARM5,
-        HUI_FADER6,
-        HUI_SELECT6,
-        HUI_MUTE6,
-        HUI_SOLO6,
-        HUI_AUTO6,
-        HUI_VSELECT6,
-        HUI_INSERT6,
-        HUI_ARM6,
-        HUI_FADER7,
-        HUI_SELECT7,
-        HUI_MUTE7,
-        HUI_SOLO7,
-        HUI_AUTO7,
-        HUI_VSELECT7,
-        HUI_INSERT7,
-        HUI_ARM7,
-        HUI_FADER8,
-        HUI_SELECT8,
-        HUI_MUTE8,
-        HUI_SOLO8,
-        HUI_AUTO8,
-        HUI_VSELECT8,
-        HUI_INSERT8,
-        HUI_ARM8,
-        HUI_KEY_CTRL_CLT,
-        HUI_KEY_SHIFT_AD,
-        HUI_KEY_EDITMODE,
-        HUI_KEY_UNDO,
-        HUI_KEY_ALT_FINE,
-        HUI_KEY_OPTION_A,
-        HUI_KEY_EDITTOOL,
-        HUI_KEY_SAVE,
-        HUI_WINDOW_MIX,
-        HUI_WINDOW_EDIT,
-        HUI_WINDOW_TRANSPRT,
-        HUI_WINDOW_MEM_LOC,
-        HUI_WINDOW_STATUS,
-        HUI_WINDOW_ALT,
-        HUI_CHANL_LEFT,
-        HUI_BANK_LEFT,
-        HUI_CHANL_RIGHT,
-        HUI_BANK_RIGHT,
-        HUI_ASSIGN1_OUTPUT,
-        HUI_ASSIGN1_INPUT,
-        HUI_ASSIGN1_PAN,
-        HUI_ASSIGN1_SEND_E,
-        HUI_ASSIGN1_SEND_D,
-        HUI_ASSIGN1_SEND_C,
-        HUI_ASSIGN1_SEND_B,
-        HUI_ASSIGN1_SEND_A,
-        HUI_ASSIGN2_ASSIGN,
-        HUI_ASSIGN2_DEFAULT,
-        HUI_ASSIGN2_SUSPEND,
-        HUI_ASSIGN2_SHIFT,
-        HUI_ASSIGN2_MUTE,
-        HUI_ASSIGN2_BYPASS,
-        HUI_ASSIGN2_RECRDYAL,
-        HUI_CURSOR_DOWN,
-        HUI_CURSOR_LEFT,
-        HUI_CURSOR_MODE,
-        HUI_CURSOR_RIGHT,
-        HUI_CURSOR_UP,
-        HUI_WHEEL_SCRUB,
-        HUI_WHEEL_SHUTTLE,
-        HUI_TRANSPORT_TALKBACK,
-        HUI_TRANSPORT_REWIND,
-        HUI_TRANSPORT_FAST_FWD,
-        HUI_TRANSPORT_STOP,
-        HUI_TRANSPORT_PLAY,
-        HUI_TRANSPORT_RECORD,
-        HUI_TRANSPORT_RETURN_TO_ZERO,
-        HUI_TRANSPORT_TO_END,
-        HUI_TRANSPORT_ON_LINE,
-        HUI_TRANSPORT_LOOP,
-        HUI_TRANSPORT_QICK_PUNCH,
-        HUI_TRANSPORT_AUDITION,
-        HUI_TRANSPORT_PRE,
-        HUI_TRANSPORT_IN,
-        HUI_TRANSPORT_OUT,
-        HUI_TRANSPORT_POST,
-        HUI_CONTROL_ROOM_INPUT_3,
-        HUI_CONTROL_ROOM_INPUT_2,
-        HUI_CONTROL_ROOM_INPUT_1,
-        HUI_CONTROL_ROOM_MUTE,
-        HUI_CONTROL_ROOM_DISCRETE,
-        HUI_CONTROL_ROOM_OUTPUT_3,
-        HUI_CONTROL_ROOM_OUTPUT_2,
-        HUI_CONTROL_ROOM_OUTPUT_1,
-        HUI_CONTROL_ROOM_DIM,
-        HUI_CONTROL_ROOM_MONO,
-        HUI_NUM_0,
-        HUI_NUM_1,
-        HUI_NUM_4,
-        HUI_NUM_2,
-        HUI_NUM_5,
-        HUI_NUM_DOT,
-        HUI_NUM_3,
-        HUI_NUM_6,
-        HUI_NUM_ENTER,
-        HUI_NUM_PLUS,
-        HUI_NUM_7,
-        HUI_NUM_8,
-        HUI_NUM_9,
-        HUI_NUM_MINUS,
-        HUI_NUM_CLR,
-        HUI_NUM_SET,
-        HUI_NUM_DIV,
-        HUI_NUM_MULT,
-        HUI_TIMECODE,
-        HUI_FEET,
-        HUI_BEATS,
-        HUI_RUDESOLO,
-        HUI_AUTO_ENABLE_PLUG_IN,
-        HUI_AUTO_ENABLE_PAN,
-        HUI_AUTO_ENABLE_FADER,
-        HUI_AUTO_ENABLE_SENDMUTE,
-        HUI_AUTO_ENABLE_SEND,
-        HUI_AUTO_ENABLE_MUTE,
-        HUI_AUTO_MODE_TRIM,
-        HUI_AUTO_MODE_LATCH,
-        HUI_AUTO_MODE_READ,
-        HUI_AUTO_MODE_OFF,
-        HUI_AUTO_MODE_WRITE,
-        HUI_AUTO_MODE_TOUCH,
-        HUI_STATUS_PHASE,
-        HUI_STATUS_MONITOR,
-        HUI_STATUS_AUTO,
-        HUI_STATUS_SUSPEND,
-        HUI_STATUS_CREATE,
-        HUI_STATUS_GROUP,
-        HUI_EDIT_PASTE,
-        HUI_EDIT_CUT,
-        HUI_EDIT_CAPTURE,
-        HUI_EDIT_DELETE,
-        HUI_EDIT_COPY,
-        HUI_EDIT_SEPARATE,
-        HUI_F1,
-        HUI_F2,
-        HUI_F3,
-        HUI_F4,
-        HUI_F5,
-        HUI_F6,
-        HUI_F7,
-        HUI_F8_ESC,
-        HUI_DSP_EDIT_INS_PARA,
-        HUI_DSP_EDIT_ASSIGN,
-        HUI_DSP_EDIT_SELECT_1,
-        HUI_DSP_EDIT_SELECT_2,
-        HUI_DSP_EDIT_SELECT_3,
-        HUI_DSP_EDIT_SELECT_4,
-        HUI_DSP_EDIT_BYPASS,
-        HUI_DSP_EDIT_COMPARE
-    };
-
     private static final boolean [] HUI_BUTTON_UPDATE;
     static
     {
@@ -489,7 +293,7 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
      */
     public HUIControlSurface (final IHost host, final ColorManager colorManager, final HUIConfiguration configuration, final IMidiOutput output, final IMidiInput input, final IModel model)
     {
-        super (host, configuration, colorManager, output, input, null, HUI_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, null);
 
         this.shiftButtonId = HUI_KEY_SHIFT_AD;
         this.selectButtonId = HUI_KEY_OPTION_A;
@@ -522,12 +326,20 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setButtonEx (int button, int channel, int value)
+    public void setTrigger (int cc, int channel, int value)
     {
         // Select the zone
-        this.output.sendCC (0x0C, button / 8);
+        this.output.sendCC (0x0C, cc / 8);
         // Turn on / off button
-        this.output.sendCC (0x2C, (value > 0 ? 0x40 : 0x00) + button % 8);
+        this.output.sendCC (0x2C, (value > 0 ? 0x40 : 0x00) + cc % 8);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setContinuous (int cc, int channel, int value)
+    {
+        // Intentionally empty
     }
 
 
@@ -618,7 +430,7 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
             case 0x2F:
                 final boolean isDown = data2 >= 0x40;
                 final int cc = this.zone * 8 + data2 % 8;
-                if (this.isButton (cc))
+                if (this.isTrigger (cc))
                     this.handleCC (0, cc, isDown ? 127 : 0);
                 break;
 

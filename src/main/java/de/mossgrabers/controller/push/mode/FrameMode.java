@@ -268,7 +268,7 @@ public class FrameMode extends BaseMode
     public void updateFirstRow ()
     {
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (20 + i, this.getFirstRowButtonState (i) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+            this.surface.updateTrigger (20 + i, this.getFirstRowButtonState (i) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
     }
 
 
@@ -279,7 +279,7 @@ public class FrameMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final int state = this.getSecondRowButtonState (i);
-            this.surface.updateButton (102 + i, state == 1 ? AbstractMode.BUTTON_COLOR2_HI : state == 0 ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF);
+            this.surface.updateTrigger (102 + i, state == 1 ? AbstractMode.BUTTON_COLOR2_HI : state == 0 ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF);
         }
     }
 

@@ -109,9 +109,9 @@ public class RibbonMode extends BaseMode
     {
         final int ribbonMode = this.surface.getConfiguration ().getRibbonMode ();
         for (int i = 0; i < 5; i++)
-            this.surface.updateButton (20 + i, ribbonMode == PushConfiguration.RIBBON_MODE_PITCH + i ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+            this.surface.updateTrigger (20 + i, ribbonMode == PushConfiguration.RIBBON_MODE_PITCH + i ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
         for (int i = 5; i < 8; i++)
-            this.surface.updateButton (20 + i, AbstractMode.BUTTON_COLOR_OFF);
+            this.surface.updateTrigger (20 + i, AbstractMode.BUTTON_COLOR_OFF);
     }
 
 
@@ -133,9 +133,9 @@ public class RibbonMode extends BaseMode
     public void updateSecondRow ()
     {
         for (int i = 0; i < 4; i++)
-            this.surface.updateButton (102 + i, this.isPush2 ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR2_ON);
+            this.surface.updateTrigger (102 + i, this.isPush2 ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR2_ON);
         for (int i = 4; i < 8; i++)
-            this.surface.updateButton (102 + i, AbstractMode.BUTTON_COLOR_OFF);
+            this.surface.updateTrigger (102 + i, AbstractMode.BUTTON_COLOR_OFF);
     }
 
 

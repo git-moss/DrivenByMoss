@@ -6,7 +6,6 @@ package de.mossgrabers.framework.command.core;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -20,15 +19,16 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class NopCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
+    /** The singleton. */
+    public static final NopCommand<?, ?> INSTANCE = new NopCommand<> ();
+
+
     /**
      * Constructor.
-     *
-     * @param model The model
-     * @param surface The surface
      */
-    public NopCommand (final IModel model, final S surface)
+    private NopCommand ()
     {
-        super (model, surface);
+        super (null, null);
     }
 
 

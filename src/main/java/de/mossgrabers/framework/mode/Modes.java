@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.mode;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 
 
@@ -13,173 +13,141 @@ import java.util.Set;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Modes
+public enum Modes
 {
     /** Single Track editing mode. */
-    public static final Integer       MODE_TRACK                = Integer.valueOf (0);
+    MODE_TRACK,
     /** Edit details of one track. */
-    public static final Integer       MODE_TRACK_DETAILS        = Integer.valueOf (1);
+    MODE_TRACK_DETAILS,
     /** Edit volume of all tracks. */
-    public static final Integer       MODE_VOLUME               = Integer.valueOf (2);
-    /** Edit crossfader settings of all tracks. */
-    public static final Integer       MODE_CROSSFADER           = Integer.valueOf (3);
+    MODE_VOLUME,
     /** Edit panorama of all tracks. */
-    public static final Integer       MODE_PAN                  = Integer.valueOf (4);
-    /** Edit Send 1 of all tracks. */
-    public static final Integer       MODE_SEND1                = Integer.valueOf (5);
-    /** Edit Send 2 of all tracks. */
-    public static final Integer       MODE_SEND2                = Integer.valueOf (6);
-    /** Edit Send 3 of all tracks. */
-    public static final Integer       MODE_SEND3                = Integer.valueOf (7);
-    /** Edit Send 4 of all tracks. */
-    public static final Integer       MODE_SEND4                = Integer.valueOf (8);
-    /** Edit Send 5 of all tracks. */
-    public static final Integer       MODE_SEND5                = Integer.valueOf (9);
-    /** Edit Send 6 of all tracks. */
-    public static final Integer       MODE_SEND6                = Integer.valueOf (10);
-    /** Edit Send 7 of all tracks. */
-    public static final Integer       MODE_SEND7                = Integer.valueOf (11);
-    /** Edit Send 8 of all tracks. */
-    public static final Integer       MODE_SEND8                = Integer.valueOf (12);
-    /** Edit Sends of all tracks. */
-    public static final Integer       MODE_SEND                 = Integer.valueOf (13);
+    MODE_PAN,
+    /** Edit crossfader settings of all tracks. */
+    MODE_CROSSFADER,
     /** Mode to arm tracks for recording. */
-    public static final Integer       MODE_REC_ARM              = Integer.valueOf (14);
+    MODE_REC_ARM,
     /** Mode to select tracks. */
-    public static final Integer       MODE_TRACK_SELECT         = Integer.valueOf (15);
+    MODE_TRACK_SELECT,
     /** Mode to mute tracks. */
-    public static final Integer       MODE_MUTE                 = Integer.valueOf (16);
+    MODE_MUTE,
     /** Mode to solo tracks. */
-    public static final Integer       MODE_SOLO                 = Integer.valueOf (17);
+    MODE_SOLO,
     /** Mode to stop clips. */
-    public static final Integer       MODE_STOP_CLIP            = Integer.valueOf (18);
+    MODE_STOP_CLIP,
+
+    /** Edit Send 1 of all tracks. */
+    MODE_SEND1,
+    /** Edit Send 2 of all tracks. */
+    MODE_SEND2,
+    /** Edit Send 3 of all tracks. */
+    MODE_SEND3,
+    /** Edit Send 4 of all tracks. */
+    MODE_SEND4,
+    /** Edit Send 5 of all tracks. */
+    MODE_SEND5,
+    /** Edit Send 6 of all tracks. */
+    MODE_SEND6,
+    /** Edit Send 7 of all tracks. */
+    MODE_SEND7,
+    /** Edit Send 8 of all tracks. */
+    MODE_SEND8,
+    /** Edit Sends of all tracks. */
+    MODE_SEND,
 
     /** Edit master track. */
-    public static final Integer       MODE_MASTER               = Integer.valueOf (19);
+    MODE_MASTER,
     /** Edit master track (temporary). */
-    public static final Integer       MODE_MASTER_TEMP          = Integer.valueOf (20);
+    MODE_MASTER_TEMP,
 
     /** Edit device parameters. */
-    public static final Integer       MODE_DEVICE_PARAMS        = Integer.valueOf (21);
+    MODE_DEVICE_PARAMS,
+
     /** Edit layer parameters. */
-    public static final Integer       MODE_DEVICE_LAYER         = Integer.valueOf (22);
+    MODE_DEVICE_LAYER,
     /** Edit volume of all layers. */
-    public static final Integer       MODE_DEVICE_LAYER_VOLUME  = Integer.valueOf (23);
+    MODE_DEVICE_LAYER_VOLUME,
     /** Edit panorama of all layers. */
-    public static final Integer       MODE_DEVICE_LAYER_PAN     = Integer.valueOf (24);
+    MODE_DEVICE_LAYER_PAN,
     /** Edit Send 1 of all layers. */
-    public static final Integer       MODE_DEVICE_LAYER_SEND1   = Integer.valueOf (25);
+    MODE_DEVICE_LAYER_SEND1,
     /** Edit Send 2 of all layers. */
-    public static final Integer       MODE_DEVICE_LAYER_SEND2   = Integer.valueOf (26);
+    MODE_DEVICE_LAYER_SEND2,
     /** Edit Send 3 of all layers. */
-    public static final Integer       MODE_DEVICE_LAYER_SEND3   = Integer.valueOf (27);
+    MODE_DEVICE_LAYER_SEND3,
     /** Edit Send 4 of all layers. */
-    public static final Integer       MODE_DEVICE_LAYER_SEND4   = Integer.valueOf (28);
+    MODE_DEVICE_LAYER_SEND4,
     /** Edit Send 5 of all layers. */
-    public static final Integer       MODE_DEVICE_LAYER_SEND5   = Integer.valueOf (29);
+    MODE_DEVICE_LAYER_SEND5,
     /** Edit Send 6 of all layers. */
-    public static final Integer       MODE_DEVICE_LAYER_SEND6   = Integer.valueOf (30);
+    MODE_DEVICE_LAYER_SEND6,
     /** Edit Send 7 of all layers. */
-    public static final Integer       MODE_DEVICE_LAYER_SEND7   = Integer.valueOf (31);
+    MODE_DEVICE_LAYER_SEND7,
     /** Edit Send 8 of all layers. */
-    public static final Integer       MODE_DEVICE_LAYER_SEND8   = Integer.valueOf (32);
+    MODE_DEVICE_LAYER_SEND8,
     /** Edit Sends of all layers. */
-    public static final Integer       MODE_DEVICE_LAYER_SEND    = Integer.valueOf (33);
+    MODE_DEVICE_LAYER_SEND,
     /** Edit layer details. */
-    public static final Integer       MODE_DEVICE_LAYER_DETAILS = Integer.valueOf (34);
+    MODE_DEVICE_LAYER_DETAILS,
 
     /** Browser mode. */
-    public static final Integer       MODE_BROWSER              = Integer.valueOf (35);
+    MODE_BROWSER,
 
     /** Edit clip parameters. */
-    public static final Integer       MODE_CLIP                 = Integer.valueOf (36);
+    MODE_CLIP,
     /** Edit note parameters. */
-    public static final Integer       MODE_NOTE                 = Integer.valueOf (37);
+    MODE_NOTE,
 
     /** Show/hide different frames. */
-    public static final Integer       MODE_FRAME                = Integer.valueOf (38);
+    MODE_FRAME,
     /** Groove edit mode. */
-    public static final Integer       MODE_GROOVE               = Integer.valueOf (39);
+    MODE_GROOVE,
     /** Edit accent parameters. */
-    public static final Integer       MODE_ACCENT               = Integer.valueOf (40);
+    MODE_ACCENT,
     /** Scale configuration. */
-    public static final Integer       MODE_SCALES               = Integer.valueOf (41);
+    MODE_SCALES,
     /** Scale layout mode. */
-    public static final Integer       MODE_SCALE_LAYOUT         = Integer.valueOf (42);
+    MODE_SCALE_LAYOUT,
     /** Pick length of new clips. */
-    public static final Integer       MODE_FIXED                = Integer.valueOf (43);
+    MODE_FIXED,
     /** Edit ribbon parameters. */
-    public static final Integer       MODE_RIBBON               = Integer.valueOf (44);
+    MODE_RIBBON,
     /** Select a view for a track. */
-    public static final Integer       MODE_VIEW_SELECT          = Integer.valueOf (45);
+    MODE_VIEW_SELECT,
     /** Edit automation parameters. */
-    public static final Integer       MODE_AUTOMATION           = Integer.valueOf (46);
+    MODE_AUTOMATION,
     /** Transport mode. */
-    public static final Integer       MODE_TRANSPORT            = Integer.valueOf (47);
+    MODE_TRANSPORT,
     /** Configuration mode. */
-    public static final Integer       MODE_CONFIGURATION        = Integer.valueOf (48);
+    MODE_CONFIGURATION,
     /** Setup mode. */
-    public static final Integer       MODE_SETUP                = Integer.valueOf (49);
+    MODE_SETUP,
     /** Info mode. */
-    public static final Integer       MODE_INFO                 = Integer.valueOf (50);
+    MODE_INFO,
     /** Select of session views. */
-    public static final Integer       MODE_SESSION_VIEW_SELECT  = Integer.valueOf (51);
+    MODE_SESSION_VIEW_SELECT,
     /** Session mode. */
-    public static final Integer       MODE_SESSION              = Integer.valueOf (52);
+    MODE_SESSION,
     /** Markers mode. */
-    public static final Integer       MODE_MARKERS              = Integer.valueOf (53);
+    MODE_MARKERS,
     /** Repeat note length mode. */
-    public static final Integer       MODE_REPEAT_NOTE          = Integer.valueOf (54);
+    MODE_REPEAT_NOTE,
     /** Execute different functions. */
-    public static final Integer       MODE_FUNCTIONS            = Integer.valueOf (55);
+    MODE_FUNCTIONS,
     /** Edit play options. */
-    public static final Integer       MODE_PLAY_OPTIONS         = Integer.valueOf (56);
+    MODE_PLAY_OPTIONS,
     /** Play cursor position mode. */
-    public static final Integer       MODE_POSITION             = Integer.valueOf (57);
+    MODE_POSITION,
     /** Tempo mode. */
-    public static final Integer       MODE_TEMPO                = Integer.valueOf (58);
+    MODE_TEMPO;
 
-    private static final Set<Integer> TRACK_MODES               = new HashSet<> ();
-    private static final Set<Integer> LAYER_MODES               = new HashSet<> ();
-    private static final Set<Integer> SEND_MODES                = new HashSet<> ();
+    private static final Set<Modes> TRACK_MODES = EnumSet.range (Modes.MODE_TRACK, Modes.MODE_STOP_CLIP);
+    private static final Set<Modes> LAYER_MODES = EnumSet.range (Modes.MODE_DEVICE_LAYER, Modes.MODE_DEVICE_LAYER_DETAILS);
+    private static final Set<Modes> SEND_MODES  = EnumSet.range (Modes.MODE_SEND1, Modes.MODE_SEND);
 
     static
     {
-        SEND_MODES.add (MODE_SEND1);
-        SEND_MODES.add (MODE_SEND2);
-        SEND_MODES.add (MODE_SEND3);
-        SEND_MODES.add (MODE_SEND4);
-        SEND_MODES.add (MODE_SEND5);
-        SEND_MODES.add (MODE_SEND6);
-        SEND_MODES.add (MODE_SEND7);
-        SEND_MODES.add (MODE_SEND8);
-        SEND_MODES.add (MODE_SEND);
-
-        TRACK_MODES.add (MODE_TRACK);
-        TRACK_MODES.add (MODE_VOLUME);
-        TRACK_MODES.add (MODE_PAN);
-        TRACK_MODES.add (MODE_CROSSFADER);
-        TRACK_MODES.add (MODE_TRACK_DETAILS);
-        TRACK_MODES.add (MODE_REC_ARM);
-        TRACK_MODES.add (MODE_TRACK_SELECT);
-        TRACK_MODES.add (MODE_MUTE);
-        TRACK_MODES.add (MODE_SOLO);
-        TRACK_MODES.add (MODE_STOP_CLIP);
         TRACK_MODES.addAll (SEND_MODES);
-
-        LAYER_MODES.add (MODE_DEVICE_LAYER);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_VOLUME);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_PAN);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_SEND1);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_SEND2);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_SEND3);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_SEND4);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_SEND5);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_SEND6);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_SEND7);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_SEND8);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_SEND);
-        LAYER_MODES.add (MODE_DEVICE_LAYER_DETAILS);
     }
 
 
@@ -198,7 +166,7 @@ public class Modes
      * @param modeId The mode ID to test
      * @return True if it is a send mode
      */
-    public static boolean isSendMode (final Integer modeId)
+    public static boolean isSendMode (final Modes modeId)
     {
         return SEND_MODES.contains (modeId);
     }
@@ -210,7 +178,7 @@ public class Modes
      * @param modeId The mode ID to test
      * @return True if it is a track mode
      */
-    public static boolean isTrackMode (final Integer modeId)
+    public static boolean isTrackMode (final Modes modeId)
     {
         return TRACK_MODES.contains (modeId);
     }
@@ -222,7 +190,7 @@ public class Modes
      * @param modeId The mode ID to test
      * @return True if it is a device layer mode
      */
-    public static boolean isLayerMode (final Integer modeId)
+    public static boolean isLayerMode (final Modes modeId)
     {
         return LAYER_MODES.contains (modeId);
     }
@@ -234,8 +202,21 @@ public class Modes
      * @param modeId The mode ID to test
      * @return True if it is a device mode
      */
-    public static boolean isDeviceMode (final Integer modeId)
+    public static boolean isDeviceMode (final Modes modeId)
     {
-        return LAYER_MODES.contains (modeId) || MODE_DEVICE_PARAMS.equals (modeId);
+        return LAYER_MODES.contains (modeId) || MODE_DEVICE_PARAMS == modeId;
+    }
+
+
+    /**
+     * Get an offset mode.
+     *
+     * @param mode The base mode
+     * @param offset The offset
+     * @return The offset mode
+     */
+    public static Modes get (final Modes mode, final int offset)
+    {
+        return Modes.values ()[mode.ordinal () + offset];
     }
 }

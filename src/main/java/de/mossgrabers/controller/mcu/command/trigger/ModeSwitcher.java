@@ -36,18 +36,18 @@ public class ModeSwitcher
     public void scrollUp ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveOrTempModeId ();
-        if (Modes.MODE_PAN.equals (activeModeId))
+        final Modes activeModeId = modeManager.getActiveOrTempModeId ();
+        if (Modes.MODE_PAN == activeModeId)
         {
             modeManager.setActiveMode (Modes.MODE_VOLUME);
             this.surface.getDisplay ().notify ("Volume");
         }
-        else if (Modes.MODE_VOLUME.equals (activeModeId))
+        else if (Modes.MODE_VOLUME == activeModeId)
         {
             modeManager.setActiveMode (Modes.MODE_TRACK);
             this.surface.getDisplay ().notify ("Track");
         }
-        else if (Modes.MODE_TRACK.equals (activeModeId))
+        else if (Modes.MODE_TRACK == activeModeId)
         {
             modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);
             this.surface.getDisplay ().notify ("Parameters");
@@ -66,18 +66,18 @@ public class ModeSwitcher
     public void scrollDown ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveOrTempModeId ();
-        if (Modes.MODE_PAN.equals (activeModeId))
+        final Modes activeModeId = modeManager.getActiveOrTempModeId ();
+        if (Modes.MODE_PAN == activeModeId)
         {
             modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);
             this.surface.getDisplay ().notify ("Parameters");
         }
-        else if (Modes.MODE_VOLUME.equals (activeModeId))
+        else if (Modes.MODE_VOLUME == activeModeId)
         {
             modeManager.setActiveMode (Modes.MODE_PAN);
             this.surface.getDisplay ().notify ("Panorama");
         }
-        else if (Modes.MODE_TRACK.equals (activeModeId))
+        else if (Modes.MODE_TRACK == activeModeId)
         {
             modeManager.setActiveMode (Modes.MODE_VOLUME);
             this.surface.getDisplay ().notify ("Volume");

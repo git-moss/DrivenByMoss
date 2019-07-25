@@ -92,15 +92,15 @@ public class ParamsMode extends AbstractKontrol1Mode
         final boolean canScrollUp = cursorDevice.canSelectNextFX ();
         final boolean canScrollDown = cursorDevice.canSelectPreviousFX ();
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, canScrollUp ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, canScrollDown ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, canScrollUp ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, canScrollDown ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BACK, cursorDevice.isEnabled () ? Kontrol1Colors.BUTTON_STATE_ON : Kontrol1Colors.BUTTON_STATE_OFF);
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_ENTER, cursorDevice.isParameterPageSectionVisible () ? Kontrol1Colors.BUTTON_STATE_ON : Kontrol1Colors.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_BACK, cursorDevice.isEnabled () ? Kontrol1Colors.BUTTON_STATE_ON : Kontrol1Colors.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_ENTER, cursorDevice.isParameterPageSectionVisible () ? Kontrol1Colors.BUTTON_STATE_ON : Kontrol1Colors.BUTTON_STATE_OFF);
 
-        this.surface.updateButton (Kontrol1ControlSurface.BUTTON_BROWSE, Kontrol1Colors.BUTTON_STATE_ON);
+        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_BROWSE, Kontrol1Colors.BUTTON_STATE_ON);
 
     }
 

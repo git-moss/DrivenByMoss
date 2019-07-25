@@ -112,7 +112,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode<> (surface, this.model, true));
         modeManager.registerMode (Modes.MODE_PAN, new PanMode<> (surface, this.model, true));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SendMode<> (i, surface, this.model, true));
+            modeManager.registerMode (Modes.get (Modes.MODE_SEND1, i), new SendMode<> (i, surface, this.model, true));
         modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
         modeManager.registerMode (Modes.MODE_BROWSER, new BrowserMode<> (surface, this.model));
 
@@ -178,7 +178,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         if (selectedModeName == null)
             return;
         final GenericFlexiControlSurface surface = this.getSurface ();
-        final Integer modeID = surface.getModeManager ().getMode (selectedModeName);
+        final Modes modeID = surface.getModeManager ().getMode (selectedModeName);
         if (modeID != null)
             surface.activateMode (modeID);
     }
@@ -186,7 +186,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
     /** {@inheritDoc} */
     @Override
-    protected void updateIndication (final Integer mode)
+    protected void updateIndication (final Modes mode)
     {
         final Set<FlexiCommand> commands = this.configuration.getMappedCommands ();
         final FlexiCommand [] allCommands = FlexiCommand.values ();
@@ -248,7 +248,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         }
         if (commands.contains (allCommands[FlexiCommand.TRACK_1_SET_SEND_1.ordinal () + sendIndex * sendPageSize + trackIndex]))
             return true;
-        return modeManager.isActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + sendIndex));
+        return modeManager.isActiveMode (Modes.get (Modes.MODE_SEND1, sendIndex));
     }
 
 

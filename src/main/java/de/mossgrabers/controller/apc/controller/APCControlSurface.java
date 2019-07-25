@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.apc.controller;
 
 import de.mossgrabers.controller.apc.APCConfiguration;
+import de.mossgrabers.framework.command.ContinuousCommandID;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
@@ -110,53 +111,6 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
     public static final int         APC_FOOTSWITCH_1           = 0x40;
     public static final int         APC_FOOTSWITCH_2           = 0x43;
 
-    public static final int []      APC_BUTTONS_ALL            =
-    {
-        APC_BUTTON_RECORD_ARM,
-        APC_BUTTON_SOLO,
-        APC_BUTTON_ACTIVATOR,
-        APC_BUTTON_TRACK_SELECTION,
-        APC_BUTTON_CLIP_STOP,
-        APC_BUTTON_CLIP_LAUNCH_1,
-        APC_BUTTON_CLIP_LAUNCH_2,
-        APC_BUTTON_CLIP_LAUNCH_3,
-        APC_BUTTON_CLIP_LAUNCH_4,
-        APC_BUTTON_CLIP_LAUNCH_5,
-        APC_BUTTON_CLIP_TRACK,
-        APC_BUTTON_DEVICE_ON_OFF,
-        APC_BUTTON_DEVICE_LEFT,
-        APC_BUTTON_DEVICE_RIGHT,
-        APC_BUTTON_DETAIL_VIEW,
-        APC_BUTTON_REC_QUANT,
-        APC_BUTTON_MIDI_OVERDUB,
-        APC_BUTTON_METRONOME,
-        APC_BUTTON_A_B,
-        APC_BUTTON_MASTER,
-        APC_BUTTON_STOP_ALL_CLIPS,
-        APC_BUTTON_SCENE_LAUNCH_1,
-        APC_BUTTON_SCENE_LAUNCH_2,
-        APC_BUTTON_SCENE_LAUNCH_3,
-        APC_BUTTON_SCENE_LAUNCH_4,
-        APC_BUTTON_SCENE_LAUNCH_5,
-        APC_BUTTON_PAN,
-        APC_BUTTON_SEND_A,
-        APC_BUTTON_SEND_B,
-        APC_BUTTON_SEND_C,
-        APC_BUTTON_PLAY,
-        APC_BUTTON_STOP,
-        APC_BUTTON_RECORD,
-        APC_BUTTON_UP,
-        APC_BUTTON_DOWN,
-        APC_BUTTON_RIGHT,
-        APC_BUTTON_LEFT,
-        APC_BUTTON_SHIFT,
-        APC_BUTTON_TAP_TEMPO,
-        APC_BUTTON_NUDGE_PLUS,
-        APC_BUTTON_NUDGE_MINUS,
-        APC_BUTTON_SESSION,
-        APC_BUTTON_BANK
-    };
-
     private static final boolean [] APC_BUTTON_UPDATE;
     static
     {
@@ -204,7 +158,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
      */
     public APCControlSurface (final IHost host, final ColorManager colorManager, final APCConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isMkII)
     {
-        super (host, configuration, colorManager, output, input, new APCPadGrid (colorManager, output, isMkII), APC_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, new APCPadGrid (colorManager, output, isMkII));
 
         this.isMkII = isMkII;
 
@@ -243,7 +197,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public int getSceneButton (final int index)
+    public int getSceneTrigger (final int index)
     {
         return APC_BUTTON_SCENE_LAUNCH_1 + index;
     }
@@ -251,17 +205,17 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setButton (final int button, final int state)
+    public void setTrigger (final int cc, final int channel, final int state)
     {
-        this.output.sendNote (button, state);
+        this.output.sendNoteEx (channel, cc, state);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setButtonEx (final int button, final int channel, final int state)
+    public void setContinuous (final int cc, final int channel, final int state)
     {
-        this.output.sendNoteEx (channel, button, state);
+        this.output.sendNoteEx (channel, cc, state);
     }
 
 
@@ -309,7 +263,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
                 final View view = this.viewManager.getActiveView ();
                 if (view == null)
                     return;
-                final Integer commandID = this.getContinuousCommand (data1, channel);
+                final ContinuousCommandID commandID = this.getContinuousCommand (data1, channel);
                 if (commandID != null)
                     view.executeContinuousCommand (commandID, data2);
                 if (data1 == APCControlSurface.APC_FOOTSWITCH_2)

@@ -9,7 +9,7 @@ import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.controller.push.mode.BaseMode;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
@@ -67,28 +67,28 @@ public abstract class AbstractTrackMode extends BaseMode
         {
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
             {
-                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
+                this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
                 track.duplicate ();
                 return;
             }
 
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DELETE))
             {
-                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+                this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
                 track.remove ();
                 return;
             }
 
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
             {
-                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_CLIP_STOP);
+                this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_CLIP_STOP);
                 track.stop ();
                 return;
             }
 
             if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_RECORD))
             {
-                this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_RECORD);
+                this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_RECORD);
                 track.toggleRecArm ();
                 return;
             }
@@ -101,7 +101,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 if (selTrack.isGroup ())
                     selTrack.enter ();
                 else
-                    this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_DEVICE, ButtonEvent.DOWN);
+                    this.surface.getViewManager ().getActiveView ().executeTriggerCommand (TriggerCommandID.DEVICE, ButtonEvent.DOWN);
             }
             else
                 track.select ();
@@ -112,7 +112,7 @@ public abstract class AbstractTrackMode extends BaseMode
         if (!this.model.isEffectTrackBankActive ())
         {
             this.model.getTrackBank ().selectParent ();
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_ROW1_1 + index);
+            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_ROW1_1 + index);
         }
     }
 
@@ -174,7 +174,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 {
                     config.setSendsAreToggled (!config.isSendsAreToggled ());
                     if (!modeManager.isActiveOrTempMode (Modes.MODE_TRACK))
-                        modeManager.setActiveMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + (config.isSendsAreToggled () ? 4 : 0)));
+                        modeManager.setActiveMode (Modes.get (Modes.MODE_SEND1, (config.isSendsAreToggled () ? 4 : 0)));
                 }
                 break;
 
@@ -207,7 +207,7 @@ public abstract class AbstractTrackMode extends BaseMode
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         if (tb == null || !tb.canEditSend (sendIndex))
             return;
-        final Integer si = Integer.valueOf (Modes.MODE_SEND1.intValue () + sendIndex);
+        final Modes si = Modes.get (Modes.MODE_SEND1, sendIndex);
         final ModeManager modeManager = this.surface.getModeManager ();
         modeManager.setActiveMode (modeManager.isActiveOrTempMode (si) ? Modes.MODE_TRACK : si);
     }
@@ -220,7 +220,7 @@ public abstract class AbstractTrackMode extends BaseMode
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         // Light up selection and record buttons
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (20 + i, this.getTrackButtonColor (tb.getItem (i)));
+            this.surface.updateTrigger (20 + i, this.getTrackButtonColor (tb.getItem (i)));
     }
 
 
@@ -237,7 +237,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 for (int i = 0; i < 8; i++)
                 {
                     final ITrack track = tb.getItem (i);
-                    this.surface.updateButton (102 + i, track.doesExist () && track.isPlaying () ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH2_COLOR_BLACK);
+                    this.surface.updateTrigger (102 + i, track.doesExist () && track.isPlaying () ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH2_COLOR_BLACK);
                 }
                 return;
             }
@@ -246,23 +246,23 @@ public abstract class AbstractTrackMode extends BaseMode
             {
                 final boolean muteState = config.isMuteState ();
                 for (int i = 0; i < 8; i++)
-                    this.surface.updateButton (102 + i, this.getTrackStateColor (muteState, tb.getItem (i)));
+                    this.surface.updateTrigger (102 + i, this.getTrackStateColor (muteState, tb.getItem (i)));
                 return;
             }
 
             final ModeManager modeManager = this.surface.getModeManager ();
-            this.surface.updateButton (102, modeManager.isActiveOrTempMode (Modes.MODE_VOLUME) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (103, modeManager.isActiveOrTempMode (Modes.MODE_PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (104, modeManager.isActiveOrTempMode (Modes.MODE_CROSSFADER) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (105, PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (102, modeManager.isActiveOrTempMode (Modes.MODE_VOLUME) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (103, modeManager.isActiveOrTempMode (Modes.MODE_PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (104, modeManager.isActiveOrTempMode (Modes.MODE_CROSSFADER) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (105, PushColors.PUSH2_COLOR_BLACK);
             final boolean sendsAreToggled = config.isSendsAreToggled ();
-            this.surface.updateButton (106, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND5 : Modes.MODE_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (107, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND6 : Modes.MODE_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateButton (108, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND7 : Modes.MODE_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (106, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND5 : Modes.MODE_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (107, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND6 : Modes.MODE_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (108, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND7 : Modes.MODE_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             if (this.surface.isShiftPressed ())
-                this.surface.updateButton (109, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND8 : Modes.MODE_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+                this.surface.updateTrigger (109, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND8 : Modes.MODE_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             else
-                this.surface.updateButton (109, tb.hasParent () ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+                this.surface.updateTrigger (109, tb.hasParent () ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             return;
         }
 
@@ -283,7 +283,7 @@ public abstract class AbstractTrackMode extends BaseMode
                     color = t.isSolo () ? PushColors.PUSH1_COLOR2_BLUE_HI : PushColors.PUSH1_COLOR2_GREY_LO;
             }
 
-            this.surface.updateButton (102 + i, color);
+            this.surface.updateTrigger (102 + i, color);
         }
     }
 

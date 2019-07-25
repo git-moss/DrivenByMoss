@@ -27,7 +27,7 @@ public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Config
 {
     private final boolean moveLeft;
     private final boolean moveBy1;
-    private final Integer deviceMode;
+    private final Modes   deviceMode;
 
 
     /**
@@ -39,7 +39,7 @@ public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Config
      * @param moveBy1 If true the bank window moves by 1 otherwise by 8
      * @param moveLeft If true the bank window is moved left otherwise to the right
      */
-    public MoveTrackBankCommand (final IModel model, final S surface, final Integer deviceMode, final boolean moveBy1, final boolean moveLeft)
+    public MoveTrackBankCommand (final IModel model, final S surface, final Modes deviceMode, final boolean moveBy1, final boolean moveLeft)
     {
         super (model, surface);
         this.deviceMode = deviceMode;

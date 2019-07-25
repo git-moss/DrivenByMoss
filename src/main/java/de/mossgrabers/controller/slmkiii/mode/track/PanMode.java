@@ -61,7 +61,7 @@ public class PanMode extends AbstractTrackMode
             if (t.doesExist ())
                 d.setCell (0, i, "Pan").setCell (1, i, t.getPanStr (9));
 
-            this.surface.updateButtonEx (SLMkIIIControlSurface.MKIII_KNOB_1 + i, 15, valueChanger.toMidiValue (t.getPan ()));
+            this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_KNOB_1 + i, 15, valueChanger.toMidiValue (t.getPan ()));
             this.setColumnColors (d, i, t, SLMkIIIColors.SLMKIII_AMBER);
         }
 

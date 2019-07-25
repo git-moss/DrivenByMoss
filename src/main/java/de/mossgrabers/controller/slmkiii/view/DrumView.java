@@ -161,8 +161,8 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
     @Override
     public void updateSceneButtons ()
     {
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_SCENE_1, this.isPlayMode ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_BLUE);
-        this.surface.updateButton (SLMkIIIControlSurface.MKIII_SCENE_2, this.surface.getModeManager ().isActiveOrTempMode (Modes.MODE_GROOVE) ? SLMkIIIColors.SLMKIII_PINK : SLMkIIIColors.SLMKIII_DARK_GREY);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_1, this.isPlayMode ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_BLUE);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_2, this.surface.getModeManager ().isActiveOrTempMode (Modes.MODE_GROOVE) ? SLMkIIIColors.SLMKIII_PINK : SLMkIIIColors.SLMKIII_DARK_GREY);
     }
 
 

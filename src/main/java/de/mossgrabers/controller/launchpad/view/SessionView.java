@@ -68,9 +68,9 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
     protected void delayedUpdateArrowButtons ()
     {
-        this.surface.setButton (this.surface.getSessionButton (), LaunchpadColors.LAUNCHPAD_COLOR_LIME);
-        this.surface.setButton (this.surface.getNoteButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        this.surface.setButton (this.surface.getDeviceButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        this.surface.setTrigger (this.surface.getSessionButton (), LaunchpadColors.LAUNCHPAD_COLOR_LIME);
+        this.surface.setTrigger (this.surface.getNoteButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        this.surface.setTrigger (this.surface.getDeviceButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
     }
 
 
@@ -79,7 +79,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     public void onGridNote (final int note, final int velocity)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer activeModeId = modeManager.getActiveOrTempModeId ();
+        final Modes activeModeId = modeManager.getActiveOrTempModeId ();
         // Block 1st row if mode is active
         final boolean isNotRow1 = note >= 44;
         if (activeModeId == null || isNotRow1)
@@ -97,7 +97,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             // Duplicate a clip
             if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
             {
-                this.surface.setButtonConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
+                this.surface.setTriggerConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
                 final ITrackBank tb = this.model.getCurrentTrackBank ();
                 final ITrack track = tb.getItem (t);
                 if (track.doesExist ())
@@ -121,7 +121,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void drawGrid ()
     {
-        final Integer controlMode = this.surface.getModeManager ().getActiveOrTempModeId ();
+        final Modes controlMode = this.surface.getModeManager ().getActiveOrTempModeId ();
         final boolean controlModeIsOff = controlMode == null;
         this.rows = controlModeIsOff ? 8 : 7;
         this.columns = 8;
@@ -172,9 +172,9 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         {
             final IScene scene = sceneBank.getItem (i);
             if (scene.doesExist ())
-                this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1 - i * 10, DAWColors.getColorIndex (scene.getColor ()));
+                this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1 - i * 10, DAWColors.getColorIndex (scene.getColor ()));
             else
-                this.surface.setButton (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1 - i * 10, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+                this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1 - i * 10, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
         }
     }
 
@@ -201,7 +201,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
                 final ITrack selectedTrack = this.model.getSelectedTrack ();
                 if (selectedTrack == null)
                     return;
-                final Integer viewId = viewManager.getPreferredView (selectedTrack.getPosition ());
+                final Views viewId = viewManager.getPreferredView (selectedTrack.getPosition ());
                 viewManager.setActiveView (viewId == null ? Views.VIEW_PLAY : viewId);
                 break;
 
@@ -248,7 +248,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
         if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
         {
-            this.surface.setButtonConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
+            this.surface.setTriggerConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
             track.duplicate ();
             return;
         }

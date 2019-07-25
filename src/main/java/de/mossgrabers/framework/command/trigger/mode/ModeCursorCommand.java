@@ -97,21 +97,21 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
         final int buttonOnColor = this.getButtonOnColor ();
         final int buttonOffColor = this.getButtonOffColor ();
 
-        final int leftButtonId = this.surface.getLeftButtonId ();
+        final int leftButtonId = this.surface.getLeftTriggerId ();
         if (leftButtonId >= 0)
-            this.surface.updateButton (leftButtonId, this.canScrollLeft ? buttonOnColor : buttonOffColor);
+            this.surface.updateTrigger (leftButtonId, this.canScrollLeft ? buttonOnColor : buttonOffColor);
 
-        final int rightButtonId = this.surface.getRightButtonId ();
+        final int rightButtonId = this.surface.getRightTriggerId ();
         if (rightButtonId >= 0)
-            this.surface.updateButton (rightButtonId, this.canScrollRight ? buttonOnColor : buttonOffColor);
+            this.surface.updateTrigger (rightButtonId, this.canScrollRight ? buttonOnColor : buttonOffColor);
 
-        final int upButtonId = this.surface.getUpButtonId ();
+        final int upButtonId = this.surface.getUpTriggerId ();
         if (upButtonId >= 0)
-            this.surface.updateButton (upButtonId, this.canScrollUp ? buttonOnColor : buttonOffColor);
+            this.surface.updateTrigger (upButtonId, this.canScrollUp ? buttonOnColor : buttonOffColor);
 
-        final int downButtonId = this.surface.getDownButtonId ();
+        final int downButtonId = this.surface.getDownTriggerId ();
         if (downButtonId >= 0)
-            this.surface.updateButton (downButtonId, this.canScrollDown ? buttonOnColor : buttonOffColor);
+            this.surface.updateTrigger (downButtonId, this.canScrollDown ? buttonOnColor : buttonOffColor);
     }
 
 

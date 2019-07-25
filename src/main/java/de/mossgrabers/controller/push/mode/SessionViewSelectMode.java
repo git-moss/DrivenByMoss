@@ -26,7 +26,7 @@ import de.mossgrabers.framework.view.Views;
 public class SessionViewSelectMode extends BaseMode
 {
     /** The views to choose from. */
-    private static final Integer [] VIEWS      =
+    private static final Views []  VIEWS      =
     {
         Views.VIEW_SESSION,
         Views.VIEW_SESSION,
@@ -36,7 +36,7 @@ public class SessionViewSelectMode extends BaseMode
     };
 
     /** The views to choose from. */
-    private static final String []  VIEW_NAMES =
+    private static final String [] VIEW_NAMES =
     {
         "Session",
         "Flipped",
@@ -142,16 +142,16 @@ public class SessionViewSelectMode extends BaseMode
         final ColorManager colorManager = this.model.getColorManager ();
         final ViewManager viewManager = this.surface.getViewManager ();
         for (int i = 0; i < VIEWS.length; i++)
-            this.surface.updateButton (20 + i, colorManager.getColor (VIEWS[i] == null ? AbstractMode.BUTTON_COLOR_OFF : this.isSelected (viewManager, i) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+            this.surface.updateTrigger (20 + i, colorManager.getColor (VIEWS[i] == null ? AbstractMode.BUTTON_COLOR_OFF : this.isSelected (viewManager, i) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
 
-        this.surface.updateButton (25, AbstractMode.BUTTON_COLOR_OFF);
-        this.surface.updateButton (26, AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateTrigger (25, AbstractMode.BUTTON_COLOR_OFF);
+        this.surface.updateTrigger (26, AbstractMode.BUTTON_COLOR_ON);
         final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
-        this.surface.updateButton (27, isOn ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        this.surface.updateTrigger (27, isOn ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
     }
 
 
-    private void activateView (final Integer viewID)
+    private void activateView (final Views viewID)
     {
         if (viewID == null)
             return;

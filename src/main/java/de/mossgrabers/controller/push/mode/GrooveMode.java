@@ -66,7 +66,7 @@ public class GrooveMode extends BaseMode
         final IParameter [] parameters = this.model.getGroove ().getParameters ();
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             if (index == 0)
                 this.surface.getConfiguration ().resetQuantizeAmount ();
             else if (index > 1 && index - 2 < parameters.length)

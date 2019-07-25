@@ -50,7 +50,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         }
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Integer currentMode = modeManager.getActiveOrTempModeId ();
+        final Modes currentMode = modeManager.getActiveOrTempModeId ();
 
         if (currentMode != null)
         {
@@ -60,7 +60,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
                 {
                     this.model.toggleCurrentTrackBank ();
                 }
-                else if (currentMode.intValue () >= Modes.MODE_SEND1.intValue () && currentMode.intValue () <= Modes.MODE_SEND8.intValue ())
+                else if (currentMode.ordinal () >= Modes.MODE_SEND1.ordinal () && currentMode.ordinal () <= Modes.MODE_SEND8.ordinal ())
                 {
                     modeManager.setActiveMode (Modes.MODE_TRACK);
                     this.model.toggleCurrentTrackBank ();

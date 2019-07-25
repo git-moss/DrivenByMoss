@@ -84,78 +84,6 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public static final int      LAUNCHPAD_BUTTON_STATE_ON          = 1;
     public static final int      LAUNCHPAD_BUTTON_STATE_HI          = 4;
 
-    private static final int []  LAUNCHPAD_PRO_BUTTONS_ALL          =
-    {
-        LAUNCHPAD_PRO_BUTTON_LEFT,
-        LAUNCHPAD_PRO_BUTTON_RIGHT,
-        LAUNCHPAD_PRO_BUTTON_UP,
-        LAUNCHPAD_PRO_BUTTON_DOWN,
-        LAUNCHPAD_PRO_BUTTON_SESSION,
-        LAUNCHPAD_PRO_BUTTON_NOTE,
-        LAUNCHPAD_PRO_BUTTON_DEVICE,
-        LAUNCHPAD_PRO_BUTTON_USER,
-        LAUNCHPAD_BUTTON_SHIFT,
-        LAUNCHPAD_BUTTON_CLICK,
-        LAUNCHPAD_BUTTON_UNDO,
-        LAUNCHPAD_BUTTON_DELETE,
-        LAUNCHPAD_BUTTON_QUANTIZE,
-        LAUNCHPAD_BUTTON_DUPLICATE,
-        LAUNCHPAD_BUTTON_DOUBLE,
-        LAUNCHPAD_BUTTON_RECORD,
-        LAUNCHPAD_BUTTON_REC_ARM,
-        LAUNCHPAD_BUTTON_TRACK,
-        LAUNCHPAD_BUTTON_MUTE,
-        LAUNCHPAD_BUTTON_SOLO,
-        LAUNCHPAD_BUTTON_VOLUME,
-        LAUNCHPAD_BUTTON_PAN,
-        LAUNCHPAD_BUTTON_SENDS,
-        LAUNCHPAD_BUTTON_STOP_CLIP,
-        LAUNCHPAD_BUTTON_SCENE1,
-        LAUNCHPAD_BUTTON_SCENE2,
-        LAUNCHPAD_BUTTON_SCENE3,
-        LAUNCHPAD_BUTTON_SCENE4,
-        LAUNCHPAD_BUTTON_SCENE5,
-        LAUNCHPAD_BUTTON_SCENE6,
-        LAUNCHPAD_BUTTON_SCENE7,
-        LAUNCHPAD_BUTTON_SCENE8
-    };
-
-    private static final int []  LAUNCHPAD_MKII_BUTTONS_ALL         =
-    {
-        LAUNCHPAD_MKII_BUTTON_LEFT,
-        LAUNCHPAD_MKII_BUTTON_RIGHT,
-        LAUNCHPAD_MKII_BUTTON_UP,
-        LAUNCHPAD_MKII_BUTTON_DOWN,
-        LAUNCHPAD_MKII_BUTTON_SESSION,
-        LAUNCHPAD_MKII_BUTTON_NOTE,
-        LAUNCHPAD_MKII_BUTTON_DEVICE,
-        LAUNCHPAD_MKII_BUTTON_USER,
-        LAUNCHPAD_BUTTON_SHIFT,
-        LAUNCHPAD_BUTTON_CLICK,
-        LAUNCHPAD_BUTTON_UNDO,
-        LAUNCHPAD_BUTTON_DELETE,
-        LAUNCHPAD_BUTTON_QUANTIZE,
-        LAUNCHPAD_BUTTON_DUPLICATE,
-        LAUNCHPAD_BUTTON_DOUBLE,
-        LAUNCHPAD_BUTTON_RECORD,
-        LAUNCHPAD_BUTTON_REC_ARM,
-        LAUNCHPAD_BUTTON_TRACK,
-        LAUNCHPAD_BUTTON_MUTE,
-        LAUNCHPAD_BUTTON_SOLO,
-        LAUNCHPAD_BUTTON_VOLUME,
-        LAUNCHPAD_BUTTON_PAN,
-        LAUNCHPAD_BUTTON_SENDS,
-        LAUNCHPAD_BUTTON_STOP_CLIP,
-        LAUNCHPAD_BUTTON_SCENE1,
-        LAUNCHPAD_BUTTON_SCENE2,
-        LAUNCHPAD_BUTTON_SCENE3,
-        LAUNCHPAD_BUTTON_SCENE4,
-        LAUNCHPAD_BUTTON_SCENE5,
-        LAUNCHPAD_BUTTON_SCENE6,
-        LAUNCHPAD_BUTTON_SCENE7,
-        LAUNCHPAD_BUTTON_SCENE8
-    };
-
     public static final int      CONTROL_MODE_OFF                   = 0;
     public static final int      CONTROL_MODE_REC_ARM               = 1;
     public static final int      CONTROL_MODE_TRACK_SELECT          = 2;
@@ -218,7 +146,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public LaunchpadControlSurface (final IHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isPro)
     {
-        super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, isPro ? LAUNCHPAD_PRO_SYSEX_HEADER : LAUNCHPAD_MKII_SYSEX_HEADER), isPro ? LAUNCHPAD_PRO_BUTTONS_ALL : LAUNCHPAD_MKII_BUTTONS_ALL);
+        super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, isPro ? LAUNCHPAD_PRO_SYSEX_HEADER : LAUNCHPAD_MKII_SYSEX_HEADER));
 
         this.isPro = isPro;
 
@@ -355,12 +283,20 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
 
     /** {@inheritDoc} */
     @Override
-    public void setButtonEx (final int button, final int channel, final int state)
+    public void setTrigger (final int cc, final int channel, final int state)
     {
-        if (!this.isPro && (button == LAUNCHPAD_BUTTON_SCENE1 || button == LAUNCHPAD_BUTTON_SCENE2 || button == LAUNCHPAD_BUTTON_SCENE3 || button == LAUNCHPAD_BUTTON_SCENE4 || button == LAUNCHPAD_BUTTON_SCENE5 || button == LAUNCHPAD_BUTTON_SCENE6 || button == LAUNCHPAD_BUTTON_SCENE7 || button == LAUNCHPAD_BUTTON_SCENE8))
-            this.output.sendNote (button, state);
+        if (!this.isPro && (cc == LAUNCHPAD_BUTTON_SCENE1 || cc == LAUNCHPAD_BUTTON_SCENE2 || cc == LAUNCHPAD_BUTTON_SCENE3 || cc == LAUNCHPAD_BUTTON_SCENE4 || cc == LAUNCHPAD_BUTTON_SCENE5 || cc == LAUNCHPAD_BUTTON_SCENE6 || cc == LAUNCHPAD_BUTTON_SCENE7 || cc == LAUNCHPAD_BUTTON_SCENE8))
+            this.output.sendNote (cc, state);
 
-        this.output.sendCC (button, state);
+        this.output.sendCC (cc, state);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setContinuous (int cc, int channel, int value)
+    {
+        // Intentionally empty
     }
 
 
@@ -410,7 +346,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
 
     /** {@inheritDoc} */
     @Override
-    public int getSceneButton (final int index)
+    public int getSceneTrigger (final int index)
     {
         return LAUNCHPAD_BUTTON_SCENE1 - 10 * index;
     }

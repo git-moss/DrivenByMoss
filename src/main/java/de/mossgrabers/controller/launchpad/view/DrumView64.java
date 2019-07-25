@@ -34,7 +34,7 @@ public class DrumView64 extends AbstractDrumView64<LaunchpadControlSurface, Laun
     @Override
     protected void handleDeleteButton (final int playedPad)
     {
-        this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+        this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
         this.model.getNoteClip (8, 128).clearRow (this.offsetY + playedPad);
     }
 
@@ -44,6 +44,6 @@ public class DrumView64 extends AbstractDrumView64<LaunchpadControlSurface, Laun
     public void updateSceneButtons ()
     {
         for (int i = 0; i < 8; i++)
-            this.surface.setButton (this.surface.getSceneButton (i), LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+            this.surface.setTrigger (this.surface.getSceneTrigger (i), LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
     }
 }

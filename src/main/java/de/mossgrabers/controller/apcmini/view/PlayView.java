@@ -49,7 +49,7 @@ public class PlayView extends AbstractPlayView<APCminiControlSurface, APCminiCon
     public void updateSceneButtons ()
     {
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, i == 2 ? APCminiControlSurface.APC_BUTTON_STATE_OFF : APCminiControlSurface.APC_BUTTON_STATE_ON);
+            this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, i == 2 ? APCminiControlSurface.APC_BUTTON_STATE_OFF : APCminiControlSurface.APC_BUTTON_STATE_ON);
 
         this.extensions.updateTrackButtons ();
     }

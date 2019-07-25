@@ -100,8 +100,8 @@ public class DrumView8 extends DrumViewBase
     @Override
     public void updateButtons ()
     {
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_ON);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_ON);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_ON);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_ON);
     }
 
 
@@ -113,10 +113,10 @@ public class DrumView8 extends DrumViewBase
         final int colorTranspose = colorManager.getColor (AbstractSequencerView.COLOR_TRANSPOSE);
         final int colorSelectedTranspose = colorManager.getColor (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED);
         final int colorOff = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1, this.soundOffset == 0 ? colorSelectedTranspose : colorTranspose);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE2, this.soundOffset == 8 ? colorSelectedTranspose : colorTranspose);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE3, colorOff);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE4, colorOff);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1, this.soundOffset == 0 ? colorSelectedTranspose : colorTranspose);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE2, this.soundOffset == 8 ? colorSelectedTranspose : colorTranspose);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE3, colorOff);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE4, colorOff);
     }
 
 

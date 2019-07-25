@@ -390,17 +390,17 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         if (this.surface.isPro ())
         {
-            this.surface.setButton (this.surface.getLeftButtonId (), this.canScrollLeft ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.setButton (this.surface.getRightButtonId (), this.canScrollRight ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.setButton (this.surface.getUpButtonId (), this.canScrollUp ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.setButton (this.surface.getDownButtonId (), this.canScrollDown ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.setTrigger (this.surface.getLeftTriggerId (), this.canScrollLeft ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.setTrigger (this.surface.getRightTriggerId (), this.canScrollRight ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.setTrigger (this.surface.getUpTriggerId (), this.canScrollUp ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.setTrigger (this.surface.getDownTriggerId (), this.canScrollDown ? this.getButtonOnColor () : this.getButtonOffColor ());
         }
         else
         {
-            this.surface.updateButton (this.surface.getLeftButtonId (), this.canScrollLeft ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.updateButton (this.surface.getRightButtonId (), this.canScrollRight ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.updateButton (this.surface.getUpButtonId (), this.canScrollUp ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.updateButton (this.surface.getDownButtonId (), this.canScrollDown ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.updateTrigger (this.surface.getLeftTriggerId (), this.canScrollLeft ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.updateTrigger (this.surface.getRightTriggerId (), this.canScrollRight ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.updateTrigger (this.surface.getUpTriggerId (), this.canScrollUp ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.updateTrigger (this.surface.getDownTriggerId (), this.canScrollDown ? this.getButtonOnColor () : this.getButtonOffColor ());
         }
     }
 }

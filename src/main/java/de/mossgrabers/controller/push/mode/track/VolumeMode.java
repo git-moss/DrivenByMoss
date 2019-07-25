@@ -54,7 +54,7 @@ public class VolumeMode extends AbstractTrackMode
 
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setButtonConsumed (this.surface.getDeleteButtonId ());
+            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
             t.resetVolume ();
         }
 

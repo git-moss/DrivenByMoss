@@ -201,8 +201,8 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
     {
         for (int i = 0; i < 8; i++)
         {
-            this.surface.updateButton (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, APCminiControlSurface.APC_BUTTON_STATE_OFF);
-            this.surface.updateButton (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, APCminiControlSurface.APC_BUTTON_STATE_OFF);
+            this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, APCminiControlSurface.APC_BUTTON_STATE_OFF);
+            this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, APCminiControlSurface.APC_BUTTON_STATE_OFF);
         }
     }
 }

@@ -31,7 +31,8 @@ import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.controller.sl.mode.device.DevicePresetsMode;
 import de.mossgrabers.controller.sl.view.ControlView;
 import de.mossgrabers.controller.sl.view.PlayView;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.ContinuousCommandID;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
@@ -252,24 +253,24 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         final SLControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
         {
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW1_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW1_1 + i, new ButtonRowViewCommand<> (0, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW2_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW2_1 + i, new ButtonRowViewCommand<> (1, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW3_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW3_1 + i, new ButtonRowViewCommand<> (2, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW4_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROW4_1 + i, new ButtonRowViewCommand<> (3, i, this.model, surface));
-            this.addTriggerCommand (Integer.valueOf (Commands.COMMAND_ROW_SELECT_1.intValue () + i), SLControlSurface.MKII_BUTTON_ROWSEL1 + i, new ButtonRowSelectCommand<> (i, this.model, surface));
+            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW1_1, i), SLControlSurface.MKII_BUTTON_ROW1_1 + i, new ButtonRowViewCommand<> (0, i, this.model, surface));
+            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW2_1, i), SLControlSurface.MKII_BUTTON_ROW2_1 + i, new ButtonRowViewCommand<> (1, i, this.model, surface));
+            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW3_1, i), SLControlSurface.MKII_BUTTON_ROW3_1 + i, new ButtonRowViewCommand<> (2, i, this.model, surface));
+            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW4_1, i), SLControlSurface.MKII_BUTTON_ROW4_1 + i, new ButtonRowViewCommand<> (3, i, this.model, surface));
+            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW_SELECT_1, i), SLControlSurface.MKII_BUTTON_ROWSEL1 + i, new ButtonRowSelectCommand<> (i, this.model, surface));
         }
 
-        this.addTriggerCommand (Commands.COMMAND_REWIND, SLControlSurface.MKII_BUTTON_REWIND, new ButtonRowViewCommand<> (4, 0, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_FORWARD, SLControlSurface.MKII_BUTTON_FORWARD, new ButtonRowViewCommand<> (4, 1, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_STOP, SLControlSurface.MKII_BUTTON_STOP, new ButtonRowViewCommand<> (4, 2, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_PLAY, SLControlSurface.MKII_BUTTON_PLAY, new ButtonRowViewCommand<> (4, 3, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_LOOP, SLControlSurface.MKII_BUTTON_LOOP, new ButtonRowViewCommand<> (4, 4, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_RECORD, SLControlSurface.MKII_BUTTON_RECORD, new ButtonRowViewCommand<> (4, 6, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_LEFT, SLControlSurface.MKII_BUTTON_P1_UP, new P1ButtonCommand (true, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_RIGHT, SLControlSurface.MKII_BUTTON_P1_DOWN, new P1ButtonCommand (false, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_UP, SLControlSurface.MKII_BUTTON_P2_UP, new P2ButtonCommand (true, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ARROW_DOWN, SLControlSurface.MKII_BUTTON_P2_DOWN, new P2ButtonCommand (false, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, SLControlSurface.MKII_BUTTON_TRANSPORT, new TransportButtonCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.REWIND, SLControlSurface.MKII_BUTTON_REWIND, new ButtonRowViewCommand<> (4, 0, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.FORWARD, SLControlSurface.MKII_BUTTON_FORWARD, new ButtonRowViewCommand<> (4, 1, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.STOP, SLControlSurface.MKII_BUTTON_STOP, new ButtonRowViewCommand<> (4, 2, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.PLAY, SLControlSurface.MKII_BUTTON_PLAY, new ButtonRowViewCommand<> (4, 3, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.LOOP, SLControlSurface.MKII_BUTTON_LOOP, new ButtonRowViewCommand<> (4, 4, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.RECORD, SLControlSurface.MKII_BUTTON_RECORD, new ButtonRowViewCommand<> (4, 6, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ARROW_LEFT, SLControlSurface.MKII_BUTTON_P1_UP, new P1ButtonCommand (true, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ARROW_RIGHT, SLControlSurface.MKII_BUTTON_P1_DOWN, new P1ButtonCommand (false, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ARROW_UP, SLControlSurface.MKII_BUTTON_P2_UP, new P2ButtonCommand (true, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ARROW_DOWN, SLControlSurface.MKII_BUTTON_P2_DOWN, new P2ButtonCommand (false, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.SELECT_PLAY_VIEW, SLControlSurface.MKII_BUTTON_TRANSPORT, new TransportButtonCommand (this.model, surface));
     }
 
 
@@ -280,14 +281,14 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         final SLControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
         {
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_FADER1.intValue () + i), SLControlSurface.MKII_SLIDER1 + i, new FaderCommand (i, this.model, surface));
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_DEVICE_KNOB1.intValue () + i), SLControlSurface.MKII_KNOB_ROW1_1 + i, new DeviceKnobRowCommand (i, this.model, surface));
-            this.addContinuousCommand (Integer.valueOf (Commands.CONT_COMMAND_KNOB1.intValue () + i), SLControlSurface.MKII_KNOB_ROW2_1 + i, new TrackKnobRowCommand (i, this.model, surface));
+            this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.FADER1, i), SLControlSurface.MKII_SLIDER1 + i, new FaderCommand (i, this.model, surface));
+            this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.DEVICE_KNOB1, i), SLControlSurface.MKII_KNOB_ROW1_1 + i, new DeviceKnobRowCommand (i, this.model, surface));
+            this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.KNOB1, i), SLControlSurface.MKII_KNOB_ROW2_1 + i, new TrackKnobRowCommand (i, this.model, surface));
         }
-        this.addContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_X, SLControlSurface.MKII_TOUCHPAD_X, new TouchpadCommand (true, this.model, surface));
-        this.addContinuousCommand (Commands.CONT_COMMAND_TOUCHPAD_Y, SLControlSurface.MKII_TOUCHPAD_Y, new TouchpadCommand (false, this.model, surface));
-        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO_TOUCH, SLControlSurface.MKI_BUTTON_TAP_TEMPO, new TapTempoInitMkICommand (this.model, surface));
-        this.addContinuousCommand (Commands.CONT_COMMAND_TEMPO, SLControlSurface.MKI_BUTTON_TAP_TEMPO_VALUE, new TapTempoMkICommand (this.model, surface));
+        this.addContinuousCommand (ContinuousCommandID.TOUCHPAD_X, SLControlSurface.MKII_TOUCHPAD_X, new TouchpadCommand (true, this.model, surface));
+        this.addContinuousCommand (ContinuousCommandID.TOUCHPAD_Y, SLControlSurface.MKII_TOUCHPAD_Y, new TouchpadCommand (false, this.model, surface));
+        this.addContinuousCommand (ContinuousCommandID.HELLO, SLControlSurface.MKI_BUTTON_TAP_TEMPO, new TapTempoInitMkICommand (this.model, surface));
+        this.addContinuousCommand (ContinuousCommandID.TEMPO, SLControlSurface.MKI_BUTTON_TAP_TEMPO_VALUE, new TapTempoMkICommand (this.model, surface));
     }
 
 
@@ -306,7 +307,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
 
     /** {@inheritDoc} */
     @Override
-    protected void updateIndication (final Integer mode)
+    protected void updateIndication (final Modes mode)
     {
         if (this.currentMode != null && this.currentMode.equals (mode))
             return;

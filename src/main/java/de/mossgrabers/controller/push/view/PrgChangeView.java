@@ -124,7 +124,7 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
         final int yellow = isPush2 ? PushColors.PUSH2_COLOR_SCENE_YELLOW : PushColors.PUSH1_COLOR_SCENE_YELLOW;
         final int black = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (PushControlSurface.PUSH_BUTTON_SCENE1 + i, this.bankNumber == 7 - i ? this.isToggled ? yellow : green : black);
+            this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1 + i, this.bankNumber == 7 - i ? this.isToggled ? yellow : green : black);
     }
 
 
@@ -161,7 +161,7 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
     @Override
     public void updateArrows ()
     {
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateButton (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_OFF);
     }
 }

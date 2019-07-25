@@ -20,86 +20,86 @@ import java.util.Set;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Views
+public enum Views
 {
-    /** The name of the play view. */
-    public static final String                VIEW_NAME_PLAY           = "Play";
-    /** The name of the piano view. */
-    public static final String                VIEW_NAME_PIANO          = "Piano";
-    /** The name of the drum view. */
-    public static final String                VIEW_NAME_DRUM           = "Drum";
-    /** The name of the drum4 view. */
-    public static final String                VIEW_NAME_DRUM4          = "Drum 4";
-    /** The name of the drum 8 view. */
-    public static final String                VIEW_NAME_DRUM8          = "Drum 8";
-    /** The name of the drum 64 view. */
-    public static final String                VIEW_NAME_DRUM64         = "Drum 64";
-    /** The name of the sequencer view. */
-    public static final String                VIEW_NAME_SEQUENCER      = "Sequencer";
-    /** The name of the raindrops view. */
-    public static final String                VIEW_NAME_RAINDROPS      = "Raindrop";
-    /** The name of the poly sequencer view. */
-    public static final String                VIEW_NAME_POLY_SEQUENCER = "Poly Seq.";
-
     /** View for playing notes. */
-    public static final Integer               VIEW_PLAY                = Integer.valueOf (0);
+    VIEW_PLAY,
     /** View for a session grid with clips. */
-    public static final Integer               VIEW_SESSION             = Integer.valueOf (1);
+    VIEW_SESSION,
     /** View for a sequencer. */
-    public static final Integer               VIEW_SEQUENCER           = Integer.valueOf (2);
+    VIEW_SEQUENCER,
     /** View for playing drums and sequencing. */
-    public static final Integer               VIEW_DRUM                = Integer.valueOf (3);
+    VIEW_DRUM,
     /** View for raindrops sequencer. */
-    public static final Integer               VIEW_RAINDROPS           = Integer.valueOf (4);
+    VIEW_RAINDROPS,
     /** View for playing in piano keyboard style. */
-    public static final Integer               VIEW_PIANO               = Integer.valueOf (5);
+    VIEW_PIANO,
     /** View sending program changes. */
-    public static final Integer               VIEW_PRG_CHANGE          = Integer.valueOf (6);
+    VIEW_PRG_CHANGE,
     /** View for editing the clip length. */
-    public static final Integer               VIEW_CLIP                = Integer.valueOf (7);
+    VIEW_CLIP,
     /** View for drum sequencing with 4 sounds. */
-    public static final Integer               VIEW_DRUM4               = Integer.valueOf (8);
+    VIEW_DRUM4,
     /** View for drum sequencing with 8 sounds. */
-    public static final Integer               VIEW_DRUM8               = Integer.valueOf (9);
+    VIEW_DRUM8,
     /** View for drum playing with 64 pads. */
-    public static final Integer               VIEW_DRUM64              = Integer.valueOf (10);
+    VIEW_DRUM64,
     /** View for selecting a color. */
-    public static final Integer               VIEW_COLOR               = Integer.valueOf (11);
+    VIEW_COLOR,
     /** View for playing scenes. */
-    public static final Integer               VIEW_SCENE_PLAY          = Integer.valueOf (12);
+    VIEW_SCENE_PLAY,
     /** View for the poly sequencer. */
-    public static final Integer               VIEW_POLY_SEQUENCER      = Integer.valueOf (13);
+    VIEW_POLY_SEQUENCER,
 
     /** View for browsing. */
-    public static final Integer               VIEW_BROWSER             = Integer.valueOf (14);
+    VIEW_BROWSER,
     /** View for changing track parameters. */
-    public static final Integer               VIEW_TRACK               = Integer.valueOf (15);
+    VIEW_TRACK,
     /** View for changing track volumes. */
-    public static final Integer               VIEW_TRACK_VOLUME        = Integer.valueOf (16);
+    VIEW_TRACK_VOLUME,
     /** View for changing track panoramas. */
-    public static final Integer               VIEW_TRACK_PAN           = Integer.valueOf (17);
+    VIEW_TRACK_PAN,
     /** View for changing track sends. */
-    public static final Integer               VIEW_TRACK_SENDS         = Integer.valueOf (18);
+    VIEW_TRACK_SENDS,
     /** View for Track selection. */
-    public static final Integer               VIEW_TRACK_SELECT        = Integer.valueOf (19);
+    VIEW_TRACK_SELECT,
     /** View for soloing tracks. */
-    public static final Integer               VIEW_TRACK_SOLO          = Integer.valueOf (20);
+    VIEW_TRACK_SOLO,
     /** View for muting tracks. */
-    public static final Integer               VIEW_TRACK_MUTE          = Integer.valueOf (21);
+    VIEW_TRACK_MUTE,
     /** View for editing remote parameters. */
-    public static final Integer               VIEW_DEVICE              = Integer.valueOf (22);
+    VIEW_DEVICE,
 
     /** View for controlling values. */
-    public static final Integer               VIEW_CONTROL             = Integer.valueOf (23);
+    VIEW_CONTROL,
     /** View for shift options. */
-    public static final Integer               VIEW_SHIFT               = Integer.valueOf (24);
+    VIEW_SHIFT;
 
-    private static final Map<String, Integer> NOTE_VIEW_NAMES          = new HashMap<> ();
-    private static final List<Integer>        NOTE_VIEWS               = new ArrayList<> ();
-    private static final Set<Integer>         SEQUENCER_VIEWS          = new HashSet<> ();
-    private static final Set<Integer>         SESSION_VIEWS            = new HashSet<> ();
+    /** The name of the play view. */
+    public static final String              VIEW_NAME_PLAY           = "Play";
+    /** The name of the piano view. */
+    public static final String              VIEW_NAME_PIANO          = "Piano";
+    /** The name of the drum view. */
+    public static final String              VIEW_NAME_DRUM           = "Drum";
+    /** The name of the drum4 view. */
+    public static final String              VIEW_NAME_DRUM4          = "Drum 4";
+    /** The name of the drum 8 view. */
+    public static final String              VIEW_NAME_DRUM8          = "Drum 8";
+    /** The name of the drum 64 view. */
+    public static final String              VIEW_NAME_DRUM64         = "Drum 64";
+    /** The name of the sequencer view. */
+    public static final String              VIEW_NAME_SEQUENCER      = "Sequencer";
+    /** The name of the raindrops view. */
+    public static final String              VIEW_NAME_RAINDROPS      = "Raindrop";
+    /** The name of the poly sequencer view. */
+    public static final String              VIEW_NAME_POLY_SEQUENCER = "Poly Seq.";
 
-    private static boolean                    isInitialised            = false;
+    private static final Map<String, Views> NOTE_VIEW_NAMES          = new HashMap<> ();
+    private static final List<Views>        NOTE_VIEWS               = new ArrayList<> ();
+    private static final Set<Views>         SEQUENCER_VIEWS          = new HashSet<> ();
+    private static final Set<Views>         SESSION_VIEWS            = new HashSet<> ();
+
+    private static boolean                  isInitialised            = false;
 
 
     /**
@@ -166,7 +166,7 @@ public class Views
      * @param viewId The view ID to test
      * @return True if it is a sequencer view
      */
-    public static boolean isSequencerView (final Integer viewId)
+    public static boolean isSequencerView (final Views viewId)
     {
         return SEQUENCER_VIEWS.contains (viewId);
     }
@@ -178,7 +178,7 @@ public class Views
      * @param viewId The view ID to test
      * @return True if it is a session view
      */
-    public static boolean isSessionView (final Integer viewId)
+    public static boolean isSessionView (final Views viewId)
     {
         return SESSION_VIEWS.contains (viewId);
     }
@@ -190,7 +190,7 @@ public class Views
      * @param viewId The view ID to test
      * @return True if it is a note view
      */
-    public static boolean isNoteView (final Integer viewId)
+    public static boolean isNoteView (final Views viewId)
     {
         return NOTE_VIEWS.contains (viewId);
     }
@@ -215,8 +215,21 @@ public class Views
      * @param name The name of the note view
      * @return The note view
      */
-    public static Integer getNoteView (final String name)
+    public static Views getNoteView (final String name)
     {
         return NOTE_VIEW_NAMES.get (name);
+    }
+
+
+    /**
+     * Get an offset view.
+     *
+     * @param view The base view
+     * @param offset The offset
+     * @return The offset view
+     */
+    public static Views get (final Views view, final int offset)
+    {
+        return Views.values ()[view.ordinal () + offset];
     }
 }

@@ -28,7 +28,7 @@ public class DummyControlSurface<C extends Configuration> extends AbstractContro
      */
     public DummyControlSurface (final IHost host, final ColorManager colorManager, final C configuration)
     {
-        super (host, configuration, colorManager, null, null, null, new int [0]);
+        super (host, configuration, colorManager, null, null, null);
 
         this.setDisplay (new DummyDisplay (this.host));
     }
@@ -36,7 +36,15 @@ public class DummyControlSurface<C extends Configuration> extends AbstractContro
 
     /** {@inheritDoc} */
     @Override
-    public void setButtonEx (int button, int channel, int value)
+    public void setTrigger (int cc, int channel, int value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setContinuous (int cc, int channel, int value)
     {
         // Intentionally empty
     }

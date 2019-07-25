@@ -85,7 +85,7 @@ public class ScalesMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final boolean isFirstOrLast = i == 0 || i == 7;
-            this.surface.updateButton (20 + i, i == 7 ? cm.getColor (AbstractMode.BUTTON_COLOR_OFF) : isFirstOrLast ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_LO : PushColors.PUSH1_COLOR_ORANGE_LO : cm.getColor (offset == i - 1 ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+            this.surface.updateTrigger (20 + i, i == 7 ? cm.getColor (AbstractMode.BUTTON_COLOR_OFF) : isFirstOrLast ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_LO : PushColors.PUSH1_COLOR_ORANGE_LO : cm.getColor (offset == i - 1 ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
         }
     }
 
@@ -120,7 +120,7 @@ public class ScalesMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final boolean isFirstOrLast = i == 0 || i == 7;
-            this.surface.updateButton (102 + i, isFirstOrLast ? this.isPush2 ? PushColors.PUSH2_COLOR2_AMBER : PushColors.PUSH1_COLOR2_AMBER : cm.getColor (offset == i - 1 + 6 ? AbstractMode.BUTTON_COLOR2_HI : AbstractMode.BUTTON_COLOR2_ON));
+            this.surface.updateTrigger (102 + i, isFirstOrLast ? this.isPush2 ? PushColors.PUSH2_COLOR2_AMBER : PushColors.PUSH1_COLOR2_AMBER : cm.getColor (offset == i - 1 + 6 ? AbstractMode.BUTTON_COLOR2_HI : AbstractMode.BUTTON_COLOR2_ON));
         }
     }
 

@@ -24,7 +24,8 @@ import de.mossgrabers.controller.maschine.mikro.mk3.view.PlayView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.SceneView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.SelectView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.SoloView;
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.ContinuousCommandID;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
@@ -91,12 +92,6 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         -1, -1, -1, -1, -1, -1, -1, -1
     };
     // @formatter:on
-
-    private static final Integer COMMAND_MOD       = Integer.valueOf (200);
-    private static final Integer COMMAND_PERFORM   = Integer.valueOf (201);
-    private static final Integer COMMAND_NOTES     = Integer.valueOf (202);
-    private static final Integer COMMAND_PITCH     = Integer.valueOf (203);
-    private static final Integer COMMAND_PARAMETER = Integer.valueOf (204);
 
 
     /**
@@ -189,7 +184,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         modeManager.registerMode (Modes.MODE_VOLUME, new SelectedVolumeMode<> (surface, this.model));
         modeManager.registerMode (Modes.MODE_PAN, new SelectedPanMode<> (surface, this.model));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Integer.valueOf (Modes.MODE_SEND1.intValue () + i), new SelectedSendMode<> (i, surface, this.model));
+            modeManager.registerMode (Modes.get (Modes.MODE_SEND1, i), new SelectedSendMode<> (i, surface, this.model));
 
         modeManager.registerMode (Modes.MODE_POSITION, new PositionMode (surface, this.model));
         modeManager.registerMode (Modes.MODE_TEMPO, new TempoMode (surface, this.model));
@@ -228,56 +223,56 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         final MaschineMikroMk3ControlSurface surface = this.getSurface ();
 
         // Transport
-        this.addTriggerCommand (Commands.COMMAND_PLAY, MaschineMikroMk3ControlSurface.MIKRO_3_PLAY, new PlayCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_RECORD, MaschineMikroMk3ControlSurface.MIKRO_3_REC, new RecordCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_STOP, MaschineMikroMk3ControlSurface.MIKRO_3_STOP, new StopCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_LOOP, MaschineMikroMk3ControlSurface.MIKRO_3_RESTART, new ToggleLoopCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_UNDO, MaschineMikroMk3ControlSurface.MIKRO_3_ERASE, new UndoCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_METRONOME, MaschineMikroMk3ControlSurface.MIKRO_3_TAP_METRO, new MetronomeCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_QUANTIZE, MaschineMikroMk3ControlSurface.MIKRO_3_FOLLOW, new QuantizeCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.PLAY, MaschineMikroMk3ControlSurface.MIKRO_3_PLAY, new PlayCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.RECORD, MaschineMikroMk3ControlSurface.MIKRO_3_REC, new RecordCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.STOP, MaschineMikroMk3ControlSurface.MIKRO_3_STOP, new StopCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.LOOP, MaschineMikroMk3ControlSurface.MIKRO_3_RESTART, new ToggleLoopCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.UNDO, MaschineMikroMk3ControlSurface.MIKRO_3_ERASE, new UndoCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.METRONOME, MaschineMikroMk3ControlSurface.MIKRO_3_TAP_METRO, new MetronomeCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.QUANTIZE, MaschineMikroMk3ControlSurface.MIKRO_3_FOLLOW, new QuantizeCommand<> (this.model, surface));
 
         // Automation
-        this.addTriggerCommand (Commands.COMMAND_NEW, MaschineMikroMk3ControlSurface.MIKRO_3_GROUP, new NewCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_AUTOMATION, MaschineMikroMk3ControlSurface.MIKRO_3_AUTO, new WriteClipLauncherAutomationCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_AUTOMATION_WRITE, MaschineMikroMk3ControlSurface.MIKRO_3_LOCK, new WriteArrangerAutomationCommand<> (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_REPEAT, MaschineMikroMk3ControlSurface.MIKRO_3_NOTE_REPEAT, new NoteRepeatCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.NEW, MaschineMikroMk3ControlSurface.MIKRO_3_GROUP, new NewCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.AUTOMATION, MaschineMikroMk3ControlSurface.MIKRO_3_AUTO, new WriteClipLauncherAutomationCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.AUTOMATION_WRITE, MaschineMikroMk3ControlSurface.MIKRO_3_LOCK, new WriteArrangerAutomationCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.REPEAT, MaschineMikroMk3ControlSurface.MIKRO_3_NOTE_REPEAT, new NoteRepeatCommand<> (this.model, surface));
 
         // Ribbon
-        this.addTriggerCommand (COMMAND_PITCH, MaschineMikroMk3ControlSurface.MIKRO_3_PITCH, new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_UP, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP));
-        this.addTriggerCommand (COMMAND_MOD, MaschineMikroMk3ControlSurface.MIKRO_3_MOD, new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_CC_1));
-        this.addTriggerCommand (COMMAND_PERFORM, MaschineMikroMk3ControlSurface.MIKRO_3_PERFORM, new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_CC_11));
-        this.addTriggerCommand (COMMAND_NOTES, MaschineMikroMk3ControlSurface.MIKRO_3_NOTES, new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME));
+        this.addTriggerCommand (TriggerCommandID.F1, MaschineMikroMk3ControlSurface.MIKRO_3_PITCH, new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_UP, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP));
+        this.addTriggerCommand (TriggerCommandID.F2, MaschineMikroMk3ControlSurface.MIKRO_3_MOD, new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_CC_1));
+        this.addTriggerCommand (TriggerCommandID.F3, MaschineMikroMk3ControlSurface.MIKRO_3_PERFORM, new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_CC_11));
+        this.addTriggerCommand (TriggerCommandID.F4, MaschineMikroMk3ControlSurface.MIKRO_3_NOTES, new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME));
 
         // Encoder Modes
-        this.addTriggerCommand (Commands.COMMAND_FADER_TOUCH_1, MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER_PUSH, new KnobRowTouchModeCommand<> (0, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_VOLUME, MaschineMikroMk3ControlSurface.MIKRO_3_VOLUME, new VolumePanSendCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_TAP_TEMPO, MaschineMikroMk3ControlSurface.MIKRO_3_SWING, new ModeSelectCommand<> (this.model, surface, Modes.MODE_POSITION));
-        this.addTriggerCommand (Commands.COMMAND_USER, MaschineMikroMk3ControlSurface.MIKRO_3_TEMPO, new ModeSelectCommand<> (this.model, surface, Modes.MODE_TEMPO));
-        this.addTriggerCommand (Commands.COMMAND_DEVICE, MaschineMikroMk3ControlSurface.MIKRO_3_PLUGIN, new ModeSelectCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS));
-        this.addTriggerCommand (Commands.COMMAND_DEVICE_ON_OFF, MaschineMikroMk3ControlSurface.MIKRO_3_SAMPLING, new PaneCommand<> (PaneCommand.Panels.DEVICE, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.FADER_TOUCH_1, MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER_PUSH, new KnobRowTouchModeCommand<> (0, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.VOLUME, MaschineMikroMk3ControlSurface.MIKRO_3_VOLUME, new VolumePanSendCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.TAP_TEMPO, MaschineMikroMk3ControlSurface.MIKRO_3_SWING, new ModeSelectCommand<> (this.model, surface, Modes.MODE_POSITION));
+        this.addTriggerCommand (TriggerCommandID.USER, MaschineMikroMk3ControlSurface.MIKRO_3_TEMPO, new ModeSelectCommand<> (this.model, surface, Modes.MODE_TEMPO));
+        this.addTriggerCommand (TriggerCommandID.DEVICE, MaschineMikroMk3ControlSurface.MIKRO_3_PLUGIN, new ModeSelectCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS));
+        this.addTriggerCommand (TriggerCommandID.DEVICE_ON_OFF, MaschineMikroMk3ControlSurface.MIKRO_3_SAMPLING, new PaneCommand<> (PaneCommand.Panels.DEVICE, this.model, surface));
 
         // Browser
-        this.addTriggerCommand (Commands.COMMAND_ADD_TRACK, MaschineMikroMk3ControlSurface.MIKRO_3_PROJECT, new ProjectButtonCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ADD_EFFECT, MaschineMikroMk3ControlSurface.MIKRO_3_FAVORITES, new AddDeviceCommand (this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_BROWSE, MaschineMikroMk3ControlSurface.MIKRO_3_BROWSER, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ADD_TRACK, MaschineMikroMk3ControlSurface.MIKRO_3_PROJECT, new ProjectButtonCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ADD_EFFECT, MaschineMikroMk3ControlSurface.MIKRO_3_FAVORITES, new AddDeviceCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.BROWSE, MaschineMikroMk3ControlSurface.MIKRO_3_BROWSER, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
 
         // Pad modes
-        this.addTriggerCommand (Commands.COMMAND_ACCENT, MaschineMikroMk3ControlSurface.MIKRO_3_FIXED_VEL, new ToggleFixedVelCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ACCENT, MaschineMikroMk3ControlSurface.MIKRO_3_FIXED_VEL, new ToggleFixedVelCommand (this.model, surface));
 
-        this.addTriggerCommand (Commands.COMMAND_SCENE1, MaschineMikroMk3ControlSurface.MIKRO_3_SCENE, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_SCENE_PLAY));
-        this.addTriggerCommand (Commands.COMMAND_CLIP, MaschineMikroMk3ControlSurface.MIKRO_3_PATTERN, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_CLIP));
-        this.addTriggerCommand (Commands.COMMAND_SELECT_PLAY_VIEW, MaschineMikroMk3ControlSurface.MIKRO_3_EVENTS, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_PLAY, Views.VIEW_DRUM));
-        this.addTriggerCommand (COMMAND_PARAMETER, MaschineMikroMk3ControlSurface.MIKRO_3_VARIATION, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_DEVICE));
-        this.addTriggerCommand (Commands.COMMAND_DUPLICATE, MaschineMikroMk3ControlSurface.MIKRO_3_DUPLICATE, new ToggleDuplicateButtonCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.SCENE1, MaschineMikroMk3ControlSurface.MIKRO_3_SCENE, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_SCENE_PLAY));
+        this.addTriggerCommand (TriggerCommandID.CLIP, MaschineMikroMk3ControlSurface.MIKRO_3_PATTERN, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_CLIP));
+        this.addTriggerCommand (TriggerCommandID.SELECT_PLAY_VIEW, MaschineMikroMk3ControlSurface.MIKRO_3_EVENTS, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_PLAY, Views.VIEW_DRUM));
+        this.addTriggerCommand (TriggerCommandID.TOGGLE_DEVICE, MaschineMikroMk3ControlSurface.MIKRO_3_VARIATION, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_DEVICE));
+        this.addTriggerCommand (TriggerCommandID.DUPLICATE, MaschineMikroMk3ControlSurface.MIKRO_3_DUPLICATE, new ToggleDuplicateButtonCommand (this.model, surface));
 
-        this.addTriggerCommand (Commands.COMMAND_TRACK, MaschineMikroMk3ControlSurface.MIKRO_3_SELECT, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_TRACK_SELECT));
-        this.addTriggerCommand (Commands.COMMAND_SOLO, MaschineMikroMk3ControlSurface.MIKRO_3_SOLO, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_TRACK_SOLO));
-        this.addTriggerCommand (Commands.COMMAND_MUTE, MaschineMikroMk3ControlSurface.MIKRO_3_MUTE, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_TRACK_MUTE));
+        this.addTriggerCommand (TriggerCommandID.TRACK, MaschineMikroMk3ControlSurface.MIKRO_3_SELECT, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_TRACK_SELECT));
+        this.addTriggerCommand (TriggerCommandID.SOLO, MaschineMikroMk3ControlSurface.MIKRO_3_SOLO, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_TRACK_SOLO));
+        this.addTriggerCommand (TriggerCommandID.MUTE, MaschineMikroMk3ControlSurface.MIKRO_3_MUTE, new ViewMultiSelectCommand<> (this.model, surface, true, Views.VIEW_TRACK_MUTE));
 
-        this.addTriggerCommand (Commands.COMMAND_ROW1_1, MaschineMikroMk3ControlSurface.MIKRO_3_PAD_MODE, new GridButtonCommand (0, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ROW1_2, MaschineMikroMk3ControlSurface.MIKRO_3_KEYBOARD, new GridButtonCommand (1, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ROW1_3, MaschineMikroMk3ControlSurface.MIKRO_3_CHORDS, new GridButtonCommand (2, this.model, surface));
-        this.addTriggerCommand (Commands.COMMAND_ROW1_4, MaschineMikroMk3ControlSurface.MIKRO_3_STEP, new GridButtonCommand (3, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ROW1_1, MaschineMikroMk3ControlSurface.MIKRO_3_PAD_MODE, new GridButtonCommand (0, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ROW1_2, MaschineMikroMk3ControlSurface.MIKRO_3_KEYBOARD, new GridButtonCommand (1, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ROW1_3, MaschineMikroMk3ControlSurface.MIKRO_3_CHORDS, new GridButtonCommand (2, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ROW1_4, MaschineMikroMk3ControlSurface.MIKRO_3_STEP, new GridButtonCommand (3, this.model, surface));
     }
 
 
@@ -286,8 +281,8 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
     protected void registerContinuousCommands ()
     {
         final MaschineMikroMk3ControlSurface surface = this.getSurface ();
-        this.addContinuousCommand (Commands.CONT_COMMAND_KNOB1, MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER, new KnobRowModeCommand<> (0, this.model, surface));
-        this.addContinuousCommand (Commands.CONT_COMMAND_CROSSFADER, MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP, new PitchbendCommand (this.model, surface));
+        this.addContinuousCommand (ContinuousCommandID.KNOB1, MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER, new KnobRowModeCommand<> (0, this.model, surface));
+        this.addContinuousCommand (ContinuousCommandID.CROSSFADER, MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP, new PitchbendCommand (this.model, surface));
     }
 
 
@@ -306,23 +301,23 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         final MaschineMikroMk3ControlSurface surface = this.getSurface ();
 
         final ITransport t = this.model.getTransport ();
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_PLAY, t.isPlaying () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_REC, t.isRecording () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_STOP, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_RESTART, t.isLoop () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_ERASE, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_TAP_METRO, t.isMetronomeOn () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_FOLLOW, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_PLAY, t.isPlaying () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_REC, t.isRecording () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_STOP, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_RESTART, t.isLoop () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_ERASE, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_TAP_METRO, t.isMetronomeOn () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_FOLLOW, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
 
         final int ribbonMode = surface.getConfiguration ().getRibbonMode ();
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_PITCH, ribbonMode <= MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_MOD, ribbonMode == MaschineMikroMk3Configuration.RIBBON_MODE_CC_1 ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_PERFORM, ribbonMode == MaschineMikroMk3Configuration.RIBBON_MODE_CC_11 ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_NOTES, ribbonMode == MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_PITCH, ribbonMode <= MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_MOD, ribbonMode == MaschineMikroMk3Configuration.RIBBON_MODE_CC_1 ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_PERFORM, ribbonMode == MaschineMikroMk3Configuration.RIBBON_MODE_CC_11 ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_NOTES, ribbonMode == MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
 
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_GROUP, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_AUTO, t.isWritingClipLauncherAutomation () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_LOCK, t.isWritingArrangerAutomation () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_GROUP, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_AUTO, t.isWritingClipLauncherAutomation () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_LOCK, t.isWritingArrangerAutomation () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
 
         int repeatState = MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF;
         if (this.host.hasRepeat ())
@@ -331,38 +326,38 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
             if (selectedTrack != null)
                 repeatState = selectedTrack.isNoteRepeat () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF;
         }
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_NOTE_REPEAT, repeatState);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_NOTE_REPEAT, repeatState);
 
-        final Integer modeID = this.getSurface ().getModeManager ().getActiveOrTempModeId ();
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_VOLUME, modeID != null && modeID.intValue () <= Modes.MODE_SEND8.intValue () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_SWING, modeID != null && modeID.intValue () == Modes.MODE_POSITION.intValue () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_TEMPO, modeID != null && modeID.intValue () == Modes.MODE_TEMPO.intValue () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_PLUGIN, modeID != null && modeID.intValue () == Modes.MODE_DEVICE_PARAMS.intValue () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_SAMPLING, this.model.getCursorDevice ().isWindowOpen () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        final Modes modeID = this.getSurface ().getModeManager ().getActiveOrTempModeId ();
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_VOLUME, modeID != null && modeID.ordinal () <= Modes.MODE_SEND8.ordinal () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_SWING, modeID != null && modeID.ordinal () == Modes.MODE_POSITION.ordinal () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_TEMPO, modeID != null && modeID.ordinal () == Modes.MODE_TEMPO.ordinal () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_PLUGIN, modeID != null && modeID.ordinal () == Modes.MODE_DEVICE_PARAMS.ordinal () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_SAMPLING, this.model.getCursorDevice ().isWindowOpen () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
 
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_FIXED_VEL, this.configuration.isAccentActive () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_FIXED_VEL, this.configuration.isAccentActive () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
 
         final ViewManager viewManager = this.getSurface ().getViewManager ();
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_SCENE, viewManager.isActiveView (Views.VIEW_SCENE_PLAY) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_PATTERN, viewManager.isActiveView (Views.VIEW_CLIP) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_EVENTS, viewManager.isActiveView (Views.VIEW_PLAY) || viewManager.isActiveView (Views.VIEW_DRUM) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_VARIATION, viewManager.isActiveView (Views.VIEW_DEVICE) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_SCENE, viewManager.isActiveView (Views.VIEW_SCENE_PLAY) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_PATTERN, viewManager.isActiveView (Views.VIEW_CLIP) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_EVENTS, viewManager.isActiveView (Views.VIEW_PLAY) || viewManager.isActiveView (Views.VIEW_DRUM) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_VARIATION, viewManager.isActiveView (Views.VIEW_DEVICE) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
 
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_DUPLICATE, this.configuration.isDuplicateEnabled () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_SELECT, viewManager.isActiveView (Views.VIEW_TRACK_SELECT) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_SOLO, viewManager.isActiveView (Views.VIEW_TRACK_SOLO) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_MUTE, viewManager.isActiveView (Views.VIEW_TRACK_MUTE) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_DUPLICATE, this.configuration.isDuplicateEnabled () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_SELECT, viewManager.isActiveView (Views.VIEW_TRACK_SELECT) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_SOLO, viewManager.isActiveView (Views.VIEW_TRACK_SOLO) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_MUTE, viewManager.isActiveView (Views.VIEW_TRACK_MUTE) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
 
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_PAD_MODE, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_KEYBOARD, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_CHORDS, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
-        surface.updateButton (MaschineMikroMk3ControlSurface.MIKRO_3_STEP, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_PAD_MODE, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_KEYBOARD, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_CHORDS, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
+        surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_STEP, MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
     }
 
 
-    private void updateMode (final Integer mode)
+    private void updateMode (final Modes mode)
     {
-        final Integer m = mode == null ? this.getSurface ().getModeManager ().getActiveOrTempModeId () : mode;
+        final Modes m = mode == null ? this.getSurface ().getModeManager ().getActiveOrTempModeId () : mode;
         if (this.currentMode != null && this.currentMode.equals (m))
             return;
         this.currentMode = m;
@@ -372,7 +367,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
 
     /** {@inheritDoc} */
     @Override
-    protected void updateIndication (final Integer mode)
+    protected void updateIndication (final Modes mode)
     {
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();

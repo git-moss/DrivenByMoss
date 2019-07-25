@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.controller;
 
+import de.mossgrabers.framework.command.ContinuousCommandID;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
@@ -40,7 +42,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     protected C                   configuration;
     protected ColorManager        colorManager;
     protected IValueChanger       valueChanger;
-    protected Integer             currentMode = Modes.MODE_VOLUME;
+    protected Modes               currentMode = Modes.MODE_VOLUME;
 
 
     /**
@@ -219,7 +221,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      * @param midiCC The midi CC
      * @param command The command to register
      */
-    protected void addTriggerCommand (final Integer commandID, final int midiCC, final TriggerCommand command)
+    protected void addTriggerCommand (final TriggerCommandID commandID, final int midiCC, final TriggerCommand command)
     {
         this.addTriggerCommand (commandID, midiCC, command, 0);
     }
@@ -233,7 +235,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      * @param command The command to register
      * @param deviceIndex The index of the device
      */
-    protected void addTriggerCommand (final Integer commandID, final int midiCC, final TriggerCommand command, final int deviceIndex)
+    protected void addTriggerCommand (final TriggerCommandID commandID, final int midiCC, final TriggerCommand command, final int deviceIndex)
     {
         final S surface = this.surfaces.get (deviceIndex);
         surface.getViewManager ().registerTriggerCommand (commandID, command);
@@ -249,7 +251,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      * @param midiChannel The midi channel to assign to
      * @param command The command to register
      */
-    protected void addTriggerCommand (final Integer commandID, final int midiCC, final int midiChannel, final TriggerCommand command)
+    protected void addTriggerCommand (final TriggerCommandID commandID, final int midiCC, final int midiChannel, final TriggerCommand command)
     {
         this.addTriggerCommand (commandID, midiCC, midiChannel, command, 0);
     }
@@ -264,7 +266,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      * @param command The command to register
      * @param deviceIndex The index of the device
      */
-    protected void addTriggerCommand (final Integer commandID, final int midiCC, final int midiChannel, final TriggerCommand command, final int deviceIndex)
+    protected void addTriggerCommand (final TriggerCommandID commandID, final int midiCC, final int midiChannel, final TriggerCommand command, final int deviceIndex)
     {
         final S surface = this.surfaces.get (deviceIndex);
         surface.getViewManager ().registerTriggerCommand (commandID, command);
@@ -280,7 +282,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      * @param midiChannel The midi channel to assign to
      * @param command The command to register
      */
-    protected void addContinuousCommand (final Integer commandID, final int midiCC, final int midiChannel, final ContinuousCommand command)
+    protected void addContinuousCommand (final ContinuousCommandID commandID, final int midiCC, final int midiChannel, final ContinuousCommand command)
     {
         final S surface = this.surfaces.get (0);
         surface.getViewManager ().registerContinuousCommand (commandID, command);
@@ -295,7 +297,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      * @param midiCC The midi CC
      * @param command The command to register
      */
-    protected void addContinuousCommand (final Integer commandID, final int midiCC, final ContinuousCommand command)
+    protected void addContinuousCommand (final ContinuousCommandID commandID, final int midiCC, final ContinuousCommand command)
     {
         final S surface = this.surfaces.get (0);
         surface.getViewManager ().registerContinuousCommand (commandID, command);
@@ -307,14 +309,14 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      * Register a (global) note command for all views and assign it to a MIDI CC.
      *
      * @param commandID The ID of the command to register
-     * @param midiCC The midi CC
+     * @param note The midi note
      * @param command The command to register
      */
-    protected void addNoteCommand (final Integer commandID, final int midiCC, final TriggerCommand command)
+    protected void addNoteCommand (final TriggerCommandID commandID, final int note, final TriggerCommand command)
     {
         final S surface = this.surfaces.get (0);
         surface.getViewManager ().registerNoteCommand (commandID, command);
-        surface.assignNoteCommand (midiCC, commandID);
+        surface.assignNoteCommand (note, commandID);
     }
 
 
@@ -323,7 +325,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      *
      * @param mode The new mode
      */
-    protected abstract void updateIndication (final Integer mode);
+    protected abstract void updateIndication (final Modes mode);
 
 
     /**

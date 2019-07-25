@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.command.continuous;
 
-import de.mossgrabers.framework.command.Commands;
+import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
@@ -127,23 +127,23 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
         switch (this.getSetting ())
         {
             case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_PLAY:
-                activeView.executeTriggerCommand (Commands.COMMAND_PLAY, event);
+                activeView.executeTriggerCommand (TriggerCommandID.PLAY, event);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_RECORD:
-                activeView.executeTriggerCommand (Commands.COMMAND_RECORD, event);
+                activeView.executeTriggerCommand (TriggerCommandID.RECORD, event);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_UNDO:
-                activeView.executeTriggerCommand (Commands.COMMAND_UNDO, event);
+                activeView.executeTriggerCommand (TriggerCommandID.UNDO, event);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_TAP_TEMPO:
-                activeView.executeTriggerCommand (Commands.COMMAND_TAP_TEMPO, event);
+                activeView.executeTriggerCommand (TriggerCommandID.TAP_TEMPO, event);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_NEW_BUTTON:
-                activeView.executeTriggerCommand (Commands.COMMAND_NEW, event);
+                activeView.executeTriggerCommand (TriggerCommandID.NEW, event);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
@@ -186,7 +186,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
             {
                 // If there is no clip in the selected slot, create a clip and begin record
                 // mode. Releasing it ends record mode.
-                this.surface.getViewManager ().getActiveView ().executeTriggerCommand (Commands.COMMAND_NEW, event);
+                this.surface.getViewManager ().getActiveView ().executeTriggerCommand (TriggerCommandID.NEW, event);
                 slot.select ();
                 this.model.getTransport ().setLauncherOverdub (true);
             }

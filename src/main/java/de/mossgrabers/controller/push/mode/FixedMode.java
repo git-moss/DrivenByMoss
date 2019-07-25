@@ -66,7 +66,7 @@ public class FixedMode extends BaseMode
         final ColorManager colorManager = this.model.getColorManager ();
         final Configuration configuration = this.surface.getConfiguration ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (20 + i, colorManager.getColor (configuration.getNewClipLength () == i ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+            this.surface.updateTrigger (20 + i, colorManager.getColor (configuration.getNewClipLength () == i ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
     }
 
 
@@ -76,7 +76,7 @@ public class FixedMode extends BaseMode
     {
         final ColorManager colorManager = this.model.getColorManager ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateButton (102 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_ON));
+            this.surface.updateTrigger (102 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_ON));
     }
 
 

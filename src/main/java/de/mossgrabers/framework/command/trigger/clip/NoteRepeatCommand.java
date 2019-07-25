@@ -46,7 +46,7 @@ public class NoteRepeatCommand<S extends IControlSurface<C>, C extends Configura
         if (event == ButtonEvent.LONG || event == ButtonEvent.DOWN && this.surface.isShiftPressed ())
         {
             modeManager.setActiveMode (Modes.MODE_REPEAT_NOTE);
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_REPEAT);
+            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_REPEAT);
             return;
         }
 

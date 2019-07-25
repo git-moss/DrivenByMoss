@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.mode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,13 +18,13 @@ import java.util.Map.Entry;
  */
 public class ModeManager
 {
-    private final Map<Integer, Mode>       modes               = new HashMap<> ();
+    private final Map<Modes, Mode>         modes               = new EnumMap<> (Modes.class);
     private final List<ModeChangeListener> modeChangeListeners = new ArrayList<> ();
 
-    private Integer                        activeModeId        = null;
-    private Integer                        previousModeId      = null;
-    private Integer                        temporaryModeId     = null;
-    private Integer                        defaultModeId       = null;
+    private Modes                          activeModeId        = null;
+    private Modes                          previousModeId      = null;
+    private Modes                          temporaryModeId     = null;
+    private Modes                          defaultModeId       = null;
 
 
     /**
@@ -33,7 +33,7 @@ public class ModeManager
      * @param modeId The ID of the mode to register
      * @param mode The mode to register
      */
-    public void registerMode (final Integer modeId, final Mode mode)
+    public void registerMode (final Modes modeId, final Mode mode)
     {
         this.modes.put (modeId, mode);
     }
@@ -45,7 +45,7 @@ public class ModeManager
      * @param modeId An ID
      * @return The mode or null if no mode with that ID is registered
      */
-    public Mode getMode (final Integer modeId)
+    public Mode getMode (final Modes modeId)
     {
         return this.modes.get (modeId);
     }
@@ -57,9 +57,9 @@ public class ModeManager
      * @param modeName The name of a mode
      * @return The mode or null if no mode with that name is registered
      */
-    public Integer getMode (final String modeName)
+    public Modes getMode (final String modeName)
     {
-        for (final Entry<Integer, Mode> entry: this.modes.entrySet ())
+        for (final Entry<Modes, Mode> entry: this.modes.entrySet ())
             if (modeName.equals (entry.getValue ().getName ()))
                 return entry.getKey ();
         return null;
@@ -72,9 +72,9 @@ public class ModeManager
      *
      * @param modeId The ID of the mode to activate
      */
-    public void setActiveMode (final Integer modeId)
+    public void setActiveMode (final Modes modeId)
     {
-        final Integer id = modeId == null ? this.defaultModeId : modeId;
+        final Modes id = modeId == null ? this.defaultModeId : modeId;
 
         // Do nothing if already active
         if (this.isActiveOrTempMode (id))
@@ -117,7 +117,7 @@ public class ModeManager
      *
      * @return The ID
      */
-    public Integer getActiveModeId ()
+    public Modes getActiveModeId ()
     {
         return this.activeModeId;
     }
@@ -129,10 +129,9 @@ public class ModeManager
      * @param modeId An ID
      * @return True if active
      */
-    public boolean isActiveMode (final Integer modeId)
+    public boolean isActiveMode (final Modes modeId)
     {
-        final Integer mode = this.getActiveModeId ();
-        return mode != null && mode.equals (modeId);
+        return this.getActiveModeId () == modeId;
     }
 
 
@@ -152,7 +151,7 @@ public class ModeManager
      *
      * @return The ID
      */
-    public Integer getActiveOrTempModeId ()
+    public Modes getActiveOrTempModeId ()
     {
         return this.temporaryModeId == null ? this.activeModeId : this.temporaryModeId;
     }
@@ -164,10 +163,9 @@ public class ModeManager
      * @param modeId An ID
      * @return True if active
      */
-    public boolean isActiveOrTempMode (final Integer modeId)
+    public boolean isActiveOrTempMode (final Modes modeId)
     {
-        final Integer mode = this.getActiveOrTempModeId ();
-        return mode != null && mode.equals (modeId);
+        return this.getActiveOrTempModeId () == modeId;
     }
 
 
@@ -176,7 +174,7 @@ public class ModeManager
      *
      * @return The ID of the previous mode
      */
-    public Integer getPreviousModeId ()
+    public Modes getPreviousModeId ()
     {
         return this.previousModeId;
     }
@@ -188,7 +186,7 @@ public class ModeManager
     public void restoreMode ()
     {
         // Deactivate the current temporary or active mode
-        Integer oldModeId = null;
+        Modes oldModeId = null;
         if (this.temporaryModeId != null)
         {
             oldModeId = this.temporaryModeId;
@@ -226,7 +224,7 @@ public class ModeManager
      *
      * @param modeId The ID of the default mode
      */
-    public void setDefaultMode (final Integer modeId)
+    public void setDefaultMode (final Modes modeId)
     {
         this.defaultModeId = modeId;
     }
@@ -249,7 +247,7 @@ public class ModeManager
      * @param oldMode The old mode
      * @param newMode The new mode
      */
-    private void notifyObservers (final Integer oldMode, final Integer newMode)
+    private void notifyObservers (final Modes oldMode, final Modes newMode)
     {
         for (final ModeChangeListener listener: this.modeChangeListeners)
             listener.call (oldMode, newMode);

@@ -45,7 +45,7 @@ public class DrumView extends DrumViewBase
     {
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_BROWSE))
         {
-            this.surface.setButtonConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
+            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
 
             final ICursorDevice primary = this.model.getInstrumentDevice ();
             if (!primary.hasDrumPads ())

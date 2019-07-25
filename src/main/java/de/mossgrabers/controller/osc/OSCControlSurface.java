@@ -23,13 +23,21 @@ public class OSCControlSurface extends AbstractControlSurface<OSCConfiguration>
      */
     public OSCControlSurface (final IHost host, final OSCConfiguration configuration, final ColorManager colorManager, final IMidiInput input)
     {
-        super (host, configuration, colorManager, null, null, null, new int [0]);
+        super (host, configuration, colorManager, null, null, null);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setButtonEx (int button, int channel, int value)
+    public void setTrigger (int cc, int channel, int value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setContinuous (int cc, int channel, int value)
     {
         // Intentionally empty
     }
