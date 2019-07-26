@@ -79,7 +79,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
                     // Commit
                     case 7:
                         this.model.getBrowser ().stopBrowsing (true);
-                        this.surface.getModeManager ().setActiveMode (Modes.MODE_TRACK_DETAILS);
+                        this.surface.getModeManager ().setActiveMode (Modes.TRACK_DETAILS);
                         this.selectionMode = DevicePresetsMode.SELECTION_OFF;
                         break;
                     // All other buttons return to Browse

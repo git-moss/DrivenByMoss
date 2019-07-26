@@ -106,7 +106,7 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
             if (layer != null)
                 layer.toggleSolo ();
         }
-        else if (Modes.MODE_MASTER.equals (activeModeId))
+        else if (Modes.MASTER.equals (activeModeId))
             this.model.getMasterTrack ().toggleSolo ();
         else
         {

@@ -158,10 +158,10 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
 
         this.isShift = velocity == 127;
         if (this.isShift)
-            this.getViewManager ().setActiveView (Views.VIEW_SHIFT);
+            this.getViewManager ().setActiveView (Views.SHIFT);
         else
         {
-            if (this.getViewManager ().isActiveView (Views.VIEW_SHIFT))
+            if (this.getViewManager ().isActiveView (Views.SHIFT))
                 this.getViewManager ().restoreView ();
             this.getPadGrid ().forceFlush ();
         }

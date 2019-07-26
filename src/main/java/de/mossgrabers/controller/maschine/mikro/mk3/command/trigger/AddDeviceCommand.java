@@ -30,7 +30,7 @@ public class AddDeviceCommand extends AddEffectCommand<MaschineMikroMk3ControlSu
      */
     public AddDeviceCommand (final IModel model, final MaschineMikroMk3ControlSurface surface)
     {
-        super (Modes.MODE_BROWSER, model, surface);
+        super (Modes.BROWSER, model, surface);
     }
 
 

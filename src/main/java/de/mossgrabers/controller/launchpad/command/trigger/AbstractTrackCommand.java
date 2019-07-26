@@ -51,7 +51,7 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
                     return;
                 }
                 modeManager.setActiveMode (controlMode);
-                this.surface.getViewManager ().setActiveView (Views.VIEW_SESSION);
+                this.surface.getViewManager ().setActiveView (Views.SESSION);
                 this.surface.getDisplay ().notify (notification);
                 break;
 

@@ -43,7 +43,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     protected C                   configuration;
     protected ColorManager        colorManager;
     protected IValueChanger       valueChanger;
-    protected Modes               currentMode = Modes.MODE_VOLUME;
+    protected Modes               currentMode = Modes.VOLUME;
 
 
     /**
@@ -128,6 +128,24 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         for (final S surface: this.surfaces)
             surface.shutdown ();
         this.host.println ("Exited.");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void flush ()
+    {
+        this.flushSurfaces ();
+        this.updateButtons ();
+    }
+
+
+    /**
+     * Update all button LEDs, except the ones controlled by the views. Refreshed on flush.
+     */
+    protected void updateButtons ()
+    {
+        // Overwrite to update button LEDs
     }
 
 

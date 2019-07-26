@@ -38,6 +38,6 @@ public class StopClipCommand extends AbstractTrackCommand
             this.model.getCurrentTrackBank ().stop ();
             return;
         }
-        this.onModeButton (event, Modes.MODE_STOP_CLIP, "Stop Clip");
+        this.onModeButton (event, Modes.STOP_CLIP, "Stop Clip");
     }
 }

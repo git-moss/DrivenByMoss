@@ -27,12 +27,12 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
 {
     private static final Views []                                      VIEWS =
     {
-        Views.VIEW_TRACK,
-        Views.VIEW_DEVICE,
-        Views.VIEW_PLAY,
-        Views.VIEW_DRUM,
-        Views.VIEW_SEQUENCER,
-        Views.VIEW_SESSION
+        Views.TRACK,
+        Views.DEVICE,
+        Views.PLAY,
+        Views.DRUM,
+        Views.SEQUENCER,
+        Views.SESSION
     };
 
     private PlayCommand<BeatstepControlSurface, BeatstepConfiguration> playCommand;
@@ -166,7 +166,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
     {
         final ViewManager viewManager = this.surface.getViewManager ();
         final Views previousViewId = viewManager.getPreviousViewId ();
-        viewManager.setActiveView (Views.VIEW_BROWSER);
+        viewManager.setActiveView (Views.BROWSER);
         viewManager.setPreviousView (previousViewId);
     }
 }

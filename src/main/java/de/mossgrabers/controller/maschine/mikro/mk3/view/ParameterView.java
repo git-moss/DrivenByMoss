@@ -45,7 +45,7 @@ public class ParameterView extends BaseView
             return;
         }
 
-        ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.MODE_DEVICE_PARAMS)).selectParameter (padIndex);
+        ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.DEVICE_PARAMS)).selectParameter (padIndex);
         this.model.getHost ().scheduleTask ( () -> {
 
             final StringBuilder message = new StringBuilder ();

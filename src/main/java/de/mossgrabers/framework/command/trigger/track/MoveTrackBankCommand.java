@@ -72,7 +72,7 @@ public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Config
             return;
         }
 
-        if (modeManager.isActiveOrTempMode (Modes.MODE_MARKERS))
+        if (modeManager.isActiveOrTempMode (Modes.MARKERS))
         {
             this.handleBankMovement (this.model.getMarkerBank ());
             return;

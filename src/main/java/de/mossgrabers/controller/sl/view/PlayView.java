@@ -78,15 +78,15 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         final ModeManager modeManager = this.surface.getModeManager ();
         final Modes activeModeId = modeManager.getActiveOrTempModeId ();
-        if (Modes.MODE_VIEW_SELECT == activeModeId)
+        if (Modes.VIEW_SELECT == activeModeId)
         {
             if (index == 0)
             {
-                this.surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-                if (Modes.MODE_VOLUME.equals (modeManager.getPreviousModeId ()))
+                this.surface.getViewManager ().setActiveView (Views.CONTROL);
+                if (Modes.VOLUME.equals (modeManager.getPreviousModeId ()))
                     modeManager.restoreMode ();
                 else
-                    modeManager.setActiveMode (Modes.MODE_TRACK);
+                    modeManager.setActiveMode (Modes.TRACK);
             }
             else
                 modeManager.restoreMode ();
@@ -94,8 +94,8 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             return;
         }
 
-        if (!Modes.MODE_SESSION.equals (activeModeId))
-            modeManager.setActiveMode (Modes.MODE_SESSION);
+        if (!Modes.SESSION.equals (activeModeId))
+            modeManager.setActiveMode (Modes.SESSION);
 
         this.model.getSceneBank ().getItem (index).launch ();
     }
@@ -110,8 +110,8 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         final ModeManager modeManager = this.surface.getModeManager ();
         final Modes cm = modeManager.getActiveOrTempModeId ();
-        if (!Modes.MODE_PLAY_OPTIONS.equals (cm))
-            modeManager.setActiveMode (Modes.MODE_PLAY_OPTIONS);
+        if (!Modes.PLAY_OPTIONS.equals (cm))
+            modeManager.setActiveMode (Modes.PLAY_OPTIONS);
 
         switch (index)
         {
@@ -202,7 +202,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     @Override
     public void onButtonRow1Select ()
     {
-        this.surface.getModeManager ().setActiveMode (Modes.MODE_SESSION);
+        this.surface.getModeManager ().setActiveMode (Modes.SESSION);
     }
 
 
@@ -210,7 +210,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     @Override
     public void onButtonRow2Select ()
     {
-        this.surface.getModeManager ().setActiveMode (Modes.MODE_PLAY_OPTIONS);
+        this.surface.getModeManager ().setActiveMode (Modes.PLAY_OPTIONS);
     }
 
 
@@ -222,7 +222,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             return;
 
         final Modes activeModeId = this.surface.getModeManager ().getActiveOrTempModeId ();
-        if (Modes.MODE_SESSION == activeModeId)
+        if (Modes.SESSION == activeModeId)
         {
             if (isUp)
                 this.model.getSceneBank ().selectNextPage ();
@@ -231,26 +231,26 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             return;
         }
 
-        if (Modes.MODE_VOLUME.equals (activeModeId))
+        if (Modes.VOLUME.equals (activeModeId))
         {
             new P2ButtonCommand (isUp, this.model, this.surface).execute (event);
             return;
         }
 
-        if (Modes.MODE_TRACK.equals (activeModeId) || Modes.MODE_MASTER.equals (activeModeId))
+        if (Modes.TRACK.equals (activeModeId) || Modes.MASTER.equals (activeModeId))
         {
             new ButtonRowSelectCommand<> (3, this.model, this.surface).execute (event);
             return;
         }
 
-        if (Modes.MODE_PLAY_OPTIONS.equals (activeModeId))
+        if (Modes.PLAY_OPTIONS.equals (activeModeId))
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
         if (isUp)
-            ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).nextPage ();
+            ((DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS)).nextPage ();
         else
-            ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).previousPage ();
+            ((DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS)).previousPage ();
     }
 
 
@@ -267,7 +267,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW2_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
 
         // LED indications for device parameters
-        ((DeviceParamsMode) this.surface.getModeManager ().getMode (Modes.MODE_DEVICE_PARAMS)).setLEDs ();
+        ((DeviceParamsMode) this.surface.getModeManager ().getMode (Modes.DEVICE_PARAMS)).setLEDs ();
 
         // Transport buttons
         if (this.surface.isTransportActive ())
@@ -287,12 +287,12 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         }
 
         final Modes mode = this.surface.getModeManager ().getActiveOrTempModeId ();
-        final boolean isSession = Modes.MODE_SESSION == mode;
-        final boolean isDevice = Modes.MODE_DEVICE_PARAMS == mode;
-        final boolean isPlayOptions = Modes.MODE_PLAY_OPTIONS == mode;
-        final boolean isTrack = Modes.MODE_TRACK == mode;
-        final boolean isMaster = Modes.MODE_MASTER == mode;
-        final boolean isVolume = Modes.MODE_VOLUME == mode;
+        final boolean isSession = Modes.SESSION == mode;
+        final boolean isDevice = Modes.DEVICE_PARAMS == mode;
+        final boolean isPlayOptions = Modes.PLAY_OPTIONS == mode;
+        final boolean isTrack = Modes.TRACK == mode;
+        final boolean isMaster = Modes.MASTER == mode;
+        final boolean isVolume = Modes.VOLUME == mode;
         this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROWSEL1, isSession ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
         this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROWSEL2, isDevice ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
         this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROWSEL3, isPlayOptions ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);

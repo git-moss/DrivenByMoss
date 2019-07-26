@@ -27,7 +27,7 @@ public class DevicesCommand extends ModeSelectCommand<MCUControlSurface, MCUConf
      */
     public DevicesCommand (final IModel model, final MCUControlSurface surface)
     {
-        super (model, surface, Modes.MODE_DEVICE_PARAMS);
+        super (model, surface, Modes.DEVICE_PARAMS);
     }
 
 

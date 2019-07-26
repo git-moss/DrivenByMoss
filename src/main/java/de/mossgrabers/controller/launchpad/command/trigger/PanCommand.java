@@ -33,6 +33,6 @@ public class PanCommand extends AbstractTrackCommand
     @Override
     public void execute (final ButtonEvent event)
     {
-        this.onFaderModeButton (event, Views.VIEW_TRACK_PAN, "Pan");
+        this.onFaderModeButton (event, Views.TRACK_PAN, "Pan");
     }
 }

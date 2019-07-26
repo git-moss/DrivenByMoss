@@ -54,17 +54,17 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
             }
 
             final Views preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
-            viewManager.setActiveView (preferredView == null ? Views.VIEW_PLAY : preferredView);
+            viewManager.setActiveView (preferredView == null ? Views.PLAY : preferredView);
 
-            if (modeManager.isActiveMode (Modes.MODE_SESSION) || modeManager.getActiveOrTempMode ().isTemporary ())
+            if (modeManager.isActiveMode (Modes.SESSION) || modeManager.getActiveOrTempMode ().isTemporary ())
                 modeManager.restoreMode ();
 
             return;
         }
 
-        if (modeManager.isActiveOrTempMode (Modes.MODE_VIEW_SELECT))
+        if (modeManager.isActiveOrTempMode (Modes.VIEW_SELECT))
             modeManager.restoreMode ();
         else
-            modeManager.setActiveMode (Modes.MODE_VIEW_SELECT);
+            modeManager.setActiveMode (Modes.VIEW_SELECT);
     }
 }

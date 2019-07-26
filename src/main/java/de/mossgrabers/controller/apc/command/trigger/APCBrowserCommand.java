@@ -26,7 +26,7 @@ public class APCBrowserCommand extends BrowserCommand<APCControlSurface, APCConf
      */
     public APCBrowserCommand (final IModel model, final APCControlSurface surface)
     {
-        super (Modes.MODE_BROWSER, model, surface);
+        super (Modes.BROWSER, model, surface);
     }
 
 

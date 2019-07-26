@@ -56,13 +56,13 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         {
             if (config.isPush2 ())
             {
-                if (Modes.MODE_TRACK.equals (currentMode) || Modes.MODE_VOLUME.equals (currentMode) || Modes.MODE_CROSSFADER.equals (currentMode) || Modes.MODE_PAN.equals (currentMode))
+                if (Modes.TRACK.equals (currentMode) || Modes.VOLUME.equals (currentMode) || Modes.CROSSFADER.equals (currentMode) || Modes.PAN.equals (currentMode))
                 {
                     this.model.toggleCurrentTrackBank ();
                 }
-                else if (currentMode.ordinal () >= Modes.MODE_SEND1.ordinal () && currentMode.ordinal () <= Modes.MODE_SEND8.ordinal ())
+                else if (currentMode.ordinal () >= Modes.SEND1.ordinal () && currentMode.ordinal () <= Modes.SEND8.ordinal ())
                 {
-                    modeManager.setActiveMode (Modes.MODE_TRACK);
+                    modeManager.setActiveMode (Modes.TRACK);
                     this.model.toggleCurrentTrackBank ();
                 }
                 else
@@ -73,18 +73,18 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
                 // Layer mode selection for Push 1
                 if (this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
                 {
-                    modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
+                    modeManager.setActiveMode (Modes.DEVICE_LAYER);
                     return;
                 }
 
-                if (Modes.MODE_TRACK.equals (currentMode))
+                if (Modes.TRACK.equals (currentMode))
                     this.model.toggleCurrentTrackBank ();
                 else
-                    modeManager.setActiveMode (Modes.MODE_TRACK);
+                    modeManager.setActiveMode (Modes.TRACK);
             }
         }
         else
-            modeManager.setActiveMode (Modes.MODE_TRACK);
+            modeManager.setActiveMode (Modes.TRACK);
 
         config.setDebugMode (modeManager.getActiveOrTempModeId ());
 

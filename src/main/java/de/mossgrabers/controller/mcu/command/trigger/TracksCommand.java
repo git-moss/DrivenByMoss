@@ -27,7 +27,7 @@ public class TracksCommand extends ModeMultiSelectCommand<MCUControlSurface, MCU
      */
     public TracksCommand (final IModel model, final MCUControlSurface surface)
     {
-        super (model, surface, Modes.MODE_VOLUME, Modes.MODE_TRACK);
+        super (model, surface, Modes.VOLUME, Modes.TRACK);
     }
 
 

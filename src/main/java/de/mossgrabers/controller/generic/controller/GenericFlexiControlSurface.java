@@ -79,18 +79,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     static
     {
-        MODE_IDS.add (Modes.MODE_TRACK);
-        MODE_IDS.add (Modes.MODE_VOLUME);
-        MODE_IDS.add (Modes.MODE_PAN);
-        MODE_IDS.add (Modes.MODE_SEND1);
-        MODE_IDS.add (Modes.MODE_SEND2);
-        MODE_IDS.add (Modes.MODE_SEND3);
-        MODE_IDS.add (Modes.MODE_SEND4);
-        MODE_IDS.add (Modes.MODE_SEND5);
-        MODE_IDS.add (Modes.MODE_SEND6);
-        MODE_IDS.add (Modes.MODE_SEND7);
-        MODE_IDS.add (Modes.MODE_SEND8);
-        MODE_IDS.add (Modes.MODE_DEVICE_PARAMS);
+        MODE_IDS.add (Modes.TRACK);
+        MODE_IDS.add (Modes.VOLUME);
+        MODE_IDS.add (Modes.PAN);
+        MODE_IDS.add (Modes.SEND1);
+        MODE_IDS.add (Modes.SEND2);
+        MODE_IDS.add (Modes.SEND3);
+        MODE_IDS.add (Modes.SEND4);
+        MODE_IDS.add (Modes.SEND5);
+        MODE_IDS.add (Modes.SEND6);
+        MODE_IDS.add (Modes.SEND7);
+        MODE_IDS.add (Modes.SEND8);
+        MODE_IDS.add (Modes.DEVICE_PARAMS);
     }
 
 
@@ -1574,51 +1574,51 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 break;
             case MODES_SELECT_MODE_TRACK:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_TRACK);
+                    this.activateMode (Modes.TRACK);
                 break;
             case MODES_SELECT_MODE_VOLUME:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_VOLUME);
+                    this.activateMode (Modes.VOLUME);
                 break;
             case MODES_SELECT_MODE_PAN:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_PAN);
+                    this.activateMode (Modes.PAN);
                 break;
             case MODES_SELECT_MODE_SEND1:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_SEND1);
+                    this.activateMode (Modes.SEND1);
                 break;
             case MODES_SELECT_MODE_SEND2:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_SEND2);
+                    this.activateMode (Modes.SEND2);
                 break;
             case MODES_SELECT_MODE_SEND3:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_SEND3);
+                    this.activateMode (Modes.SEND3);
                 break;
             case MODES_SELECT_MODE_SEND4:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_SEND4);
+                    this.activateMode (Modes.SEND4);
                 break;
             case MODES_SELECT_MODE_SEND5:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_SEND5);
+                    this.activateMode (Modes.SEND5);
                 break;
             case MODES_SELECT_MODE_SEND6:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_SEND6);
+                    this.activateMode (Modes.SEND6);
                 break;
             case MODES_SELECT_MODE_SEND7:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_SEND7);
+                    this.activateMode (Modes.SEND7);
                 break;
             case MODES_SELECT_MODE_SEND8:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_SEND8);
+                    this.activateMode (Modes.SEND8);
                 break;
             case MODES_SELECT_MODE_DEVICE:
                 if (isButtonPressed)
-                    this.activateMode (Modes.MODE_DEVICE_PARAMS);
+                    this.activateMode (Modes.DEVICE_PARAMS);
                 break;
             case MODES_SELECT_MODE_NEXT:
                 if (isButtonPressed)
@@ -1632,7 +1632,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (isButtonPressed)
                 {
                     this.model.getBrowser ().browseForPresets ();
-                    this.host.scheduleTask ( () -> this.activateMode (Modes.MODE_BROWSER), 500);
+                    this.host.scheduleTask ( () -> this.activateMode (Modes.BROWSER), 500);
                 }
                 break;
 
@@ -2183,7 +2183,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 index = MODE_IDS.size () - 1;
             newMode = MODE_IDS.get (index);
             newModeID = newMode.ordinal ();
-        } while (newModeID >= Modes.MODE_SEND1.ordinal () && newModeID <= Modes.MODE_SEND8.ordinal () && !trackBank.canEditSend (newModeID - Modes.MODE_SEND1.ordinal ()));
+        } while (newModeID >= Modes.SEND1.ordinal () && newModeID <= Modes.SEND8.ordinal () && !trackBank.canEditSend (newModeID - Modes.SEND1.ordinal ()));
 
         this.activateMode (newMode);
     }
@@ -2204,7 +2204,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 index = 0;
             newMode = MODE_IDS.get (index);
             newModeID = newMode.ordinal ();
-        } while (newModeID >= Modes.MODE_SEND1.ordinal () && newModeID <= Modes.MODE_SEND8.ordinal () && !trackBank.canEditSend (newModeID - Modes.MODE_SEND1.ordinal ()));
+        } while (newModeID >= Modes.SEND1.ordinal () && newModeID <= Modes.SEND8.ordinal () && !trackBank.canEditSend (newModeID - Modes.SEND1.ordinal ()));
 
         this.activateMode (newMode);
     }

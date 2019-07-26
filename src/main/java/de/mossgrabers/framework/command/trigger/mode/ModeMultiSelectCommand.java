@@ -48,7 +48,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
 
         this.modeManager = this.surface.getModeManager ();
         this.modeIds.addAll (Arrays.asList (modeIds));
-        this.send1 = Modes.MODE_SEND1;
+        this.send1 = Modes.SEND1;
         this.currentModeID = this.modeIds.get (0);
     }
 

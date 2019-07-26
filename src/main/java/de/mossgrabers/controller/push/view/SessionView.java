@@ -68,7 +68,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     {
         if (velocity == 0)
         {
-            final TriggerCommand triggerCommand = this.surface.getViewManager ().getView (Views.VIEW_SESSION).getTriggerCommand (TriggerCommandID.SELECT_SESSION_VIEW);
+            final TriggerCommand triggerCommand = this.surface.getViewManager ().getView (Views.SESSION).getTriggerCommand (TriggerCommandID.SELECT_SESSION_VIEW);
             ((SelectSessionViewCommand) triggerCommand).setTemporary ();
             return;
         }
@@ -132,7 +132,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
                 return;
             track.getSlotBank ().getItem (s).browse ();
             final ModeManager modeManager = this.surface.getModeManager ();
-            if (!modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
+            if (!modeManager.isActiveOrTempMode (Modes.BROWSER))
                 this.activateMode ();
             return;
         }
@@ -147,7 +147,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     protected void activateMode ()
     {
         if (this.model.getBrowser ().isActive ())
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
+            this.surface.getModeManager ().setActiveMode (Modes.BROWSER);
         else if (this.startRetries < NUMBER_OF_RETRIES)
         {
             this.startRetries++;

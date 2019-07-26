@@ -296,7 +296,7 @@ public class BrowseMode extends AbstractKontrol1Mode
     @Override
     public void onBack ()
     {
-        ((BrowserCommand<?, ?>) this.surface.getViewManager ().getView (Views.VIEW_CONTROL).getTriggerCommand (TriggerCommandID.BROWSE)).startBrowser (true, true);
+        ((BrowserCommand<?, ?>) this.surface.getViewManager ().getView (Views.CONTROL).getTriggerCommand (TriggerCommandID.BROWSE)).startBrowser (true, true);
     }
 
 
@@ -304,7 +304,7 @@ public class BrowseMode extends AbstractKontrol1Mode
     @Override
     public void onEnter ()
     {
-        ((BrowserCommand<?, ?>) this.surface.getViewManager ().getView (Views.VIEW_CONTROL).getTriggerCommand (TriggerCommandID.BROWSE)).startBrowser (false, false);
+        ((BrowserCommand<?, ?>) this.surface.getViewManager ().getView (Views.CONTROL).getTriggerCommand (TriggerCommandID.BROWSE)).startBrowser (false, false);
     }
 
 

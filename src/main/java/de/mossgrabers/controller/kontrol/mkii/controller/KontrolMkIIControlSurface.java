@@ -143,6 +143,8 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
     public KontrolMkIIControlSurface (final IHost host, final ColorManager colorManager, final KontrolMkIIConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
         super (host, configuration, colorManager, output, input, null);
+
+        this.defaultMidiChannel = 15;
     }
 
 

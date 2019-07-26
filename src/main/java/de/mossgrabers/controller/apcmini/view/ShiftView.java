@@ -113,11 +113,11 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         if (this.model.getHost ().hasClips ())
         {
             final Views previousViewId = this.surface.getViewManager ().getPreviousViewId ();
-            padGrid.light (36 + 56, Views.VIEW_SESSION == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 57, Views.VIEW_PLAY == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 58, Views.VIEW_DRUM == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 59, Views.VIEW_SEQUENCER == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 60, Views.VIEW_RAINDROPS == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 56, Views.SESSION == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 57, Views.PLAY == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 58, Views.DRUM == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 59, Views.SEQUENCER == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+            padGrid.light (36 + 60, Views.RAINDROPS == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
         }
         else
         {
@@ -152,19 +152,19 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         {
             // Flip views
             case 56:
-                this.switchToView (Views.VIEW_SESSION);
+                this.switchToView (Views.SESSION);
                 break;
             case 57:
-                this.switchToView (Views.VIEW_PLAY);
+                this.switchToView (Views.PLAY);
                 break;
             case 58:
-                this.switchToView (Views.VIEW_DRUM);
+                this.switchToView (Views.DRUM);
                 break;
             case 59:
-                this.switchToView (Views.VIEW_SEQUENCER);
+                this.switchToView (Views.SEQUENCER);
                 break;
             case 60:
-                this.switchToView (Views.VIEW_RAINDROPS);
+                this.switchToView (Views.RAINDROPS);
                 break;
 
             // Last row transport
@@ -288,13 +288,13 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 break;
 
             case 4:
-                modeManager.setActiveMode (Modes.MODE_VOLUME);
+                modeManager.setActiveMode (Modes.VOLUME);
                 this.surface.getConfiguration ().setFaderCtrl ("Volume");
                 this.surface.getDisplay ().notify ("Volume");
                 break;
 
             case 5:
-                modeManager.setActiveMode (Modes.MODE_PAN);
+                modeManager.setActiveMode (Modes.PAN);
                 this.surface.getConfiguration ().setFaderCtrl ("Pan");
                 this.surface.getDisplay ().notify ("Pan");
                 break;
@@ -305,28 +305,28 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 Modes mode = Modes.get (modeManager.getActiveOrTempModeId (), 1);
                 // Wrap
                 if (!Modes.isSendMode (mode))
-                    mode = Modes.MODE_SEND1;
+                    mode = Modes.SEND1;
                 // Check if Send channel exists
-                if (Modes.isSendMode (mode) && tb.canEditSend (mode.ordinal () - Modes.MODE_SEND1.ordinal ()))
-                    mode = Modes.MODE_SEND1;
+                if (Modes.isSendMode (mode) && tb.canEditSend (mode.ordinal () - Modes.SEND1.ordinal ()))
+                    mode = Modes.SEND1;
                 modeManager.setActiveMode (mode);
-                final String name = "Send " + (mode.ordinal () - Modes.MODE_SEND1.ordinal () + 1);
+                final String name = "Send " + (mode.ordinal () - Modes.SEND1.ordinal () + 1);
                 this.surface.getConfiguration ().setFaderCtrl (name);
                 this.surface.getDisplay ().notify (name);
                 break;
 
             case 7:
-                if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
+                if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
                 {
                     this.model.getBrowser ().browseForPresets ();
                     final ViewManager viewManager = this.surface.getViewManager ();
                     final Views previousViewId = viewManager.getPreviousViewId ();
-                    viewManager.setActiveView (Views.VIEW_BROWSER);
+                    viewManager.setActiveView (Views.BROWSER);
                     viewManager.setPreviousView (previousViewId);
                 }
                 else
                 {
-                    modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);
+                    modeManager.setActiveMode (Modes.DEVICE_PARAMS);
                     this.surface.getConfiguration ().setFaderCtrl ("Device");
                     this.surface.getDisplay ().notify ("Device");
                 }
@@ -356,7 +356,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                     // No Sends on effect tracks
                     final ModeManager modeManager = this.surface.getModeManager ();
                     if (Modes.isSendMode (modeManager.getActiveOrTempModeId ()))
-                        modeManager.setActiveMode (Modes.MODE_VOLUME);
+                        modeManager.setActiveMode (Modes.VOLUME);
                 }
                 this.surface.getDisplay ().notify (isEffectTrackBank ? "Effect Tracks" : "Instrument/Audio Tracks");
                 break;
@@ -398,10 +398,10 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON4, tb.canScrollPageForwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
         final Modes mode = this.surface.getModeManager ().getActiveOrTempModeId ();
-        this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON5, Modes.MODE_VOLUME.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-        this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON6, Modes.MODE_PAN.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON5, Modes.VOLUME.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON6, Modes.PAN.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
         this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON7, Modes.isSendMode (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-        this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON8, Modes.MODE_DEVICE_PARAMS.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+        this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON8, Modes.DEVICE_PARAMS.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
     }
 

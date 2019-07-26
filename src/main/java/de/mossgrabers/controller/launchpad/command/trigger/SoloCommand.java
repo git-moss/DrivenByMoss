@@ -33,6 +33,6 @@ public class SoloCommand extends AbstractTrackCommand
     @Override
     public void execute (final ButtonEvent event)
     {
-        this.onModeButton (event, Modes.MODE_SOLO, "Solo");
+        this.onModeButton (event, Modes.SOLO, "Solo");
     }
 }

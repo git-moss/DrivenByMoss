@@ -36,6 +36,6 @@ public class DeviceCommand extends AbstractTriggerCommand<PushControlSurface, Pu
     public void execute (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_DEVICE_PARAMS);
+            this.surface.getModeManager ().setActiveMode (Modes.DEVICE_PARAMS);
     }
 }

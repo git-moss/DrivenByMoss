@@ -134,7 +134,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final Kontrol1Display display = new Kontrol1Display (this.host, this.valueChanger.getUpperBound (), this.configuration, usbDevice);
         surface.setDisplay (display);
 
-        surface.getModeManager ().setDefaultMode (Modes.MODE_TRACK);
+        surface.getModeManager ().setDefaultMode (Modes.TRACK);
     }
 
 
@@ -145,12 +145,12 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final Kontrol1ControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new ParamsMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_BROWSER, new BrowseMode (surface, this.model));
+        modeManager.registerMode (Modes.TRACK, new TrackMode (surface, this.model));
+        modeManager.registerMode (Modes.VOLUME, new VolumeMode (surface, this.model));
+        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParamsMode (surface, this.model));
+        modeManager.registerMode (Modes.BROWSER, new BrowseMode (surface, this.model));
 
-        modeManager.registerMode (Modes.MODE_SCALES, new ScaleMode (surface, this.model));
+        modeManager.registerMode (Modes.SCALES, new ScaleMode (surface, this.model));
     }
 
 
@@ -160,7 +160,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     {
         final Kontrol1ControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerView (Views.VIEW_CONTROL, new ControlView (surface, this.model));
+        viewManager.registerView (Views.CONTROL, new ControlView (surface, this.model));
     }
 
 
@@ -197,8 +197,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         this.addTriggerCommand (TriggerCommandID.FORWARD, Kontrol1ControlSurface.BUTTON_FWD, new WindCommand<> (this.model, surface, true));
         this.addTriggerCommand (TriggerCommandID.LOOP, Kontrol1ControlSurface.BUTTON_LOOP, new ToggleLoopCommand<> (this.model, surface));
 
-        this.addTriggerCommand (TriggerCommandID.PAGE_LEFT, Kontrol1ControlSurface.BUTTON_PAGE_LEFT, new ModeMultiSelectCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, Modes.MODE_VOLUME, Modes.MODE_TRACK));
-        this.addTriggerCommand (TriggerCommandID.PAGE_RIGHT, Kontrol1ControlSurface.BUTTON_PAGE_RIGHT, new ModeMultiSelectCommand<> (this.model, surface, Modes.MODE_TRACK, Modes.MODE_VOLUME, Modes.MODE_DEVICE_PARAMS));
+        this.addTriggerCommand (TriggerCommandID.PAGE_LEFT, Kontrol1ControlSurface.BUTTON_PAGE_LEFT, new ModeMultiSelectCommand<> (this.model, surface, Modes.DEVICE_PARAMS, Modes.VOLUME, Modes.TRACK));
+        this.addTriggerCommand (TriggerCommandID.PAGE_RIGHT, Kontrol1ControlSurface.BUTTON_PAGE_RIGHT, new ModeMultiSelectCommand<> (this.model, surface, Modes.TRACK, Modes.VOLUME, Modes.DEVICE_PARAMS));
 
         this.addTriggerCommand (TriggerCommandID.MASTERTRACK, Kontrol1ControlSurface.BUTTON_MAIN_ENCODER, new MainEncoderButtonCommand (this.model, surface));
 
@@ -210,7 +210,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         this.addTriggerCommand (TriggerCommandID.MUTE, Kontrol1ControlSurface.BUTTON_BACK, new BackButtonCommand (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.SOLO, Kontrol1ControlSurface.BUTTON_ENTER, new EnterButtonCommand (this.model, surface));
 
-        this.addTriggerCommand (TriggerCommandID.BROWSE, Kontrol1ControlSurface.BUTTON_BROWSE, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.BROWSE, Kontrol1ControlSurface.BUTTON_BROWSE, new BrowserCommand<> (Modes.BROWSER, this.model, surface));
 
         this.addTriggerCommand (TriggerCommandID.FADER_TOUCH_1, Kontrol1ControlSurface.TOUCH_ENCODER_1, new KnobRowTouchModeCommand<> (0, this.model, surface));
         this.addTriggerCommand (TriggerCommandID.FADER_TOUCH_2, Kontrol1ControlSurface.TOUCH_ENCODER_2, new KnobRowTouchModeCommand<> (1, this.model, surface));
@@ -250,16 +250,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     public void startup ()
     {
         final Kontrol1ControlSurface surface = this.getSurface ();
-        surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-        surface.getModeManager ().setActiveMode (Modes.MODE_TRACK);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void flush ()
-    {
-        this.flushSurfaces ();
+        surface.getViewManager ().setActiveView (Views.CONTROL);
+        surface.getModeManager ().setActiveMode (Modes.TRACK);
     }
 
 
@@ -302,8 +294,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
 
-        final boolean isVolume = Modes.MODE_VOLUME.equals (mode);
-        final boolean isDevice = Modes.MODE_DEVICE_PARAMS.equals (mode);
+        final boolean isVolume = Modes.VOLUME.equals (mode);
+        final boolean isDevice = Modes.DEVICE_PARAMS.equals (mode);
 
         tb.setIndication (isVolume);
         if (tbe != null)
@@ -314,7 +306,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         for (int i = 0; i < tb.getPageSize (); i++)
         {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
+            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.TRACK.equals (mode);
             final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
             track.setPanIndication (!isEffect && hasTrackSel);

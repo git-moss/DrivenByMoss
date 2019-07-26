@@ -60,8 +60,8 @@ public class LayerDetailsMode extends BaseMode
                 break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();
-                ((ColorView) viewManager.getView (Views.VIEW_COLOR)).setMode (ColorView.SelectMode.MODE_LAYER);
-                viewManager.setActiveView (Views.VIEW_COLOR);
+                ((ColorView) viewManager.getView (Views.COLOR)).setMode (ColorView.SelectMode.MODE_LAYER);
+                viewManager.setActiveView (Views.COLOR);
                 break;
             default:
                 // Not used

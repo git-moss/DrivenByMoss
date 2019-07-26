@@ -10,6 +10,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.clip.StartClipCommand;
 import de.mossgrabers.framework.command.trigger.clip.StartSceneCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -43,9 +44,17 @@ public class StartClipOrSceneCommand extends AbstractTriggerCommand<KontrolMkIIC
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (this.surface.getConfiguration ().isFlipClipSceneNavigation ())
-            this.sceneCommand.execute (event);
-        else
-            this.clipCommand.execute (event);
+        if (this.surface.getModeManager ().isActiveMode (Modes.VOLUME))
+        {
+            if (this.surface.getConfiguration ().isFlipClipSceneNavigation ())
+                this.sceneCommand.execute (event);
+            else
+                this.clipCommand.execute (event);
+            return;
+        }
+
+        // Parameters mode
+        if (event == ButtonEvent.DOWN)
+            this.model.getCursorDevice ().toggleWindowOpen ();
     }
 }

@@ -43,14 +43,14 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (viewManager.isActiveView (Views.VIEW_BROWSER))
+        if (viewManager.isActiveView (Views.BROWSER))
         {
             this.model.getBrowser ().stopBrowsing (false);
-            viewManager.setActiveView (Views.VIEW_DEVICE);
+            viewManager.setActiveView (Views.DEVICE);
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DEVICE))
+        if (viewManager.isActiveView (Views.DEVICE))
         {
             if (this.surface.isShiftPressed () || !this.model.getCursorDevice ().doesExist ())
                 this.model.getBrowser ().browseToInsertAfterDevice ();
@@ -62,7 +62,7 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
             return;
         }
 
-        viewManager.setActiveView (Views.VIEW_DEVICE);
+        viewManager.setActiveView (Views.DEVICE);
     }
 
 
@@ -72,7 +72,7 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
     protected void activateBrowserView ()
     {
         if (this.model.getBrowser ().isActive ())
-            this.surface.getViewManager ().setActiveView (Views.VIEW_BROWSER);
+            this.surface.getViewManager ().setActiveView (Views.BROWSER);
         else if (this.startRetries < 20)
         {
             this.startRetries++;

@@ -33,6 +33,6 @@ public class RecordArmCommand extends AbstractTrackCommand
     @Override
     public void execute (final ButtonEvent event)
     {
-        this.onModeButton (event, Modes.MODE_REC_ARM, "Record Arm");
+        this.onModeButton (event, Modes.REC_ARM, "Record Arm");
     }
 }

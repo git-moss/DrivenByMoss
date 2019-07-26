@@ -85,7 +85,7 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
         final ViewManager viewManager = this.surface.getViewManager ();
         if (!browser.isActive ())
         {
-            if (viewManager.isActiveView (Views.VIEW_BROWSER))
+            if (viewManager.isActiveView (Views.BROWSER))
                 viewManager.restoreView ();
             return;
         }

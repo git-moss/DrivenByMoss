@@ -56,7 +56,7 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
 
             case MCUConfiguration.SHOW_MARKER_MODE:
                 if (event == ButtonEvent.DOWN)
-                    this.surface.getModeManager ().setActiveMode (Modes.MODE_MARKERS);
+                    this.surface.getModeManager ().setActiveMode (Modes.MARKERS);
                 break;
 
             default:

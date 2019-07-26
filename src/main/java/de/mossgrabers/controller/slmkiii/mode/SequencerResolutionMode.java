@@ -50,7 +50,7 @@ public class SequencerResolutionMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM);
+        final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
         drumView.getClip ().setStepLength (AbstractSequencerView.RESOLUTIONS[index]);
         this.surface.getModeManager ().restoreMode ();
     }
@@ -60,7 +60,7 @@ public class SequencerResolutionMode extends BaseMode
     @Override
     public void updateFirstRow ()
     {
-        final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM);
+        final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
         final double stepLength = drumView.getClip ().getStepLength ();
         for (int i = 0; i < 8; i++)
             this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, Math.abs (stepLength - AbstractSequencerView.RESOLUTIONS[i]) < 0.001 ? SLMkIIIColors.SLMKIII_PINK : SLMkIIIColors.SLMKIII_DARK_GREY);
@@ -74,7 +74,7 @@ public class SequencerResolutionMode extends BaseMode
         final SLMkIIIDisplay d = this.surface.getDisplay ();
         d.clear ();
 
-        final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.VIEW_DRUM);
+        final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
         final double stepLength = drumView.getClip ().getStepLength ();
 
         for (int i = 0; i < 8; i++)

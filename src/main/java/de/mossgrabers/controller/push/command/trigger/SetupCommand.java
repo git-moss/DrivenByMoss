@@ -33,7 +33,7 @@ public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, Pus
     public SetupCommand (final boolean isPush2, final IModel model, final PushControlSurface surface)
     {
         super (model, surface);
-        this.mode = isPush2 ? Modes.MODE_SETUP : Modes.MODE_CONFIGURATION;
+        this.mode = isPush2 ? Modes.SETUP : Modes.CONFIGURATION;
     }
 
 

@@ -48,11 +48,11 @@ public class SelectCommand extends AbstractTriggerCommand<PushControlSurface, Pu
         {
             // Track or layer details?
             if (Modes.isLayerMode (modeManager.getActiveOrTempModeId ()))
-                modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER_DETAILS);
+                modeManager.setActiveMode (Modes.DEVICE_LAYER_DETAILS);
             else
-                modeManager.setActiveMode (Modes.MODE_TRACK_DETAILS);
+                modeManager.setActiveMode (Modes.TRACK_DETAILS);
         }
-        else if (isUp && modeManager.isActiveOrTempMode (Modes.MODE_TRACK_DETAILS))
+        else if (isUp && modeManager.isActiveOrTempMode (Modes.TRACK_DETAILS))
             modeManager.restoreMode ();
     }
 }

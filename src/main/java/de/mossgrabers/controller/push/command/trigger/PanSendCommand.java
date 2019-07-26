@@ -51,18 +51,18 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
             if (this.model.isEffectTrackBankActive ())
             {
                 // No Sends on FX tracks
-                mode = Modes.MODE_DEVICE_LAYER_PAN;
+                mode = Modes.DEVICE_LAYER_PAN;
             }
             else
             {
                 mode = Modes.get (currentMode, 1);
                 // Wrap
-                if (mode.ordinal () < Modes.MODE_DEVICE_LAYER_PAN.ordinal () || mode.ordinal () > Modes.MODE_DEVICE_LAYER_SEND8.ordinal ())
-                    mode = Modes.MODE_DEVICE_LAYER_PAN;
+                if (mode.ordinal () < Modes.DEVICE_LAYER_PAN.ordinal () || mode.ordinal () > Modes.DEVICE_LAYER_SEND8.ordinal ())
+                    mode = Modes.DEVICE_LAYER_PAN;
                 // Check if Send channel exists
                 final ITrackBank tb = this.model.getTrackBank ();
-                if (mode.ordinal () < Modes.MODE_DEVICE_LAYER_SEND1.ordinal () || mode.ordinal () > Modes.MODE_DEVICE_LAYER_SEND8.ordinal () || tb.canEditSend (mode.ordinal () - Modes.MODE_DEVICE_LAYER_SEND1.ordinal ()))
-                    mode = Modes.MODE_DEVICE_LAYER_PAN;
+                if (mode.ordinal () < Modes.DEVICE_LAYER_SEND1.ordinal () || mode.ordinal () > Modes.DEVICE_LAYER_SEND8.ordinal () || tb.canEditSend (mode.ordinal () - Modes.DEVICE_LAYER_SEND1.ordinal ()))
+                    mode = Modes.DEVICE_LAYER_PAN;
             }
             modeManager.setActiveMode (mode);
             return;
@@ -71,18 +71,18 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
         if (this.model.isEffectTrackBankActive ())
         {
             // No Sends on FX tracks
-            mode = Modes.MODE_PAN;
+            mode = Modes.PAN;
         }
         else
         {
             mode = Modes.get (currentMode, 1);
             // Wrap
-            if (mode.ordinal () < Modes.MODE_PAN.ordinal () || mode.ordinal () > Modes.MODE_SEND8.ordinal ())
-                mode = Modes.MODE_PAN;
+            if (mode.ordinal () < Modes.PAN.ordinal () || mode.ordinal () > Modes.SEND8.ordinal ())
+                mode = Modes.PAN;
             // Check if Send channel exists
             final ITrackBank tb = this.model.getTrackBank ();
-            if (mode.ordinal () < Modes.MODE_SEND1.ordinal () || mode.ordinal () > Modes.MODE_SEND8.ordinal () || !tb.canEditSend (mode.ordinal () - Modes.MODE_SEND1.ordinal ()))
-                mode = Modes.MODE_PAN;
+            if (mode.ordinal () < Modes.SEND1.ordinal () || mode.ordinal () > Modes.SEND8.ordinal () || !tb.canEditSend (mode.ordinal () - Modes.SEND1.ordinal ()))
+                mode = Modes.PAN;
         }
         modeManager.setActiveMode (mode);
     }

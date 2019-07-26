@@ -162,7 +162,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
     public void updateSceneButtons ()
     {
         this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_1, this.isPlayMode ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_BLUE);
-        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_2, this.surface.getModeManager ().isActiveOrTempMode (Modes.MODE_GROOVE) ? SLMkIIIColors.SLMKIII_PINK : SLMkIIIColors.SLMKIII_DARK_GREY);
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_2, this.surface.getModeManager ().isActiveOrTempMode (Modes.GROOVE) ? SLMkIIIColors.SLMKIII_PINK : SLMkIIIColors.SLMKIII_DARK_GREY);
     }
 
 
@@ -181,10 +181,10 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         else
         {
             final ModeManager modeManager = this.surface.getModeManager ();
-            if (modeManager.isActiveOrTempMode (Modes.MODE_GROOVE))
+            if (modeManager.isActiveOrTempMode (Modes.GROOVE))
                 modeManager.restoreMode ();
             else
-                modeManager.setActiveMode (Modes.MODE_GROOVE);
+                modeManager.setActiveMode (Modes.GROOVE);
         }
     }
 

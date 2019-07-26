@@ -128,63 +128,63 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
     static
     {
-        DEBUG_MODES.add (Modes.MODE_TRACK);
-        DEBUG_MODES.add (Modes.MODE_TRACK_DETAILS);
-        DEBUG_MODES.add (Modes.MODE_VOLUME);
-        DEBUG_MODES.add (Modes.MODE_CROSSFADER);
-        DEBUG_MODES.add (Modes.MODE_PAN);
-        DEBUG_MODES.add (Modes.MODE_SEND1);
-        DEBUG_MODES.add (Modes.MODE_SEND2);
-        DEBUG_MODES.add (Modes.MODE_SEND3);
-        DEBUG_MODES.add (Modes.MODE_SEND4);
-        DEBUG_MODES.add (Modes.MODE_SEND5);
-        DEBUG_MODES.add (Modes.MODE_SEND6);
-        DEBUG_MODES.add (Modes.MODE_SEND7);
-        DEBUG_MODES.add (Modes.MODE_SEND8);
-        DEBUG_MODES.add (Modes.MODE_SEND);
-        DEBUG_MODES.add (Modes.MODE_MASTER);
-        DEBUG_MODES.add (Modes.MODE_MASTER_TEMP);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_PARAMS);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_VOLUME);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_PAN);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND1);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND2);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND3);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND4);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND5);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND6);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND7);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND8);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_SEND);
-        DEBUG_MODES.add (Modes.MODE_DEVICE_LAYER_DETAILS);
-        DEBUG_MODES.add (Modes.MODE_BROWSER);
-        DEBUG_MODES.add (Modes.MODE_CLIP);
-        DEBUG_MODES.add (Modes.MODE_NOTE);
-        DEBUG_MODES.add (Modes.MODE_FRAME);
-        DEBUG_MODES.add (Modes.MODE_GROOVE);
-        DEBUG_MODES.add (Modes.MODE_ACCENT);
-        DEBUG_MODES.add (Modes.MODE_SCALES);
-        DEBUG_MODES.add (Modes.MODE_SCALE_LAYOUT);
-        DEBUG_MODES.add (Modes.MODE_FIXED);
-        DEBUG_MODES.add (Modes.MODE_RIBBON);
-        DEBUG_MODES.add (Modes.MODE_VIEW_SELECT);
-        DEBUG_MODES.add (Modes.MODE_AUTOMATION);
-        DEBUG_MODES.add (Modes.MODE_TRANSPORT);
-        DEBUG_MODES.add (Modes.MODE_CONFIGURATION);
-        DEBUG_MODES.add (Modes.MODE_SETUP);
-        DEBUG_MODES.add (Modes.MODE_INFO);
-        DEBUG_MODES.add (Modes.MODE_SESSION_VIEW_SELECT);
-        DEBUG_MODES.add (Modes.MODE_SESSION);
-        DEBUG_MODES.add (Modes.MODE_MARKERS);
-        DEBUG_MODES.add (Modes.MODE_REPEAT_NOTE);
+        DEBUG_MODES.add (Modes.TRACK);
+        DEBUG_MODES.add (Modes.TRACK_DETAILS);
+        DEBUG_MODES.add (Modes.VOLUME);
+        DEBUG_MODES.add (Modes.CROSSFADER);
+        DEBUG_MODES.add (Modes.PAN);
+        DEBUG_MODES.add (Modes.SEND1);
+        DEBUG_MODES.add (Modes.SEND2);
+        DEBUG_MODES.add (Modes.SEND3);
+        DEBUG_MODES.add (Modes.SEND4);
+        DEBUG_MODES.add (Modes.SEND5);
+        DEBUG_MODES.add (Modes.SEND6);
+        DEBUG_MODES.add (Modes.SEND7);
+        DEBUG_MODES.add (Modes.SEND8);
+        DEBUG_MODES.add (Modes.SEND);
+        DEBUG_MODES.add (Modes.MASTER);
+        DEBUG_MODES.add (Modes.MASTER_TEMP);
+        DEBUG_MODES.add (Modes.DEVICE_PARAMS);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_VOLUME);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_PAN);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND1);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND2);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND3);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND4);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND5);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND6);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND7);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND8);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND);
+        DEBUG_MODES.add (Modes.DEVICE_LAYER_DETAILS);
+        DEBUG_MODES.add (Modes.BROWSER);
+        DEBUG_MODES.add (Modes.CLIP);
+        DEBUG_MODES.add (Modes.NOTE);
+        DEBUG_MODES.add (Modes.FRAME);
+        DEBUG_MODES.add (Modes.GROOVE);
+        DEBUG_MODES.add (Modes.ACCENT);
+        DEBUG_MODES.add (Modes.SCALES);
+        DEBUG_MODES.add (Modes.SCALE_LAYOUT);
+        DEBUG_MODES.add (Modes.FIXED);
+        DEBUG_MODES.add (Modes.RIBBON);
+        DEBUG_MODES.add (Modes.VIEW_SELECT);
+        DEBUG_MODES.add (Modes.AUTOMATION);
+        DEBUG_MODES.add (Modes.TRANSPORT);
+        DEBUG_MODES.add (Modes.CONFIGURATION);
+        DEBUG_MODES.add (Modes.SETUP);
+        DEBUG_MODES.add (Modes.INFO);
+        DEBUG_MODES.add (Modes.SESSION_VIEW_SELECT);
+        DEBUG_MODES.add (Modes.SESSION);
+        DEBUG_MODES.add (Modes.MARKERS);
+        DEBUG_MODES.add (Modes.REPEAT_NOTE);
     }
 
     private boolean         isSoloLongPressed           = false;
     private boolean         isMuteLongPressed           = false;
     private boolean         isMuteSoloLocked            = false;
 
-    private Views           defaultNoteView             = Views.VIEW_PLAY;
+    private Views           defaultNoteView             = Views.PLAY;
     private boolean         displayScenesClips;
     private boolean         isScenesClipView;
 
@@ -193,7 +193,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private int             ribbonModeCCVal             = 1;
     private boolean         stopAutomationOnKnobRelease = false;
     private TrackState      trackState                  = TrackState.MUTE;
-    private Modes           debugMode                   = Modes.MODE_TRACK;
+    private Modes           debugMode                   = Modes.TRACK;
 
     // Only Push 1
     private int             velocityCurve               = 1;
@@ -1208,7 +1208,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
             i++;
         }
 
-        this.debugModeSetting = settingsUI.getEnumSetting ("Display Mode", CATEGORY_DEBUG, modes, Modes.MODE_TRACK.toString ());
+        this.debugModeSetting = settingsUI.getEnumSetting ("Display Mode", CATEGORY_DEBUG, modes, Modes.TRACK.toString ());
         this.debugModeSetting.addValueObserver (value -> {
             try
             {
@@ -1216,7 +1216,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
             }
             catch (final IllegalArgumentException ex)
             {
-                this.debugMode = Modes.MODE_TRACK;
+                this.debugMode = Modes.TRACK;
             }
             this.notifyObservers (DEBUG_MODE);
         });

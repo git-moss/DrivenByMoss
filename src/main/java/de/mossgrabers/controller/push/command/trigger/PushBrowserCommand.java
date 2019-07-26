@@ -44,7 +44,7 @@ public class PushBrowserCommand extends BrowserCommand<PushControlSurface, PushC
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (viewManager.isActiveView (Views.VIEW_DRUM))
-            ((DrumView) viewManager.getView (Views.VIEW_DRUM)).repositionBankPage ();
+        if (viewManager.isActiveView (Views.DRUM))
+            ((DrumView) viewManager.getView (Views.DRUM)).repositionBankPage ();
     }
 }

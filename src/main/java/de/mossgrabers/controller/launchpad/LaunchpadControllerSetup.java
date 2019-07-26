@@ -119,15 +119,6 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
     /** {@inheritDoc} */
     @Override
-    public void flush ()
-    {
-        this.flushSurfaces ();
-        this.updateButtons ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void createScales ()
     {
         this.scales = new LaunchpadScales (this.valueChanger, 36, 100, 8, 8);
@@ -175,14 +166,14 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     {
         final LaunchpadControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.registerMode (Modes.MODE_REC_ARM, new RecArmMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_TRACK_SELECT, new TrackMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_MUTE, new MuteMode<> (surface, this.model));
-        modeManager.registerMode (Modes.MODE_SOLO, new SoloMode<> (surface, this.model));
-        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode<> (surface, this.model, true));
-        modeManager.registerMode (Modes.MODE_PAN, new PanMode<> (surface, this.model, true));
-        modeManager.registerMode (Modes.MODE_SEND, new SendMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_STOP_CLIP, new StopClipMode (surface, this.model));
+        modeManager.registerMode (Modes.REC_ARM, new RecArmMode (surface, this.model));
+        modeManager.registerMode (Modes.TRACK_SELECT, new TrackMode (surface, this.model));
+        modeManager.registerMode (Modes.MUTE, new MuteMode<> (surface, this.model));
+        modeManager.registerMode (Modes.SOLO, new SoloMode<> (surface, this.model));
+        modeManager.registerMode (Modes.VOLUME, new VolumeMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.PAN, new PanMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.SEND, new SendMode (surface, this.model));
+        modeManager.registerMode (Modes.STOP_CLIP, new StopClipMode (surface, this.model));
     }
 
 
@@ -192,21 +183,21 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     {
         final LaunchpadControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerView (Views.VIEW_BROWSER, new BrowserView (surface, this.model));
-        viewManager.registerView (Views.VIEW_DEVICE, new DeviceView (surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM4, new DrumView4 (surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM8, new DrumView8 (surface, this.model));
-        viewManager.registerView (Views.VIEW_TRACK_PAN, new PanView (surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM64, new DrumView64 (surface, this.model));
-        viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
-        viewManager.registerView (Views.VIEW_PIANO, new PianoView (surface, this.model));
-        viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (surface, this.model));
-        viewManager.registerView (Views.VIEW_TRACK_SENDS, new SendsView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
-        viewManager.registerView (Views.VIEW_TRACK_VOLUME, new VolumeView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (surface, this.model));
+        viewManager.registerView (Views.BROWSER, new BrowserView (surface, this.model));
+        viewManager.registerView (Views.DEVICE, new DeviceView (surface, this.model));
+        viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
+        viewManager.registerView (Views.DRUM4, new DrumView4 (surface, this.model));
+        viewManager.registerView (Views.DRUM8, new DrumView8 (surface, this.model));
+        viewManager.registerView (Views.TRACK_PAN, new PanView (surface, this.model));
+        viewManager.registerView (Views.DRUM64, new DrumView64 (surface, this.model));
+        viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
+        viewManager.registerView (Views.PIANO, new PianoView (surface, this.model));
+        viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
+        viewManager.registerView (Views.TRACK_SENDS, new SendsView (surface, this.model));
+        viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
+        viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
+        viewManager.registerView (Views.TRACK_VOLUME, new VolumeView (surface, this.model));
+        viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
     }
 
 
@@ -285,9 +276,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         for (int i = 0; i < 8; i++)
             this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.KNOB1, i), LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, new FaderCommand (i, this.model, surface));
         final ViewManager viewManager = surface.getViewManager ();
-        final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);
+        final PlayView playView = (PlayView) viewManager.getView (Views.PLAY);
         playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, surface));
-        final PianoView pianoView = (PianoView) viewManager.getView (Views.VIEW_PIANO);
+        final PianoView pianoView = (PianoView) viewManager.getView (Views.PIANO);
         pianoView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (pianoView, this.model, surface));
     }
 
@@ -296,11 +287,13 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     @Override
     public void startup ()
     {
-        this.getSurface ().getViewManager ().setActiveView (Views.VIEW_PLAY);
+        this.getSurface ().getViewManager ().setActiveView (Views.PLAY);
     }
 
 
-    private void updateButtons ()
+    /** {@inheritDoc} */
+    @Override
+    protected void updateButtons ()
     {
         final LaunchpadControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
@@ -333,14 +326,14 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final boolean flipRecord = surface.getConfiguration ().isFlipRecord ();
         surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_RECORD, isShift && !flipRecord || !isShift && flipRecord ? transport.isLauncherOverdub () ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : LaunchpadColors.LAUNCHPAD_COLOR_RED_AMBER : transport.isRecording () ? LaunchpadColors.LAUNCHPAD_COLOR_RED_HI : LaunchpadColors.LAUNCHPAD_COLOR_RED_LO);
 
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_REC_ARM, modeManager.isActiveOrTempMode (Modes.MODE_REC_ARM) ? LaunchpadColors.LAUNCHPAD_COLOR_RED : index == 0 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_TRACK, modeManager.isActiveOrTempMode (Modes.MODE_TRACK_SELECT) ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN : index == 1 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_MUTE, modeManager.isActiveOrTempMode (Modes.MODE_MUTE) ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : index == 2 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SOLO, modeManager.isActiveOrTempMode (Modes.MODE_SOLO) ? LaunchpadColors.LAUNCHPAD_COLOR_BLUE : index == 3 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_VOLUME, viewManager.isActiveView (Views.VIEW_TRACK_VOLUME) ? LaunchpadColors.LAUNCHPAD_COLOR_CYAN : index == 4 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_PAN, viewManager.isActiveView (Views.VIEW_TRACK_PAN) ? LaunchpadColors.LAUNCHPAD_COLOR_SKY : index == 5 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SENDS, viewManager.isActiveView (Views.VIEW_TRACK_SENDS) ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : index == 6 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_STOP_CLIP, modeManager.isActiveOrTempMode (Modes.MODE_STOP_CLIP) ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : index == 7 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_REC_ARM, modeManager.isActiveOrTempMode (Modes.REC_ARM) ? LaunchpadColors.LAUNCHPAD_COLOR_RED : index == 0 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_TRACK, modeManager.isActiveOrTempMode (Modes.TRACK_SELECT) ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN : index == 1 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_MUTE, modeManager.isActiveOrTempMode (Modes.MUTE) ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : index == 2 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SOLO, modeManager.isActiveOrTempMode (Modes.SOLO) ? LaunchpadColors.LAUNCHPAD_COLOR_BLUE : index == 3 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_VOLUME, viewManager.isActiveView (Views.TRACK_VOLUME) ? LaunchpadColors.LAUNCHPAD_COLOR_CYAN : index == 4 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_PAN, viewManager.isActiveView (Views.TRACK_PAN) ? LaunchpadColors.LAUNCHPAD_COLOR_SKY : index == 5 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SENDS, viewManager.isActiveView (Views.TRACK_SENDS) ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : index == 6 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_STOP_CLIP, modeManager.isActiveOrTempMode (Modes.STOP_CLIP) ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : index == 7 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
 
         // Update the front LED with the color of the current track
         final ITrack track = index == -1 ? null : this.model.getCurrentTrackBank ().getItem (index);
@@ -358,10 +351,10 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     protected void updateIndication (final Modes mode)
     {
         final ViewManager viewManager = this.getSurface ().getViewManager ();
-        final boolean isVolume = viewManager.isActiveView (Views.VIEW_TRACK_VOLUME);
-        final boolean isPan = viewManager.isActiveView (Views.VIEW_TRACK_PAN);
-        final boolean isSends = viewManager.isActiveView (Views.VIEW_TRACK_SENDS);
-        final boolean isDevice = viewManager.isActiveView (Views.VIEW_DEVICE);
+        final boolean isVolume = viewManager.isActiveView (Views.TRACK_VOLUME);
+        final boolean isPan = viewManager.isActiveView (Views.TRACK_PAN);
+        final boolean isSends = viewManager.isActiveView (Views.TRACK_SENDS);
+        final boolean isDevice = viewManager.isActiveView (Views.DEVICE);
 
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
@@ -410,22 +403,22 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         // Recall last used view (if we are not in session mode)
         final ViewManager viewManager = this.getSurface ().getViewManager ();
-        if (!viewManager.isActiveView (Views.VIEW_SESSION))
+        if (!viewManager.isActiveView (Views.SESSION))
         {
             final ITrack selectedTrack = this.model.getSelectedTrack ();
             if (selectedTrack != null)
             {
                 final Views preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
-                viewManager.setActiveView (preferredView == null ? Views.VIEW_PLAY : preferredView);
+                viewManager.setActiveView (preferredView == null ? Views.PLAY : preferredView);
             }
         }
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.PLAY))
             viewManager.getActiveView ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
         this.scales.resetDrumOctave ();
-        if (viewManager.isActiveView (Views.VIEW_DRUM))
-            viewManager.getView (Views.VIEW_DRUM).updateNoteMapping ();
+        if (viewManager.isActiveView (Views.DRUM))
+            viewManager.getView (Views.DRUM).updateNoteMapping ();
     }
 }

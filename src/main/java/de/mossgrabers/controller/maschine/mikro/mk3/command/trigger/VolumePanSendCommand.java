@@ -26,6 +26,6 @@ public class VolumePanSendCommand extends ModeMultiSelectCommand<MaschineMikroMk
      */
     public VolumePanSendCommand (final IModel model, final MaschineMikroMk3ControlSurface surface)
     {
-        super (model, surface, Modes.MODE_VOLUME, Modes.MODE_PAN, Modes.MODE_SEND1, Modes.MODE_SEND2, Modes.MODE_SEND3, Modes.MODE_SEND4, Modes.MODE_SEND5, Modes.MODE_SEND6, Modes.MODE_SEND7, Modes.MODE_SEND8);
+        super (model, surface, Modes.VOLUME, Modes.PAN, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8);
     }
 }

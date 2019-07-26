@@ -42,10 +42,10 @@ public class MarkerCommand<S extends IControlSurface<C>, C extends Configuration
         if (event != ButtonEvent.DOWN)
             return;
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTempMode (Modes.MODE_MARKERS))
+        if (modeManager.isActiveOrTempMode (Modes.MARKERS))
             modeManager.restoreMode ();
         else
-            modeManager.setActiveMode (Modes.MODE_MARKERS);
+            modeManager.setActiveMode (Modes.MARKERS);
     }
 
 

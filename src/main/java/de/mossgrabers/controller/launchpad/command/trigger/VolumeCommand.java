@@ -33,6 +33,6 @@ public class VolumeCommand extends AbstractTrackCommand
     @Override
     public void execute (final ButtonEvent event)
     {
-        this.onFaderModeButton (event, Views.VIEW_TRACK_VOLUME, "Volume");
+        this.onFaderModeButton (event, Views.TRACK_VOLUME, "Volume");
     }
 }

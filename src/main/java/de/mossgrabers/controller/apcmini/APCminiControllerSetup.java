@@ -62,17 +62,17 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     private static final Map<String, Modes> FADER_CTRL_MODES = new HashMap<> ();
     static
     {
-        FADER_CTRL_MODES.put ("Volume", Modes.MODE_VOLUME);
-        FADER_CTRL_MODES.put ("Pan", Modes.MODE_PAN);
-        FADER_CTRL_MODES.put ("Send 1", Modes.MODE_SEND1);
-        FADER_CTRL_MODES.put ("Send 2", Modes.MODE_SEND2);
-        FADER_CTRL_MODES.put ("Send 3", Modes.MODE_SEND3);
-        FADER_CTRL_MODES.put ("Send 4", Modes.MODE_SEND4);
-        FADER_CTRL_MODES.put ("Send 5", Modes.MODE_SEND5);
-        FADER_CTRL_MODES.put ("Send 6", Modes.MODE_SEND6);
-        FADER_CTRL_MODES.put ("Send 7", Modes.MODE_SEND7);
-        FADER_CTRL_MODES.put ("Send 8", Modes.MODE_SEND8);
-        FADER_CTRL_MODES.put ("Device", Modes.MODE_DEVICE_PARAMS);
+        FADER_CTRL_MODES.put ("Volume", Modes.VOLUME);
+        FADER_CTRL_MODES.put ("Pan", Modes.PAN);
+        FADER_CTRL_MODES.put ("Send 1", Modes.SEND1);
+        FADER_CTRL_MODES.put ("Send 2", Modes.SEND2);
+        FADER_CTRL_MODES.put ("Send 3", Modes.SEND3);
+        FADER_CTRL_MODES.put ("Send 4", Modes.SEND4);
+        FADER_CTRL_MODES.put ("Send 5", Modes.SEND5);
+        FADER_CTRL_MODES.put ("Send 6", Modes.SEND6);
+        FADER_CTRL_MODES.put ("Send 7", Modes.SEND7);
+        FADER_CTRL_MODES.put ("Send 8", Modes.SEND8);
+        FADER_CTRL_MODES.put ("Device", Modes.DEVICE_PARAMS);
     }
 
 
@@ -91,15 +91,6 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         APCminiColors.addColors (this.colorManager);
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
         this.configuration = new APCminiConfiguration (host, this.valueChanger);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void flush ()
-    {
-        this.flushSurfaces ();
-        this.updateButtons ();
     }
 
 
@@ -168,13 +159,13 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     {
         final APCminiControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode<> (surface, this.model, true));
-        modeManager.registerMode (Modes.MODE_PAN, new PanMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.VOLUME, new VolumeMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.PAN, new PanMode<> (surface, this.model, true));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Modes.get (Modes.MODE_SEND1, i), new SendMode<> (i, surface, this.model, true));
-        modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
+            modeManager.registerMode (Modes.get (Modes.SEND1, i), new SendMode<> (i, surface, this.model, true));
+        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
 
-        modeManager.setDefaultMode (Modes.MODE_VOLUME);
+        modeManager.setDefaultMode (Modes.VOLUME);
     }
 
 
@@ -184,16 +175,16 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     {
         final APCminiControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (surface, this.model));
-        viewManager.registerView (Views.VIEW_BROWSER, new BrowserView (surface, this.model));
+        viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
+        viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
+        viewManager.registerView (Views.BROWSER, new BrowserView (surface, this.model));
 
         if (this.host.hasClips ())
         {
-            viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
-            viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
-            viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
-            viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (surface, this.model));
+            viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
+            viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
+            viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
+            viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
         }
     }
 
@@ -240,12 +231,14 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     public void startup ()
     {
         final APCminiControlSurface surface = this.getSurface ();
-        surface.getModeManager ().setActiveMode (Modes.MODE_VOLUME);
-        surface.getViewManager ().setActiveView (Views.VIEW_PLAY);
+        surface.getModeManager ().setActiveMode (Modes.VOLUME);
+        surface.getViewManager ().setActiveView (Views.PLAY);
     }
 
 
-    private void updateButtons ()
+    /** {@inheritDoc} */
+    @Override
+    protected void updateButtons ()
     {
         final APCminiControlSurface surface = this.getSurface ();
         final View activeView = surface.getViewManager ().getActiveView ();
@@ -272,11 +265,11 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final APCminiControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        final boolean isShiftView = viewManager.isActiveView (Views.VIEW_SHIFT);
-        final boolean isSession = viewManager.isActiveView (Views.VIEW_SESSION) || isShiftView;
+        final boolean isShiftView = viewManager.isActiveView (Views.SHIFT);
+        final boolean isSession = viewManager.isActiveView (Views.SESSION) || isShiftView;
         final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isPan = Modes.MODE_PAN.equals (mode);
-        final boolean isDevice = Modes.MODE_DEVICE_PARAMS.equals (mode);
+        final boolean isPan = Modes.PAN.equals (mode);
+        final boolean isDevice = Modes.DEVICE_PARAMS.equals (mode);
 
         tb.setIndication (!isEffect && isSession);
         if (tbe != null)
@@ -290,7 +283,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
             track.setPanIndication (!isEffect && isPan);
             final ISendBank sendBank = track.getSendBank ();
             for (int j = 0; j < 8; j++)
-                sendBank.getItem (j).setIndication (!isEffect && (Modes.MODE_SEND1.equals (mode) && j == 0 || Modes.MODE_SEND2.equals (mode) && j == 1 || Modes.MODE_SEND3.equals (mode) && j == 2 || Modes.MODE_SEND4.equals (mode) && j == 3 || Modes.MODE_SEND5.equals (mode) && j == 4 || Modes.MODE_SEND6.equals (mode) && j == 5 || Modes.MODE_SEND7.equals (mode) && j == 6 || Modes.MODE_SEND8.equals (mode) && j == 7));
+                sendBank.getItem (j).setIndication (!isEffect && (Modes.SEND1.equals (mode) && j == 0 || Modes.SEND2.equals (mode) && j == 1 || Modes.SEND3.equals (mode) && j == 2 || Modes.SEND4.equals (mode) && j == 3 || Modes.SEND5.equals (mode) && j == 4 || Modes.SEND6.equals (mode) && j == 5 || Modes.SEND7.equals (mode) && j == 6 || Modes.SEND8.equals (mode) && j == 7));
 
             if (tbe != null)
             {
@@ -316,15 +309,15 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
 
         final APCminiControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.PLAY))
             viewManager.getActiveView ().updateNoteMapping ();
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.PLAY))
             viewManager.getActiveView ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
         this.scales.resetDrumOctave ();
-        if (viewManager.isActiveView (Views.VIEW_DRUM))
-            viewManager.getView (Views.VIEW_DRUM).updateNoteMapping ();
+        if (viewManager.isActiveView (Views.DRUM))
+            viewManager.getView (Views.DRUM).updateNoteMapping ();
     }
 }

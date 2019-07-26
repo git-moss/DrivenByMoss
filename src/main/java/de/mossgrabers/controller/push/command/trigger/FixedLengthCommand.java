@@ -40,9 +40,9 @@ public class FixedLengthCommand extends AbstractTriggerCommand<PushControlSurfac
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTempMode (Modes.MODE_FIXED))
+        if (modeManager.isActiveOrTempMode (Modes.FIXED))
             modeManager.restoreMode ();
         else
-            modeManager.setActiveMode (Modes.MODE_FIXED);
+            modeManager.setActiveMode (Modes.FIXED);
     }
 }

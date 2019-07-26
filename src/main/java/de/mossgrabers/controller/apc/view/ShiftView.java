@@ -29,11 +29,11 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
 {
     private static final Views [] VIEW_IDS  =
     {
-        Views.VIEW_SESSION,
-        Views.VIEW_PLAY,
-        Views.VIEW_DRUM,
-        Views.VIEW_SEQUENCER,
-        Views.VIEW_RAINDROPS
+        Views.SESSION,
+        Views.PLAY,
+        Views.DRUM,
+        Views.SEQUENCER,
+        Views.RAINDROPS
     };
 
     private static final int []   TRANSLATE =
@@ -167,7 +167,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         viewManager.setPreviousView (VIEW_IDS[scene]);
         this.surface.getDisplay ().notify (viewManager.getView (VIEW_IDS[scene]).getName ());
 
-        if (Views.VIEW_SESSION.equals (VIEW_IDS[scene]))
+        if (Views.SESSION.equals (VIEW_IDS[scene]))
             return;
 
         final ITrack selectedTrack = this.model.getSelectedTrack ();
@@ -191,10 +191,10 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         }
 
         final Views previousViewId = this.surface.getViewManager ().getPreviousViewId ();
-        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, Views.VIEW_SESSION.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, Views.VIEW_PLAY.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, Views.VIEW_DRUM.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, Views.VIEW_SEQUENCER.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
-        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, Views.VIEW_RAINDROPS.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, Views.SESSION.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, Views.PLAY.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, Views.DRUM.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, Views.SEQUENCER.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
+        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, Views.RAINDROPS.equals (previousViewId) ? APCColors.COLOR_VIEW_SELECTED : APCColors.COLOR_VIEW_UNSELECTED);
     }
 }

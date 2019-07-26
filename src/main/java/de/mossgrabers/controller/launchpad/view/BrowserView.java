@@ -116,7 +116,7 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
         if (!browser.isActive ())
         {
             final ViewManager viewManager = this.surface.getViewManager ();
-            if (viewManager.isActiveView (Views.VIEW_BROWSER))
+            if (viewManager.isActiveView (Views.BROWSER))
                 viewManager.restoreView ();
             return;
         }

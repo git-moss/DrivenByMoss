@@ -41,12 +41,12 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (viewManager.isActiveView (Views.VIEW_SESSION))
+        if (viewManager.isActiveView (Views.SESSION))
         {
             final Configuration configuration = this.surface.getConfiguration ();
             configuration.setFlipSession (!configuration.isFlipSession ());
         }
         else
-            viewManager.setActiveView (Views.VIEW_SESSION);
+            viewManager.setActiveView (Views.SESSION);
     }
 }

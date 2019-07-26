@@ -37,24 +37,24 @@ public class ModeSwitcher
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final Modes activeModeId = modeManager.getActiveOrTempModeId ();
-        if (Modes.MODE_PAN == activeModeId)
+        if (Modes.PAN == activeModeId)
         {
-            modeManager.setActiveMode (Modes.MODE_VOLUME);
+            modeManager.setActiveMode (Modes.VOLUME);
             this.surface.getDisplay ().notify ("Volume");
         }
-        else if (Modes.MODE_VOLUME == activeModeId)
+        else if (Modes.VOLUME == activeModeId)
         {
-            modeManager.setActiveMode (Modes.MODE_TRACK);
+            modeManager.setActiveMode (Modes.TRACK);
             this.surface.getDisplay ().notify ("Track");
         }
-        else if (Modes.MODE_TRACK == activeModeId)
+        else if (Modes.TRACK == activeModeId)
         {
-            modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);
+            modeManager.setActiveMode (Modes.DEVICE_PARAMS);
             this.surface.getDisplay ().notify ("Parameters");
         }
         else
         {
-            modeManager.setActiveMode (Modes.MODE_PAN);
+            modeManager.setActiveMode (Modes.PAN);
             this.surface.getDisplay ().notify ("Panorama");
         }
     }
@@ -67,24 +67,24 @@ public class ModeSwitcher
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final Modes activeModeId = modeManager.getActiveOrTempModeId ();
-        if (Modes.MODE_PAN == activeModeId)
+        if (Modes.PAN == activeModeId)
         {
-            modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);
+            modeManager.setActiveMode (Modes.DEVICE_PARAMS);
             this.surface.getDisplay ().notify ("Parameters");
         }
-        else if (Modes.MODE_VOLUME == activeModeId)
+        else if (Modes.VOLUME == activeModeId)
         {
-            modeManager.setActiveMode (Modes.MODE_PAN);
+            modeManager.setActiveMode (Modes.PAN);
             this.surface.getDisplay ().notify ("Panorama");
         }
-        else if (Modes.MODE_TRACK == activeModeId)
+        else if (Modes.TRACK == activeModeId)
         {
-            modeManager.setActiveMode (Modes.MODE_VOLUME);
+            modeManager.setActiveMode (Modes.VOLUME);
             this.surface.getDisplay ().notify ("Volume");
         }
         else
         {
-            modeManager.setActiveMode (Modes.MODE_TRACK);
+            modeManager.setActiveMode (Modes.TRACK);
             this.surface.getDisplay ().notify ("Track");
         }
     }

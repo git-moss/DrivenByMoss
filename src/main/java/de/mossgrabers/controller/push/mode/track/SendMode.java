@@ -125,6 +125,6 @@ public class SendMode extends AbstractTrackMode
 
     private int getCurrentSendIndex ()
     {
-        return this.surface.getModeManager ().getActiveOrTempModeId ().ordinal () - Modes.MODE_SEND1.ordinal ();
+        return this.surface.getModeManager ().getActiveOrTempModeId ().ordinal () - Modes.SEND1.ordinal ();
     }
 }

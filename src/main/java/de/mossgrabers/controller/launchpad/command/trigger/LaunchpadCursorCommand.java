@@ -59,7 +59,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.PLAY))
         {
             final Scales scales = this.model.getScales ();
             final int octave = scales.getOctave ();
@@ -71,7 +71,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_PIANO))
+        if (viewManager.isActiveView (Views.PIANO))
         {
             final Scales scales = this.model.getScales ();
             final int octave = scales.getOctave ();
@@ -82,9 +82,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DRUM))
+        if (viewManager.isActiveView (Views.DRUM))
         {
-            final INoteClip clip = ((DrumView) viewManager.getView (Views.VIEW_DRUM)).getClip ();
+            final INoteClip clip = ((DrumView) viewManager.getView (Views.DRUM)).getClip ();
             final Scales scales = this.model.getScales ();
             this.canScrollUp = scales.canScrollDrumOctaveUp ();
             this.canScrollDown = scales.canScrollDrumOctaveDown ();
@@ -93,9 +93,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DRUM64))
+        if (viewManager.isActiveView (Views.DRUM64))
         {
-            final DrumView64 drumView64 = (DrumView64) viewManager.getView (Views.VIEW_DRUM64);
+            final DrumView64 drumView64 = (DrumView64) viewManager.getView (Views.DRUM64);
             final int octave = drumView64.getDrumOctave ();
             this.canScrollUp = octave < 1;
             this.canScrollDown = octave > -2;
@@ -104,9 +104,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_SEQUENCER) || viewManager.isActiveView (Views.VIEW_RAINDROPS))
+        if (viewManager.isActiveView (Views.SEQUENCER) || viewManager.isActiveView (Views.RAINDROPS))
         {
-            final INoteClip clip = ((AbstractSequencerView<?, ?>) viewManager.getView (Views.VIEW_DRUM)).getClip ();
+            final INoteClip clip = ((AbstractSequencerView<?, ?>) viewManager.getView (Views.DRUM)).getClip ();
             final int octave = this.model.getScales ().getOctave ();
             this.canScrollUp = octave < Scales.OCTAVE_RANGE;
             this.canScrollDown = octave > -Scales.OCTAVE_RANGE;
@@ -115,7 +115,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DEVICE))
+        if (viewManager.isActiveView (Views.DEVICE))
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             this.canScrollUp = cursorDevice.canSelectNextFX ();
@@ -126,7 +126,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_BROWSER))
+        if (viewManager.isActiveView (Views.BROWSER))
         {
             final IBrowser browser = this.model.getBrowser ();
             this.canScrollUp = false;
@@ -136,7 +136,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_SHIFT) || viewManager.isActiveView (Views.VIEW_DRUM4) || viewManager.isActiveView (Views.VIEW_DRUM8))
+        if (viewManager.isActiveView (Views.SHIFT) || viewManager.isActiveView (Views.DRUM4) || viewManager.isActiveView (Views.DRUM8))
         {
             this.canScrollUp = false;
             this.canScrollDown = false;
@@ -163,22 +163,22 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.VIEW_SESSION) || viewManager.isActiveView (Views.VIEW_TRACK_VOLUME) || viewManager.isActiveView (Views.VIEW_TRACK_PAN) || viewManager.isActiveView (Views.VIEW_TRACK_SENDS))
+        if (viewManager.isActiveView (Views.SESSION) || viewManager.isActiveView (Views.TRACK_VOLUME) || viewManager.isActiveView (Views.TRACK_PAN) || viewManager.isActiveView (Views.TRACK_SENDS))
             return LaunchpadColors.LAUNCHPAD_COLOR_LIME;
 
-        if (viewManager.isActiveView (Views.VIEW_RAINDROPS))
+        if (viewManager.isActiveView (Views.RAINDROPS))
             return LaunchpadColors.LAUNCHPAD_COLOR_GREEN;
 
-        if (viewManager.isActiveView (Views.VIEW_SEQUENCER))
+        if (viewManager.isActiveView (Views.SEQUENCER))
             return LaunchpadColors.LAUNCHPAD_COLOR_BLUE;
 
-        if (viewManager.isActiveView (Views.VIEW_DEVICE))
+        if (viewManager.isActiveView (Views.DEVICE))
             return LaunchpadColors.LAUNCHPAD_COLOR_AMBER;
 
-        if (viewManager.isActiveView (Views.VIEW_DRUM) || viewManager.isActiveView (Views.VIEW_DRUM4) || viewManager.isActiveView (Views.VIEW_DRUM8) || viewManager.isActiveView (Views.VIEW_DRUM64))
+        if (viewManager.isActiveView (Views.DRUM) || viewManager.isActiveView (Views.DRUM4) || viewManager.isActiveView (Views.DRUM8) || viewManager.isActiveView (Views.DRUM64))
             return LaunchpadColors.LAUNCHPAD_COLOR_YELLOW;
 
-        if (viewManager.isActiveView (Views.VIEW_BROWSER))
+        if (viewManager.isActiveView (Views.BROWSER))
             return LaunchpadColors.LAUNCHPAD_COLOR_TURQUOISE;
 
         // VIEW_PLAY, VIEW_PIANO, VIEW_SHIFT
@@ -193,7 +193,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.PLAY))
         {
             final Scales scales = this.model.getScales ();
             scales.prevScale ();
@@ -203,7 +203,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DEVICE))
+        if (viewManager.isActiveView (Views.DEVICE))
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             cursorDevice.getParameterBank ().scrollBackwards ();
@@ -211,13 +211,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_BROWSER))
+        if (viewManager.isActiveView (Views.BROWSER))
         {
             this.model.getBrowser ().previousContentType ();
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_SHIFT) || viewManager.isActiveView (Views.VIEW_DRUM64))
+        if (viewManager.isActiveView (Views.SHIFT) || viewManager.isActiveView (Views.DRUM64))
             return;
 
         // VIEW_SEQUENCER, VIEW_RAINDROPS, VIEW_DRUM, VIEW_DRUM4, VIEW_DRUM8
@@ -229,7 +229,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         }
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
-        final Mode mode = this.surface.getModeManager ().getMode (Modes.MODE_VOLUME);
+        final Mode mode = this.surface.getModeManager ().getMode (Modes.VOLUME);
         if (mode != null)
             mode.selectPreviousItem ();
     }
@@ -242,7 +242,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.PLAY))
         {
             final Scales scales = this.model.getScales ();
             scales.nextScale ();
@@ -252,7 +252,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DEVICE))
+        if (viewManager.isActiveView (Views.DEVICE))
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             cursorDevice.getParameterBank ().scrollForwards ();
@@ -260,13 +260,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_BROWSER))
+        if (viewManager.isActiveView (Views.BROWSER))
         {
             this.model.getBrowser ().nextContentType ();
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_SHIFT) || viewManager.isActiveView (Views.VIEW_DRUM64))
+        if (viewManager.isActiveView (Views.SHIFT) || viewManager.isActiveView (Views.DRUM64))
             return;
 
         // VIEW_SEQUENCER, VIEW_RAINDROPS, VIEW_DRUM, VIEW_DRUM4, VIEW_DRUM8
@@ -278,7 +278,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         }
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
-        final Mode mode = this.surface.getModeManager ().getMode (Modes.MODE_VOLUME);
+        final Mode mode = this.surface.getModeManager ().getMode (Modes.VOLUME);
         if (mode != null)
             mode.selectNextItem ();
     }
@@ -290,43 +290,43 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY) || viewManager.isActiveView (Views.VIEW_PIANO))
+        if (viewManager.isActiveView (Views.PLAY) || viewManager.isActiveView (Views.PIANO))
         {
             ((TransposeView) viewManager.getActiveView ()).onOctaveUp (ButtonEvent.DOWN);
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DRUM))
+        if (viewManager.isActiveView (Views.DRUM))
         {
-            ((DrumView) viewManager.getView (Views.VIEW_DRUM)).onOctaveUp (ButtonEvent.DOWN);
+            ((DrumView) viewManager.getView (Views.DRUM)).onOctaveUp (ButtonEvent.DOWN);
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DRUM64))
+        if (viewManager.isActiveView (Views.DRUM64))
         {
-            ((DrumView64) viewManager.getView (Views.VIEW_DRUM64)).onOctaveUp (ButtonEvent.DOWN);
+            ((DrumView64) viewManager.getView (Views.DRUM64)).onOctaveUp (ButtonEvent.DOWN);
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_SEQUENCER))
+        if (viewManager.isActiveView (Views.SEQUENCER))
         {
-            ((SequencerView) viewManager.getView (Views.VIEW_SEQUENCER)).onOctaveUp (ButtonEvent.DOWN);
+            ((SequencerView) viewManager.getView (Views.SEQUENCER)).onOctaveUp (ButtonEvent.DOWN);
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_RAINDROPS))
+        if (viewManager.isActiveView (Views.RAINDROPS))
         {
-            ((RaindropsView) viewManager.getView (Views.VIEW_RAINDROPS)).onOctaveUp (ButtonEvent.DOWN);
+            ((RaindropsView) viewManager.getView (Views.RAINDROPS)).onOctaveUp (ButtonEvent.DOWN);
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DEVICE))
+        if (viewManager.isActiveView (Views.DEVICE))
         {
             this.model.getCursorDevice ().selectNext ();
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_BROWSER) || viewManager.isActiveView (Views.VIEW_SHIFT) || viewManager.isActiveView (Views.VIEW_DRUM4) || viewManager.isActiveView (Views.VIEW_DRUM8))
+        if (viewManager.isActiveView (Views.BROWSER) || viewManager.isActiveView (Views.SHIFT) || viewManager.isActiveView (Views.DRUM4) || viewManager.isActiveView (Views.DRUM8))
             return;
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
@@ -340,43 +340,43 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY) || viewManager.isActiveView (Views.VIEW_PIANO))
+        if (viewManager.isActiveView (Views.PLAY) || viewManager.isActiveView (Views.PIANO))
         {
             ((TransposeView) viewManager.getActiveView ()).onOctaveDown (ButtonEvent.DOWN);
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DRUM))
+        if (viewManager.isActiveView (Views.DRUM))
         {
-            ((DrumView) viewManager.getView (Views.VIEW_DRUM)).onOctaveDown (ButtonEvent.DOWN);
+            ((DrumView) viewManager.getView (Views.DRUM)).onOctaveDown (ButtonEvent.DOWN);
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DRUM64))
+        if (viewManager.isActiveView (Views.DRUM64))
         {
-            ((DrumView64) viewManager.getView (Views.VIEW_DRUM64)).onOctaveDown (ButtonEvent.DOWN);
+            ((DrumView64) viewManager.getView (Views.DRUM64)).onOctaveDown (ButtonEvent.DOWN);
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_SEQUENCER))
+        if (viewManager.isActiveView (Views.SEQUENCER))
         {
-            ((SequencerView) viewManager.getView (Views.VIEW_SEQUENCER)).onOctaveDown (ButtonEvent.DOWN);
+            ((SequencerView) viewManager.getView (Views.SEQUENCER)).onOctaveDown (ButtonEvent.DOWN);
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_RAINDROPS))
+        if (viewManager.isActiveView (Views.RAINDROPS))
         {
-            ((RaindropsView) viewManager.getView (Views.VIEW_RAINDROPS)).onOctaveDown (ButtonEvent.DOWN);
+            ((RaindropsView) viewManager.getView (Views.RAINDROPS)).onOctaveDown (ButtonEvent.DOWN);
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_DEVICE))
+        if (viewManager.isActiveView (Views.DEVICE))
         {
             this.model.getCursorDevice ().selectPrevious ();
             return;
         }
 
-        if (viewManager.isActiveView (Views.VIEW_BROWSER) || viewManager.isActiveView (Views.VIEW_SHIFT) || viewManager.isActiveView (Views.VIEW_DRUM4) || viewManager.isActiveView (Views.VIEW_DRUM8))
+        if (viewManager.isActiveView (Views.BROWSER) || viewManager.isActiveView (Views.SHIFT) || viewManager.isActiveView (Views.DRUM4) || viewManager.isActiveView (Views.DRUM8))
             return;
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS

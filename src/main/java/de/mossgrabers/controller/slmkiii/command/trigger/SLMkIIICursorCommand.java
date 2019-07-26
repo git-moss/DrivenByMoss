@@ -43,9 +43,9 @@ public class SLMkIIICursorCommand extends CursorCommand<SLMkIIIControlSurface, S
         if (Modes.isTrackMode (modeManager.getActiveModeId ()))
             return SLMkIIIColors.SLMKIII_GREEN_HALF;
 
-        if (modeManager.isActiveMode (Modes.MODE_DEVICE_PARAMS))
+        if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
         {
-            if (((ParametersMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).isShowDevices ())
+            if (((ParametersMode) modeManager.getMode (Modes.DEVICE_PARAMS)).isShowDevices ())
                 return SLMkIIIColors.SLMKIII_MINT_HALF;
             return SLMkIIIColors.SLMKIII_PURPLE_HALF;
         }

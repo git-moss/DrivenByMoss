@@ -91,14 +91,6 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
     /** {@inheritDoc} */
     @Override
-    public void flush ()
-    {
-        this.flushSurfaces ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void createScales ()
     {
         this.scales = new Scales (this.valueChanger, 36, 52, 8, 2);
@@ -168,19 +160,19 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     {
         final BeatstepControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerView (Views.VIEW_TRACK, new TrackView (surface, this.model));
-        viewManager.registerView (Views.VIEW_DEVICE, new DeviceView (surface, this.model));
-        viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
+        viewManager.registerView (Views.TRACK, new TrackView (surface, this.model));
+        viewManager.registerView (Views.DEVICE, new DeviceView (surface, this.model));
+        viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
 
         if (this.host.hasClips ())
         {
-            viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
-            viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
-            viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
+            viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
+            viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
+            viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
         }
 
-        viewManager.registerView (Views.VIEW_BROWSER, new BrowserView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (surface, this.model));
+        viewManager.registerView (Views.BROWSER, new BrowserView (surface, this.model));
+        viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
     }
 
 
@@ -209,7 +201,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
             this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.DEVICE_KNOB1, i), BeatstepControlSurface.BEATSTEP_KNOB_9 + i, new KnobRowViewCommand (i + 8, this.model, surface));
         }
         this.addContinuousCommand (ContinuousCommandID.MASTER_KNOB, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, new PlayPositionCommand<> (this.model, surface));
-        final PlayView playView = (PlayView) viewManager.getView (Views.VIEW_PLAY);
+        final PlayView playView = (PlayView) viewManager.getView (Views.PLAY);
         playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, surface));
     }
 
@@ -221,7 +213,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         // Enable Shift button to send Midi Note 07
         final BeatstepControlSurface surface = this.getSurface ();
         surface.getOutput ().sendSysex ("F0 00 20 6B 7F 42 02 00 01 5E 09 F7");
-        surface.getViewManager ().setActiveView (Views.VIEW_TRACK);
+        surface.getViewManager ().setActiveView (Views.TRACK);
     }
 
 
@@ -231,9 +223,9 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     {
         final BeatstepControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        final boolean isTrack = viewManager.isActiveView (Views.VIEW_TRACK);
-        final boolean isDevice = viewManager.isActiveView (Views.VIEW_DEVICE);
-        final boolean isSession = viewManager.isActiveView (Views.VIEW_SESSION);
+        final boolean isTrack = viewManager.isActiveView (Views.TRACK);
+        final boolean isDevice = viewManager.isActiveView (Views.DEVICE);
+        final boolean isSession = viewManager.isActiveView (Views.SESSION);
 
         final IMasterTrack mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (!isDevice);
@@ -284,12 +276,12 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
             return;
 
         final ViewManager viewManager = this.getSurface ().getViewManager ();
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.PLAY))
             viewManager.getActiveView ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
         this.scales.resetDrumOctave ();
-        if (viewManager.isActiveView (Views.VIEW_DRUM))
-            viewManager.getView (Views.VIEW_DRUM).updateNoteMapping ();
+        if (viewManager.isActiveView (Views.DRUM))
+            viewManager.getView (Views.DRUM).updateNoteMapping ();
     }
 }

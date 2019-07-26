@@ -43,9 +43,9 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (event == ButtonEvent.DOWN && !viewManager.isActiveView (Views.VIEW_SHIFT))
-            viewManager.setActiveView (Views.VIEW_SHIFT);
-        else if (event == ButtonEvent.UP && viewManager.isActiveView (Views.VIEW_SHIFT))
+        if (event == ButtonEvent.DOWN && !viewManager.isActiveView (Views.SHIFT))
+            viewManager.setActiveView (Views.SHIFT);
+        else if (event == ButtonEvent.UP && viewManager.isActiveView (Views.SHIFT))
             viewManager.restoreView ();
 
         this.model.getValueChanger ().setSpeed (this.surface.isShiftPressed ());

@@ -28,9 +28,9 @@ public class SessionViewSelectMode extends BaseMode
     /** The views to choose from. */
     private static final Views []  VIEWS      =
     {
-        Views.VIEW_SESSION,
-        Views.VIEW_SESSION,
-        Views.VIEW_SCENE_PLAY,
+        Views.SESSION,
+        Views.SESSION,
+        Views.SCENE_PLAY,
         null,
         null
     };
@@ -81,7 +81,7 @@ public class SessionViewSelectMode extends BaseMode
                 break;
 
             case 6:
-                this.surface.getModeManager ().setActiveMode (Modes.MODE_MARKERS);
+                this.surface.getModeManager ().setActiveMode (Modes.MARKERS);
                 break;
 
             case 7:
@@ -109,7 +109,7 @@ public class SessionViewSelectMode extends BaseMode
                 d.setCell (3, i, (this.isSelected (viewManager, i) ? PushDisplay.SELECT_ARROW : "") + VIEW_NAMES[i]);
         }
         d.setBlock (1, 3, "Session mode:");
-        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
+        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.SESSION);
         d.setCell (3, 6, "Markers");
         d.setCell (3, 7, (isOn ? PushDisplay.SELECT_ARROW : "") + " Clips");
         d.allDone ();
@@ -127,7 +127,7 @@ public class SessionViewSelectMode extends BaseMode
             final boolean isMenuBottomSelected = VIEWS[i] != null && this.isSelected (viewManager, i);
             message.addOptionElement ("", "", false, i == 0 ? "Session view" : "", VIEW_NAMES[i], isMenuBottomSelected, false);
         }
-        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
+        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.SESSION);
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("", "", false, "Session mode", "Markers", false, false);
         message.addOptionElement ("", "", false, "", "Clips", isOn, false);
@@ -146,7 +146,7 @@ public class SessionViewSelectMode extends BaseMode
 
         this.surface.updateTrigger (25, AbstractMode.BUTTON_COLOR_OFF);
         this.surface.updateTrigger (26, AbstractMode.BUTTON_COLOR_ON);
-        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.MODE_SESSION);
+        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.SESSION);
         this.surface.updateTrigger (27, isOn ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
     }
 

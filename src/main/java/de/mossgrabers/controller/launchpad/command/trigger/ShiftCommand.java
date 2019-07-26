@@ -39,7 +39,7 @@ public class ShiftCommand extends AbstractTriggerCommand<LaunchpadControlSurface
         if (event != ButtonEvent.UP)
             return;
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (viewManager.isActiveView (Views.VIEW_SHIFT))
+        if (viewManager.isActiveView (Views.SHIFT))
             viewManager.restoreView ();
     }
 
@@ -51,7 +51,7 @@ public class ShiftCommand extends AbstractTriggerCommand<LaunchpadControlSurface
         if (event != ButtonEvent.DOWN)
             return;
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (!viewManager.isActiveView (Views.VIEW_SESSION))
-            viewManager.setActiveView (Views.VIEW_SHIFT);
+        if (!viewManager.isActiveView (Views.SESSION))
+            viewManager.setActiveView (Views.SHIFT);
     }
 }

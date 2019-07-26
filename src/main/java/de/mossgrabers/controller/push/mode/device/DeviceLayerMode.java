@@ -171,8 +171,8 @@ public class DeviceLayerMode extends BaseMode
 
             layer.enter ();
             final ModeManager modeManager = this.surface.getModeManager ();
-            modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);
-            ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).setShowDevices (true);
+            modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+            ((DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS)).setShowDevices (true);
             return;
         }
 
@@ -196,9 +196,9 @@ public class DeviceLayerMode extends BaseMode
         }
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (Modes.MODE_DEVICE_PARAMS);
+        modeManager.setActiveMode (Modes.DEVICE_PARAMS);
         cd.selectChannel ();
-        ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).setShowDevices (true);
+        ((DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS)).setShowDevices (true);
     }
 
 
@@ -225,17 +225,17 @@ public class DeviceLayerMode extends BaseMode
         switch (index)
         {
             case 0:
-                if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_VOLUME))
-                    modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
+                if (modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_VOLUME))
+                    modeManager.setActiveMode (Modes.DEVICE_LAYER);
                 else
-                    modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER_VOLUME);
+                    modeManager.setActiveMode (Modes.DEVICE_LAYER_VOLUME);
                 break;
 
             case 1:
-                if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_PAN))
-                    modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
+                if (modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_PAN))
+                    modeManager.setActiveMode (Modes.DEVICE_LAYER);
                 else
-                    modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER_PAN);
+                    modeManager.setActiveMode (Modes.DEVICE_LAYER_PAN);
                 break;
 
             case 2:
@@ -254,8 +254,8 @@ public class DeviceLayerMode extends BaseMode
                 }
                 config.setSendsAreToggled (!config.isSendsAreToggled ());
 
-                if (!modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER))
-                    modeManager.setActiveMode (Modes.get (Modes.MODE_DEVICE_LAYER_SEND1, config.isSendsAreToggled () ? 4 : 0));
+                if (!modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER))
+                    modeManager.setActiveMode (Modes.get (Modes.DEVICE_LAYER_SEND1, config.isSendsAreToggled () ? 4 : 0));
                 break;
 
             case 7:
@@ -284,9 +284,9 @@ public class DeviceLayerMode extends BaseMode
         final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
         if (!fxTrackBank.getItem (sendIndex).doesExist ())
             return;
-        final Modes si = Modes.get (Modes.MODE_DEVICE_LAYER_SEND1, sendIndex);
+        final Modes si = Modes.get (Modes.DEVICE_LAYER_SEND1, sendIndex);
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (modeManager.isActiveOrTempMode (si) ? Modes.MODE_DEVICE_LAYER : si);
+        modeManager.setActiveMode (modeManager.isActiveOrTempMode (si) ? Modes.DEVICE_LAYER : si);
     }
 
 
@@ -597,14 +597,14 @@ public class DeviceLayerMode extends BaseMode
             }
 
             final ModeManager modeManager = this.surface.getModeManager ();
-            this.surface.updateTrigger (102, modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_VOLUME) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (103, modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_LAYER_PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (102, modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_VOLUME) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (103, modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             this.surface.updateTrigger (104, PushColors.PUSH2_COLOR_BLACK);
             this.surface.updateTrigger (105, PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (106, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND5 : Modes.MODE_DEVICE_LAYER_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (107, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND6 : Modes.MODE_DEVICE_LAYER_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (108, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND7 : Modes.MODE_DEVICE_LAYER_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (109, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.MODE_DEVICE_LAYER_SEND8 : Modes.MODE_DEVICE_LAYER_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (106, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND5 : Modes.DEVICE_LAYER_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (107, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND6 : Modes.DEVICE_LAYER_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (108, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND7 : Modes.DEVICE_LAYER_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (109, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND8 : Modes.DEVICE_LAYER_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             return;
         }
 

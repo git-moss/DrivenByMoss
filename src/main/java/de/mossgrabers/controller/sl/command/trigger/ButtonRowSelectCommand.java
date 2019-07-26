@@ -61,7 +61,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
                 break;
 
             case 1:
-                this.surface.getModeManager ().setActiveMode (Modes.MODE_DEVICE_PARAMS);
+                this.surface.getModeManager ().setActiveMode (Modes.DEVICE_PARAMS);
                 this.surface.getDisplay ().notify ("Device Parameters");
                 break;
 
@@ -96,13 +96,13 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
     {
         final ModeManager modeManager = this.surface.getModeManager ();
 
-        if (modeManager.isActiveOrTempMode (Modes.MODE_MASTER))
+        if (modeManager.isActiveOrTempMode (Modes.MASTER))
         {
             this.activateTrackMode (true, false);
             return;
         }
 
-        if (modeManager.isActiveOrTempMode (Modes.MODE_TRACK))
+        if (modeManager.isActiveOrTempMode (Modes.TRACK))
         {
             if (this.model.isEffectTrackBankActive ())
                 this.activateMasterMode (true);
@@ -122,7 +122,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
             this.model.toggleCurrentTrackBank ();
         final ModeManager modeManager = this.surface.getModeManager ();
         if (activateMode)
-            modeManager.setActiveMode (Modes.MODE_TRACK);
+            modeManager.setActiveMode (Modes.TRACK);
         this.surface.getDisplay ().notify (isEffect ? "Effects" : "Tracks");
         if (this.model.getSelectedTrack () != null)
             return;
@@ -136,7 +136,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
     {
         this.model.getMasterTrack ().select ();
         if (activateMode)
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_MASTER);
+            this.surface.getModeManager ().setActiveMode (Modes.MASTER);
         this.surface.getDisplay ().notify ("Master");
     }
 
@@ -145,9 +145,9 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
     {
         final ModeManager modeManager = this.surface.getModeManager ();
 
-        if (!modeManager.isActiveOrTempMode (Modes.MODE_VOLUME))
+        if (!modeManager.isActiveOrTempMode (Modes.VOLUME))
         {
-            modeManager.setActiveMode (Modes.MODE_VOLUME);
+            modeManager.setActiveMode (Modes.VOLUME);
             this.activateTrackMode (false, false);
             return;
         }

@@ -159,7 +159,8 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     @Override
     public void flush ()
     {
-        this.flushSurfaces ();
+        super.flush ();
+
         this.updateIndication (this.getSurface ().getModeManager ().getActiveOrTempModeId ());
     }
 
@@ -186,8 +187,8 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
             if (!isSelected)
                 return;
             final ModeManager modeManager = this.getSurface ().getModeManager ();
-            if (!modeManager.isActiveOrTempMode (Modes.MODE_VOLUME))
-                modeManager.setActiveMode (Modes.MODE_MASTER);
+            if (!modeManager.isActiveOrTempMode (Modes.VOLUME))
+                modeManager.setActiveMode (Modes.MASTER);
         });
     }
 
@@ -221,18 +222,18 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     {
         final SLControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.registerMode (Modes.MODE_FIXED, new FixedMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_FRAME, new FrameMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_FUNCTIONS, new FunctionMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_PLAY_OPTIONS, new PlayOptionsMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_SESSION, new SessionMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_TRACK_DETAILS, new TrackTogglesMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_VIEW_SELECT, new ViewSelectMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_BROWSER, new DevicePresetsMode (surface, this.model));
+        modeManager.registerMode (Modes.FIXED, new FixedMode (surface, this.model));
+        modeManager.registerMode (Modes.FRAME, new FrameMode (surface, this.model));
+        modeManager.registerMode (Modes.FUNCTIONS, new FunctionMode (surface, this.model));
+        modeManager.registerMode (Modes.MASTER, new MasterMode (surface, this.model));
+        modeManager.registerMode (Modes.PLAY_OPTIONS, new PlayOptionsMode (surface, this.model));
+        modeManager.registerMode (Modes.SESSION, new SessionMode (surface, this.model));
+        modeManager.registerMode (Modes.TRACK, new TrackMode (surface, this.model));
+        modeManager.registerMode (Modes.TRACK_DETAILS, new TrackTogglesMode (surface, this.model));
+        modeManager.registerMode (Modes.VIEW_SELECT, new ViewSelectMode (surface, this.model));
+        modeManager.registerMode (Modes.VOLUME, new VolumeMode (surface, this.model));
+        modeManager.registerMode (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
+        modeManager.registerMode (Modes.BROWSER, new DevicePresetsMode (surface, this.model));
     }
 
 
@@ -242,8 +243,8 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     {
         final SLControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
-        viewManager.registerView (Views.VIEW_CONTROL, new ControlView (surface, this.model));
+        viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
+        viewManager.registerView (Views.CONTROL, new ControlView (surface, this.model));
     }
 
 
@@ -300,9 +301,9 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         // Initialise 2nd display
         final SLControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.getMode (Modes.MODE_VOLUME).updateDisplay ();
-        surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-        modeManager.setActiveMode (Modes.MODE_TRACK);
+        modeManager.getMode (Modes.VOLUME).updateDisplay ();
+        surface.getViewManager ().setActiveView (Views.CONTROL);
+        modeManager.setActiveMode (Modes.TRACK);
     }
 
 
@@ -315,20 +316,20 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         this.currentMode = mode;
 
         final IMasterTrack mt = this.model.getMasterTrack ();
-        mt.setVolumeIndication (Modes.MODE_MASTER.equals (mode));
-        mt.setPanIndication (Modes.MODE_MASTER.equals (mode));
+        mt.setVolumeIndication (Modes.MASTER.equals (mode));
+        mt.setPanIndication (Modes.MASTER.equals (mode));
 
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isVolume = Modes.MODE_VOLUME.equals (mode);
+        final boolean isVolume = Modes.VOLUME.equals (mode);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         final ITrack selectedTrack = tb.getSelectedItem ();
         for (int i = 0; i < 8; i++)
         {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.MODE_TRACK.equals (mode);
+            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.TRACK.equals (mode);
             final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
             track.setPanIndication (!isEffect && hasTrackSel);
@@ -357,7 +358,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     private void handleTrackChange (final boolean isSelected)
     {
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (isSelected && modeManager.isActiveOrTempMode (Modes.MODE_MASTER))
-            modeManager.setActiveMode (Modes.MODE_TRACK);
+        if (isSelected && modeManager.isActiveOrTempMode (Modes.MASTER))
+            modeManager.setActiveMode (Modes.TRACK);
     }
 }

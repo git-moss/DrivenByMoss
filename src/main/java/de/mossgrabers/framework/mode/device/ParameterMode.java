@@ -25,6 +25,9 @@ import de.mossgrabers.framework.mode.AbstractMode;
  */
 public class ParameterMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
 {
+    protected final ICursorDevice cursorDevice;
+
+
     /**
      * Constructor.
      *
@@ -36,7 +39,9 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     public ParameterMode (final S surface, final IModel model, final boolean isAbsolute)
     {
         super ("Parameters", surface, model, isAbsolute);
+
         this.isTemporary = false;
+        this.cursorDevice = this.model.getCursorDevice ();
     }
 
 
@@ -44,10 +49,9 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (cursorDevice == null)
+        if (this.cursorDevice == null)
             return;
-        final IParameter item = cursorDevice.getParameterBank ().getItem (index);
+        final IParameter item = this.cursorDevice.getParameterBank ().getItem (index);
         if (item == null || !item.doesExist ())
             return;
         if (this.isAbsolute)
@@ -63,10 +67,9 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     {
         if (!isTouched)
             return;
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (cursorDevice == null)
+        if (this.cursorDevice == null)
             return;
-        final IParameter item = cursorDevice.getParameterBank ().getItem (index);
+        final IParameter item = this.cursorDevice.getParameterBank ().getItem (index);
         if (item.doesExist ())
             item.resetValue ();
     }
@@ -76,10 +79,9 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public int getKnobValue (final int index)
     {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (cursorDevice == null)
+        if (this.cursorDevice == null)
             return -1;
-        final IParameter item = cursorDevice.getParameterBank ().getItem (index);
+        final IParameter item = this.cursorDevice.getParameterBank ().getItem (index);
         return item != null && item.doesExist () ? item.getValue () : -1;
     }
 
@@ -88,11 +90,10 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public String getSelectedItemName ()
     {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (cursorDevice == null || !cursorDevice.doesExist ())
+        if (this.cursorDevice == null || !this.cursorDevice.doesExist ())
             return null;
-        final IParameterPageBank parameterPageBank = cursorDevice.getParameterPageBank ();
-        return cursorDevice.getName () + " - " + parameterPageBank.getSelectedItem ();
+        final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterPageBank ();
+        return this.cursorDevice.getName () + " - " + parameterPageBank.getSelectedItem ();
     }
 
 
@@ -101,9 +102,9 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     public void selectPreviousItem ()
     {
         if (this.surface.isShiftPressed ())
-            this.model.getCursorDevice ().getDeviceBank ().selectPreviousPage ();
+            this.cursorDevice.getDeviceBank ().selectPreviousPage ();
         else
-            this.model.getCursorDevice ().selectPrevious ();
+            this.cursorDevice.selectPrevious ();
     }
 
 
@@ -112,9 +113,9 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     public void selectNextItem ()
     {
         if (this.surface.isShiftPressed ())
-            this.model.getCursorDevice ().getDeviceBank ().selectNextPage ();
+            this.cursorDevice.getDeviceBank ().selectNextPage ();
         else
-            this.model.getCursorDevice ().selectNext ();
+            this.cursorDevice.selectNext ();
     }
 
 
@@ -122,7 +123,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void selectPreviousItemPage ()
     {
-        this.model.getCursorDevice ().getParameterBank ().scrollBackwards ();
+        this.cursorDevice.getParameterBank ().scrollBackwards ();
     }
 
 
@@ -130,7 +131,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void selectNextItemPage ()
     {
-        this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
+        this.cursorDevice.getParameterBank ().scrollForwards ();
     }
 
 
@@ -138,7 +139,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void selectItem (final int index)
     {
-        this.model.getCursorDevice ().getParameterBank ().selectItemAtPosition (index);
+        this.cursorDevice.getParameterBank ().selectItemAtPosition (index);
     }
 
 
@@ -146,6 +147,6 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     protected IParameterBank getBank ()
     {
-        return this.model.getCursorDevice ().getParameterBank ();
+        return this.cursorDevice.getParameterBank ();
     }
 }

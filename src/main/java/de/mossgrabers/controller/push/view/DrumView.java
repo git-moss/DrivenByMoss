@@ -108,7 +108,7 @@ public class DrumView extends DrumViewBase
         // Only activate layer mode if not one of the layer modes is already active
         final ModeManager modeManager = this.surface.getModeManager ();
         if (!Modes.isLayerMode (modeManager.getActiveModeId ()))
-            modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
+            modeManager.setActiveMode (Modes.DEVICE_LAYER);
 
         drumPad.select ();
 
@@ -122,7 +122,7 @@ public class DrumView extends DrumViewBase
     protected void activateMode ()
     {
         if (this.model.getBrowser ().isActive ())
-            this.surface.getModeManager ().setActiveMode (Modes.MODE_BROWSER);
+            this.surface.getModeManager ().setActiveMode (Modes.BROWSER);
         else if (this.startRetries < NUMBER_OF_RETRIES)
         {
             this.startRetries++;

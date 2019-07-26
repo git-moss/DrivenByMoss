@@ -157,14 +157,14 @@ public class DeviceParamsMode extends BaseMode
             final ModeManager modeManager = this.surface.getModeManager ();
             if (!cd.hasLayers ())
             {
-                ((DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS)).setShowDevices (false);
+                ((DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS)).setShowDevices (false);
                 return;
             }
 
             final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
             if (layer == null)
                 cd.getLayerOrDrumPadBank ().getItem (0).select ();
-            modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
+            modeManager.setActiveMode (Modes.DEVICE_LAYER);
             return;
         }
 
@@ -190,7 +190,7 @@ public class DeviceParamsMode extends BaseMode
 
         // Parameter banks are shown -> show devices
         final ModeManager modeManager = this.surface.getModeManager ();
-        final DeviceParamsMode deviceParamsMode = (DeviceParamsMode) modeManager.getMode (Modes.MODE_DEVICE_PARAMS);
+        final DeviceParamsMode deviceParamsMode = (DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS);
         if (!deviceParamsMode.isShowDevices ())
         {
             deviceParamsMode.setShowDevices (true);
@@ -201,7 +201,7 @@ public class DeviceParamsMode extends BaseMode
         if (cd.isNested ())
         {
             cd.selectParent ();
-            modeManager.setActiveMode (Modes.MODE_DEVICE_LAYER);
+            modeManager.setActiveMode (Modes.DEVICE_LAYER);
             deviceParamsMode.setShowDevices (false);
             cd.selectChannel ();
             return;

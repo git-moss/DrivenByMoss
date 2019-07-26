@@ -111,21 +111,21 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
     static
     {
-        MODE_ACRONYMS.put (Modes.MODE_TRACK, "TR");
-        MODE_ACRONYMS.put (Modes.MODE_VOLUME, "VL");
-        MODE_ACRONYMS.put (Modes.MODE_PAN, "PN");
-        MODE_ACRONYMS.put (Modes.MODE_SEND1, "S1");
-        MODE_ACRONYMS.put (Modes.MODE_SEND2, "S2");
-        MODE_ACRONYMS.put (Modes.MODE_SEND3, "S3");
-        MODE_ACRONYMS.put (Modes.MODE_SEND4, "S4");
-        MODE_ACRONYMS.put (Modes.MODE_SEND5, "S5");
-        MODE_ACRONYMS.put (Modes.MODE_SEND6, "S6");
-        MODE_ACRONYMS.put (Modes.MODE_SEND7, "S7");
-        MODE_ACRONYMS.put (Modes.MODE_SEND8, "S8");
-        MODE_ACRONYMS.put (Modes.MODE_MASTER, "MT");
-        MODE_ACRONYMS.put (Modes.MODE_DEVICE_PARAMS, "DC");
-        MODE_ACRONYMS.put (Modes.MODE_BROWSER, "BR");
-        MODE_ACRONYMS.put (Modes.MODE_MARKERS, "MK");
+        MODE_ACRONYMS.put (Modes.TRACK, "TR");
+        MODE_ACRONYMS.put (Modes.VOLUME, "VL");
+        MODE_ACRONYMS.put (Modes.PAN, "PN");
+        MODE_ACRONYMS.put (Modes.SEND1, "S1");
+        MODE_ACRONYMS.put (Modes.SEND2, "S2");
+        MODE_ACRONYMS.put (Modes.SEND3, "S3");
+        MODE_ACRONYMS.put (Modes.SEND4, "S4");
+        MODE_ACRONYMS.put (Modes.SEND5, "S5");
+        MODE_ACRONYMS.put (Modes.SEND6, "S6");
+        MODE_ACRONYMS.put (Modes.SEND7, "S7");
+        MODE_ACRONYMS.put (Modes.SEND8, "S8");
+        MODE_ACRONYMS.put (Modes.MASTER, "MT");
+        MODE_ACRONYMS.put (Modes.DEVICE_PARAMS, "DC");
+        MODE_ACRONYMS.put (Modes.BROWSER, "BR");
+        MODE_ACRONYMS.put (Modes.MARKERS, "MK");
 
     }
 
@@ -165,9 +165,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     @Override
     public void flush ()
     {
-        this.flushSurfaces ();
+        super.flush ();
 
-        this.updateButtons ();
         this.updateMode (this.getSurface ().getModeManager ().getActiveOrTempModeId ());
     }
 
@@ -196,7 +195,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.model.getMasterTrack ().addSelectionObserver ( (index, isSelected) -> {
             final ModeManager modeManager = this.getSurface ().getModeManager ();
             if (isSelected)
-                modeManager.setActiveMode (Modes.MODE_MASTER);
+                modeManager.setActiveMode (Modes.MASTER);
             else
                 modeManager.restoreMode ();
         });
@@ -218,7 +217,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             surface.setDisplay (new MCUDisplay (this.host, output, true, false));
             surface.setSecondDisplay (new MCUDisplay (this.host, output, false, i == 0));
             surface.setSegmentDisplay (new MCUSegmentDisplay (output));
-            surface.getModeManager ().setDefaultMode (Modes.MODE_VOLUME);
+            surface.getModeManager ().setDefaultMode (Modes.VOLUME);
         }
     }
 
@@ -232,17 +231,17 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             final MCUControlSurface surface = this.getSurface (index);
             final ModeManager modeManager = surface.getModeManager ();
 
-            modeManager.registerMode (Modes.MODE_TRACK, new TrackMode (surface, this.model));
-            modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
-            modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
+            modeManager.registerMode (Modes.TRACK, new TrackMode (surface, this.model));
+            modeManager.registerMode (Modes.VOLUME, new VolumeMode (surface, this.model));
+            modeManager.registerMode (Modes.PAN, new PanMode (surface, this.model));
             final SendMode modeSend = new SendMode (surface, this.model);
             for (int i = 0; i < 8; i++)
-                modeManager.registerMode (Modes.get (Modes.MODE_SEND1, i), modeSend);
-            modeManager.registerMode (Modes.MODE_MASTER, new MasterMode (surface, this.model, false));
+                modeManager.registerMode (Modes.get (Modes.SEND1, i), modeSend);
+            modeManager.registerMode (Modes.MASTER, new MasterMode (surface, this.model, false));
 
-            modeManager.registerMode (Modes.MODE_DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
-            modeManager.registerMode (Modes.MODE_BROWSER, new DeviceBrowserMode (surface, this.model));
-            modeManager.registerMode (Modes.MODE_MARKERS, new MarkerMode (surface, this.model));
+            modeManager.registerMode (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
+            modeManager.registerMode (Modes.BROWSER, new DeviceBrowserMode (surface, this.model));
+            modeManager.registerMode (Modes.MARKERS, new MarkerMode (surface, this.model));
         }
     }
 
@@ -289,7 +288,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         for (int index = 0; index < this.numMCUDevices; index++)
         {
             final MCUControlSurface surface = this.getSurface (index);
-            surface.getViewManager ().registerView (Views.VIEW_CONTROL, new ControlOnlyView<> (surface, this.model));
+            surface.getViewManager ().registerView (Views.CONTROL, new ControlOnlyView<> (surface, this.model));
         }
     }
 
@@ -337,11 +336,11 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         // Assignment
         this.addTriggerCommand (TriggerCommandID.TRACK, MCUControlSurface.MCU_MODE_IO, new TracksCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.PAN_SEND, MCUControlSurface.MCU_MODE_PAN, new ModeSelectCommand<> (this.model, surface, Modes.MODE_PAN));
+        this.addTriggerCommand (TriggerCommandID.PAN_SEND, MCUControlSurface.MCU_MODE_PAN, new ModeSelectCommand<> (this.model, surface, Modes.PAN));
         this.addTriggerCommand (TriggerCommandID.SENDS, MCUControlSurface.MCU_MODE_SENDS, new SendSelectCommand (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.DEVICE, MCUControlSurface.MCU_MODE_PLUGIN, new DevicesCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_LEFT, MCUControlSurface.MCU_MODE_EQ, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, true, true));
-        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_RIGHT, MCUControlSurface.MCU_MODE_DYN, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, true, false));
+        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_LEFT, MCUControlSurface.MCU_MODE_EQ, new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, true));
+        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_RIGHT, MCUControlSurface.MCU_MODE_DYN, new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, false));
 
         // Automation
         this.addTriggerCommand (TriggerCommandID.AUTOMATION_READ, MCUControlSurface.MCU_READ, new AutomationCommand<> (0, this.model, surface));
@@ -365,7 +364,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.addTriggerCommand (TriggerCommandID.LAYOUT_EDIT, MCUControlSurface.MCU_OUTPUTS, new LayoutCommand<> (IApplication.PANEL_LAYOUT_EDIT, this.model, surface));
 
         // Utilities
-        this.addTriggerCommand (TriggerCommandID.BROWSE, MCUControlSurface.MCU_USER, new BrowserCommand<> (Modes.MODE_BROWSER, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.BROWSE, MCUControlSurface.MCU_USER, new BrowserCommand<> (Modes.BROWSER, this.model, surface));
         this.addTriggerCommand (TriggerCommandID.METRONOME, MCUControlSurface.MCU_CLICK, new MetronomeCommand<> (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.GROOVE, MCUControlSurface.MCU_SOLO, new GrooveCommand (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.OVERDUB, MCUControlSurface.MCU_REPLACE, new OverdubCommand (this.model, surface));
@@ -383,10 +382,10 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.addTriggerCommand (TriggerCommandID.CANCEL, MCUControlSurface.MCU_CANCEL, new KeyCommand (Key.ESCAPE, this.model, surface));
         this.addTriggerCommand (TriggerCommandID.ENTER, MCUControlSurface.MCU_ENTER, new KeyCommand (Key.ENTER, this.model, surface));
 
-        this.addTriggerCommand (TriggerCommandID.MOVE_BANK_LEFT, MCUControlSurface.MCU_BANK_LEFT, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, false, true));
-        this.addTriggerCommand (TriggerCommandID.MOVE_BANK_RIGHT, MCUControlSurface.MCU_BANK_RIGHT, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, false, false));
-        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_LEFT, MCUControlSurface.MCU_TRACK_LEFT, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, true, true));
-        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_RIGHT, MCUControlSurface.MCU_TRACK_RIGHT, new MoveTrackBankCommand<> (this.model, surface, Modes.MODE_DEVICE_PARAMS, true, false));
+        this.addTriggerCommand (TriggerCommandID.MOVE_BANK_LEFT, MCUControlSurface.MCU_BANK_LEFT, new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, false, true));
+        this.addTriggerCommand (TriggerCommandID.MOVE_BANK_RIGHT, MCUControlSurface.MCU_BANK_RIGHT, new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, false, false));
+        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_LEFT, MCUControlSurface.MCU_TRACK_LEFT, new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, true));
+        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_RIGHT, MCUControlSurface.MCU_TRACK_RIGHT, new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, false));
 
         // Additional commands for footcontrollers
         final ViewManager viewManager = surface.getViewManager ();
@@ -469,14 +468,15 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             final MCUControlSurface surface = this.getSurface (index);
             surface.switchVuMode (MCUControlSurface.VUMODE_LED);
 
-            surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-            surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
+            surface.getViewManager ().setActiveView (Views.CONTROL);
+            surface.getModeManager ().setActiveMode (Modes.PAN);
         }
     }
 
 
-    @SuppressWarnings("unchecked")
-    private void updateButtons ()
+    /** {@inheritDoc} */
+    @Override
+    protected void updateButtons ()
     {
         final MCUControlSurface surface = this.getSurface ();
         final Modes mode = surface.getModeManager ().getActiveOrTempModeId ();
@@ -493,10 +493,10 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         final boolean isFlipRecord = this.configuration.isFlipRecord ();
         final boolean isRecordShifted = isShift && !isFlipRecord || !isShift && isFlipRecord;
 
-        final boolean isTrackOn = Modes.MODE_TRACK.equals (mode) || Modes.MODE_VOLUME.equals (mode);
-        final boolean isPanOn = Modes.MODE_PAN.equals (mode);
-        final boolean isSendOn = mode.ordinal () >= Modes.MODE_SEND1.ordinal () && mode.ordinal () <= Modes.MODE_SEND8.ordinal ();
-        final boolean isDeviceOn = Modes.MODE_DEVICE_PARAMS.equals (mode);
+        final boolean isTrackOn = Modes.TRACK.equals (mode) || Modes.VOLUME.equals (mode);
+        final boolean isPanOn = Modes.PAN.equals (mode);
+        final boolean isSendOn = mode.ordinal () >= Modes.SEND1.ordinal () && mode.ordinal () <= Modes.SEND8.ordinal ();
+        final boolean isDeviceOn = Modes.DEVICE_PARAMS.equals (mode);
 
         final boolean isLEDOn = surface.isPressed (MCUControlSurface.MCU_OPTION) ? this.model.isCursorTrackPinned () : isTrackOn;
         surface.updateTrigger (MCUControlSurface.MCU_MODE_IO, isLEDOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
@@ -507,7 +507,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         final boolean isOn = surface.isPressed (MCUControlSurface.MCU_OPTION) ? cursorDevice.isPinned () : isDeviceOn;
 
         surface.updateTrigger (MCUControlSurface.MCU_MODE_PLUGIN, isOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateTrigger (MCUControlSurface.MCU_USER, Modes.MODE_BROWSER.equals (mode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateTrigger (MCUControlSurface.MCU_USER, Modes.BROWSER.equals (mode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         final String automationWriteMode = t.getAutomationWriteMode ();
         final boolean writingArrangerAutomation = t.isWritingArrangerAutomation ();
@@ -523,9 +523,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         surface.updateTrigger (MCUControlSurface.MCU_TOUCH, writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         surface.updateTrigger (MCUControlSurface.MCU_LATCH, writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
-        final View view = surface.getViewManager ().getView (Views.VIEW_CONTROL);
-        surface.updateTrigger (MCUControlSurface.MCU_REWIND, ((WindCommand<MCUControlSurface, MCUConfiguration>) view.getTriggerCommand (TriggerCommandID.REWIND)).isRewinding () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateTrigger (MCUControlSurface.MCU_FORWARD, ((WindCommand<MCUControlSurface, MCUConfiguration>) view.getTriggerCommand (TriggerCommandID.FORWARD)).isForwarding () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        final View view = surface.getViewManager ().getView (Views.CONTROL);
+        surface.updateTrigger (MCUControlSurface.MCU_REWIND, ((WindCommand<?, ?>) view.getTriggerCommand (TriggerCommandID.REWIND)).isRewinding () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateTrigger (MCUControlSurface.MCU_FORWARD, ((WindCommand<?, ?>) view.getTriggerCommand (TriggerCommandID.FORWARD)).isForwarding () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         surface.updateTrigger (MCUControlSurface.MCU_REPEAT, t.isLoop () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         surface.updateTrigger (MCUControlSurface.MCU_STOP, !t.isPlaying () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         surface.updateTrigger (MCUControlSurface.MCU_PLAY, t.isPlaying () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
@@ -533,7 +533,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         surface.updateTrigger (MCUControlSurface.MCU_NAME_VALUE, surface.getConfiguration ().isDisplayTrackNames () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
         surface.updateTrigger (MCUControlSurface.MCU_ZOOM, surface.getConfiguration ().isZoomState () ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
-        surface.updateTrigger (MCUControlSurface.MCU_SCRUB, surface.getModeManager ().isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
+        surface.updateTrigger (MCUControlSurface.MCU_SCRUB, surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_PARAMS) ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF);
 
         surface.updateTrigger (MCUControlSurface.MCU_MIDI_TRACKS, MCU_BUTTON_STATE_OFF);
         surface.updateTrigger (MCUControlSurface.MCU_INPUTS, MCU_BUTTON_STATE_OFF);
@@ -657,11 +657,11 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         if (this.configuration.useFadersAsKnobs ())
         {
             final ModeManager modeManager = this.getSurface ().getModeManager ();
-            if (modeManager.isActiveOrTempMode (Modes.MODE_VOLUME))
+            if (modeManager.isActiveOrTempMode (Modes.VOLUME))
                 value = track.getVolume ();
-            else if (modeManager.isActiveOrTempMode (Modes.MODE_PAN))
+            else if (modeManager.isActiveOrTempMode (Modes.PAN))
                 value = track.getPan ();
-            else if (modeManager.isActiveOrTempMode (Modes.MODE_TRACK))
+            else if (modeManager.isActiveOrTempMode (Modes.TRACK))
             {
                 final ITrack selectedTrack = this.model.getSelectedTrack ();
                 if (selectedTrack == null)
@@ -694,23 +694,23 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                     }
                 }
             }
-            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND1))
+            else if (modeManager.isActiveOrTempMode (Modes.SEND1))
                 value = track.getSendBank ().getItem (0).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND2))
+            else if (modeManager.isActiveOrTempMode (Modes.SEND2))
                 value = track.getSendBank ().getItem (1).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND3))
+            else if (modeManager.isActiveOrTempMode (Modes.SEND3))
                 value = track.getSendBank ().getItem (2).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND4))
+            else if (modeManager.isActiveOrTempMode (Modes.SEND4))
                 value = track.getSendBank ().getItem (3).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND5))
+            else if (modeManager.isActiveOrTempMode (Modes.SEND5))
                 value = track.getSendBank ().getItem (4).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND6))
+            else if (modeManager.isActiveOrTempMode (Modes.SEND6))
                 value = track.getSendBank ().getItem (5).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND7))
+            else if (modeManager.isActiveOrTempMode (Modes.SEND7))
                 value = track.getSendBank ().getItem (6).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.MODE_SEND8))
+            else if (modeManager.isActiveOrTempMode (Modes.SEND8))
                 value = track.getSendBank ().getItem (7).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.MODE_DEVICE_PARAMS))
+            else if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
                 value = this.model.getCursorDevice ().getParameterBank ().getItem (channel).getValue ();
         }
 
@@ -744,9 +744,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isPan = Modes.MODE_PAN.equals (mode);
-        final boolean isTrack = Modes.MODE_TRACK.equals (mode);
-        final boolean isDevice = Modes.MODE_DEVICE_PARAMS.equals (mode);
+        final boolean isPan = Modes.PAN.equals (mode);
+        final boolean isTrack = Modes.TRACK.equals (mode);
+        final boolean isDevice = Modes.DEVICE_PARAMS.equals (mode);
 
         tb.setIndication (!isEffect);
         if (tbe != null)
@@ -763,7 +763,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
             final ISendBank sendBank = track.getSendBank ();
             for (int j = 0; j < sendBank.getPageSize (); j++)
-                sendBank.getItem (j).setIndication (!isEffect && (mode.ordinal () - Modes.MODE_SEND1.ordinal () == j || hasTrackSel));
+                sendBank.getItem (j).setIndication (!isEffect && (mode.ordinal () - Modes.SEND1.ordinal () == j || hasTrackSel));
 
             if (tbe != null)
             {
@@ -790,7 +790,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             return;
 
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (modeManager.isActiveOrTempMode (Modes.MODE_MASTER))
-            modeManager.setActiveMode (Modes.MODE_TRACK);
+        if (modeManager.isActiveOrTempMode (Modes.MASTER))
+            modeManager.setActiveMode (Modes.TRACK);
     }
 }

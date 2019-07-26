@@ -37,7 +37,7 @@ public class SLMkIIIDisplay extends AbstractDisplay
     private static final Integer   PROPERTY_COLOR                   = Integer.valueOf (2);
     private static final Integer   PROPERTY_VALUE                   = Integer.valueOf (3);
 
-    private static String          LED_CACHE_STR                    = "%02X%02X%02X";
+    private static final String    LED_CACHE_STR                    = "%02X%02X%02X";
 
     private static final String [] SPACES                           =
     {

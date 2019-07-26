@@ -47,7 +47,7 @@ public class FaderTouchCommand extends SelectCommand
             }
 
             if (event == ButtonEvent.DOWN)
-                modeManager.setActiveMode (Modes.MODE_VOLUME);
+                modeManager.setActiveMode (Modes.VOLUME);
             else if (event == ButtonEvent.UP)
                 modeManager.restoreMode ();
         }

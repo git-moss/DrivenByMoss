@@ -33,6 +33,6 @@ public class TrackSelectCommand extends AbstractTrackCommand
     @Override
     public void execute (final ButtonEvent event)
     {
-        this.onModeButton (event, Modes.MODE_TRACK_SELECT, "Track Select");
+        this.onModeButton (event, Modes.TRACK_SELECT, "Track Select");
     }
 }

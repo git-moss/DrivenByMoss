@@ -50,7 +50,7 @@ public class ParametersMode extends BaseMode
         this.isTemporary = false;
         this.showDevices = true;
 
-        this.browserCommand = new BrowserCommand<> (Modes.MODE_BROWSER, model, surface);
+        this.browserCommand = new BrowserCommand<> (Modes.BROWSER, model, surface);
     }
 
 

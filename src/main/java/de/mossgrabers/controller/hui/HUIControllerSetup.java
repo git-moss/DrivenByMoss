@@ -107,9 +107,8 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     @Override
     public void flush ()
     {
-        this.flushSurfaces ();
+        super.flush ();
 
-        this.updateButtons ();
         this.updateMode (this.getSurface ().getModeManager ().getActiveOrTempModeId ());
     }
 
@@ -148,7 +147,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         surface.setDisplay (new HUIDisplay (this.host, output));
         surface.setMainDisplay (new HUIMainDisplay (this.host, output));
         surface.setSegmentDisplay (new HUISegmentDisplay (output));
-        surface.getModeManager ().setDefaultMode (Modes.MODE_VOLUME);
+        surface.getModeManager ().setDefaultMode (Modes.VOLUME);
     }
 
 
@@ -159,10 +158,10 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         final HUIControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.registerMode (Modes.MODE_VOLUME, new VolumeMode (surface, this.model));
-        modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
+        modeManager.registerMode (Modes.VOLUME, new VolumeMode (surface, this.model));
+        modeManager.registerMode (Modes.PAN, new PanMode (surface, this.model));
         for (int i = 0; i < 5; i++)
-            modeManager.registerMode (Modes.get (Modes.MODE_SEND1, i), new SendMode (i, surface, this.model));
+            modeManager.registerMode (Modes.get (Modes.SEND1, i), new SendMode (i, surface, this.model));
     }
 
 
@@ -191,7 +190,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     protected void createViews ()
     {
         final HUIControlSurface surface = this.getSurface ();
-        surface.getViewManager ().registerView (Views.VIEW_CONTROL, new ControlOnlyView<> (surface, this.model));
+        surface.getViewManager ().registerView (Views.CONTROL, new ControlOnlyView<> (surface, this.model));
     }
 
 
@@ -242,12 +241,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         // Assignment (mode selection)
         // HUI_ASSIGN1_OUTPUT, not supported
         // HUI_ASSIGN1_INPUT, not supported
-        this.addTriggerCommand (TriggerCommandID.PAN_SEND, HUIControlSurface.HUI_ASSIGN1_PAN, new ModeSelectCommand<> (this.model, surface, Modes.MODE_PAN));
-        this.addTriggerCommand (TriggerCommandID.SEND1, HUIControlSurface.HUI_ASSIGN1_SEND_A, new ModeSelectCommand<> (this.model, surface, Modes.MODE_SEND1));
-        this.addTriggerCommand (TriggerCommandID.SEND2, HUIControlSurface.HUI_ASSIGN1_SEND_B, new ModeSelectCommand<> (this.model, surface, Modes.MODE_SEND2));
-        this.addTriggerCommand (TriggerCommandID.SEND3, HUIControlSurface.HUI_ASSIGN1_SEND_C, new ModeSelectCommand<> (this.model, surface, Modes.MODE_SEND3));
-        this.addTriggerCommand (TriggerCommandID.SEND4, HUIControlSurface.HUI_ASSIGN1_SEND_D, new ModeSelectCommand<> (this.model, surface, Modes.MODE_SEND4));
-        this.addTriggerCommand (TriggerCommandID.SEND5, HUIControlSurface.HUI_ASSIGN1_SEND_E, new ModeSelectCommand<> (this.model, surface, Modes.MODE_SEND5));
+        this.addTriggerCommand (TriggerCommandID.PAN_SEND, HUIControlSurface.HUI_ASSIGN1_PAN, new ModeSelectCommand<> (this.model, surface, Modes.PAN));
+        this.addTriggerCommand (TriggerCommandID.SEND1, HUIControlSurface.HUI_ASSIGN1_SEND_A, new ModeSelectCommand<> (this.model, surface, Modes.SEND1));
+        this.addTriggerCommand (TriggerCommandID.SEND2, HUIControlSurface.HUI_ASSIGN1_SEND_B, new ModeSelectCommand<> (this.model, surface, Modes.SEND2));
+        this.addTriggerCommand (TriggerCommandID.SEND3, HUIControlSurface.HUI_ASSIGN1_SEND_C, new ModeSelectCommand<> (this.model, surface, Modes.SEND3));
+        this.addTriggerCommand (TriggerCommandID.SEND4, HUIControlSurface.HUI_ASSIGN1_SEND_D, new ModeSelectCommand<> (this.model, surface, Modes.SEND4));
+        this.addTriggerCommand (TriggerCommandID.SEND5, HUIControlSurface.HUI_ASSIGN1_SEND_E, new ModeSelectCommand<> (this.model, surface, Modes.SEND5));
 
         // Assignment 2
         // HUI_ASSIGN2_ASSIGN, not supported
@@ -381,8 +380,8 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     {
         final HUIControlSurface surface = this.getSurface ();
 
-        surface.getViewManager ().setActiveView (Views.VIEW_CONTROL);
-        surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
+        surface.getViewManager ().setActiveView (Views.CONTROL);
+        surface.getModeManager ().setActiveMode (Modes.PAN);
 
         this.sendPing ();
     }
@@ -395,8 +394,9 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     }
 
 
-    @SuppressWarnings("unchecked")
-    private void updateButtons ()
+    /** {@inheritDoc} */
+    @Override
+    protected void updateButtons ()
     {
         final HUIControlSurface surface = this.getSurface ();
         final Modes mode = surface.getModeManager ().getActiveOrTempModeId ();
@@ -408,12 +408,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
 
         // Set button states
         final ITransport t = this.model.getTransport ();
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_PAN, Modes.MODE_PAN.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_A, Modes.MODE_SEND1.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_B, Modes.MODE_SEND2.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_C, Modes.MODE_SEND3.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_D, Modes.MODE_SEND4.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_E, Modes.MODE_SEND5.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_PAN, Modes.PAN.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_A, Modes.SEND1.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_B, Modes.SEND2.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_C, Modes.SEND3.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_D, Modes.SEND4.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_E, Modes.SEND5.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
 
         final String automationWriteMode = t.getAutomationWriteMode ();
         final boolean writingArrangerAutomation = t.isWritingArrangerAutomation ();
@@ -425,9 +425,9 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         surface.updateTrigger (HUIControlSurface.HUI_AUTO_MODE_TOUCH, writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
         surface.updateTrigger (HUIControlSurface.HUI_AUTO_MODE_LATCH, writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
 
-        final View view = surface.getViewManager ().getView (Views.VIEW_CONTROL);
-        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_REWIND, ((WindCommand<HUIControlSurface, HUIConfiguration>) view.getTriggerCommand (TriggerCommandID.REWIND)).isRewinding () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_FAST_FWD, ((WindCommand<HUIControlSurface, HUIConfiguration>) view.getTriggerCommand (TriggerCommandID.FORWARD)).isForwarding () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        final View view = surface.getViewManager ().getView (Views.CONTROL);
+        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_REWIND, ((WindCommand<?, ?>) view.getTriggerCommand (TriggerCommandID.REWIND)).isRewinding () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
+        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_FAST_FWD, ((WindCommand<?, ?>) view.getTriggerCommand (TriggerCommandID.FORWARD)).isForwarding () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
         surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_LOOP, t.isLoop () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
         surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_STOP, !t.isPlaying () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
         surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_PLAY, t.isPlaying () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
@@ -533,9 +533,9 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isPan = Modes.MODE_PAN.equals (mode);
-        final boolean isTrack = Modes.MODE_TRACK.equals (mode);
-        final boolean isDevice = Modes.MODE_DEVICE_PARAMS.equals (mode);
+        final boolean isPan = Modes.PAN == mode;
+        final boolean isTrack = Modes.TRACK == mode;
+        final boolean isDevice = Modes.DEVICE_PARAMS == mode;
 
         tb.setIndication (!isEffect);
         if (tbe != null)
@@ -552,7 +552,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
 
             final ISendBank sendBank = track.getSendBank ();
             for (int j = 0; j < sendBank.getPageSize (); j++)
-                sendBank.getItem (j).setIndication (!isEffect && (mode.ordinal () - Modes.MODE_SEND1.ordinal () == j || hasTrackSel));
+                sendBank.getItem (j).setIndication (!isEffect && (mode.ordinal () - Modes.SEND1.ordinal () == j || hasTrackSel));
 
             if (tbe != null)
             {

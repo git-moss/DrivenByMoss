@@ -115,15 +115,6 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
     /** {@inheritDoc} */
     @Override
-    public void flush ()
-    {
-        this.flushSurfaces ();
-        this.updateButtons ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void createScales ()
     {
         this.scales = new Scales (this.valueChanger, 36, 76, 8, 5);
@@ -178,10 +169,10 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     {
         final APCControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.registerMode (Modes.MODE_PAN, new PanMode (surface, this.model));
+        modeManager.registerMode (Modes.PAN, new PanMode (surface, this.model));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Modes.get (Modes.MODE_SEND1, i), new SendMode (surface, this.model, i));
-        modeManager.registerMode (Modes.MODE_BROWSER, new BrowserMode (surface, this.model));
+            modeManager.registerMode (Modes.get (Modes.SEND1, i), new SendMode (surface, this.model, i));
+        modeManager.registerMode (Modes.BROWSER, new BrowserMode (surface, this.model));
     }
 
 
@@ -191,12 +182,12 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     {
         final APCControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerView (Views.VIEW_PLAY, new PlayView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SESSION, new SessionView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SEQUENCER, new SequencerView (surface, this.model));
-        viewManager.registerView (Views.VIEW_DRUM, new DrumView (surface, this.model));
-        viewManager.registerView (Views.VIEW_RAINDROPS, new RaindropsView (surface, this.model));
-        viewManager.registerView (Views.VIEW_SHIFT, new ShiftView (surface, this.model));
+        viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
+        viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
+        viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
+        viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
+        viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
+        viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
     }
 
 
@@ -211,7 +202,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addTriggerCommand (TriggerCommandID.RECORD, APCControlSurface.APC_BUTTON_RECORD, new APCRecordCommand (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.TAP_TEMPO, APCControlSurface.APC_BUTTON_TAP_TEMPO, new TapTempoCommand<> (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.QUANTIZE, APCControlSurface.APC_BUTTON_REC_QUANT, new APCQuantizeCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.PAN_SEND, APCControlSurface.APC_BUTTON_PAN, new ModeSelectCommand<> (this.model, surface, Modes.MODE_PAN));
+        this.addTriggerCommand (TriggerCommandID.PAN_SEND, APCControlSurface.APC_BUTTON_PAN, new ModeSelectCommand<> (this.model, surface, Modes.PAN));
         this.addTriggerCommand (TriggerCommandID.MASTERTRACK, APCControlSurface.APC_BUTTON_MASTER, new MasterCommand<> (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.STOP_ALL_CLIPS, APCControlSurface.APC_BUTTON_STOP_ALL_CLIPS, new StopAllClipsOrBrowseCommand<> (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.SEND1, APCControlSurface.APC_BUTTON_SEND_A, new SendModeCommand (0, this.model, surface));
@@ -329,12 +320,14 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     public void startup ()
     {
         final APCControlSurface surface = this.getSurface ();
-        surface.getModeManager ().setActiveMode (Modes.MODE_PAN);
-        surface.getViewManager ().setActiveView (Views.VIEW_PLAY);
+        surface.getModeManager ().setActiveMode (Modes.PAN);
+        surface.getViewManager ().setActiveView (Views.PLAY);
     }
 
 
-    private void updateButtons ()
+    /** {@inheritDoc} */
+    @Override
+    protected void updateButtons ()
     {
         final APCControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
@@ -367,7 +360,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             if (isShift)
                 isOn = i == clipLength;
             else
-                isOn = isSendA ? modeManager.isActiveOrTempMode (Modes.get (Modes.MODE_SEND1, i)) : i == selIndex;
+                isOn = isSendA ? modeManager.isActiveOrTempMode (Modes.get (Modes.SEND1, i)) : i == selIndex;
             surface.updateTrigger (i, APCControlSurface.APC_BUTTON_TRACK_SELECTION, isOn ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             surface.updateTrigger (i, APCControlSurface.APC_BUTTON_SOLO, trackExists && getSoloButtonState (isShift, track) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             surface.updateTrigger (i, APCControlSurface.APC_BUTTON_ACTIVATOR, trackExists && getMuteButtonState (isShift, track) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
@@ -453,17 +446,17 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final APCControlSurface surface = this.getSurface ();
         final Modes m = mode == null ? surface.getModeManager ().getActiveOrTempModeId () : mode;
         this.updateIndication (m);
-        surface.updateTrigger (APCControlSurface.APC_BUTTON_PAN, Modes.MODE_PAN.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        surface.updateTrigger (APCControlSurface.APC_BUTTON_PAN, Modes.PAN.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         if (surface.isMkII ())
         {
-            surface.updateTrigger (APCControlSurface.APC_BUTTON_SEND_A, Modes.MODE_SEND1.equals (m) || Modes.MODE_SEND3.equals (m) || Modes.MODE_SEND5.equals (m) || Modes.MODE_SEND7.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-            surface.updateTrigger (APCControlSurface.APC_BUTTON_SEND_B, Modes.MODE_SEND2.equals (m) || Modes.MODE_SEND4.equals (m) || Modes.MODE_SEND6.equals (m) || Modes.MODE_SEND8.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateTrigger (APCControlSurface.APC_BUTTON_SEND_A, Modes.SEND1.equals (m) || Modes.SEND3.equals (m) || Modes.SEND5.equals (m) || Modes.SEND7.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateTrigger (APCControlSurface.APC_BUTTON_SEND_B, Modes.SEND2.equals (m) || Modes.SEND4.equals (m) || Modes.SEND6.equals (m) || Modes.SEND8.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         }
         else
         {
-            surface.updateTrigger (APCControlSurface.APC_BUTTON_SEND_A, Modes.MODE_SEND1.equals (m) || Modes.MODE_SEND4.equals (m) || Modes.MODE_SEND7.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-            surface.updateTrigger (APCControlSurface.APC_BUTTON_SEND_B, Modes.MODE_SEND2.equals (m) || Modes.MODE_SEND5.equals (m) || Modes.MODE_SEND8.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-            surface.updateTrigger (APCControlSurface.APC_BUTTON_SEND_C, Modes.MODE_SEND3.equals (m) || Modes.MODE_SEND6.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateTrigger (APCControlSurface.APC_BUTTON_SEND_A, Modes.SEND1.equals (m) || Modes.SEND4.equals (m) || Modes.SEND7.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateTrigger (APCControlSurface.APC_BUTTON_SEND_B, Modes.SEND2.equals (m) || Modes.SEND5.equals (m) || Modes.SEND8.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateTrigger (APCControlSurface.APC_BUTTON_SEND_C, Modes.SEND3.equals (m) || Modes.SEND6.equals (m) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
         }
     }
 
@@ -492,9 +485,9 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final APCControlSurface surface = this.getSurface ();
-        final boolean isSession = surface.getViewManager ().isActiveView (Views.VIEW_SESSION);
+        final boolean isSession = surface.getViewManager ().isActiveView (Views.SESSION);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isPan = Modes.MODE_PAN.equals (mode);
+        final boolean isPan = Modes.PAN.equals (mode);
         final boolean isShift = surface.isShiftPressed ();
 
         tb.setIndication (!isEffect && (isSession || isShift));
@@ -510,7 +503,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             track.setPanIndication (!isEffect && isPan);
             final ISendBank sendBank = track.getSendBank ();
             for (int j = 0; j < 8; j++)
-                sendBank.getItem (j).setIndication (!isEffect && (Modes.MODE_SEND1.equals (mode) && j == 0 || Modes.MODE_SEND2.equals (mode) && j == 1 || Modes.MODE_SEND3.equals (mode) && j == 2 || Modes.MODE_SEND4.equals (mode) && j == 3 || Modes.MODE_SEND5.equals (mode) && j == 4 || Modes.MODE_SEND6.equals (mode) && j == 5 || Modes.MODE_SEND7.equals (mode) && j == 6 || Modes.MODE_SEND8.equals (mode) && j == 7));
+                sendBank.getItem (j).setIndication (!isEffect && (Modes.SEND1.equals (mode) && j == 0 || Modes.SEND2.equals (mode) && j == 1 || Modes.SEND3.equals (mode) && j == 2 || Modes.SEND4.equals (mode) && j == 3 || Modes.SEND5.equals (mode) && j == 4 || Modes.SEND6.equals (mode) && j == 5 || Modes.SEND7.equals (mode) && j == 6 || Modes.SEND8.equals (mode) && j == 7));
 
             if (tbe != null)
             {
@@ -537,22 +530,22 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final APCControlSurface surface = this.getSurface ();
         // Recall last used view (if we are not in session mode)
         final ViewManager viewManager = surface.getViewManager ();
-        if (!viewManager.isActiveView (Views.VIEW_SESSION))
+        if (!viewManager.isActiveView (Views.SESSION))
         {
             final ITrack selectedTrack = this.model.getSelectedTrack ();
             if (selectedTrack != null)
             {
                 final Views preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
-                viewManager.setActiveView (preferredView == null ? Views.VIEW_PLAY : preferredView);
+                viewManager.setActiveView (preferredView == null ? Views.PLAY : preferredView);
             }
         }
 
-        if (viewManager.isActiveView (Views.VIEW_PLAY))
+        if (viewManager.isActiveView (Views.PLAY))
             viewManager.getActiveView ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
         this.scales.resetDrumOctave ();
-        if (viewManager.isActiveView (Views.VIEW_DRUM))
-            viewManager.getView (Views.VIEW_DRUM).updateNoteMapping ();
+        if (viewManager.isActiveView (Views.DRUM))
+            viewManager.getView (Views.DRUM).updateNoteMapping ();
     }
 }

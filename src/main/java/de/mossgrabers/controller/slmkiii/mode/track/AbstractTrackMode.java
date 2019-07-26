@@ -47,14 +47,14 @@ public abstract class AbstractTrackMode extends BaseMode
 
     private static final Modes []               MODES     =
     {
-        Modes.MODE_TRACK,
-        Modes.MODE_VOLUME,
-        Modes.MODE_PAN,
-        Modes.MODE_SEND1,
-        Modes.MODE_SEND2,
-        Modes.MODE_SEND3,
-        Modes.MODE_SEND4,
-        Modes.MODE_SEND5
+        Modes.TRACK,
+        Modes.VOLUME,
+        Modes.PAN,
+        Modes.SEND1,
+        Modes.SEND2,
+        Modes.SEND3,
+        Modes.SEND4,
+        Modes.SEND5
     };
 
 
@@ -102,7 +102,7 @@ public abstract class AbstractTrackMode extends BaseMode
                     break;
                 case 2:
                     if (selectedTrack != null)
-                        this.surface.getViewManager ().setActiveView (Views.VIEW_COLOR);
+                        this.surface.getViewManager ().setActiveView (Views.COLOR);
                     break;
                 case 5:
                     this.model.getApplication ().addInstrumentTrack ();
@@ -161,9 +161,9 @@ public abstract class AbstractTrackMode extends BaseMode
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         if (tb == null || !tb.canEditSend (sendIndex))
             return;
-        final Modes si = Modes.get (Modes.MODE_SEND1, sendIndex);
+        final Modes si = Modes.get (Modes.SEND1, sendIndex);
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (modeManager.isActiveOrTempMode (si) ? Modes.MODE_TRACK : si);
+        modeManager.setActiveMode (modeManager.isActiveOrTempMode (si) ? Modes.TRACK : si);
     }
 
 

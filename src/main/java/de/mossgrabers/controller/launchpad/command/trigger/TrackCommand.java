@@ -33,6 +33,6 @@ public class TrackCommand extends AbstractTrackCommand
     @Override
     public void execute (final ButtonEvent event)
     {
-        this.onModeButton (event, Modes.MODE_MUTE, "Mute");
+        this.onModeButton (event, Modes.MUTE, "Mute");
     }
 }

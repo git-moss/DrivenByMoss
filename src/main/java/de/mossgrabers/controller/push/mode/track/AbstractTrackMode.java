@@ -146,26 +146,26 @@ public abstract class AbstractTrackMode extends BaseMode
         switch (index)
         {
             case 0:
-                if (modeManager.isActiveOrTempMode (Modes.MODE_VOLUME))
-                    modeManager.setActiveMode (Modes.MODE_TRACK);
+                if (modeManager.isActiveOrTempMode (Modes.VOLUME))
+                    modeManager.setActiveMode (Modes.TRACK);
                 else
-                    modeManager.setActiveMode (Modes.MODE_VOLUME);
+                    modeManager.setActiveMode (Modes.VOLUME);
                 break;
 
             case 1:
-                if (modeManager.isActiveOrTempMode (Modes.MODE_PAN))
-                    modeManager.setActiveMode (Modes.MODE_TRACK);
+                if (modeManager.isActiveOrTempMode (Modes.PAN))
+                    modeManager.setActiveMode (Modes.TRACK);
                 else
-                    modeManager.setActiveMode (Modes.MODE_PAN);
+                    modeManager.setActiveMode (Modes.PAN);
                 break;
 
             case 2:
                 if (config.isDisplayCrossfader ())
                 {
-                    if (modeManager.isActiveOrTempMode (Modes.MODE_CROSSFADER))
-                        modeManager.setActiveMode (Modes.MODE_TRACK);
+                    if (modeManager.isActiveOrTempMode (Modes.CROSSFADER))
+                        modeManager.setActiveMode (Modes.TRACK);
                     else
-                        modeManager.setActiveMode (Modes.MODE_CROSSFADER);
+                        modeManager.setActiveMode (Modes.CROSSFADER);
                 }
                 break;
 
@@ -173,8 +173,8 @@ public abstract class AbstractTrackMode extends BaseMode
                 if (!this.model.isEffectTrackBankActive ())
                 {
                     config.setSendsAreToggled (!config.isSendsAreToggled ());
-                    if (!modeManager.isActiveOrTempMode (Modes.MODE_TRACK))
-                        modeManager.setActiveMode (Modes.get (Modes.MODE_SEND1, config.isSendsAreToggled () ? 4 : 0));
+                    if (!modeManager.isActiveOrTempMode (Modes.TRACK))
+                        modeManager.setActiveMode (Modes.get (Modes.SEND1, config.isSendsAreToggled () ? 4 : 0));
                 }
                 break;
 
@@ -207,9 +207,9 @@ public abstract class AbstractTrackMode extends BaseMode
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         if (tb == null || !tb.canEditSend (sendIndex))
             return;
-        final Modes si = Modes.get (Modes.MODE_SEND1, sendIndex);
+        final Modes si = Modes.get (Modes.SEND1, sendIndex);
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (modeManager.isActiveOrTempMode (si) ? Modes.MODE_TRACK : si);
+        modeManager.setActiveMode (modeManager.isActiveOrTempMode (si) ? Modes.TRACK : si);
     }
 
 
@@ -251,16 +251,16 @@ public abstract class AbstractTrackMode extends BaseMode
             }
 
             final ModeManager modeManager = this.surface.getModeManager ();
-            this.surface.updateTrigger (102, modeManager.isActiveOrTempMode (Modes.MODE_VOLUME) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (103, modeManager.isActiveOrTempMode (Modes.MODE_PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (104, modeManager.isActiveOrTempMode (Modes.MODE_CROSSFADER) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (102, modeManager.isActiveOrTempMode (Modes.VOLUME) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (103, modeManager.isActiveOrTempMode (Modes.PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (104, modeManager.isActiveOrTempMode (Modes.CROSSFADER) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             this.surface.updateTrigger (105, PushColors.PUSH2_COLOR_BLACK);
             final boolean sendsAreToggled = config.isSendsAreToggled ();
-            this.surface.updateTrigger (106, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND5 : Modes.MODE_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (107, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND6 : Modes.MODE_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (108, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND7 : Modes.MODE_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (106, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.SEND5 : Modes.SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (107, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.SEND6 : Modes.SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            this.surface.updateTrigger (108, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.SEND7 : Modes.SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             if (this.surface.isShiftPressed ())
-                this.surface.updateTrigger (109, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.MODE_SEND8 : Modes.MODE_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+                this.surface.updateTrigger (109, modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.SEND8 : Modes.SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             else
                 this.surface.updateTrigger (109, tb.hasParent () ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
             return;

@@ -38,12 +38,12 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
 
         if (this.model.getHost ().hasDrumDevice ())
         {
-            this.playSelect = new ViewMultiSelectCommand<> (model, surface, true, Views.VIEW_PLAY, Views.VIEW_PIANO, Views.VIEW_DRUM, Views.VIEW_DRUM4, Views.VIEW_DRUM8, Views.VIEW_DRUM64);
-            this.seqSelect = new ViewMultiSelectCommand<> (model, surface, true, Views.VIEW_SEQUENCER, Views.VIEW_RAINDROPS);
+            this.playSelect = new ViewMultiSelectCommand<> (model, surface, true, Views.PLAY, Views.PIANO, Views.DRUM, Views.DRUM4, Views.DRUM8, Views.DRUM64);
+            this.seqSelect = new ViewMultiSelectCommand<> (model, surface, true, Views.SEQUENCER, Views.RAINDROPS);
         }
         else
         {
-            this.playSelect = new ViewMultiSelectCommand<> (model, surface, true, Views.VIEW_PLAY, Views.VIEW_PIANO, Views.VIEW_DRUM64);
+            this.playSelect = new ViewMultiSelectCommand<> (model, surface, true, Views.PLAY, Views.PIANO, Views.DRUM64);
             this.seqSelect = this.playSelect;
         }
     }
@@ -60,7 +60,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         final ITrack sel = this.model.getSelectedTrack ();
         if (sel == null)
         {
-            viewManager.setActiveView (Views.VIEW_SESSION);
+            viewManager.setActiveView (Views.SESSION);
             return;
         }
 

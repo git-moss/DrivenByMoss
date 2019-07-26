@@ -16,134 +16,134 @@ import java.util.Set;
 public enum Modes
 {
     /** Single Track editing mode. */
-    MODE_TRACK,
+    TRACK,
     /** Edit details of one track. */
-    MODE_TRACK_DETAILS,
+    TRACK_DETAILS,
     /** Edit volume of all tracks. */
-    MODE_VOLUME,
+    VOLUME,
     /** Edit panorama of all tracks. */
-    MODE_PAN,
+    PAN,
     /** Edit crossfader settings of all tracks. */
-    MODE_CROSSFADER,
+    CROSSFADER,
     /** Mode to arm tracks for recording. */
-    MODE_REC_ARM,
+    REC_ARM,
     /** Mode to select tracks. */
-    MODE_TRACK_SELECT,
+    TRACK_SELECT,
     /** Mode to mute tracks. */
-    MODE_MUTE,
+    MUTE,
     /** Mode to solo tracks. */
-    MODE_SOLO,
+    SOLO,
     /** Mode to stop clips. */
-    MODE_STOP_CLIP,
+    STOP_CLIP,
 
     /** Edit Send 1 of all tracks. */
-    MODE_SEND1,
+    SEND1,
     /** Edit Send 2 of all tracks. */
-    MODE_SEND2,
+    SEND2,
     /** Edit Send 3 of all tracks. */
-    MODE_SEND3,
+    SEND3,
     /** Edit Send 4 of all tracks. */
-    MODE_SEND4,
+    SEND4,
     /** Edit Send 5 of all tracks. */
-    MODE_SEND5,
+    SEND5,
     /** Edit Send 6 of all tracks. */
-    MODE_SEND6,
+    SEND6,
     /** Edit Send 7 of all tracks. */
-    MODE_SEND7,
+    SEND7,
     /** Edit Send 8 of all tracks. */
-    MODE_SEND8,
+    SEND8,
     /** Edit Sends of all tracks. */
-    MODE_SEND,
+    SEND,
 
     /** Edit master track. */
-    MODE_MASTER,
+    MASTER,
     /** Edit master track (temporary). */
-    MODE_MASTER_TEMP,
+    MASTER_TEMP,
 
     /** Edit device parameters. */
-    MODE_DEVICE_PARAMS,
+    DEVICE_PARAMS,
 
     /** Edit layer parameters. */
-    MODE_DEVICE_LAYER,
+    DEVICE_LAYER,
     /** Edit volume of all layers. */
-    MODE_DEVICE_LAYER_VOLUME,
+    DEVICE_LAYER_VOLUME,
     /** Edit panorama of all layers. */
-    MODE_DEVICE_LAYER_PAN,
+    DEVICE_LAYER_PAN,
     /** Edit Send 1 of all layers. */
-    MODE_DEVICE_LAYER_SEND1,
+    DEVICE_LAYER_SEND1,
     /** Edit Send 2 of all layers. */
-    MODE_DEVICE_LAYER_SEND2,
+    DEVICE_LAYER_SEND2,
     /** Edit Send 3 of all layers. */
-    MODE_DEVICE_LAYER_SEND3,
+    DEVICE_LAYER_SEND3,
     /** Edit Send 4 of all layers. */
-    MODE_DEVICE_LAYER_SEND4,
+    DEVICE_LAYER_SEND4,
     /** Edit Send 5 of all layers. */
-    MODE_DEVICE_LAYER_SEND5,
+    DEVICE_LAYER_SEND5,
     /** Edit Send 6 of all layers. */
-    MODE_DEVICE_LAYER_SEND6,
+    DEVICE_LAYER_SEND6,
     /** Edit Send 7 of all layers. */
-    MODE_DEVICE_LAYER_SEND7,
+    DEVICE_LAYER_SEND7,
     /** Edit Send 8 of all layers. */
-    MODE_DEVICE_LAYER_SEND8,
+    DEVICE_LAYER_SEND8,
     /** Edit Sends of all layers. */
-    MODE_DEVICE_LAYER_SEND,
+    DEVICE_LAYER_SEND,
     /** Edit layer details. */
-    MODE_DEVICE_LAYER_DETAILS,
+    DEVICE_LAYER_DETAILS,
 
     /** Browser mode. */
-    MODE_BROWSER,
+    BROWSER,
 
     /** Edit clip parameters. */
-    MODE_CLIP,
+    CLIP,
     /** Edit note parameters. */
-    MODE_NOTE,
+    NOTE,
 
     /** Show/hide different frames. */
-    MODE_FRAME,
+    FRAME,
     /** Groove edit mode. */
-    MODE_GROOVE,
+    GROOVE,
     /** Edit accent parameters. */
-    MODE_ACCENT,
+    ACCENT,
     /** Scale configuration. */
-    MODE_SCALES,
+    SCALES,
     /** Scale layout mode. */
-    MODE_SCALE_LAYOUT,
+    SCALE_LAYOUT,
     /** Pick length of new clips. */
-    MODE_FIXED,
+    FIXED,
     /** Edit ribbon parameters. */
-    MODE_RIBBON,
+    RIBBON,
     /** Select a view for a track. */
-    MODE_VIEW_SELECT,
+    VIEW_SELECT,
     /** Edit automation parameters. */
-    MODE_AUTOMATION,
+    AUTOMATION,
     /** Transport mode. */
-    MODE_TRANSPORT,
+    TRANSPORT,
     /** Configuration mode. */
-    MODE_CONFIGURATION,
+    CONFIGURATION,
     /** Setup mode. */
-    MODE_SETUP,
+    SETUP,
     /** Info mode. */
-    MODE_INFO,
+    INFO,
     /** Select of session views. */
-    MODE_SESSION_VIEW_SELECT,
+    SESSION_VIEW_SELECT,
     /** Session mode. */
-    MODE_SESSION,
+    SESSION,
     /** Markers mode. */
-    MODE_MARKERS,
+    MARKERS,
     /** Repeat note length mode. */
-    MODE_REPEAT_NOTE,
+    REPEAT_NOTE,
     /** Execute different functions. */
-    MODE_FUNCTIONS,
+    FUNCTIONS,
     /** Edit play options. */
-    MODE_PLAY_OPTIONS,
+    PLAY_OPTIONS,
     /** Play cursor position mode. */
-    MODE_POSITION,
+    POSITION,
     /** Tempo mode. */
-    MODE_TEMPO;
+    TEMPO;
 
-    private static final Set<Modes> TRACK_MODES = EnumSet.range (Modes.MODE_TRACK, Modes.MODE_STOP_CLIP);
-    private static final Set<Modes> LAYER_MODES = EnumSet.range (Modes.MODE_DEVICE_LAYER, Modes.MODE_DEVICE_LAYER_DETAILS);
-    private static final Set<Modes> SEND_MODES  = EnumSet.range (Modes.MODE_SEND1, Modes.MODE_SEND);
+    private static final Set<Modes> TRACK_MODES = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);
+    private static final Set<Modes> LAYER_MODES = EnumSet.range (Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_DETAILS);
+    private static final Set<Modes> SEND_MODES  = EnumSet.range (Modes.SEND1, Modes.SEND);
 
     static
     {
@@ -204,7 +204,7 @@ public enum Modes
      */
     public static boolean isDeviceMode (final Modes modeId)
     {
-        return LAYER_MODES.contains (modeId) || MODE_DEVICE_PARAMS == modeId;
+        return LAYER_MODES.contains (modeId) || DEVICE_PARAMS == modeId;
     }
 
 

@@ -57,7 +57,7 @@ public class KeyCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCon
         switch (this.key)
         {
             case ENTER:
-                if (modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
+                if (modeManager.isActiveOrTempMode (Modes.BROWSER))
                 {
                     this.model.getBrowser ().stopBrowsing (true);
                     modeManager.restoreMode ();
@@ -67,7 +67,7 @@ public class KeyCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCon
                 break;
 
             case ESCAPE:
-                if (modeManager.isActiveOrTempMode (Modes.MODE_BROWSER))
+                if (modeManager.isActiveOrTempMode (Modes.BROWSER))
                 {
                     this.model.getBrowser ().stopBrowsing (false);
                     modeManager.restoreMode ();

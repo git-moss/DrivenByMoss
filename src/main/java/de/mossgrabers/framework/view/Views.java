@@ -23,57 +23,57 @@ import java.util.Set;
 public enum Views
 {
     /** View for playing notes. */
-    VIEW_PLAY,
+    PLAY,
     /** View for a session grid with clips. */
-    VIEW_SESSION,
+    SESSION,
     /** View for a sequencer. */
-    VIEW_SEQUENCER,
+    SEQUENCER,
     /** View for playing drums and sequencing. */
-    VIEW_DRUM,
+    DRUM,
     /** View for raindrops sequencer. */
-    VIEW_RAINDROPS,
+    RAINDROPS,
     /** View for playing in piano keyboard style. */
-    VIEW_PIANO,
+    PIANO,
     /** View sending program changes. */
-    VIEW_PRG_CHANGE,
+    PRG_CHANGE,
     /** View for editing the clip length. */
-    VIEW_CLIP,
+    CLIP,
     /** View for drum sequencing with 4 sounds. */
-    VIEW_DRUM4,
+    DRUM4,
     /** View for drum sequencing with 8 sounds. */
-    VIEW_DRUM8,
+    DRUM8,
     /** View for drum playing with 64 pads. */
-    VIEW_DRUM64,
+    DRUM64,
     /** View for selecting a color. */
-    VIEW_COLOR,
+    COLOR,
     /** View for playing scenes. */
-    VIEW_SCENE_PLAY,
+    SCENE_PLAY,
     /** View for the poly sequencer. */
-    VIEW_POLY_SEQUENCER,
+    POLY_SEQUENCER,
 
     /** View for browsing. */
-    VIEW_BROWSER,
+    BROWSER,
     /** View for changing track parameters. */
-    VIEW_TRACK,
+    TRACK,
     /** View for changing track volumes. */
-    VIEW_TRACK_VOLUME,
+    TRACK_VOLUME,
     /** View for changing track panoramas. */
-    VIEW_TRACK_PAN,
+    TRACK_PAN,
     /** View for changing track sends. */
-    VIEW_TRACK_SENDS,
+    TRACK_SENDS,
     /** View for Track selection. */
-    VIEW_TRACK_SELECT,
+    TRACK_SELECT,
     /** View for soloing tracks. */
-    VIEW_TRACK_SOLO,
+    TRACK_SOLO,
     /** View for muting tracks. */
-    VIEW_TRACK_MUTE,
+    TRACK_MUTE,
     /** View for editing remote parameters. */
-    VIEW_DEVICE,
+    DEVICE,
 
     /** View for controlling values. */
-    VIEW_CONTROL,
+    CONTROL,
     /** View for shift options. */
-    VIEW_SHIFT;
+    SHIFT;
 
     /** The name of the play view. */
     public static final String              VIEW_NAME_PLAY           = "Play";
@@ -122,40 +122,40 @@ public enum Views
             return;
         isInitialised = true;
 
-        NOTE_VIEWS.add (VIEW_PLAY);
-        NOTE_VIEWS.add (VIEW_PIANO);
-        NOTE_VIEWS.add (VIEW_DRUM64);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_PLAY, VIEW_PLAY);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_PIANO, VIEW_PIANO);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM64, VIEW_DRUM64);
+        NOTE_VIEWS.add (PLAY);
+        NOTE_VIEWS.add (PIANO);
+        NOTE_VIEWS.add (DRUM64);
+        NOTE_VIEW_NAMES.put (VIEW_NAME_PLAY, PLAY);
+        NOTE_VIEW_NAMES.put (VIEW_NAME_PIANO, PIANO);
+        NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM64, DRUM64);
 
         if (host.hasDrumDevice ())
         {
-            NOTE_VIEWS.add (VIEW_DRUM);
-            NOTE_VIEWS.add (VIEW_DRUM4);
-            NOTE_VIEWS.add (VIEW_DRUM8);
-            NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM, VIEW_DRUM);
-            NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM4, VIEW_DRUM4);
-            NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM8, VIEW_DRUM8);
+            NOTE_VIEWS.add (DRUM);
+            NOTE_VIEWS.add (DRUM4);
+            NOTE_VIEWS.add (DRUM8);
+            NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM, DRUM);
+            NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM4, DRUM4);
+            NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM8, DRUM8);
 
-            SEQUENCER_VIEWS.add (VIEW_DRUM);
-            SEQUENCER_VIEWS.add (VIEW_DRUM4);
-            SEQUENCER_VIEWS.add (VIEW_DRUM8);
+            SEQUENCER_VIEWS.add (DRUM);
+            SEQUENCER_VIEWS.add (DRUM4);
+            SEQUENCER_VIEWS.add (DRUM8);
         }
 
         if (host.hasClips ())
         {
-            NOTE_VIEWS.add (VIEW_SEQUENCER);
-            NOTE_VIEWS.add (VIEW_RAINDROPS);
-            NOTE_VIEW_NAMES.put (VIEW_NAME_SEQUENCER, VIEW_SEQUENCER);
-            NOTE_VIEW_NAMES.put (VIEW_NAME_RAINDROPS, VIEW_RAINDROPS);
+            NOTE_VIEWS.add (SEQUENCER);
+            NOTE_VIEWS.add (RAINDROPS);
+            NOTE_VIEW_NAMES.put (VIEW_NAME_SEQUENCER, SEQUENCER);
+            NOTE_VIEW_NAMES.put (VIEW_NAME_RAINDROPS, RAINDROPS);
 
-            SEQUENCER_VIEWS.add (VIEW_SEQUENCER);
-            SEQUENCER_VIEWS.add (VIEW_RAINDROPS);
-            SEQUENCER_VIEWS.add (VIEW_POLY_SEQUENCER);
+            SEQUENCER_VIEWS.add (SEQUENCER);
+            SEQUENCER_VIEWS.add (RAINDROPS);
+            SEQUENCER_VIEWS.add (POLY_SEQUENCER);
 
-            SESSION_VIEWS.add (VIEW_SESSION);
-            SESSION_VIEWS.add (VIEW_SCENE_PLAY);
+            SESSION_VIEWS.add (SESSION);
+            SESSION_VIEWS.add (SCENE_PLAY);
         }
     }
 
