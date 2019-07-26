@@ -34,7 +34,8 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 {
     protected final List<S>       surfaces    = new ArrayList<> ();
     protected final IHost         host;
-    protected final ISettingsUI   settings;
+    protected final ISettingsUI   globalSettings;
+    protected final ISettingsUI   documentSettings;
     protected final ISetupFactory factory;
 
     protected Scales              scales;
@@ -50,13 +51,15 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      *
      * @param factory The factory
      * @param host The host
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      */
-    protected AbstractControllerSetup (final ISetupFactory factory, final IHost host, final ISettingsUI settings)
+    protected AbstractControllerSetup (final ISetupFactory factory, final IHost host, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         this.factory = factory;
         this.host = host;
-        this.settings = settings;
+        this.globalSettings = globalSettings;
+        this.documentSettings = documentSettings;
     }
 
 
@@ -143,7 +146,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      */
     protected void initConfiguration ()
     {
-        this.configuration.init (this.settings);
+        this.configuration.init (this.globalSettings, this.documentSettings);
     }
 
 
@@ -270,7 +273,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     {
         final S surface = this.surfaces.get (deviceIndex);
         surface.getViewManager ().registerTriggerCommand (commandID, command);
-        surface.assignTriggerCommand (midiCC, midiChannel, commandID);
+        surface.assignTriggerCommand (midiChannel, midiCC, commandID);
     }
 
 
@@ -286,7 +289,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     {
         final S surface = this.surfaces.get (0);
         surface.getViewManager ().registerContinuousCommand (commandID, command);
-        surface.assignContinuousCommand (midiCC, midiChannel, commandID);
+        surface.assignContinuousCommand (midiChannel, midiCC, commandID);
     }
 
 

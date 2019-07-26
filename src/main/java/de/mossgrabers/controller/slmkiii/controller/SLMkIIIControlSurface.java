@@ -119,6 +119,8 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
     {
         super (host, configuration, colorManager, output, input, new SLMkIIIPadGrid (colorManager, output));
 
+        this.defaultMidiChannel = 15;
+
         this.shiftButtonId = MKIII_SHIFT;
         this.deleteButtonId = MKIII_CLEAR;
         this.leftButtonId = MKIII_TRACK_LEFT;
@@ -130,33 +132,17 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
 
     /** {@inheritDoc} */
     @Override
-    public void updateTrigger (final int button, final int value)
+    public void setTrigger (final int channel, final int cc, final int value)
     {
-        this.updateTrigger (button, 15, value);
+        this.output.sendCCEx (channel, cc, value);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int cc, final int state)
+    public void setContinuous (final int channel, final int cc, final int value)
     {
-        this.output.sendCCEx (15, cc, state);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setTrigger (final int cc, final int channel, final int state)
-    {
-        this.output.sendCCEx (channel, cc, state);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setContinuous (int cc, int channel, int value)
-    {
-        // Intentionally empty
+        this.output.sendCCEx (channel, cc, value);
     }
 
 
@@ -175,7 +161,7 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
     public void clearKnobCache ()
     {
         for (int i = 0; i < 8; i++)
-            this.clearTriggerCache (15, MKIII_KNOB_1 + i);
+            this.clearContinuousCache (MKIII_KNOB_1 + i);
     }
 
 

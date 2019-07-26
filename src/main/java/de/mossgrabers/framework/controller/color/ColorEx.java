@@ -144,10 +144,10 @@ public class ColorEx
      */
     public static double calcDistance (final double [] color1, final double [] color2)
     {
-        double rmean = (color1[0] + color2[0]) / 2.0;
-        double deltaR = color1[0] - color2[0];
-        double deltaG = color1[1] - color2[1];
-        double deltaB = color1[2] - color2[2];
+        final double rmean = (color1[0] + color2[0]) / 2.0;
+        final double deltaR = color1[0] - color2[0];
+        final double deltaG = color1[1] - color2[1];
+        final double deltaB = color1[2] - color2[2];
         return Math.sqrt ((2.0 + rmean) * deltaR * deltaR + 4.0 * deltaG * deltaG + (2.99609375 - rmean) * deltaB * deltaB);
     }
 

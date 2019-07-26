@@ -140,12 +140,13 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      * @param isMkII True if SLMkII
      */
-    public SLControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings, final boolean isMkII)
+    public SLControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final boolean isMkII)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
         this.isMkII = isMkII;
         this.colorManager = new ColorManager ();
         this.colorManager.registerColor (PadGrid.GRID_OFF, 0);

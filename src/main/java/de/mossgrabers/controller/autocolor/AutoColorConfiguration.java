@@ -47,12 +47,12 @@ public class AutoColorConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
         // Auto Color
 
-        final IEnumSetting enableAutoColorSetting = settingsUI.getEnumSetting (CATEGORY_AUTO_COLOR, CATEGORY_AUTO_COLOR, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        final IEnumSetting enableAutoColorSetting = globalSettings.getEnumSetting (CATEGORY_AUTO_COLOR, CATEGORY_AUTO_COLOR, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         enableAutoColorSetting.addValueObserver (value -> {
             this.enableAutoColor = ON_OFF_OPTIONS[1].equals (value);
             this.notifyObservers (AutoColorConfiguration.ENABLE_AUTO_COLOR);
@@ -62,7 +62,7 @@ public class AutoColorConfiguration extends AbstractConfiguration
         for (int i = 0; i < colors.length; i++)
         {
             final NamedColor color = colors[i];
-            final IStringSetting setting = settingsUI.getStringSetting (color.getName (), CATEGORY_AUTO_COLOR, 256, "");
+            final IStringSetting setting = globalSettings.getStringSetting (color.getName (), CATEGORY_AUTO_COLOR, 256, "");
             final int index = i;
             setting.addValueObserver (value -> {
                 this.colorRegEx.put (color, value);

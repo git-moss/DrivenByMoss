@@ -72,11 +72,12 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
      * @param modelIndex The index of the model (S25, S49, S61, S88)
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      */
-    public Kontrol1ControllerSetup (final int modelIndex, final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    public Kontrol1ControllerSetup (final int modelIndex, final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
         this.modelIndex = modelIndex;
         this.valueChanger = new DefaultValueChanger (1024, 10, 1);
         this.colorManager = new ColorManager ();

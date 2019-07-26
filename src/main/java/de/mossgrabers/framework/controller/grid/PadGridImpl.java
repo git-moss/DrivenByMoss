@@ -303,7 +303,7 @@ public class PadGridImpl implements PadGrid
 
     /** {@inheritDoc} */
     @Override
-    public boolean isGridNote (int note)
+    public boolean isGridNote (final int note)
     {
         final int gridNote = this.translateToGrid (note);
         return gridNote >= this.startNote && gridNote <= this.endNote;

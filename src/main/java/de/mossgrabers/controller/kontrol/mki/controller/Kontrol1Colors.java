@@ -34,31 +34,31 @@ public class Kontrol1Colors
     private static final int    COLOR_PLAY               = 53;
     private static final int    COLOR_RECORD             = 54;
 
-    private static final int [] BLACK                    = new int []
+    private static final int [] BLACK                    =
     {
         0,
         0,
         0
     };
-    private static final int [] RED                      = new int []
+    private static final int [] RED                      =
     {
         127,
         0,
         0
     };
-    private static final int [] GREEN                    = new int []
+    private static final int [] GREEN                    =
     {
         0,
         127,
         0
     };
-    private static final int [] BLUE                     = new int []
+    private static final int [] BLUE                     =
     {
         0,
         0,
         127
     };
-    private static final int [] WHITE                    = new int []
+    private static final int [] WHITE                    =
     {
         127,
         127,

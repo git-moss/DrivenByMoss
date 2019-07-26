@@ -326,20 +326,12 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (int cc, int channel, int value)
+    public void setTrigger (final int channel, final int cc, final int value)
     {
         // Select the zone
         this.output.sendCC (0x0C, cc / 8);
         // Turn on / off button
         this.output.sendCC (0x2C, (value > 0 ? 0x40 : 0x00) + cc % 8);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setContinuous (int cc, int channel, int value)
-    {
-        // Intentionally empty
     }
 
 

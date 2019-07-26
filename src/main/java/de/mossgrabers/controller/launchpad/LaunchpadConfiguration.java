@@ -47,36 +47,36 @@ public class LaunchpadConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        ///////////////////////////
-        // Play and Sequence
-
-        this.activateQuantizeAmountSetting (settingsUI);
-
         ///////////////////////////
         // Scale
 
-        this.activateScaleSetting (settingsUI);
-        this.activateScaleBaseSetting (settingsUI);
-        this.activateScaleInScaleSetting (settingsUI);
-        this.activateScaleLayoutSetting (settingsUI);
+        this.activateScaleSetting (documentSettings);
+        this.activateScaleBaseSetting (documentSettings);
+        this.activateScaleInScaleSetting (documentSettings);
+        this.activateScaleLayoutSetting (documentSettings);
+
+        ///////////////////////////
+        // Play and Sequence
+
+        this.activateQuantizeAmountSetting (globalSettings);
 
         ///////////////////////////
         // Workflow
 
-        this.activateBehaviourOnStopSetting (settingsUI);
-        this.activateSelectClipOnLaunchSetting (settingsUI);
-        this.activateFlipSessionSetting (settingsUI);
+        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateSelectClipOnLaunchSetting (globalSettings);
+        this.activateFlipSessionSetting (globalSettings);
         if (this.isPro)
-            this.activateFlipRecordSetting (settingsUI);
-        this.activateAutoSelectDrumSetting (settingsUI);
-        this.activateTurnOffEmptyDrumPadsSetting (settingsUI);
-        this.activateNewClipLengthSetting (settingsUI);
+            this.activateFlipRecordSetting (globalSettings);
+        this.activateAutoSelectDrumSetting (globalSettings);
+        this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
 
         ///////////////////////////
         // Pad Sensitivity
 
-        this.activateConvertAftertouchSetting (settingsUI);
+        this.activateConvertAftertouchSetting (globalSettings);
     }
 }

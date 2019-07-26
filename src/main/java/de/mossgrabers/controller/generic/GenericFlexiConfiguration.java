@@ -54,7 +54,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     private static final String [] NAMES                = FlexiCommand.getNames ();
 
-    private static final String [] OPTIONS_KNOBMODE     = new String []
+    private static final String [] OPTIONS_KNOBMODE     =
     {
         "Absolute (push button: Button down > 0, button up = 0)",
         "Relative (1-64 increments, 127-65 decrements)",
@@ -64,7 +64,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     };
 
     /** The types. */
-    public static final String []  OPTIONS_TYPE         = new String []
+    public static final String []  OPTIONS_TYPE         =
     {
         "Off",
         "CC",
@@ -74,7 +74,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "MMC"
     };
 
-    static final String []         NUMBER_NAMES         = new String []
+    static final String []         NUMBER_NAMES         =
     {
         "0  CC Bank Select",
         "1  MMC Stop, CC Modulation",
@@ -208,7 +208,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     /** The midi channel options. */
     private static final String [] OPTIONS_MIDI_CHANNEL = new String [16];
-    private static final String [] MODES                = new String []
+    private static final String [] MODES                =
     {
         "Track",
         "Volume",
@@ -281,7 +281,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         try
         {
@@ -301,7 +301,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             slotEntries[i] = Integer.toString (i + 1);
         }
 
-        this.slotSelectionSetting = settingsUI.getEnumSetting ("Selected:", category, slotEntries, slotEntries[0]);
+        this.slotSelectionSetting = globalSettings.getEnumSetting ("Selected:", category, slotEntries, slotEntries[0]);
         this.slotSelectionSetting.addValueObserver (this::selectSlot);
 
         ///////////////////////////////////////////////
@@ -309,11 +309,11 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         category = "Selected Slot - MIDI trigger";
 
-        this.typeSetting = settingsUI.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE[0]);
-        this.numberSetting = settingsUI.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES[0]);
-        this.midiChannelSetting = settingsUI.getEnumSetting ("Midi Channel:", category, OPTIONS_MIDI_CHANNEL, OPTIONS_MIDI_CHANNEL[0]);
-        this.knobModeSetting = settingsUI.getEnumSetting ("Knob Mode:", category, OPTIONS_KNOBMODE, OPTIONS_KNOBMODE[0]);
-        this.sendValueSetting = settingsUI.getEnumSetting ("Send value to device:", category, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
+        this.typeSetting = globalSettings.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE[0]);
+        this.numberSetting = globalSettings.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES[0]);
+        this.midiChannelSetting = globalSettings.getEnumSetting ("Midi Channel:", category, OPTIONS_MIDI_CHANNEL, OPTIONS_MIDI_CHANNEL[0]);
+        this.knobModeSetting = globalSettings.getEnumSetting ("Knob Mode:", category, OPTIONS_KNOBMODE, OPTIONS_KNOBMODE[0]);
+        this.sendValueSetting = globalSettings.getEnumSetting ("Send value to device:", category, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
 
         ///////////////////////////////////////////////
         // Selected Slot - Function
@@ -323,7 +323,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         final CommandCategory [] values = CommandCategory.values ();
         for (final CommandCategory value: values)
         {
-            final IEnumSetting fs = createFunctionSetting (value.getName (), category, settingsUI);
+            final IEnumSetting fs = createFunctionSetting (value.getName (), category, globalSettings);
             this.functionSettings.add (fs);
             this.functionSettingsMap.put (value, fs);
             fs.addValueObserver (this::handleFunctionChange);
@@ -334,14 +334,14 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         category = "Use a knob/fader/button then click Set...";
 
-        this.learnTypeSetting = settingsUI.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE[0]);
-        this.learnNumberSetting = settingsUI.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES[0]);
-        this.learnMidiChannelSetting = settingsUI.getEnumSetting ("Midi channel:", category, OPTIONS_MIDI_CHANNEL, OPTIONS_MIDI_CHANNEL[0]);
+        this.learnTypeSetting = globalSettings.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE[0]);
+        this.learnNumberSetting = globalSettings.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES[0]);
+        this.learnMidiChannelSetting = globalSettings.getEnumSetting ("Midi channel:", category, OPTIONS_MIDI_CHANNEL, OPTIONS_MIDI_CHANNEL[0]);
         this.learnTypeSetting.setEnabled (false);
         this.learnNumberSetting.setEnabled (false);
         this.learnMidiChannelSetting.setEnabled (false);
 
-        settingsUI.getSignalSetting (" ", category, "Set").addValueObserver (value -> {
+        globalSettings.getSignalSetting (" ", category, "Set").addValueObserver (value -> {
             if (this.learnTypeValue == null)
                 return;
             this.typeSetting.set (this.learnTypeValue);
@@ -355,10 +355,10 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         category = "Ex-/Import";
 
         // The Setlist file to auto-load
-        final IStringSetting fileSetting = settingsUI.getStringSetting ("Filename to ex-/import:", category, -1, "");
+        final IStringSetting fileSetting = globalSettings.getStringSetting ("Filename to ex-/import:", category, -1, "");
         fileSetting.addValueObserver (value -> this.filename = value);
 
-        settingsUI.getSignalSetting (" ", category, "Select").addValueObserver (value -> {
+        globalSettings.getSignalSetting (" ", category, "Select").addValueObserver (value -> {
             if (this.filename != null)
             {
                 final File currentFolder = new File (this.filename);
@@ -378,8 +378,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             }
         });
 
-        settingsUI.getSignalSetting ("  ", category, "Export").addValueObserver (value -> this.notifyObservers (BUTTON_EXPORT));
-        settingsUI.getSignalSetting ("   ", category, "Import").addValueObserver (value -> this.notifyObservers (BUTTON_IMPORT));
+        globalSettings.getSignalSetting ("  ", category, "Export").addValueObserver (value -> this.notifyObservers (BUTTON_EXPORT));
+        globalSettings.getSignalSetting ("   ", category, "Import").addValueObserver (value -> this.notifyObservers (BUTTON_IMPORT));
 
         this.learnTypeSetting.set (OPTIONS_TYPE[0]);
 
@@ -409,13 +409,13 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         ///////////////////////////////////////////////
         // Options
 
-        this.selectedModeSetting = settingsUI.getEnumSetting ("Selected Mode", "Options", MODES, MODES[0]);
+        this.selectedModeSetting = globalSettings.getEnumSetting ("Selected Mode", "Options", MODES, MODES[0]);
         this.selectedModeSetting.addValueObserver (value -> {
             this.selectedMode = value;
             this.notifyObservers (SELECTED_MODE);
         });
 
-        this.activateKnobSpeedSetting (settingsUI, 6);
+        this.activateKnobSpeedSetting (globalSettings, 6);
 
         // Load last configuration
 

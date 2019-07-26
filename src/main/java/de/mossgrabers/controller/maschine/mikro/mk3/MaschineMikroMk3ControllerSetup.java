@@ -99,11 +99,12 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      */
-    public MaschineMikroMk3ControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    public MaschineMikroMk3ControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
         this.configuration = new MaschineMikroMk3Configuration (host, this.valueChanger);

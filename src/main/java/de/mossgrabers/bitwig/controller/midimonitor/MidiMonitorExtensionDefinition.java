@@ -5,7 +5,7 @@
 package de.mossgrabers.bitwig.controller.midimonitor;
 
 import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
-import de.mossgrabers.bitwig.framework.configuration.SettingsUI;
+import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.controller.midimonitor.MidiMonitorDefinition;
@@ -35,6 +35,6 @@ public class MidiMonitorExtensionDefinition extends AbstractControllerExtensionD
     @Override
     protected IControllerSetup getControllerSetup (final ControllerHost host)
     {
-        return new MidiMonitorSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUI (host.getPreferences ()));
+        return new MidiMonitorSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()));
     }
 }

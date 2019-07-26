@@ -89,101 +89,101 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Assigns a command to a midi CC on midi channel 1. When the midi CC is received the command is
-     * executed.
+     * Assigns a command to a midi CC on the default midi channel. When the midi CC is received the
+     * command is executed.
      *
-     * @param midiCC The midi CC
+     * @param cc The midi CC
      * @param commandID The command ID
      */
-    void assignTriggerCommand (int midiCC, TriggerCommandID commandID);
+    void assignTriggerCommand (int cc, TriggerCommandID commandID);
 
 
     /**
      * Assigns a command to a midi CC. When the midi CC is received the command is executed.
-     *
-     * @param midiCC The midi CC
-     * @param midiChannel The midi channel to assign to (0-15)
+     * 
+     * @param channel The midi channel to assign to (0-15)
+     * @param cc The midi CC
      * @param commandID The command ID
      */
-    void assignTriggerCommand (int midiCC, int midiChannel, TriggerCommandID commandID);
+    void assignTriggerCommand (int channel, int cc, TriggerCommandID commandID);
 
 
     /**
-     * Get the ID of an assigned command on midi channel 1.
+     * Get the ID of an assigned command on the default midi channel.
      *
-     * @param midiCC The midi CC
+     * @param cc The midi CC
      * @return The command ID or null if none is assigned to the given midi CC
      */
-    TriggerCommandID getTriggerCommand (int midiCC);
+    TriggerCommandID getTriggerCommand (int cc);
 
 
     /**
      * Get the ID of an assigned command.
-     *
-     * @param midiCC The midi CC
-     * @param midiChannel The midi channel to which it was assign to (0-15)
+     * 
+     * @param channel The midi channel to which it was assign to (0-15)
+     * @param cc The midi CC
      * @return The command ID or null if none is assigned to the given midi CC
      */
-    TriggerCommandID getTriggerCommand (int midiCC, int midiChannel);
+    TriggerCommandID getTriggerCommand (int channel, int cc);
 
 
     /**
-     * Assigns a continuous command to a midi CC on midi channel 1. When the midi CC is received the
-     * command is executed.
+     * Assigns a continuous command to a midi CC on the default midi channel. When the midi CC is
+     * received the command is executed.
      *
-     * @param midiCC The midi CC
+     * @param cc The midi CC
      * @param commandID The command ID
      */
-    void assignContinuousCommand (int midiCC, ContinuousCommandID commandID);
+    void assignContinuousCommand (int cc, ContinuousCommandID commandID);
 
 
     /**
      * Assigns a continuous command to a midi CC. When the midi CC is received the command is
      * executed.
-     *
-     * @param midiCC The midi CC
-     * @param midiChannel The midi channel to assign to (0-15)
+     * 
+     * @param channel The midi channel to assign to (0-15)
+     * @param cc The midi CC
      * @param commandID The command ID
      */
-    void assignContinuousCommand (int midiCC, int midiChannel, ContinuousCommandID commandID);
+    void assignContinuousCommand (int channel, int cc, ContinuousCommandID commandID);
 
 
     /**
-     * Get the ID of an assigned continuous command on midi channel 1.
+     * Get the ID of an assigned continuous command on the default midi channel.
      *
-     * @param midiCC The midi CC
+     * @param cc The midi CC
      * @return The command ID or null if none is assigned to the given midi CC
      */
-    ContinuousCommandID getContinuousCommand (int midiCC);
+    ContinuousCommandID getContinuousCommand (int cc);
 
 
     /**
      * Get the ID of an assigned continuous command.
-     *
-     * @param midiCC The midi CC
-     * @param midiChannel The midi channel to which it was assign to (0-15)
+     * 
+     * @param channel The midi channel to which it was assign to (0-15)
+     * @param cc The midi CC
      * @return The command ID or null if none is assigned to the given midi CC
      */
-    ContinuousCommandID getContinuousCommand (int midiCC, int midiChannel);
+    ContinuousCommandID getContinuousCommand (int channel, int cc);
 
 
     /**
      * Assigns a note (continuous) command to a midi note on all midi channels. When the midi note
      * is received the command is executed.
      *
-     * @param midiNote The midi note
+     * @param note The midi note
      * @param commandID The command ID
      */
-    void assignNoteCommand (final int midiNote, final TriggerCommandID commandID);
+    void assignNoteCommand (final int note, final TriggerCommandID commandID);
 
 
     /**
      * Get the ID of an assigned note (continuous) command on all midi channels.
      *
-     * @param midiNote The midi note
+     * @param note The midi note
      * @return The command ID or null if none is assigned to the given midi CC
      */
-    TriggerCommandID getNoteCommand (final int midiNote);
+    TriggerCommandID getNoteCommand (final int note);
 
 
     /**
@@ -346,7 +346,7 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Test if the trigger with the given midi CC on midi channel 1 is pressed.
+     * Test if the trigger with the given midi CC on the default midi channel is pressed.
      *
      * @param cc The trigger to test
      * @return True if pressed
@@ -422,9 +422,9 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Update the lighting of a trigger (if the trigger has light), sending on midi channel 1. This
-     * method caches the state of the trigger and sends only updates to the controller if the state
-     * has changed, in contrast to setTrigger.
+     * Update the lighting of a trigger (if the trigger has light), sending on the default midi
+     * channel. This method caches the state of the trigger and sends only updates to the controller
+     * if the state has changed, in contrast to setTrigger.
      *
      * @param cc The trigger
      * @param value The color / brightness depending on the controller
@@ -436,18 +436,18 @@ public interface IControlSurface<C extends Configuration>
      * Update the lighting of a trigger (if the trigger has light). This method caches the state of
      * the trigger and sends only updates to the controller if the state has changed, in contrast to
      * setTrigger.
-     *
-     * @param cc The trigger
+     * 
      * @param channel The midi channel to use
+     * @param cc The trigger
      * @param value The color / brightness depending on the controller
      */
-    void updateTrigger (int cc, int channel, int value);
+    void updateTrigger (int channel, int cc, int value);
 
 
     /**
-     * Update the lighting of a trigger (if the trigger has light), sending on midi channel 1. This
-     * method caches the state of the trigger and sends only updates to the controller if the state
-     * has changed, in contrast to setTrigger.
+     * Update the lighting of a trigger (if the trigger has light), sending on the default midi
+     * channel. This method caches the state of the trigger and sends only updates to the controller
+     * if the state has changed, in contrast to setTrigger.
      *
      * @param cc The trigger
      * @param colorID A registered color ID of the color / brightness depending on the controller
@@ -459,16 +459,17 @@ public interface IControlSurface<C extends Configuration>
      * Update the lighting of a trigger (if the trigger has light). This method caches the state of
      * the trigger and sends only updates to the controller if the state has changed, in contrast to
      * setTrigger.
-     *
-     * @param cc The trigger
+     * 
      * @param channel The midi channel to use
+     * @param cc The trigger
      * @param colorID A registered color ID of the color / brightness depending on the controller
      */
-    void updateTrigger (int cc, int channel, String colorID);
+    void updateTrigger (int channel, int cc, String colorID);
 
 
     /**
-     * Update the lighting of a trigger (if the trigger has light), sending on midi channel 1.
+     * Update the lighting of a trigger (if the trigger has light), sending on the default midi
+     * channel.
      *
      * @param cc The trigger
      * @param value The color / brightness depending on the controller
@@ -477,7 +478,8 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Update the lighting of a trigger (if the trigger has light), sending on midi channel 1.
+     * Update the lighting of a trigger (if the trigger has light), sending on the default midi
+     * channel.
      *
      * @param cc The trigger
      * @param colorID A registered color ID of the color / brightness depending on the controller
@@ -487,38 +489,36 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Update the lighting of a trigger (if the trigger has light).
-     *
-     * @param cc The trigger
+     * 
      * @param channel The midi channel to use
+     * @param cc The trigger
      * @param value The color / brightness depending on the controller
      */
-    void setTrigger (int cc, int channel, int value);
+    void setTrigger (int channel, int cc, int value);
 
 
     /**
      * Update the lighting of a trigger (if the trigger has light).
-     *
-     * @param cc The trigger
+     * 
      * @param channel The midi channel to use
+     * @param cc The trigger
      * @param colorID A registered color ID of the color / brightness depending on the controller
      */
-    void setTrigger (int cc, int channel, String colorID);
+    void setTrigger (int channel, int cc, String colorID);
 
 
     /**
-     * Clear the cached lighting state of a trigger of MIDI channel 1.
+     * Clear the cached lighting state of all triggers.
+     */
+    void clearTriggerCache ();
+
+
+    /**
+     * Clear the cached lighting state of a trigger of the default MIDI channel.
      *
      * @param cc The trigger
      */
     void clearTriggerCache (int cc);
-
-
-    /**
-     * Clear the cached lighting state of all triggers of MIDI channel 1.
-     *
-     * @param channel The midi channel
-     */
-    void clearFullTriggerCache (int channel);
 
 
     /**
@@ -531,13 +531,30 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Clear the cached lighting state of all triggers (of MIDI channel 1).
+     * Clear the cached state of all continuous.
      */
-    void clearFullTriggerCache ();
+    void clearContinuousCache ();
 
 
     /**
-     * Check if the midi CC on midi channel 1 belongs to a trigger.
+     * Clear the cached state of a continuous of the default MIDI channel.
+     *
+     * @param cc The trigger
+     */
+    void clearContinuousCache (int cc);
+
+
+    /**
+     * Clear the cached state of a continuous of the given MIDI channel.
+     *
+     * @param channel The midi channel
+     * @param cc The trigger
+     */
+    void clearContinuousCache (int channel, int cc);
+
+
+    /**
+     * Check if the midi CC on the default midi channel belongs to a trigger.
      *
      * @param cc The CC to check
      * @return True if it belongs to a trigger
@@ -576,12 +593,12 @@ public interface IControlSurface<C extends Configuration>
      * Update the position of a continuous (if the knob/fader e.g. has motors). This method caches
      * the state of the continuous and sends only updates to the controller if the state has
      * changed, in contrast to setContinuous.
-     *
-     * @param cc The trigger
+     * 
      * @param channel The midi channel to use
+     * @param cc The trigger
      * @param value The position depending on the controller
      */
-    void updateContinuous (int cc, int channel, int value);
+    void updateContinuous (int channel, int cc, int value);
 
 
     /**
@@ -596,12 +613,12 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Update the position of a continuous (if the knob/fader e.g. has motors).
-     *
-     * @param cc The continuous
+     * 
      * @param channel The midi channel to use
+     * @param cc The continuous
      * @param value The position depending on the controller
      */
-    void setContinuous (int cc, int channel, int value);
+    void setContinuous (int channel, int cc, int value);
 
 
     /**

@@ -118,13 +118,13 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
         super.handleCC (channel, cc, 127);
         super.handleCC (channel, cc, 0);
 
-        this.clearTriggerCache (cc);
+        this.clearTriggerCache (channel, cc);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int cc, final int channel, final int state)
+    public void setTrigger (final int channel, final int cc, final int state)
     {
         this.output.sendCCEx (channel, cc, state);
     }
@@ -132,7 +132,7 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
 
     /** {@inheritDoc} */
     @Override
-    public void setContinuous (final int cc, final int channel, final int state)
+    public void setContinuous (final int channel, final int cc, final int state)
     {
         this.output.sendCCEx (channel, cc, state);
     }

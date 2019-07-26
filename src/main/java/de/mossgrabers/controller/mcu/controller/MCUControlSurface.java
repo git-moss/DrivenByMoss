@@ -165,7 +165,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     // Sysex
 
-    public static final int []      MCU_SYSEX_HEADER      = new int []
+    public static final int []      MCU_SYSEX_HEADER      =
     {
         0xF0,
         0x00,
@@ -259,7 +259,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (int cc, int channel, int value)
+    public void setTrigger (final int channel, final int cc, final int value)
     {
         this.output.sendNoteEx (channel, cc, value);
     }
@@ -267,7 +267,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setContinuous (int cc, int channel, int value)
+    public void setContinuous (final int channel, final int cc, final int value)
     {
         this.output.sendNoteEx (channel, cc, value);
     }

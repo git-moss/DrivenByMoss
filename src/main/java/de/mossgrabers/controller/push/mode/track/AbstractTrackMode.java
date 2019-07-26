@@ -174,7 +174,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 {
                     config.setSendsAreToggled (!config.isSendsAreToggled ());
                     if (!modeManager.isActiveOrTempMode (Modes.MODE_TRACK))
-                        modeManager.setActiveMode (Modes.get (Modes.MODE_SEND1, (config.isSendsAreToggled () ? 4 : 0)));
+                        modeManager.setActiveMode (Modes.get (Modes.MODE_SEND1, config.isSendsAreToggled () ? 4 : 0));
                 }
                 break;
 

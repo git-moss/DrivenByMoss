@@ -175,17 +175,9 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (int cc, int channel, int value)
+    public void setTrigger (final int channel, final int cc, final int value)
     {
         this.output.sendCCEx (channel, cc, value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setContinuous (int cc, int channel, int value)
-    {
-        // Intentionally empty
     }
 
 

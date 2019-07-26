@@ -25,20 +25,4 @@ public class OSCControlSurface extends AbstractControlSurface<OSCConfiguration>
     {
         super (host, configuration, colorManager, null, null, null);
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setTrigger (int cc, int channel, int value)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setContinuous (int cc, int channel, int value)
-    {
-        // Intentionally empty
-    }
 }

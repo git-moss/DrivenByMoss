@@ -38,9 +38,9 @@ public class MidiMonitorConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        final IEnumSetting filterSystemRealtimeSetting = settingsUI.getEnumSetting ("System Realtime", "Filter", ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting filterSystemRealtimeSetting = globalSettings.getEnumSetting ("System Realtime", "Filter", ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         filterSystemRealtimeSetting.addValueObserver (value -> {
             this.isFilterSystemRealtimeOn = "On".equals (value);
             this.notifyObservers (FILTER_SYSTEM_REALTIME);

@@ -56,7 +56,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private static final String    DEVICE_MACKIE_MCU_PRO       = "Mackie MCU Pro";
     private static final String    DEVICE_ZOOM_R16             = "Zoom R16";
 
-    private static final String [] DEVICE_OPTIONS              = new String []
+    private static final String [] DEVICE_OPTIONS              =
     {
         DEVICE_SELECT,
         DEVICE_ICON_PLATFORM_M,
@@ -87,7 +87,7 @@ public class MCUConfiguration extends AbstractConfiguration
         "Marker mode"
     };
 
-    private static final String [] ASSIGNABLE_BUTTON_NAMES     = new String []
+    private static final String [] ASSIGNABLE_BUTTON_NAMES     =
     {
         "Footswitch 1",
         "Footswitch 2",
@@ -98,7 +98,7 @@ public class MCUConfiguration extends AbstractConfiguration
         "F5"
     };
 
-    private static final String [] TEMPO_OR_TICKS_OPTIONS      = new String []
+    private static final String [] TEMPO_OR_TICKS_OPTIONS      =
     {
         "Ticks",
         "Tempo"
@@ -144,43 +144,43 @@ public class MCUConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
         // Hardware
 
-        this.activateHardwareSettings (settingsUI);
-        this.activateEnableVUMetersSetting (settingsUI, CATEGORY_HARDWARE_SETUP);
+        this.activateHardwareSettings (globalSettings);
+        this.activateEnableVUMetersSetting (globalSettings, CATEGORY_HARDWARE_SETUP);
 
         ///////////////////////////
         // Assignable buttons
 
-        this.activateAssignableSettings (settingsUI);
+        this.activateAssignableSettings (globalSettings);
 
         ///////////////////////////
         // Transport
 
-        this.activateBehaviourOnStopSetting (settingsUI);
-        this.activateFlipRecordSetting (settingsUI);
+        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateFlipRecordSetting (globalSettings);
 
         ///////////////////////////
         // Play and Sequence
 
-        this.activateQuantizeAmountSetting (settingsUI);
+        this.activateQuantizeAmountSetting (globalSettings);
 
         ///////////////////////////
         // Workflow
 
-        this.activateDisplayCrossfaderSetting (settingsUI);
-        this.activateNewClipLengthSetting (settingsUI);
-        this.activateZoomStateSetting (settingsUI);
-        this.activateDisplayTempoOrTicksSetting (settingsUI);
-        this.activateChannelTouchSetting (settingsUI);
+        this.activateDisplayCrossfaderSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
+        this.activateZoomStateSetting (globalSettings);
+        this.activateDisplayTempoOrTicksSetting (globalSettings);
+        this.activateChannelTouchSetting (globalSettings);
 
         ///////////////////////////
         // Browser
 
-        this.activateBrowserSettings (settingsUI);
+        this.activateBrowserSettings (globalSettings);
     }
 
 

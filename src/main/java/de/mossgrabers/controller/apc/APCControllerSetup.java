@@ -98,12 +98,13 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settingsUI The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      * @param isMkII True if is mkII
      */
-    public APCControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settingsUI, final boolean isMkII)
+    public APCControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final boolean isMkII)
     {
-        super (factory, host, settingsUI);
+        super (factory, host, globalSettings, documentSettings);
         this.isMkII = isMkII;
         this.colorManager = new ColorManager ();
         APCColors.addColors (this.colorManager, isMkII);
@@ -231,12 +232,12 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             viewManager.registerTriggerCommand (recArmCommand, new RecArmCommand<> (i, this.model, surface));
             viewManager.registerTriggerCommand (crossfadeCommand, new CrossfadeModeCommand<> (i, this.model, surface));
             viewManager.registerTriggerCommand (stopClipCommand, new StopClipCommand<> (i, this.model, surface));
-            surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_TRACK_SELECTION, i, selectCommand);
-            surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_SOLO, i, soloCommand);
-            surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_ACTIVATOR, i, muteCommand);
-            surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_RECORD_ARM, i, recArmCommand);
-            surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_A_B, i, crossfadeCommand);
-            surface.assignTriggerCommand (APCControlSurface.APC_BUTTON_CLIP_STOP, i, stopClipCommand);
+            surface.assignTriggerCommand (i, APCControlSurface.APC_BUTTON_TRACK_SELECTION, selectCommand);
+            surface.assignTriggerCommand (i, APCControlSurface.APC_BUTTON_SOLO, soloCommand);
+            surface.assignTriggerCommand (i, APCControlSurface.APC_BUTTON_ACTIVATOR, muteCommand);
+            surface.assignTriggerCommand (i, APCControlSurface.APC_BUTTON_RECORD_ARM, recArmCommand);
+            surface.assignTriggerCommand (i, APCControlSurface.APC_BUTTON_A_B, crossfadeCommand);
+            surface.assignTriggerCommand (i, APCControlSurface.APC_BUTTON_CLIP_STOP, stopClipCommand);
         }
 
         viewManager.registerTriggerCommand (TriggerCommandID.DEVICE_LEFT, new DeviceLayerLeftCommand<> (this.model, surface));
@@ -307,7 +308,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         {
             final ContinuousCommandID faderCommand = ContinuousCommandID.get (ContinuousCommandID.FADER1, i);
             viewManager.registerContinuousCommand (faderCommand, new FaderAbsoluteCommand<> (i, this.model, surface));
-            surface.assignContinuousCommand (APCControlSurface.APC_KNOB_TRACK_LEVEL, i, faderCommand);
+            surface.assignContinuousCommand (i, APCControlSurface.APC_KNOB_TRACK_LEVEL, faderCommand);
 
             final ContinuousCommandID knobCommand = ContinuousCommandID.get (ContinuousCommandID.KNOB1, i);
             viewManager.registerContinuousCommand (knobCommand, new KnobRowModeCommand<> (i, this.model, surface));
@@ -367,21 +368,21 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
                 isOn = i == clipLength;
             else
                 isOn = isSendA ? modeManager.isActiveOrTempMode (Modes.get (Modes.MODE_SEND1, i)) : i == selIndex;
-            surface.updateTrigger (APCControlSurface.APC_BUTTON_TRACK_SELECTION, i, isOn ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-            surface.updateTrigger (APCControlSurface.APC_BUTTON_SOLO, i, trackExists && getSoloButtonState (isShift, track) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-            surface.updateTrigger (APCControlSurface.APC_BUTTON_ACTIVATOR, i, trackExists && getMuteButtonState (isShift, track) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateTrigger (i, APCControlSurface.APC_BUTTON_TRACK_SELECTION, isOn ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateTrigger (i, APCControlSurface.APC_BUTTON_SOLO, trackExists && getSoloButtonState (isShift, track) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+            surface.updateTrigger (i, APCControlSurface.APC_BUTTON_ACTIVATOR, trackExists && getMuteButtonState (isShift, track) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
 
             if (this.isMkII)
             {
-                surface.updateTrigger (APCControlSurface.APC_BUTTON_A_B, i, getCrossfadeButtonColor (track, trackExists));
-                surface.updateTrigger (APCControlSurface.APC_BUTTON_RECORD_ARM, i, trackExists && track.isRecArm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+                surface.updateTrigger (i, APCControlSurface.APC_BUTTON_A_B, getCrossfadeButtonColor (track, trackExists));
+                surface.updateTrigger (i, APCControlSurface.APC_BUTTON_RECORD_ARM, trackExists && track.isRecArm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             }
             else
             {
                 if (isShift)
-                    surface.updateTrigger (APCControlSurface.APC_BUTTON_RECORD_ARM, i, getCrossfadeButtonColor (track, trackExists));
+                    surface.updateTrigger (i, APCControlSurface.APC_BUTTON_RECORD_ARM, getCrossfadeButtonColor (track, trackExists));
                 else
-                    surface.updateTrigger (APCControlSurface.APC_BUTTON_RECORD_ARM, i, trackExists && track.isRecArm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+                    surface.updateTrigger (i, APCControlSurface.APC_BUTTON_RECORD_ARM, trackExists && track.isRecArm () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
             }
         }
         surface.updateTrigger (APCControlSurface.APC_BUTTON_MASTER, this.model.getMasterTrack ().isSelected () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);

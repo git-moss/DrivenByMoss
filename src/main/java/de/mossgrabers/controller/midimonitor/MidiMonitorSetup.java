@@ -27,11 +27,12 @@ public class MidiMonitorSetup extends AbstractControllerSetup<IControlSurface<Mi
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      */
-    public MidiMonitorSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    public MidiMonitorSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
 
         this.configuration = new MidiMonitorConfiguration (host, null);
     }

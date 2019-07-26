@@ -102,12 +102,13 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      * @param isPro True if Launchpad Pro
      */
-    public LaunchpadControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings, final boolean isPro)
+    public LaunchpadControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final boolean isPro)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
         this.isPro = isPro;
         this.colorManager = new ColorManager ();
         LaunchpadColors.addColors (this.colorManager);

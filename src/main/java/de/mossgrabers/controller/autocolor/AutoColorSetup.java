@@ -34,11 +34,12 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      */
-    public AutoColorSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    public AutoColorSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);

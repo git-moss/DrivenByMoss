@@ -207,11 +207,12 @@ public interface Configuration
 
 
     /**
-     * Overwrite this function to the settings which are supported by your extension.
+     * Overwrite this function to add the settings which are supported by your extension.
      *
-     * @param settings The user interface settings
+     * @param globalSettings The global user interface settings
+     * @param documentSettings The document (project) specific user interface settings
      */
-    void init (ISettingsUI settings);
+    void init (ISettingsUI globalSettings, ISettingsUI documentSettings);
 
 
     /**

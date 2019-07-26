@@ -14,7 +14,7 @@ import de.mossgrabers.framework.configuration.ISignalSetting;
 import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.color.ColorEx;
 
-import com.bitwig.extension.controller.api.Preferences;
+import com.bitwig.extension.controller.api.Settings;
 
 
 /**
@@ -22,9 +22,9 @@ import com.bitwig.extension.controller.api.Preferences;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SettingsUI implements ISettingsUI
+public class SettingsUIImpl implements ISettingsUI
 {
-    private Preferences preferences;
+    private Settings preferences;
 
 
     /**
@@ -32,7 +32,7 @@ public class SettingsUI implements ISettingsUI
      *
      * @param preferences The Bitwig preferences
      */
-    public SettingsUI (final Preferences preferences)
+    public SettingsUIImpl (final Settings preferences)
     {
         this.preferences = preferences;
     }

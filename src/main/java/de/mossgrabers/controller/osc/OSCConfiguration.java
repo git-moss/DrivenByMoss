@@ -42,7 +42,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         HIGH
     }
 
-    private static final String [] VALUE_RESOLUTION_OPTIONS = new String []
+    private static final String [] VALUE_RESOLUTION_OPTIONS =
     {
         "Low (128)",
         "Medium (1024)",
@@ -69,32 +69,32 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
         // Network
 
-        final IIntegerSetting receivePortSetting = settingsUI.getRangeSetting ("Port to receive on", CATEGORY_SETUP, 0, 65535, 1, "", 8000);
+        final IIntegerSetting receivePortSetting = globalSettings.getRangeSetting ("Port to receive on", CATEGORY_SETUP, 0, 65535, 1, "", 8000);
         receivePortSetting.addValueObserver (value -> {
             this.receivePort = value.intValue ();
             this.notifyObservers (OSCConfiguration.RECEIVE_PORT);
         });
 
-        final IStringSetting sendHostSetting = settingsUI.getStringSetting ("Host to send to", CATEGORY_SETUP, 15, DEFAULT_SERVER);
+        final IStringSetting sendHostSetting = globalSettings.getStringSetting ("Host to send to", CATEGORY_SETUP, 15, DEFAULT_SERVER);
         sendHostSetting.addValueObserver (value -> {
             this.sendHost = value;
             this.notifyObservers (OSCConfiguration.SEND_HOST);
         });
         sendHostSetting.setEnabled (false);
 
-        final IIntegerSetting sendPortSetting = settingsUI.getRangeSetting ("Port to send to", CATEGORY_SETUP, 0, 65535, 1, "", 9000);
+        final IIntegerSetting sendPortSetting = globalSettings.getRangeSetting ("Port to send to", CATEGORY_SETUP, 0, 65535, 1, "", 9000);
         sendPortSetting.addValueObserver (value -> {
             this.sendPort = value.intValue ();
             this.notifyObservers (SEND_PORT);
         });
         sendPortSetting.setEnabled (false);
 
-        final IEnumSetting valueResolutionSetting = settingsUI.getEnumSetting ("Value resolution", CATEGORY_SETUP, VALUE_RESOLUTION_OPTIONS, VALUE_RESOLUTION_OPTIONS[0]);
+        final IEnumSetting valueResolutionSetting = globalSettings.getEnumSetting ("Value resolution", CATEGORY_SETUP, VALUE_RESOLUTION_OPTIONS, VALUE_RESOLUTION_OPTIONS[0]);
         valueResolutionSetting.addValueObserver (value -> {
             if (VALUE_RESOLUTION_OPTIONS[0].equals (value))
                 this.valueResolution = ValueResolution.LOW;
@@ -109,18 +109,18 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         ///////////////////////////
         // Accent
 
-        this.activateAccentActiveSetting (settingsUI);
-        this.activateAccentValueSetting (settingsUI);
+        this.activateAccentActiveSetting (globalSettings);
+        this.activateAccentValueSetting (globalSettings);
 
         ///////////////////////////
         // Workflow
 
-        this.activateEnableVUMetersSetting (settingsUI);
+        this.activateEnableVUMetersSetting (globalSettings);
 
         ///////////////////////////
         // Debug
 
-        this.activateOSCLogging (settingsUI);
+        this.activateOSCLogging (globalSettings);
     }
 
 

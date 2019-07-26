@@ -160,22 +160,22 @@ public class OptionsMode extends BaseMode
 
         final IMasterTrack master = this.model.getMasterTrack ();
         d.setCell (0, 0, StringUtils.fixASCII ("Mstr Vol")).setCell (1, 0, master.getVolumeStr (9));
-        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_KNOB_1, 15, valueChanger.toMidiValue (master.getVolume ()));
+        this.surface.updateContinuous (SLMkIIIControlSurface.MKIII_KNOB_1, valueChanger.toMidiValue (master.getVolume ()));
         d.setPropertyColor (0, 0, SLMkIIIColors.SLMKIII_BROWN);
         d.setPropertyColor (0, 1, SLMkIIIColors.SLMKIII_BROWN);
 
         d.setCell (0, 1, StringUtils.fixASCII ("Mstr Pan")).setCell (1, 1, master.getPanStr (9));
-        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_KNOB_2, 15, valueChanger.toMidiValue (master.getPan ()));
+        this.surface.updateContinuous (SLMkIIIControlSurface.MKIII_KNOB_2, valueChanger.toMidiValue (master.getPan ()));
         d.setPropertyColor (1, 0, SLMkIIIColors.SLMKIII_BROWN);
         d.setPropertyColor (1, 1, SLMkIIIColors.SLMKIII_BROWN);
 
         d.setCell (0, 4, StringUtils.fixASCII ("Tempo")).setCell (1, 4, transport.formatTempo (transport.getTempo ()));
-        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_KNOB_5, 15, valueChanger.toMidiValue ((int) transport.rescaleTempo (transport.getTempo (), valueChanger.getUpperBound ())));
+        this.surface.updateContinuous (SLMkIIIControlSurface.MKIII_KNOB_5, valueChanger.toMidiValue ((int) transport.rescaleTempo (transport.getTempo (), valueChanger.getUpperBound ())));
         d.setPropertyColor (4, 0, SLMkIIIColors.SLMKIII_BROWN);
         d.setPropertyColor (4, 1, SLMkIIIColors.SLMKIII_BROWN);
 
         d.setCell (0, 5, StringUtils.fixASCII ("Metronome")).setCell (1, 5, transport.getMetronomeVolumeStr ());
-        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_KNOB_6, 15, valueChanger.toMidiValue (transport.getMetronomeVolume ()));
+        this.surface.updateContinuous (SLMkIIIControlSurface.MKIII_KNOB_6, valueChanger.toMidiValue (transport.getMetronomeVolume ()));
         d.setPropertyColor (5, 0, SLMkIIIColors.SLMKIII_BROWN);
         d.setPropertyColor (5, 1, SLMkIIIColors.SLMKIII_BROWN);
 

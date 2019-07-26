@@ -37,7 +37,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
         "             "
     };
 
-    static final String []         CC_NAMES  = new String []
+    static final String []         CC_NAMES  =
     {
         "Bank Select",
         "Modulation",
@@ -296,22 +296,6 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
                 this.host.println ("Unhandled midi status: " + status);
                 break;
         }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setTrigger (int cc, int channel, int value)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setContinuous (int cc, int channel, int value)
-    {
-        // Intentionally empty
     }
 
 

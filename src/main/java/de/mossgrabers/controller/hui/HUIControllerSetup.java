@@ -86,11 +86,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      */
-    public HUIControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    public HUIControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
 
         Arrays.fill (this.vuValuesL, -1);
         Arrays.fill (this.vuValuesR, -1);

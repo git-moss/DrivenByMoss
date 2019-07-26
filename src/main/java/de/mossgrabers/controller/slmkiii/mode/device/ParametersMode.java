@@ -270,7 +270,7 @@ public class ParametersMode extends BaseMode
                 final IParameter param = parameterBank.getItem (i);
                 d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (9)) : "").setCell (1, i, param.getDisplayedValue (9));
 
-                this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_KNOB_1 + i, 15, valueChanger.toMidiValue (param.getValue ()));
+                this.surface.updateContinuous (SLMkIIIControlSurface.MKIII_KNOB_1 + i, valueChanger.toMidiValue (param.getValue ()));
 
                 final int color = param.doesExist () ? SLMkIIIColors.SLMKIII_PURPLE : SLMkIIIColors.SLMKIII_BLACK;
                 d.setPropertyColor (i, 0, color);

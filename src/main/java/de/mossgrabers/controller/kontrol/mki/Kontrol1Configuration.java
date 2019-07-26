@@ -39,30 +39,30 @@ public class Kontrol1Configuration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
         // Scale
 
-        this.scaleIsActiveSetting = settingsUI.getEnumSetting ("Is active", CATEGORY_SCALES, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.scaleIsActiveSetting = documentSettings.getEnumSetting ("Is active", CATEGORY_SCALES, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.scaleIsActiveSetting.addValueObserver (value -> {
             this.scaleIsActive = "On".equals (value);
             this.notifyObservers (SCALE_IS_ACTIVE);
         });
 
-        this.activateScaleSetting (settingsUI);
-        this.activateScaleBaseSetting (settingsUI);
+        this.activateScaleSetting (documentSettings);
+        this.activateScaleBaseSetting (documentSettings);
 
         ///////////////////////////
         // Transport
 
-        this.activateBehaviourOnStopSetting (settingsUI);
-        this.activateFlipRecordSetting (settingsUI);
+        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateFlipRecordSetting (globalSettings);
 
         ///////////////////////////
         // Workflow
 
-        this.activateEnableVUMetersSetting (settingsUI);
+        this.activateEnableVUMetersSetting (globalSettings);
     }
 
 

@@ -27,7 +27,7 @@ public class SLConfiguration extends AbstractConfiguration
     public static final String     TOUCHPAD_MODE_CROSSFADER   = "Crossfader";
     /** Touchpad mode: Use to modify the first two remote parameters. */
     public static final String     TOUCHPAD_MODE_PARAMETER    = "Remote Parameter 1&2";
-    private static final String [] TOUCHPAD_OPTIONS           = new String []
+    private static final String [] TOUCHPAD_OPTIONS           =
     {
         TOUCHPAD_MODE_CROSSFADER,
         TOUCHPAD_MODE_PARAMETER
@@ -65,12 +65,12 @@ public class SLConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
         // Play and Sequence
 
-        final IEnumSetting touchpadModeSetting = settingsUI.getEnumSetting ("Mode", "Touchpad", TOUCHPAD_OPTIONS, TOUCHPAD_OPTIONS[1]);
+        final IEnumSetting touchpadModeSetting = globalSettings.getEnumSetting ("Mode", "Touchpad", TOUCHPAD_OPTIONS, TOUCHPAD_OPTIONS[1]);
         touchpadModeSetting.addValueObserver (value -> {
             this.touchpadMode = value;
             this.notifyObservers (TOUCHPAD_MODE);
@@ -79,11 +79,11 @@ public class SLConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
-        this.activateBehaviourOnStopSetting (settingsUI);
-        this.activateDisplayCrossfaderSetting (settingsUI);
-        this.activateNewClipLengthSetting (settingsUI);
+        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateDisplayCrossfaderSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
 
-        final IEnumSetting drumpadsAsModeSelectionSetting = settingsUI.getEnumSetting ("Use drum pads for mode selection", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting drumpadsAsModeSelectionSetting = globalSettings.getEnumSetting ("Use drum pads for mode selection", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         drumpadsAsModeSelectionSetting.addValueObserver (value -> {
             this.drumpadsAsModeSelection = ON_OFF_OPTIONS[1].equals (value);
             this.notifyObservers (DRUMPADS_AS_MODE_SELECTION);

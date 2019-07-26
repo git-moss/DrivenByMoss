@@ -45,7 +45,7 @@ public class HUIConfiguration extends AbstractConfiguration
     private static final String    DEVICE_MACKIE_HUI       = "Mackie HUI";
     private static final String    DEVICE_NOVATION_SLMKIII = "Novation MkIII";
 
-    private static final String [] DEVICE_OPTIONS          = new String []
+    private static final String [] DEVICE_OPTIONS          =
     {
         DEVICE_SELECT,
         DEVICE_ICON_QCON_PRO_X,
@@ -53,7 +53,7 @@ public class HUIConfiguration extends AbstractConfiguration
         DEVICE_NOVATION_SLMKIII
     };
 
-    private static final String [] ASSIGNABLE_BUTTON_NAMES = new String []
+    private static final String [] ASSIGNABLE_BUTTON_NAMES =
     {
         "Footswitch 1",
         "Footswitch 2",
@@ -98,29 +98,29 @@ public class HUIConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
         // Hardware
 
-        this.activateHardwareSettings (settingsUI);
-        this.activateEnableVUMetersSetting (settingsUI, CATEGORY_HARDWARE_SETUP);
+        this.activateHardwareSettings (globalSettings);
+        this.activateEnableVUMetersSetting (globalSettings, CATEGORY_HARDWARE_SETUP);
 
         ///////////////////////////
         // Assignable buttons
 
-        this.activateAssignableSettings (settingsUI);
+        this.activateAssignableSettings (globalSettings);
 
         ///////////////////////////
         // Transport
 
-        this.activateBehaviourOnStopSetting (settingsUI);
+        this.activateBehaviourOnStopSetting (globalSettings);
 
         ///////////////////////////
         // Workflow
 
-        this.activateZoomStateSetting (settingsUI);
-        this.activateChannelTouchSetting (settingsUI);
+        this.activateZoomStateSetting (globalSettings);
+        this.activateChannelTouchSetting (globalSettings);
     }
 
 

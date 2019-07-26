@@ -31,26 +31,26 @@ public class APCConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        ///////////////////////////
-        // Play and Sequence
-
-        this.activateQuantizeAmountSetting (settingsUI);
-
         ///////////////////////////
         // Scale
 
-        this.activateScaleSetting (settingsUI);
-        this.activateScaleBaseSetting (settingsUI);
-        this.activateScaleInScaleSetting (settingsUI);
-        this.activateScaleLayoutSetting (settingsUI);
+        this.activateScaleSetting (documentSettings);
+        this.activateScaleBaseSetting (documentSettings);
+        this.activateScaleInScaleSetting (documentSettings);
+        this.activateScaleLayoutSetting (documentSettings);
+
+        ///////////////////////////
+        // Play and Sequence
+
+        this.activateQuantizeAmountSetting (globalSettings);
 
         ///////////////////////////
         // Workflow
 
-        this.activateBehaviourOnStopSetting (settingsUI);
-        this.activateSelectClipOnLaunchSetting (settingsUI);
-        this.activateNewClipLengthSetting (settingsUI);
+        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateSelectClipOnLaunchSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
     }
 }

@@ -66,35 +66,35 @@ public class MaschineMikroMk3Configuration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
+        ///////////////////////////
+        // Scale
+
+        this.activateScaleSetting (documentSettings);
+        this.activateScaleBaseSetting (documentSettings);
+        this.activateScaleInScaleSetting (documentSettings);
+        this.activateScaleLayoutSetting (documentSettings);
+
         ///////////////////////////
         // Play and Sequence
 
-        this.activateAccentActiveSetting (settingsUI);
-        this.activateAccentValueSetting (settingsUI);
-        this.activateQuantizeAmountSetting (settingsUI);
+        this.activateAccentActiveSetting (globalSettings);
+        this.activateAccentValueSetting (globalSettings);
+        this.activateQuantizeAmountSetting (globalSettings);
 
-        this.ribbonModeSetting = settingsUI.getEnumSetting ("Ribbon Mode", CATEGORY_PLAY_AND_SEQUENCE, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES[0]);
+        this.ribbonModeSetting = globalSettings.getEnumSetting ("Ribbon Mode", CATEGORY_PLAY_AND_SEQUENCE, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES[0]);
         this.ribbonModeSetting.addValueObserver (value -> {
             this.ribbonMode = lookupIndex (RIBBON_MODE_VALUES, value);
             this.notifyObservers (RIBBON_MODE);
         });
 
         ///////////////////////////
-        // Scale
-
-        this.activateScaleSetting (settingsUI);
-        this.activateScaleBaseSetting (settingsUI);
-        this.activateScaleInScaleSetting (settingsUI);
-        this.activateScaleLayoutSetting (settingsUI);
-
-        ///////////////////////////
         // Workflow
 
-        this.activateBehaviourOnStopSetting (settingsUI);
-        this.activateSelectClipOnLaunchSetting (settingsUI);
-        this.activateNewClipLengthSetting (settingsUI);
+        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateSelectClipOnLaunchSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
     }
 
 

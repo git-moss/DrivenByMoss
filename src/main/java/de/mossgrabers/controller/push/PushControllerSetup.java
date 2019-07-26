@@ -155,12 +155,13 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      * @param isPush2 True if Push 2
      */
-    public PushControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings, final boolean isPush2)
+    public PushControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final boolean isPush2)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
         this.isPush2 = isPush2;
         this.colorManager = new ColorManager ();
         PushColors.addColors (this.colorManager, isPush2);
@@ -541,7 +542,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         surface.sendPressureMode (true);
         surface.getOutput ().sendSysex (DeviceInquiry.createQuery ());
 
-        surface.requestColorPalette ();
+        this.host.scheduleTask (surface::requestColorPalette, 2000);
     }
 
 

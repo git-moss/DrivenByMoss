@@ -210,7 +210,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (int cc, int channel, int value)
+    public void setTrigger (final int channel, final int cc, final int value)
     {
         this.sendCommand (cc, value);
     }
@@ -218,7 +218,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
 
     /** {@inheritDoc} */
     @Override
-    public void setContinuous (int cc, int channel, int value)
+    public void setContinuous (final int channel, final int cc, final int value)
     {
         this.sendCommand (cc, value);
     }
@@ -271,7 +271,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
         synchronized (this.cacheLock)
         {
             this.valueCache.clearCache ();
-            this.clearFullTriggerCache (15);
+            this.clearTriggerCache ();
         }
     }
 

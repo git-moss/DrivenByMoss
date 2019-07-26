@@ -36,7 +36,7 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
 
     private static final String    CATEGORY_NAVIGATION            = "Navigation";
 
-    private static final String [] RECORD_OPTIONS                 = new String []
+    private static final String [] RECORD_OPTIONS                 =
     {
         "Record arranger",
         "Record clip",
@@ -65,14 +65,14 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
         // Transport
 
-        this.activateBehaviourOnStopSetting (settingsUI);
+        this.activateBehaviourOnStopSetting (globalSettings);
 
-        final IEnumSetting recordButtonSetting = settingsUI.getEnumSetting ("Record button", CATEGORY_TRANSPORT, RECORD_OPTIONS, RECORD_OPTIONS[1]);
+        final IEnumSetting recordButtonSetting = globalSettings.getEnumSetting ("Record button", CATEGORY_TRANSPORT, RECORD_OPTIONS, RECORD_OPTIONS[1]);
         recordButtonSetting.addValueObserver (value -> {
             for (int i = 0; i < RECORD_OPTIONS.length; i++)
             {
@@ -82,7 +82,7 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
             this.notifyObservers (RECORD_BUTTON_FUNCTION);
         });
 
-        final IEnumSetting shiftedRecordButtonSetting = settingsUI.getEnumSetting ("Shift + Record button", CATEGORY_TRANSPORT, RECORD_OPTIONS, RECORD_OPTIONS[0]);
+        final IEnumSetting shiftedRecordButtonSetting = globalSettings.getEnumSetting ("Shift + Record button", CATEGORY_TRANSPORT, RECORD_OPTIONS, RECORD_OPTIONS[0]);
         shiftedRecordButtonSetting.addValueObserver (value -> {
             for (int i = 0; i < RECORD_OPTIONS.length; i++)
             {
@@ -95,13 +95,13 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Navigation
 
-        final IEnumSetting flipTrackClipNavigationSetting = settingsUI.getEnumSetting ("Flip track/clip navigation", CATEGORY_NAVIGATION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting flipTrackClipNavigationSetting = globalSettings.getEnumSetting ("Flip track/clip navigation", CATEGORY_NAVIGATION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         flipTrackClipNavigationSetting.addValueObserver (value -> {
             this.flipTrackClipNavigation = ON_OFF_OPTIONS[1].equals (value);
             this.notifyObservers (FLIP_TRACK_CLIP_NAVIGATION);
         });
 
-        final IEnumSetting flipClipSceneNavigationSetting = settingsUI.getEnumSetting ("Flip clip/scene navigation", CATEGORY_NAVIGATION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting flipClipSceneNavigationSetting = globalSettings.getEnumSetting ("Flip clip/scene navigation", CATEGORY_NAVIGATION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         flipClipSceneNavigationSetting.addValueObserver (value -> {
             this.flipClipSceneNavigation = ON_OFF_OPTIONS[1].equals (value);
             this.notifyObservers (FLIP_CLIP_SCENE_NAVIGATION);
@@ -110,7 +110,7 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
-        this.activateNewClipLengthSetting (settingsUI);
+        this.activateNewClipLengthSetting (globalSettings);
     }
 
 

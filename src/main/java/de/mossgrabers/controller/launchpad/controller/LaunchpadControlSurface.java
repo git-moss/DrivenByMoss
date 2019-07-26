@@ -101,7 +101,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public static final String   LAUNCHPAD_MKII_FADER_MODE          = "22 04";
     public static final String   LAUNCHPAD_MKII_PAN_MODE            = "22 05";
 
-    private static final byte [] LAUNCHPAD_VERSION_INQUIRY          = new byte []
+    private static final byte [] LAUNCHPAD_VERSION_INQUIRY          =
     {
         (byte) 0xF0,
         (byte) 0x00,
@@ -112,7 +112,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
         (byte) 0xF7
     };
 
-    private static final int []  LAUNCHPAD_VERSION_INQUIRY_RESPONSE = new int []
+    private static final int []  LAUNCHPAD_VERSION_INQUIRY_RESPONSE =
     {
         0xF0,
         0x00,
@@ -283,20 +283,12 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int cc, final int channel, final int state)
+    public void setTrigger (final int channel, final int cc, final int state)
     {
         if (!this.isPro && (cc == LAUNCHPAD_BUTTON_SCENE1 || cc == LAUNCHPAD_BUTTON_SCENE2 || cc == LAUNCHPAD_BUTTON_SCENE3 || cc == LAUNCHPAD_BUTTON_SCENE4 || cc == LAUNCHPAD_BUTTON_SCENE5 || cc == LAUNCHPAD_BUTTON_SCENE6 || cc == LAUNCHPAD_BUTTON_SCENE7 || cc == LAUNCHPAD_BUTTON_SCENE8))
             this.output.sendNote (cc, state);
 
         this.output.sendCC (cc, state);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setContinuous (int cc, int channel, int value)
-    {
-        // Intentionally empty
     }
 
 

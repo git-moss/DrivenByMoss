@@ -390,7 +390,7 @@ public class Kontrol1UsbDevice
         0x80
     };
 
-    private static final int []                KEY_SIZES                 = new int []
+    private static final int []                KEY_SIZES                 =
     {
         25,
         49,

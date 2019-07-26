@@ -141,12 +141,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      * @param numMCUDevices The number of MCU devices (main device + extenders) to support
      */
-    public MCUControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings, final int numMCUDevices)
+    public MCUControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final int numMCUDevices)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
 
         this.numMCUDevices = numMCUDevices;
 
@@ -443,7 +444,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         MCUControlSurface surface = this.getSurface ();
         ViewManager viewManager = surface.getViewManager ();
         viewManager.registerContinuousCommand (ContinuousCommandID.PLAY_POSITION, new PlayPositionTempoCommand (this.model, surface));
-        surface.assignContinuousCommand (MCUControlSurface.MCU_CC_JOG, 1, ContinuousCommandID.PLAY_POSITION);
+        surface.assignContinuousCommand (1, MCUControlSurface.MCU_CC_JOG, ContinuousCommandID.PLAY_POSITION);
 
         for (int index = 0; index < this.numMCUDevices; index++)
         {
@@ -453,7 +454,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             {
                 final ContinuousCommandID commandID = ContinuousCommandID.get (ContinuousCommandID.KNOB1, i);
                 viewManager.registerContinuousCommand (commandID, new KnobRowModeCommand<> (i, this.model, surface));
-                surface.assignContinuousCommand (MCUControlSurface.MCU_CC_VPOT1 + i, 1, commandID);
+                surface.assignContinuousCommand (1, MCUControlSurface.MCU_CC_VPOT1 + i, commandID);
             }
         }
     }

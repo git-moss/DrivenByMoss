@@ -31,21 +31,21 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
         // Workflow
 
-        this.activateBehaviourOnStopSetting (settingsUI);
-        this.activateNewClipLengthSetting (settingsUI);
+        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
 
         ///////////////////////////
         // Session
         if (this.host.hasClips ())
         {
-            this.activateSelectClipOnLaunchSetting (settingsUI);
-            this.activateDrawRecordStripeSetting (settingsUI);
-            this.activateActionForRecArmedPad (settingsUI);
+            this.activateSelectClipOnLaunchSetting (globalSettings);
+            this.activateDrawRecordStripeSetting (globalSettings);
+            this.activateActionForRecArmedPad (globalSettings);
         }
     }
 }

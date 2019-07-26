@@ -23,7 +23,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MarkersMode extends BaseMode
 {
-    private static final String [] EDIT_MENU        = new String []
+    private static final String [] EDIT_MENU        =
     {
         "Add Marker",
         "",

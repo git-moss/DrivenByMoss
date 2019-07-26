@@ -49,11 +49,12 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      */
-    public GenericFlexiControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    public GenericFlexiControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 6, 1);
         this.configuration = new GenericFlexiConfiguration (host, this.valueChanger);

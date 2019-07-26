@@ -37,7 +37,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 {
     protected static final int                                      BUTTON_STATE_INTERVAL = 400;
     protected static final int                                      NUM_NOTES             = 128;
-    protected static final int                                      NUM_BUTTONS           = 256;
+    protected static final int                                      NUM_INFOS             = 256;
 
     protected final IHost                                           host;
     protected final C                                               configuration;
@@ -47,6 +47,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     protected final ViewManager                                     viewManager           = new ViewManager ();
     protected final ModeManager                                     modeManager           = new ModeManager ();
+
+    protected int                                                   defaultMidiChannel    = 0;
 
     protected int                                                   selectButtonId        = -1;
     protected int                                                   shiftButtonId         = -1;
@@ -58,8 +60,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     protected int                                                   upButtonId            = -1;
     protected int                                                   downButtonId          = -1;
 
-    private final TriggerInfo [] []                                 triggerInfos          = new TriggerInfo [16] [NUM_BUTTONS];
-    private final ContinuousInfo [] []                              continuousInfos       = new ContinuousInfo [16] [NUM_BUTTONS];
+    private final TriggerInfo [] []                                 triggerInfos          = new TriggerInfo [16] [NUM_INFOS];
+    private final ContinuousInfo [] []                              continuousInfos       = new ContinuousInfo [16] [NUM_INFOS];
     private final int []                                            noteVelocities;
 
     protected Display                                               display;
@@ -183,13 +185,13 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void assignTriggerCommand (final int cc, final TriggerCommandID commandID)
     {
-        this.assignTriggerCommand (cc, 0, commandID);
+        this.assignTriggerCommand (this.defaultMidiChannel, cc, commandID);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void assignTriggerCommand (final int cc, final int channel, final TriggerCommandID commandID)
+    public void assignTriggerCommand (final int channel, final int cc, final TriggerCommandID commandID)
     {
         this.triggerInfos[channel][cc] = new TriggerInfo ();
         this.triggerCommands.computeIfAbsent (Integer.valueOf (cc), k -> new HashMap<> ()).put (Integer.valueOf (channel), commandID);
@@ -198,18 +200,18 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public TriggerCommandID getTriggerCommand (final int midiCC)
+    public TriggerCommandID getTriggerCommand (final int cc)
     {
-        return this.getTriggerCommand (midiCC, 0);
+        return this.getTriggerCommand (this.defaultMidiChannel, cc);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public TriggerCommandID getTriggerCommand (final int midiCC, final int midiChannel)
+    public TriggerCommandID getTriggerCommand (final int channel, final int cc)
     {
-        final Map<Integer, TriggerCommandID> channelMap = this.triggerCommands.get (Integer.valueOf (midiCC));
-        return channelMap == null ? null : channelMap.get (Integer.valueOf (midiChannel));
+        final Map<Integer, TriggerCommandID> channelMap = this.triggerCommands.get (Integer.valueOf (cc));
+        return channelMap == null ? null : channelMap.get (Integer.valueOf (channel));
     }
 
 
@@ -217,13 +219,13 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void assignContinuousCommand (final int cc, final ContinuousCommandID commandID)
     {
-        this.assignContinuousCommand (cc, 0, commandID);
+        this.assignContinuousCommand (this.defaultMidiChannel, cc, commandID);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void assignContinuousCommand (final int cc, final int channel, final ContinuousCommandID commandID)
+    public void assignContinuousCommand (final int channel, final int cc, final ContinuousCommandID commandID)
     {
         this.continuousInfos[channel][cc] = new ContinuousInfo ();
         this.continuousCommands.computeIfAbsent (Integer.valueOf (cc), k -> new HashMap<> ()).put (Integer.valueOf (channel), commandID);
@@ -232,34 +234,34 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public ContinuousCommandID getContinuousCommand (final int midiCC)
+    public ContinuousCommandID getContinuousCommand (final int cc)
     {
-        return this.getContinuousCommand (midiCC, 0);
+        return this.getContinuousCommand (this.defaultMidiChannel, cc);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public ContinuousCommandID getContinuousCommand (final int midiCC, final int midiChannel)
+    public ContinuousCommandID getContinuousCommand (final int channel, final int cc)
     {
-        final Map<Integer, ContinuousCommandID> channelMap = this.continuousCommands.get (Integer.valueOf (midiCC));
-        return channelMap == null ? null : channelMap.get (Integer.valueOf (midiChannel));
+        final Map<Integer, ContinuousCommandID> channelMap = this.continuousCommands.get (Integer.valueOf (cc));
+        return channelMap == null ? null : channelMap.get (Integer.valueOf (channel));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void assignNoteCommand (final int midiNote, final TriggerCommandID commandID)
+    public void assignNoteCommand (final int note, final TriggerCommandID commandID)
     {
-        this.noteCommands.put (Integer.valueOf (midiNote), commandID);
+        this.noteCommands.put (Integer.valueOf (note), commandID);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public TriggerCommandID getNoteCommand (final int midiNote)
+    public TriggerCommandID getNoteCommand (final int note)
     {
-        return this.noteCommands.get (Integer.valueOf (midiNote));
+        return this.noteCommands.get (Integer.valueOf (note));
     }
 
 
@@ -350,37 +352,37 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public boolean isPressed (final int cc)
     {
-        return this.isPressed (0, cc);
+        return this.isPressed (this.defaultMidiChannel, cc);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public boolean isPressed (final int channel, final int button)
+    public boolean isPressed (final int channel, final int cc)
     {
-        final TriggerInfo buttonInfo = this.getTriggerInfo (channel, button);
-        if (buttonInfo == null)
+        final TriggerInfo info = this.getTriggerInfo (channel, cc);
+        if (info == null)
             return false;
-        return buttonInfo.getState () != ButtonEvent.UP;
+        return info.getState () != ButtonEvent.UP;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public boolean isLongPressed (final int button)
+    public boolean isLongPressed (final int cc)
     {
-        return isLongPressed (0, button);
+        return this.isLongPressed (this.defaultMidiChannel, cc);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public boolean isLongPressed (final int channel, final int button)
+    public boolean isLongPressed (final int channel, final int cc)
     {
-        final TriggerInfo buttonInfo = this.getTriggerInfo (channel, button);
-        if (buttonInfo == null)
+        final TriggerInfo info = this.getTriggerInfo (channel, cc);
+        if (info == null)
             return false;
-        return buttonInfo.getState () == ButtonEvent.LONG;
+        return info.getState () == ButtonEvent.LONG;
     }
 
 
@@ -466,99 +468,110 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public void updateTrigger (final int button, final String colorID)
+    public void updateTrigger (final int cc, final String colorID)
     {
-        this.updateTrigger (button, this.colorManager.getColor (colorID));
+        this.updateTrigger (cc, this.colorManager.getColor (colorID));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateTrigger (final int button, final int value)
+    public void updateTrigger (final int cc, final int value)
     {
-        this.updateTrigger (button, 0, value);
+        this.updateTrigger (this.defaultMidiChannel, cc, value);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateTrigger (final int button, final int channel, final String colorID)
+    public void updateTrigger (final int channel, final int cc, final String colorID)
     {
-        this.updateTrigger (button, channel, this.colorManager.getColor (colorID));
+        this.updateTrigger (channel, cc, this.colorManager.getColor (colorID));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateTrigger (final int button, final int channel, final int value)
+    public void updateTrigger (final int channel, final int cc, final int value)
     {
-        final TriggerInfo buttonInfo = this.getTriggerInfo (channel, button);
-        if (buttonInfo == null || buttonInfo.getLedValue () == value)
+        final TriggerInfo info = this.getTriggerInfo (channel, cc);
+        if (info == null || info.getLedValue () == value)
             return;
-        this.setTrigger (button, channel, value);
-        buttonInfo.setLedValue (value);
+        this.setTrigger (channel, cc, value);
+        info.setLedValue (value);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int button, final int state)
+    public void setTrigger (final int cc, final int state)
     {
-        this.setTrigger (button, 0, state);
+        this.setTrigger (this.defaultMidiChannel, cc, state);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int button, final String colorID)
+    public void setTrigger (final int cc, final String colorID)
     {
-        this.setTrigger (button, this.colorManager.getColor (colorID));
+        this.setTrigger (cc, this.colorManager.getColor (colorID));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int button, final int channel, final String colorID)
+    public void setTrigger (final int channel, final int cc, final String colorID)
     {
-        this.setTrigger (button, channel, this.colorManager.getColor (colorID));
+        this.setTrigger (channel, cc, this.colorManager.getColor (colorID));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void clearTriggerCache (final int button)
+    public void setTrigger (final int channel, final int cc, final int state)
     {
-        this.clearTriggerCache (0, button);
+        // Overwrite to support trigger LEDs
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void clearTriggerCache (final int channel, final int button)
+    public void setContinuous (final int channel, final int cc, final int value)
     {
-        final TriggerInfo buttonInfo = this.getTriggerInfo (channel, button);
-        if (buttonInfo != null)
-            buttonInfo.setLedValue (-1);
+        // Overwrite to support continuous LEDs/motors
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void clearFullTriggerCache ()
+    public void clearTriggerCache ()
     {
-        this.clearFullTriggerCache (0);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearFullTriggerCache (final int channel)
-    {
-        for (int i = 0; i < NUM_BUTTONS; i++)
+        for (int channel = 0; channel < 16; channel++)
         {
-            if (this.triggerInfos[channel][i] != null)
-                this.triggerInfos[channel][i].setLedValue (-1);
+            for (int cc = 0; cc < NUM_INFOS; cc++)
+            {
+                if (this.triggerInfos[channel][cc] != null)
+                    this.triggerInfos[channel][cc].setLedValue (-1);
+            }
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearTriggerCache (final int cc)
+    {
+        this.clearTriggerCache (this.defaultMidiChannel, cc);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearTriggerCache (final int channel, final int cc)
+    {
+        final TriggerInfo info = this.getTriggerInfo (channel, cc);
+        if (info != null)
+            info.setLedValue (-1);
     }
 
 
@@ -566,7 +579,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public boolean isTrigger (final int cc)
     {
-        return this.isTrigger (0, cc);
+        return this.isTrigger (this.defaultMidiChannel, cc);
     }
 
 
@@ -582,7 +595,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setTriggerConsumed (final int cc)
     {
-        this.setTriggerConsumed (0, cc);
+        this.setTriggerConsumed (this.defaultMidiChannel, cc);
     }
 
 
@@ -600,7 +613,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public boolean isTriggerConsumed (final int cc)
     {
-        return this.isTriggerConsumed (0, cc);
+        return this.isTriggerConsumed (this.defaultMidiChannel, cc);
     }
 
 
@@ -608,8 +621,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public boolean isTriggerConsumed (final int channel, final int cc)
     {
-        final TriggerInfo triggerInfo = this.getTriggerInfo (channel, cc);
-        return triggerInfo != null && triggerInfo.isConsumed ();
+        final TriggerInfo info = this.getTriggerInfo (channel, cc);
+        return info != null && info.isConsumed ();
     }
 
 
@@ -622,7 +635,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             for (int cc = 0; cc < 128; cc++)
             {
                 if (this.isTrigger (channel, cc))
-                    this.setTrigger (cc, channel, 0);
+                    this.setTrigger (channel, cc, 0);
             }
         }
     }
@@ -632,19 +645,19 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void updateContinuous (final int cc, final int value)
     {
-        this.updateContinuous (cc, 0, value);
+        this.updateContinuous (this.defaultMidiChannel, cc, value);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateContinuous (final int cc, final int channel, final int value)
+    public void updateContinuous (final int channel, final int cc, final int value)
     {
-        final ContinuousInfo triggerInfo = this.getContinuousInfo (channel, cc);
-        if (triggerInfo == null || triggerInfo.getValue () == value)
+        final ContinuousInfo info = this.getContinuousInfo (channel, cc);
+        if (info == null || info.getValue () == value)
             return;
-        this.setContinuous (cc, channel, value);
-        triggerInfo.setValue (value);
+        this.setContinuous (channel, cc, value);
+        info.setValue (value);
     }
 
 
@@ -652,7 +665,40 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setContinuous (final int cc, final int state)
     {
-        this.setContinuous (cc, 0, state);
+        this.setContinuous (this.defaultMidiChannel, cc, state);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearContinuousCache ()
+    {
+        for (int channel = 0; channel < 16; channel++)
+        {
+            for (int cc = 0; cc < NUM_INFOS; cc++)
+            {
+                if (this.continuousInfos[channel][cc] != null)
+                    this.continuousInfos[channel][cc].setValue (-1);
+            }
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearContinuousCache (final int cc)
+    {
+        this.clearContinuousCache (this.defaultMidiChannel, cc);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearContinuousCache (final int channel, final int cc)
+    {
+        final ContinuousInfo info = this.getContinuousInfo (channel, cc);
+        if (info != null)
+            info.setValue (-1);
     }
 
 
@@ -987,7 +1033,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         if (view == null)
             return;
 
-        final TriggerCommandID triggerCommandID = this.getTriggerCommand (cc, channel);
+        final TriggerCommandID triggerCommandID = this.getTriggerCommand (channel, cc);
         if (triggerCommandID != null)
         {
             final ButtonEvent event = this.triggerInfos[channel][cc] == null ? null : this.triggerInfos[channel][cc].getState ();
@@ -995,7 +1041,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             return;
         }
 
-        final ContinuousCommandID commandID = this.getContinuousCommand (cc, channel);
+        final ContinuousCommandID commandID = this.getContinuousCommand (channel, cc);
         if (commandID != null)
         {
             view.executeContinuousCommand (commandID, value);
@@ -1036,17 +1082,17 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     /**
      * If the state of the given button is still down, the state is set to long and an event gets
      * fired.
-     * 
+     *
      * @param channel The MIDI channel
-     * @param button The button CC to check
+     * @param cc The button CC to check
      */
-    protected void checkButtonState (final int channel, final int button)
+    protected void checkButtonState (final int channel, final int cc)
     {
-        final TriggerInfo buttonInfo = this.getTriggerInfo (channel, button);
-        if (buttonInfo == null || buttonInfo.getState () != ButtonEvent.DOWN)
+        final TriggerInfo info = this.getTriggerInfo (channel, cc);
+        if (info == null || info.getState () != ButtonEvent.DOWN)
             return;
-        buttonInfo.setState (ButtonEvent.LONG);
-        this.handleCCEvent (channel, button, 127);
+        info.setState (ButtonEvent.LONG);
+        this.handleCCEvent (channel, cc, 127);
     }
 
 

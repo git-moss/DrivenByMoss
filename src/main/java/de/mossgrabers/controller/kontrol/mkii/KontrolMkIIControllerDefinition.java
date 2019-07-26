@@ -29,63 +29,52 @@ public class KontrolMkIIControllerDefinition extends DefaultControllerDefinition
         "4- "
     };
 
-    private static final String [] [] PORTS_WINDOWS  = new String [] []
+    private static final String [] [] PORTS_WINDOWS  =
     {
-        new String []
         {
             "Komplete Kontrol DAW - 1",
             "KOMPLETE KONTROL - 1"
         },
-        new String []
         {
             "Komplete Kontrol A DAW",
             "KOMPLETE KONTROL A25 MIDI",
         },
-        new String []
         {
             "Komplete Kontrol A DAW",
             "KOMPLETE KONTROL A49 MIDI",
         },
-        new String []
         {
             "Komplete Kontrol A DAW",
             "KOMPLETE KONTROL A61 MIDI",
         },
-        new String []
         {
             "Komplete Kontrol M DAW",
             "KOMPLETE KONTROL M32 MIDI"
         }
     };
 
-    private static final String [] [] PORTS_MACOS    = new String [] []
+    private static final String [] [] PORTS_MACOS    =
     {
-        new String []
         {
             "Komplete Kontrol DAW - 1",
             "KOMPLETE KONTROL S49 MK2 Port 1"
         },
-        new String []
         {
             "Komplete Kontrol DAW - 1",
             "KOMPLETE KONTROL S49 MK2 Anschluss 1"
         },
-        new String []
         {
             "Komplete Kontrol A DAW",
             "KOMPLETE KONTROL A25",
         },
-        new String []
         {
             "Komplete Kontrol A DAW",
             "KOMPLETE KONTROL A49",
         },
-        new String []
         {
             "Komplete Kontrol A DAW",
             "KOMPLETE KONTROL A61",
         },
-        new String []
         {
             "Komplete Kontrol M DAW",
             "KOMPLETE KONTROL M32"

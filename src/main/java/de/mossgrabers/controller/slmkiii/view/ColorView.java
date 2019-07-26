@@ -59,7 +59,7 @@ public class ColorView extends AbstractView<SLMkIIIControlSurface, SLMkIIIConfig
         if (velocity == 0)
             return;
 
-        final int color = (note - 36) + (this.flip ? 16 : 0);
+        final int color = note - 36 + (this.flip ? 16 : 0);
         if (color < DAWColors.DAW_COLORS.length)
         {
             final double [] entry = DAWColors.getColorEntry (DAWColors.DAW_COLORS[color]);
@@ -100,7 +100,7 @@ public class ColorView extends AbstractView<SLMkIIIControlSurface, SLMkIIIConfig
      *
      * @param flip Select colors 1-16 is false and colors 17-32 if true.
      */
-    public void setFlip (boolean flip)
+    public void setFlip (final boolean flip)
     {
         this.flip = flip;
     }

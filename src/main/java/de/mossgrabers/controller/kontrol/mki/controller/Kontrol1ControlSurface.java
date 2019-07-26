@@ -161,7 +161,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (int cc, int channel, int value)
+    public void setTrigger (final int channel, final int cc, final int value)
     {
         this.usbDevice.setButtonLED (cc, value);
     }
@@ -169,7 +169,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
 
     /** {@inheritDoc} */
     @Override
-    public void setContinuous (int cc, int channel, int value)
+    public void setContinuous (final int channel, final int cc, final int value)
     {
         this.usbDevice.setButtonLED (cc, value);
     }

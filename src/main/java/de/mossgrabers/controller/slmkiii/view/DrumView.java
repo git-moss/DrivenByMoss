@@ -117,7 +117,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         // Paint the sequencer steps
         final INoteClip clip = this.getClip ();
         final int step = clip.getCurrentStep ();
-        final int stepColor = getStepColor (primary);
+        final int stepColor = this.getStepColor (primary);
         final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
         final int offsetY = this.scales.getDrumOffset ();
         for (int col = 0; col < DrumView.NUM_DISPLAY_COLS; col++)

@@ -205,7 +205,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int cc, final int channel, final int state)
+    public void setTrigger (final int channel, final int cc, final int state)
     {
         this.output.sendNoteEx (channel, cc, state);
     }
@@ -213,7 +213,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setContinuous (final int cc, final int channel, final int state)
+    public void setContinuous (final int channel, final int cc, final int state)
     {
         this.output.sendNoteEx (channel, cc, state);
     }
@@ -263,7 +263,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
                 final View view = this.viewManager.getActiveView ();
                 if (view == null)
                     return;
-                final ContinuousCommandID commandID = this.getContinuousCommand (data1, channel);
+                final ContinuousCommandID commandID = this.getContinuousCommand (channel, data1);
                 if (commandID != null)
                     view.executeContinuousCommand (commandID, data2);
                 if (data1 == APCControlSurface.APC_FOOTSWITCH_2)

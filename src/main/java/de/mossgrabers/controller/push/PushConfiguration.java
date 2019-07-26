@@ -262,94 +262,94 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
         // Scale
 
-        this.activateScaleSetting (settingsUI);
-        this.activateScaleBaseSetting (settingsUI);
-        this.activateScaleInScaleSetting (settingsUI);
-        this.activateScaleLayoutSetting (settingsUI);
+        this.activateScaleSetting (documentSettings);
+        this.activateScaleBaseSetting (documentSettings);
+        this.activateScaleInScaleSetting (documentSettings);
+        this.activateScaleLayoutSetting (documentSettings);
 
         ///////////////////////////
         // Session
         if (this.host.hasClips ())
         {
-            this.activateSessionView (settingsUI);
-            this.activateLockFlipSessionSetting (settingsUI);
-            this.activateSelectClipOnLaunchSetting (settingsUI);
-            this.activateDrawRecordStripeSetting (settingsUI);
-            this.activateActionForRecArmedPad (settingsUI);
+            this.activateSessionView (globalSettings);
+            this.activateLockFlipSessionSetting (globalSettings);
+            this.activateSelectClipOnLaunchSetting (globalSettings);
+            this.activateDrawRecordStripeSetting (globalSettings);
+            this.activateActionForRecArmedPad (globalSettings);
         }
 
         ///////////////////////////
         // Transport
 
-        this.activateBehaviourOnStopSetting (settingsUI);
+        this.activateBehaviourOnStopSetting (globalSettings);
         if (this.host.hasClips ())
-            this.activateFlipRecordSetting (settingsUI);
+            this.activateFlipRecordSetting (globalSettings);
 
         ///////////////////////////
         // Play and Sequence
 
-        this.activateAccentActiveSetting (settingsUI);
-        this.activateAccentValueSetting (settingsUI);
-        this.activateQuantizeAmountSetting (settingsUI);
-        this.activateDefaultNoteViewSetting (settingsUI);
+        this.activateAccentActiveSetting (globalSettings);
+        this.activateAccentValueSetting (globalSettings);
+        this.activateQuantizeAmountSetting (globalSettings);
+        this.activateDefaultNoteViewSetting (globalSettings);
 
         ///////////////////////////
         // Drum Sequencer
         if (this.host.hasDrumDevice ())
         {
-            this.activateAutoSelectDrumSetting (settingsUI);
-            this.activateTurnOffEmptyDrumPadsSetting (settingsUI);
+            this.activateAutoSelectDrumSetting (globalSettings);
+            this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
         }
 
         ///////////////////////////
         // Workflow
 
-        this.activateEnableVUMetersSetting (settingsUI);
+        this.activateEnableVUMetersSetting (globalSettings);
         if (this.host.hasCrossfader ())
-            this.activateDisplayCrossfaderSetting (settingsUI);
+            this.activateDisplayCrossfaderSetting (globalSettings);
         else
             this.displayCrossfader = false;
 
-        this.activateFootswitchSetting (settingsUI);
-        this.activateStopAutomationOnKnobReleaseSetting (settingsUI);
-        this.activateNewClipLengthSetting (settingsUI);
-        this.activateKnobSpeedSetting (settingsUI, 10);
+        this.activateFootswitchSetting (globalSettings);
+        this.activateStopAutomationOnKnobReleaseSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
+        this.activateKnobSpeedSetting (globalSettings, 10);
 
         ///////////////////////////
         // Ribbon
 
-        this.activateRibbonSettings (settingsUI);
+        this.activateRibbonSettings (globalSettings);
 
         ///////////////////////////
         // Pad Sensitivity
 
         if (this.isPush2)
-            this.activatePush2PadSettings (settingsUI);
+            this.activatePush2PadSettings (globalSettings);
         else
-            this.activatePush1PadSettings (settingsUI);
+            this.activatePush1PadSettings (globalSettings);
 
-        this.activateConvertAftertouchSetting (settingsUI);
+        this.activateConvertAftertouchSetting (globalSettings);
 
         ///////////////////////////
         // Browser
 
-        this.activateBrowserSettings (settingsUI);
+        this.activateBrowserSettings (globalSettings);
 
         ///////////////////////////
         // Push 2 Hardware
 
-        this.activatePush2HardwareSettings (settingsUI);
-        this.activatePush2DisplayColorsSettings (settingsUI);
+        this.activatePush2HardwareSettings (globalSettings);
+        this.activatePush2DisplayColorsSettings (globalSettings);
 
         ///////////////////////////
         // Debugging
 
-        this.activateDebugSettings (settingsUI);
+        this.activateDebugSettings (globalSettings);
     }
 
 

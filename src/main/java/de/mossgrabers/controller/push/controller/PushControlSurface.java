@@ -1210,17 +1210,9 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (int cc, int channel, int value)
+    public void setTrigger (final int channel, final int cc, final int value)
     {
         this.output.sendCCEx (channel, cc, value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setContinuous (int cc, int channel, int value)
-    {
-        // Intentionally empty
     }
 
 
@@ -1564,7 +1556,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
         for (int i = 0; i < 128; i++)
         {
-            int [] color = getPaletteColor (i);
+            final int [] color = getPaletteColor (i);
 
             // Already set?
             if (color[0] == this.redMap[i] && color[1] == this.greenMap[i] && color[2] == this.blueMap[i])
@@ -1596,7 +1588,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     {
         if (index >= 70 && index <= 96)
         {
-            double [] colorEntry = DAWColors.getColorEntry (index - 70);
+            final double [] colorEntry = DAWColors.getColorEntry (index - 70);
             return new int []
             {
                 (int) Math.round (colorEntry[0] * 255.0),
@@ -1725,7 +1717,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     public void requestColorPalette ()
     {
         // Retrieve the first, all others are requested after the previous one was received
-        sendColorPaletteRequest (0);
+        this.sendColorPaletteRequest (0);
     }
 
 

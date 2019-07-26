@@ -47,19 +47,19 @@ public class BeatstepConfiguration extends AbstractConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void init (final ISettingsUI settingsUI)
+    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
         // Scale
 
-        this.activateScaleSetting (settingsUI);
-        this.activateScaleBaseSetting (settingsUI);
-        this.activateScaleInScaleSetting (settingsUI);
-        this.activateScaleLayoutSetting (settingsUI);
+        this.activateScaleSetting (documentSettings);
+        this.activateScaleBaseSetting (documentSettings);
+        this.activateScaleInScaleSetting (documentSettings);
+        this.activateScaleLayoutSetting (documentSettings);
 
         ///////////////////////////
         // Pad Sensitivity
 
-        this.activateConvertAftertouchSetting (settingsUI);
+        this.activateConvertAftertouchSetting (globalSettings);
     }
 }

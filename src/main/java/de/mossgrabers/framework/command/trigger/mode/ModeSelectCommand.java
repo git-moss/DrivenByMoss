@@ -29,7 +29,7 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
 
     /**
      * Constructor.
-     * 
+     *
      * @param model The model
      * @param surface The surface
      * @param modeId The ID of the mode to select
@@ -42,7 +42,7 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
 
     /**
      * Constructor.
-     * 
+     *
      * @param model The model
      * @param surface The surface
      * @param modeId The ID of the mode to select

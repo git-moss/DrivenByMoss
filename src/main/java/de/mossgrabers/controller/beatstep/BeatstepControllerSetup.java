@@ -73,12 +73,13 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      * @param isPro True if Beatstep Pro
      */
-    public BeatstepControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings, final boolean isPro)
+    public BeatstepControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final boolean isPro)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
 
         this.isPro = isPro;
         this.colorManager = new ColorManager ();

@@ -5,8 +5,10 @@
 package de.mossgrabers.controller.maschine.mikro.mk3.view;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
+import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -35,9 +37,33 @@ public class ParameterView extends BaseView
     @Override
     protected void executeFunction (final int padIndex)
     {
-        ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.MODE_DEVICE_PARAMS)).selectParameter (padIndex);
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem () + ": " + cursorDevice.getParameterBank ().getItem (padIndex).getName ()), 200);
+        final Display display = this.surface.getDisplay ();
+        if (!cursorDevice.doesExist ())
+        {
+            display.notify ("No device selected.");
+            return;
+        }
+
+        ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.MODE_DEVICE_PARAMS)).selectParameter (padIndex);
+        this.model.getHost ().scheduleTask ( () -> {
+
+            final StringBuilder message = new StringBuilder ();
+            final String selectedPage = cursorDevice.getParameterPageBank ().getSelectedItem ();
+            if (selectedPage == null)
+                message.append ("No parameters available.");
+            else
+            {
+                message.append (selectedPage).append (": ");
+                final IParameter item = cursorDevice.getParameterBank ().getItem (padIndex);
+                if (item.doesExist ())
+                    message.append (item.getName ());
+                else
+                    message.append ("None");
+            }
+            display.notify (message.toString ());
+
+        }, 200);
     }
 
 

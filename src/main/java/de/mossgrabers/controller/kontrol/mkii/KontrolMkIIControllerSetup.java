@@ -63,11 +63,12 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      */
-    public KontrolMkIIControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    public KontrolMkIIControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new ColorManager ();
         KontrolMkIIColors.addColors (this.colorManager);
@@ -280,17 +281,17 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     {
         final ITransport t = this.model.getTransport ();
         final IControlSurface<KontrolMkIIConfiguration> surface = this.getSurface ();
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_PLAY, 15, t.isPlaying () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_RECORD, 15, this.model.hasRecordingState () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_COUNT_IN, 15, t.isRecording () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_STOP, 15, !t.isPlaying () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_CLEAR, 15, ColorManager.BUTTON_STATE_HI);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_LOOP, 15, t.isLoop () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_METRO, 15, t.isMetronomeOn () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_UNDO, 15, ColorManager.BUTTON_STATE_HI);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_REDO, 15, ColorManager.BUTTON_STATE_HI);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_QUANTIZE, 15, ColorManager.BUTTON_STATE_HI);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_AUTOMATION, 15, t.isWritingArrangerAutomation () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_PLAY, t.isPlaying () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_RECORD, this.model.hasRecordingState () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_COUNT_IN, t.isRecording () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_STOP, !t.isPlaying () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_CLEAR, ColorManager.BUTTON_STATE_HI);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_LOOP, t.isLoop () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_METRO, t.isMetronomeOn () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_UNDO, ColorManager.BUTTON_STATE_HI);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_REDO, ColorManager.BUTTON_STATE_HI);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_QUANTIZE, ColorManager.BUTTON_STATE_HI);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_AUTOMATION, t.isWritingArrangerAutomation () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
     }
 
 
@@ -321,8 +322,8 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
             vuData[j] = this.valueChanger.toMidiValue (track.getVuLeft ());
             vuData[j + 1] = this.valueChanger.toMidiValue (track.getVuRight ());
 
-            surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME + i, 15, this.valueChanger.toMidiValue (track.getVolume ()));
-            surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_TRACK_PAN + i, 15, this.valueChanger.toMidiValue (track.getPan ()));
+            surface.updateContinuous (15, KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME + i, this.valueChanger.toMidiValue (track.getVolume ()));
+            surface.updateContinuous (15, KontrolMkIIControlSurface.KONTROL_TRACK_PAN + i, this.valueChanger.toMidiValue (track.getPan ()));
         }
 
         surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
@@ -339,15 +340,15 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         final ISceneBank sceneBank = trackBank.getSceneBank ();
         final int scrollScenesState = (sceneBank.canScrollBackwards () ? 1 : 0) + (sceneBank.canScrollForwards () ? 2 : 0);
 
-        surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, 15, (trackBank.canScrollPageBackwards () ? 1 : 0) + (trackBank.canScrollPageForwards () ? 2 : 0));
-        surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, 15, this.configuration.isFlipTrackClipNavigation () ? this.configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState : scrollTracksState);
-        surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, 15, this.configuration.isFlipTrackClipNavigation () ? scrollTracksState : this.configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState);
-        surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, 15, this.configuration.isFlipTrackClipNavigation () ? scrollTracksState : this.configuration.isFlipClipSceneNavigation () ? scrollClipsState : scrollScenesState);
+        surface.updateContinuous (15, KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, (trackBank.canScrollPageBackwards () ? 1 : 0) + (trackBank.canScrollPageForwards () ? 2 : 0));
+        surface.updateContinuous (15, KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, this.configuration.isFlipTrackClipNavigation () ? this.configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState : scrollTracksState);
+        surface.updateContinuous (15, KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, this.configuration.isFlipTrackClipNavigation () ? scrollTracksState : this.configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState);
+        surface.updateContinuous (15, KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, this.configuration.isFlipTrackClipNavigation () ? scrollTracksState : this.configuration.isFlipClipSceneNavigation () ? scrollClipsState : scrollScenesState);
 
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_MUTE, 15, selectedTrack != null && selectedTrack.isMute () ? 1 : 0);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_SOLO, 15, selectedTrack != null && selectedTrack.isSolo () ? 1 : 0);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_AVAILABLE, 15, selectedTrack != null ? TrackType.toTrackType (selectedTrack.getType ()) : 0);
-        surface.updateTrigger (KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_MUTED_BY_SOLO, 15, selectedTrack != null && !selectedTrack.isSolo () && hasSolo ? 1 : 0);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_MUTE, selectedTrack != null && selectedTrack.isMute () ? 1 : 0);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_SOLO, selectedTrack != null && selectedTrack.isSolo () ? 1 : 0);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_AVAILABLE, selectedTrack != null ? TrackType.toTrackType (selectedTrack.getType ()) : 0);
+        surface.updateTrigger (15, KontrolMkIIControlSurface.KONTROL_SELECTED_TRACK_MUTED_BY_SOLO, selectedTrack != null && !selectedTrack.isSolo () && hasSolo ? 1 : 0);
     }
 
 

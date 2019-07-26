@@ -20,6 +20,7 @@ import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
+import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -80,11 +81,12 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
      *
      * @param host The DAW host
      * @param factory The factory
-     * @param settings The settings
+     * @param globalSettings The global settings
+     * @param documentSettings The document (project) specific settings
      */
-    public APCminiControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI settings)
+    public APCminiControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        super (factory, host, settings);
+        super (factory, host, globalSettings, documentSettings);
         this.colorManager = new ColorManager ();
         APCminiColors.addColors (this.colorManager);
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
@@ -201,11 +203,22 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     protected void registerTriggerCommands ()
     {
         final APCminiControlSurface surface = this.getSurface ();
+
+        // Nop triggers are added to support the CC button updates
+
         this.addNoteCommand (TriggerCommandID.SHIFT, APCminiControlSurface.APC_BUTTON_SHIFT, new ToggleShiftViewCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.SHIFT, APCminiControlSurface.APC_BUTTON_SHIFT, NopCommand.INSTANCE);
+
         for (int i = 0; i < 8; i++)
         {
-            this.addNoteCommand (TriggerCommandID.get (TriggerCommandID.ROW_SELECT_1, i), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, new TrackSelectCommand (i, this.model, surface));
-            this.addNoteCommand (TriggerCommandID.get (TriggerCommandID.SCENE1, i), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, new SceneCommand<> (i, this.model, surface));
+            final TriggerCommandID commandID1 = TriggerCommandID.get (TriggerCommandID.ROW_SELECT_1, i);
+            final TriggerCommandID commandID2 = TriggerCommandID.get (TriggerCommandID.SCENE1, i);
+
+            this.addNoteCommand (commandID1, APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, new TrackSelectCommand (i, this.model, surface));
+            this.addNoteCommand (commandID2, APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, new SceneCommand<> (i, this.model, surface));
+
+            this.addTriggerCommand (commandID1, APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, NopCommand.INSTANCE);
+            this.addTriggerCommand (commandID2, APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, NopCommand.INSTANCE);
         }
     }
 
@@ -234,7 +247,8 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
 
     private void updateButtons ()
     {
-        final View activeView = this.getSurface ().getViewManager ().getActiveView ();
+        final APCminiControlSurface surface = this.getSurface ();
+        final View activeView = surface.getViewManager ().getActiveView ();
         if (activeView != null)
             ((SceneView) activeView).updateSceneButtons ();
     }

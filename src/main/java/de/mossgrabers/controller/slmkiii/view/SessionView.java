@@ -50,8 +50,8 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
     public void onGridNote (final int note, final int velocity)
     {
         final int index = note - 36;
-        int t = index % this.columns;
-        int s = this.rows - 1 - index / this.columns;
+        final int t = index % this.columns;
+        final int s = this.rows - 1 - index / this.columns;
         final ITrackBank tb = this.model.getCurrentTrackBank ();
 
         // Birds-eye-view navigation
