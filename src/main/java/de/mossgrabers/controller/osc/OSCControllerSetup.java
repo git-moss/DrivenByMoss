@@ -102,9 +102,8 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         });
 
         final ITrackBank tb = this.model.getTrackBank ();
-        for (int i = 0; i < tb.getPageSize (); i++)
-            tb.getItem (i).addNoteObserver (this.keyManager);
         tb.addSelectionObserver ( (final int index, final boolean isSelected) -> this.keyManager.clearPressedKeys ());
+        tb.addNoteObserver (this.keyManager);
 
         this.configuration.addSettingObserver (OSCConfiguration.VALUE_RESOLUTION, () -> {
             switch (this.configuration.getValueResolution ())

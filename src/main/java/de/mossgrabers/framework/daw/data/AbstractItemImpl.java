@@ -36,6 +36,14 @@ public abstract class AbstractItemImpl implements IItem
 
     /** {@inheritDoc} */
     @Override
+    public int getPosition ()
+    {
+        throw new UnsupportedOperationException ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isSelected ()
     {
         return this.selected;
@@ -53,14 +61,6 @@ public abstract class AbstractItemImpl implements IItem
     /** {@inheritDoc} */
     @Override
     public void select ()
-    {
-        throw new UnsupportedOperationException ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getPosition ()
     {
         throw new UnsupportedOperationException ();
     }

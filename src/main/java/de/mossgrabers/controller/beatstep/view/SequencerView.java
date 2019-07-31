@@ -40,11 +40,8 @@ public class SequencerView extends BaseSequencerView
         this.offsetY = SequencerView.START_KEY;
 
         final ITrackBank tb = model.getTrackBank ();
-
-        // Light notes send from the sequencer
-        for (int i = 0; i < tb.getPageSize (); i++)
-            tb.getItem (i).addNoteObserver (this::updateNote);
         tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
+        tb.addNoteObserver (this::updateNote);
     }
 
 

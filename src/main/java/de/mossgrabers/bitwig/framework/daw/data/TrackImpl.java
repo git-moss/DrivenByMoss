@@ -380,24 +380,14 @@ public class TrackImpl extends ChannelImpl implements ITrack
     }
 
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Add a note observer.
+     *
+     * @param observer The note observer
+     */
     public void addNoteObserver (final NoteObserver observer)
     {
         this.noteObservers.add (observer);
-    }
-
-
-    /**
-     * Notify all registered note observers.
-     *
-     * @param note The note which is playing or stopped
-     * @param velocity The velocity of the note, note is stopped if 0
-     */
-    protected void notifyNoteObservers (final int note, final int velocity)
-    {
-        for (final NoteObserver noteObserver: this.noteObservers)
-            noteObserver.call (this.index, note, velocity);
     }
 
 
@@ -430,5 +420,18 @@ public class TrackImpl extends ChannelImpl implements ITrack
                 }
             }
         }
+    }
+
+
+    /**
+     * Notify all registered note observers.
+     *
+     * @param note The note which is playing or stopped
+     * @param velocity The velocity of the note, note is stopped if 0
+     */
+    protected void notifyNoteObservers (final int note, final int velocity)
+    {
+        for (final NoteObserver noteObserver: this.noteObservers)
+            noteObserver.call (this.index, note, velocity);
     }
 }

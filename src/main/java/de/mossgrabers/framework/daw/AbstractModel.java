@@ -23,42 +23,44 @@ import java.util.Map;
  */
 public abstract class AbstractModel implements IModel
 {
-    protected IHost              host;
-    protected IApplication       application;
-    protected IMixer             mixer;
-    protected ITransport         transport;
-    protected IGroove            groove;
-    protected IProject           project;
-    protected IBrowser           browser;
-    protected IArranger          arranger;
-    protected IMarkerBank        markerBank;
-    protected ITrackBank         currentTrackBank;
-    protected ITrackBank         trackBank;
-    protected ITrackBank         effectTrackBank;
-    protected IMasterTrack       masterTrack;
-    protected ICursorDevice      instrumentDevice;
-    protected ICursorDevice      cursorDevice;
-    protected ICursorDevice      drumDevice64;
-    protected Map<String, IClip> cursorClips = new HashMap<> ();
+    protected final IHost         host;
+    protected final Scales        scales;
+    protected final ColorManager  colorManager;
+    protected final IValueChanger valueChanger;
+    protected final ModelSetup    modelSetup;
 
-    protected Scales             scales;
-    protected ColorManager       colorManager;
-    protected IValueChanger      valueChanger;
-    protected ModelSetup         modelSetup;
+    protected IApplication        application;
+    protected IMixer              mixer;
+    protected ITransport          transport;
+    protected IGroove             groove;
+    protected IProject            project;
+    protected IBrowser            browser;
+    protected IArranger           arranger;
+    protected IMarkerBank         markerBank;
+    protected ITrackBank          currentTrackBank;
+    protected ITrackBank          trackBank;
+    protected ITrackBank          effectTrackBank;
+    protected IMasterTrack        masterTrack;
+    protected ICursorDevice       instrumentDevice;
+    protected ICursorDevice       cursorDevice;
+    protected ICursorDevice       drumDevice64;
+    protected Map<String, IClip>  cursorClips = new HashMap<> ();
 
-    private int                  lastSelection;
+    private int                   lastSelection;
 
 
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param colorManager The color manager
      * @param valueChanger The value changer
      * @param scales The scales object
      * @param modelSetup The configuration parameters for the model
      */
-    public AbstractModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
+    public AbstractModel (final IHost host, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
     {
+        this.host = host;
         this.colorManager = colorManager;
         this.valueChanger = valueChanger;
         this.scales = scales;

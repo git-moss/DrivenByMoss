@@ -141,7 +141,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         DEBUG_MODES.add (Modes.SEND6);
         DEBUG_MODES.add (Modes.SEND7);
         DEBUG_MODES.add (Modes.SEND8);
-        DEBUG_MODES.add (Modes.SEND);
         DEBUG_MODES.add (Modes.MASTER);
         DEBUG_MODES.add (Modes.MASTER_TEMP);
         DEBUG_MODES.add (Modes.DEVICE_PARAMS);
@@ -156,7 +155,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND6);
         DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND7);
         DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND8);
-        DEBUG_MODES.add (Modes.DEVICE_LAYER_SEND);
         DEBUG_MODES.add (Modes.DEVICE_LAYER_DETAILS);
         DEBUG_MODES.add (Modes.BROWSER);
         DEBUG_MODES.add (Modes.CLIP);

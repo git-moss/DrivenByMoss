@@ -2,12 +2,13 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.daw.data;
+package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.EmptyBank;
 import de.mossgrabers.framework.daw.ISendBank;
+import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.observer.IValueObserver;
 
 
 /**
@@ -15,17 +16,9 @@ import de.mossgrabers.framework.observer.IValueObserver;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class EmptyChannelData implements IChannel
+public class EmptyChannel extends EmptyItem implements IChannel
 {
     private final ISendBank sendBank = new EmptySendBank ();
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean doesExist ()
-    {
-        return false;
-    }
 
 
     /** {@inheritDoc} */
@@ -33,22 +26,6 @@ public class EmptyChannelData implements IChannel
     public ChannelType getType ()
     {
         return ChannelType.UNKNOWN;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getPosition ()
-    {
-        return -1;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isSelected ()
-    {
-        return false;
     }
 
 
@@ -70,22 +47,6 @@ public class EmptyChannelData implements IChannel
 
     /** {@inheritDoc} */
     @Override
-    public String getName (final int limit)
-    {
-        return "";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addNameObserver (final IValueObserver<String> observer)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public String getVolumeStr ()
     {
         return "";
@@ -97,6 +58,22 @@ public class EmptyChannelData implements IChannel
     public int getVolume ()
     {
         return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getVolumeStr (final int limit)
+    {
+        return "";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getPanStr (final int limit)
+    {
+        return "";
     }
 
 
@@ -136,12 +113,7 @@ public class EmptyChannelData implements IChannel
     @Override
     public double [] getColor ()
     {
-        return new double []
-        {
-            0.0,
-            0.0,
-            0.0
-        };
+        return COLOR_OFF;
     }
 
 
@@ -182,38 +154,6 @@ public class EmptyChannelData implements IChannel
     public int getVuRight ()
     {
         return 0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getIndex ()
-    {
-        return -1;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setSelected (final boolean isSelected)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getVolumeStr (final int limit)
-    {
-        return "";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getPanStr (final int limit)
-    {
-        return "";
     }
 
 
@@ -403,6 +343,11 @@ public class EmptyChannelData implements IChannel
 
     class EmptySendBank extends EmptyBank<ISend> implements ISendBank
     {
-        // Intentionally empty
+        /** {@inheritDoc} */
+        @Override
+        public ISend getItem (final int index)
+        {
+            return EmptySend.INSTANCE;
+        }
     }
 }

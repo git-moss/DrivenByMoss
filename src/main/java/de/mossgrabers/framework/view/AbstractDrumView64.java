@@ -74,10 +74,8 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         this.drumOctave = 0;
 
         final ITrackBank tb = model.getTrackBank ();
-        // Light notes send from the sequencer
-        for (int i = 0; i < tb.getPageSize (); i++)
-            tb.getItem (i).addNoteObserver (this::updateNote);
         tb.addSelectionObserver ( (final int index, final boolean isSelected) -> this.clearPressedKeys ());
+        tb.addNoteObserver (this::updateNote);
     }
 
 

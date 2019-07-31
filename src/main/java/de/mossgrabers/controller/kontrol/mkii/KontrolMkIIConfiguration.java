@@ -18,37 +18,44 @@ import de.mossgrabers.framework.daw.IHost;
  */
 public class KontrolMkIIConfiguration extends AbstractConfiguration
 {
-    private static final Integer   RECORD_BUTTON_FUNCTION         = Integer.valueOf (50);
-    private static final Integer   SHIFTED_RECORD_BUTTON_FUNCTION = Integer.valueOf (51);
-    private static final Integer   FLIP_TRACK_CLIP_NAVIGATION     = Integer.valueOf (52);
-    private static final Integer   FLIP_CLIP_SCENE_NAVIGATION     = Integer.valueOf (53);
+    private static final Integer RECORD_BUTTON_FUNCTION         = Integer.valueOf (50);
+    private static final Integer SHIFTED_RECORD_BUTTON_FUNCTION = Integer.valueOf (51);
+    private static final Integer FLIP_TRACK_CLIP_NAVIGATION     = Integer.valueOf (52);
+    private static final Integer FLIP_CLIP_SCENE_NAVIGATION     = Integer.valueOf (53);
 
-    /** Record in arranger. */
-    public static final int        RECORD_ARRANGER                = 0;
-    /** Record in clip. */
-    public static final int        RECORD_CLIP                    = 1;
-    /** Create a new clip, enable overdub and start playback. */
-    public static final int        NEW_CLIP                       = 2;
-    /** Toggle arranger overdub. */
-    public static final int        TOGGLE_ARRANGER_OVERDUB        = 3;
-    /** Toggle clip overdub. */
-    public static final int        TOGGLE_CLIP_OVERDUB            = 4;
+    /** Different options for the record button. */
+    public enum RecordFunction
+    {
+        /** Record in arranger. */
+        RECORD_ARRANGER,
+        /** Record in clip. */
+        RECORD_CLIP,
+        /** Create a new clip, enable overdub and start playback. */
+        NEW_CLIP,
+        /** Toggle arranger overdub. */
+        TOGGLE_ARRANGER_OVERDUB,
+        /** Toggle clip overdub. */
+        TOGGLE_CLIP_OVERDUB,
+        /** Toggle clip overdub. */
+        TOGGLE_REC_ARM
+    }
 
-    private static final String    CATEGORY_NAVIGATION            = "Navigation";
+    private static final String    CATEGORY_NAVIGATION         = "Navigation";
 
-    private static final String [] RECORD_OPTIONS                 =
+    private static final String [] RECORD_OPTIONS              =
     {
         "Record arranger",
         "Record clip",
         "New clip",
         "Toggle arranger overdub",
         "Toggle clip overdub",
+        "Toggle rec arm",
     };
 
-    private int                    recordButtonFunction           = 0;
-    private int                    shiftedRecordButtonFunction    = 1;
-    private boolean                flipTrackClipNavigation        = false;
-    private boolean                flipClipSceneNavigation        = false;
+    private RecordFunction         recordButtonFunction        = RecordFunction.RECORD_ARRANGER;
+    private RecordFunction         shiftedRecordButtonFunction = RecordFunction.NEW_CLIP;
+    private boolean                flipTrackClipNavigation     = false;
+    private boolean                flipClipSceneNavigation     = false;
 
 
     /**
@@ -77,7 +84,7 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
             for (int i = 0; i < RECORD_OPTIONS.length; i++)
             {
                 if (RECORD_OPTIONS[i].equals (value))
-                    this.recordButtonFunction = i;
+                    this.recordButtonFunction = RecordFunction.values ()[i];
             }
             this.notifyObservers (RECORD_BUTTON_FUNCTION);
         });
@@ -87,7 +94,7 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
             for (int i = 0; i < RECORD_OPTIONS.length; i++)
             {
                 if (RECORD_OPTIONS[i].equals (value))
-                    this.shiftedRecordButtonFunction = i;
+                    this.shiftedRecordButtonFunction = RecordFunction.values ()[i];
             }
             this.notifyObservers (SHIFTED_RECORD_BUTTON_FUNCTION);
         });
@@ -119,7 +126,7 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
      *
      * @return The function index
      */
-    public int getRecordButtonFunction ()
+    public RecordFunction getRecordButtonFunction ()
     {
         return this.recordButtonFunction;
     }
@@ -130,7 +137,7 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
      *
      * @return The function index
      */
-    public int getShiftedRecordButtonFunction ()
+    public RecordFunction getShiftedRecordButtonFunction ()
     {
         return this.shiftedRecordButtonFunction;
     }

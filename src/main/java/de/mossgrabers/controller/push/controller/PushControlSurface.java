@@ -16,8 +16,6 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.View;
 
-import java.util.Arrays;
-
 
 /**
  * The Push 1 and Push 2 control surface.
@@ -118,7 +116,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     /** The convert button - only Push 2. */
     public static final int          PUSH_BUTTON_CONVERT           = 35;
     /** The scene 1 button. */
-    public static final int          PUSH_BUTTON_SCENE1            = 36;           // 1/4
+    public static final int          PUSH_BUTTON_SCENE1            = 36;                    // 1/4
     /** The scene 2 button. */
     public static final int          PUSH_BUTTON_SCENE2            = 37;
     /** The scene 3 button. */
@@ -126,13 +124,13 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     /** The scene 4 button. */
     public static final int          PUSH_BUTTON_SCENE4            = 39;
     /** The scene 5 button. */
-    public static final int          PUSH_BUTTON_SCENE5            = 40;           // ...
+    public static final int          PUSH_BUTTON_SCENE5            = 40;                    // ...
     /** The scene 6 button. */
     public static final int          PUSH_BUTTON_SCENE6            = 41;
     /** The scene 7 button. */
     public static final int          PUSH_BUTTON_SCENE7            = 42;
     /** The scene 8 button. */
-    public static final int          PUSH_BUTTON_SCENE8            = 43;           // 1/32T
+    public static final int          PUSH_BUTTON_SCENE8            = 43;                    // 1/32T
     /** The cursor left button. */
     public static final int          PUSH_BUTTON_LEFT              = 44;
     /** The cursor right button. */
@@ -1109,10 +1107,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         0x01
     };
 
-    private int []                   redMap                        = new int [128];
-    private int []                   greenMap                      = new int [128];
-    private int []                   blueMap                       = new int [128];
-    private int []                   whiteMap                      = new int [128];
+    private PaletteEntry []          colorPalette                  = new PaletteEntry [128];
 
     private int                      ribbonMode                    = -1;
     private int                      ribbonValue                   = -1;
@@ -1148,11 +1143,6 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         this.downButtonId = PUSH_BUTTON_DOWN;
 
         this.input.setSysexCallback (this::handleSysEx);
-
-        Arrays.fill (this.redMap, -1);
-        Arrays.fill (this.greenMap, -1);
-        Arrays.fill (this.blueMap, -1);
-        Arrays.fill (this.whiteMap, -1);
     }
 
 
@@ -1502,31 +1492,60 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             return;
         }
 
-        if (!this.configuration.isPush2 () || !isPush2Data (byteData))
-            return;
-
         // Color palette entry message?
-        if (byteData.length != 17 || byteData[6] != 0x04)
-            return;
+        if (this.configuration.isPush2 () && isPush2Data (byteData) && PaletteEntry.isValid (byteData))
+            this.handleColorPaletteMessage (byteData);
+    }
 
-        // Store the color and the white calibration values
-        final int index = byteData[7];
-        this.redMap[index] = byteData[8] + (byteData[9] << 7);
-        this.greenMap[index] = byteData[10] + (byteData[11] << 7);
-        this.blueMap[index] = byteData[12] + (byteData[13] << 7);
-        this.whiteMap[index] = byteData[14] + (byteData[15] << 7);
 
-        // Request the next color entry ...
-        for (int i = 0; i < 128; i++)
+    /**
+     * Handle a color palette message.
+     * 
+     * @param data The message data
+     */
+    private void handleColorPaletteMessage (final int [] data)
+    {
+        int index = data[7];
+
+        synchronized (this.colorPalette)
         {
-            if (this.whiteMap[i] == -1)
+            // First try?
+            if (this.colorPalette[index] == null)
             {
-                this.sendColorPaletteRequest (i);
+                // Store the color and the white calibration values
+                this.colorPalette[index] = new PaletteEntry (data);
+            }
+
+            // Already set?
+            if (this.colorPalette[index].update (getPaletteColor (index)))
+            {
+                if (this.colorPalette[index].hasMaxNumberOfRetriesReached ())
+                {
+                    this.host.error ("Failed writing color palette entry #" + index + ". Gave up after 10 retries.");
+                    return;
+                }
+
+                // No
+                this.sendPush2SysEx (this.colorPalette[index].createUpdateMessage (index));
+
+                // Request the value to confirm it was written
+                this.sendColorPaletteRequest (index);
+
                 return;
             }
+
+            final int retries = this.colorPalette[index].getRetries ();
+            if (retries > 1)
+                this.host.println ("Success writing color palette entry #" + index + " after " + retries + " attempts.");
         }
 
-        this.setDefaultColorPalette ();
+        index++;
+
+        if (index == 128)
+            // Re-apply the color palette
+            this.output.sendSysex ("F0 00 21 1D 01 01 05 F7");
+        else
+            this.sendColorPaletteRequest (index);
     }
 
 
@@ -1542,45 +1561,6 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         }
 
         return data[data.length - 1] == 0xF7;
-    }
-
-
-    /**
-     * Set the default color palette on the Push 2 using the retrieved white calibration values.
-     */
-    private void setDefaultColorPalette ()
-    {
-        final int [] data = new int [10];
-
-        boolean reapply = false;
-
-        for (int i = 0; i < 128; i++)
-        {
-            final int [] color = getPaletteColor (i);
-
-            // Already set?
-            if (color[0] == this.redMap[i] && color[1] == this.greenMap[i] && color[2] == this.blueMap[i])
-                continue;
-
-            data[0] = 0x03;
-            data[1] = i;
-            data[2] = color[0] % 128;
-            data[3] = color[0] / 128;
-            data[4] = color[1] % 128;
-            data[5] = color[1] / 128;
-            data[6] = color[2] % 128;
-            data[7] = color[2] / 128;
-            data[8] = this.whiteMap[i] % 128;
-            data[9] = this.whiteMap[i] / 128;
-
-            this.sendPush2SysEx (data);
-
-            reapply = true;
-        }
-
-        // Re-apply the color palette
-        if (reapply)
-            this.output.sendSysex ("F0 00 21 1D 01 01 05 F7");
     }
 
 
@@ -1714,7 +1694,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     /**
      * Request the full color palette.
      */
-    public void requestColorPalette ()
+    public void updateColorPalette ()
     {
         // Retrieve the first, all others are requested after the previous one was received
         this.sendColorPaletteRequest (0);
@@ -1733,6 +1713,20 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             0x04,
             paletteEntry
         });
+
+        // If there was no answer after 1s, retry...
+        this.scheduleTask ( () -> {
+
+            synchronized (this.colorPalette)
+            {
+                if (this.colorPalette[paletteEntry] == null)
+                {
+                    this.host.println ("Resending color palette entry #" + paletteEntry + " request.");
+                    this.sendColorPaletteRequest (paletteEntry);
+                }
+            }
+
+        }, 1000);
     }
 
 

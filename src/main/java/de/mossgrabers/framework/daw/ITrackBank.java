@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.observer.IIndexedValueObserver;
+import de.mossgrabers.framework.observer.NoteObserver;
 
 
 /**
@@ -62,4 +63,12 @@ public interface ITrackBank extends IChannelBank<ITrack>
      * @param observer The observer to notify on a name change
      */
     void addNameObserver (IIndexedValueObserver<String> observer);
+
+
+    /**
+     * Add a note observer.
+     *
+     * @param observer The note observer
+     */
+    void addNoteObserver (final NoteObserver observer);
 }

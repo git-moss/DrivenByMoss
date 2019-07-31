@@ -2,11 +2,12 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.daw.data;
+package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.EmptyBank;
 import de.mossgrabers.framework.daw.ISlotBank;
-import de.mossgrabers.framework.observer.NoteObserver;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -14,12 +15,21 @@ import de.mossgrabers.framework.observer.NoteObserver;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class EmptyTrackData extends EmptyChannelData implements ITrack
+public class EmptyTrack extends EmptyChannel implements ITrack
 {
     /** The singleton. */
-    public static final ITrack INSTANCE = new EmptyTrackData ();
+    public static final ITrack INSTANCE = new EmptyTrack ();
 
     private final ISlotBank    slotBank = new EmptySlotBank ();
+
+
+    /**
+     * Constructor.
+     */
+    private EmptyTrack ()
+    {
+        // Intentionally empty
+    }
 
 
     /** {@inheritDoc} */
@@ -232,20 +242,21 @@ public class EmptyTrackData extends EmptyChannelData implements ITrack
         return this.slotBank;
     }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void addNoteObserver (final NoteObserver observer)
-    {
-        // Intentionally empty
-    }
-
     class EmptySlotBank extends EmptyBank<ISlot> implements ISlotBank
     {
+        /** {@inheritDoc} */
         @Override
         public ISlot getEmptySlot (final int startFrom)
         {
             return null;
+        }
+
+
+        /** {@inheritDoc} */
+        @Override
+        public ISlot getItem (final int index)
+        {
+            return EmptySlot.INSTANCE;
         }
     }
 }

@@ -60,10 +60,9 @@ public class ModelImpl extends AbstractModel
      */
     public ModelImpl (final ControllerHost controllerHost, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
     {
-        super (colorManager, valueChanger, scales, modelSetup);
+        super (new HostImpl (controllerHost), colorManager, valueChanger, scales, modelSetup);
 
         this.controllerHost = controllerHost;
-        this.host = new HostImpl (controllerHost);
 
         final Application app = controllerHost.createApplication ();
         this.application = new ApplicationImpl (app);

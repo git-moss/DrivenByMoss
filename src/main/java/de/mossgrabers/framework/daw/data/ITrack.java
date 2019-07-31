@@ -5,7 +5,6 @@
 package de.mossgrabers.framework.daw.data;
 
 import de.mossgrabers.framework.daw.ISlotBank;
-import de.mossgrabers.framework.observer.NoteObserver;
 
 
 /**
@@ -207,12 +206,4 @@ public interface ITrack extends IChannel
      * Switch playback back to the arrangement.
      */
     void returnToArrangement ();
-
-
-    /**
-     * Add a note observer.
-     *
-     * @param observer The note observer
-     */
-    void addNoteObserver (final NoteObserver observer);
 }

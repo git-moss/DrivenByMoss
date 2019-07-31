@@ -4,8 +4,10 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.bitwig.framework.daw.data.TrackImpl;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.observer.NoteObserver;
 
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.Track;
@@ -75,5 +77,14 @@ public class TrackBankImpl extends AbstractTrackBankImpl
     public String getEditSendName (final int sendIndex)
     {
         return this.getItem (0).getSendBank ().getItem (sendIndex).getName ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addNoteObserver (final NoteObserver observer)
+    {
+        for (int i = 0; i < this.getPageSize (); i++)
+            ((TrackImpl) this.getItem (i)).addNoteObserver (observer);
     }
 }

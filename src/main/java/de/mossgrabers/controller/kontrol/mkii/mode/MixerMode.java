@@ -53,7 +53,7 @@ public class MixerMode extends VolumeMode<KontrolMkIIControlSurface, KontrolMkII
             this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_RECARM, track.isRecArm () ? 1 : 0, i);
             this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, track.getVolumeStr (8));
             this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, track.getPanStr (8));
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_NAME, 0, i, track.getName ());
+            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_NAME, 0, i, track.doesExist () ? "Track " + (track.getPosition () + 1) + "\n\n" + track.getName () : "");
 
             final int j = 2 * i;
             vuData[j] = valueChanger.toMidiValue (track.getVuLeft ());

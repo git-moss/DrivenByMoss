@@ -40,6 +40,6 @@ public class SendBankImpl extends AbstractBankImpl<SendBank, ISend> implements I
     protected void initItems ()
     {
         for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new SendImpl (this.valueChanger, this.bank.getItemAt (i), i));
+            this.items.add (new SendImpl (this, this.valueChanger, this.bank.getItemAt (i), i));
     }
 }

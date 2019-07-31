@@ -24,8 +24,6 @@ import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.data.EmptyLayerData;
-import de.mossgrabers.framework.daw.data.EmptyTrackData;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -36,6 +34,8 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.empty.EmptyLayer;
+import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.osc.AbstractOpenSoundControlWriter;
 import de.mossgrabers.framework.osc.IOpenSoundControlClient;
@@ -150,7 +150,7 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
             this.flushTrack ("/track/" + (i + 1) + "/", trackBank.getItem (i), dump);
         this.flushTrack ("/master/", this.model.getMasterTrack (), dump);
         final ITrack selectedTrack = trackBank.getSelectedItem ();
-        this.flushTrack ("/track/selected/", selectedTrack == null ? EmptyTrackData.INSTANCE : selectedTrack, dump);
+        this.flushTrack ("/track/selected/", selectedTrack == null ? EmptyTrack.INSTANCE : selectedTrack, dump);
         this.sendOSC ("/track/toggleBank", this.model.isEffectTrackBankActive () ? 1 : 0, dump);
 
         //
@@ -176,7 +176,7 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         for (int i = 0; i < layerBank.getPageSize (); i++)
             this.flushDeviceLayer ("/device/layer/" + (i + 1) + "/", layerBank.getItem (i), dump);
         final ILayer selectedLayer = layerBank.getSelectedItem ();
-        this.flushDeviceLayer ("/device/layer/selected/", selectedLayer == null ? EmptyLayerData.INSTANCE : selectedLayer, dump);
+        this.flushDeviceLayer ("/device/layer/selected/", selectedLayer == null ? EmptyLayer.INSTANCE : selectedLayer, dump);
 
         this.flushDevice ("/primary/", this.model.getInstrumentDevice (), dump);
 

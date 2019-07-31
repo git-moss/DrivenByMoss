@@ -10,6 +10,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -45,13 +46,13 @@ public class KontrolRecordCommand extends AbstractTriggerCommand<KontrolMkIICont
             return;
 
         final KontrolMkIIConfiguration configuration = this.surface.getConfiguration ();
-        final int recordMode = this.isRecordButton ? configuration.getRecordButtonFunction () : configuration.getShiftedRecordButtonFunction ();
+        final KontrolMkIIConfiguration.RecordFunction recordMode = this.isRecordButton ? configuration.getRecordButtonFunction () : configuration.getShiftedRecordButtonFunction ();
         switch (recordMode)
         {
-            case KontrolMkIIConfiguration.RECORD_ARRANGER:
+            case RECORD_ARRANGER:
                 this.model.getTransport ().record ();
                 break;
-            case KontrolMkIIConfiguration.RECORD_CLIP:
+            case RECORD_CLIP:
                 final ISlot slot = this.model.getSelectedSlot ();
                 if (slot == null)
                     return;
@@ -59,14 +60,19 @@ public class KontrolRecordCommand extends AbstractTriggerCommand<KontrolMkIICont
                     slot.record ();
                 slot.launch ();
                 break;
-            case KontrolMkIIConfiguration.NEW_CLIP:
+            case NEW_CLIP:
                 new NewCommand<> (this.model, this.surface).executeNormal (ButtonEvent.DOWN);
                 break;
-            case KontrolMkIIConfiguration.TOGGLE_ARRANGER_OVERDUB:
+            case TOGGLE_ARRANGER_OVERDUB:
                 this.model.getTransport ().toggleOverdub ();
                 break;
-            case KontrolMkIIConfiguration.TOGGLE_CLIP_OVERDUB:
+            case TOGGLE_CLIP_OVERDUB:
                 this.model.getTransport ().toggleLauncherOverdub ();
+                break;
+            case TOGGLE_REC_ARM:
+                final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+                if (selectedTrack != null)
+                    selectedTrack.toggleRecArm ();
                 break;
             default:
                 // Intentionally empty

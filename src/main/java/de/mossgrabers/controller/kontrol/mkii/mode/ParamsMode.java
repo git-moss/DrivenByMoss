@@ -60,7 +60,7 @@ public class ParamsMode extends ParameterMode<KontrolMkIIControlSurface, Kontrol
             final String info = parameter.doesExist () ? parameter.getDisplayedValue (8) : " ";
             this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, info);
             this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, info);
-            final String name = parameter.doesExist () ? this.cursorDevice.getName () + ": " + selectedPage + ": " + parameter.getName () : "None";
+            final String name = parameter.doesExist () ? this.cursorDevice.getName () + "\n" + selectedPage + "\n" + parameter.getName () : "None";
             this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_NAME, 0, i, name);
 
             final int j = 2 * i;

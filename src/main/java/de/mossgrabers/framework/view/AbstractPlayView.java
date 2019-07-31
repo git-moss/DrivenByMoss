@@ -69,10 +69,8 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
             this.defaultVelocity[i] = i;
 
         final ITrackBank tb = model.getTrackBank ();
-        // Light notes sent from the sequencer
-        for (int i = 0; i < tb.getPageSize (); i++)
-            tb.getItem (i).addNoteObserver (this.keyManager::call);
         tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
+        tb.addNoteObserver (this.keyManager::call);
     }
 
 

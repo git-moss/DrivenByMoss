@@ -11,6 +11,7 @@ import de.mossgrabers.controller.kontrol.mkii.controller.KontrolMkIIControlSurfa
 import de.mossgrabers.controller.kontrol.mkii.controller.SlowValueChanger;
 import de.mossgrabers.controller.kontrol.mkii.mode.MixerMode;
 import de.mossgrabers.controller.kontrol.mkii.mode.ParamsMode;
+import de.mossgrabers.controller.kontrol.mkii.mode.SendMode;
 import de.mossgrabers.controller.kontrol.mkii.view.ControlView;
 import de.mossgrabers.framework.command.ContinuousCommandID;
 import de.mossgrabers.framework.command.TriggerCommandID;
@@ -117,7 +118,6 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     {
         final ModelSetup ms = new ModelSetup ();
         ms.setHasFullFlatTrackList (true);
-        ms.setNumSends (0);
         ms.setNumFilterColumnEntries (0);
         ms.setNumResults (0);
         ms.setNumDeviceLayers (0);
@@ -158,6 +158,7 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         final ModeManager modeManager = surface.getModeManager ();
 
         modeManager.registerMode (Modes.VOLUME, new MixerMode (surface, this.model));
+        modeManager.registerMode (Modes.SEND, new SendMode (surface, this.model));
         modeManager.registerMode (Modes.DEVICE_PARAMS, new ParamsMode (surface, this.model));
     }
 
@@ -172,7 +173,7 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         this.addTriggerCommand (TriggerCommandID.RECORD, KontrolMkIIControlSurface.KONTROL_RECORD, new KontrolRecordCommand (true, this.model, surface));
         this.addTriggerCommand (TriggerCommandID.REC_ARM, KontrolMkIIControlSurface.KONTROL_COUNT_IN, new KontrolRecordCommand (false, this.model, surface));
         this.addTriggerCommand (TriggerCommandID.STOP, KontrolMkIIControlSurface.KONTROL_STOP, new StopCommand<> (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.DELETE, KontrolMkIIControlSurface.KONTROL_CLEAR, new ModeMultiSelectCommand<> (this.model, surface, Modes.VOLUME, Modes.DEVICE_PARAMS));
+        this.addTriggerCommand (TriggerCommandID.DELETE, KontrolMkIIControlSurface.KONTROL_CLEAR, new ModeMultiSelectCommand<> (this.model, surface, Modes.VOLUME, Modes.SEND, Modes.DEVICE_PARAMS));
         this.addTriggerCommand (TriggerCommandID.LOOP, KontrolMkIIControlSurface.KONTROL_LOOP, new ToggleLoopCommand<> (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.METRONOME, KontrolMkIIControlSurface.KONTROL_METRO, new MetronomeCommand<> (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.TAP_TEMPO, KontrolMkIIControlSurface.KONTROL_TEMPO, new TapTempoCommand<> (this.model, surface));
@@ -233,11 +234,13 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
                 return;
             }
 
-            // Parameters mode
+            final Mode activeMode = this.getSurface ().getModeManager ().getActiveOrTempMode ();
+            if (activeMode == null)
+                return;
             if (value == 1)
-                this.model.getCursorDevice ().getParameterBank ().selectNextItem ();
+                activeMode.selectNextItem ();
             else
-                this.model.getCursorDevice ().getParameterBank ().selectPreviousItem ();
+                activeMode.selectPreviousItem ();
         });
 
         this.addContinuousCommand (ContinuousCommandID.NAVIGATE_CLIPS, KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, value -> {
@@ -256,11 +259,13 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
                 return;
             }
 
-            // Parameters mode
+            final Mode activeMode = this.getSurface ().getModeManager ().getActiveOrTempMode ();
+            if (activeMode == null)
+                return;
             if (value == 1)
-                this.model.getCursorDevice ().selectNext ();
+                activeMode.selectNextItemPage ();
             else
-                this.model.getCursorDevice ().selectPrevious ();
+                activeMode.selectPreviousItemPage ();
         });
 
         this.addContinuousCommand (ContinuousCommandID.NAVIGATE_SCENES, KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, value -> {
@@ -367,16 +372,22 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
      * Get the name of an Komplete Kontrol instance on the current track, or an empty string
      * otherwise. A track contains a Komplete Kontrol instance if: There is an instance of a plugin
      * whose name starts with Komplete Kontrol and the first parameter label exposed by the plugin
-     * is NIKBxx, where xx is a number between 00 and 99 If the conditions are satisfied.
+     * is NIKBxx, where xx is a number between 00 and 99 If the conditions are satisfied. First
+     * checks the selected device, if that is no KK device, the first instrument device is checked.
      *
      * @return The instance name, which is the actual label of the first parameter (e.g. NIKB01). An
      *         empty string if none is present
      */
     private String getKompleteInstance ()
     {
-        final ICursorDevice instrumentDevice = this.model.getInstrumentDevice ();
-        if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
-            return instrumentDevice.getID ();
+        ICursorDevice device = this.model.getCursorDevice ();
+        if (device.doesExist () && device.getName ().startsWith ("Komplete Kontrol"))
+            return device.getID ();
+
+        device = this.model.getInstrumentDevice ();
+        if (device.doesExist () && device.getName ().startsWith ("Komplete Kontrol"))
+            return device.getID ();
+
         return "";
     }
 
