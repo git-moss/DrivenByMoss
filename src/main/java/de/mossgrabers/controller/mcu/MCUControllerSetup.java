@@ -746,6 +746,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isPan = Modes.PAN.equals (mode);
         final boolean isTrack = Modes.TRACK.equals (mode);
+        final boolean isVolume = Modes.VOLUME.equals (mode);
         final boolean isDevice = Modes.DEVICE_PARAMS.equals (mode);
 
         tb.setIndication (!isEffect);
@@ -758,7 +759,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         {
             final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrack;
             final ITrack track = tb.getItem (i);
-            track.setVolumeIndication (!isEffect && (isTrack || hasTrackSel));
+            track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
             track.setPanIndication (!isEffect && (isPan || hasTrackSel));
 
             final ISendBank sendBank = track.getSendBank ();

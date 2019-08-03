@@ -39,7 +39,9 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -160,6 +162,15 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         modeManager.registerMode (Modes.VOLUME, new MixerMode (surface, this.model));
         modeManager.registerMode (Modes.SEND, new SendMode (surface, this.model));
         modeManager.registerMode (Modes.DEVICE_PARAMS, new ParamsMode (surface, this.model));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createObservers ()
+    {
+        final KontrolMkIIControlSurface surface = this.getSurface ();
+        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
     }
 
 
@@ -323,7 +334,34 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
     @Override
     protected void updateIndication (final Modes mode)
     {
-        // Unused
+        if (this.currentMode != null && this.currentMode == mode)
+            return;
+
+        if (mode != null)
+            this.currentMode = mode;
+
+        final ITrackBank tb = this.model.getTrackBank ();
+        final boolean isVolume = Modes.VOLUME == this.currentMode;
+        final boolean isSend = Modes.SEND == this.currentMode;
+        final boolean isDevice = Modes.isDeviceMode (this.currentMode) || Modes.isLayerMode (this.currentMode);
+
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final ITrack selectedTrack = tb.getSelectedItem ();
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+        for (int i = 0; i < tb.getPageSize (); i++)
+        {
+            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i;
+
+            final ITrack track = tb.getItem (i);
+            track.setVolumeIndication (isVolume);
+            track.setPanIndication (isVolume);
+
+            final ISendBank sendBank = track.getSendBank ();
+            for (int j = 0; j < sendBank.getPageSize (); j++)
+                sendBank.getItem (j).setIndication (isSend && hasTrackSel);
+
+            parameterBank.getItem (i).setIndication (isDevice);
+        }
     }
 
 

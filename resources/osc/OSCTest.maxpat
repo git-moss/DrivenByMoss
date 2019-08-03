@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 0,
-			"revision" : 3,
+			"revision" : 6,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ -3806.0, 73.0, 1468.0, 754.0 ],
+		"rect" : [ -3797.0, -39.0, 1472.0, 759.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -3619,8 +3619,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 423.5, 670.0, 147.0, 22.0 ],
-					"text" : "/track/2/volume/indicate 0",
+					"patching_rect" : [ 423.5, 670.0, 145.0, 22.0 ],
+					"text" : "/track/1/volume/indicate 0",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
 
@@ -3643,8 +3643,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 423.5, 652.0, 147.0, 22.0 ],
-					"text" : "/track/2/volume/indicate 1",
+					"patching_rect" : [ 423.5, 652.0, 145.0, 22.0 ],
+					"text" : "/track/1/volume/indicate 1",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
 
@@ -5736,7 +5736,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 423.5, 124.333336000000003, 115.0, 22.0 ],
+					"patching_rect" : [ 423.5, 129.666671999999977, 113.0, 22.0 ],
 					"text" : "/track/1/volume 127",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -5760,8 +5760,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 423.5, 98.333336000000003, 119.0, 22.0 ],
-					"text" : "/track/1/volume 10.5",
+					"patching_rect" : [ 423.5, 98.333336000000003, 107.0, 22.0 ],
+					"text" : "/track/1/volume 10",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
 

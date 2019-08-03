@@ -43,7 +43,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     protected C                   configuration;
     protected ColorManager        colorManager;
     protected IValueChanger       valueChanger;
-    protected Modes               currentMode = Modes.VOLUME;
+    protected Modes               currentMode = null;
 
 
     /**
