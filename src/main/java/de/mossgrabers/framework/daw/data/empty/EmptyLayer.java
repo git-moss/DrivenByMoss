@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.data.ILayer;
 
+
 /**
  * Default data for an empty layer.
  *

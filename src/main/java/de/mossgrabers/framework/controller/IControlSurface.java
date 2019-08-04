@@ -100,7 +100,7 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Assigns a command to a midi CC. When the midi CC is received the command is executed.
-     * 
+     *
      * @param channel The midi channel to assign to (0-15)
      * @param cc The midi CC
      * @param commandID The command ID
@@ -119,7 +119,7 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Get the ID of an assigned command.
-     * 
+     *
      * @param channel The midi channel to which it was assign to (0-15)
      * @param cc The midi CC
      * @return The command ID or null if none is assigned to the given midi CC
@@ -140,7 +140,7 @@ public interface IControlSurface<C extends Configuration>
     /**
      * Assigns a continuous command to a midi CC. When the midi CC is received the command is
      * executed.
-     * 
+     *
      * @param channel The midi channel to assign to (0-15)
      * @param cc The midi CC
      * @param commandID The command ID
@@ -159,7 +159,7 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Get the ID of an assigned continuous command.
-     * 
+     *
      * @param channel The midi channel to which it was assign to (0-15)
      * @param cc The midi CC
      * @return The command ID or null if none is assigned to the given midi CC
@@ -436,7 +436,7 @@ public interface IControlSurface<C extends Configuration>
      * Update the lighting of a trigger (if the trigger has light). This method caches the state of
      * the trigger and sends only updates to the controller if the state has changed, in contrast to
      * setTrigger.
-     * 
+     *
      * @param channel The midi channel to use
      * @param cc The trigger
      * @param value The color / brightness depending on the controller
@@ -459,7 +459,7 @@ public interface IControlSurface<C extends Configuration>
      * Update the lighting of a trigger (if the trigger has light). This method caches the state of
      * the trigger and sends only updates to the controller if the state has changed, in contrast to
      * setTrigger.
-     * 
+     *
      * @param channel The midi channel to use
      * @param cc The trigger
      * @param colorID A registered color ID of the color / brightness depending on the controller
@@ -489,7 +489,7 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Update the lighting of a trigger (if the trigger has light).
-     * 
+     *
      * @param channel The midi channel to use
      * @param cc The trigger
      * @param value The color / brightness depending on the controller
@@ -499,7 +499,7 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Update the lighting of a trigger (if the trigger has light).
-     * 
+     *
      * @param channel The midi channel to use
      * @param cc The trigger
      * @param colorID A registered color ID of the color / brightness depending on the controller
@@ -593,7 +593,7 @@ public interface IControlSurface<C extends Configuration>
      * Update the position of a continuous (if the knob/fader e.g. has motors). This method caches
      * the state of the continuous and sends only updates to the controller if the state has
      * changed, in contrast to setContinuous.
-     * 
+     *
      * @param channel The midi channel to use
      * @param cc The trigger
      * @param value The position depending on the controller
@@ -613,7 +613,7 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Update the position of a continuous (if the knob/fader e.g. has motors).
-     * 
+     *
      * @param channel The midi channel to use
      * @param cc The continuous
      * @param value The position depending on the controller

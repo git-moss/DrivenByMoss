@@ -1500,7 +1500,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
     /**
      * Handle a color palette message.
-     * 
+     *
      * @param data The message data
      */
     private void handleColorPaletteMessage (final int [] data)

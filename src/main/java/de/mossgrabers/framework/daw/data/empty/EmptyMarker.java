@@ -37,7 +37,7 @@ public class EmptyMarker extends EmptyItem implements IMarker
 
     /** {@inheritDoc} */
     @Override
-    public void launch (boolean quantized)
+    public void launch (final boolean quantized)
     {
         // Intentionally empty
     }

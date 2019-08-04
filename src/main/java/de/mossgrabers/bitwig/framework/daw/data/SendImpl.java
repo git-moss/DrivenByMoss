@@ -23,7 +23,7 @@ public class SendImpl extends ParameterImpl implements ISend
 
     /**
      * Constructor.
-     * 
+     *
      * @param sendBank The bank in which this send is located, for getting the position
      * @param valueChanger The value changer
      * @param send The send

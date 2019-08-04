@@ -20,7 +20,7 @@ public class EmptyParameter extends EmptyItem implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public void inc (double increment)
+    public void inc (final double increment)
     {
         // Intentionally empty
     }
@@ -36,7 +36,7 @@ public class EmptyParameter extends EmptyItem implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public String getDisplayedValue (int limit)
+    public String getDisplayedValue (final int limit)
     {
         return "";
     }
@@ -52,7 +52,7 @@ public class EmptyParameter extends EmptyItem implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public void setValue (int value)
+    public void setValue (final int value)
     {
         // Intentionally empty
     }
@@ -60,7 +60,7 @@ public class EmptyParameter extends EmptyItem implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public void changeValue (int value)
+    public void changeValue (final int value)
     {
         // Intentionally empty
     }
@@ -76,7 +76,7 @@ public class EmptyParameter extends EmptyItem implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public void touchValue (boolean isBeingTouched)
+    public void touchValue (final boolean isBeingTouched)
     {
         // Intentionally empty
     }
@@ -92,7 +92,7 @@ public class EmptyParameter extends EmptyItem implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public void setIndication (boolean enable)
+    public void setIndication (final boolean enable)
     {
         // Intentionally empty
     }
