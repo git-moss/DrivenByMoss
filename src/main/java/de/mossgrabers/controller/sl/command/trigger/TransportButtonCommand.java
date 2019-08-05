@@ -40,9 +40,6 @@ public class TransportButtonCommand extends AbstractTriggerCommand<SLControlSurf
         if (event == ButtonEvent.LONG)
             return;
 
-        if (!this.model.getHost ().hasClips ())
-            return;
-
         // Toggle transport
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActiveOrTempMode (Modes.VIEW_SELECT) || event == ButtonEvent.UP)

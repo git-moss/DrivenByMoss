@@ -9,7 +9,7 @@ package de.mossgrabers.framework.daw.midi;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IMidiInput extends INoteInput
+public interface IMidiInput
 {
     /**
      * Registers a callback for receiving short (normal) MIDI messages on this MIDI input port.
@@ -38,6 +38,14 @@ public interface IMidiInput extends INoteInput
      * @return The note input
      */
     INoteInput createNoteInput (final String name, final String... filters);
+
+
+    /**
+     * Get the default note input.
+     *
+     * @return The input or null if none exists
+     */
+    INoteInput getDefaultNoteInput ();
 
 
     /**

@@ -179,13 +179,10 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
         viewManager.registerView (Views.BROWSER, new BrowserView (surface, this.model));
 
-        if (this.host.hasClips ())
-        {
-            viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
-            viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
-            viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
-            viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
-        }
+        viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
+        viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
+        viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
+        viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
     }
 
 

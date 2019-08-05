@@ -43,8 +43,6 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
     @Override
     public boolean usesButton (final int buttonID)
     {
-        if (buttonID == PushControlSurface.PUSH_BUTTON_REPEAT)
-            return this.model.getHost ().hasRepeat ();
         return !this.surface.getConfiguration ().isPush2 () || buttonID != PushControlSurface.PUSH_BUTTON_USER_MODE;
     }
 

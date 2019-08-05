@@ -58,9 +58,6 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     {
         switch (buttonID)
         {
-            case PushControlSurface.PUSH_BUTTON_REPEAT:
-                return this.model.getHost ().hasRepeat ();
-
             case PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN:
             case PushControlSurface.PUSH_BUTTON_OCTAVE_UP:
                 return false;

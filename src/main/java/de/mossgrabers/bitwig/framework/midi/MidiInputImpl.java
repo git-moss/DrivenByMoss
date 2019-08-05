@@ -11,7 +11,6 @@ import de.mossgrabers.framework.daw.midi.MidiSysExCallback;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.MidiIn;
-import com.bitwig.extension.controller.api.NoteInput;
 
 
 /**
@@ -21,8 +20,8 @@ import com.bitwig.extension.controller.api.NoteInput;
  */
 class MidiInputImpl implements IMidiInput
 {
-    private MidiIn    port;
-    private NoteInput defaultNoteInput;
+    private MidiIn        port;
+    private NoteInputImpl defaultNoteInput;
 
 
     /**
@@ -42,10 +41,7 @@ class MidiInputImpl implements IMidiInput
         this.port = host.getMidiInPort (portNumber);
 
         if (name != null)
-        {
-            this.defaultNoteInput = this.port.createNoteInput (name, filters);
-            this.defaultNoteInput.setShouldConsumeEvents (false);
-        }
+            this.defaultNoteInput = new NoteInputImpl (this.port.createNoteInput (name, filters));
     }
 
 
@@ -75,27 +71,17 @@ class MidiInputImpl implements IMidiInput
 
     /** {@inheritDoc} */
     @Override
-    public void setKeyTranslationTable (final Integer [] table)
-    {
-        if (this.defaultNoteInput != null)
-            this.defaultNoteInput.setKeyTranslationTable (table);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setVelocityTranslationTable (final Integer [] table)
-    {
-        if (this.defaultNoteInput != null)
-            this.defaultNoteInput.setVelocityTranslationTable (table);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void sendRawMidiEvent (final int status, final int data1, final int data2)
     {
         if (this.defaultNoteInput != null)
             this.defaultNoteInput.sendRawMidiEvent (status, data1, data2);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public INoteInput getDefaultNoteInput ()
+    {
+        return this.defaultNoteInput;
     }
 }

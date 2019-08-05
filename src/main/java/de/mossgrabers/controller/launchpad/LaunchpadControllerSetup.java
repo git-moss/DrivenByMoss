@@ -47,7 +47,6 @@ import de.mossgrabers.controller.launchpad.view.VolumeView;
 import de.mossgrabers.framework.command.ContinuousCommandID;
 import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
-import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
@@ -233,10 +232,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.addTriggerCommand (TriggerCommandID.VOLUME, LaunchpadControlSurface.LAUNCHPAD_BUTTON_VOLUME, new VolumeCommand (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.PAN_SEND, LaunchpadControlSurface.LAUNCHPAD_BUTTON_PAN, new PanCommand (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.SENDS, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SENDS, new SendsCommand (this.model, surface));
-        if (this.host.hasClips ())
-            this.addTriggerCommand (TriggerCommandID.STOP_CLIP, LaunchpadControlSurface.LAUNCHPAD_BUTTON_STOP_CLIP, new StopClipCommand (this.model, surface));
-        else
-            this.addTriggerCommand (TriggerCommandID.STOP_CLIP, LaunchpadControlSurface.LAUNCHPAD_BUTTON_STOP_CLIP, NopCommand.INSTANCE);
+        this.addTriggerCommand (TriggerCommandID.STOP_CLIP, LaunchpadControlSurface.LAUNCHPAD_BUTTON_STOP_CLIP, new StopClipCommand (this.model, surface));
 
         this.addTriggerCommand (TriggerCommandID.ARROW_DOWN, surface.getDownTriggerId (), new LaunchpadCursorCommand (Direction.DOWN, this.model, surface));
         this.addTriggerCommand (TriggerCommandID.ARROW_UP, surface.getUpTriggerId (), new LaunchpadCursorCommand (Direction.UP, this.model, surface));

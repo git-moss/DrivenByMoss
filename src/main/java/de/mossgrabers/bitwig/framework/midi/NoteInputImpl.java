@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.midi;
 
 import de.mossgrabers.framework.daw.midi.INoteInput;
+import de.mossgrabers.framework.daw.midi.INoteRepeat;
 
 import com.bitwig.extension.controller.api.NoteInput;
 
@@ -16,7 +17,8 @@ import com.bitwig.extension.controller.api.NoteInput;
  */
 class NoteInputImpl implements INoteInput
 {
-    private final NoteInput noteInput;
+    private final NoteInput   noteInput;
+    private final INoteRepeat noteRepeat;
 
 
     /**
@@ -28,6 +30,8 @@ class NoteInputImpl implements INoteInput
     {
         this.noteInput = noteInput;
         noteInput.setShouldConsumeEvents (false);
+
+        this.noteRepeat = new NoteRepeatImpl ();
     }
 
 
@@ -44,5 +48,19 @@ class NoteInputImpl implements INoteInput
     public void setVelocityTranslationTable (final Integer [] table)
     {
         this.noteInput.setVelocityTranslationTable (table);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public INoteRepeat getNoteRepeat ()
+    {
+        return this.noteRepeat;
+    }
+
+
+    public void sendRawMidiEvent (final int status, final int data1, final int data2)
+    {
+        this.noteInput.sendRawMidiEvent (status, data1, data2);
     }
 }

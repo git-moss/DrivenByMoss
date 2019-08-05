@@ -43,7 +43,7 @@ public class LayoutCommand extends AbstractTriggerCommand<PushControlSurface, Pu
         if (viewManager.isActiveView (Views.PLAY))
             viewManager.setActiveView (Views.PIANO);
         else if (viewManager.isActiveView (Views.PIANO))
-            viewManager.setActiveView (this.model.getHost ().hasClips () ? Views.DRUM64 : Views.PLAY);
+            viewManager.setActiveView (Views.DRUM64);
         else if (viewManager.isActiveView (Views.DRUM64))
             viewManager.setActiveView (Views.PLAY);
         else if (viewManager.isActiveView (Views.SEQUENCER))

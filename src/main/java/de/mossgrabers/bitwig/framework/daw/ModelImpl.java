@@ -5,9 +5,8 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.MasterTrackImpl;
-import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.AbstractModel;
+import de.mossgrabers.framework.daw.DataSetup;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ISceneBank;
@@ -52,15 +51,14 @@ public class ModelImpl extends AbstractModel
     /**
      * Constructor.
      *
-     * @param controllerHost The host
-     * @param colorManager The color manager
-     * @param valueChanger The value changer
-     * @param scales The scales object
      * @param modelSetup The configuration parameters for the model
+     * @param dataSetup Some setup variables
+     * @param controllerHost The controller host
+     * @param scales The scales object
      */
-    public ModelImpl (final ControllerHost controllerHost, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
+    public ModelImpl (final ModelSetup modelSetup, final DataSetup dataSetup, final ControllerHost controllerHost, final Scales scales)
     {
-        super (new HostImpl (controllerHost), colorManager, valueChanger, scales, modelSetup);
+        super (modelSetup, dataSetup, scales);
 
         this.controllerHost = controllerHost;
 
@@ -73,13 +71,13 @@ public class ModelImpl extends AbstractModel
         this.arranger = new ArrangerImpl (bwArranger);
         final int numMarkers = modelSetup.getNumMarkers ();
         if (numMarkers > 0)
-            this.markerBank = new MarkerBankImpl (this.host, valueChanger, bwArranger.createCueMarkerBank (numMarkers), numMarkers);
+            this.markerBank = new MarkerBankImpl (this.host, this.valueChanger, bwArranger.createCueMarkerBank (numMarkers), numMarkers);
 
         this.mixer = new MixerImpl (controllerHost.createMixer ());
-        this.transport = new TransportImpl (controllerHost, valueChanger);
-        this.groove = new GrooveImpl (controllerHost, valueChanger);
+        this.transport = new TransportImpl (controllerHost, this.valueChanger);
+        this.groove = new GrooveImpl (controllerHost, this.valueChanger);
         final MasterTrack master = controllerHost.createMasterTrack (0);
-        this.masterTrack = new MasterTrackImpl (this.host, valueChanger, master);
+        this.masterTrack = new MasterTrackImpl (this.host, this.valueChanger, master);
 
         this.cursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", 0, 0, true);
         this.cursorTrack.isPinned ().markInterested ();
@@ -100,9 +98,9 @@ public class ModelImpl extends AbstractModel
             tb = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
 
         this.rootTrackGroup = proj.getRootTrackGroup ();
-        this.trackBank = new TrackBankImpl (this.host, valueChanger, tb, this.cursorTrack, this.rootTrackGroup, numTracks, numScenes, numSends);
+        this.trackBank = new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, this.rootTrackGroup, numTracks, numScenes, numSends);
         final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numTracks, numScenes);
-        this.effectTrackBank = new EffectTrackBankImpl (this.host, valueChanger, this.cursorTrack, effectTrackBank, numTracks, numScenes, this.trackBank);
+        this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, this.cursorTrack, effectTrackBank, numTracks, numScenes, this.trackBank);
 
         this.muteSoloTrackBank = controllerHost.createTrackBank (ALL_TRACKS, 0, 0, true);
         for (int i = 0; i < ALL_TRACKS; i++)
@@ -112,13 +110,13 @@ public class ModelImpl extends AbstractModel
         final int numDeviceLayers = this.modelSetup.getNumDeviceLayers ();
         final int numDrumPadLayers = this.modelSetup.getNumDrumPadLayers ();
         final int numDevicesInBank = this.modelSetup.getNumDevicesInBank ();
-        this.instrumentDevice = new CursorDeviceImpl (this.host, valueChanger, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.instrumentDevice = new CursorDeviceImpl (this.host, this.valueChanger, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
         PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
-        this.cursorDevice = new CursorDeviceImpl (this.host, valueChanger, cd, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.cursorDevice = new CursorDeviceImpl (this.host, this.valueChanger, cd, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
         if (numDrumPadLayers > 0)
         {
             cd = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
-            this.drumDevice64 = new CursorDeviceImpl (this.host, valueChanger, cd, 0, 0, -1, 64, 64);
+            this.drumDevice64 = new CursorDeviceImpl (this.host, this.valueChanger, cd, 0, 0, -1, 64, 64);
         }
         final int numResults = this.modelSetup.getNumResults ();
         if (numResults > 0)

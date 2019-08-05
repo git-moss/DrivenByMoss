@@ -41,11 +41,8 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
 
         ///////////////////////////
         // Session
-        if (this.host.hasClips ())
-        {
-            this.activateSelectClipOnLaunchSetting (globalSettings);
-            this.activateDrawRecordStripeSetting (globalSettings);
-            this.activateActionForRecArmedPad (globalSettings);
-        }
+        this.activateSelectClipOnLaunchSetting (globalSettings);
+        this.activateDrawRecordStripeSetting (globalSettings);
+        this.activateActionForRecArmedPad (globalSettings);
     }
 }

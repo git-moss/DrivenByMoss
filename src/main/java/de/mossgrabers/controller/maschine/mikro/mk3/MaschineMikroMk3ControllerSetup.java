@@ -314,12 +314,9 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_LOCK, t.isWritingArrangerAutomation () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF);
 
         int repeatState = MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF;
-        if (this.host.hasRepeat ())
-        {
-            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-            if (selectedTrack != null)
-                repeatState = selectedTrack.isNoteRepeat () ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF;
-        }
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (selectedTrack != null)
+            repeatState = this.getSurface ().getInput ().getDefaultNoteInput ().getNoteRepeat ().isActive (selectedTrack) ? MaschineMikroMk3ControlSurface.MIKRO_3_STATE_ON : MaschineMikroMk3ControlSurface.MIKRO_3_STATE_OFF;
         surface.updateTrigger (MaschineMikroMk3ControlSurface.MIKRO_3_NOTE_REPEAT, repeatState);
 
         final Modes modeID = this.getSurface ().getModeManager ().getActiveOrTempModeId ();

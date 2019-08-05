@@ -37,7 +37,7 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN || !this.model.getHost ().hasClips ())
+        if (event != ButtonEvent.DOWN)
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();

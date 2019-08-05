@@ -146,39 +146,6 @@ public class EmptyTrack extends EmptyChannel implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void toggleNoteRepeat ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setNoteRepeatLength (final double length)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double getNoteRepeatLength ()
-    {
-        return 1.0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isNoteRepeat ()
-    {
-        // Intentionally empty
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void changeCrossfadeModeAsNumber (final int control)
     {
         // Intentionally empty

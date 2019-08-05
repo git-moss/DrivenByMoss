@@ -4,11 +4,13 @@
 
 package de.mossgrabers.bitwig.framework;
 
+import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.daw.ModelImpl;
 import de.mossgrabers.bitwig.framework.midi.MidiDeviceImpl;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.DataSetup;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
@@ -24,17 +26,17 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public class BitwigSetupFactory implements ISetupFactory
 {
-    private ControllerHost host;
+    private ControllerHost controllerHost;
 
 
     /**
      * Constructor.
      *
-     * @param host The DAW host
+     * @param controllerHost The DAW host
      */
-    public BitwigSetupFactory (final ControllerHost host)
+    public BitwigSetupFactory (final ControllerHost controllerHost)
     {
-        this.host = host;
+        this.controllerHost = controllerHost;
     }
 
 
@@ -42,7 +44,8 @@ public class BitwigSetupFactory implements ISetupFactory
     @Override
     public IModel createModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
     {
-        return new ModelImpl (this.host, colorManager, valueChanger, scales, modelSetup);
+        final DataSetup dataSetup = new DataSetup (new HostImpl (this.controllerHost), valueChanger, colorManager);
+        return new ModelImpl (modelSetup, dataSetup, this.controllerHost, scales);
     }
 
 
@@ -50,6 +53,6 @@ public class BitwigSetupFactory implements ISetupFactory
     @Override
     public IMidiAccess createMidiAccess ()
     {
-        return new MidiDeviceImpl (this.host);
+        return new MidiDeviceImpl (this.controllerHost);
     }
 }

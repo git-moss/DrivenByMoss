@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.ContinuousInfo;
@@ -283,7 +284,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
             t[i] = Integer.valueOf (table[i]);
-        this.input.setKeyTranslationTable (t);
+        final INoteInput defaultNoteInput = this.input.getDefaultNoteInput ();
+        if (defaultNoteInput != null)
+            defaultNoteInput.setKeyTranslationTable (t);
     }
 
 
@@ -304,7 +307,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         final Integer [] t = new Integer [table.length];
         for (int i = 0; i < table.length; i++)
             t[i] = Integer.valueOf (table[i]);
-        this.input.setVelocityTranslationTable (t);
+        final INoteInput defaultNoteInput = this.input.getDefaultNoteInput ();
+        if (defaultNoteInput != null)
+            defaultNoteInput.setVelocityTranslationTable (t);
     }
 
 

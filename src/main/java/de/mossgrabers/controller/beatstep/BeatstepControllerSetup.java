@@ -164,12 +164,9 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         viewManager.registerView (Views.DEVICE, new DeviceView (surface, this.model));
         viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
 
-        if (this.host.hasClips ())
-        {
-            viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
-            viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
-            viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
-        }
+        viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
+        viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
+        viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
 
         viewManager.registerView (Views.BROWSER, new BrowserView (surface, this.model));
         viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));

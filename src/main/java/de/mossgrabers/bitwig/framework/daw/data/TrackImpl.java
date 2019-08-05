@@ -229,40 +229,6 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void toggleNoteRepeat ()
-    {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/20
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isNoteRepeat ()
-    {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/20
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setNoteRepeatLength (final double length)
-    {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/20
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double getNoteRepeatLength ()
-    {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/20
-        return 1.0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean canHoldNotes ()
     {
         return this.track.canHoldNoteData ().get ();

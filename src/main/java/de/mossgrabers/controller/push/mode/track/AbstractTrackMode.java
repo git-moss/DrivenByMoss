@@ -371,7 +371,7 @@ public abstract class AbstractTrackMode extends BaseMode
 
     protected void updateMenuItems (final int selectedMenu)
     {
-        if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP) && this.model.getHost ().hasClips ())
+        if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
         {
             this.updateStopMenu ();
             return;

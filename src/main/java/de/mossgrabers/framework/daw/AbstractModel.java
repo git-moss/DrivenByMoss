@@ -52,19 +52,17 @@ public abstract class AbstractModel implements IModel
     /**
      * Constructor.
      *
-     * @param host The DAW host
-     * @param colorManager The color manager
-     * @param valueChanger The value changer
-     * @param scales The scales object
      * @param modelSetup The configuration parameters for the model
+     * @param dataSetup Some setup variables
+     * @param scales The scales object
      */
-    public AbstractModel (final IHost host, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
+    public AbstractModel (final ModelSetup modelSetup, final DataSetup dataSetup, final Scales scales)
     {
-        this.host = host;
-        this.colorManager = colorManager;
-        this.valueChanger = valueChanger;
-        this.scales = scales;
         this.modelSetup = modelSetup;
+        this.host = dataSetup.getHost ();
+        this.colorManager = dataSetup.getColorManager ();
+        this.valueChanger = dataSetup.getValueChanger ();
+        this.scales = scales;
     }
 
 

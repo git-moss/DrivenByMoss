@@ -110,20 +110,12 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         padGrid.light (36 + 27, APCminiColors.APC_COLOR_GREEN);
 
         // Draw the view selection: Session, Note, Drum, Sequencer
-        if (this.model.getHost ().hasClips ())
-        {
-            final Views previousViewId = this.surface.getViewManager ().getPreviousViewId ();
-            padGrid.light (36 + 56, Views.SESSION == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 57, Views.PLAY == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 58, Views.DRUM == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 59, Views.SEQUENCER == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-            padGrid.light (36 + 60, Views.RAINDROPS == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
-        }
-        else
-        {
-            for (int i = 56; i <= 60; i++)
-                padGrid.light (36 + i, APCminiColors.APC_COLOR_BLACK);
-        }
+        final Views previousViewId = this.surface.getViewManager ().getPreviousViewId ();
+        padGrid.light (36 + 56, Views.SESSION == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+        padGrid.light (36 + 57, Views.PLAY == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+        padGrid.light (36 + 58, Views.DRUM == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+        padGrid.light (36 + 59, Views.SEQUENCER == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
+        padGrid.light (36 + 60, Views.RAINDROPS == previousViewId ? APCminiColors.APC_COLOR_GREEN : APCminiColors.APC_COLOR_YELLOW);
 
         // Draw transport
         final ITransport transport = this.model.getTransport ();
@@ -437,8 +429,6 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
     private void switchToView (final Views viewID)
     {
-        if (!this.model.getHost ().hasClips ())
-            return;
         final ViewManager viewManager = this.surface.getViewManager ();
         viewManager.setPreviousView (viewID);
         this.surface.getDisplay ().notify (viewManager.getView (viewID).getName ());

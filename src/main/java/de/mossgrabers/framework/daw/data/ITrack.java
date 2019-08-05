@@ -89,36 +89,6 @@ public interface ITrack extends IChannel
 
 
     /**
-     * Toggle the note repeat state of the track (only applies to midi/note tracks).
-     */
-    void toggleNoteRepeat ();
-
-
-    /**
-     * Set the note repeat length.
-     *
-     * @param length The length
-     */
-    void setNoteRepeatLength (double length);
-
-
-    /**
-     * Get the note repeat length.
-     *
-     * @return The length
-     */
-    double getNoteRepeatLength ();
-
-
-    /**
-     * True if note repeat is enabled.
-     *
-     * @return True if note repeat is enabled
-     */
-    boolean isNoteRepeat ();
-
-
-    /**
      * Returns true if the track can hold note data.
      *
      * @return True if the track can hold note data.

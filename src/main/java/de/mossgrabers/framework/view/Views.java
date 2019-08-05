@@ -143,20 +143,17 @@ public enum Views
             SEQUENCER_VIEWS.add (DRUM8);
         }
 
-        if (host.hasClips ())
-        {
-            NOTE_VIEWS.add (SEQUENCER);
-            NOTE_VIEWS.add (RAINDROPS);
-            NOTE_VIEW_NAMES.put (VIEW_NAME_SEQUENCER, SEQUENCER);
-            NOTE_VIEW_NAMES.put (VIEW_NAME_RAINDROPS, RAINDROPS);
+        NOTE_VIEWS.add (SEQUENCER);
+        NOTE_VIEWS.add (RAINDROPS);
+        NOTE_VIEW_NAMES.put (VIEW_NAME_SEQUENCER, SEQUENCER);
+        NOTE_VIEW_NAMES.put (VIEW_NAME_RAINDROPS, RAINDROPS);
 
-            SEQUENCER_VIEWS.add (SEQUENCER);
-            SEQUENCER_VIEWS.add (RAINDROPS);
-            SEQUENCER_VIEWS.add (POLY_SEQUENCER);
+        SEQUENCER_VIEWS.add (SEQUENCER);
+        SEQUENCER_VIEWS.add (RAINDROPS);
+        SEQUENCER_VIEWS.add (POLY_SEQUENCER);
 
-            SESSION_VIEWS.add (SESSION);
-            SESSION_VIEWS.add (SCENE_PLAY);
-        }
+        SESSION_VIEWS.add (SESSION);
+        SESSION_VIEWS.add (SCENE_PLAY);
     }
 
 

@@ -272,21 +272,17 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
         ///////////////////////////
         // Session
-        if (this.host.hasClips ())
-        {
-            this.activateSessionView (globalSettings);
-            this.activateLockFlipSessionSetting (globalSettings);
-            this.activateSelectClipOnLaunchSetting (globalSettings);
-            this.activateDrawRecordStripeSetting (globalSettings);
-            this.activateActionForRecArmedPad (globalSettings);
-        }
+        this.activateSessionView (globalSettings);
+        this.activateLockFlipSessionSetting (globalSettings);
+        this.activateSelectClipOnLaunchSetting (globalSettings);
+        this.activateDrawRecordStripeSetting (globalSettings);
+        this.activateActionForRecArmedPad (globalSettings);
 
         ///////////////////////////
         // Transport
 
         this.activateBehaviourOnStopSetting (globalSettings);
-        if (this.host.hasClips ())
-            this.activateFlipRecordSetting (globalSettings);
+        this.activateFlipRecordSetting (globalSettings);
 
         ///////////////////////////
         // Play and Sequence

@@ -193,13 +193,10 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
         this.addTriggerCommand (TriggerCommandID.QUANTIZE, KontrolMkIIControlSurface.KONTROL_QUANTIZE, new QuantizeCommand<> (this.model, surface));
         this.addTriggerCommand (TriggerCommandID.AUTOMATION, KontrolMkIIControlSurface.KONTROL_AUTOMATION, new WriteArrangerAutomationCommand<> (this.model, surface));
 
-        if (this.host.hasClips ())
-        {
-            this.addTriggerCommand (TriggerCommandID.CLIP, KontrolMkIIControlSurface.KONTROL_PLAY_SELECTED_CLIP, new StartClipOrSceneCommand (this.model, surface));
-            this.addTriggerCommand (TriggerCommandID.STOP_CLIP, KontrolMkIIControlSurface.KONTROL_STOP_CLIP, new StopClipCommand<> (this.model, surface));
-            // Not implemented in NIHIA
-            this.addTriggerCommand (TriggerCommandID.SCENE1, KontrolMkIIControlSurface.KONTROL_PLAY_SCENE, new StartSceneCommand<> (this.model, surface));
-        }
+        this.addTriggerCommand (TriggerCommandID.CLIP, KontrolMkIIControlSurface.KONTROL_PLAY_SELECTED_CLIP, new StartClipOrSceneCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.STOP_CLIP, KontrolMkIIControlSurface.KONTROL_STOP_CLIP, new StopClipCommand<> (this.model, surface));
+        // Not implemented in NIHIA
+        this.addTriggerCommand (TriggerCommandID.SCENE1, KontrolMkIIControlSurface.KONTROL_PLAY_SCENE, new StartSceneCommand<> (this.model, surface));
 
         // KONTROL_RECORD_SESSION - Not implemented in NIHIA
 
@@ -437,8 +434,6 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
      */
     private void navigateScenes (final int value)
     {
-        if (!this.host.hasClips ())
-            return;
         final ISceneBank sceneBank = this.model.getSceneBank ();
         if (sceneBank == null)
             return;
@@ -456,8 +451,6 @@ public class KontrolMkIIControllerSetup extends AbstractControllerSetup<KontrolM
      */
     private void navigateClips (final int value)
     {
-        if (!this.host.hasClips ())
-            return;
         final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)
             return;

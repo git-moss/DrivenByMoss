@@ -40,4 +40,12 @@ public interface INoteInput
      *            the range [0..127] or -1 in case of filtering.
      */
     void setVelocityTranslationTable (Integer [] table);
+
+
+    /**
+     * Get the interface to the note repeat control object.
+     *
+     * @return The note repeat object
+     */
+    INoteRepeat getNoteRepeat ();
 }

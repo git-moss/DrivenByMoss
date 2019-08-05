@@ -32,14 +32,6 @@ public interface IHost
 
 
     /**
-     * Returns true if the DAW supports a clip based view.
-     *
-     * @return True if the DAW supports a clip based view
-     */
-    boolean hasClips ();
-
-
-    /**
      * Returns true if the DAW supports track/device pinning.
      *
      * @return True if the DAW supports track/device pinning
@@ -61,14 +53,6 @@ public interface IHost
      * @return True if the DAW supports Drum Device options
      */
     boolean hasDrumDevice ();
-
-
-    /**
-     * Returns true if the DAW supports note repeat.
-     *
-     * @return True if the DAW supports note repeat
-     */
-    boolean hasRepeat ();
 
 
     /**
