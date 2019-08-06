@@ -146,7 +146,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public LaunchpadControlSurface (final IHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isPro)
     {
-        super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, isPro ? LAUNCHPAD_PRO_SYSEX_HEADER : LAUNCHPAD_MKII_SYSEX_HEADER));
+        super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, isPro ? LAUNCHPAD_PRO_SYSEX_HEADER : LAUNCHPAD_MKII_SYSEX_HEADER, isPro));
 
         this.isPro = isPro;
 

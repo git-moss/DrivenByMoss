@@ -96,7 +96,8 @@ public class LaunchpadPadGrid extends PadGridImpl
             INVERSE_TRANSLATE_MATRIX.put (Integer.valueOf (TRANSLATE_MATRIX[i]), Integer.valueOf (36 + i));
     }
 
-    private final String sysexHeader;
+    private final String  sysexHeader;
+    private final boolean isPro;
 
 
     /**
@@ -105,11 +106,14 @@ public class LaunchpadPadGrid extends PadGridImpl
      * @param colorManager The color manager for accessing specific colors to use
      * @param output The midi output which can address the pad states
      * @param sysexHeader The sysex header
+     * @param isPro Is Pro or MkII?
      */
-    public LaunchpadPadGrid (final ColorManager colorManager, final IMidiOutput output, final String sysexHeader)
+    public LaunchpadPadGrid (final ColorManager colorManager, final IMidiOutput output, final String sysexHeader, final boolean isPro)
     {
         super (colorManager, output);
+
         this.sysexHeader = sysexHeader + "23 ";
+        this.isPro = isPro;
     }
 
 
@@ -117,7 +121,17 @@ public class LaunchpadPadGrid extends PadGridImpl
     @Override
     protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
     {
-        this.output.sendSysex (this.sysexHeader + StringUtils.toHexStr (note) + " " + StringUtils.toHexStr (blinkColor) + " F7");
+        if (this.isPro)
+        {
+            this.output.sendSysex (this.sysexHeader + StringUtils.toHexStr (note) + " " + StringUtils.toHexStr (blinkColor) + " F7");
+            return;
+        }
+
+        // Start blinking on channel 2, stop it on channel 1
+        if (blinkColor == 0)
+            this.output.sendNoteEx (1, note, blinkColor);
+        else
+            this.output.sendNoteEx (2, note, blinkColor);
     }
 
 

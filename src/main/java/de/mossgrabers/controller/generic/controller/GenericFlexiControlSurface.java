@@ -311,8 +311,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_ACTIVE:
             case TRACK_8_TOGGLE_ACTIVE:
                 return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
+            case TRACK_1_SET_ACTIVE:
+            case TRACK_2_SET_ACTIVE:
+            case TRACK_3_SET_ACTIVE:
+            case TRACK_4_SET_ACTIVE:
+            case TRACK_5_SET_ACTIVE:
+            case TRACK_6_SET_ACTIVE:
+            case TRACK_7_SET_ACTIVE:
+            case TRACK_8_SET_ACTIVE:
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_ACTIVE:
+            case TRACK_SELECTED_SET_ACTIVE:
                 final ITrack selectedTrack = this.model.getSelectedTrack ();
                 return selectedTrack != null && selectedTrack.isActivated () ? 127 : 0;
 
@@ -353,8 +363,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_MUTE:
             case TRACK_8_TOGGLE_MUTE:
                 return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).isMute () ? 127 : 0;
+            case TRACK_1_SET_MUTE:
+            case TRACK_2_SET_MUTE:
+            case TRACK_3_SET_MUTE:
+            case TRACK_4_SET_MUTE:
+            case TRACK_5_SET_MUTE:
+            case TRACK_6_SET_MUTE:
+            case TRACK_7_SET_MUTE:
+            case TRACK_8_SET_MUTE:
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MUTE.ordinal ()).isMute () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_MUTE:
+            case TRACK_SELECTED_SET_MUTE:
                 final ITrack track = this.model.getSelectedTrack ();
                 return track != null && track.isMute () ? 127 : 0;
 
@@ -367,8 +387,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_SOLO:
             case TRACK_8_TOGGLE_SOLO:
                 return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).isSolo () ? 127 : 0;
+            case TRACK_1_SET_SOLO:
+            case TRACK_2_SET_SOLO:
+            case TRACK_3_SET_SOLO:
+            case TRACK_4_SET_SOLO:
+            case TRACK_5_SET_SOLO:
+            case TRACK_6_SET_SOLO:
+            case TRACK_7_SET_SOLO:
+            case TRACK_8_SET_SOLO:
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SOLO.ordinal ()).isSolo () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_SOLO:
+            case TRACK_SELECTED_SET_SOLO:
                 final ITrack track2 = this.model.getSelectedTrack ();
                 return track2 != null && track2.isSolo () ? 127 : 0;
 
@@ -381,8 +411,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_ARM:
             case TRACK_8_TOGGLE_ARM:
                 return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).isRecArm () ? 127 : 0;
+            case TRACK_1_SET_ARM:
+            case TRACK_2_SET_ARM:
+            case TRACK_3_SET_ARM:
+            case TRACK_4_SET_ARM:
+            case TRACK_5_SET_ARM:
+            case TRACK_6_SET_ARM:
+            case TRACK_7_SET_ARM:
+            case TRACK_8_SET_ARM:
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ARM.ordinal ()).isRecArm () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_ARM:
+            case TRACK_SELECTED_SET_ARM:
                 final ITrack track3 = this.model.getSelectedTrack ();
                 return track3 != null && track3.isRecArm () ? 127 : 0;
 
@@ -395,8 +435,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_MONITOR:
             case TRACK_8_TOGGLE_MONITOR:
                 return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).isMonitor () ? 127 : 0;
+            case TRACK_1_SET_MONITOR:
+            case TRACK_2_SET_MONITOR:
+            case TRACK_3_SET_MONITOR:
+            case TRACK_4_SET_MONITOR:
+            case TRACK_5_SET_MONITOR:
+            case TRACK_6_SET_MONITOR:
+            case TRACK_7_SET_MONITOR:
+            case TRACK_8_SET_MONITOR:
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MONITOR.ordinal ()).isMonitor () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_MONITOR:
+            case TRACK_SELECTED_SET_MONITOR:
                 final ITrack track4 = this.model.getSelectedTrack ();
                 return track4 != null && track4.isMonitor () ? 127 : 0;
 
@@ -409,8 +459,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_7_TOGGLE_AUTO_MONITOR:
             case TRACK_8_TOGGLE_AUTO_MONITOR:
                 return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).isAutoMonitor () ? 127 : 0;
+            case TRACK_1_SET_AUTO_MONITOR:
+            case TRACK_2_SET_AUTO_MONITOR:
+            case TRACK_3_SET_AUTO_MONITOR:
+            case TRACK_4_SET_AUTO_MONITOR:
+            case TRACK_5_SET_AUTO_MONITOR:
+            case TRACK_6_SET_AUTO_MONITOR:
+            case TRACK_7_SET_AUTO_MONITOR:
+            case TRACK_8_SET_AUTO_MONITOR:
+                return this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_AUTO_MONITOR.ordinal ()).isAutoMonitor () ? 127 : 0;
 
             case TRACK_SELECTED_TOGGLE_AUTO_MONITOR:
+            case TRACK_SELECTED_SET_AUTO_MONITOR:
                 final ITrack track5 = this.model.getSelectedTrack ();
                 return track5 != null && track5.isAutoMonitor () ? 127 : 0;
 
@@ -511,12 +571,15 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 return this.model.getMasterTrack ().getPan ();
 
             case MASTER_TOGGLE_MUTE:
+            case MASTER_SET_MUTE:
                 return this.model.getMasterTrack ().isMute () ? 127 : 0;
 
             case MASTER_TOGGLE_SOLO:
+            case MASTER_SET_SOLO:
                 return this.model.getMasterTrack ().isSolo () ? 127 : 0;
 
             case MASTER_TOGGLE_ARM:
+            case MASTER_SET_ARM:
                 return this.model.getMasterTrack ().isRecArm () ? 127 : 0;
 
             case MASTER_CROSSFADER:
@@ -954,6 +1017,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                     this.getDisplay ().notify (track.getName ());
                 }
                 break;
+
             // Track 1-8: Toggle Active
             case TRACK_1_TOGGLE_ACTIVE:
             case TRACK_2_TOGGLE_ACTIVE:
@@ -966,6 +1030,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).toggleIsActivated ();
                 break;
+            // Track 1-8: Set Active
+            case TRACK_1_SET_ACTIVE:
+            case TRACK_2_SET_ACTIVE:
+            case TRACK_3_SET_ACTIVE:
+            case TRACK_4_SET_ACTIVE:
+            case TRACK_5_SET_ACTIVE:
+            case TRACK_6_SET_ACTIVE:
+            case TRACK_7_SET_ACTIVE:
+            case TRACK_8_SET_ACTIVE:
+                if (isButtonPressed)
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ACTIVE.ordinal ()).setIsActivated (value > 0);
+                break;
             case TRACK_SELECTED_TOGGLE_ACTIVE:
                 if (isButtonPressed)
                 {
@@ -974,6 +1050,15 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                         selectedTrack.toggleIsActivated ();
                 }
                 break;
+            case TRACK_SELECTED_SET_ACTIVE:
+                if (isButtonPressed)
+                {
+                    final ITrack selectedTrack = this.model.getSelectedTrack ();
+                    if (selectedTrack != null)
+                        selectedTrack.setIsActivated (value > 0);
+                }
+                break;
+
             // Track 1-8: Set Volume
             case TRACK_1_SET_VOLUME:
             case TRACK_2_SET_VOLUME:
@@ -989,6 +1074,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_SELECTED_SET_VOLUME_TRACK:
                 this.changeTrackVolume (knobMode, -1, value);
                 break;
+
             // Track 1-8: Set Panorama
             case TRACK_1_SET_PANORAMA:
             case TRACK_2_SET_PANORAMA:
@@ -1004,6 +1090,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case TRACK_SELECTED_SET_PANORAMA:
                 this.changeTrackPanorama (knobMode, -1, value);
                 break;
+
             // Track 1-8: Toggle Mute
             case TRACK_1_TOGGLE_MUTE:
             case TRACK_2_TOGGLE_MUTE:
@@ -1016,6 +1103,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).toggleMute ();
                 break;
+            // Track 1-8: Set Mute
+            case TRACK_1_SET_MUTE:
+            case TRACK_2_SET_MUTE:
+            case TRACK_3_SET_MUTE:
+            case TRACK_4_SET_MUTE:
+            case TRACK_5_SET_MUTE:
+            case TRACK_6_SET_MUTE:
+            case TRACK_7_SET_MUTE:
+            case TRACK_8_SET_MUTE:
+                if (isButtonPressed)
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MUTE.ordinal ()).setMute (value > 0);
+                break;
             // Track Selected: Toggle Mute
             case TRACK_SELECTED_TOGGLE_MUTE:
                 if (isButtonPressed)
@@ -1025,6 +1124,16 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                         selectedTrack.toggleMute ();
                 }
                 break;
+            // Track Selected: Set Mute
+            case TRACK_SELECTED_SET_MUTE:
+                if (isButtonPressed)
+                {
+                    final ITrack selectedTrack = this.model.getSelectedTrack ();
+                    if (selectedTrack != null)
+                        selectedTrack.setMute (value > 0);
+                }
+                break;
+
             // Track 1-8: Toggle Solo
             case TRACK_1_TOGGLE_SOLO:
             case TRACK_2_TOGGLE_SOLO:
@@ -1037,6 +1146,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).toggleSolo ();
                 break;
+            // Track 1-8: Set Solo
+            case TRACK_1_SET_SOLO:
+            case TRACK_2_SET_SOLO:
+            case TRACK_3_SET_SOLO:
+            case TRACK_4_SET_SOLO:
+            case TRACK_5_SET_SOLO:
+            case TRACK_6_SET_SOLO:
+            case TRACK_7_SET_SOLO:
+            case TRACK_8_SET_SOLO:
+                if (isButtonPressed)
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SOLO.ordinal ()).setSolo (value > 0);
+                break;
             // Track Selected: Toggle Solo
             case TRACK_SELECTED_TOGGLE_SOLO:
                 if (isButtonPressed)
@@ -1046,6 +1167,16 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                         selectedTrack.toggleSolo ();
                 }
                 break;
+            // Track Selected: Set Solo
+            case TRACK_SELECTED_SET_SOLO:
+                if (isButtonPressed)
+                {
+                    final ITrack selectedTrack = this.model.getSelectedTrack ();
+                    if (selectedTrack != null)
+                        selectedTrack.setSolo (value > 0);
+                }
+                break;
+
             // Track 1-8: Toggle Arm
             case TRACK_1_TOGGLE_ARM:
             case TRACK_2_TOGGLE_ARM:
@@ -1058,6 +1189,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).toggleRecArm ();
                 break;
+            // Track 1-8: Set Arm
+            case TRACK_1_SET_ARM:
+            case TRACK_2_SET_ARM:
+            case TRACK_3_SET_ARM:
+            case TRACK_4_SET_ARM:
+            case TRACK_5_SET_ARM:
+            case TRACK_6_SET_ARM:
+            case TRACK_7_SET_ARM:
+            case TRACK_8_SET_ARM:
+                if (isButtonPressed)
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ARM.ordinal ()).setRecArm (value > 0);
+                break;
             // Track Selected: Toggle Arm
             case TRACK_SELECTED_TOGGLE_ARM:
                 if (isButtonPressed)
@@ -1067,6 +1210,16 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                         selectedTrack.toggleRecArm ();
                 }
                 break;
+            // Track Selected: Set Arm
+            case TRACK_SELECTED_SET_ARM:
+                if (isButtonPressed)
+                {
+                    final ITrack selectedTrack = this.model.getSelectedTrack ();
+                    if (selectedTrack != null)
+                        selectedTrack.setRecArm (value > 0);
+                }
+                break;
+
             // Track 1-8: Toggle Monitor
             case TRACK_1_TOGGLE_MONITOR:
             case TRACK_2_TOGGLE_MONITOR:
@@ -1079,6 +1232,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).toggleMonitor ();
                 break;
+            // Track 1-8: Set Monitor
+            case TRACK_1_SET_MONITOR:
+            case TRACK_2_SET_MONITOR:
+            case TRACK_3_SET_MONITOR:
+            case TRACK_4_SET_MONITOR:
+            case TRACK_5_SET_MONITOR:
+            case TRACK_6_SET_MONITOR:
+            case TRACK_7_SET_MONITOR:
+            case TRACK_8_SET_MONITOR:
+                if (isButtonPressed)
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MONITOR.ordinal ()).setMonitor (value > 0);
+                break;
             // Track Selected: Toggle Monitor
             case TRACK_SELECTED_TOGGLE_MONITOR:
                 if (isButtonPressed)
@@ -1088,6 +1253,16 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                         selectedTrack.toggleMonitor ();
                 }
                 break;
+            // Track Selected: Set Monitor
+            case TRACK_SELECTED_SET_MONITOR:
+                if (isButtonPressed)
+                {
+                    final ITrack selectedTrack = this.model.getSelectedTrack ();
+                    if (selectedTrack != null)
+                        selectedTrack.setMonitor (value > 0);
+                }
+                break;
+
             // Track 1: Toggle Auto Monitor
             case TRACK_1_TOGGLE_AUTO_MONITOR:
             case TRACK_2_TOGGLE_AUTO_MONITOR:
@@ -1100,6 +1275,18 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (isButtonPressed)
                     this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).toggleAutoMonitor ();
                 break;
+            // Track 1: Set Auto Monitor
+            case TRACK_1_SET_AUTO_MONITOR:
+            case TRACK_2_SET_AUTO_MONITOR:
+            case TRACK_3_SET_AUTO_MONITOR:
+            case TRACK_4_SET_AUTO_MONITOR:
+            case TRACK_5_SET_AUTO_MONITOR:
+            case TRACK_6_SET_AUTO_MONITOR:
+            case TRACK_7_SET_AUTO_MONITOR:
+            case TRACK_8_SET_AUTO_MONITOR:
+                if (isButtonPressed)
+                    this.model.getTrackBank ().getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_AUTO_MONITOR.ordinal ()).setAutoMonitor (value > 0);
+                break;
             // Track Selected: Toggle Auto Monitor
             case TRACK_SELECTED_TOGGLE_AUTO_MONITOR:
                 if (isButtonPressed)
@@ -1107,6 +1294,15 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                     final ITrack selectedTrack = this.model.getSelectedTrack ();
                     if (selectedTrack != null)
                         selectedTrack.toggleAutoMonitor ();
+                }
+                break;
+            // Track Selected: Set Auto Monitor
+            case TRACK_SELECTED_SET_AUTO_MONITOR:
+                if (isButtonPressed)
+                {
+                    final ITrack selectedTrack = this.model.getSelectedTrack ();
+                    if (selectedTrack != null)
+                        selectedTrack.setAutoMonitor (value > 0);
                 }
                 break;
 
@@ -1231,15 +1427,30 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 if (isButtonPressed)
                     this.model.getMasterTrack ().toggleMute ();
                 break;
+            // Master: Set Mute
+            case MASTER_SET_MUTE:
+                if (isButtonPressed)
+                    this.model.getMasterTrack ().setMute (value > 0);
+                break;
             // Master: Toggle Solo
             case MASTER_TOGGLE_SOLO:
                 if (isButtonPressed)
                     this.model.getMasterTrack ().toggleSolo ();
                 break;
+            // Master: Set Solo
+            case MASTER_SET_SOLO:
+                if (isButtonPressed)
+                    this.model.getMasterTrack ().setSolo (value > 0);
+                break;
             // Master: Toggle Arm
             case MASTER_TOGGLE_ARM:
                 if (isButtonPressed)
                     this.model.getMasterTrack ().toggleRecArm ();
+                break;
+            // Master: Set Arm
+            case MASTER_SET_ARM:
+                if (isButtonPressed)
+                    this.model.getMasterTrack ().setRecArm (value > 0);
                 break;
             // Master: Crossfader
             case MASTER_CROSSFADER:
