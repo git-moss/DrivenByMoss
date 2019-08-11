@@ -52,7 +52,7 @@ public class SelectCommand extends AbstractTriggerCommand<PushControlSurface, Pu
             else
                 modeManager.setActiveMode (Modes.TRACK_DETAILS);
         }
-        else if (isUp && modeManager.isActiveOrTempMode (Modes.TRACK_DETAILS))
+        else if (isUp && (modeManager.isActiveOrTempMode (Modes.TRACK_DETAILS) || modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_DETAILS)))
             modeManager.restoreMode ();
     }
 }
