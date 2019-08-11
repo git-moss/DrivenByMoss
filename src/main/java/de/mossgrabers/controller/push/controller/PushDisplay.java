@@ -9,10 +9,14 @@ import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.GraphicDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.graphics.DefaultGraphicsDimensions;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 import de.mossgrabers.framework.graphics.display.VirtualDisplay;
-import de.mossgrabers.framework.graphics.grid.DefaultGraphicsDimensions;
+import de.mossgrabers.framework.utils.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -91,7 +95,7 @@ public class PushDisplay extends GraphicDisplay
      *
      * @param host The host
      * @param isPush2 True if Push 2
-     * @param maxParameterValue
+     * @param maxParameterValue The maximum parameter value (upper bound)
      * @param output The midi output
      * @param configuration The Push configuration
      */
@@ -102,7 +106,7 @@ public class PushDisplay extends GraphicDisplay
         this.maxParameterValue = maxParameterValue;
         this.isPush2 = isPush2;
 
-        final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (960, 160);
+        final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (960, 160, maxParameterValue);
         this.virtualDisplay = this.isPush2 ? new VirtualDisplay (host, this.model, configuration, dimensions, "Push 2 Display") : null;
         this.usbDisplay = this.isPush2 ? new PushUsbDisplay (host) : null;
     }
@@ -252,6 +256,28 @@ public class PushDisplay extends GraphicDisplay
         if (diff > 0)
             return text + (" ".equals (character) ? PushDisplay.SPACES[diff] : PushDisplay.DASHES[diff]);
         return text;
+    }
+
+
+    /**
+     * Fills a list for drawing a menu.
+     *
+     * @param displaySize The number of rows to fill
+     * @param elements All elements
+     * @param selectedIndex The selected index in the elements
+     * @return The menu items including the selected element
+     */
+    public static List<Pair<String, Boolean>> createMenuList (final int displaySize, final String [] elements, final int selectedIndex)
+    {
+        final List<Pair<String, Boolean>> menu = new ArrayList<> ();
+        final int startIndex = Math.max (0, Math.min (selectedIndex, elements.length - displaySize));
+        for (int i = 0; i < displaySize; i++)
+        {
+            final int pos = startIndex + i;
+            final String itemName = pos < elements.length ? elements[pos] : "";
+            menu.add (new Pair<> (itemName, Boolean.valueOf (pos == selectedIndex)));
+        }
+        return menu;
     }
 
 

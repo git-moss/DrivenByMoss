@@ -10,18 +10,19 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.graphics.grid.ChannelGridElement;
-import de.mossgrabers.framework.graphics.grid.ClipListGridElement;
-import de.mossgrabers.framework.graphics.grid.GridChangeListener;
-import de.mossgrabers.framework.graphics.grid.IGridElement;
-import de.mossgrabers.framework.graphics.grid.ListGridElement;
-import de.mossgrabers.framework.graphics.grid.MidiClipElement;
-import de.mossgrabers.framework.graphics.grid.OptionsGridElement;
-import de.mossgrabers.framework.graphics.grid.ParamGridElement;
-import de.mossgrabers.framework.graphics.grid.SceneListGridElement;
-import de.mossgrabers.framework.graphics.grid.SelectionGridElement;
-import de.mossgrabers.framework.graphics.grid.SendData;
-import de.mossgrabers.framework.graphics.grid.SendsGridElement;
+import de.mossgrabers.framework.graphics.canvas.component.ChannelComponent;
+import de.mossgrabers.framework.graphics.canvas.component.ChannelSelectComponent;
+import de.mossgrabers.framework.graphics.canvas.component.ClipListComponent;
+import de.mossgrabers.framework.graphics.canvas.component.IComponent;
+import de.mossgrabers.framework.graphics.canvas.component.LabelComponent.LabelLayout;
+import de.mossgrabers.framework.graphics.canvas.component.ListComponent;
+import de.mossgrabers.framework.graphics.canvas.component.MidiClipComponent;
+import de.mossgrabers.framework.graphics.canvas.component.OptionsComponent;
+import de.mossgrabers.framework.graphics.canvas.component.ParameterComponent;
+import de.mossgrabers.framework.graphics.canvas.component.SceneListGridElement;
+import de.mossgrabers.framework.graphics.canvas.component.SendsComponent;
+import de.mossgrabers.framework.graphics.canvas.utils.GridChangeListener;
+import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.utils.Pair;
 
 import java.util.ArrayList;
@@ -41,6 +42,13 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class DisplayModel
 {
+    private static final double []         COLOR_BLACK                     = new double []
+    {
+        0,
+        0,
+        0
+    };
+
     /** Display only a channel name for selection. */
     public static final int                GRID_ELEMENT_CHANNEL_SELECTION  = 0;
     /** Display a channel, edit volume. */
@@ -67,7 +75,7 @@ public class DisplayModel
     private final ScheduledExecutorService executor                        = Executors.newSingleThreadScheduledExecutor ();
 
     private final List<GridChangeListener> listeners                       = new ArrayList<> ();
-    private final List<IGridElement>       elements                        = new ArrayList<> (8);
+    private final List<IComponent>         columns                         = new ArrayList<> (8);
     private final AtomicReference<String>  notificationMessage             = new AtomicReference<> ();
     private ModelInfo                      info                            = new ModelInfo (null, Collections.emptyList ());
 
@@ -116,8 +124,8 @@ public class DisplayModel
         if (this.executor.isShutdown ())
             return;
 
-        this.info = new ModelInfo (this.notificationMessage.get (), this.elements);
-        this.elements.clear ();
+        this.info = new ModelInfo (this.notificationMessage.get (), this.columns);
+        this.columns.clear ();
         for (final GridChangeListener listener: this.listeners)
             listener.gridHasChanged ();
     }
@@ -131,7 +139,7 @@ public class DisplayModel
      */
     public void setMidiClipElement (final INoteClip clip, final int quartersPerMeasure)
     {
-        this.elements.add (new MidiClipElement (clip, quartersPerMeasure));
+        this.columns.add (new MidiClipComponent (clip, quartersPerMeasure));
     }
 
 
@@ -184,7 +192,7 @@ public class DisplayModel
      */
     public void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final boolean isActive)
     {
-        this.elements.add (new SelectionGridElement (topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, isActive, type));
+        this.columns.add (new ChannelSelectComponent (type, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, isActive));
     }
 
 
@@ -247,19 +255,19 @@ public class DisplayModel
         switch (channelType)
         {
             case GRID_ELEMENT_CHANNEL_VOLUME:
-                editType = ChannelGridElement.EDIT_TYPE_VOLUME;
+                editType = ChannelComponent.EDIT_TYPE_VOLUME;
                 break;
             case GRID_ELEMENT_CHANNEL_PAN:
-                editType = ChannelGridElement.EDIT_TYPE_PAN;
+                editType = ChannelComponent.EDIT_TYPE_PAN;
                 break;
             case GRID_ELEMENT_CHANNEL_CROSSFADER:
-                editType = ChannelGridElement.EDIT_TYPE_CROSSFADER;
+                editType = ChannelComponent.EDIT_TYPE_CROSSFADER;
                 break;
             default:
-                editType = ChannelGridElement.EDIT_TYPE_ALL;
+                editType = ChannelComponent.EDIT_TYPE_ALL;
                 break;
         }
-        this.elements.add (new ChannelGridElement (editType, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode));
+        this.columns.add (new ChannelComponent (editType, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode));
     }
 
 
@@ -279,7 +287,7 @@ public class DisplayModel
      */
     public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final SendData [] sendData, final boolean isTrackMode, final boolean isSendActive, final boolean isChannelLabelActive)
     {
-        this.elements.add (new SendsGridElement (sendData, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, isTrackMode, isSendActive, isChannelLabelActive));
+        this.columns.add (new SendsComponent (sendData, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, isTrackMode, isSendActive, isChannelLabelActive));
     }
 
 
@@ -294,12 +302,7 @@ public class DisplayModel
      */
     public void addParameterElement (final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        this.addParameterElement ("", false, "", ChannelType.EFFECT, new double []
-        {
-            0,
-            0,
-            0
-        }, false, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+        this.addParameterElement ("", false, "", (ChannelType) null, COLOR_BLACK, false, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
     }
 
 
@@ -309,7 +312,7 @@ public class DisplayModel
      * @param topMenu The text of the top menu
      * @param isTopMenuOn True if the top menu is selected
      * @param bottomMenu The text of the bottom menu
-     * @param type The type of the channel
+     * @param type The channel type
      * @param bottomMenuColor A background color for the menu
      * @param isBottomMenuOn True if the bottom menu is selected
      * @param parameterName The name to display for the parameter
@@ -320,7 +323,29 @@ public class DisplayModel
      */
     public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        this.elements.add (new ParamGridElement (topMenu, isTopMenuOn, bottomMenu, type, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+        final ColorEx bottomColor = bottomMenuColor == null ? null : new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]);
+        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, type, bottomColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+    }
+
+
+    /**
+     * Adds a parameter element.
+     *
+     * @param topMenu The text of the top menu
+     * @param isTopMenuOn True if the top menu is selected
+     * @param bottomMenu The text of the bottom menu
+     * @param bottomMenuColor A background color for the menu
+     * @param isBottomMenuOn True if the bottom menu is selected
+     * @param parameterName The name to display for the parameter
+     * @param parameterValue The numeric value of the parameter
+     * @param parameterValueStr The textual form of the parameter
+     * @param parameterIsActive The parameter is currently edited
+     * @param parameterModulatedValue The modulated numeric value
+     */
+    public void addParameterElementWithPlainMenu (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    {
+        final ColorEx bottomColor = bottomMenuColor == null ? null : new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]);
+        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, null, bottomColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive, LabelLayout.PLAIN));
     }
 
 
@@ -341,7 +366,7 @@ public class DisplayModel
      */
     public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String deviceName, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        this.elements.add (new ParamGridElement (topMenu, isTopMenuOn, bottomMenu, deviceName, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, deviceName, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
     }
 
 
@@ -397,7 +422,28 @@ public class DisplayModel
      */
     public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu, final boolean isBottomHeaderSelected)
     {
-        this.elements.add (new OptionsGridElement (headerTopName, menuTopName, isMenuTopSelected, menuTopColor, headerBottomName, menuBottomName, isMenuBottomSelected, menuBottomColor, useSmallTopMenu, isBottomHeaderSelected));
+        this.columns.add (new OptionsComponent (headerTopName, menuTopName, isMenuTopSelected, menuTopColor, headerBottomName, menuBottomName, isMenuBottomSelected, menuBottomColor, useSmallTopMenu, isBottomHeaderSelected));
+    }
+
+
+    /**
+     * Add a list element to the message with one selected item.
+     *
+     * @param displaySize The number of items to display in the list
+     * @param elements The list with all items
+     * @param selectedIndex The selected index in the list
+     */
+    public void addListElement (final int displaySize, final String [] elements, final int selectedIndex)
+    {
+        final List<Pair<String, Boolean>> menu = new ArrayList<> ();
+        final int startIndex = Math.max (0, Math.min (selectedIndex, elements.length - displaySize));
+        for (int i = 0; i < displaySize; i++)
+        {
+            final int pos = startIndex + i;
+            final String itemName = pos < elements.length ? elements[pos] : "";
+            menu.add (new Pair<> (itemName, Boolean.valueOf (pos == selectedIndex)));
+        }
+        this.columns.add (new ListComponent (menu));
     }
 
 
@@ -412,7 +458,7 @@ public class DisplayModel
         final List<Pair<String, Boolean>> menu = new ArrayList<> ();
         for (int i = 0; i < items.length; i++)
             menu.add (new Pair<> (items[i], Boolean.valueOf (selected[i])));
-        this.elements.add (new ListGridElement (menu));
+        this.columns.add (new ListComponent (menu));
     }
 
 
@@ -423,7 +469,7 @@ public class DisplayModel
      */
     public void addSceneListElement (final List<IScene> scenes)
     {
-        this.elements.add (new SceneListGridElement (scenes));
+        this.columns.add (new SceneListGridElement (scenes));
     }
 
 
@@ -434,7 +480,7 @@ public class DisplayModel
      */
     public void addSlotListElement (final List<Pair<ITrack, ISlot>> slots)
     {
-        this.elements.add (new ClipListGridElement (slots));
+        this.columns.add (new ClipListComponent (slots));
     }
 
 

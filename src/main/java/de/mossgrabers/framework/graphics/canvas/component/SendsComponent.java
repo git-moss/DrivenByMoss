@@ -2,7 +2,7 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.graphics.grid;
+package de.mossgrabers.framework.graphics.canvas.component;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -10,6 +10,8 @@ import de.mossgrabers.framework.graphics.Align;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.graphics.IGraphicsDimensions;
+import de.mossgrabers.framework.graphics.IGraphicsInfo;
+import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 
 
 /**
@@ -17,7 +19,7 @@ import de.mossgrabers.framework.graphics.IGraphicsDimensions;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendsGridElement extends SelectionGridElement
+public class SendsComponent extends ChannelSelectComponent
 {
     private final SendData [] sendData;
     private final boolean     isExMode;
@@ -38,9 +40,9 @@ public class SendsGridElement extends SelectionGridElement
      * @param isSendActive True if the upper send part is activated
      * @param isChannelLabelActive True if channel is activated
      */
-    public SendsGridElement (final SendData [] sendData, final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type, final boolean isExMode, final boolean isSendActive, final boolean isChannelLabelActive)
+    public SendsComponent (final SendData [] sendData, final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type, final boolean isExMode, final boolean isSendActive, final boolean isChannelLabelActive)
     {
-        super (menuName, isMenuSelected, name, color, isSelected, isChannelLabelActive, type);
+        super (type, menuName, isMenuSelected, name, color, isSelected, isChannelLabelActive);
 
         this.sendData = sendData;
         this.isExMode = isExMode;
@@ -50,14 +52,21 @@ public class SendsGridElement extends SelectionGridElement
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final IGraphicsContext gc, final IGraphicsConfiguration configuration, final IGraphicsDimensions dimensions, final double left, final double width, final double height)
+    public void draw (final IGraphicsInfo info)
     {
-        super.draw (gc, configuration, dimensions, left, width, height);
+        super.draw (info);
 
-        final String name = this.getName ();
+        final String name = this.footer.getText ();
         // Element is off if the name is empty
         if ((name == null || name.length () == 0) && !this.isExMode)
             return;
+
+        final IGraphicsContext gc = info.getContext ();
+        final IGraphicsDimensions dimensions = info.getDimensions ();
+        final IGraphicsConfiguration configuration = info.getConfiguration ();
+        final double left = info.getBounds ().getLeft ();
+        final double width = info.getBounds ().getWidth ();
+        final double height = info.getBounds ().getHeight ();
 
         final double separatorSize = dimensions.getSeparatorSize ();
         final double menuHeight = dimensions.getMenuHeight ();
@@ -75,15 +84,15 @@ public class SendsGridElement extends SelectionGridElement
         final double sliderHeight = sendRowHeight - 2 * separatorSize;
 
         // Background of slider area
-        final ColorEx backgroundColor = SelectionGridElement.modifyIfOff (configuration.getColorBackground (), this.isSendActive);
-        gc.fillRectangle (this.isExMode ? left - separatorSize : left, t, this.isExMode ? width + separatorSize : width, this.isExMode ? h - 2 : h, this.isSelected () || this.isExMode ? SelectionGridElement.modifyIfOff (configuration.getColorBackgroundLighter (), this.isSendActive) : backgroundColor);
+        final ColorEx backgroundColor = this.modifyIfOff (configuration.getColorBackground ());
+        gc.fillRectangle (this.isExMode ? left - separatorSize : left, t, this.isExMode ? width + separatorSize : width, this.isExMode ? h - 2 : h, this.footer.isSelected () || this.isExMode ? this.modifyIfOff (configuration.getColorBackgroundLighter ()) : backgroundColor);
 
         double topy = menuHeight + (this.isExMode ? 0 : separatorSize);
 
-        final ColorEx textColor = SelectionGridElement.modifyIfOff (configuration.getColorText (), this.isSendActive);
-        final ColorEx borderColor = SelectionGridElement.modifyIfOff (configuration.getColorBorder (), this.isSendActive);
-        final ColorEx faderColor = SelectionGridElement.modifyIfOff (configuration.getColorFader (), this.isSendActive);
-        final ColorEx editColor = SelectionGridElement.modifyIfOff (configuration.getColorEdit (), this.isSendActive);
+        final ColorEx textColor = this.modifyIfOff (configuration.getColorText ());
+        final ColorEx borderColor = this.modifyIfOff (configuration.getColorBorder ());
+        final ColorEx faderColor = this.modifyIfOff (configuration.getColorFader ());
+        final ColorEx editColor = this.modifyIfOff (configuration.getColorEdit ());
         final double faderLeft = left + inset;
         for (final SendData element: this.sendData)
         {
@@ -95,10 +104,10 @@ public class SendsGridElement extends SelectionGridElement
             topy += sendRowHeight;
             gc.fillRectangle (faderLeft, topy + separatorSize, sliderWidth, sliderHeight, borderColor);
 
-            final double valueWidth = element.getValue () * sliderWidth / getMaxValue ();
+            final double valueWidth = element.getValue () * sliderWidth / dimensions.getParameterUpperBound ();
             final int modulatedValue = element.getModulatedValue ();
             final boolean isSendModulated = modulatedValue != -1;
-            final double modulatedValueWidth = isSendModulated ? (double) (modulatedValue * sliderWidth / getMaxValue ()) : valueWidth;
+            final double modulatedValueWidth = isSendModulated ? (double) (modulatedValue * sliderWidth / dimensions.getParameterUpperBound ()) : valueWidth;
             final double faderTop = topy + separatorSize + 1;
             gc.fillRectangle (faderLeft + 1, faderTop, modulatedValueWidth - 1, sliderHeight - 2, faderColor);
 
@@ -117,7 +126,7 @@ public class SendsGridElement extends SelectionGridElement
         final double boxWidth = sliderWidth / 2;
         final double boxLeft = faderLeft + sliderWidth - boxWidth;
         topy = menuHeight;
-        final ColorEx backgroundDarker = SelectionGridElement.modifyIfOff (configuration.getColorBackgroundDarker (), this.isSendActive);
+        final ColorEx backgroundDarker = this.modifyIfOff (configuration.getColorBackgroundDarker ());
         for (final SendData element: this.sendData)
         {
             topy += sendRowHeight;
@@ -133,5 +142,11 @@ public class SendsGridElement extends SelectionGridElement
 
             topy += sendRowHeight;
         }
+    }
+
+
+    protected ColorEx modifyIfOff (final ColorEx color)
+    {
+        return this.isSendActive ? color : ColorEx.dimToGray (color);
     }
 }

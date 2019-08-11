@@ -6,6 +6,7 @@ package de.mossgrabers.controller.beatstep.view;
 
 import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
+import de.mossgrabers.framework.Resolution;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 
@@ -52,8 +53,8 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
     protected void changeResolution (final int value)
     {
         final boolean isInc = value >= 65;
-        this.selectedIndex = Math.max (0, Math.min (RESOLUTIONS.length - 1, isInc ? this.selectedIndex + 1 : this.selectedIndex - 1));
-        this.getClip ().setStepLength (RESOLUTIONS[this.selectedIndex]);
+        this.selectedIndex = Resolution.change (this.selectedIndex, isInc);
+        this.getClip ().setStepLength (Resolution.getValueAt (this.selectedIndex));
     }
 
 

@@ -2,10 +2,7 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.graphics.grid;
-
-import de.mossgrabers.framework.graphics.IGraphicsDimensions;
-
+package de.mossgrabers.framework.graphics;
 
 /**
  * Default implementation of pre-calculated grid dimensions.
@@ -38,14 +35,17 @@ public class DefaultGraphicsDimensions implements IGraphicsDimensions
     /** Where the controls drawing area starts. */
     private final double        controlsTop;
 
+    private int                 maxParameterValue;
+
 
     /**
      * Constructor.
      *
      * @param width The full width of the drawing area
      * @param height The full height of the drawing area
+     * @param maxParameterValue
      */
-    public DefaultGraphicsDimensions (final int width, final int height)
+    public DefaultGraphicsDimensions (final int width, final int height, final int maxParameterValue)
     {
         this.width = width;
         this.height = height;
@@ -56,6 +56,8 @@ public class DefaultGraphicsDimensions implements IGraphicsDimensions
         this.menuHeight = this.unit + 2.0 * SEPARATOR_SIZE;
         this.inset = SEPARATOR_SIZE / 2.0 + this.halfUnit;
         this.controlsTop = this.menuHeight + this.inset;
+
+        this.maxParameterValue = maxParameterValue;
     }
 
 
@@ -128,5 +130,13 @@ public class DefaultGraphicsDimensions implements IGraphicsDimensions
     public double getInset ()
     {
         return this.inset;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getParameterUpperBound ()
+    {
+        return this.maxParameterValue;
     }
 }

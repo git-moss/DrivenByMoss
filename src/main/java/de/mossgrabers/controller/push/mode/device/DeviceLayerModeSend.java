@@ -14,8 +14,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
-import de.mossgrabers.framework.graphics.grid.SendData;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.Pair;
 

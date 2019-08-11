@@ -8,10 +8,12 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.resource.ResourceHandler;
 import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.DefaultGraphicsInfo;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsDimensions;
-import de.mossgrabers.framework.graphics.grid.IGridElement;
+import de.mossgrabers.framework.graphics.IGraphicsInfo;
+import de.mossgrabers.framework.graphics.canvas.component.IComponent;
 
 import java.util.List;
 
@@ -79,7 +81,7 @@ public class VirtualDisplay
             gc.fillRectangle (0, 0, width, height, colorBorder);
 
             final ModelInfo info = this.model.getInfo ();
-            final List<IGridElement> elements = info.getElements ();
+            final List<IComponent> elements = info.getComponents ();
             final int size = elements.size ();
             if (size == 0)
                 return;
@@ -87,8 +89,9 @@ public class VirtualDisplay
             final double paintWidth = gridWidth - separatorSize;
             final double offsetX = separatorSize / 2.0;
 
+            final IGraphicsInfo graphicsInfo = new DefaultGraphicsInfo (gc, this.configuration, this.dimensions);
             for (int i = 0; i < size; i++)
-                elements.get (i).draw (gc, this.configuration, this.dimensions, i * gridWidth + offsetX, paintWidth, height);
+                elements.get (i).draw (graphicsInfo.withBounds (i * gridWidth + offsetX, 0, paintWidth, height));
 
             final String notification = info.getNotification ();
             if (notification == null)

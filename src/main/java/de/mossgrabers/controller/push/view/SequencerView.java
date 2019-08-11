@@ -107,6 +107,9 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
         final INoteClip cursorClip = this.getClip ();
         final int mappedNote = this.keyManager.map (y);
         final int state = cursorClip.getStep (x, mappedNote);
+        if (state != INoteClip.NOTE_START)
+            return;
+
         final ModeManager modeManager = this.surface.getModeManager ();
         final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
         noteMode.setValues (cursorClip, x, mappedNote, state == 2 ? 1.0 : 0, 127);

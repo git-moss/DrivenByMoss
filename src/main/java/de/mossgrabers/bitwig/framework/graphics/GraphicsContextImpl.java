@@ -205,7 +205,7 @@ public class GraphicsContextImpl implements IGraphicsContext
         {
             final double w = this.gc.getTextExtents (text).getWidth ();
             final double inset = 12.0;
-            this.fillRoundedRectangle (x + inset, posY - h - inset, w + 2 * inset, h + 2 * inset, inset, backgroundColor);
+            this.fillRoundedRectangle (x - inset, posY - h - inset, w + 2 * inset, h + 2 * inset, inset, backgroundColor);
         }
 
         this.setColor (color);

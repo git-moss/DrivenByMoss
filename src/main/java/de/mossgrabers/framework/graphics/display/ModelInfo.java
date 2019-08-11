@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.graphics.display;
 
-import de.mossgrabers.framework.graphics.grid.IGridElement;
+import de.mossgrabers.framework.graphics.canvas.component.IComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +17,8 @@ import java.util.List;
  */
 public class ModelInfo
 {
-    private String                   notification;
-    private final List<IGridElement> elements;
+    private String                 notification;
+    private final List<IComponent> components;
 
 
     /**
@@ -27,10 +27,10 @@ public class ModelInfo
      * @param notification The notification message, if any
      * @param elements The elements
      */
-    public ModelInfo (final String notification, final List<IGridElement> elements)
+    public ModelInfo (final String notification, final List<IComponent> elements)
     {
         this.notification = notification;
-        this.elements = new ArrayList<> (elements);
+        this.components = new ArrayList<> (elements);
     }
 
 
@@ -46,12 +46,12 @@ public class ModelInfo
 
 
     /**
-     * Get the grid elements.
+     * Get the canvas components.
      *
-     * @return The elements
+     * @return The components
      */
-    public List<IGridElement> getElements ()
+    public List<IComponent> getComponents ()
     {
-        return this.elements;
+        return this.components;
     }
 }

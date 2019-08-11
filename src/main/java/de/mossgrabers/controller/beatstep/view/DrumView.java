@@ -6,6 +6,7 @@ package de.mossgrabers.controller.beatstep.view;
 
 import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
+import de.mossgrabers.framework.Resolution;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -53,7 +54,7 @@ public class DrumView extends BaseSequencerView
 
             case 13:
                 this.changeResolution (value);
-                this.surface.getDisplay ().notify (RESOLUTION_TEXTS[this.selectedIndex]);
+                this.surface.getDisplay ().notify (Resolution.getNameAt (this.selectedIndex));
                 break;
 
             // Up/Down

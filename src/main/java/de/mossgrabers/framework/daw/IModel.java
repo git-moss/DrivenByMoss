@@ -221,13 +221,13 @@ public interface IModel
     /**
      * Deactivate all solo states of all tracks.
      */
-    void deactivateSolo ();
+    void clearSolo ();
 
 
     /**
      * Deactivate all mute states of all tracks.
      */
-    void deactivateMute ();
+    void clearMute ();
 
 
     /**

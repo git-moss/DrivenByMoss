@@ -45,7 +45,7 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
         if (this.surface.isSelectPressed ())
         {
             if (event == ButtonEvent.UP)
-                this.model.deactivateSolo ();
+                this.model.clearSolo ();
             return;
         }
 

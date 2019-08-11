@@ -156,13 +156,16 @@ public class TrackDetailsMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final Display d = this.surface.getDisplay ().clearRow (0).clearRow (1);
         final ITrack deviceChain = this.getSelectedTrack ();
         if (deviceChain == null)
-            d.setRow (1, "                     Please selecta track...                        ").clearRow (0).clearRow (2).done (0).done (2);
+            d.setRow (1, "                     Please selecta track...                        ").done (0).done (2);
         else
         {
-            d.clearRow (0).clearRow (1).setBlock (0, 0, "Track: " + deviceChain.getName ());
+            final String trackName = deviceChain.getName ();
+            d.setBlock (0, 0, "Track: " + trackName);
+            if (trackName.length () > 10)
+                d.setBlock (0, 1, trackName.substring (10));
             d.setCell (2, 0, "Active").setCell (3, 0, deviceChain.isActivated () ? "On" : "Off");
             d.setCell (2, 1, "Rec Arm");
             d.setCell (3, 1, deviceChain.isRecArm () ? "On" : "Off");

@@ -24,8 +24,9 @@ import com.bitwig.extension.controller.api.Bank;
  */
 public abstract class AbstractChannelBank<B extends Bank<?>, T extends IChannel> extends AbstractBankImpl<B, T> implements IChannelBank<T>
 {
-    protected int        numScenes;
-    protected int        numSends;
+    protected final int  numScenes;
+    protected final int  numSends;
+
     protected ISceneBank sceneBank;
 
 

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.Resolution;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
@@ -47,32 +48,6 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     public static final String    COLOR_TRANSPOSE              = "COLOR_TRANSPOSE";
     /** The color for selected transposition. */
     public static final String    COLOR_TRANSPOSE_SELECTED     = "COLOR_TRANSPOSE_SELECTED";
-
-    /** Resolution values. */
-    public static final double [] RESOLUTIONS                  =
-    {
-        1,
-        2.0 / 3.0,
-        1.0 / 2.0,
-        1.0 / 3.0,
-        1.0 / 4.0,
-        1.0 / 6.0,
-        1.0 / 8.0,
-        1.0 / 12.0
-    };
-
-    /** Resolution texts. */
-    public static final String [] RESOLUTION_TEXTS             =
-    {
-        "1/4",
-        "1/4t",
-        "1/8",
-        "1/8t",
-        "1/16",
-        "1/16t",
-        "1/32",
-        "1/32t"
-    };
 
     protected int                 numSequencerRows;
     protected int                 selectedIndex;
@@ -129,8 +104,9 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     public void onActivate ()
     {
         super.onActivate ();
+
         final INoteClip clip = this.getClip ();
-        clip.setStepLength (RESOLUTIONS[this.selectedIndex]);
+        clip.setStepLength (Resolution.getValueAt (this.selectedIndex));
     }
 
 
@@ -141,8 +117,9 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         if (event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
             return;
         this.selectedIndex = 7 - index;
-        this.getClip ().setStepLength (RESOLUTIONS[this.selectedIndex]);
-        this.surface.getDisplay ().notify (RESOLUTION_TEXTS[this.selectedIndex]);
+        final Resolution resolution = Resolution.values ()[this.selectedIndex];
+        this.getClip ().setStepLength (resolution.getValue ());
+        this.surface.getDisplay ().notify (resolution.getName ());
     }
 
 
@@ -217,7 +194,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     protected int getLengthOfOnePage (final int numOfSteps)
     {
-        return (int) Math.floor (numOfSteps * AbstractSequencerView.RESOLUTIONS[this.selectedIndex]);
+        return (int) Math.floor (numOfSteps * Resolution.getValueAt (this.selectedIndex));
     }
 
 

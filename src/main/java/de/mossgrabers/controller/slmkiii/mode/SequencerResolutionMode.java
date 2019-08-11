@@ -8,9 +8,9 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColors;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.controller.slmkiii.view.DrumView;
+import de.mossgrabers.framework.Resolution;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -51,7 +51,7 @@ public class SequencerResolutionMode extends BaseMode
             return;
 
         final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
-        drumView.getClip ().setStepLength (AbstractSequencerView.RESOLUTIONS[index]);
+        drumView.getClip ().setStepLength (Resolution.getValueAt (index));
         this.surface.getModeManager ().restoreMode ();
     }
 
@@ -61,9 +61,9 @@ public class SequencerResolutionMode extends BaseMode
     public void updateFirstRow ()
     {
         final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
-        final double stepLength = drumView.getClip ().getStepLength ();
+        final int match = Resolution.getMatch (drumView.getClip ().getStepLength ());
         for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, Math.abs (stepLength - AbstractSequencerView.RESOLUTIONS[i]) < 0.001 ? SLMkIIIColors.SLMKIII_PINK : SLMkIIIColors.SLMKIII_DARK_GREY);
+            this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, match == i ? SLMkIIIColors.SLMKIII_PINK : SLMkIIIColors.SLMKIII_DARK_GREY);
     }
 
 
@@ -75,13 +75,14 @@ public class SequencerResolutionMode extends BaseMode
         d.clear ();
 
         final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
-        final double stepLength = drumView.getClip ().getStepLength ();
+
+        final int match = Resolution.getMatch (drumView.getClip ().getStepLength ());
 
         for (int i = 0; i < 8; i++)
         {
-            d.setCell (3, i, AbstractSequencerView.RESOLUTION_TEXTS[i]);
+            d.setCell (3, i, Resolution.getNameAt (i));
             d.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_PINK);
-            d.setPropertyValue (i, 1, Math.abs (stepLength - AbstractSequencerView.RESOLUTIONS[i]) < 0.001 ? 1 : 0);
+            d.setPropertyValue (i, 1, match == i ? 1 : 0);
         }
 
         d.setCell (0, 8, "Sequencer");

@@ -6,6 +6,7 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.controller.PushDisplay;
+import de.mossgrabers.framework.Resolution;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.daw.IModel;
@@ -14,7 +15,6 @@ import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractSequencerView;
 
 
 /**
@@ -48,7 +48,7 @@ public class NoteRepeatMode extends BaseMode
             return;
         final INoteInput defaultNoteInput = this.surface.getInput ().getDefaultNoteInput ();
         if (defaultNoteInput != null)
-            defaultNoteInput.getNoteRepeat ().setPeriod (selectedTrack, AbstractSequencerView.RESOLUTIONS[index]);
+            defaultNoteInput.getNoteRepeat ().setPeriod (selectedTrack, Resolution.getValueAt (index));
         this.surface.getModeManager ().restoreMode ();
     }
 
@@ -80,7 +80,7 @@ public class NoteRepeatMode extends BaseMode
         if (defaultNoteInput == null)
             return false;
 
-        return Math.abs (defaultNoteInput.getNoteRepeat ().getPeriod (track) - AbstractSequencerView.RESOLUTIONS[index]) < 0.001;
+        return Math.abs (defaultNoteInput.getNoteRepeat ().getPeriod (track) - Resolution.getValueAt (index)) < 0.001;
     }
 
 
@@ -92,7 +92,7 @@ public class NoteRepeatMode extends BaseMode
         d.setBlock (2, 0, "Repeat Length:");
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         for (int i = 0; i < 8; i++)
-            d.setCell (3, i, (this.isPeriodSelected (selectedTrack, i) ? PushDisplay.SELECT_ARROW : "") + AbstractSequencerView.RESOLUTION_TEXTS[i]);
+            d.setCell (3, i, (this.isPeriodSelected (selectedTrack, i) ? PushDisplay.SELECT_ARROW : "") + Resolution.getNameAt (i));
         d.allDone ();
     }
 
@@ -104,7 +104,7 @@ public class NoteRepeatMode extends BaseMode
         final DisplayModel message = this.surface.getDisplay ().getModel ();
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         for (int i = 0; i < 8; i++)
-            message.addOptionElement ("", "", false, i == 0 ? "Repeat Length" : "", AbstractSequencerView.RESOLUTION_TEXTS[i], this.isPeriodSelected (selectedTrack, i), false);
+            message.addOptionElement ("", "", false, i == 0 ? "Repeat Length" : "", Resolution.getNameAt (i), this.isPeriodSelected (selectedTrack, i), false);
         message.send ();
     }
 }

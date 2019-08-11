@@ -23,7 +23,10 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class SmallKnobTouchCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {
-    private boolean isTempo;
+    private boolean        isTempo;
+
+    private static boolean isTempoTouched    = false;
+    private static boolean isPositionTouched = false;
 
 
     /**
@@ -60,9 +63,24 @@ public class SmallKnobTouchCommand extends AbstractTriggerCommand<PushControlSur
             this.model.getTransport ().setTempoIndication (isTouched);
 
         if (isTouched)
-            modeManager.setActiveMode (Modes.TRANSPORT);
+        {
+            if (!isTempoTouched && !isPositionTouched)
+                modeManager.setActiveMode (Modes.TRANSPORT);
+            if (this.isTempo)
+                isTempoTouched = true;
+            else
+                isPositionTouched = true;
+        }
         else
-            modeManager.restoreMode ();
+        {
+            if (this.isTempo)
+                isTempoTouched = false;
+            else
+                isPositionTouched = false;
+
+            if (!isTempoTouched && !isPositionTouched)
+                modeManager.restoreMode ();
+        }
 
         modeManager.getMode (Modes.TRANSPORT).onKnobTouch (this.isTempo ? 4 : 6, isTouched);
     }

@@ -63,7 +63,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
             if (this.surface.isShiftPressed ())
                 track.toggleAutoMonitor ();
             else if (this.surface.isSelectPressed ())
-                this.model.deactivateSolo ();
+                this.model.clearSolo ();
             else
                 track.toggleSolo ();
         }
@@ -72,7 +72,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
             if (this.surface.isShiftPressed ())
                 track.toggleMonitor ();
             else if (this.surface.isSelectPressed ())
-                this.model.deactivateMute ();
+                this.model.clearMute ();
             else
                 track.toggleMute ();
         }

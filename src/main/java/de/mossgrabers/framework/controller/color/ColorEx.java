@@ -114,24 +114,46 @@ public class ColorEx
     /**
      * Calculates a darker version of the given color.
      *
-     * @param c A color
+     * @param color A color
      * @return The darker version
      */
-    public static ColorEx darker (final ColorEx c)
+    public static ColorEx darker (final ColorEx color)
     {
-        return new ColorEx (Math.max (c.getRed () * FACTOR, 0), Math.max (c.getGreen () * FACTOR, 0), Math.max (c.getBlue () * FACTOR, 0));
+        return new ColorEx (Math.max (color.getRed () * FACTOR, 0), Math.max (color.getGreen () * FACTOR, 0), Math.max (color.getBlue () * FACTOR, 0));
     }
 
 
     /**
      * Calculates a even more darker version of the given color.
      *
-     * @param c A color
+     * @param color A color
      * @return The even more darker version
      */
-    public static ColorEx evenDarker (final ColorEx c)
+    public static ColorEx evenDarker (final ColorEx color)
     {
-        return new ColorEx (Math.max (c.getRed () * FACTOR2, 0), Math.max (c.getGreen () * FACTOR2, 0), Math.max (c.getBlue () * FACTOR2, 0));
+        return new ColorEx (Math.max (color.getRed () * FACTOR2, 0), Math.max (color.getGreen () * FACTOR2, 0), Math.max (color.getBlue () * FACTOR2, 0));
+    }
+
+
+    /**
+     * Dim the color (evenDarker) and convert it to a gray scale color.
+     *
+     * @param color The color to dim
+     * @return The dimmed color
+     */
+    public static ColorEx dimToGray (final ColorEx color)
+    {
+        final double red = color.getRed ();
+        final double green = color.getGreen ();
+        final double blue = color.getBlue ();
+
+        if (red != green || green != blue)
+        {
+            final double v = (red + green + blue) / 3.0;
+            return ColorEx.evenDarker (new ColorEx (v, v, v));
+        }
+
+        return ColorEx.evenDarker (color);
     }
 
 

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.Resolution;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
@@ -88,7 +89,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final int stepSize = y == 0 ? 1 : 2 * y;
 
         final INoteClip clip = this.getClip ();
-        final int length = (int) Math.floor (clip.getLoopLength () / RESOLUTIONS[this.selectedIndex]);
+        final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.selectedIndex));
         final int distance = this.getNoteDistance (this.keyManager.map (x), length);
         clip.clearRow (this.keyManager.map (x));
         if (distance == -1 || distance != (y == 0 ? 1 : y * 2))
@@ -97,7 +98,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
             if (offset < 0)
                 return;
             for (int i = offset; i < length; i += stepSize)
-                clip.setStep (i, this.keyManager.map (x), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, RESOLUTIONS[this.selectedIndex]);
+                clip.setStep (i, this.keyManager.map (x), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, Resolution.getValueAt (this.selectedIndex));
         }
     }
 
@@ -119,7 +120,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final ITrack selectedTrack = this.useTrackColor ? this.model.getSelectedTrack () : null;
 
         final INoteClip clip = this.getClip ();
-        final int length = (int) Math.floor (clip.getLoopLength () / RESOLUTIONS[this.selectedIndex]);
+        final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.selectedIndex));
         final int step = clip.getCurrentStep ();
         for (int x = 0; x < AbstractRaindropsView.NUM_DISPLAY_COLS; x++)
         {

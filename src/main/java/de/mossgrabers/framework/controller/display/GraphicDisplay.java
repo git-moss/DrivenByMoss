@@ -7,9 +7,9 @@ package de.mossgrabers.framework.controller.display;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.graphics.IBitmap;
+import de.mossgrabers.framework.graphics.canvas.utils.GridChangeListener;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.graphics.display.VirtualDisplay;
-import de.mossgrabers.framework.graphics.grid.GridChangeListener;
 
 
 /**

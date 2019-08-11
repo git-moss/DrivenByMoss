@@ -81,4 +81,13 @@ public interface IGraphicsDimensions
      * @return The size
      */
     double getInset ();
+
+
+    /**
+     * Get the limit for the maximum value for parameters. The value is in the range of 0 to
+     * upperbound-1.
+     *
+     * @return The upper bound value
+     */
+    int getParameterUpperBound ();
 }

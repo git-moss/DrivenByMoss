@@ -2,13 +2,14 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.graphics.grid;
+package de.mossgrabers.framework.graphics.canvas.component;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.graphics.Align;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.graphics.IGraphicsDimensions;
+import de.mossgrabers.framework.graphics.IGraphicsInfo;
 import de.mossgrabers.framework.utils.Pair;
 
 import java.util.ArrayList;
@@ -16,13 +17,11 @@ import java.util.List;
 
 
 /**
- * An element in the grid which contains several text items. Each item can be selected.
- *
- * Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+ * A component which contains several text items. Each item can be selected.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ListGridElement extends AbstractGridElement
+public class ListComponent implements IComponent
 {
     private final List<Pair<String, Boolean>> items = new ArrayList<> (6);
 
@@ -32,17 +31,23 @@ public class ListGridElement extends AbstractGridElement
      *
      * @param items The list items
      */
-    public ListGridElement (final List<Pair<String, Boolean>> items)
+    public ListComponent (final List<Pair<String, Boolean>> items)
     {
-        super (null, false, null, null, null, false);
         this.items.addAll (items);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void draw (final IGraphicsContext gc, final IGraphicsConfiguration configuration, final IGraphicsDimensions dimensions, final double left, final double width, final double height)
+    public void draw (final IGraphicsInfo info)
     {
+        final IGraphicsContext gc = info.getContext ();
+        final IGraphicsDimensions dimensions = info.getDimensions ();
+        final IGraphicsConfiguration configuration = info.getConfiguration ();
+        final double left = info.getBounds ().getLeft ();
+        final double width = info.getBounds ().getWidth ();
+        final double height = info.getBounds ().getHeight ();
+
         final double separatorSize = dimensions.getSeparatorSize ();
         final double inset = dimensions.getInset ();
 

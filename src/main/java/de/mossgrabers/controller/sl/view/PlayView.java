@@ -9,6 +9,7 @@ import de.mossgrabers.controller.sl.command.trigger.ButtonRowSelectCommand;
 import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
+import de.mossgrabers.framework.Resolution;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
@@ -133,12 +134,12 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
             case 2:
                 this.changeResolution (0);
-                this.surface.getDisplay ().notify (RESOLUTION_TEXTS[this.selectedIndex]);
+                this.surface.getDisplay ().notify (Resolution.getNameAt (this.selectedIndex));
                 break;
 
             case 3:
                 this.changeResolution (127);
-                this.surface.getDisplay ().notify (RESOLUTION_TEXTS[this.selectedIndex]);
+                this.surface.getDisplay ().notify (Resolution.getNameAt (this.selectedIndex));
                 break;
 
             case 4:
@@ -448,8 +449,8 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     private void changeResolution (final int value)
     {
         final boolean isInc = value >= 65;
-        this.selectedIndex = Math.max (0, Math.min (RESOLUTIONS.length - 1, isInc ? this.selectedIndex + 1 : this.selectedIndex - 1));
-        this.getClip ().setStepLength (RESOLUTIONS[this.selectedIndex]);
+        this.selectedIndex = Resolution.change (this.selectedIndex, isInc);
+        this.getClip ().setStepLength (Resolution.getValueAt (this.selectedIndex));
     }
 
 

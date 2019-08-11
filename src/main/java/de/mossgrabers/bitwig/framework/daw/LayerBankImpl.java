@@ -9,7 +9,6 @@ import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ILayerBank;
-import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.data.ILayer;
 
 import com.bitwig.extension.controller.api.CursorDeviceLayer;
@@ -22,10 +21,9 @@ import com.bitwig.extension.controller.api.DeviceLayerBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LayerBankImpl extends AbstractBankImpl<DeviceLayerBank, ILayer> implements ILayerBank
+public class LayerBankImpl extends AbstractChannelBank<DeviceLayerBank, ILayer> implements ILayerBank
 {
     private final CursorDeviceLayer cursorDeviceLayer;
-    private int                     numSends;
     private int                     numDevices;
 
 
@@ -42,11 +40,10 @@ public class LayerBankImpl extends AbstractBankImpl<DeviceLayerBank, ILayer> imp
      */
     public LayerBankImpl (final IHost host, final IValueChanger valueChanger, final DeviceLayerBank layerBank, final CursorDeviceLayer cursorDeviceLayer, final int numLayers, final int numSends, final int numDevices)
     {
-        super (host, valueChanger, layerBank, numLayers);
+        super (host, valueChanger, layerBank, numLayers, 0, numSends);
 
         this.cursorDeviceLayer = cursorDeviceLayer;
 
-        this.numSends = numSends;
         this.numDevices = numDevices;
 
         this.initItems ();
@@ -98,23 +95,6 @@ public class LayerBankImpl extends AbstractBankImpl<DeviceLayerBank, ILayer> imp
             return DAWColors.COLOR_OFF;
         final double [] color = sel.getColor ();
         return DAWColors.getColorIndex (color[0], color[1], color[2]);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void stop ()
-    {
-        // No clips in layers.
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISceneBank getSceneBank ()
-    {
-        // No clips in layers.
-        return null;
     }
 
 

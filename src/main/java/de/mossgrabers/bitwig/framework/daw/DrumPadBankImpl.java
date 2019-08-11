@@ -9,7 +9,6 @@ import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.ILayer;
 
@@ -22,9 +21,8 @@ import com.bitwig.extension.controller.api.DrumPadBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumPadBankImpl extends AbstractBankImpl<DrumPadBank, IDrumPad> implements IDrumPadBank
+public class DrumPadBankImpl extends AbstractChannelBank<DrumPadBank, IDrumPad> implements IDrumPadBank
 {
-    private int numSends;
     private int numDevices;
 
 
@@ -40,9 +38,10 @@ public class DrumPadBankImpl extends AbstractBankImpl<DrumPadBank, IDrumPad> imp
      */
     public DrumPadBankImpl (final IHost host, final IValueChanger valueChanger, final DrumPadBank layerBank, final int numLayers, final int numSends, final int numDevices)
     {
-        super (host, valueChanger, layerBank, numLayers);
-        this.numSends = numSends;
+        super (host, valueChanger, layerBank, numLayers, 0, numSends);
+
         this.numDevices = numDevices;
+
         this.initItems ();
     }
 
@@ -88,22 +87,5 @@ public class DrumPadBankImpl extends AbstractBankImpl<DrumPadBank, IDrumPad> imp
             return DAWColors.COLOR_OFF;
         final double [] color = sel.getColor ();
         return DAWColors.getColorIndex (color[0], color[1], color[2]);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void stop ()
-    {
-        // No clips in layers.
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ISceneBank getSceneBank ()
-    {
-        // Not supported
-        return null;
     }
 }

@@ -7,6 +7,7 @@ package de.mossgrabers.controller.push.view;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.Resolution;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
@@ -111,7 +112,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
         // Clip length/loop area
         final int step = clip.getCurrentStep ();
         final double quartersPerPad = this.getQuartersPerPad ();
-        final int stepsPerMeasure = (int) Math.round (quartersPerPad / RESOLUTIONS[this.selectedIndex]);
+        final int stepsPerMeasure = (int) Math.round (quartersPerPad / Resolution.getValueAt (this.selectedIndex));
         final int currentMeasure = step / stepsPerMeasure;
         final double maxQuarters = quartersPerPad * 64;
         final double start = clip.getLoopStart ();

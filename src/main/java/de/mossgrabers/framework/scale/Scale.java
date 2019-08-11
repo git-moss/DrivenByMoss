@@ -315,15 +315,24 @@ public enum Scale
         10
     });
 
-    private String       name;
-    private int []       intervals;
-    private Set<Integer> scaleKeys = new HashSet<> (7);
+    private String                 name;
+    private int []                 intervals;
+    private Set<Integer>           scaleKeys = new HashSet<> (7);
+
+    private static final String [] SCALE_NAMES;
+    static
+    {
+        final Scale [] values = Scale.values ();
+        SCALE_NAMES = new String [values.length];
+        for (int i = 0; i < values.length; i++)
+            SCALE_NAMES[i] = values[i].name;
+    }
 
 
     /**
      * Constructor.
      *
-     * @param name The name of the color
+     * @param name The name of the scale
      * @param intervals The intervals of the scale
      */
     Scale (final String name, final int [] intervals)
@@ -377,11 +386,7 @@ public enum Scale
      */
     public static String [] getNames ()
     {
-        final Scale [] values = Scale.values ();
-        final String [] scaleNames = new String [values.length];
-        for (int i = 0; i < values.length; i++)
-            scaleNames[i] = values[i].name;
-        return scaleNames;
+        return SCALE_NAMES;
     }
 
 

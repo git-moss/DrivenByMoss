@@ -156,7 +156,7 @@ public class ModelImpl extends AbstractModel
 
     /** {@inheritDoc} */
     @Override
-    public void deactivateSolo ()
+    public void clearSolo ()
     {
         for (int i = 0; i < ALL_TRACKS; i++)
             this.muteSoloTrackBank.getItemAt (i).solo ().set (false);
@@ -165,7 +165,7 @@ public class ModelImpl extends AbstractModel
 
     /** {@inheritDoc} */
     @Override
-    public void deactivateMute ()
+    public void clearMute ()
     {
         for (int i = 0; i < ALL_TRACKS; i++)
             this.muteSoloTrackBank.getItemAt (i).mute ().set (false);

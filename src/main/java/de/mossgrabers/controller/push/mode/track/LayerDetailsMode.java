@@ -97,13 +97,16 @@ public class LayerDetailsMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final Display d = this.surface.getDisplay ().clear ();
         final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
         if (deviceChain == null)
-            d.setRow (1, "                     Please selecta layer...                        ").clearRow (0).clearRow (2).done (0).done (2);
+            d.setRow (1, "                     Please selecta layer...                        ").allDone ();
         else
         {
-            d.clearRow (0).clearRow (1).setBlock (0, 0, "Layer: " + deviceChain.getName ());
+            final String layerName = deviceChain.getName ();
+            d.setBlock (0, 0, "Layer: " + layerName);
+            if (layerName.length () > 10)
+                d.setBlock (0, 1, layerName.substring (10));
             d.setCell (2, 0, "Active").setCell (3, 0, deviceChain.isActivated () ? "On" : "Off");
             d.setCell (2, 1, "");
             d.setCell (3, 1, "");
@@ -113,8 +116,9 @@ public class LayerDetailsMode extends BaseMode
             d.setCell (3, 4, "");
             d.setCell (2, 5, "");
             d.setCell (3, 5, "");
-            d.clearCell (2, 6).clearCell (3, 6);
-            d.setCell (2, 7, "Select").setCell (3, 7, "Color").done (0).done (1).done (2).done (3);
+            d.setCell (2, 7, "Select");
+            d.setCell (3, 7, "Color");
+            d.allDone ();
         }
     }
 
