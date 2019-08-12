@@ -53,7 +53,7 @@ public class MixerMode extends VolumeMode<KontrolMkIIControlSurface, KontrolMkII
             this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_RECARM, track.isRecArm () ? 1 : 0, i);
             this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, track.getVolumeStr (8));
             this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, track.getPanStr (8));
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_NAME, 0, i, track.doesExist () ? "Track " + (track.getPosition () + 1) + "\n\n" + track.getName () : "");
+            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_NAME, 0, i, formatTrackName (track));
 
             final int j = 2 * i;
             vuData[j] = valueChanger.toMidiValue (track.getVuLeft ());
@@ -80,5 +80,16 @@ public class MixerMode extends VolumeMode<KontrolMkIIControlSurface, KontrolMkII
         this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, configuration.isFlipTrackClipNavigation () ? configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState : scrollTracksState);
         this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, configuration.isFlipTrackClipNavigation () ? scrollTracksState : configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState);
         this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, configuration.isFlipTrackClipNavigation () ? scrollTracksState : configuration.isFlipClipSceneNavigation () ? scrollClipsState : scrollScenesState);
+    }
+
+
+    private String formatTrackName (final ITrack track)
+    {
+        if (!track.doesExist ())
+            return "";
+        final String name = track.getName ();
+        if (this.surface.getProtocolVersion () == KontrolMkIIControlSurface.PROTOCOL_VERSION_1)
+            return name;
+        return "Track " + (track.getPosition () + 1) + "\n\n" + name;
     }
 }
