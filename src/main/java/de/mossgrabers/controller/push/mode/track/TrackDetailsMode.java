@@ -8,7 +8,7 @@ import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.controller.push.view.ColorView;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
@@ -156,7 +156,7 @@ public class TrackDetailsMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ().clearRow (0).clearRow (1);
+        final ITextDisplay d = this.surface.getDisplay ().clearRow (0).clearRow (1);
         final ITrack deviceChain = this.getSelectedTrack ();
         if (deviceChain == null)
             d.setRow (1, "                     Please selecta track...                        ").done (0).done (2);
@@ -187,7 +187,7 @@ public class TrackDetailsMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final ITrack deviceChain = this.getSelectedTrack ();
         if (deviceChain == null)
             message.setMessage (3, "Please select a track...");

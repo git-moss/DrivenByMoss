@@ -147,7 +147,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
         // since it comprises part of the temp value
         this.lastCC94Value = 0;
 
-        this.display = new SLDisplay (host, output);
+        this.addTextDisplay (new SLDisplay (host, output));
 
         // Switch to Ableton Automap mode
         this.output.sendSysex (SYSEX_AUTOMAP_ON);
@@ -185,7 +185,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
     @Override
     public void shutdown ()
     {
-        this.display.clear ();
+        this.getDisplay ().clear ();
         this.output.sendSysex (SYSEX_AUTOMAP_OFF);
 
         super.shutdown ();

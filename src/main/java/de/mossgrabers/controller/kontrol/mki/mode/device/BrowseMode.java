@@ -9,7 +9,7 @@ import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.mki.mode.AbstractKontrol1Mode;
 import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
@@ -92,7 +92,7 @@ public class BrowseMode extends AbstractKontrol1Mode
             return;
         }
 
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
         {

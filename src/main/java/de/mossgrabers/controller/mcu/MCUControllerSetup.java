@@ -214,9 +214,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             final IMidiInput input = midiAccess.createInput (i, null);
             final MCUControlSurface surface = new MCUControlSurface (this.surfaces, this.host, this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1), i == 0);
             this.surfaces.add (surface);
-            surface.setDisplay (new MCUDisplay (this.host, output, true, false));
-            surface.setSecondDisplay (new MCUDisplay (this.host, output, false, i == 0));
-            surface.setSegmentDisplay (new MCUSegmentDisplay (output));
+            surface.addTextDisplay (new MCUDisplay (this.host, output, true, false));
+            surface.addTextDisplay (new MCUDisplay (this.host, output, false, i == 0));
+            surface.addTextDisplay (new MCUSegmentDisplay (output));
             surface.getModeManager ().setDefaultMode (Modes.VOLUME);
         }
     }

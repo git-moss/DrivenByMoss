@@ -8,7 +8,10 @@ import de.mossgrabers.framework.command.ContinuousCommandID;
 import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.DummyDisplay;
+import de.mossgrabers.framework.controller.display.IDisplay;
+import de.mossgrabers.framework.controller.display.IGraphicsDisplay;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -22,8 +25,10 @@ import de.mossgrabers.framework.utils.TriggerInfo;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -65,7 +70,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     private final ContinuousInfo [] []                              continuousInfos       = new ContinuousInfo [16] [NUM_INFOS];
     private final int []                                            noteVelocities;
 
-    protected Display                                               display;
+    protected List<ITextDisplay>                                    textDisplays          = new ArrayList<> (1);
+    protected List<IGraphicsDisplay>                                graphicsDisplays      = new ArrayList<> (1);
+
     protected final PadGrid                                         pads;
     protected final Map<Integer, Map<Integer, TriggerCommandID>>    triggerCommands       = new HashMap<> ();
     protected final Map<Integer, Map<Integer, ContinuousCommandID>> continuousCommands    = new HashMap<> ();
@@ -77,6 +84,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     private int []                                                  keyTranslationTable;
 
     private final LatestTaskExecutor                                flushExecutor         = new LatestTaskExecutor ();
+    private final DummyDisplay                                      dummyDisplay;
 
 
     /**
@@ -95,6 +103,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         this.configuration = configuration;
         this.colorManager = colorManager;
         this.pads = padGrid;
+
+        this.dummyDisplay = new DummyDisplay (host);
 
         this.output = output;
         this.input = input;
@@ -144,17 +154,59 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public Display getDisplay ()
+    public ITextDisplay getDisplay ()
     {
-        return this.display;
+        return this.getTextDisplay (0);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setDisplay (final Display display)
+    public ITextDisplay getTextDisplay ()
     {
-        this.display = display;
+        return this.getTextDisplay (0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ITextDisplay getTextDisplay (final int index)
+    {
+        if (index >= this.textDisplays.size ())
+            return this.dummyDisplay;
+        return this.textDisplays.get (index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IGraphicsDisplay getGraphicsDisplay ()
+    {
+        return this.getGraphicsDisplay (0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IGraphicsDisplay getGraphicsDisplay (final int index)
+    {
+        return this.graphicsDisplays.get (index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addTextDisplay (final ITextDisplay display)
+    {
+        this.textDisplays.add (display);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addGraphicsDisplay (final IGraphicsDisplay display)
+    {
+        this.graphicsDisplays.add (display);
     }
 
 
@@ -736,8 +788,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         if (this.pads != null)
             this.pads.turnOff ();
 
-        if (this.display != null)
-            this.display.shutdown ();
+        this.textDisplays.forEach (IDisplay::shutdown);
+        this.graphicsDisplays.forEach (IDisplay::shutdown);
     }
 
 
@@ -1065,8 +1117,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         final View view = this.viewManager.getActiveView ();
         if (view != null)
             view.updateControlSurface ();
-        if (this.display != null)
-            this.display.flush ();
+        this.textDisplays.forEach (ITextDisplay::flush);
     }
 
 

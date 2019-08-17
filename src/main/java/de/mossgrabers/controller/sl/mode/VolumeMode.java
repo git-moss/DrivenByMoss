@@ -7,7 +7,7 @@ package de.mossgrabers.controller.sl.mode;
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.controller.SLDisplay;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
@@ -40,7 +40,7 @@ public class VolumeMode extends AbstractTrackMode<SLControlSurface, SLConfigurat
     @Override
     public void updateDisplay ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
 
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
         if (masterTrack.isSelected ())

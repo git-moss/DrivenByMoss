@@ -25,7 +25,6 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.Relative3ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -139,9 +138,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
             input.createNoteInput ("Drums", "99????", "89????");
         }
 
-        final BeatstepControlSurface surface = new BeatstepControlSurface (this.host, this.colorManager, this.configuration, output, input, this.isPro);
-        this.surfaces.add (surface);
-        surface.setDisplay (new DummyDisplay (this.host));
+        this.surfaces.add (new BeatstepControlSurface (this.host, this.colorManager, this.configuration, output, input, this.isPro));
     }
 
 

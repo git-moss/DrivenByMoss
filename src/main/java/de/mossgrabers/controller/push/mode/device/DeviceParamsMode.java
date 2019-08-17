@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.push.mode.device;
 
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -327,7 +327,7 @@ public class DeviceParamsMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
 
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
@@ -358,7 +358,7 @@ public class DeviceParamsMode extends BaseMode
                 if (device.doesExist ())
                 {
                     if (i == cd.getIndex ())
-                        sb.append (PushDisplay.SELECT_ARROW);
+                        sb.append (Push1Display.SELECT_ARROW);
                     sb.append (device.getName ());
                 }
                 d.setCell (3, i, sb.toString ());
@@ -371,7 +371,7 @@ public class DeviceParamsMode extends BaseMode
             for (int i = 0; i < bank.getPageSize (); i++)
             {
                 final String item = bank.getItem (i);
-                d.setCell (3, i, !item.isEmpty () ? (i == selectedItemIndex ? PushDisplay.SELECT_ARROW : "") + item : "");
+                d.setCell (3, i, !item.isEmpty () ? (i == selectedItemIndex ? Push1Display.SELECT_ARROW : "") + item : "");
             }
         }
 
@@ -383,7 +383,7 @@ public class DeviceParamsMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
         {

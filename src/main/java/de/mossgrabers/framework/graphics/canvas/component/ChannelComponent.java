@@ -309,4 +309,93 @@ public class ChannelComponent extends ChannelSelectComponent
     {
         return this.isActive ? color : ColorEx.dimToGray (color);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode ()
+    {
+        final int prime = 31;
+        int result = super.hashCode ();
+        long temp;
+        temp = Double.doubleToLongBits (this.crossfadeMode);
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        temp = Double.doubleToLongBits (this.editType);
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        result = prime * result + (this.isActive ? 1231 : 1237);
+        result = prime * result + (this.isArm ? 1231 : 1237);
+        result = prime * result + (this.isMute ? 1231 : 1237);
+        result = prime * result + (this.isSolo ? 1231 : 1237);
+        temp = Double.doubleToLongBits (this.modulatedPanValue);
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        temp = Double.doubleToLongBits (this.modulatedVolumeValue);
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        result = prime * result + (this.panText == null ? 0 : this.panText.hashCode ());
+        temp = Double.doubleToLongBits (this.panValue);
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        result = prime * result + (this.type == null ? 0 : this.type.hashCode ());
+        result = prime * result + (this.volumeText == null ? 0 : this.volumeText.hashCode ());
+        temp = Double.doubleToLongBits (this.volumeValue);
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        temp = Double.doubleToLongBits (this.vuValueLeft);
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        temp = Double.doubleToLongBits (this.vuValueRight);
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals (final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (!super.equals (obj))
+            return false;
+        if (this.getClass () != obj.getClass ())
+            return false;
+        final ChannelComponent other = (ChannelComponent) obj;
+        if (Double.doubleToLongBits (this.crossfadeMode) != Double.doubleToLongBits (other.crossfadeMode))
+            return false;
+        if (Double.doubleToLongBits (this.editType) != Double.doubleToLongBits (other.editType))
+            return false;
+        if (this.isActive != other.isActive)
+            return false;
+        if (this.isArm != other.isArm)
+            return false;
+        if (this.isMute != other.isMute)
+            return false;
+        if (this.isSolo != other.isSolo)
+            return false;
+        if (Double.doubleToLongBits (this.modulatedPanValue) != Double.doubleToLongBits (other.modulatedPanValue))
+            return false;
+        if (Double.doubleToLongBits (this.modulatedVolumeValue) != Double.doubleToLongBits (other.modulatedVolumeValue))
+            return false;
+        if (this.panText == null)
+        {
+            if (other.panText != null)
+                return false;
+        }
+        else if (!this.panText.equals (other.panText))
+            return false;
+        if (Double.doubleToLongBits (this.panValue) != Double.doubleToLongBits (other.panValue))
+            return false;
+        if (this.type != other.type)
+            return false;
+        if (this.volumeText == null)
+        {
+            if (other.volumeText != null)
+                return false;
+        }
+        else if (!this.volumeText.equals (other.volumeText))
+            return false;
+        if (Double.doubleToLongBits (this.volumeValue) != Double.doubleToLongBits (other.volumeValue))
+            return false;
+        if (Double.doubleToLongBits (this.vuValueLeft) != Double.doubleToLongBits (other.vuValueLeft))
+            return false;
+        if (Double.doubleToLongBits (this.vuValueRight) != Double.doubleToLongBits (other.vuValueRight))
+            return false;
+        return true;
+    }
 }

@@ -6,7 +6,7 @@ package de.mossgrabers.controller.mcu.mode.device;
 
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mcu.mode.BaseMode;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -48,7 +48,7 @@ public class DeviceParamsMode extends BaseMode
     {
         this.drawDisplay2 ();
 
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
 
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())

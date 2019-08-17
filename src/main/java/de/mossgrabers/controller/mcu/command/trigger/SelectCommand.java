@@ -8,7 +8,7 @@ import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.mode.Modes;
@@ -54,7 +54,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             return;
         }
 
-        final Display display = this.surface.getDisplay ();
+        final ITextDisplay display = this.surface.getDisplay ();
 
         // Select Send channels when Send button is additionally pressed
         if (this.surface.isPressed (MCUControlSurface.MCU_MODE_SENDS))

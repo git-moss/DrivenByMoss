@@ -5,11 +5,11 @@
 package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -130,13 +130,13 @@ public class ScalesMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
 
         final int selIndex = this.scales.getScale ().ordinal ();
         int pos = 0;
-        for (final Pair<String, Boolean> p: PushDisplay.createMenuList (4, Scale.getNames (), selIndex))
+        for (final Pair<String, Boolean> p: Push1Display.createMenuList (4, Scale.getNames (), selIndex))
         {
-            d.setBlock (pos, 0, (p.getValue ().booleanValue () ? PushDisplay.SELECT_ARROW : " ") + p.getKey ());
+            d.setBlock (pos, 0, (p.getValue ().booleanValue () ? Push1Display.SELECT_ARROW : " ") + p.getKey ());
             pos++;
         }
 
@@ -145,8 +145,8 @@ public class ScalesMode extends BaseMode
         final int offset = this.scales.getScaleOffset ();
         for (int i = 0; i < 6; i++)
         {
-            d.setCell (2, i + 1, "  " + (offset == i ? PushDisplay.SELECT_ARROW : " ") + Scales.BASES[i]);
-            d.setCell (3, i + 1, "  " + (offset == 6 + i ? PushDisplay.SELECT_ARROW : " ") + Scales.BASES[6 + i]);
+            d.setCell (2, i + 1, "  " + (offset == i ? Push1Display.SELECT_ARROW : " ") + Scales.BASES[i]);
+            d.setCell (3, i + 1, "  " + (offset == 6 + i ? Push1Display.SELECT_ARROW : " ") + Scales.BASES[6 + i]);
         }
         d.setCell (3, 7, this.scales.isChromatic () ? "Chromatc" : "In Key");
 
@@ -158,7 +158,7 @@ public class ScalesMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
 
         final int selIndex = this.scales.getScale ().ordinal ();
         message.addListElement (6, Scale.getNames (), selIndex);

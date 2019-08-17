@@ -132,4 +132,37 @@ public class ClipListComponent implements IComponent
             gc.strokeRectangle (itemLeft, itemTop + separatorSize, itemWidth, itemHeight - 2 * separatorSize, color, slot.isSelected () ? 2 : 1);
         }
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode ()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.items == null ? 0 : this.items.hashCode ());
+        return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals (final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass () != obj.getClass ())
+            return false;
+        final ClipListComponent other = (ClipListComponent) obj;
+        if (this.items == null)
+        {
+            if (other.items != null)
+                return false;
+        }
+        else if (!this.items.equals (other.items))
+            return false;
+        return true;
+    }
 }

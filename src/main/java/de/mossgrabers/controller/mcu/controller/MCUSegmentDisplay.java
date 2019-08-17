@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.mcu.controller;
 
+import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
@@ -12,7 +13,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MCUSegmentDisplay
+public class MCUSegmentDisplay extends DummyDisplay
 {
     private IMidiOutput output;
     private int []      transportBuffer  = new int [10];
@@ -26,6 +27,8 @@ public class MCUSegmentDisplay
      */
     public MCUSegmentDisplay (final IMidiOutput output)
     {
+        super (null);
+
         this.output = output;
     }
 
@@ -90,11 +93,11 @@ public class MCUSegmentDisplay
     }
 
 
-    /**
-     * Clear the 7-digit displays.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void shutdown ()
     {
+        // Clear the 7-digit displays
         for (int i = 0; i < 12; i++)
             this.output.sendCC (0x40 + i, 0x20);
     }

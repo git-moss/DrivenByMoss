@@ -77,10 +77,51 @@ public class MenuComponent implements IComponent
 
         // TODO should be the same, SEPARATE_COLOR drawing must be changed to be drawn in its own
         // box
-        double menuHeight = 2 * dimensions.getMenuHeight ();
+        final double menuHeight = 2 * dimensions.getMenuHeight ();
         final double trackRowTop = this.footer.getLayout () == LabelLayout.SEPARATE_COLOR ? height - trackRowHeight - unit - dimensions.getSeparatorSize () : height - menuHeight;
         final double h = this.footer.getLayout () == LabelLayout.SEPARATE_COLOR ? height : menuHeight;
 
         this.footer.draw (info.withBounds (trackRowTop, h));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode ()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.footer == null ? 0 : this.footer.hashCode ());
+        result = prime * result + (this.header == null ? 0 : this.header.hashCode ());
+        return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals (final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass () != obj.getClass ())
+            return false;
+        final MenuComponent other = (MenuComponent) obj;
+        if (this.footer == null)
+        {
+            if (other.footer != null)
+                return false;
+        }
+        else if (!this.footer.equals (other.footer))
+            return false;
+        if (this.header == null)
+        {
+            if (other.header != null)
+                return false;
+        }
+        else if (!this.header.equals (other.header))
+            return false;
+        return true;
     }
 }

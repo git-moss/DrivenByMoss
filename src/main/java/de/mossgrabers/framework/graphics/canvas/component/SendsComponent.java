@@ -13,6 +13,8 @@ import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 import de.mossgrabers.framework.graphics.IGraphicsInfo;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 
+import java.util.Arrays;
+
 
 /**
  * An element in the grid which contains a menu and a channels' sends 1-4 or 5-8.
@@ -148,5 +150,39 @@ public class SendsComponent extends ChannelSelectComponent
     protected ColorEx modifyIfOff (final ColorEx color)
     {
         return this.isSendActive ? color : ColorEx.dimToGray (color);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode ()
+    {
+        final int prime = 31;
+        int result = super.hashCode ();
+        result = prime * result + (this.isExMode ? 1231 : 1237);
+        result = prime * result + (this.isSendActive ? 1231 : 1237);
+        result = prime * result + Arrays.hashCode (this.sendData);
+        return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals (final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (!super.equals (obj))
+            return false;
+        if (this.getClass () != obj.getClass ())
+            return false;
+        final SendsComponent other = (SendsComponent) obj;
+        if (this.isExMode != other.isExMode)
+            return false;
+        if (this.isSendActive != other.isSendActive)
+            return false;
+        if (!Arrays.equals (this.sendData, other.sendData))
+            return false;
+        return true;
     }
 }

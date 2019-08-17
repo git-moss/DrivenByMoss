@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.mcu.mode.track;
 
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -58,7 +58,7 @@ public class SendMode extends AbstractTrackMode
         if (!this.drawTrackHeader ())
             return;
 
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final int sendIndex = this.getCurrentSendIndex ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         if (!tb.canEditSend (sendIndex))
@@ -93,7 +93,7 @@ public class SendMode extends AbstractTrackMode
         if (this.surface.getConfiguration ().isDisplayTrackNames ())
             return true;
 
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int sendIndex = this.getCurrentSendIndex ();
         final int extenderOffset = this.surface.getExtenderOffset ();

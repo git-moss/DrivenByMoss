@@ -4,8 +4,8 @@
 
 package de.mossgrabers.controller.sl.controller;
 
-import de.mossgrabers.framework.controller.display.AbstractDisplay;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SLDisplay extends AbstractDisplay
+public class SLDisplay extends AbstractTextDisplay
 {
     /** The right arrow. */
     public static final String     RIGHT_ARROW = ">";
@@ -61,7 +61,7 @@ public class SLDisplay extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Display setBlock (final int row, final int block, final String value)
+    public ITextDisplay setBlock (final int row, final int block, final String value)
     {
         final int cell = 2 * block;
         if (value.length () > 9)
@@ -80,7 +80,7 @@ public class SLDisplay extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Display setCell (final int row, final int column, final int value, final Format format)
+    public ITextDisplay setCell (final int row, final int column, final int value, final Format format)
     {
         this.cells[row * this.noOfCells + column] = pad (Integer.toString (value), 8) + " ";
         return this;
@@ -89,7 +89,7 @@ public class SLDisplay extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Display setCell (final int row, final int column, final String value)
+    public ITextDisplay setCell (final int row, final int column, final String value)
     {
         try
         {

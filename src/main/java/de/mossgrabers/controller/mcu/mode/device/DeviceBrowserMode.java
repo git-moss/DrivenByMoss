@@ -6,7 +6,7 @@ package de.mossgrabers.controller.mcu.mode.device;
 
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mcu.mode.BaseMode;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -77,7 +77,7 @@ public class DeviceBrowserMode extends BaseMode
     public void updateDisplay ()
     {
         final IBrowser browser = this.model.getBrowser ();
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final boolean isPresetSession = browser.isPresetContentType ();
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (isPresetSession && !(browser.isActive () && cd.doesExist ()))

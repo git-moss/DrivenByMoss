@@ -4,10 +4,10 @@
 
 package de.mossgrabers.controller.push.mode.device;
 
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.controller.push.mode.BaseMode;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
@@ -174,7 +174,7 @@ public class DeviceBrowserMode extends BaseMode
             return;
         }
 
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
 
         switch (this.selectionMode)
         {
@@ -183,7 +183,7 @@ public class DeviceBrowserMode extends BaseMode
                 final String deviceName = this.model.getCursorDevice ().getName ();
                 String selectedContentType = browser.getSelectedContentType ();
                 if (this.filterColumn == -1)
-                    selectedContentType = PushDisplay.SELECT_ARROW + selectedContentType;
+                    selectedContentType = Push1Display.SELECT_ARROW + selectedContentType;
 
                 d.setCell (0, 7, selectedContentType).setBlock (3, 0, " Selected Device:").setBlock (3, 1, deviceName.length () == 0 ? "None" : deviceName);
                 final boolean isPresetSession = browser.isPresetContentType ();
@@ -194,7 +194,7 @@ public class DeviceBrowserMode extends BaseMode
                     final IBrowserColumn column = this.getFilterColumn (i);
                     String name = column == null ? "" : StringUtils.shortenAndFixASCII (column.getName (), 8);
                     if (i == this.filterColumn)
-                        name = PushDisplay.SELECT_ARROW + name;
+                        name = Push1Display.SELECT_ARROW + name;
                     d.setCell (0, i, name).setCell (1, i, getColumnName (column));
                 }
                 break;
@@ -211,7 +211,7 @@ public class DeviceBrowserMode extends BaseMode
                 for (int i = 0; i < 16; i++)
                 {
                     if (i < results.length)
-                        d.setBlock (i % 4, i / 4, (results[i].isSelected () ? PushDisplay.SELECT_ARROW : " ") + results[i].getName (16));
+                        d.setBlock (i % 4, i / 4, (results[i].isSelected () ? Push1Display.SELECT_ARROW : " ") + results[i].getName (16));
                     else
                         d.setBlock (i % 4, i / 4, "");
                 }
@@ -221,7 +221,7 @@ public class DeviceBrowserMode extends BaseMode
                 final IBrowserColumnItem [] items = browser.getFilterColumn (this.filterColumn).getItems ();
                 for (int i = 0; i < 16; i++)
                 {
-                    String text = (items[i].isSelected () ? PushDisplay.SELECT_ARROW : " ") + items[i].getName () + "                ";
+                    String text = (items[i].isSelected () ? Push1Display.SELECT_ARROW : " ") + items[i].getName () + "                ";
                     if (!items[i].getName ().isEmpty ())
                     {
                         final String hitStr = "(" + items[i].getHitCount () + ")";
@@ -250,7 +250,7 @@ public class DeviceBrowserMode extends BaseMode
             return;
         }
 
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         switch (this.selectionMode)
         {
             case DeviceBrowserMode.SELECTION_OFF:

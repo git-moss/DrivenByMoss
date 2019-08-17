@@ -12,7 +12,6 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISendBank;
@@ -89,7 +88,6 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
         final GenericFlexiControlSurface surface = new GenericFlexiControlSurface (this.host, this.model, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
-        surface.setDisplay (new DummyDisplay (this.host));
 
         this.configuration.setCommandObserver (this);
     }

@@ -59,7 +59,6 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
@@ -145,7 +144,6 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
                 "90????" /* Note on */);
         final LaunchpadControlSurface surface = new LaunchpadControlSurface (this.host, this.colorManager, this.configuration, output, input, this.isPro);
         this.surfaces.add (surface);
-        surface.setDisplay (new DummyDisplay (this.host));
         surface.setLaunchpadToStandalone ();
     }
 

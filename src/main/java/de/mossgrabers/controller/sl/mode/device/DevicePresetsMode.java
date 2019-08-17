@@ -7,7 +7,7 @@ package de.mossgrabers.controller.sl.mode.device;
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.controller.SLDisplay;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
@@ -118,7 +118,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
     @Override
     public void updateDisplay ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
 
         if (!this.model.hasSelectedDevice ())
         {

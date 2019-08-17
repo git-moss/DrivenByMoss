@@ -5,12 +5,20 @@
 package de.mossgrabers.framework.controller.display;
 
 /**
- * Interface to a display.
+ * Interface to a text only display.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface Display
+public interface ITextDisplay extends IDisplay
 {
+    /**
+     * Clears the display.
+     *
+     * @return The instance for concatenated calls
+     */
+    ITextDisplay clear ();
+
+
     /**
      * Clear a cell.
      *
@@ -18,7 +26,7 @@ public interface Display
      * @param column The column of the cell
      * @return The instance for concatenated calls
      */
-    Display clearCell (int row, int column);
+    ITextDisplay clearCell (int row, int column);
 
 
     /**
@@ -30,7 +38,7 @@ public interface Display
      * @param format How to format the value
      * @return The instance for concatenated calls
      */
-    Display setCell (int row, int column, int value, Format format);
+    ITextDisplay setCell (int row, int column, int value, Format format);
 
 
     /**
@@ -41,7 +49,7 @@ public interface Display
      * @param value The text to write into the cell
      * @return The instance for concatenated calls
      */
-    Display setCell (int row, int column, String value);
+    ITextDisplay setCell (int row, int column, String value);
 
 
     /**
@@ -52,7 +60,7 @@ public interface Display
      * @param value The text to write into the block
      * @return The instance for concatenated calls
      */
-    Display setBlock (int row, int block, String value);
+    ITextDisplay setBlock (int row, int block, String value);
 
 
     /**
@@ -62,15 +70,7 @@ public interface Display
      * @param str The text to set. It must match the exact number of characters of a row!
      * @return The instance for concatenated calls
      */
-    Display setRow (final int row, final String str);
-
-
-    /**
-     * Clear all rows.
-     *
-     * @return The instance for concatenated calls
-     */
-    Display clear ();
+    ITextDisplay setRow (final int row, final String str);
 
 
     /**
@@ -79,7 +79,7 @@ public interface Display
      * @param row The row to clear
      * @return The instance for concatenated calls
      */
-    Display clearRow (final int row);
+    ITextDisplay clearRow (final int row);
 
 
     /**
@@ -89,7 +89,7 @@ public interface Display
      * @param block The block to clear
      * @return The instance for concatenated calls
      */
-    public Display clearBlock (final int row, final int block);
+    public ITextDisplay clearBlock (final int row, final int block);
 
 
     /**
@@ -98,7 +98,7 @@ public interface Display
      * @param column The column to clear
      * @return The instance for concatenated calls
      */
-    Display clearColumn (final int column);
+    ITextDisplay clearColumn (final int column);
 
 
     /**
@@ -107,7 +107,7 @@ public interface Display
      * @param row The row
      * @return The instance for concatenated calls
      */
-    Display done (final int row);
+    ITextDisplay done (final int row);
 
 
     /**
@@ -115,7 +115,7 @@ public interface Display
      *
      * @return The instance for concatenated calls
      */
-    Display allDone ();
+    ITextDisplay allDone ();
 
 
     /**
@@ -128,23 +128,9 @@ public interface Display
 
 
     /**
-     * Displays a notification message on the screen (in the DAW).
-     *
-     * @param message The message to display
-     */
-    void notify (final String message);
-
-
-    /**
      * Flushes (only) the changed texts of all rows.
      */
     void flush ();
-
-
-    /**
-     * If there is any cleanup necessary.
-     */
-    void shutdown ();
 
 
     /**

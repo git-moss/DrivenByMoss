@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.mcu.mode.track;
 
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -49,7 +49,7 @@ public class PanMode extends AbstractTrackMode
         if (!this.drawTrackHeader ())
             return;
 
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
@@ -72,7 +72,7 @@ public class PanMode extends AbstractTrackMode
             return true;
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {

@@ -4,8 +4,8 @@
 
 package de.mossgrabers.controller.slmkiii.controller;
 
-import de.mossgrabers.framework.controller.display.AbstractDisplay;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SLMkIIIDisplay extends AbstractDisplay
+public class SLMkIIIDisplay extends AbstractTextDisplay
 {
     private static final String    MKIII_SYSEX_HEADER               = "F0 00 20 29 02 0A 01 ";
     private static final String    MKIII_SYSEX_LAYOUT_COMMAND       = MKIII_SYSEX_HEADER + "01 %02d F7";
@@ -118,7 +118,7 @@ public class SLMkIIIDisplay extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Display setCell (final int row, final int column, final int value, final Format format)
+    public ITextDisplay setCell (final int row, final int column, final int value, final Format format)
     {
         this.setCell (row, column, Integer.toString (value));
         return this;

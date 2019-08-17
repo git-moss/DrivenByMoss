@@ -132,7 +132,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         usbDevice.setCallback (surface);
         this.surfaces.add (surface);
         final Kontrol1Display display = new Kontrol1Display (this.host, this.valueChanger.getUpperBound (), this.configuration, usbDevice);
-        surface.setDisplay (display);
+        surface.addTextDisplay (display);
 
         surface.getModeManager ().setDefaultMode (Modes.TRACK);
     }

@@ -33,9 +33,10 @@ import de.mossgrabers.controller.push.command.trigger.ShiftCommand;
 import de.mossgrabers.controller.push.command.trigger.SoloCommand;
 import de.mossgrabers.controller.push.command.trigger.TrackCommand;
 import de.mossgrabers.controller.push.command.trigger.VolumeCommand;
+import de.mossgrabers.controller.push.controller.Push1Display;
+import de.mossgrabers.controller.push.controller.Push2Display;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.controller.push.mode.AccentMode;
 import de.mossgrabers.controller.push.mode.AutomationMode;
 import de.mossgrabers.controller.push.mode.ConfigurationMode;
@@ -225,16 +226,15 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput ("Pads", "80????" /* Note off */,
                 "90????" /* Note on */, "B040??" /* Sustainpedal */);
-        final PushControlSurface surface = new PushControlSurface (this.model.getHost (), this.colorManager, this.configuration, output, input);
+        final PushControlSurface surface = new PushControlSurface (this.host, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
-        surface.setDisplay (this.createDisplay (output));
+
+        if (this.isPush2)
+            surface.addGraphicsDisplay (new Push2Display (this.host, this.valueChanger.getUpperBound (), this.configuration));
+        else
+            surface.addTextDisplay (new Push1Display (this.host, this.valueChanger.getUpperBound (), output, this.configuration));
+
         surface.getModeManager ().setDefaultMode (Modes.TRACK);
-    }
-
-
-    protected PushDisplay createDisplay (final IMidiOutput output)
-    {
-        return new PushDisplay (this.model.getHost (), this.isPush2, this.valueChanger.getUpperBound (), output, this.configuration);
     }
 
 
@@ -352,7 +352,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             else
                 this.host.error ("Mode " + debugMode + " not registered.");
         });
-        this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, this.getSurface ().getDisplay ()::showDebugWindow);
+        this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, this.getSurface ().getGraphicsDisplay ()::showDebugWindow);
 
         this.configuration.addSettingObserver (PushConfiguration.DISPLAY_SCENES_CLIPS, () -> {
             if (Views.isSessionView (this.getSurface ().getViewManager ().getActiveViewId ()))

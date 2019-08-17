@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.maschine.mikro.mk3.view;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -38,7 +38,7 @@ public class ParameterView extends BaseView
     protected void executeFunction (final int padIndex)
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final Display display = this.surface.getDisplay ();
+        final ITextDisplay display = this.surface.getDisplay ();
         if (!cursorDevice.doesExist ())
         {
             display.notify ("No device selected.");

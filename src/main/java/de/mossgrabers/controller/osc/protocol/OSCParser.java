@@ -6,7 +6,7 @@ package de.mossgrabers.controller.osc.protocol;
 
 import de.mossgrabers.controller.osc.OSCConfiguration;
 import de.mossgrabers.controller.osc.OSCControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
@@ -55,7 +55,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
     private static final Pattern    RGB_COLOR_PATTERN = Pattern.compile ("(rgb|RGB)\\((\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?)\\)");
 
     private final OSCControlSurface surface;
-    private final Display           display;
+    private final ITextDisplay           display;
     private final KeyManager        keyManager;
 
 

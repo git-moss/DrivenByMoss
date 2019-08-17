@@ -203,7 +203,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         midiAccess.createInput (1, this.isMkII ? "Novation SL MkII (Keyboard)" : "Novation SL MkI (Keyboard)", "80????", "90????", "B0????", "D0????", "E0????");
         final IHost hostProxy = this.model.getHost ();
         final SLControlSurface surface = new SLControlSurface (hostProxy, this.colorManager, this.configuration, output, input, this.isMkII);
-        surface.setDisplay (new SLDisplay (hostProxy, output));
+        surface.addTextDisplay (new SLDisplay (hostProxy, output));
         this.surfaces.add (surface);
     }
 

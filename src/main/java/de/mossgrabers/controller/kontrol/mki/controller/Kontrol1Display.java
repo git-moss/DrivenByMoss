@@ -5,9 +5,9 @@
 package de.mossgrabers.controller.kontrol.mki.controller;
 
 import de.mossgrabers.controller.kontrol.mki.Kontrol1Configuration;
-import de.mossgrabers.framework.controller.display.AbstractDisplay;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 
 
@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.IHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Kontrol1Display extends AbstractDisplay
+public class Kontrol1Display extends AbstractTextDisplay
 {
     private static final String [] SPACES =
     {
@@ -75,7 +75,7 @@ public class Kontrol1Display extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public AbstractDisplay clear ()
+    public ITextDisplay clear ()
     {
         for (int i = 0; i < 9; i++)
         {
@@ -130,7 +130,7 @@ public class Kontrol1Display extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Display setCell (final int row, final int column, final int value, final Format format)
+    public ITextDisplay setCell (final int row, final int column, final int value, final Format format)
     {
         this.setCell (row, column, Integer.toString (value));
         return this;
@@ -234,6 +234,6 @@ public class Kontrol1Display extends AbstractDisplay
         this.host.scheduleTask ( () -> {
             this.isNotificationActive = false;
             this.forceFlush ();
-        }, AbstractDisplay.NOTIFICATION_TIME);
+        }, AbstractTextDisplay.NOTIFICATION_TIME);
     }
 }

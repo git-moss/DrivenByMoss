@@ -9,7 +9,7 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -109,7 +109,7 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
             return;
         if (!this.model.canSelectedTrackHoldNotes ())
             return;
-        final Display display = this.surface.getDisplay ();
+        final ITextDisplay display = this.surface.getDisplay ();
         String name;
         switch (scene)
         {

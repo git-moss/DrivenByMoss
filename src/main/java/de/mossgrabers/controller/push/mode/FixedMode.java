@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.push.mode;
 
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -84,7 +84,7 @@ public class FixedMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         d.clear ().setBlock (1, 0, "Create Clip (leng").setBlock (1, 1, "th not stored):");
         final int newClipLength = this.surface.getConfiguration ().getNewClipLength ();
         d.setBlock (2, 0, "New Clip Length:");
@@ -92,7 +92,7 @@ public class FixedMode extends BaseMode
         {
             final String newClipLengthValue = AbstractConfiguration.getNewClipLengthValue (i);
             d.setCell (0, i, newClipLengthValue);
-            d.setCell (3, i, (newClipLength == i ? PushDisplay.SELECT_ARROW : "") + newClipLengthValue);
+            d.setCell (3, i, (newClipLength == i ? Push1Display.SELECT_ARROW : "") + newClipLengthValue);
         }
         d.allDone ();
     }
@@ -103,7 +103,7 @@ public class FixedMode extends BaseMode
     public void updateDisplay2 ()
     {
         final int newClipLength = this.surface.getConfiguration ().getNewClipLength ();
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < 8; i++)
         {
             final String newClipLengthValue = AbstractConfiguration.getNewClipLengthValue (i);

@@ -9,8 +9,8 @@ import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
@@ -101,7 +101,7 @@ public class MasterMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final IMasterTrack master = this.model.getMasterTrack ();
         d.setRow (0, MasterMode.PARAM_NAMES).setCell (1, 0, master.getVolumeStr (8)).setCell (1, 1, master.getPanStr (8));
         d.clearCell (1, 2).clearCell (1, 3).setBlock (1, 2, "Audio Engine").setBlock (1, 3, this.model.getProject ().getName ()).done (1);
@@ -118,7 +118,7 @@ public class MasterMode extends BaseMode
     {
         final IMasterTrack master = this.model.getMasterTrack ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final boolean enableVUMeters = this.surface.getConfiguration ().isEnableVUMeters ();
         final int vuR = valueChanger.toDisplayValue (enableVUMeters ? master.getVuRight () : 0);
         final int vuL = valueChanger.toDisplayValue (enableVUMeters ? master.getVuLeft () : 0);

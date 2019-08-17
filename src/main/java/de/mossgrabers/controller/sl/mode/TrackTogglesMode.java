@@ -6,7 +6,7 @@ package de.mossgrabers.controller.sl.mode;
 
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -42,7 +42,7 @@ public class TrackTogglesMode extends AbstractTrackMode<SLControlSurface, SLConf
     public void updateDisplay ()
     {
         final ITrack t = this.model.getSelectedTrack ();
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         if (t == null)
         {
             d.setRow (0, "                        Please select a track...                       ").clearRow (2).done (2);

@@ -124,10 +124,16 @@ public class DisplayModel
         if (this.executor.isShutdown ())
             return;
 
-        this.info = new ModelInfo (this.notificationMessage.get (), this.columns);
+        final ModelInfo newInfo = new ModelInfo (this.notificationMessage.get (), this.columns);
         this.columns.clear ();
+
+        // Only update if there are changes
+        if (this.info.equals (newInfo))
+            return;
+
+        this.info = newInfo;
         for (final GridChangeListener listener: this.listeners)
-            listener.gridHasChanged ();
+            listener.render (this.info);
     }
 
 
@@ -481,16 +487,5 @@ public class DisplayModel
     public void addSlotListElement (final List<Pair<ITrack, ISlot>> slots)
     {
         this.columns.add (new ClipListComponent (slots));
-    }
-
-
-    /**
-     * Get the drawing info object.
-     *
-     * @return The info.
-     */
-    public ModelInfo getInfo ()
-    {
-        return this.info;
     }
 }

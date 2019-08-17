@@ -27,7 +27,6 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISendBank;
@@ -121,9 +120,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput ("Akai APCmini");
-        final APCminiControlSurface surface = new APCminiControlSurface (this.host, this.colorManager, this.configuration, output, input);
-        this.surfaces.add (surface);
-        surface.setDisplay (new DummyDisplay (this.host));
+        this.surfaces.add (new APCminiControlSurface (this.host, this.colorManager, this.configuration, output, input));
     }
 
 

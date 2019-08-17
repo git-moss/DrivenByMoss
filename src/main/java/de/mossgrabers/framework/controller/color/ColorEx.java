@@ -219,4 +219,40 @@ public class ColorEx
     {
         return this.blueValue;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode ()
+    {
+        final int prime = 31;
+        int result = 1;
+        long temp;
+        temp = Double.doubleToLongBits (this.blueValue);
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        temp = Double.doubleToLongBits (this.greenValue);
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        temp = Double.doubleToLongBits (this.redValue);
+        result = prime * result + (int) (temp ^ temp >>> 32);
+        return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals (final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass () != obj.getClass ())
+            return false;
+        final ColorEx other = (ColorEx) obj;
+        if (Double.doubleToLongBits (this.blueValue) != Double.doubleToLongBits (other.blueValue))
+            return false;
+        if (Double.doubleToLongBits (this.greenValue) != Double.doubleToLongBits (other.greenValue))
+            return false;
+        return Double.doubleToLongBits (this.redValue) == Double.doubleToLongBits (other.redValue);
+    }
 }

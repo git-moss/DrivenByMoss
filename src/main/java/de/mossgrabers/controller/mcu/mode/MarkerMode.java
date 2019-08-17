@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.mcu.mode;
 
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IMarkerBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMarker;
@@ -45,7 +45,7 @@ public class MarkerMode extends BaseMode
     @Override
     public void updateDisplay ()
     {
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
 
         final IMarkerBank markerBank = this.model.getMarkerBank ();
         final int extenderOffset = this.surface.getExtenderOffset ();

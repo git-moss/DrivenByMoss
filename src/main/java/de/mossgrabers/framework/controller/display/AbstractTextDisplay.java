@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractDisplay implements Display
+public abstract class AbstractTextDisplay implements ITextDisplay
 {
     /** Time to keep a notification displayed in ms. */
     public static final int NOTIFICATION_TIME = 1000;
@@ -43,7 +43,7 @@ public abstract class AbstractDisplay implements Display
      * @param noOfCells The number of cells that the display supports
      * @param noOfCharacters The number of characters of 1 row that the display supports
      */
-    public AbstractDisplay (final IHost host, final IMidiOutput output, final int noOfLines, final int noOfCells, final int noOfCharacters)
+    public AbstractTextDisplay (final IHost host, final IMidiOutput output, final int noOfLines, final int noOfCells, final int noOfCharacters)
     {
         this.host = host;
         this.output = output;
@@ -68,7 +68,7 @@ public abstract class AbstractDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public AbstractDisplay setRow (final int row, final String str)
+    public ITextDisplay setRow (final int row, final String str)
     {
         this.message[row] = str;
         return this;
@@ -77,7 +77,7 @@ public abstract class AbstractDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public AbstractDisplay clear ()
+    public ITextDisplay clear ()
     {
         for (int i = 0; i < this.noOfLines; i++)
             this.clearRow (i);
@@ -87,7 +87,7 @@ public abstract class AbstractDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public AbstractDisplay clearRow (final int row)
+    public ITextDisplay clearRow (final int row)
     {
         for (int i = 0; i < 4; i++)
             this.clearBlock (row, i);
@@ -97,7 +97,7 @@ public abstract class AbstractDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public AbstractDisplay clearBlock (final int row, final int block)
+    public ITextDisplay clearBlock (final int row, final int block)
     {
         final int cell = 2 * block;
         this.clearCell (row, cell);
@@ -108,7 +108,7 @@ public abstract class AbstractDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public AbstractDisplay clearColumn (final int column)
+    public ITextDisplay clearColumn (final int column)
     {
         for (int i = 0; i < this.noOfLines; i++)
             this.clearCell (i, column);
@@ -118,7 +118,7 @@ public abstract class AbstractDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public AbstractDisplay done (final int row)
+    public ITextDisplay done (final int row)
     {
         final int index = row * this.noOfCells;
         this.message[row] = "";
@@ -130,7 +130,7 @@ public abstract class AbstractDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public AbstractDisplay allDone ()
+    public ITextDisplay allDone ()
     {
         for (int row = 0; row < this.noOfLines; row++)
             this.done (row);
@@ -144,7 +144,6 @@ public abstract class AbstractDisplay implements Display
     {
         if (message == null)
             return;
-
         this.host.showNotification (message);
         this.notifyOnDisplay (message);
     }
@@ -160,7 +159,7 @@ public abstract class AbstractDisplay implements Display
         this.host.scheduleTask ( () -> {
             this.isNotificationActive = false;
             this.forceFlush ();
-        }, AbstractDisplay.NOTIFICATION_TIME);
+        }, AbstractTextDisplay.NOTIFICATION_TIME);
     }
 
 

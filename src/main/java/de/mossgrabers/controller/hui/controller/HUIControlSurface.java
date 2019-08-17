@@ -265,8 +265,6 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
     public static final int                                                    KNOB_LED_MODE_WRAP       = 2;
     public static final int                                                    KNOB_LED_MODE_SPREAD     = 3;
 
-    private HUISegmentDisplay                                                  segmentDisplay;
-    private HUIMainDisplay                                                     mainDisplay;
     private int []                                                             knobValues               = new int [8];
 
     // The currently selected zone (area of a group of buttons)
@@ -310,17 +308,6 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
             this.knobCommands[i] = new KnobRowModeCommand<> (i, model, this);
         }
         this.playPositionCommand = new PlayPositionCommand<> (model, this);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void shutdown ()
-    {
-        super.shutdown ();
-
-        this.segmentDisplay.shutdown ();
-        this.mainDisplay.shutdown ();
     }
 
 
@@ -446,35 +433,13 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
 
 
     /**
-     * Set the segment display.
-     *
-     * @param segmentDisplay The segment display
-     */
-    public void setSegmentDisplay (final HUISegmentDisplay segmentDisplay)
-    {
-        this.segmentDisplay = segmentDisplay;
-    }
-
-
-    /**
      * Get the segment display.
      *
      * @return The segment display
      */
     public HUISegmentDisplay getSegmentDisplay ()
     {
-        return this.segmentDisplay;
-    }
-
-
-    /**
-     * Set the main display.
-     *
-     * @param mainDisplay The main display
-     */
-    public void setMainDisplay (final HUIMainDisplay mainDisplay)
-    {
-        this.mainDisplay = mainDisplay;
+        return (HUISegmentDisplay) this.getTextDisplay (2);
     }
 
 
@@ -485,7 +450,7 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
      */
     public HUIMainDisplay getMainDisplay ()
     {
-        return this.mainDisplay;
+        return (HUIMainDisplay) this.getTextDisplay (1);
     }
 
 
@@ -494,16 +459,5 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
     public boolean isGridNote (final int note)
     {
         return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void scheduledFlush ()
-    {
-        super.scheduledFlush ();
-
-        if (this.mainDisplay != null)
-            this.mainDisplay.flush ();
     }
 }

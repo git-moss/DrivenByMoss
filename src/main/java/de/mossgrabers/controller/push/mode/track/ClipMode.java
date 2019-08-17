@@ -8,7 +8,7 @@ import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.view.ColorView;
 import de.mossgrabers.controller.push.view.ColorView.SelectMode;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
@@ -101,7 +101,7 @@ public class ClipMode extends AbstractTrackMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final IClip clip = this.model.getClip ();
         d.setCell (0, 0, "PlayStrt").setCell (1, 0, this.formatMeasures (clip.getPlayStart (), 1));
         d.setCell (0, 1, "Play End").setCell (1, 1, this.formatMeasures (clip.getPlayEnd (), 1));
@@ -118,7 +118,7 @@ public class ClipMode extends AbstractTrackMode
     @Override
     public void updateDisplay2 ()
     {
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
 
         if (this.displayMidiNotes)
         {

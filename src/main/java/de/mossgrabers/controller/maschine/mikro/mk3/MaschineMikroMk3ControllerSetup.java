@@ -48,7 +48,6 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
@@ -147,7 +146,6 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         this.colorManager.registerColor (PadGrid.GRID_OFF, 0);
         final MaschineMikroMk3ControlSurface surface = new MaschineMikroMk3ControlSurface (this.host, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
-        surface.setDisplay (new DummyDisplay (this.host));
     }
 
 

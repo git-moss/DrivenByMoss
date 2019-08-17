@@ -6,8 +6,8 @@ package de.mossgrabers.controller.push.mode.track;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -70,7 +70,7 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final int sendIndex = this.getCurrentSendIndex ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
@@ -101,7 +101,7 @@ public class SendMode extends AbstractTrackMode
         this.updateTrackMenu (5 + sendIndex % 4);
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
         final int sendOffset = this.surface.getConfiguration ().isSendsAreToggled () ? 4 : 0;

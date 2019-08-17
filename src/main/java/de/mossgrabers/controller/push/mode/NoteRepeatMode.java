@@ -4,11 +4,11 @@
 
 package de.mossgrabers.controller.push.mode;
 
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.framework.Resolution;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.INoteInput;
@@ -88,11 +88,11 @@ public class NoteRepeatMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
         d.setBlock (2, 0, "Repeat Length:");
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         for (int i = 0; i < 8; i++)
-            d.setCell (3, i, (this.isPeriodSelected (selectedTrack, i) ? PushDisplay.SELECT_ARROW : "") + Resolution.getNameAt (i));
+            d.setCell (3, i, (this.isPeriodSelected (selectedTrack, i) ? Push1Display.SELECT_ARROW : "") + Resolution.getNameAt (i));
         d.allDone ();
     }
 
@@ -101,7 +101,7 @@ public class NoteRepeatMode extends BaseMode
     @Override
     public void updateDisplay2 ()
     {
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         for (int i = 0; i < 8; i++)
             message.addOptionElement ("", "", false, i == 0 ? "Repeat Length" : "", Resolution.getNameAt (i), this.isPeriodSelected (selectedTrack, i), false);

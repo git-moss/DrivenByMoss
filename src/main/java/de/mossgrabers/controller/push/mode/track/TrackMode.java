@@ -7,8 +7,8 @@ package de.mossgrabers.controller.push.mode.track;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -207,7 +207,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
         final ITrack t = this.model.getSelectedTrack ();
         if (t == null)
             d.setRow (1, "                     Please selecta track...                        ").done (0).done (2);
@@ -263,7 +263,7 @@ public class TrackMode extends AbstractTrackMode
         this.updateMenuItems (0);
 
         final PushConfiguration config = this.surface.getConfiguration ();
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final boolean displayCrossfader = config.isDisplayCrossfader ();
         for (int i = 0; i < 8; i++)
         {

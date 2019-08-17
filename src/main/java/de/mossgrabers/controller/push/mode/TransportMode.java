@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.push.mode;
 
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
@@ -115,16 +115,16 @@ public class TransportMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final ITransport transport = this.model.getTransport ();
         final String preroll = transport.getPreroll ();
         final double tempo = transport.getTempo ();
         d.clear ();
         d.setBlock (2, 0, "Pre-roll");
-        d.setCell (3, 0, (TransportConstants.PREROLL_NONE.equals (preroll) ? PushDisplay.SELECT_ARROW : " ") + "None");
-        d.setCell (3, 1, (TransportConstants.PREROLL_1_BAR.equals (preroll) ? PushDisplay.SELECT_ARROW : " ") + "1 Bar");
-        d.setCell (3, 2, (TransportConstants.PREROLL_2_BARS.equals (preroll) ? PushDisplay.SELECT_ARROW : " ") + "2 Bars");
-        d.setCell (3, 3, (TransportConstants.PREROLL_4_BARS.equals (preroll) ? PushDisplay.SELECT_ARROW : " ") + "4 Bars");
+        d.setCell (3, 0, (TransportConstants.PREROLL_NONE.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "None");
+        d.setCell (3, 1, (TransportConstants.PREROLL_1_BAR.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "1 Bar");
+        d.setCell (3, 2, (TransportConstants.PREROLL_2_BARS.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "2 Bars");
+        d.setCell (3, 3, (TransportConstants.PREROLL_4_BARS.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "4 Bars");
         d.setBlock (0, 0, "Play Metro during").setBlock (0, 1, "Pre-roll?");
         d.setCell (1, 0, transport.isPrerollMetronomeEnabled () ? " Yes" : " No");
         d.setCell (0, 4, "Tempo").setCell (1, 4, transport.formatTempo (tempo)).setCell (2, 4, formatTempoBars (tempo));
@@ -141,7 +141,7 @@ public class TransportMode extends BaseMode
         final String preroll = transport.getPreroll ();
         final double tempo = transport.getTempo ();
 
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         message.addOptionElement ("Play Metronome during Pre-Roll?", transport.isPrerollMetronomeEnabled () ? "Yes" : "No", transport.isPrerollMetronomeEnabled (), "Pre-roll", "None", TransportConstants.PREROLL_NONE.equals (preroll), false);
         message.addOptionElement ("", "", false, "", "1 Bar", TransportConstants.PREROLL_1_BAR.equals (preroll), false);
         message.addOptionElement ("", "", false, "", "2 Bars", TransportConstants.PREROLL_2_BARS.equals (preroll), false);
@@ -160,9 +160,9 @@ public class TransportMode extends BaseMode
         final int noOfBars = (int) Math.round (16 * v / (TransportConstants.MAX_TEMPO - TransportConstants.MIN_TEMPO));
         final StringBuilder n = new StringBuilder ();
         for (int j = 0; j < noOfBars / 2; j++)
-            n.append (PushDisplay.BARS_TWO);
+            n.append (Push1Display.BARS_TWO);
         if (noOfBars % 2 == 1)
-            n.append (PushDisplay.BARS_ONE);
-        return PushDisplay.pad (n.toString (), 8, PushDisplay.BARS_NON);
+            n.append (Push1Display.BARS_ONE);
+        return Push1Display.pad (n.toString (), 8, Push1Display.BARS_NON);
     }
 }

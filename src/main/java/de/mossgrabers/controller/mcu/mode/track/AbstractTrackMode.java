@@ -6,7 +6,7 @@ package de.mossgrabers.controller.mcu.mode.track;
 
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mcu.mode.BaseMode;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -37,7 +37,7 @@ public abstract class AbstractTrackMode extends BaseMode
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
 
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
 
         // Format track names
         final int extenderOffset = this.surface.getExtenderOffset ();

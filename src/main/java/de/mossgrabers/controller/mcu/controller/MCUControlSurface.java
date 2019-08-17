@@ -195,8 +195,6 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     public static final int         KNOB_LED_MODE_WRAP       = 2;
     public static final int         KNOB_LED_MODE_SPREAD     = 3;
 
-    private MCUDisplay              secondDisplay;
-    private MCUSegmentDisplay       segmentDisplay;
     private int                     activeVuMode             = VUMODE_LED;
     private int []                  knobValues               = new int [8];
 
@@ -251,9 +249,6 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         output.sendPitchbend (8, 0, 0);
 
         super.shutdown ();
-
-        this.secondDisplay.shutdown ();
-        this.segmentDisplay.shutdown ();
     }
 
 
@@ -334,35 +329,13 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
 
     /**
-     * Set the second display (only on icon QCon Pro X).
-     *
-     * @param secondDisplay The second display
-     */
-    public void setSecondDisplay (final MCUDisplay secondDisplay)
-    {
-        this.secondDisplay = secondDisplay;
-    }
-
-
-    /**
      * Get the second display (only on icon QCon Pro X).
      *
      * @return The second display
      */
     public MCUDisplay getSecondDisplay ()
     {
-        return this.secondDisplay;
-    }
-
-
-    /**
-     * Set the segment display.
-     *
-     * @param segmentDisplay The segment display
-     */
-    public void setSegmentDisplay (final MCUSegmentDisplay segmentDisplay)
-    {
-        this.segmentDisplay = segmentDisplay;
+        return (MCUDisplay) this.getTextDisplay (1);
     }
 
 
@@ -373,7 +346,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      */
     public MCUSegmentDisplay getSegmentDisplay ()
     {
-        return this.segmentDisplay;
+        return (MCUSegmentDisplay) this.getTextDisplay (2);
     }
 
 
@@ -385,16 +358,6 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     public int getExtenderOffset ()
     {
         return this.extenderOffset;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void scheduledFlush ()
-    {
-        super.scheduledFlush ();
-        if (this.secondDisplay != null)
-            this.secondDisplay.flush ();
     }
 
 

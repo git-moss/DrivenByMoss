@@ -6,7 +6,7 @@ package de.mossgrabers.controller.mcu.mode.track;
 
 import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -80,7 +80,7 @@ public class TrackMode extends AbstractTrackMode
         if (!this.drawTrackHeader ())
             return;
 
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
 
         final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)

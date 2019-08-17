@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DummyDisplay implements Display
+public class DummyDisplay implements ITextDisplay
 {
     private IHost host;
 
@@ -30,7 +30,7 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public Display clearCell (final int row, final int column)
+    public ITextDisplay clearCell (final int row, final int column)
     {
         return this;
     }
@@ -38,7 +38,7 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public Display setCell (final int row, final int column, final int value, final Format format)
+    public ITextDisplay setCell (final int row, final int column, final int value, final Format format)
     {
         return this;
     }
@@ -46,7 +46,7 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public Display setCell (final int row, final int column, final String value)
+    public ITextDisplay setCell (final int row, final int column, final String value)
     {
         return this;
     }
@@ -54,7 +54,7 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public Display setBlock (final int row, final int block, final String value)
+    public ITextDisplay setBlock (final int row, final int block, final String value)
     {
         return this;
     }
@@ -62,7 +62,7 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public Display setRow (final int row, final String str)
+    public ITextDisplay setRow (final int row, final String str)
     {
         return this;
     }
@@ -70,7 +70,7 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public Display clear ()
+    public ITextDisplay clear ()
     {
         return this;
     }
@@ -78,7 +78,7 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public Display clearRow (final int row)
+    public ITextDisplay clearRow (final int row)
     {
         return this;
     }
@@ -86,7 +86,7 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public Display clearBlock (final int row, final int block)
+    public ITextDisplay clearBlock (final int row, final int block)
     {
         return this;
     }
@@ -94,7 +94,7 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public Display clearColumn (final int column)
+    public ITextDisplay clearColumn (final int column)
     {
         return this;
     }
@@ -102,7 +102,7 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public Display done (final int row)
+    public ITextDisplay done (final int row)
     {
         return this;
     }
@@ -110,7 +110,7 @@ public class DummyDisplay implements Display
 
     /** {@inheritDoc} */
     @Override
-    public Display allDone ()
+    public ITextDisplay allDone ()
     {
         return this;
     }

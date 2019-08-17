@@ -7,7 +7,7 @@ package de.mossgrabers.controller.mcu.mode;
 import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.MCUControllerSetup;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -112,7 +112,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         final ITrackBank tb = this.model.getCurrentTrackBank ();
 
         // Format track names
-        final Display d2 = this.surface.getSecondDisplay ();
+        final ITextDisplay d2 = this.surface.getSecondDisplay ();
         final int extenderOffset = this.surface.getExtenderOffset ();
 
         final boolean isMainDevice = this.surface.isMainDevice ();

@@ -6,7 +6,6 @@ package de.mossgrabers.framework.controller;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.IHost;
 
 
@@ -29,7 +28,5 @@ public class DummyControlSurface<C extends Configuration> extends AbstractContro
     public DummyControlSurface (final IHost host, final ColorManager colorManager, final C configuration)
     {
         super (host, configuration, colorManager, null, null, null);
-
-        this.setDisplay (new DummyDisplay (this.host));
     }
 }

@@ -4,10 +4,10 @@
 
 package de.mossgrabers.controller.push.mode;
 
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
@@ -87,7 +87,7 @@ public class NoteViewSelectMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final ViewManager viewManager = this.surface.getViewManager ();
 
         d.clear ();
@@ -100,12 +100,12 @@ public class NoteViewSelectMode extends BaseMode
             if (VIEWS[i] != null)
             {
                 final View view = viewManager.getView (VIEWS[i]);
-                d.setCell (3, i, view == null ? "" : (viewManager.isActiveView (VIEWS[i]) ? PushDisplay.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
+                d.setCell (3, i, view == null ? "" : (viewManager.isActiveView (VIEWS[i]) ? Push1Display.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
             }
             if (VIEWS_TOP[i] != null)
             {
                 final View view = viewManager.getView (VIEWS_TOP[i]);
-                d.setCell (0, i, view == null ? "" : (viewManager.isActiveView (VIEWS_TOP[i]) ? PushDisplay.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
+                d.setCell (0, i, view == null ? "" : (viewManager.isActiveView (VIEWS_TOP[i]) ? Push1Display.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
             }
         }
         d.allDone ();
@@ -117,7 +117,7 @@ public class NoteViewSelectMode extends BaseMode
     public void updateDisplay2 ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < VIEWS.length; i++)
         {
             String menuBottomName = "";

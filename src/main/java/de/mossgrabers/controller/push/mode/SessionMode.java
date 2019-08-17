@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.push.mode;
 
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.controller.push.mode.track.AbstractTrackMode;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -154,7 +154,7 @@ public class SessionMode extends AbstractTrackMode
         final int maxCols = 8;
         final int maxRows = this.rowDisplayMode == RowDisplayMode.ALL ? 8 : 4;
 
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
         for (int col = 0; col < maxCols; col++)
         {
             for (int row = 0; row < maxRows; row++)
@@ -168,7 +168,7 @@ public class SessionMode extends AbstractTrackMode
                     continue;
                 final boolean isSel = scene.isSelected ();
                 final String n = StringUtils.shortenAndFixASCII (scene.getName (8), isSel ? 7 : 8);
-                d.setCell (row, col, isSel ? PushDisplay.SELECT_ARROW + n : n);
+                d.setCell (row, col, isSel ? Push1Display.SELECT_ARROW + n : n);
             }
         }
         d.allDone ();
@@ -188,7 +188,7 @@ public class SessionMode extends AbstractTrackMode
         if (this.rowDisplayMode != RowDisplayMode.ALL)
             maxRows = maxRows / 2;
 
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
         for (int col = 0; col < maxCols; col++)
         {
             for (int row = 0; row < maxRows; row++)
@@ -229,7 +229,7 @@ public class SessionMode extends AbstractTrackMode
                 }
 
                 if (slot.isSelected ())
-                    name = PushDisplay.SELECT_ARROW + name;
+                    name = Push1Display.SELECT_ARROW + name;
                 else if (slot.isPlaying ())
                     name = ">" + name;
                 else if (slot.isPlayingQueued () || slot.isRecordingQueued ())
@@ -237,9 +237,9 @@ public class SessionMode extends AbstractTrackMode
                 else if (track.isRecArm () || slot.isRecording ())
                     name = "*" + name;
                 else if (slot.hasContent ())
-                    name = PushDisplay.RIGHT_ARROW + name;
+                    name = Push1Display.RIGHT_ARROW + name;
                 else
-                    name = PushDisplay.DEGREE + name;
+                    name = Push1Display.DEGREE + name;
 
                 d.setCell (row, col, StringUtils.shortenAndFixASCII (name, 8));
             }
@@ -253,7 +253,7 @@ public class SessionMode extends AbstractTrackMode
         final int maxCols = 8;
         final int maxRows = this.rowDisplayMode == RowDisplayMode.ALL ? 8 : 4;
 
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int col = 0; col < maxCols; col++)
         {
             final List<IScene> scenes = new ArrayList<> (maxRows);
@@ -273,7 +273,7 @@ public class SessionMode extends AbstractTrackMode
     private void updateDisplay2Clips ()
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
 
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
 

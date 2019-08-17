@@ -6,7 +6,7 @@ package de.mossgrabers.controller.hui.mode.track;
 
 import de.mossgrabers.controller.hui.HUIConfiguration;
 import de.mossgrabers.controller.hui.controller.HUIControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -44,10 +44,10 @@ public abstract class AbstractTrackMode extends AbstractMode<HUIControlSurface, 
     }
 
 
-    protected Display drawTrackHeader ()
+    protected ITextDisplay drawTrackHeader ()
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final Display d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getDisplay ().clear ();
 
         // Format track names
         for (int i = 0; i < 8; i++)

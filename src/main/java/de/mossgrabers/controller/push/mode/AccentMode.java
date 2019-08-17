@@ -7,8 +7,8 @@ package de.mossgrabers.controller.push.mode;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 
@@ -58,7 +58,7 @@ public class AccentMode extends BaseMode
     {
         final int fixedAccentValue = this.surface.getConfiguration ().getFixedAccentValue ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         d.clear ().setCell (0, 7, "Accent").setCell (1, 7, fixedAccentValue, Format.FORMAT_RAW).setCell (2, 7, valueChanger.toDAWValue (fixedAccentValue), Format.FORMAT_VALUE).allDone ();
     }
 
@@ -69,7 +69,7 @@ public class AccentMode extends BaseMode
     {
         final int fixedAccentValue = this.surface.getConfiguration ().getFixedAccentValue ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < 8; i++)
             message.addParameterElement (i == 7 ? "Accent" : "", i == 7 ? valueChanger.toDisplayValue (valueChanger.toDAWValue (fixedAccentValue)) : 0, i == 7 ? Integer.toString (fixedAccentValue) : "", this.isKnobTouched[i], -1);
         message.send ();

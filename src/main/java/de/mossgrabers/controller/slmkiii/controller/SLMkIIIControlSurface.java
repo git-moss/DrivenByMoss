@@ -126,7 +126,7 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
         this.leftButtonId = MKIII_TRACK_LEFT;
         this.rightButtonId = MKIII_TRACK_RIGHT;
 
-        this.display = new SLMkIIIDisplay (host, output);
+        this.addTextDisplay (new SLMkIIIDisplay (host, output));
     }
 
 

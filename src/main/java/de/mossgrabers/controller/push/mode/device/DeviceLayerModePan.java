@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.push.mode.device;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -76,7 +76,7 @@ public class DeviceLayerModePan extends DeviceLayerMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final ICursorDevice cd = this.model.getCursorDevice ();
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);

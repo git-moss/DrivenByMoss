@@ -185,4 +185,54 @@ public class ParameterComponent extends MenuComponent
         final double valueWidth = this.paramValue >= maxValue - 1 ? elementInnerWidth : elementInnerWidth * this.paramValue / maxValue;
         gc.fillRectangle (left + inset + Math.max (0, valueWidth - w), innerTop, w, elementHeight - 2, configuration.getColorEdit ());
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode ()
+    {
+        final int prime = 31;
+        int result = super.hashCode ();
+        result = prime * result + (this.isTouched ? 1231 : 1237);
+        result = prime * result + this.modulatedParamValue;
+        result = prime * result + (this.paramName == null ? 0 : this.paramName.hashCode ());
+        result = prime * result + this.paramValue;
+        result = prime * result + (this.paramValueText == null ? 0 : this.paramValueText.hashCode ());
+        return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals (final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (!super.equals (obj))
+            return false;
+        if (this.getClass () != obj.getClass ())
+            return false;
+        final ParameterComponent other = (ParameterComponent) obj;
+        if (this.isTouched != other.isTouched)
+            return false;
+        if (this.modulatedParamValue != other.modulatedParamValue)
+            return false;
+        if (this.paramName == null)
+        {
+            if (other.paramName != null)
+                return false;
+        }
+        else if (!this.paramName.equals (other.paramName))
+            return false;
+        if (this.paramValue != other.paramValue)
+            return false;
+        if (this.paramValueText == null)
+        {
+            if (other.paramValueText != null)
+                return false;
+        }
+        else if (!this.paramValueText.equals (other.paramValueText))
+            return false;
+        return true;
+    }
 }

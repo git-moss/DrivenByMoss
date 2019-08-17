@@ -6,7 +6,7 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
@@ -119,7 +119,7 @@ public class NoteMode extends BaseMode
     {
         final int quarters = (int) Math.floor (this.noteLength);
         final int fine = (int) Math.floor (this.noteLength * 100) % 100;
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         d.clear ().setCell (0, 0, "Quarters").setCell (1, 0, Integer.toString (quarters));
         d.setCell (0, 1, "Fine").setCell (1, 1, Integer.toString (fine));
         d.setCell (0, 2, "Velocity").setCell (1, 2, Integer.toString (this.noteVelocity * 100 / 127) + "%");
@@ -136,7 +136,7 @@ public class NoteMode extends BaseMode
         final int quarters = (int) Math.floor (this.noteLength);
         final int fine = (int) Math.floor (this.noteLength * 100) % 100;
 
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         message.addParameterElement ("Quarters", quarters, Integer.toString (quarters), this.isKnobTouched[0], -1);
         message.addParameterElement ("Fine", fine, Integer.toString (fine), this.isKnobTouched[1], -1);
         final int parameterValue = this.noteVelocity * 1023 / 127;

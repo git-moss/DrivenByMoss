@@ -7,7 +7,8 @@ package de.mossgrabers.framework.controller;
 import de.mossgrabers.framework.command.ContinuousCommandID;
 import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.IGraphicsDisplay;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -49,19 +50,61 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Get the interface to the display if the controller does have one.
+     * Get the default text display of the controller.
      *
      * @return The display interface
      */
-    Display getDisplay ();
+    ITextDisplay getTextDisplay ();
 
 
     /**
-     * Set the interface to the display if the controller does have one.
+     * Get the default text display.
+     *
+     * @return The default text display
+     */
+    ITextDisplay getDisplay ();
+
+
+    /**
+     * Get the interface to one of the text displays of the controller.
+     * 
+     * @param index The index of the interface
+     * @return The display interface
+     */
+    ITextDisplay getTextDisplay (int index);
+
+
+    /**
+     * Add a text display to the controller.
      *
      * @param display The display interface
      */
-    void setDisplay (final Display display);
+    void addTextDisplay (final ITextDisplay display);
+
+
+    /**
+     * Get the default graphics display of the controller.
+     *
+     * @return The graphics interface
+     */
+    IGraphicsDisplay getGraphicsDisplay ();
+
+
+    /**
+     * Get the interface to one of the graphics displays of the controller.
+     * 
+     * @param index The index of the interface
+     * @return The display interface
+     */
+    IGraphicsDisplay getGraphicsDisplay (int index);
+
+
+    /**
+     * Add a graphics display to the controller.
+     *
+     * @param display The display interface
+     */
+    void addGraphicsDisplay (final IGraphicsDisplay display);
 
 
     /**

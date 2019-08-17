@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.push.mode;
 
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -76,13 +76,13 @@ public class ScaleLayoutMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final int sl = this.scales.getScaleLayout ().ordinal ();
         final int pos = sl / 2;
         final String [] names = ScaleLayout.getNames ();
         d.clear ().setBlock (1, 0, "Scale layout:");
         for (int i = 0; i < names.length; i += 2)
-            d.setCell (3, i / 2, (pos == i / 2 ? PushDisplay.SELECT_ARROW : " ") + names[i].replace (" ^", ""));
+            d.setCell (3, i / 2, (pos == i / 2 ? Push1Display.SELECT_ARROW : " ") + names[i].replace (" ^", ""));
         d.setCell (3, 7, sl % 2 == 0 ? "Horizontal" : "Vertical");
         d.allDone ();
     }
@@ -96,7 +96,7 @@ public class ScaleLayoutMode extends BaseMode
         final int pos = sl / 2;
         final String [] names = ScaleLayout.getNames ();
 
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < names.length; i += 2)
             message.addOptionElement ("", "", false, i == 0 ? "Scale layout" : "", names[i].replace (" ^", ""), pos == i / 2, false);
 

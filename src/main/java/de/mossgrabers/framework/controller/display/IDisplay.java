@@ -1,0 +1,26 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2019
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.framework.controller.display;
+
+/**
+ * Interface to a display.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public interface IDisplay
+{
+    /**
+     * Displays a notification message on the screen (in the DAW).
+     *
+     * @param message The message to display
+     */
+    void notify (final String message);
+
+
+    /**
+     * If there is any cleanup necessary.
+     */
+    void shutdown ();
+}

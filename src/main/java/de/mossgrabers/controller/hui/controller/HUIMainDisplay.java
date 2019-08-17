@@ -4,8 +4,8 @@
 
 package de.mossgrabers.controller.hui.controller;
 
-import de.mossgrabers.framework.controller.display.AbstractDisplay;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.LatestTaskExecutor;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class HUIMainDisplay extends AbstractDisplay
+public class HUIMainDisplay extends AbstractTextDisplay
 {
     private static final byte []        SYSEX_DISPLAY_HEADER = new byte []
     {
@@ -67,7 +67,7 @@ public class HUIMainDisplay extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public AbstractDisplay clearRow (final int row)
+    public AbstractTextDisplay clearRow (final int row)
     {
         for (int i = 0; i < this.noOfCells; i++)
             this.clearCell (row, i);
@@ -86,7 +86,7 @@ public class HUIMainDisplay extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Display setBlock (final int row, final int block, final String value)
+    public ITextDisplay setBlock (final int row, final int block, final String value)
     {
         final int cell = 2 * block;
         if (value.length () >= this.charactersOfCell)
@@ -105,7 +105,7 @@ public class HUIMainDisplay extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Display setCell (final int row, final int column, final int value, final Format format)
+    public ITextDisplay setCell (final int row, final int column, final int value, final Format format)
     {
         this.cells[row * this.noOfCells + column] = pad (Integer.toString (value), this.charactersOfCell);
         return this;
@@ -114,7 +114,7 @@ public class HUIMainDisplay extends AbstractDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Display setCell (final int row, final int column, final String value)
+    public ITextDisplay setCell (final int row, final int column, final String value)
     {
         try
         {

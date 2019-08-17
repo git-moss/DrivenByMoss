@@ -6,7 +6,7 @@ package de.mossgrabers.controller.sl.mode.device;
 
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -41,7 +41,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
     @Override
     public void updateDisplay ()
     {
-        final Display d = this.surface.getDisplay ().clearRow (0).clearRow (2);
+        final ITextDisplay d = this.surface.getDisplay ().clearRow (0).clearRow (2);
 
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IParameterBank parameterBank = cd.getParameterBank ();

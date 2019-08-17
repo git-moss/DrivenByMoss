@@ -144,9 +144,9 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         final IMidiInput input = midiAccess.createInput (null);
         final HUIControlSurface surface = new HUIControlSurface (this.host, this.colorManager, this.configuration, output, input, this.model);
         this.surfaces.add (surface);
-        surface.setDisplay (new HUIDisplay (this.host, output));
-        surface.setMainDisplay (new HUIMainDisplay (this.host, output));
-        surface.setSegmentDisplay (new HUISegmentDisplay (output));
+        surface.addTextDisplay (new HUIDisplay (this.host, output));
+        surface.addTextDisplay (new HUIMainDisplay (this.host, output));
+        surface.addTextDisplay (new HUISegmentDisplay (output));
         surface.getModeManager ().setDefaultMode (Modes.VOLUME);
     }
 

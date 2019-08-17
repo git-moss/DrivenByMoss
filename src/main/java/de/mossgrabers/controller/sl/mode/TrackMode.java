@@ -6,7 +6,7 @@ package de.mossgrabers.controller.sl.mode;
 
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -39,7 +39,7 @@ public class TrackMode extends AbstractTrackMode<SLControlSurface, SLConfigurati
     public void updateDisplay ()
     {
         final ITrack t = this.model.getSelectedTrack ();
-        final Display d = this.surface.getDisplay ().clearRow (0).clearRow (2);
+        final ITextDisplay d = this.surface.getDisplay ().clearRow (0).clearRow (2);
 
         if (t == null)
         {

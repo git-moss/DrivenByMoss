@@ -68,4 +68,29 @@ public class ListComponent implements IComponent
             gc.drawTextInBounds (item.getKey (), itemLeft + inset, itemTop, itemWidth - 2 * inset, itemHeight, Align.LEFT, isSelected ? borderColor : textColor, itemHeight / 2);
         }
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode ()
+    {
+        final int prime = 31;
+        int result = 1;
+        return prime * result + this.items.hashCode ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals (final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass () != obj.getClass ())
+            return false;
+        final ListComponent other = (ListComponent) obj;
+        return this.items.equals (other.items);
+    }
 }

@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.graphics.canvas.utils;
 
+import de.mossgrabers.framework.graphics.display.ModelInfo;
+
+
 /**
  * Callback interface for when the display grid has changed.
  *
@@ -14,6 +17,8 @@ public interface GridChangeListener
 {
     /**
      * The display grid has changed.
+     * 
+     * @param info The model info
      */
-    void gridHasChanged ();
+    void render (final ModelInfo info);
 }

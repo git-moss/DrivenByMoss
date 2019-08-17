@@ -71,4 +71,37 @@ public class SceneListGridElement implements IComponent
             gc.strokeRectangle (itemLeft, itemTop + separatorSize, itemWidth, itemHeight - 2 * separatorSize, scene.isSelected () ? textColor : borderColor, scene.isSelected () ? 2 : 1);
         }
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode ()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.scenes == null ? 0 : this.scenes.hashCode ());
+        return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals (final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass () != obj.getClass ())
+            return false;
+        final SceneListGridElement other = (SceneListGridElement) obj;
+        if (this.scenes == null)
+        {
+            if (other.scenes != null)
+                return false;
+        }
+        else if (!this.scenes.equals (other.scenes))
+            return false;
+        return true;
+    }
 }

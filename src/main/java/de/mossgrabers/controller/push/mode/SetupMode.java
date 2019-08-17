@@ -139,7 +139,7 @@ public class SetupMode extends BaseMode
         final int padGain = config.getPadGain ();
         final int padDynamics = config.getPadDynamics ();
 
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         message.addOptionElement ("", "Setup", true, "", "", false, true);
         message.addOptionElement ("Brightness", "Info", false, "", "", false, true);
         message.addParameterElement ("Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched[2], -1);

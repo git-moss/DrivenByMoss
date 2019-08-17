@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.hui.controller;
 
+import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -15,7 +16,7 @@ import java.util.Arrays;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class HUISegmentDisplay
+public class HUISegmentDisplay extends DummyDisplay
 {
     private static final String SYSEX_HDR          = "F0 00 00 66 05 00 11 ";
 
@@ -31,7 +32,7 @@ public class HUISegmentDisplay
      */
     public HUISegmentDisplay (final IMidiOutput output)
     {
-        this.output = output;
+        super (null);
 
         Arrays.fill (this.oldtransportBuffer, -1);
     }
@@ -86,14 +87,5 @@ public class HUISegmentDisplay
         System.arraycopy (this.transportBuffer, 0, data, 0, data.length);
         final String msg = SYSEX_HDR + StringUtils.toHexStr (data) + "F7";
         this.output.sendSysex (msg);
-    }
-
-
-    /**
-     * Clear the 7-digit displays.
-     */
-    public void shutdown ()
-    {
-        // Can't be cleared
     }
 }

@@ -4,10 +4,10 @@
 
 package de.mossgrabers.controller.push.mode;
 
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
@@ -38,11 +38,11 @@ public class AutomationMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
         d.clear ().setBlock (1, 0, "Automation Mode:");
         for (int i = 0; i < TransportConstants.AUTOMATION_MODES.size (); i++)
-            d.setCell (3, i, (TransportConstants.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? PushDisplay.SELECT_ARROW : "") + TransportConstants.AUTOMATION_MODES.get (i));
+            d.setCell (3, i, (TransportConstants.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? Push1Display.SELECT_ARROW : "") + TransportConstants.AUTOMATION_MODES.get (i));
         d.allDone ();
     }
 
@@ -52,7 +52,7 @@ public class AutomationMode extends BaseMode
     public void updateDisplay2 ()
     {
         final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < 8; i++)
             message.addOptionElement ("", "", false, i == 0 ? "Automation Mode" : "", i < TransportConstants.AUTOMATION_MODES.size () ? TransportConstants.AUTOMATION_MODES.get (i) : "", i < TransportConstants.AUTOMATION_MODES.size () && TransportConstants.AUTOMATION_MODES_VALUES[i].equals (writeMode), false);
         message.send ();

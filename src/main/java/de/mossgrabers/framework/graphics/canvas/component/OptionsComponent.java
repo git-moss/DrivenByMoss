@@ -97,4 +97,62 @@ public class OptionsComponent implements IComponent
                 gc.drawTextInHeight (this.headerBottom, left, menuHeight + headerHeight, headerHeight, textColor, headerHeight / 2.0);
         }
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode ()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.footer == null ? 0 : this.footer.hashCode ());
+        result = prime * result + (this.header == null ? 0 : this.header.hashCode ());
+        result = prime * result + (this.headerBottom == null ? 0 : this.headerBottom.hashCode ());
+        result = prime * result + (this.headerTop == null ? 0 : this.headerTop.hashCode ());
+        result = prime * result + (this.isBottomHeaderSelected ? 1231 : 1237);
+        return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals (final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass () != obj.getClass ())
+            return false;
+        final OptionsComponent other = (OptionsComponent) obj;
+        if (this.footer == null)
+        {
+            if (other.footer != null)
+                return false;
+        }
+        else if (!this.footer.equals (other.footer))
+            return false;
+        if (this.header == null)
+        {
+            if (other.header != null)
+                return false;
+        }
+        else if (!this.header.equals (other.header))
+            return false;
+        if (this.headerBottom == null)
+        {
+            if (other.headerBottom != null)
+                return false;
+        }
+        else if (!this.headerBottom.equals (other.headerBottom))
+            return false;
+        if (this.headerTop == null)
+        {
+            if (other.headerTop != null)
+                return false;
+        }
+        else if (!this.headerTop.equals (other.headerTop))
+            return false;
+        return this.isBottomHeaderSelected == other.isBottomHeaderSelected;
+    }
 }

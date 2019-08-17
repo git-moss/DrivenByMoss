@@ -5,13 +5,13 @@
 package de.mossgrabers.controller.push.mode.track;
 
 import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.controller.PushDisplay;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.controller.display.Display;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -312,13 +312,13 @@ public abstract class AbstractTrackMode extends BaseMode
 
         // Format track names
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         for (int i = 0; i < 8; i++)
         {
             final boolean isSel = i == selIndex;
             final ITrack t = tb.getItem (i);
             final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8);
-            d.setCell (3, i, isSel ? PushDisplay.SELECT_ARROW + n : n);
+            d.setCell (3, i, isSel ? Push1Display.SELECT_ARROW + n : n);
         }
         d.done (3);
     }
@@ -347,7 +347,7 @@ public abstract class AbstractTrackMode extends BaseMode
     {
         this.updateMenuItems (selectedMenu);
 
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();

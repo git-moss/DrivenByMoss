@@ -143,8 +143,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
             this.usbDevice.setKeyLED (i, 0, 0, 0);
         this.updateKeyLEDs ();
 
-        this.display.clear ();
-        this.display.notify ("START " + this.host.getName ().toUpperCase () + " TO PLAY");
+        this.getDisplay ().clear ().notify ("START " + this.host.getName ().toUpperCase () + " TO PLAY");
 
         super.shutdown ();
     }
@@ -210,7 +209,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
     public void keyboardChanged (final int firstNote)
     {
         final int endNote = firstNote + this.usbDevice.getNumKeys () - 1;
-        this.display.notify (Scales.formatDrumNote (firstNote) + " to " + Scales.formatDrumNote (endNote));
+        this.getDisplay ().notify (Scales.formatDrumNote (firstNote) + " to " + Scales.formatDrumNote (endNote));
 
         this.host.scheduleTask ( () -> this.getPadGrid ().forceFlush (), 100);
     }

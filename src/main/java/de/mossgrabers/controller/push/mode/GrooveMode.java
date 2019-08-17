@@ -5,8 +5,8 @@
 package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.display.Display;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -82,7 +82,7 @@ public class GrooveMode extends BaseMode
     @Override
     public void updateDisplay1 ()
     {
-        final Display d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getDisplay ();
         final IParameter [] parameters = this.model.getGroove ().getParameters ();
         final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
         d.clear ().setCell (0, 0, "Quant Amnt").setCell (1, 0, quantizeAmount + "%").setCell (2, 0, quantizeAmount * 1023 / 100, Format.FORMAT_VALUE);
@@ -98,7 +98,7 @@ public class GrooveMode extends BaseMode
     {
         final IParameter [] parameters = this.model.getGroove ().getParameters ();
         final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
-        final DisplayModel message = this.surface.getDisplay ().getModel ();
+        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         message.addParameterElement ("Quant Amnt", quantizeAmount * 1023 / 100, quantizeAmount + "%", this.isKnobTouched[0], -1);
         message.addOptionElement ("     Groove", "", false, "", "", false, false);
         for (int i = 0; i < parameters.length; i++)
