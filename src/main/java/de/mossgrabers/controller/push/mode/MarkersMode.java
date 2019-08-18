@@ -99,40 +99,35 @@ public class MarkersMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
-
         final boolean canEditMarkers = this.model.getHost ().canEditMarkers ();
         final IMarkerBank markerBank = this.model.getMarkerBank ();
 
-        d.setCell (2, 0, "Markers:");
+        display.setCell (2, 0, "Markers:");
 
         for (int i = 0; i < 8; i++)
         {
             if (canEditMarkers)
             {
                 final boolean isMenuTopSelected = i == 6 && !this.actionModeLaunch || i == 7 && this.actionModeLaunch;
-                d.setCell (0, i, (isMenuTopSelected ? Push1Display.SELECT_ARROW : "") + EDIT_MENU[i]);
+                display.setCell (0, i, (isMenuTopSelected ? Push1Display.SELECT_ARROW : "") + EDIT_MENU[i]);
             }
 
             final IMarker marker = markerBank.getItem (i);
             if (marker.doesExist ())
-                d.setCell (3, i, StringUtils.shortenAndFixASCII (marker.getName (), 8));
+                display.setCell (3, i, StringUtils.shortenAndFixASCII (marker.getName (), 8));
         }
 
         if (canEditMarkers)
-            d.setCell (0, 5, "Action:");
-
-        d.allDone ();
+            display.setCell (0, 5, "Action:");
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final boolean canEditMarkers = this.model.getHost ().canEditMarkers ();
         final IMarkerBank markerBank = this.model.getMarkerBank ();
         for (int i = 0; i < 8; i++)
@@ -144,7 +139,6 @@ public class MarkersMode extends BaseMode
             final boolean isMenuTopSelected = i == 6 && !this.actionModeLaunch || i == 7 && this.actionModeLaunch;
             message.addOptionElement (headerTopName, menuTopName, isMenuTopSelected, null, headerBottomName, marker.doesExist () ? marker.getName (12) : "", false, marker.getColor (), false);
         }
-        message.send ();
     }
 
 

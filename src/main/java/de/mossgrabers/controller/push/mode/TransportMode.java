@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -113,35 +114,32 @@ public class TransportMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ();
         final ITransport transport = this.model.getTransport ();
         final String preroll = transport.getPreroll ();
         final double tempo = transport.getTempo ();
-        d.clear ();
-        d.setBlock (2, 0, "Pre-roll");
-        d.setCell (3, 0, (TransportConstants.PREROLL_NONE.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "None");
-        d.setCell (3, 1, (TransportConstants.PREROLL_1_BAR.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "1 Bar");
-        d.setCell (3, 2, (TransportConstants.PREROLL_2_BARS.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "2 Bars");
-        d.setCell (3, 3, (TransportConstants.PREROLL_4_BARS.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "4 Bars");
-        d.setBlock (0, 0, "Play Metro during").setBlock (0, 1, "Pre-roll?");
-        d.setCell (1, 0, transport.isPrerollMetronomeEnabled () ? " Yes" : " No");
-        d.setCell (0, 4, "Tempo").setCell (1, 4, transport.formatTempo (tempo)).setCell (2, 4, formatTempoBars (tempo));
-        d.setCell (0, 5, "Time Sig.").setCell (1, 5, transport.getNumerator () + " / " + transport.getDenominator ());
-        d.setBlock (0, 3, "Play Position").setBlock (1, 3, transport.getPositionText ()).allDone ();
+        display.setBlock (2, 0, "Pre-roll");
+        display.setCell (3, 0, (TransportConstants.PREROLL_NONE.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "None");
+        display.setCell (3, 1, (TransportConstants.PREROLL_1_BAR.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "1 Bar");
+        display.setCell (3, 2, (TransportConstants.PREROLL_2_BARS.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "2 Bars");
+        display.setCell (3, 3, (TransportConstants.PREROLL_4_BARS.equals (preroll) ? Push1Display.SELECT_ARROW : " ") + "4 Bars");
+        display.setBlock (0, 0, "Play Metro during").setBlock (0, 1, "Pre-roll?");
+        display.setCell (1, 0, transport.isPrerollMetronomeEnabled () ? " Yes" : " No");
+        display.setCell (0, 4, "Tempo").setCell (1, 4, transport.formatTempo (tempo)).setCell (2, 4, formatTempoBars (tempo));
+        display.setCell (0, 5, "Time Sig.").setCell (1, 5, transport.getNumerator () + " / " + transport.getDenominator ());
+        display.setBlock (0, 3, "Play Position").setBlock (1, 3, transport.getPositionText ());
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final ITransport transport = this.model.getTransport ();
         final String preroll = transport.getPreroll ();
         final double tempo = transport.getTempo ();
 
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         message.addOptionElement ("Play Metronome during Pre-Roll?", transport.isPrerollMetronomeEnabled () ? "Yes" : "No", transport.isPrerollMetronomeEnabled (), "Pre-roll", "None", TransportConstants.PREROLL_NONE.equals (preroll), false);
         message.addOptionElement ("", "", false, "", "1 Bar", TransportConstants.PREROLL_1_BAR.equals (preroll), false);
         message.addOptionElement ("", "", false, "", "2 Bars", TransportConstants.PREROLL_2_BARS.equals (preroll), false);
@@ -150,7 +148,6 @@ public class TransportMode extends BaseMode
         message.addOptionElement ("Play Position", "", false, null, transport.getPositionText (), "", false, null, false, this.isKnobTouched[6]);
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addParameterElement ("Tempo", (int) transport.rescaleTempo (tempo, this.model.getValueChanger ().getUpperBound ()), transport.formatTempo (tempo), this.isKnobTouched[4], -1);
-        message.send ();
     }
 
 
@@ -163,6 +160,6 @@ public class TransportMode extends BaseMode
             n.append (Push1Display.BARS_TWO);
         if (noOfBars % 2 == 1)
             n.append (Push1Display.BARS_ONE);
-        return Push1Display.pad (n.toString (), 8, Push1Display.BARS_NON);
+        return StringUtils.pad (n.toString (), 8, Push1Display.BARS_NON.charAt (0));
     }
 }

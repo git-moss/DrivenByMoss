@@ -5,8 +5,8 @@
 package de.mossgrabers.controller.sl.controller;
 
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
-import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -20,21 +20,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 public class SLDisplay extends AbstractTextDisplay
 {
     /** The right arrow. */
-    public static final String     RIGHT_ARROW = ">";
-
-    private static final String [] SPACES      =
-    {
-        "",
-        " ",
-        "  ",
-        "   ",
-        "    ",
-        "     ",
-        "      ",
-        "       ",
-        "        ",
-        "         "
-    };
+    public static final String RIGHT_ARROW = ">";
 
 
     /**
@@ -52,7 +38,7 @@ public class SLDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public SLDisplay clearCell (final int row, final int cell)
+    public ITextDisplay clearCell (final int row, final int cell)
     {
         this.cells[row * this.noOfCells + cell] = "         ";
         return this;
@@ -67,11 +53,11 @@ public class SLDisplay extends AbstractTextDisplay
         if (value.length () > 9)
         {
             this.cells[row * 8 + cell] = value.substring (0, 9);
-            this.cells[row * 8 + cell + 1] = pad (value.substring (9), 8) + " ";
+            this.cells[row * 8 + cell + 1] = StringUtils.pad (value.substring (9), 8) + " ";
         }
         else
         {
-            this.cells[row * 8 + cell] = pad (value, 9);
+            this.cells[row * 8 + cell] = StringUtils.pad (value, 9);
             this.clearCell (row, cell + 1);
         }
         return this;
@@ -82,7 +68,7 @@ public class SLDisplay extends AbstractTextDisplay
     @Override
     public ITextDisplay setCell (final int row, final int column, final int value, final Format format)
     {
-        this.cells[row * this.noOfCells + column] = pad (Integer.toString (value), 8) + " ";
+        this.cells[row * this.noOfCells + column] = StringUtils.pad (Integer.toString (value), 8) + " ";
         return this;
     }
 
@@ -93,7 +79,7 @@ public class SLDisplay extends AbstractTextDisplay
     {
         try
         {
-            this.cells[row * this.noOfCells + column] = pad (value, 8) + " ";
+            this.cells[row * this.noOfCells + column] = StringUtils.pad (value, 8) + " ";
         }
         catch (final ArrayIndexOutOfBoundsException ex)
         {
@@ -120,18 +106,6 @@ public class SLDisplay extends AbstractTextDisplay
     public void shutdown ()
     {
         this.notify ("Please start " + this.host.getName () + " to play...");
-    }
-
-
-    private static String pad (final String str, final int length)
-    {
-        final String text = str == null ? "" : str;
-        final int diff = length - text.length ();
-        if (diff < 0)
-            return text.substring (0, length);
-        if (diff > 0)
-            return text + SPACES[diff];
-        return text;
     }
 
 

@@ -80,32 +80,28 @@ public class GrooveMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ();
         final IParameter [] parameters = this.model.getGroove ().getParameters ();
         final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
-        d.clear ().setCell (0, 0, "Quant Amnt").setCell (1, 0, quantizeAmount + "%").setCell (2, 0, quantizeAmount * 1023 / 100, Format.FORMAT_VALUE);
+        display.setCell (0, 0, "Quant Amnt").setCell (1, 0, quantizeAmount + "%").setCell (2, 0, quantizeAmount * 1023 / 100, Format.FORMAT_VALUE);
         for (int i = 0; i < parameters.length; i++)
-            d.setCell (0, 2 + i, parameters[i].getName (8)).setCell (1, 2 + i, parameters[i].getDisplayedValue (8)).setCell (2, 2 + i, parameters[i].getValue (), Format.FORMAT_VALUE);
-        d.allDone ();
+            display.setCell (0, 2 + i, parameters[i].getName (8)).setCell (1, 2 + i, parameters[i].getDisplayedValue (8)).setCell (2, 2 + i, parameters[i].getValue (), Format.FORMAT_VALUE);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final IParameter [] parameters = this.model.getGroove ().getParameters ();
         final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         message.addParameterElement ("Quant Amnt", quantizeAmount * 1023 / 100, quantizeAmount + "%", this.isKnobTouched[0], -1);
         message.addOptionElement ("     Groove", "", false, "", "", false, false);
         for (int i = 0; i < parameters.length; i++)
             message.addParameterElement (parameters[i].getName (10), parameters[i].getValue (), parameters[i].getDisplayedValue (8), this.isKnobTouched[i], -1);
         for (int i = parameters.length; i < 6; i++)
             message.addEmptyElement ();
-        message.send ();
     }
 
 

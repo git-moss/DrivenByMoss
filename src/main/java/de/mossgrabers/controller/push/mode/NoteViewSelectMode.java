@@ -85,39 +85,35 @@ public class NoteViewSelectMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ();
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        d.clear ();
-        d.setBlock (1, 0, "Sequence:");
-        d.setBlock (2, 0, "Play:");
-        d.setBlock (2, 3, "Tools:");
+        display.setBlock (1, 0, "Sequence:");
+        display.setBlock (2, 0, "Play:");
+        display.setBlock (2, 3, "Tools:");
 
         for (int i = 0; i < VIEWS.length; i++)
         {
             if (VIEWS[i] != null)
             {
                 final View view = viewManager.getView (VIEWS[i]);
-                d.setCell (3, i, view == null ? "" : (viewManager.isActiveView (VIEWS[i]) ? Push1Display.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
+                display.setCell (3, i, view == null ? "" : (viewManager.isActiveView (VIEWS[i]) ? Push1Display.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
             }
             if (VIEWS_TOP[i] != null)
             {
                 final View view = viewManager.getView (VIEWS_TOP[i]);
-                d.setCell (0, i, view == null ? "" : (viewManager.isActiveView (VIEWS_TOP[i]) ? Push1Display.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
+                display.setCell (0, i, view == null ? "" : (viewManager.isActiveView (VIEWS_TOP[i]) ? Push1Display.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
             }
         }
-        d.allDone ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < VIEWS.length; i++)
         {
             String menuBottomName = "";
@@ -141,7 +137,6 @@ public class NoteViewSelectMode extends BaseMode
                 titleBottom = "Tools";
             message.addOptionElement (titleTop, menuTopName, isMenuTopSelected, titleBottom, menuBottomName, isMenuBottomSelected, false);
         }
-        message.send ();
     }
 
 

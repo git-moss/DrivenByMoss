@@ -305,14 +305,13 @@ public abstract class AbstractTrackMode extends BaseMode
     }
 
 
-    protected void drawRow4 ()
+    protected void drawRow4 (final ITextDisplay d)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack selTrack = tb.getSelectedItem ();
 
         // Format track names
         final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
-        final ITextDisplay d = this.surface.getDisplay ();
         for (int i = 0; i < 8; i++)
         {
             final boolean isSel = i == selIndex;
@@ -320,7 +319,6 @@ public abstract class AbstractTrackMode extends BaseMode
             final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8);
             d.setCell (3, i, isSel ? Push1Display.SELECT_ARROW + n : n);
         }
-        d.done (3);
     }
 
 
@@ -343,11 +341,10 @@ public abstract class AbstractTrackMode extends BaseMode
 
 
     // Called from sub-classes
-    protected void updateChannelDisplay (final int selectedMenu, final boolean isVolume, final boolean isPan)
+    protected void updateChannelDisplay (final DisplayModel message, final int selectedMenu, final boolean isVolume, final boolean isPan)
     {
         this.updateMenuItems (selectedMenu);
 
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
@@ -364,8 +361,6 @@ public abstract class AbstractTrackMode extends BaseMode
             final int vuL = valueChanger.toDisplayValue (enableVUMeters ? t.getVuLeft () : 0);
             message.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName (12) : "", t.getType (), t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr (8) : "", vuL, vuR, t.isMute (), t.isSolo (), t.isRecArm (), t.isActivated (), crossfadeMode);
         }
-
-        message.send ();
     }
 
 

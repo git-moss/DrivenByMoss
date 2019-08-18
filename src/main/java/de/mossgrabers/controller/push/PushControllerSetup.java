@@ -352,7 +352,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             else
                 this.host.error ("Mode " + debugMode + " not registered.");
         });
-        this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, this.getSurface ().getGraphicsDisplay ()::showDebugWindow);
+
+        if (this.isPush2)
+            this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, this.getSurface ().getGraphicsDisplay ()::showDebugWindow);
 
         this.configuration.addSettingObserver (PushConfiguration.DISPLAY_SCENES_CLIPS, () -> {
             if (Views.isSessionView (this.getSurface ().getViewManager ().getActiveViewId ()))

@@ -24,18 +24,11 @@ import java.text.DecimalFormat;
  */
 public class TransportImpl implements ITransport
 {
-    /** 1 beat. */
-    private static final double INC_FRACTION_TIME      = 1.0;
-    /** 1/20th of a beat. */
-    private static final double INC_FRACTION_TIME_SLOW = 1.0 / 20;
-    private static final int    TEMPO_MIN              = 20;
-    private static final int    TEMPO_MAX              = 666;
+    private ControllerHost host;
+    private IValueChanger  valueChanger;
+    private Transport      transport;
 
-    private ControllerHost      host;
-    private IValueChanger       valueChanger;
-    private Transport           transport;
-
-    private double              tempo;
+    private double         tempo;
 
 
     /**
@@ -423,7 +416,7 @@ public class TransportImpl implements ITransport
     @Override
     public void changePosition (final boolean increase, final boolean slow)
     {
-        final double frac = slow ? INC_FRACTION_TIME_SLOW : INC_FRACTION_TIME;
+        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
         this.transport.incPosition (increase ? frac : -frac, false);
     }
 
@@ -653,6 +646,6 @@ public class TransportImpl implements ITransport
 
     private void handleTempo (final double value)
     {
-        this.tempo = Math.min (TransportImpl.TEMPO_MAX, Math.max (TransportImpl.TEMPO_MIN, value));
+        this.tempo = Math.min (TransportConstants.MAX_TEMPO, Math.max (TransportConstants.MIN_TEMPO, value));
     }
 }

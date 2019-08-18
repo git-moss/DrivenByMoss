@@ -86,7 +86,7 @@ public class NoteRepeatMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
         final ITextDisplay d = this.surface.getDisplay ().clear ();
         d.setBlock (2, 0, "Repeat Length:");
@@ -99,12 +99,10 @@ public class NoteRepeatMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         for (int i = 0; i < 8; i++)
             message.addOptionElement ("", "", false, i == 0 ? "Repeat Length" : "", Resolution.getNameAt (i), this.isPeriodSelected (selectedTrack, i), false);
-        message.send ();
     }
 }

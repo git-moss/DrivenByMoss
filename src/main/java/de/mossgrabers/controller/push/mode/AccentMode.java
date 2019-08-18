@@ -54,24 +54,21 @@ public class AccentMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
         final int fixedAccentValue = this.surface.getConfiguration ().getFixedAccentValue ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final ITextDisplay d = this.surface.getDisplay ();
-        d.clear ().setCell (0, 7, "Accent").setCell (1, 7, fixedAccentValue, Format.FORMAT_RAW).setCell (2, 7, valueChanger.toDAWValue (fixedAccentValue), Format.FORMAT_VALUE).allDone ();
+        display.setCell (0, 7, "Accent").setCell (1, 7, fixedAccentValue, Format.FORMAT_RAW).setCell (2, 7, valueChanger.toDAWValue (fixedAccentValue), Format.FORMAT_VALUE);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final int fixedAccentValue = this.surface.getConfiguration ().getFixedAccentValue ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < 8; i++)
             message.addParameterElement (i == 7 ? "Accent" : "", i == 7 ? valueChanger.toDisplayValue (valueChanger.toDAWValue (fixedAccentValue)) : 0, i == 7 ? Integer.toString (fixedAccentValue) : "", this.isKnobTouched[i], -1);
-        message.send ();
     }
 }

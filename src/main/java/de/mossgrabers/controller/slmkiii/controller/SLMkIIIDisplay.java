@@ -5,8 +5,8 @@
 package de.mossgrabers.controller.slmkiii.controller;
 
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
-import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -19,47 +19,29 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class SLMkIIIDisplay extends AbstractTextDisplay
 {
-    private static final String    MKIII_SYSEX_HEADER               = "F0 00 20 29 02 0A 01 ";
-    private static final String    MKIII_SYSEX_LAYOUT_COMMAND       = MKIII_SYSEX_HEADER + "01 %02d F7";
-    private static final String    MKIII_SYSEX_PROPERTY_COMMAND     = MKIII_SYSEX_HEADER + "02 %02d %02d %02d %s F7";
-    private static final String    MKIII_SYSEX_LED_COMMAND          = MKIII_SYSEX_HEADER + "03 %02X 01 %02X %02X %02X F7";
+    private static final String  MKIII_SYSEX_HEADER               = "F0 00 20 29 02 0A 01 ";
+    private static final String  MKIII_SYSEX_LAYOUT_COMMAND       = MKIII_SYSEX_HEADER + "01 %02d F7";
+    private static final String  MKIII_SYSEX_PROPERTY_COMMAND     = MKIII_SYSEX_HEADER + "02 %02d %02d %02d %s F7";
+    private static final String  MKIII_SYSEX_LED_COMMAND          = MKIII_SYSEX_HEADER + "03 %02X 01 %02X %02X %02X F7";
     @SuppressWarnings("unused")
-    private static final String    MKIII_SYSEX_NOTIFICATION_COMMAND = MKIII_SYSEX_HEADER + "04 %s F7";
+    private static final String  MKIII_SYSEX_NOTIFICATION_COMMAND = MKIII_SYSEX_HEADER + "04 %s F7";
 
     /** The empty layout. */
-    public static final Integer    SCREEN_LAYOUT_EMPTY              = Integer.valueOf (0);
+    public static final Integer  SCREEN_LAYOUT_EMPTY              = Integer.valueOf (0);
     /** The layout with knobs. */
-    public static final Integer    SCREEN_LAYOUT_KNOB               = Integer.valueOf (1);
+    public static final Integer  SCREEN_LAYOUT_KNOB               = Integer.valueOf (1);
     /** The layout with larger selection boxes. */
-    public static final Integer    SCREEN_LAYOUT_BOX                = Integer.valueOf (2);
+    public static final Integer  SCREEN_LAYOUT_BOX                = Integer.valueOf (2);
 
-    private static final Integer   PROPERTY_TEXT                    = Integer.valueOf (1);
-    private static final Integer   PROPERTY_COLOR                   = Integer.valueOf (2);
-    private static final Integer   PROPERTY_VALUE                   = Integer.valueOf (3);
+    private static final Integer PROPERTY_TEXT                    = Integer.valueOf (1);
+    private static final Integer PROPERTY_COLOR                   = Integer.valueOf (2);
+    private static final Integer PROPERTY_VALUE                   = Integer.valueOf (3);
 
-    private static final String    LED_CACHE_STR                    = "%02X%02X%02X";
+    private static final String  LED_CACHE_STR                    = "%02X%02X%02X";
 
-    private static final String [] SPACES                           =
-    {
-        "",
-        " ",
-        "  ",
-        "   ",
-        "    ",
-        "     ",
-        "      ",
-        "       ",
-        "        ",
-        "         ",
-        "          ",
-        "           ",
-        "            ",
-        "             "
-    };
-
-    private final String []        ledCache                         = new String [8];
-    private final int [] []        displayColorCache                = new int [9] [4];
-    private final int [] []        displayValueCache                = new int [9] [4];
+    private final String []      ledCache                         = new String [8];
+    private final int [] []      displayColorCache                = new int [9] [4];
+    private final int [] []      displayValueCache                = new int [9] [4];
 
 
     /**
@@ -80,7 +62,7 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public SLMkIIIDisplay clearRow (final int row)
+    public ITextDisplay clearRow (final int row)
     {
         for (int i = 0; i < this.noOfCells; i++)
             this.clearCell (row, i);
@@ -90,7 +72,7 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public SLMkIIIDisplay clearCell (final int row, final int cell)
+    public ITextDisplay clearCell (final int row, final int cell)
     {
         this.cells[row * this.noOfCells + cell] = "         ";
         return this;
@@ -99,17 +81,17 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public SLMkIIIDisplay setBlock (final int row, final int block, final String value)
+    public ITextDisplay setBlock (final int row, final int block, final String value)
     {
         final int cell = 2 * block;
         if (value.length () > 9)
         {
             this.cells[row * this.noOfCells + cell] = value.substring (0, 9);
-            this.cells[row * this.noOfCells + cell + 1] = pad (value.substring (9), 9);
+            this.cells[row * this.noOfCells + cell + 1] = StringUtils.pad (value.substring (9), 9);
         }
         else
         {
-            this.cells[row * this.noOfCells + cell] = pad (value, 9);
+            this.cells[row * this.noOfCells + cell] = StringUtils.pad (value, 9);
             this.clearCell (row, cell + 1);
         }
         return this;
@@ -127,9 +109,9 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public SLMkIIIDisplay setCell (final int row, final int cell, final String value)
+    public ITextDisplay setCell (final int row, final int cell, final String value)
     {
-        this.cells[row * this.noOfCells + cell] = pad (value, this.noOfCells);
+        this.cells[row * this.noOfCells + cell] = StringUtils.pad (value, this.noOfCells);
         return this;
     }
 
@@ -260,25 +242,6 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
     {
         final String msg = String.format (MKIII_SYSEX_PROPERTY_COMMAND, Integer.valueOf (hPosition), property, Integer.valueOf (vPosition), values);
         this.output.sendSysex (msg);
-    }
-
-
-    /**
-     * Pad the given text with the given character until it reaches the given length.
-     *
-     * @param str The text to pad
-     * @param length The maximum length
-     * @return The padded text
-     */
-    public static String pad (final String str, final int length)
-    {
-        final String text = str == null ? "" : str;
-        final int diff = length - text.length ();
-        if (diff < 0)
-            return text.substring (0, length);
-        if (diff > 0)
-            return text + SLMkIIIDisplay.SPACES[diff];
-        return text;
     }
 
 

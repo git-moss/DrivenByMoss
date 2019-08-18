@@ -99,26 +99,24 @@ public class MasterMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ();
         final IMasterTrack master = this.model.getMasterTrack ();
-        d.setRow (0, MasterMode.PARAM_NAMES).setCell (1, 0, master.getVolumeStr (8)).setCell (1, 1, master.getPanStr (8));
-        d.clearCell (1, 2).clearCell (1, 3).setBlock (1, 2, "Audio Engine").setBlock (1, 3, this.model.getProject ().getName ()).done (1);
-        d.setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : master.getVolume (), Format.FORMAT_VALUE);
-        d.setCell (2, 1, master.getPan (), Format.FORMAT_PAN).clearCell (2, 2).clearCell (2, 3).clearCell (2, 4).clearCell (2, 5).clearCell (2, 6).clearCell (2, 7).done (2);
-        d.setCell (3, 0, master.getName ()).clearCell (3, 1).clearCell (3, 2).clearCell (3, 3).setCell (3, 4, this.model.getApplication ().isEngineActive () ? "Active" : "Off");
-        d.clearCell (3, 5).setCell (3, 6, "Previous").setCell (3, 7, "Next").done (3);
+        display.setRow (0, MasterMode.PARAM_NAMES).setCell (1, 0, master.getVolumeStr (8)).setCell (1, 1, master.getPanStr (8));
+        display.setBlock (1, 2, "Audio Engine").setBlock (1, 3, this.model.getProject ().getName ());
+        display.setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : master.getVolume (), Format.FORMAT_VALUE);
+        display.setCell (2, 1, master.getPan (), Format.FORMAT_PAN);
+        display.setCell (3, 0, master.getName ()).setCell (3, 4, this.model.getApplication ().isEngineActive () ? "Active" : "Off");
+        display.setCell (3, 6, "Previous").setCell (3, 7, "Next");
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final IMasterTrack master = this.model.getMasterTrack ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final boolean enableVUMeters = this.surface.getConfiguration ().isEnableVUMeters ();
         final int vuR = valueChanger.toDisplayValue (enableVUMeters ? master.getVuRight () : 0);
         final int vuL = valueChanger.toDisplayValue (enableVUMeters ? master.getVuLeft () : 0);
@@ -138,7 +136,6 @@ public class MasterMode extends BaseMode
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("Project:", "", false, this.model.getProject ().getName (), "Previous", false, false);
         message.addOptionElement ("", "", false, "", "Next", false, false);
-        message.send ();
     }
 
 

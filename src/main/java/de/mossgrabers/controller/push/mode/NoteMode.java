@@ -115,28 +115,26 @@ public class NoteMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
         final int quarters = (int) Math.floor (this.noteLength);
         final int fine = (int) Math.floor (this.noteLength * 100) % 100;
-        final ITextDisplay d = this.surface.getDisplay ();
-        d.clear ().setCell (0, 0, "Quarters").setCell (1, 0, Integer.toString (quarters));
-        d.setCell (0, 1, "Fine").setCell (1, 1, Integer.toString (fine));
-        d.setCell (0, 2, "Velocity").setCell (1, 2, Integer.toString (this.noteVelocity * 100 / 127) + "%");
-        d.setBlock (3, 0, "Step: " + (this.step + 1));
-        d.setBlock (3, 1, "Selec. Note: " + Scales.formatNoteAndOctave (this.note, -3));
-        d.allDone ();
+        display.setCell (0, 0, "Quarters").setCell (1, 0, Integer.toString (quarters));
+        display.setCell (0, 1, "Fine").setCell (1, 1, Integer.toString (fine));
+        display.setCell (0, 2, "Velocity").setCell (1, 2, Integer.toString (this.noteVelocity * 100 / 127) + "%");
+        display.setBlock (3, 0, "Step: " + (this.step + 1));
+        display.setBlock (3, 1, "Selec. Note: " + Scales.formatNoteAndOctave (this.note, -3));
+
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final int quarters = (int) Math.floor (this.noteLength);
         final int fine = (int) Math.floor (this.noteLength * 100) % 100;
 
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         message.addParameterElement ("Quarters", quarters, Integer.toString (quarters), this.isKnobTouched[0], -1);
         message.addParameterElement ("Fine", fine, Integer.toString (fine), this.isKnobTouched[1], -1);
         final int parameterValue = this.noteVelocity * 1023 / 127;
@@ -144,6 +142,6 @@ public class NoteMode extends BaseMode
         message.addOptionElement ("    Step: " + (this.step + 1), "", false, "    Selected note: " + Scales.formatNoteAndOctave (this.note, -3), "", false, false);
         for (int i = 4; i < 8; i++)
             message.addOptionElement ("", "", false, "", "", false, false);
-        message.send ();
+
     }
 }

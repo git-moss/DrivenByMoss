@@ -82,33 +82,29 @@ public class FixedMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ();
-        d.clear ().setBlock (1, 0, "Create Clip (leng").setBlock (1, 1, "th not stored):");
+        display.setBlock (1, 0, "Create Clip (leng").setBlock (1, 1, "th not stored):");
         final int newClipLength = this.surface.getConfiguration ().getNewClipLength ();
-        d.setBlock (2, 0, "New Clip Length:");
+        display.setBlock (2, 0, "New Clip Length:");
         for (int i = 0; i < 8; i++)
         {
             final String newClipLengthValue = AbstractConfiguration.getNewClipLengthValue (i);
-            d.setCell (0, i, newClipLengthValue);
-            d.setCell (3, i, (newClipLength == i ? Push1Display.SELECT_ARROW : "") + newClipLengthValue);
+            display.setCell (0, i, newClipLengthValue);
+            display.setCell (3, i, (newClipLength == i ? Push1Display.SELECT_ARROW : "") + newClipLengthValue);
         }
-        d.allDone ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final int newClipLength = this.surface.getConfiguration ().getNewClipLength ();
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < 8; i++)
         {
             final String newClipLengthValue = AbstractConfiguration.getNewClipLengthValue (i);
             message.addOptionElement (i == 0 ? "Create Clip (length not stored)" : "", newClipLengthValue, false, i == 0 ? "New Clip Length" : "", newClipLengthValue, newClipLength == i, false);
         }
-        message.send ();
     }
 }

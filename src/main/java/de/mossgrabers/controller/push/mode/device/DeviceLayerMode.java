@@ -292,28 +292,27 @@ public class DeviceLayerMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
         {
-            d.setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
+            display.setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
             return;
         }
 
         final boolean noLayers = cd.hasLayers () && cd.getLayerBank ().hasZeroLayers ();
         if (noLayers)
         {
-            d.setBlock (1, 1, "    Please create").setBlock (1, 2, cd.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
+            display.setBlock (1, 1, "    Please create").setBlock (1, 2, cd.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
         }
         else
         {
             final IChannel l = cd.getLayerOrDrumPadBank ().getSelectedItem ();
             if (l != null)
             {
-                d.setCell (0, 0, "Volume").setCell (1, 0, l.getVolumeStr (8)).setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? l.getVu () : l.getVolume (), Format.FORMAT_VALUE);
-                d.setCell (0, 1, "Pan").setCell (1, 1, l.getPanStr (8)).setCell (2, 1, l.getPan (), Format.FORMAT_PAN);
+                display.setCell (0, 0, "Volume").setCell (1, 0, l.getVolumeStr (8)).setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? l.getVu () : l.getVolume (), Format.FORMAT_VALUE);
+                display.setCell (0, 1, "Pan").setCell (1, 1, l.getPanStr (8)).setCell (2, 1, l.getPan (), Format.FORMAT_PAN);
 
                 final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
                 if (fxTrackBank == null)
@@ -322,7 +321,7 @@ public class DeviceLayerMode extends BaseMode
                     {
                         final int pos = 2 + i;
                         final ISend send = l.getSendBank ().getItem (i);
-                        d.setCell (0, pos, send.getName ()).setCell (1, pos, send.getDisplayedValue (8)).setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
+                        display.setCell (0, pos, send.getName ()).setCell (1, pos, send.getDisplayedValue (8)).setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
                     }
                 }
                 else
@@ -333,37 +332,30 @@ public class DeviceLayerMode extends BaseMode
                         final ITrack fxTrack = fxTrackBank.getItem (i);
                         final boolean isEmpty = isFX || !fxTrack.doesExist ();
                         final int pos = 2 + i;
-                        if (isEmpty)
-                        {
-                            d.clearCell (0, pos);
-                            d.clearCell (2, pos);
-                        }
-                        else
+                        if (!isEmpty)
                         {
                             final ISend send = l.getSendBank ().getItem (i);
-                            d.setCell (0, pos, fxTrack.getName ()).setCell (1, pos, send.getDisplayedValue (8));
-                            d.setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
+                            display.setCell (0, pos, fxTrack.getName ()).setCell (1, pos, send.getDisplayedValue (8));
+                            display.setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
                         }
                     }
                 }
             }
         }
 
-        this.drawRow4 (d, cd);
+        this.drawRow4 (display, cd);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         if (!cd.doesExist ())
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
-            message.send ();
             return;
         }
 
@@ -372,12 +364,10 @@ public class DeviceLayerMode extends BaseMode
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 3 ? "Please create a " + (cd.hasDrumPads () ? "Drum Pad..." : "Device Layer...") : "", i == 7 ? "Up" : "", true, "", "", false, true);
-            message.send ();
             return;
         }
 
         this.updateDisplayElements (message, cd, cd.getLayerOrDrumPadBank ().getSelectedItem ());
-        message.send ();
     }
 
 
@@ -638,10 +628,10 @@ public class DeviceLayerMode extends BaseMode
     /**
      * Draw the fourth row.
      *
-     * @param d The display
+     * @param display The display
      * @param cd The cursor device
      */
-    protected void drawRow4 (final ITextDisplay d, final ICursorDevice cd)
+    protected void drawRow4 (final ITextDisplay display, final ICursorDevice cd)
     {
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
@@ -650,9 +640,8 @@ public class DeviceLayerMode extends BaseMode
         {
             final IChannel layer = bank.getItem (offset + i);
             final String n = StringUtils.shortenAndFixASCII (layer.getName (), layer.isSelected () ? 7 : 8);
-            d.setCell (3, i, layer.isSelected () ? Push1Display.SELECT_ARROW + n : n);
+            display.setCell (3, i, layer.isSelected () ? Push1Display.SELECT_ARROW + n : n);
         }
-        d.allDone ();
     }
 
 

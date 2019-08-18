@@ -36,26 +36,22 @@ public class AutomationMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ();
         final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
-        d.clear ().setBlock (1, 0, "Automation Mode:");
+        display.setBlock (1, 0, "Automation Mode:");
         for (int i = 0; i < TransportConstants.AUTOMATION_MODES.size (); i++)
-            d.setCell (3, i, (TransportConstants.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? Push1Display.SELECT_ARROW : "") + TransportConstants.AUTOMATION_MODES.get (i));
-        d.allDone ();
+            display.setCell (3, i, (TransportConstants.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? Push1Display.SELECT_ARROW : "") + TransportConstants.AUTOMATION_MODES.get (i));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < 8; i++)
             message.addOptionElement ("", "", false, i == 0 ? "Automation Mode" : "", i < TransportConstants.AUTOMATION_MODES.size () ? TransportConstants.AUTOMATION_MODES.get (i) : "", i < TransportConstants.AUTOMATION_MODES.size () && TransportConstants.AUTOMATION_MODES_VALUES[i].equals (writeMode), false);
-        message.send ();
     }
 
 

@@ -7,8 +7,10 @@ package de.mossgrabers.controller.push.mode;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -69,22 +71,33 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
     public void updateDisplay ()
     {
         if (this.surface.getConfiguration ().isPush2 ())
-            this.updateDisplay2 ();
-        else
-            this.updateDisplay1 ();
+        {
+            final DisplayModel model = this.surface.getGraphicsDisplay ().getModel ();
+            this.updateDisplay2 (model);
+            model.send ();
+            return;
+        }
+
+        final ITextDisplay display = this.surface.getDisplay ().clear ();
+        this.updateDisplay1 (display);
+        display.allDone ();
     }
 
 
     /**
      * Update the display of Push 1.
+     * 
+     * @param display The display to fill
      */
-    public abstract void updateDisplay1 ();
+    public abstract void updateDisplay1 (final ITextDisplay display);
 
 
     /**
      * Update the display of Push 2.
+     * 
+     * @param message The model to add the components to
      */
-    public abstract void updateDisplay2 ();
+    public abstract void updateDisplay2 (final DisplayModel message);
 
 
     /** {@inheritDoc} */

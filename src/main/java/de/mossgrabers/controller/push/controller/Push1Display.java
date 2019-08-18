@@ -7,9 +7,11 @@ package de.mossgrabers.controller.push.controller;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.Pair;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,38 +40,6 @@ public class Push1Display extends AbstractTextDisplay
     public static final String     DEGREE        = Character.toString ((char) 9);
     /** Push character for a right arrow. */
     public static final String     RIGHT_ARROW   = Character.toString ((char) 30);
-
-    private static final String [] SPACES        =
-    {
-        "",
-        " ",
-        "  ",
-        "   ",
-        "    ",
-        "     ",
-        "      ",
-        "       ",
-        "        ",
-        "         ",
-        "          ",
-        "           ",
-        "            ",
-        "             "
-    };
-
-    private static final String [] DASHES        =
-    {
-        "",
-        BARS_NON,
-        BARS_NON + BARS_NON,
-        BARS_NON + BARS_NON + BARS_NON,
-        BARS_NON + BARS_NON + BARS_NON + BARS_NON,
-        BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
-        BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
-        BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
-        BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON,
-        BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON + BARS_NON
-    };
 
     private static final String [] SYSEX_MESSAGE =
     {
@@ -109,7 +79,7 @@ public class Push1Display extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Push1Display clearCell (final int row, final int cell)
+    public ITextDisplay clearCell (final int row, final int cell)
     {
         this.cells[row * 8 + cell] = cell % 2 == 0 ? "         " : "        ";
         return this;
@@ -118,17 +88,17 @@ public class Push1Display extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Push1Display setBlock (final int row, final int block, final String value)
+    public ITextDisplay setBlock (final int row, final int block, final String value)
     {
         final int cell = 2 * block;
         if (value.length () > 9)
         {
             this.cells[row * 8 + cell] = value.substring (0, 9);
-            this.cells[row * 8 + cell + 1] = pad (value.substring (9), 8, " ");
+            this.cells[row * 8 + cell + 1] = StringUtils.pad (value.substring (9), 8, ' ');
         }
         else
         {
-            this.cells[row * 8 + cell] = pad (value, 9, " ");
+            this.cells[row * 8 + cell] = StringUtils.pad (value, 9, ' ');
             this.clearCell (row, cell + 1);
         }
         return this;
@@ -137,7 +107,7 @@ public class Push1Display extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Push1Display setCell (final int row, final int cell, final int value, final Format format)
+    public ITextDisplay setCell (final int row, final int cell, final int value, final Format format)
     {
         return this.setCell (row, cell, formatStr (value, format, this.maxParameterValue));
     }
@@ -145,9 +115,9 @@ public class Push1Display extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public Push1Display setCell (final int row, final int cell, final String value)
+    public ITextDisplay setCell (final int row, final int cell, final String value)
     {
-        this.cells[row * 8 + cell] = pad (value, 8, " ") + (cell % 2 == 0 ? " " : "");
+        this.cells[row * 8 + cell] = StringUtils.pad (value, 8, ' ') + (cell % 2 == 0 ? " " : "");
         return this;
     }
 
@@ -185,7 +155,7 @@ public class Push1Display extends AbstractTextDisplay
             n.append (Push1Display.BARS_TWO);
         if (noOfBars % 2 == 1)
             n.append (Push1Display.BARS_ONE);
-        return pad (n.toString (), 8, Push1Display.BARS_NON);
+        return StringUtils.pad (n.toString (), 8, Push1Display.BARS_NON.charAt (0));
     }
 
 
@@ -200,30 +170,12 @@ public class Push1Display extends AbstractTextDisplay
         StringBuilder n = new StringBuilder ();
         for (int i = 0; i < noOfBars / 2; i++)
             n.append (BARS_TWO);
-        if (noOfBars % 2 == 1)
+        if (pan >= maxParam - 1)
+            n.append (BARS_TWO);
+        else if (noOfBars % 2 == 1)
             n.append (isLeft ? Push1Display.BARS_ONE_L : Push1Display.BARS_ONE);
-        n = new StringBuilder (Push1Display.NON_4).append (pad (n.toString (), 4, Push1Display.BARS_NON));
+        n = new StringBuilder (Push1Display.NON_4).append (StringUtils.pad (n.toString (), 4, Push1Display.BARS_NON.charAt (0)));
         return isLeft ? n.reverse ().toString () : n.toString ();
-    }
-
-
-    /**
-     * Pad the given text with the given character until it reaches the given length.
-     *
-     * @param str The text to pad
-     * @param length The maximum length
-     * @param character The character to use for padding
-     * @return The padded text
-     */
-    public static String pad (final String str, final int length, final String character)
-    {
-        final String text = str == null ? "" : str;
-        final int diff = length - text.length ();
-        if (diff < 0)
-            return text.substring (0, length);
-        if (diff > 0)
-            return text + (" ".equals (character) ? Push1Display.SPACES[diff] : Push1Display.DASHES[diff]);
-        return text;
     }
 
 

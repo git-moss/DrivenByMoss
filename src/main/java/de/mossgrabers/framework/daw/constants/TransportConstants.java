@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TransportConstants
+public final class TransportConstants
 {
     /** The names for automation modes. */
     public static final List<String> AUTOMATION_MODES        = Collections.unmodifiableList (Arrays.asList ("Latch", "Touch", "Write"));
@@ -35,6 +35,11 @@ public class TransportConstants
     public static final String       PREROLL_2_BARS          = "two_bars";
     /** 4 bar preroll. */
     public static final String       PREROLL_4_BARS          = "four_bars";
+
+    /** 1 beat. */
+    public static final double       INC_FRACTION_TIME       = 1.0;
+    /** 1/20th of a beat. */
+    public static final double       INC_FRACTION_TIME_SLOW  = 1.0 / 16;
 
     /** The minimum tempo in BPM. */
     public static final int          MIN_TEMPO               = 20;

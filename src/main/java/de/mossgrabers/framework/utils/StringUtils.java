@@ -35,6 +35,19 @@ public class StringUtils
 
 
     /**
+     * Pad the given text with the space character until it reaches the given length.
+     *
+     * @param str The text to pad
+     * @param length The maximum length
+     * @return The padded text
+     */
+    public static String pad (final String str, final int length)
+    {
+        return pad (str, length, ' ');
+    }
+
+
+    /**
      * Pad the given text with the given character until it reaches the given length.
      *
      * @param str The text to pad
@@ -46,16 +59,14 @@ public class StringUtils
     {
         final String text = str == null ? "" : str;
         final int diff = length - text.length ();
+        if (diff == 0)
+            return text;
         if (diff < 0)
             return text.substring (0, length);
-        if (diff > 0)
-        {
-            final StringBuilder sb = new StringBuilder (text.length () + diff).append (text);
-            for (int i = 0; i < diff; i++)
-                sb.append (character);
-            return sb.toString ();
-        }
-        return text;
+        final StringBuilder sb = new StringBuilder (text.length () + diff).append (text);
+        for (int i = 0; i < diff; i++)
+            sb.append (character);
+        return sb.toString ();
     }
 
 
@@ -270,6 +281,27 @@ public class StringUtils
         final int quarters = (int) Math.floor (t); // :1
         t = t - quarters; // *1
         final int eights = (int) Math.floor (t / 0.25);
-        return measure + startOffset + "." + (quarters + startOffset) + "." + (eights + startOffset);
+        return String.format ("%d.%d.%d", Integer.valueOf (measure + startOffset), Integer.valueOf (quarters + startOffset), Integer.valueOf (eights + startOffset));
+    }
+
+
+    /**
+     * Format the given time as measure.quarters.eights:frames.
+     *
+     * @param quartersPerMeasure The number of quarters of a measure
+     * @param time The time to format
+     * @param startOffset An offset that is added to the measure, quarter and eights values
+     * @return The formatted text
+     */
+    public static String formatMeasuresLong (final int quartersPerMeasure, final double time, final int startOffset)
+    {
+        final int measure = (int) Math.floor (time / quartersPerMeasure);
+        double t = time - measure * quartersPerMeasure;
+        final int quarters = (int) Math.floor (t); // :1
+        t = t - quarters; // *1
+        final int eights = (int) Math.floor (t / 0.25);
+        t = t - (eights * 0.25);
+        final int frames = (int) Math.floor (t / 0.25 * 100.0);
+        return String.format ("%d.%d.%d:%03d", Integer.valueOf (measure + startOffset), Integer.valueOf (quarters + startOffset), Integer.valueOf (eights + startOffset), Integer.valueOf (frames));
     }
 }

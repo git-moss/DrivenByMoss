@@ -68,9 +68,8 @@ public class SendMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ();
         final int sendIndex = this.getCurrentSendIndex ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
@@ -79,29 +78,24 @@ public class SendMode extends AbstractTrackMode
             if (t.doesExist ())
             {
                 final ISend send = t.getSendBank ().getItem (sendIndex);
-                d.setCell (0, i, send.getName ());
-                d.setCell (1, i, send.getDisplayedValue (8));
-                d.setCell (2, i, send.getValue (), Format.FORMAT_VALUE);
+                display.setCell (0, i, send.getName ());
+                display.setCell (1, i, send.getDisplayedValue (8));
+                display.setCell (2, i, send.getValue (), Format.FORMAT_VALUE);
             }
-            else
-                d.clearColumn (i);
         }
-        d.done (0).done (1).done (2);
-
-        this.drawRow4 ();
+        this.drawRow4 (display);
     }
 
 
     /** {@inheritDoc} */
     @SuppressWarnings("null")
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final int sendIndex = this.getCurrentSendIndex ();
         this.updateTrackMenu (5 + sendIndex % 4);
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
         final int sendOffset = this.surface.getConfiguration ().isSendsAreToggled () ? 4 : 0;
@@ -119,7 +113,6 @@ public class SendMode extends AbstractTrackMode
             final Pair<String, Boolean> pair = this.menu.get (i);
             message.addSendsElement (pair.getKey (), pair.getValue ().booleanValue (), t.doesExist () ? t.getName () : "", t.getType (), t.getColor (), t.isSelected (), sendData, false, t.isActivated (), t.isActivated ());
         }
-        message.send ();
     }
 
 

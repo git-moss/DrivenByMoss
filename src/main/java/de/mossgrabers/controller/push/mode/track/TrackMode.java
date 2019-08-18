@@ -205,17 +205,16 @@ public class TrackMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
         final ITrack t = this.model.getSelectedTrack ();
         if (t == null)
-            d.setRow (1, "                     Please selecta track...                        ").done (0).done (2);
+            display.setRow (1, "                     Please selecta track...                        ");
         else
         {
             final PushConfiguration config = this.surface.getConfiguration ();
-            d.setCell (0, 0, "Volume").setCell (1, 0, t.getVolumeStr (8)).setCell (2, 0, config.isEnableVUMeters () ? t.getVu () : t.getVolume (), Format.FORMAT_VALUE);
-            d.setCell (0, 1, "Pan").setCell (1, 1, t.getPanStr (8)).setCell (2, 1, t.getPan (), Format.FORMAT_PAN);
+            display.setCell (0, 0, "Volume").setCell (1, 0, t.getVolumeStr (8)).setCell (2, 0, config.isEnableVUMeters () ? t.getVu () : t.getVolume (), Format.FORMAT_VALUE);
+            display.setCell (0, 1, "Pan").setCell (1, 1, t.getPanStr (8)).setCell (2, 1, t.getPan (), Format.FORMAT_PAN);
 
             int sendStart = 2;
             int sendCount = 6;
@@ -225,8 +224,8 @@ public class TrackMode extends AbstractTrackMode
                 sendCount = 5;
                 final String crossfadeMode = t.getCrossfadeMode ();
                 final int upperBound = this.model.getValueChanger ().getUpperBound ();
-                d.setCell (0, 2, "Crossfdr").setCell (1, 2, "A".equals (crossfadeMode) ? "A" : "B".equals (crossfadeMode) ? "       B" : "   <> ");
-                d.setCell (2, 2, "A".equals (crossfadeMode) ? 0 : "B".equals (crossfadeMode) ? upperBound : upperBound / 2, Format.FORMAT_PAN);
+                display.setCell (0, 2, "Crossfdr").setCell (1, 2, "A".equals (crossfadeMode) ? "A" : "B".equals (crossfadeMode) ? "       B" : "   <> ");
+                display.setCell (2, 2, "A".equals (crossfadeMode) ? 0 : "B".equals (crossfadeMode) ? upperBound : upperBound / 2, Format.FORMAT_PAN);
             }
             final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
             final ISendBank sendBank = t.getSendBank ();
@@ -237,19 +236,18 @@ public class TrackMode extends AbstractTrackMode
                 {
                     final ISend send = sendBank.getItem (i);
                     if (send.doesExist ())
-                        d.setCell (0, pos, send.getName ()).setCell (1, pos, send.getDisplayedValue (8)).setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
+                        display.setCell (0, pos, send.getName ()).setCell (1, pos, send.getDisplayedValue (8)).setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
                 }
             }
-            d.done (0).done (1).done (2);
         }
 
-        this.drawRow4 ();
+        this.drawRow4 (display);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack selectedTrack = tb.getSelectedItem ();
@@ -263,7 +261,6 @@ public class TrackMode extends AbstractTrackMode
         this.updateMenuItems (0);
 
         final PushConfiguration config = this.surface.getConfiguration ();
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final boolean displayCrossfader = config.isDisplayCrossfader ();
         for (int i = 0; i < 8; i++)
         {
@@ -313,6 +310,5 @@ public class TrackMode extends AbstractTrackMode
             else
                 message.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, t.getType (), bottomMenuColor, isBottomMenuOn, t.isActivated ());
         }
-        message.send ();
     }
 }

@@ -325,14 +325,12 @@ public class DeviceParamsMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
-
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
         {
-            d.setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
+            display.setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
             return;
         }
 
@@ -341,11 +339,11 @@ public class DeviceParamsMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final IParameter param = parameterBank.getItem (i);
-            d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName ()) : "").setCell (1, i, param.getDisplayedValue (8));
+            display.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName ()) : "").setCell (1, i, param.getDisplayedValue (8));
         }
 
         // Row 3
-        d.setBlock (2, 0, "Selected Device:").setBlock (2, 1, cd.getName ());
+        display.setBlock (2, 0, "Selected Device:").setBlock (2, 1, cd.getName ());
 
         // Row 4
         if (this.showDevices)
@@ -361,35 +359,29 @@ public class DeviceParamsMode extends BaseMode
                         sb.append (Push1Display.SELECT_ARROW);
                     sb.append (device.getName ());
                 }
-                d.setCell (3, i, sb.toString ());
+                display.setCell (3, i, sb.toString ());
             }
+            return;
         }
-        else
+        final IParameterPageBank bank = cd.getParameterPageBank ();
+        final int selectedItemIndex = bank.getSelectedItemIndex ();
+        for (int i = 0; i < bank.getPageSize (); i++)
         {
-            final IParameterPageBank bank = cd.getParameterPageBank ();
-            final int selectedItemIndex = bank.getSelectedItemIndex ();
-            for (int i = 0; i < bank.getPageSize (); i++)
-            {
-                final String item = bank.getItem (i);
-                d.setCell (3, i, !item.isEmpty () ? (i == selectedItemIndex ? Push1Display.SELECT_ARROW : "") + item : "");
-            }
+            final String item = bank.getItem (i);
+            display.setCell (3, i, !item.isEmpty () ? (i == selectedItemIndex ? Push1Display.SELECT_ARROW : "") + item : "");
         }
-
-        d.allDone ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
         {
             for (int i = 0; i < 8; i++)
                 message.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
-            message.send ();
             return;
         }
 
@@ -465,8 +457,6 @@ public class DeviceParamsMode extends BaseMode
 
             message.addParameterElement (i != 5 || hasPinning ? MENU[i] : "", isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
-
-        message.send ();
     }
 
 

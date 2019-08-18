@@ -141,29 +141,26 @@ public class RibbonMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ();
         final PushConfiguration config = this.surface.getConfiguration ();
         final String ribbonModeCC = Integer.toString (config.getRibbonModeCCVal ());
         final int ribbonMode = config.getRibbonMode ();
-        d.clear ().setCell (0, 0, "Modulatn").setCell (0, 1, "Expressn").setCell (0, 2, "Volume").setCell (0, 3, "Sustain").setCell (0, 7, "Midi CC");
-        d.setCell (1, 7, ribbonModeCC).setCell (3, 0, (ribbonMode == PushConfiguration.RIBBON_MODE_PITCH ? Push1Display.SELECT_ARROW : "") + "Pitchbd").setCell (3, 1, (ribbonMode == PushConfiguration.RIBBON_MODE_CC ? Push1Display.SELECT_ARROW : "") + "CC").setCell (3, 2, (ribbonMode == PushConfiguration.RIBBON_MODE_CC_PB ? Push1Display.SELECT_ARROW : "") + "CC/Pitch").setCell (3, 3, (ribbonMode == PushConfiguration.RIBBON_MODE_PB_CC ? Push1Display.SELECT_ARROW : "") + "Pitch/CC").setCell (3, 4, (ribbonMode == PushConfiguration.RIBBON_MODE_FADER ? Push1Display.SELECT_ARROW : "") + "Fader").allDone ();
+        display.setCell (0, 0, "Modulatn").setCell (0, 1, "Expressn").setCell (0, 2, "Volume").setCell (0, 3, "Sustain").setCell (0, 7, "Midi CC");
+        display.setCell (1, 7, ribbonModeCC).setCell (3, 0, (ribbonMode == PushConfiguration.RIBBON_MODE_PITCH ? Push1Display.SELECT_ARROW : "") + "Pitchbd").setCell (3, 1, (ribbonMode == PushConfiguration.RIBBON_MODE_CC ? Push1Display.SELECT_ARROW : "") + "CC").setCell (3, 2, (ribbonMode == PushConfiguration.RIBBON_MODE_CC_PB ? Push1Display.SELECT_ARROW : "") + "CC/Pitch").setCell (3, 3, (ribbonMode == PushConfiguration.RIBBON_MODE_PB_CC ? Push1Display.SELECT_ARROW : "") + "Pitch/CC").setCell (3, 4, (ribbonMode == PushConfiguration.RIBBON_MODE_FADER ? Push1Display.SELECT_ARROW : "") + "Fader");
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final PushConfiguration config = this.surface.getConfiguration ();
         final String ribbonModeCC = Integer.toString (config.getRibbonModeCCVal ());
         final int ribbonMode = config.getRibbonMode ();
 
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < 7; i++)
             message.addOptionElement (i == 0 ? "CC Quick Select" : "", RibbonMode.CC_QUICK_SELECT[i], false, i == 0 ? "Function" : "", RibbonMode.FUNCTION[i], i < RibbonMode.FUNCTION_IDS.length && ribbonMode == RibbonMode.FUNCTION_IDS[i], false);
         message.addParameterElement ("Midi CC", -1, ribbonModeCC, this.isKnobTouched[5], -1);
-        message.send ();
     }
 }

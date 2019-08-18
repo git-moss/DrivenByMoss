@@ -5,8 +5,8 @@
 package de.mossgrabers.controller.hui.controller;
 
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
-import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.LatestTaskExecutor;
@@ -23,20 +23,6 @@ import de.mossgrabers.framework.utils.StringUtils;
 public class HUIDisplay extends AbstractTextDisplay
 {
     private static final String      SYSEX_DISPLAY_HEADER = "F0 00 00 66 05 00 10 ";
-
-    private static final String []   SPACES               =
-    {
-        "",
-        " ",
-        "  ",
-        "   ",
-        "    ",
-        "     ",
-        "      ",
-        "       ",
-        "        ",
-        "         "
-    };
 
     private int                      charactersOfCell;
 
@@ -60,7 +46,7 @@ public class HUIDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public AbstractTextDisplay clearRow (final int row)
+    public ITextDisplay clearRow (final int row)
     {
         for (int i = 0; i < this.noOfCells; i++)
             this.clearCell (row, i);
@@ -70,7 +56,7 @@ public class HUIDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public HUIDisplay clearCell (final int row, final int cell)
+    public ITextDisplay clearCell (final int row, final int cell)
     {
         this.cells[row * this.noOfCells + cell] = "         ".substring (0, this.charactersOfCell);
         return this;
@@ -84,8 +70,8 @@ public class HUIDisplay extends AbstractTextDisplay
         final int cell = 2 * block;
         if (value.length () >= this.charactersOfCell)
         {
-            this.cells[row * this.noOfCells + cell] = pad (value.substring (0, this.charactersOfCell), this.charactersOfCell);
-            this.cells[row * this.noOfCells + cell + 1] = pad (value.substring (this.charactersOfCell), this.charactersOfCell);
+            this.cells[row * this.noOfCells + cell] = StringUtils.pad (value.substring (0, this.charactersOfCell), this.charactersOfCell);
+            this.cells[row * this.noOfCells + cell + 1] = StringUtils.pad (value.substring (this.charactersOfCell), this.charactersOfCell);
         }
         else
         {
@@ -100,7 +86,7 @@ public class HUIDisplay extends AbstractTextDisplay
     @Override
     public ITextDisplay setCell (final int row, final int column, final int value, final Format format)
     {
-        this.cells[row * this.noOfCells + column] = pad (Integer.toString (value), this.charactersOfCell);
+        this.cells[row * this.noOfCells + column] = StringUtils.pad (Integer.toString (value), this.charactersOfCell);
         return this;
     }
 
@@ -111,7 +97,7 @@ public class HUIDisplay extends AbstractTextDisplay
     {
         try
         {
-            this.cells[row * this.noOfCells + column] = pad (value, this.charactersOfCell);
+            this.cells[row * this.noOfCells + column] = StringUtils.pad (value, this.charactersOfCell);
         }
         catch (final ArrayIndexOutOfBoundsException ex)
         {
@@ -168,17 +154,5 @@ public class HUIDisplay extends AbstractTextDisplay
 
         // Prevent further sends
         this.executor.shutdown ();
-    }
-
-
-    private static String pad (final String str, final int length)
-    {
-        final String text = str == null ? "" : str;
-        final int diff = length - text.length ();
-        if (diff < 0)
-            return text.substring (0, length);
-        if (diff > 0)
-            return text + SPACES[diff];
-        return text;
     }
 }

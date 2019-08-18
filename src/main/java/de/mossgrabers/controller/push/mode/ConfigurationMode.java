@@ -7,6 +7,7 @@ package de.mossgrabers.controller.push.mode;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.graphics.display.DisplayModel;
 
 
 /**
@@ -49,20 +50,19 @@ public class ConfigurationMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ();
-        d.clear ().setBlock (0, 0, "Pad Threshold").setBlock (1, 0, this.surface.getSelectedPadThreshold ());
-        d.setBlock (0, 1, "Velocity Curve").setBlock (1, 1, this.surface.getSelectedVelocityCurve ());
-        d.setBlock (0, 3, "Firmware: " + this.surface.getMajorVersion () + "." + this.surface.getMinorVersion ()).allDone ();
+        display.setBlock (0, 0, "Pad Threshold").setBlock (1, 0, this.surface.getSelectedPadThreshold ());
+        display.setBlock (0, 1, "Velocity Curve").setBlock (1, 1, this.surface.getSelectedVelocityCurve ());
+        display.setBlock (0, 3, "Firmware: " + this.surface.getMajorVersion () + "." + this.surface.getMinorVersion ());
         if (this.surface.getConfiguration ().getPadThreshold () < 20)
-            d.setRow (3, " Warning:Low threshold maycause stuck pads ");
+            display.setRow (3, " Warning:Low threshold maycause stuck pads ");
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         // Intentionally empty - mode is only for Push 1
     }

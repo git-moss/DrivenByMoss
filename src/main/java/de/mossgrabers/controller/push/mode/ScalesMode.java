@@ -128,7 +128,7 @@ public class ScalesMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
         final ITextDisplay d = this.surface.getDisplay ().clear ();
 
@@ -156,10 +156,8 @@ public class ScalesMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
-
         final int selIndex = this.scales.getScale ().ordinal ();
         message.addListElement (6, Scale.getNames (), selIndex);
 
@@ -169,8 +167,6 @@ public class ScalesMode extends BaseMode
             message.addOptionElement (i == 3 ? "Note range: " + rangeText : "", Scales.BASES[6 + i], offset == 6 + i, "", Scales.BASES[i], offset == i, false);
 
         message.addOptionElement ("", this.scales.isChromatic () ? "Chromatc" : "In Key", this.scales.isChromatic (), "", "", false, false);
-
-        message.send ();
     }
 
 

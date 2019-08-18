@@ -74,35 +74,31 @@ public class ScaleLayoutMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ();
         final int sl = this.scales.getScaleLayout ().ordinal ();
         final int pos = sl / 2;
         final String [] names = ScaleLayout.getNames ();
-        d.clear ().setBlock (1, 0, "Scale layout:");
+        display.setBlock (1, 0, "Scale layout:");
         for (int i = 0; i < names.length; i += 2)
-            d.setCell (3, i / 2, (pos == i / 2 ? Push1Display.SELECT_ARROW : " ") + names[i].replace (" ^", ""));
-        d.setCell (3, 7, sl % 2 == 0 ? "Horizontal" : "Vertical");
-        d.allDone ();
+            display.setCell (3, i / 2, (pos == i / 2 ? Push1Display.SELECT_ARROW : " ") + names[i].replace (" ^", ""));
+        display.setCell (3, 7, sl % 2 == 0 ? "Horizontal" : "Vertical");
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final int sl = this.scales.getScaleLayout ().ordinal ();
         final int pos = sl / 2;
         final String [] names = ScaleLayout.getNames ();
 
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < names.length; i += 2)
             message.addOptionElement ("", "", false, i == 0 ? "Scale layout" : "", names[i].replace (" ^", ""), pos == i / 2, false);
 
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("", "", false, "", "", false, false);
         message.addOptionElement ("", "", false, "", sl % 2 == 0 ? "Horizontal" : "Vertical", false, false);
-        message.send ();
     }
 }

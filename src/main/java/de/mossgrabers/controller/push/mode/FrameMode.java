@@ -243,23 +243,20 @@ public class FrameMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
         final IApplication app = this.model.getApplication ();
-        final ITextDisplay d = this.surface.getDisplay ();
-        d.setRow (0, FrameMode.ROW0).setRow (1, FrameMode.ROW1).setRow (2, app.isArrangeLayout () ? FrameMode.ARRANGER_ROW2 : app.isMixerLayout () ? FrameMode.MIXER_ROW2 : FrameMode.EMPTY).setRow (3, app.isArrangeLayout () ? FrameMode.ARRANGER_ROW3 : app.isMixerLayout () ? FrameMode.MIXER_ROW3 : FrameMode.EMPTY);
+        display.setRow (0, FrameMode.ROW0).setRow (1, FrameMode.ROW1).setRow (2, app.isArrangeLayout () ? FrameMode.ARRANGER_ROW2 : app.isMixerLayout () ? FrameMode.MIXER_ROW2 : FrameMode.EMPTY).setRow (3, app.isArrangeLayout () ? FrameMode.ARRANGER_ROW3 : app.isMixerLayout () ? FrameMode.MIXER_ROW3 : FrameMode.EMPTY);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
         final IApplication app = this.model.getApplication ();
-        final DisplayModel message = this.surface.getGraphicsDisplay ().getModel ();
         for (int i = 0; i < FrameMode.ARRANGER1.length; i++)
             message.addOptionElement (app.isArrangeLayout () ? FrameMode.ARRANGER1[i] : app.isMixerLayout () ? FrameMode.MIXER1[i] : "", app.isArrangeLayout () ? FrameMode.ARRANGER2[i] : app.isMixerLayout () ? FrameMode.MIXER2[i] : "", this.getSecondRowButtonState (i) > 0, FrameMode.LAYOUTS1[i], FrameMode.LAYOUTS2[i], this.getFirstRowButtonState (i), false);
-        message.send ();
     }
 
 

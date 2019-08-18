@@ -5,8 +5,8 @@
 package de.mossgrabers.controller.push.mode.track;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -68,38 +68,30 @@ public class CrossfaderMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay1 ()
+    public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (i);
-            d.setCell (0, i, t.doesExist () ? "Crossfdr" : "");
+            display.setCell (0, i, t.doesExist () ? "Crossfdr" : "");
             if (t.doesExist ())
             {
                 final boolean isA = "A".equals (t.getCrossfadeMode ());
-                d.setCell (1, i, isA ? "A" : "B".equals (t.getCrossfadeMode ()) ? "       B" : "   <> ");
-                d.setCell (2, i, isA ? 0 : "B".equals (t.getCrossfadeMode ()) ? upperBound : upperBound / 2, Format.FORMAT_PAN);
-            }
-            else
-            {
-                d.clearCell (1, i);
-                d.clearCell (2, i);
+                display.setCell (1, i, isA ? "A" : "B".equals (t.getCrossfadeMode ()) ? "       B" : "   <> ");
+                display.setCell (2, i, isA ? 0 : "B".equals (t.getCrossfadeMode ()) ? upperBound : upperBound / 2, Format.FORMAT_PAN);
             }
         }
-        d.done (0).done (1).done (2);
-
-        this.drawRow4 ();
+        this.drawRow4 (display);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 ()
+    public void updateDisplay2 (final DisplayModel message)
     {
-        this.updateChannelDisplay (DisplayModel.GRID_ELEMENT_CHANNEL_CROSSFADER, false, false);
+        this.updateChannelDisplay (message, DisplayModel.GRID_ELEMENT_CHANNEL_CROSSFADER, false, false);
     }
 
 }
