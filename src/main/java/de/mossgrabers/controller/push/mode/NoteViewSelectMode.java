@@ -7,10 +7,10 @@ package de.mossgrabers.controller.push.mode;
 import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -111,7 +111,7 @@ public class NoteViewSelectMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 (final DisplayModel message)
+    public void updateDisplay2 (final IGraphicDisplay display)
     {
         final ViewManager viewManager = this.surface.getViewManager ();
         for (int i = 0; i < VIEWS.length; i++)
@@ -135,7 +135,7 @@ public class NoteViewSelectMode extends BaseMode
             }
             else if (i == 6)
                 titleBottom = "Tools";
-            message.addOptionElement (titleTop, menuTopName, isMenuTopSelected, titleBottom, menuBottomName, isMenuBottomSelected, false);
+            display.addOptionElement (titleTop, menuTopName, isMenuTopSelected, titleBottom, menuBottomName, isMenuBottomSelected, false);
         }
     }
 

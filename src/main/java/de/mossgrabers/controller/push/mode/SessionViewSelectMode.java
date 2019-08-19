@@ -8,9 +8,9 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -116,18 +116,18 @@ public class SessionViewSelectMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 (final DisplayModel message)
+    public void updateDisplay2 (final IGraphicDisplay display)
     {
         final ViewManager viewManager = this.surface.getViewManager ();
         for (int i = 0; i < VIEWS.length; i++)
         {
             final boolean isMenuBottomSelected = VIEWS[i] != null && this.isSelected (viewManager, i);
-            message.addOptionElement ("", "", false, i == 0 ? "Session view" : "", VIEW_NAMES[i], isMenuBottomSelected, false);
+            display.addOptionElement ("", "", false, i == 0 ? "Session view" : "", VIEW_NAMES[i], isMenuBottomSelected, false);
         }
         final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.SESSION);
-        message.addOptionElement ("", "", false, "", "", false, false);
-        message.addOptionElement ("", "", false, "Session mode", "Markers", false, false);
-        message.addOptionElement ("", "", false, "", "Clips", isOn, false);
+        display.addOptionElement ("", "", false, "", "", false, false);
+        display.addOptionElement ("", "", false, "Session mode", "Markers", false, false);
+        display.addOptionElement ("", "", false, "", "Clips", isOn, false);
     }
 
 

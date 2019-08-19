@@ -6,10 +6,10 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -130,18 +130,18 @@ public class NoteMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 (final DisplayModel message)
+    public void updateDisplay2 (final IGraphicDisplay display)
     {
         final int quarters = (int) Math.floor (this.noteLength);
         final int fine = (int) Math.floor (this.noteLength * 100) % 100;
 
-        message.addParameterElement ("Quarters", quarters, Integer.toString (quarters), this.isKnobTouched[0], -1);
-        message.addParameterElement ("Fine", fine, Integer.toString (fine), this.isKnobTouched[1], -1);
+        display.addParameterElement ("Quarters", quarters, Integer.toString (quarters), this.isKnobTouched[0], -1);
+        display.addParameterElement ("Fine", fine, Integer.toString (fine), this.isKnobTouched[1], -1);
         final int parameterValue = this.noteVelocity * 1023 / 127;
-        message.addParameterElement ("Velocity", parameterValue, Integer.toString (this.noteVelocity * 100 / 127) + "%", this.isKnobTouched[2], parameterValue);
-        message.addOptionElement ("    Step: " + (this.step + 1), "", false, "    Selected note: " + Scales.formatNoteAndOctave (this.note, -3), "", false, false);
+        display.addParameterElement ("Velocity", parameterValue, Integer.toString (this.noteVelocity * 100 / 127) + "%", this.isKnobTouched[2], parameterValue);
+        display.addOptionElement ("    Step: " + (this.step + 1), "", false, "    Selected note: " + Scales.formatNoteAndOctave (this.note, -3), "", false, false);
         for (int i = 4; i < 8; i++)
-            message.addOptionElement ("", "", false, "", "", false, false);
+            display.addOptionElement ("", "", false, "", "", false, false);
 
     }
 }

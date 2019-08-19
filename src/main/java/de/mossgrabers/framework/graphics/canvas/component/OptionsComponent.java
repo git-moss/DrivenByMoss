@@ -70,14 +70,12 @@ public class OptionsComponent implements IComponent
         final double menuHeight = 2 * dimensions.getMenuHeight ();
         final IGraphicsConfiguration configuration = info.getConfiguration ();
 
-        this.header.setColor (configuration.getColorBackgroundDarker ());
         this.header.draw (info.withBounds (0, menuHeight));
 
         final IBounds bounds = info.getBounds ();
         final double left = bounds.getLeft ();
         final double height = bounds.getHeight ();
 
-        this.footer.setColor (configuration.getColorBackgroundDarker ());
         this.footer.draw (info.withBounds (height - menuHeight, menuHeight));
 
         final boolean hasTopHeader = this.headerTop != null && !this.headerTop.isEmpty ();

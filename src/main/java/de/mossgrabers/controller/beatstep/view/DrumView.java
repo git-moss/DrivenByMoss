@@ -6,12 +6,12 @@ package de.mossgrabers.controller.beatstep.view;
 
 import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.framework.Resolution;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ITrack;
 

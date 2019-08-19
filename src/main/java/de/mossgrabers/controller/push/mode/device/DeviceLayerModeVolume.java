@@ -6,12 +6,13 @@ package de.mossgrabers.controller.push.mode.device;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.display.AbstractGraphicDisplay;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 
 
 /**
@@ -94,8 +95,8 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplayElements (final DisplayModel message, final ICursorDevice cd, final IChannel l)
+    public void updateDisplayElements (final IGraphicDisplay message, final ICursorDevice cd, final IChannel l)
     {
-        this.updateChannelDisplay (message, cd, DisplayModel.GRID_ELEMENT_CHANNEL_VOLUME, true, false);
+        this.updateChannelDisplay (message, cd, AbstractGraphicDisplay.GRID_ELEMENT_CHANNEL_VOLUME, true, false);
     }
 }

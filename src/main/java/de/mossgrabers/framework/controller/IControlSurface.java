@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller;
 import de.mossgrabers.framework.command.ContinuousCommandID;
 import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.display.IGraphicsDisplay;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -87,7 +87,7 @@ public interface IControlSurface<C extends Configuration>
      *
      * @return The graphics interface
      */
-    IGraphicsDisplay getGraphicsDisplay ();
+    IGraphicDisplay getGraphicsDisplay ();
 
 
     /**
@@ -96,7 +96,7 @@ public interface IControlSurface<C extends Configuration>
      * @param index The index of the interface
      * @return The display interface
      */
-    IGraphicsDisplay getGraphicsDisplay (int index);
+    IGraphicDisplay getGraphicsDisplay (int index);
 
 
     /**
@@ -104,7 +104,7 @@ public interface IControlSurface<C extends Configuration>
      *
      * @param display The display interface
      */
-    void addGraphicsDisplay (final IGraphicsDisplay display);
+    void addGraphicsDisplay (final IGraphicDisplay display);
 
 
     /**

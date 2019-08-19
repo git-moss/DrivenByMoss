@@ -9,6 +9,7 @@ import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.track.AbstractTrackMode;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
@@ -16,7 +17,6 @@ import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
@@ -140,12 +140,12 @@ public class SessionMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 (final DisplayModel message)
+    public void updateDisplay2 (final IGraphicDisplay display)
     {
         if (this.surface.getViewManager ().isActiveView (Views.SESSION))
-            this.updateDisplay2Clips (message);
+            this.updateDisplay2Clips (display);
         else
-            this.updateDisplay2Scenes (message);
+            this.updateDisplay2Scenes (display);
     }
 
 
@@ -243,7 +243,7 @@ public class SessionMode extends AbstractTrackMode
     }
 
 
-    private void updateDisplay2Scenes (final DisplayModel message)
+    private void updateDisplay2Scenes (final IGraphicDisplay display)
     {
         final int maxCols = 8;
         final int maxRows = this.rowDisplayMode == RowDisplayMode.ALL ? 8 : 4;
@@ -258,12 +258,12 @@ public class SessionMode extends AbstractTrackMode
                     sceneIndex += 32;
                 scenes.add (this.sceneBank.getItem (sceneIndex));
             }
-            message.addSceneListElement (scenes);
+            display.addSceneListElement (scenes);
         }
     }
 
 
-    private void updateDisplay2Clips (final DisplayModel message)
+    private void updateDisplay2Clips (final IGraphicDisplay display)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int numTracks = tb.getPageSize ();
@@ -294,7 +294,7 @@ public class SessionMode extends AbstractTrackMode
                 final ITrack track = tb.getItem (x);
                 slots.add (new Pair<> (track, track.getSlotBank ().getItem (y)));
             }
-            message.addSlotListElement (slots);
+            display.addSlotListElement (slots);
         }
     }
 }

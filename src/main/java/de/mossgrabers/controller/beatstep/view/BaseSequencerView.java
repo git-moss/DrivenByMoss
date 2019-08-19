@@ -6,8 +6,8 @@ package de.mossgrabers.controller.beatstep.view;
 
 import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.framework.Resolution;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 
 

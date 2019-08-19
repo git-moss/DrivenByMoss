@@ -9,9 +9,9 @@ import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
@@ -130,43 +130,39 @@ public class ScalesMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
-
         final int selIndex = this.scales.getScale ().ordinal ();
         int pos = 0;
         for (final Pair<String, Boolean> p: Push1Display.createMenuList (4, Scale.getNames (), selIndex))
         {
-            d.setBlock (pos, 0, (p.getValue ().booleanValue () ? Push1Display.SELECT_ARROW : " ") + p.getKey ());
+            display.setBlock (pos, 0, (p.getValue ().booleanValue () ? Push1Display.SELECT_ARROW : " ") + p.getKey ());
             pos++;
         }
 
-        d.setBlock (0, 3, this.scales.getRangeText ());
+        display.setBlock (0, 3, this.scales.getRangeText ());
 
         final int offset = this.scales.getScaleOffset ();
         for (int i = 0; i < 6; i++)
         {
-            d.setCell (2, i + 1, "  " + (offset == i ? Push1Display.SELECT_ARROW : " ") + Scales.BASES[i]);
-            d.setCell (3, i + 1, "  " + (offset == 6 + i ? Push1Display.SELECT_ARROW : " ") + Scales.BASES[6 + i]);
+            display.setCell (2, i + 1, "  " + (offset == i ? Push1Display.SELECT_ARROW : " ") + Scales.BASES[i]);
+            display.setCell (3, i + 1, "  " + (offset == 6 + i ? Push1Display.SELECT_ARROW : " ") + Scales.BASES[6 + i]);
         }
-        d.setCell (3, 7, this.scales.isChromatic () ? "Chromatc" : "In Key");
-
-        d.allDone ();
+        display.setCell (3, 7, this.scales.isChromatic () ? "Chromatc" : "In Key");
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 (final DisplayModel message)
+    public void updateDisplay2 (final IGraphicDisplay display)
     {
         final int selIndex = this.scales.getScale ().ordinal ();
-        message.addListElement (6, Scale.getNames (), selIndex);
+        display.addListElement (6, Scale.getNames (), selIndex);
 
         final int offset = this.scales.getScaleOffset ();
         final String rangeText = this.scales.getRangeText ();
         for (int i = 0; i < 6; i++)
-            message.addOptionElement (i == 3 ? "Note range: " + rangeText : "", Scales.BASES[6 + i], offset == 6 + i, "", Scales.BASES[i], offset == i, false);
+            display.addOptionElement (i == 3 ? "Note range: " + rangeText : "", Scales.BASES[6 + i], offset == 6 + i, "", Scales.BASES[i], offset == i, false);
 
-        message.addOptionElement ("", this.scales.isChromatic () ? "Chromatc" : "In Key", this.scales.isChromatic (), "", "", false, false);
+        display.addOptionElement ("", this.scales.isChromatic () ? "Chromatc" : "In Key", this.scales.isChromatic (), "", "", false, false);
     }
 
 

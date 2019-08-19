@@ -8,11 +8,11 @@ import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.controller.push.view.ColorView;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -124,22 +124,23 @@ public class LayerDetailsMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 (final DisplayModel message)
+    public void updateDisplay2 (final IGraphicDisplay display)
     {
         final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
         if (deviceChain == null)
-            message.setMessage (3, "Please select a layer...");
-        else
         {
-            message.addOptionElement ("Layer: " + deviceChain.getName (), "", false, "", "Active", deviceChain.isActivated (), false);
-            message.addEmptyElement ();
-            message.addOptionElement ("", "", false, "", "Mute", deviceChain.isMute (), false);
-            message.addOptionElement ("", "", false, "", "Solo", deviceChain.isSolo (), false);
-            message.addEmptyElement ();
-            message.addEmptyElement ();
-            message.addEmptyElement ();
-            message.addOptionElement ("", "", false, "", "Select Color", false, false);
+            display.setMessage (3, "Please select a layer...");
+            return;
         }
+
+        display.addOptionElement ("Layer: " + deviceChain.getName (), "", false, "", "Active", deviceChain.isActivated (), false);
+        display.addEmptyElement ();
+        display.addOptionElement ("", "", false, "", "Mute", deviceChain.isMute (), false);
+        display.addOptionElement ("", "", false, "", "Solo", deviceChain.isSolo (), false);
+        display.addEmptyElement ();
+        display.addEmptyElement ();
+        display.addEmptyElement ();
+        display.addOptionElement ("", "", false, "", "Select Color", false, false);
     }
 
 

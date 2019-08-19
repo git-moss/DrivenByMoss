@@ -10,7 +10,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.controller.display.IDisplay;
-import de.mossgrabers.framework.controller.display.IGraphicsDisplay;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IHost;
@@ -71,7 +71,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     private final int []                                            noteVelocities;
 
     protected List<ITextDisplay>                                    textDisplays          = new ArrayList<> (1);
-    protected List<IGraphicsDisplay>                                graphicsDisplays      = new ArrayList<> (1);
+    protected List<IGraphicDisplay>                                graphicsDisplays      = new ArrayList<> (1);
 
     protected final PadGrid                                         pads;
     protected final Map<Integer, Map<Integer, TriggerCommandID>>    triggerCommands       = new HashMap<> ();
@@ -180,7 +180,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public IGraphicsDisplay getGraphicsDisplay ()
+    public IGraphicDisplay getGraphicsDisplay ()
     {
         return this.getGraphicsDisplay (0);
     }
@@ -188,7 +188,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public IGraphicsDisplay getGraphicsDisplay (final int index)
+    public IGraphicDisplay getGraphicsDisplay (final int index)
     {
         return this.graphicsDisplays.get (index);
     }
@@ -204,7 +204,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public void addGraphicsDisplay (final IGraphicsDisplay display)
+    public void addGraphicsDisplay (final IGraphicDisplay display)
     {
         this.graphicsDisplays.add (display);
     }

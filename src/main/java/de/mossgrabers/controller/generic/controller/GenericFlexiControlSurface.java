@@ -29,6 +29,7 @@ import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -1644,7 +1645,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case SCENE_7_LAUNCH_SCENE:
             case SCENE_8_LAUNCH_SCENE:
                 if (isButtonPressed)
-                    this.model.getSceneBank ().getItem (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_SCENE.ordinal ()).launch ();
+                {
+                    final IScene scene = this.model.getSceneBank ().getItem (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_SCENE.ordinal ());
+                    scene.select ();
+                    scene.launch ();
+                }
                 break;
 
             // Scene: Select Previous Bank

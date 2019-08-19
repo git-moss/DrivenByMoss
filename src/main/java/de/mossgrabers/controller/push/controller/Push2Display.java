@@ -9,8 +9,6 @@ import de.mossgrabers.framework.controller.display.AbstractGraphicDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.graphics.DefaultGraphicsDimensions;
 import de.mossgrabers.framework.graphics.IBitmap;
-import de.mossgrabers.framework.graphics.IGraphicsDimensions;
-import de.mossgrabers.framework.graphics.display.DisplayCanvas;
 
 
 /**
@@ -33,10 +31,8 @@ public class Push2Display extends AbstractGraphicDisplay
      */
     public Push2Display (final IHost host, final int maxParameterValue, final PushConfiguration configuration)
     {
-        super (host);
+        super (host, configuration, new DefaultGraphicsDimensions (960, 160, maxParameterValue), "Push 2 Display");
 
-        final IGraphicsDimensions dimensions = new DefaultGraphicsDimensions (960, 160, maxParameterValue);
-        this.canvas = new DisplayCanvas (host, this.model, configuration, dimensions, "Push 2 Display");
         this.usbDisplay = new PushUsbDisplay (host);
     }
 
@@ -48,7 +44,7 @@ public class Push2Display extends AbstractGraphicDisplay
         if (message == null)
             return;
         this.host.showNotification (message);
-        this.model.setNotificationMessage (message);
+        this.setNotificationMessage (message);
     }
 
 
@@ -57,7 +53,7 @@ public class Push2Display extends AbstractGraphicDisplay
     public void send (final IBitmap image)
     {
         if (this.usbDisplay != null)
-            this.usbDisplay.send (this.canvas.getImage ());
+            this.usbDisplay.send (this.image);
     }
 
 
@@ -65,9 +61,11 @@ public class Push2Display extends AbstractGraphicDisplay
     @Override
     public void shutdown ()
     {
-        this.model.setMessage (3, "Please start " + this.host.getName () + " to play...").send ();
+        this.setMessage (3, "Please start " + this.host.getName () + " to play...");
+        this.send ();
         if (this.usbDisplay != null)
             this.usbDisplay.shutdown ();
-        this.model.shutdown ();
+
+        super.shutdown ();
     }
 }

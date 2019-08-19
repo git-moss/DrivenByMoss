@@ -7,12 +7,12 @@ package de.mossgrabers.controller.push.mode.device;
 import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -238,7 +238,7 @@ public class DeviceBrowserMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 (final DisplayModel message)
+    public void updateDisplay2 (final IGraphicDisplay display)
     {
         final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
@@ -261,9 +261,9 @@ public class DeviceBrowserMode extends BaseMode
                     final String headerTopName = i == 0 ? "Device: " + (deviceName.isEmpty () ? "None" : deviceName) : "";
                     final String headerBottomName = i == 0 && isPresetSession ? "Preset: " + selectedResult : "";
                     final String menuBottomName = getColumnName (column);
-                    message.addOptionElement (headerTopName, column == null ? "" : column.getName (), i == this.filterColumn, headerBottomName, menuBottomName, !menuBottomName.equals (" "), false);
+                    display.addOptionElement (headerTopName, column == null ? "" : column.getName (), i == this.filterColumn, headerBottomName, menuBottomName, !menuBottomName.equals (" "), false);
                 }
-                message.addOptionElement ("", browser.getSelectedContentType (), this.filterColumn == -1, "", "", false, false);
+                display.addOptionElement ("", browser.getSelectedContentType (), this.filterColumn == -1, "", "", false, false);
                 break;
 
             case DeviceBrowserMode.SELECTION_PRESET:
@@ -272,8 +272,8 @@ public class DeviceBrowserMode extends BaseMode
                 if (!results[0].doesExist ())
                 {
                     for (int i = 0; i < 8; i++)
-                        message.addOptionElement (i == 3 ? "No results available..." : "", "", false, "", "", false, false);
-                    message.send ();
+                        display.addOptionElement (i == 3 ? "No results available..." : "", "", false, "", "", false, false);
+                    display.send ();
                     return;
                 }
 
@@ -287,7 +287,7 @@ public class DeviceBrowserMode extends BaseMode
                         items[item] = pos < results.length ? results[pos].getName (16) : "";
                         selected[item] = pos < results.length && results[pos].isSelected ();
                     }
-                    message.addListElement (items, selected);
+                    display.addListElement (items, selected);
                 }
                 break;
 
@@ -306,7 +306,7 @@ public class DeviceBrowserMode extends BaseMode
                         items[itemIndex] = text;
                         selected[itemIndex] = item[pos].isSelected ();
                     }
-                    message.addListElement (items, selected);
+                    display.addListElement (items, selected);
                 }
                 break;
 

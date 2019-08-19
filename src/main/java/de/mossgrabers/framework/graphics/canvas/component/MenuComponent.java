@@ -5,8 +5,6 @@
 package de.mossgrabers.framework.graphics.canvas.component;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.graphics.IBounds;
-import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 import de.mossgrabers.framework.graphics.IGraphicsInfo;
 import de.mossgrabers.framework.graphics.canvas.component.LabelComponent.LabelLayout;
 
@@ -69,19 +67,8 @@ public class MenuComponent implements IComponent
         if (name == null || name.length () == 0)
             return;
 
-        final IGraphicsDimensions dimensions = info.getDimensions ();
-        final double unit = dimensions.getUnit ();
-        final int trackRowHeight = (int) (1.6 * unit);
-        final IBounds bounds = info.getBounds ();
-        final double height = bounds.getHeight ();
-
-        // TODO should be the same, SEPARATE_COLOR drawing must be changed to be drawn in its own
-        // box
-        final double menuHeight = 2 * dimensions.getMenuHeight ();
-        final double trackRowTop = this.footer.getLayout () == LabelLayout.SEPARATE_COLOR ? height - trackRowHeight - unit - dimensions.getSeparatorSize () : height - menuHeight;
-        final double h = this.footer.getLayout () == LabelLayout.SEPARATE_COLOR ? height : menuHeight;
-
-        this.footer.draw (info.withBounds (trackRowTop, h));
+        final double menuHeight = 2 * info.getDimensions ().getMenuHeight ();
+        this.footer.draw (info.withBounds (info.getBounds ().getHeight () - menuHeight, menuHeight));
     }
 
 

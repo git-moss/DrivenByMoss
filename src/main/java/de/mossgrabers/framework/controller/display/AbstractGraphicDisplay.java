@@ -4,11 +4,43 @@
 
 package de.mossgrabers.framework.controller.display;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.graphics.canvas.utils.GridChangeListener;
-import de.mossgrabers.framework.graphics.display.DisplayCanvas;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.daw.resource.ResourceHandler;
+import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.DefaultGraphicsInfo;
+import de.mossgrabers.framework.graphics.IBitmap;
+import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
+import de.mossgrabers.framework.graphics.IGraphicsDimensions;
+import de.mossgrabers.framework.graphics.IGraphicsInfo;
+import de.mossgrabers.framework.graphics.canvas.component.ChannelComponent;
+import de.mossgrabers.framework.graphics.canvas.component.ChannelSelectComponent;
+import de.mossgrabers.framework.graphics.canvas.component.ClipListComponent;
+import de.mossgrabers.framework.graphics.canvas.component.IComponent;
+import de.mossgrabers.framework.graphics.canvas.component.LabelComponent.LabelLayout;
+import de.mossgrabers.framework.graphics.canvas.component.ListComponent;
+import de.mossgrabers.framework.graphics.canvas.component.MidiClipComponent;
+import de.mossgrabers.framework.graphics.canvas.component.OptionsComponent;
+import de.mossgrabers.framework.graphics.canvas.component.ParameterComponent;
+import de.mossgrabers.framework.graphics.canvas.component.SceneListGridElement;
+import de.mossgrabers.framework.graphics.canvas.component.SendsComponent;
+import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.graphics.display.ModelInfo;
+import de.mossgrabers.framework.utils.Pair;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -16,31 +48,110 @@ import de.mossgrabers.framework.graphics.display.ModelInfo;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractGraphicDisplay implements IGraphicsDisplay, GridChangeListener
+public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 {
-    protected final IHost        host;
-    protected final DisplayModel model = new DisplayModel ();
-    protected DisplayCanvas      canvas;
+    private static final double []         COLOR_BLACK                     = new double []
+    {
+        0,
+        0,
+        0
+    };
+
+    /** Display only a channel name for selection. */
+    public static final int                GRID_ELEMENT_CHANNEL_SELECTION  = 0;
+    /** Display a channel, edit volume. */
+    public static final int                GRID_ELEMENT_CHANNEL_VOLUME     = 1;
+    /** Display a channel, edit panorama. */
+    public static final int                GRID_ELEMENT_CHANNEL_PAN        = 2;
+    /** Display a channel, edit crossfader. */
+    public static final int                GRID_ELEMENT_CHANNEL_CROSSFADER = 3;
+    /** Display a channel sends. */
+    public static final int                GRID_ELEMENT_CHANNEL_SENDS      = 4;
+    /** Display a channel, edit all parameters. */
+    public static final int                GRID_ELEMENT_CHANNEL_ALL        = 5;
+    /** Display a parameter with name and value. */
+    public static final int                GRID_ELEMENT_PARAMETERS         = 6;
+    /** Display options on top and bottom. */
+    public static final int                GRID_ELEMENT_OPTIONS            = 7;
+    /** Display a list. */
+    public static final int                GRID_ELEMENT_LIST               = 8;
+
+    /** Timeout for displaying the notification message. */
+    private static final int               TIMEOUT                         = 2;
+
+    private final AtomicInteger            counter                         = new AtomicInteger ();
+    private final ScheduledExecutorService executor                        = Executors.newSingleThreadScheduledExecutor ();
+
+    private final List<IComponent>         columns                         = new ArrayList<> (8);
+    private final AtomicReference<String>  notificationMessage             = new AtomicReference<> ();
+    private ModelInfo                      info                            = new ModelInfo (null, Collections.emptyList ());
+
+    protected final IHost                  host;
+    protected final IGraphicsConfiguration configuration;
+    protected final IGraphicsDimensions    dimensions;
+    protected final IBitmap                image;
 
 
     /**
      * Constructor.
      *
      * @param host The host
+     * @param configuration The configuration
+     * @param dimensions The pre-calculated dimensions
+     * @param windowTitle The window title
      */
-    public AbstractGraphicDisplay (final IHost host)
+    public AbstractGraphicDisplay (final IHost host, final IGraphicsConfiguration configuration, final IGraphicsDimensions dimensions, final String windowTitle)
     {
         this.host = host;
+        this.configuration = configuration;
+        this.dimensions = dimensions;
 
-        this.model.addGridElementChangeListener (this);
+        ResourceHandler.init (host);
+
+        this.image = host.createBitmap (dimensions.getWidth (), dimensions.getHeight ());
+        this.image.setDisplayWindowTitle (windowTitle);
+
+        // Manage notification message display time
+        this.executor.scheduleAtFixedRate ( () -> {
+            final int c = this.counter.get ();
+            if (c <= 0)
+                return;
+            if (this.counter.decrementAndGet () == 0)
+                this.notificationMessage.set (null);
+        }, 1, 1, TimeUnit.SECONDS);
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public DisplayModel getModel ()
+    private void render ()
     {
-        return this.model;
+        this.image.render (gc -> {
+            final int width = this.dimensions.getWidth ();
+            final int height = this.dimensions.getHeight ();
+            final double separatorSize = this.dimensions.getSeparatorSize ();
+
+            // Clear display
+            final ColorEx colorBorder = this.configuration.getColorBorder ();
+            gc.fillRectangle (0, 0, width, height, colorBorder);
+
+            final List<IComponent> elements = this.info.getComponents ();
+            final int size = elements.size ();
+            if (size == 0)
+                return;
+            final int gridWidth = width / size;
+            final double paintWidth = gridWidth - separatorSize;
+            final double offsetX = separatorSize / 2.0;
+
+            final IGraphicsInfo graphicsInfo = new DefaultGraphicsInfo (gc, this.configuration, this.dimensions);
+            for (int i = 0; i < size; i++)
+                elements.get (i).draw (graphicsInfo.withBounds (i * gridWidth + offsetX, 0, paintWidth, height));
+
+            final String notification = this.info.getNotification ();
+            if (notification == null)
+                return;
+
+            final ColorEx colorText = this.configuration.getColorText ();
+            gc.drawTextInBounds (notification, 0, 0, width, height, Align.CENTER, colorText, colorBorder, height / 4.0);
+        });
     }
 
 
@@ -48,16 +159,223 @@ public abstract class AbstractGraphicDisplay implements IGraphicsDisplay, GridCh
     @Override
     public void showDebugWindow ()
     {
-        if (this.canvas != null)
-            this.canvas.getImage ().showDisplayWindow ();
+        this.image.showDisplayWindow ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void render (final ModelInfo info)
+    public void shutdown ()
     {
-        if (this.canvas != null)
-            this.send (this.canvas.getImage ());
+        this.executor.shutdown ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void send ()
+    {
+        if (this.executor.isShutdown ())
+            return;
+
+        this.info = new ModelInfo (this.notificationMessage.get (), this.columns);
+
+        this.render ();
+
+        this.columns.clear ();
+
+        this.send (this.image);
+    }
+
+
+    /**
+     * Send the buffered image to the graphics display.
+     *
+     * @param image An image
+     */
+    protected abstract void send (final IBitmap image);
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setNotificationMessage (final String message)
+    {
+        this.counter.set (TIMEOUT);
+        this.notificationMessage.set (message);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setMidiClipElement (final INoteClip clip, final int quartersPerMeasure)
+    {
+        this.columns.add (new MidiClipComponent (clip, quartersPerMeasure));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IGraphicDisplay setMessage (final int column, final String text)
+    {
+        for (int i = 0; i < 8; i++)
+            this.addOptionElement (column == i ? text : "", "", false, "", "", false, false);
+        return this;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addEmptyElement ()
+    {
+        this.addOptionElement ("", "", false, "", "", false, false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final boolean isActive)
+    {
+        this.columns.add (new ChannelSelectComponent (type, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, isActive));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode)
+    {
+        this.addChannelElement (GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode)
+    {
+        int editType;
+        switch (channelType)
+        {
+            case GRID_ELEMENT_CHANNEL_VOLUME:
+                editType = ChannelComponent.EDIT_TYPE_VOLUME;
+                break;
+            case GRID_ELEMENT_CHANNEL_PAN:
+                editType = ChannelComponent.EDIT_TYPE_PAN;
+                break;
+            case GRID_ELEMENT_CHANNEL_CROSSFADER:
+                editType = ChannelComponent.EDIT_TYPE_CROSSFADER;
+                break;
+            default:
+                editType = ChannelComponent.EDIT_TYPE_ALL;
+                break;
+        }
+        this.columns.add (new ChannelComponent (editType, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final SendData [] sendData, final boolean isTrackMode, final boolean isSendActive, final boolean isChannelLabelActive)
+    {
+        this.columns.add (new SendsComponent (sendData, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, isTrackMode, isSendActive, isChannelLabelActive));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addParameterElement (final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    {
+        this.addParameterElement ("", false, "", (ChannelType) null, COLOR_BLACK, false, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    {
+        final ColorEx bottomColor = bottomMenuColor == null ? null : new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]);
+        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, type, bottomColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addParameterElementWithPlainMenu (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    {
+        final ColorEx bottomColor = bottomMenuColor == null ? null : new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]);
+        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, null, bottomColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive, LabelLayout.PLAIN));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String deviceName, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    {
+        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, deviceName, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final boolean useSmallTopMenu)
+    {
+        this.addOptionElement (headerTopName, menuTopName, isMenuTopSelected, null, headerBottomName, menuBottomName, isMenuBottomSelected, null, useSmallTopMenu);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu)
+    {
+        this.addOptionElement (headerTopName, menuTopName, isMenuTopSelected, menuTopColor, headerBottomName, menuBottomName, isMenuBottomSelected, menuBottomColor, useSmallTopMenu, false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu, final boolean isBottomHeaderSelected)
+    {
+        this.columns.add (new OptionsComponent (headerTopName, menuTopName, isMenuTopSelected, menuTopColor, headerBottomName, menuBottomName, isMenuBottomSelected, menuBottomColor, useSmallTopMenu, isBottomHeaderSelected));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addListElement (final int displaySize, final String [] elements, final int selectedIndex)
+    {
+        final List<Pair<String, Boolean>> menu = new ArrayList<> ();
+        final int startIndex = Math.max (0, Math.min (selectedIndex, elements.length - displaySize));
+        for (int i = 0; i < displaySize; i++)
+        {
+            final int pos = startIndex + i;
+            final String itemName = pos < elements.length ? elements[pos] : "";
+            menu.add (new Pair<> (itemName, Boolean.valueOf (pos == selectedIndex)));
+        }
+        this.columns.add (new ListComponent (menu));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addListElement (final String [] items, final boolean [] selected)
+    {
+        final List<Pair<String, Boolean>> menu = new ArrayList<> ();
+        for (int i = 0; i < items.length; i++)
+            menu.add (new Pair<> (items[i], Boolean.valueOf (selected[i])));
+        this.columns.add (new ListComponent (menu));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addSceneListElement (final List<IScene> scenes)
+    {
+        this.columns.add (new SceneListGridElement (scenes));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addSlotListElement (final List<Pair<ITrack, ISlot>> slots)
+    {
+        this.columns.add (new ClipListComponent (slots));
     }
 }

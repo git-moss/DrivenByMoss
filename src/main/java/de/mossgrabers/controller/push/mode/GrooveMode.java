@@ -6,11 +6,11 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.display.Format;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 
 
 /**
@@ -92,16 +92,16 @@ public class GrooveMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 (final DisplayModel message)
+    public void updateDisplay2 (final IGraphicDisplay display)
     {
         final IParameter [] parameters = this.model.getGroove ().getParameters ();
         final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
-        message.addParameterElement ("Quant Amnt", quantizeAmount * 1023 / 100, quantizeAmount + "%", this.isKnobTouched[0], -1);
-        message.addOptionElement ("     Groove", "", false, "", "", false, false);
+        display.addParameterElement ("Quant Amnt", quantizeAmount * 1023 / 100, quantizeAmount + "%", this.isKnobTouched[0], -1);
+        display.addOptionElement ("     Groove", "", false, "", "", false, false);
         for (int i = 0; i < parameters.length; i++)
-            message.addParameterElement (parameters[i].getName (10), parameters[i].getValue (), parameters[i].getDisplayedValue (8), this.isKnobTouched[i], -1);
+            display.addParameterElement (parameters[i].getName (10), parameters[i].getValue (), parameters[i].getDisplayedValue (8), this.isKnobTouched[i], -1);
         for (int i = parameters.length; i < 6; i++)
-            message.addEmptyElement ();
+            display.addEmptyElement ();
     }
 
 

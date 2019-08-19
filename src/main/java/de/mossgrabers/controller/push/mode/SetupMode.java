@@ -6,9 +6,9 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.graphics.display.DisplayModel;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -131,7 +131,7 @@ public class SetupMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplay2 (final DisplayModel message)
+    public void updateDisplay2 (final IGraphicDisplay display)
     {
         final PushConfiguration config = this.surface.getConfiguration ();
         final int displayBrightness = config.getDisplayBrightness ();
@@ -140,13 +140,13 @@ public class SetupMode extends BaseMode
         final int padGain = config.getPadGain ();
         final int padDynamics = config.getPadDynamics ();
 
-        message.addOptionElement ("", "Setup", true, "", "", false, true);
-        message.addOptionElement ("Brightness", "Info", false, "", "", false, true);
-        message.addParameterElement ("Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched[2], -1);
-        message.addParameterElement ("LEDs", ledBrightness * 1023 / 100, ledBrightness + "%", this.isKnobTouched[3], -1);
-        message.addOptionElement ("        Pads", "", false, "", "", false, false);
-        message.addParameterElement ("Sensitivity", padSensitivity * 1023 / 10, Integer.toString (padSensitivity), this.isKnobTouched[5], -1);
-        message.addParameterElement ("Gain", padGain * 1023 / 10, Integer.toString (padGain), this.isKnobTouched[6], -1);
-        message.addParameterElement ("Dynamics", padDynamics * 1023 / 10, Integer.toString (padDynamics), this.isKnobTouched[7], -1);
+        display.addOptionElement ("", "Setup", true, "", "", false, true);
+        display.addOptionElement ("Brightness", "Info", false, "", "", false, true);
+        display.addParameterElement ("Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched[2], -1);
+        display.addParameterElement ("LEDs", ledBrightness * 1023 / 100, ledBrightness + "%", this.isKnobTouched[3], -1);
+        display.addOptionElement ("        Pads", "", false, "", "", false, false);
+        display.addParameterElement ("Sensitivity", padSensitivity * 1023 / 10, Integer.toString (padSensitivity), this.isKnobTouched[5], -1);
+        display.addParameterElement ("Gain", padGain * 1023 / 10, Integer.toString (padGain), this.isKnobTouched[6], -1);
+        display.addParameterElement ("Dynamics", padDynamics * 1023 / 10, Integer.toString (padDynamics), this.isKnobTouched[7], -1);
     }
 }
