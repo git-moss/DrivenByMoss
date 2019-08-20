@@ -44,6 +44,7 @@ public abstract class AbstractModel implements IModel
     protected ICursorDevice       instrumentDevice;
     protected ICursorDevice       cursorDevice;
     protected ICursorDevice       drumDevice64;
+    protected IParameterBank      userParameterBank;
     protected Map<String, IClip>  cursorClips = new HashMap<> ();
 
     private int                   lastSelection;
@@ -175,6 +176,14 @@ public abstract class AbstractModel implements IModel
     public ICursorDevice getDrumDevice64 ()
     {
         return this.drumDevice64;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameterBank getUserParameterBank ()
+    {
+        return this.userParameterBank;
     }
 
 

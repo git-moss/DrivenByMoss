@@ -272,7 +272,6 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         PUSH_BUTTON_SHIFT,
         PUSH_BUTTON_ADD_EFFECT,
         PUSH_BUTTON_ADD_TRACK,
-        PUSH_BUTTON_USER_MODE,
         PUSH_BUTTON_NEW,
         PUSH_BUTTON_DUPLICATE,
         PUSH_BUTTON_QUANTIZE,

@@ -43,7 +43,7 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
     @Override
     public boolean usesButton (final int buttonID)
     {
-        return !this.surface.getConfiguration ().isPush2 () || buttonID != PushControlSurface.PUSH_BUTTON_USER_MODE;
+        return true;
     }
 
 

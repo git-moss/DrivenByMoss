@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.push.mode.track;
 
 import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Format;
@@ -213,7 +214,9 @@ public class TrackMode extends AbstractTrackMode
         else
         {
             final PushConfiguration config = this.surface.getConfiguration ();
-            display.setCell (0, 0, "Volume").setCell (1, 0, t.getVolumeStr (8)).setCell (2, 0, config.isEnableVUMeters () ? t.getVu () : t.getVolume (), Format.FORMAT_VALUE);
+            final int upperBound = this.model.getValueChanger ().getUpperBound ();
+            final String volValueStr = config.isEnableVUMeters () ? Push1Display.formatValue (t.getVolume (), t.getVu (), upperBound) : Push1Display.formatValue (t.getVolume (), upperBound);
+            display.setCell (0, 0, "Volume").setCell (1, 0, t.getVolumeStr (8)).setCell (2, 0, volValueStr);
             display.setCell (0, 1, "Pan").setCell (1, 1, t.getPanStr (8)).setCell (2, 1, t.getPan (), Format.FORMAT_PAN);
 
             int sendStart = 2;
@@ -223,7 +226,6 @@ public class TrackMode extends AbstractTrackMode
                 sendStart = 3;
                 sendCount = 5;
                 final String crossfadeMode = t.getCrossfadeMode ();
-                final int upperBound = this.model.getValueChanger ().getUpperBound ();
                 display.setCell (0, 2, "Crossfdr").setCell (1, 2, "A".equals (crossfadeMode) ? "A" : "B".equals (crossfadeMode) ? "       B" : "   <> ");
                 display.setCell (2, 2, "A".equals (crossfadeMode) ? 0 : "B".equals (crossfadeMode) ? upperBound : upperBound / 2, Format.FORMAT_PAN);
             }

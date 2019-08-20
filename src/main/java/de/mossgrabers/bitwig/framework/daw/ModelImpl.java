@@ -25,6 +25,7 @@ import com.bitwig.extension.controller.api.PinnableCursorDevice;
 import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
+import com.bitwig.extension.controller.api.UserControlBank;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -118,6 +119,10 @@ public class ModelImpl extends AbstractModel
             cd = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
             this.drumDevice64 = new CursorDeviceImpl (this.host, this.valueChanger, cd, 0, 0, -1, 64, 64);
         }
+
+        final UserControlBank userControls = this.controllerHost.createUserControls (64);
+        this.userParameterBank = new UserParameterBankImpl (this.host, this.valueChanger, userControls, 64, 8);
+
         final int numResults = this.modelSetup.getNumResults ();
         if (numResults > 0)
             this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.modelSetup.getNumFilterColumnEntries (), numResults);

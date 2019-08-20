@@ -53,7 +53,7 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
                 return false;
 
             default:
-                return !this.surface.getConfiguration ().isPush2 () || buttonID != PushControlSurface.PUSH_BUTTON_USER_MODE;
+                return true;
         }
     }
 

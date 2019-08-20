@@ -14,6 +14,7 @@ import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -147,15 +148,73 @@ public class Push1Display extends AbstractTextDisplay
     }
 
 
-    private static String formatValue (final int value, final int maxParam)
+    /**
+     * Convert a value into a 8 character filled bar for the Push 1 display.
+     *
+     * @param value The value
+     * @param maxParam The maximum value
+     * @return The formatted bar
+     */
+    public static String formatValue (final int value, final int maxParam)
     {
-        final int noOfBars = (int) Math.round (16.0 * value / maxParam);
         final StringBuilder n = new StringBuilder ();
-        for (int j = 0; j < noOfBars / 2; j++)
-            n.append (Push1Display.BARS_TWO);
+        Arrays.asList (fillFields (value, maxParam)).forEach (n::append);
+        return n.toString ();
+    }
+
+
+    /**
+     * Convert a value into a 8 character bar for the Push 1 display. Besides the filled modulated
+     * value bar, the value is displayed as one small bar.
+     * 
+     * @param modulated The modulated value
+     * @param value The value
+     * @param maxParam The maximum value
+     * @return The formatted bar
+     */
+    public static String formatValue (final int modulated, final int value, final int maxParam)
+    {
+        final String [] fields = fillFields (value, maxParam);
+
+        final int noOfBarsModulated = (int) Math.round (16.0 * modulated / maxParam);
+        final int pos = noOfBarsModulated / 2;
+        if (noOfBarsModulated % 2 == 0)
+        {
+            if (pos > 0)
+            {
+                if (fields[pos - 1].charAt (0) == BARS_NON.charAt (0))
+                    fields[pos - 1] = BARS_ONE_L;
+                else if (fields[pos].charAt (0) == BARS_ONE.charAt (0))
+                    fields[pos - 1] = BARS_TWO;
+            }
+        }
+        else
+        {
+            if (fields[pos].charAt (0) == BARS_NON.charAt (0))
+                fields[pos] = BARS_ONE;
+            else
+                fields[pos] = BARS_TWO;
+        }
+
+        final StringBuilder n = new StringBuilder ();
+        Arrays.asList (fields).forEach (n::append);
+        return n.toString ();
+    }
+
+
+    private static String [] fillFields (final int value, final int maxParam)
+    {
+        final String [] fields = new String [8];
+        Arrays.fill (fields, Push1Display.BARS_NON);
+
+        final int noOfBars = (int) Math.round (16.0 * value / maxParam);
+        int count;
+        for (count = 0; count < noOfBars / 2; count++)
+            fields[count] = Push1Display.BARS_TWO;
         if (noOfBars % 2 == 1)
-            n.append (Push1Display.BARS_ONE);
-        return StringUtils.pad (n.toString (), 8, Push1Display.BARS_NON.charAt (0));
+            fields[count] = Push1Display.BARS_ONE;
+
+        return fields;
     }
 
 

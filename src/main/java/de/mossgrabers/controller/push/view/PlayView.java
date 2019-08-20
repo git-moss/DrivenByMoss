@@ -69,7 +69,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
     @Override
     public boolean usesButton (final int buttonID)
     {
-        return !this.surface.getConfiguration ().isPush2 () || buttonID != PushControlSurface.PUSH_BUTTON_USER_MODE;
+        return true;
     }
 
 

@@ -122,39 +122,6 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     }
 
 
-    private void render ()
-    {
-        this.image.render (gc -> {
-            final int width = this.dimensions.getWidth ();
-            final int height = this.dimensions.getHeight ();
-            final double separatorSize = this.dimensions.getSeparatorSize ();
-
-            // Clear display
-            final ColorEx colorBorder = this.configuration.getColorBorder ();
-            gc.fillRectangle (0, 0, width, height, colorBorder);
-
-            final List<IComponent> elements = this.info.getComponents ();
-            final int size = elements.size ();
-            if (size == 0)
-                return;
-            final int gridWidth = width / size;
-            final double paintWidth = gridWidth - separatorSize;
-            final double offsetX = separatorSize / 2.0;
-
-            final IGraphicsInfo graphicsInfo = new DefaultGraphicsInfo (gc, this.configuration, this.dimensions);
-            for (int i = 0; i < size; i++)
-                elements.get (i).draw (graphicsInfo.withBounds (i * gridWidth + offsetX, 0, paintWidth, height));
-
-            final String notification = this.info.getNotification ();
-            if (notification == null)
-                return;
-
-            final ColorEx colorText = this.configuration.getColorText ();
-            gc.drawTextInBounds (notification, 0, 0, width, height, Align.CENTER, colorText, colorBorder, height / 4.0);
-        });
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public void showDebugWindow ()
@@ -178,9 +145,14 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
         if (this.executor.isShutdown ())
             return;
 
-        this.info = new ModelInfo (this.notificationMessage.get (), this.columns);
+        final ModelInfo newInfo = new ModelInfo (this.notificationMessage.get (), this.columns);
 
-        this.render ();
+        // Only render image if there is a change in the data
+        if (!this.info.equals (newInfo))
+        {
+            this.info = newInfo;
+            this.renderImage ();
+        }
 
         this.columns.clear ();
 
@@ -377,5 +349,38 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     public void addSlotListElement (final List<Pair<ITrack, ISlot>> slots)
     {
         this.columns.add (new ClipListComponent (slots));
+    }
+
+
+    private void renderImage ()
+    {
+        this.image.render (gc -> {
+            final int width = this.dimensions.getWidth ();
+            final int height = this.dimensions.getHeight ();
+            final double separatorSize = this.dimensions.getSeparatorSize ();
+
+            // Clear display
+            final ColorEx colorBorder = this.configuration.getColorBorder ();
+            gc.fillRectangle (0, 0, width, height, colorBorder);
+
+            final List<IComponent> elements = this.info.getComponents ();
+            final int size = elements.size ();
+            if (size == 0)
+                return;
+            final int gridWidth = width / size;
+            final double paintWidth = gridWidth - separatorSize;
+            final double offsetX = separatorSize / 2.0;
+
+            final IGraphicsInfo graphicsInfo = new DefaultGraphicsInfo (gc, this.configuration, this.dimensions);
+            for (int i = 0; i < size; i++)
+                elements.get (i).draw (graphicsInfo.withBounds (i * gridWidth + offsetX, 0, paintWidth, height));
+
+            final String notification = this.info.getNotification ();
+            if (notification == null)
+                return;
+
+            final ColorEx colorText = this.configuration.getColorText ();
+            gc.drawTextInBounds (notification, 0, 0, width, height, Align.CENTER, colorText, colorBorder, height / 4.0);
+        });
     }
 }

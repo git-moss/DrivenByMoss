@@ -50,15 +50,6 @@ public class Push2Display extends AbstractGraphicDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void send (final IBitmap image)
-    {
-        if (this.usbDisplay != null)
-            this.usbDisplay.send (this.image);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void shutdown ()
     {
         this.setMessage (3, "Please start " + this.host.getName () + " to play...");
@@ -67,5 +58,14 @@ public class Push2Display extends AbstractGraphicDisplay
             this.usbDisplay.shutdown ();
 
         super.shutdown ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void send (final IBitmap image)
+    {
+        if (this.usbDisplay != null)
+            this.usbDisplay.send (this.image);
     }
 }

@@ -61,6 +61,7 @@ import de.mossgrabers.controller.push.mode.device.DeviceLayerModePan;
 import de.mossgrabers.controller.push.mode.device.DeviceLayerModeSend;
 import de.mossgrabers.controller.push.mode.device.DeviceLayerModeVolume;
 import de.mossgrabers.controller.push.mode.device.DeviceParamsMode;
+import de.mossgrabers.controller.push.mode.device.UserParamsMode;
 import de.mossgrabers.controller.push.mode.track.ClipMode;
 import de.mossgrabers.controller.push.mode.track.CrossfaderMode;
 import de.mossgrabers.controller.push.mode.track.LayerDetailsMode;
@@ -105,6 +106,7 @@ import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.KnobRowTouchModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
+import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.track.AddTrackCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
@@ -297,6 +299,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.DEVICE_LAYER_SEND7, modeLayerSend);
         modeManager.registerMode (Modes.DEVICE_LAYER_SEND8, modeLayerSend);
 
+        modeManager.registerMode (Modes.USER, new UserParamsMode (surface, this.model));
+
         if (this.isPush2)
         {
             modeManager.registerMode (Modes.SETUP, new SetupMode (surface, this.model));
@@ -466,6 +470,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         {
             surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_SETUP, TriggerCommandID.SETUP);
             this.addTriggerCommand (TriggerCommandID.CONVERT, PushControlSurface.PUSH_BUTTON_CONVERT, new ConvertCommand<> (this.model, surface));
+            this.addTriggerCommand (TriggerCommandID.USER, PushControlSurface.PUSH_BUTTON_USER_MODE, new ModeSelectCommand<> (this.model, surface, Modes.USER));
         }
         else
             surface.assignTriggerCommand (PushControlSurface.PUSH_BUTTON_USER_MODE, TriggerCommandID.SETUP);
@@ -642,6 +647,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         surface.updateTrigger (PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, Modes.FIXED == mode ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
         surface.updateTrigger (PushControlSurface.PUSH_BUTTON_BROWSE, Modes.BROWSER == mode ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
         surface.updateTrigger (PushControlSurface.PUSH_BUTTON_CLIP, Modes.CLIP == mode ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
+
+        surface.updateTrigger (PushControlSurface.PUSH_BUTTON_USER_MODE, Modes.USER == mode ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
 
         if (this.isPush2)
             surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SETUP, Modes.SETUP == mode ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);

@@ -139,7 +139,9 @@ public enum Modes
     /** Play cursor position mode. */
     POSITION,
     /** Tempo mode. */
-    TEMPO;
+    TEMPO,
+    /** A user mode. */
+    USER;
 
     private static final Set<Modes> TRACK_MODES = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);
     private static final Set<Modes> LAYER_MODES = EnumSet.range (Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_DETAILS);

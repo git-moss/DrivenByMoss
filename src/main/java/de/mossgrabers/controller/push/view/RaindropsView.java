@@ -38,7 +38,7 @@ public class RaindropsView extends AbstractRaindropsView<PushControlSurface, Pus
     @Override
     public boolean usesButton (final int buttonID)
     {
-        return !this.surface.getConfiguration ().isPush2 () || buttonID != PushControlSurface.PUSH_BUTTON_USER_MODE;
+        return true;
     }
 
 

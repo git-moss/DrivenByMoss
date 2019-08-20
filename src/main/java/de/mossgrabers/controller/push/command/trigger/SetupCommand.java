@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {
-    private Modes mode;
+    private boolean isPush2;
 
 
     /**
@@ -33,7 +33,8 @@ public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, Pus
     public SetupCommand (final boolean isPush2, final IModel model, final PushControlSurface surface)
     {
         super (model, surface);
-        this.mode = isPush2 ? Modes.SETUP : Modes.CONFIGURATION;
+
+        this.isPush2 = isPush2;
     }
 
 
@@ -44,9 +45,24 @@ public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         if (event != ButtonEvent.DOWN)
             return;
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTempMode (this.mode))
+
+        final Modes mode = this.getMode ();
+
+        if (modeManager.isActiveOrTempMode (mode))
             modeManager.restoreMode ();
         else
-            modeManager.setActiveMode (this.mode);
+            modeManager.setActiveMode (mode);
+    }
+
+
+    private Modes getMode ()
+    {
+        if (this.isPush2)
+            return Modes.SETUP;
+
+        if (this.surface.isShiftPressed ())
+            return Modes.CONFIGURATION;
+
+        return Modes.USER;
     }
 }

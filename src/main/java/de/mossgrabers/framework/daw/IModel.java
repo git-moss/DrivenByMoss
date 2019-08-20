@@ -140,6 +140,14 @@ public interface IModel
 
 
     /**
+     * Get the user parameter bank if any.
+     *
+     * @return The user parameter bank or null if none exists
+     */
+    IParameterBank getUserParameterBank ();
+
+
+    /**
      * Toggles the audio/instrument track bank with the effect track bank.
      */
     void toggleCurrentTrackBank ();

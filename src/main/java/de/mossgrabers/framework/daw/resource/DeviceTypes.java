@@ -27,7 +27,8 @@ public class DeviceTypes
         ICON_IO,
         ICON_ANALYSIS,
         ICON_GENERIC,
-        ICON_PLUGIN
+        ICON_PLUGIN,
+        ICON_USER
     }
 
     private static final Map<String, TypeIcon>     DEVICES      = new HashMap<> ();
@@ -123,6 +124,7 @@ public class DeviceTypes
         DEVICES.put ("Tremolo", TypeIcon.ICON_WAVE);
         DEVICES.put ("XY Effect", TypeIcon.ICON_FOLDER);
         DEVICES.put ("XY Instrument", TypeIcon.ICON_FOLDER);
+        DEVICES.put ("USER", TypeIcon.ICON_USER);
 
         DEVICE_ICONS.put (TypeIcon.ICON_ANALYSIS, "device/device_analysis.svg");
         DEVICE_ICONS.put (TypeIcon.ICON_WAVE, "device/device_audio.svg");
@@ -134,6 +136,7 @@ public class DeviceTypes
         DEVICE_ICONS.put (TypeIcon.ICON_IO, "device/device_io.svg");
         DEVICE_ICONS.put (TypeIcon.ICON_NOTE, "device/device_note.svg");
         DEVICE_ICONS.put (TypeIcon.ICON_PLUGIN, "device/device_plugin.svg");
+        DEVICE_ICONS.put (TypeIcon.ICON_USER, "user.svg");
     }
 
 

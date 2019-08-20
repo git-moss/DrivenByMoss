@@ -74,7 +74,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
                 return false;
 
             default:
-                return !this.surface.getConfiguration ().isPush2 () || buttonID != PushControlSurface.PUSH_BUTTON_USER_MODE;
+                return true;
         }
     }
 

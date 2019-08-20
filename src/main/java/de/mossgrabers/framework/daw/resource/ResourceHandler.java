@@ -57,6 +57,8 @@ public final class ResourceHandler
         addSVGImage ("device/device_io.svg");
         addSVGImage ("device/device_note.svg");
         addSVGImage ("device/device_plugin.svg");
+
+        addSVGImage ("user.svg");
     }
 
 
