@@ -166,7 +166,7 @@ public class Push1Display extends AbstractTextDisplay
     /**
      * Convert a value into a 8 character bar for the Push 1 display. Besides the filled modulated
      * value bar, the value is displayed as one small bar.
-     * 
+     *
      * @param modulated The modulated value
      * @param value The value
      * @param maxParam The maximum value

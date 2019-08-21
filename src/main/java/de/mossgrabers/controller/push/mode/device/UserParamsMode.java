@@ -129,7 +129,7 @@ public class UserParamsMode extends BaseMode
         final int selectedPage = bank.getScrollPosition () / bank.getPageSize ();
         for (int i = 0; i < bank.getPageSize (); i++)
         {
-            boolean isBottomMenuOn = i == selectedPage;
+            final boolean isBottomMenuOn = i == selectedPage;
 
             final IParameter param = bank.getItem (i);
             final boolean exists = param.doesExist ();

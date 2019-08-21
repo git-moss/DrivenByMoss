@@ -15,6 +15,7 @@ public enum CommandCategory
     BROWSER("Browser"),
     CLIP("Clip"),
     DEVICE("Device"),
+    FX_TRACK("FX Track"),
     GLOBAL("Global"),
     LAYOUT("Layout"),
     MARKER("Marker"),
@@ -23,7 +24,8 @@ public enum CommandCategory
     MODES("Modes"),
     SCENE("Scene"),
     TRACK("Track"),
-    TRANSPORT("Transport");
+    TRANSPORT("Transport"),
+    USER("User");
 
     private final String name;
 
@@ -48,5 +50,4 @@ public enum CommandCategory
     {
         return this.name;
     }
-
 }

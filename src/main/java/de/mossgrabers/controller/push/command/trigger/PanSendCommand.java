@@ -75,10 +75,15 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
         }
         else
         {
-            mode = Modes.get (currentMode, 1);
-            // Wrap
-            if (mode.ordinal () < Modes.PAN.ordinal () || mode.ordinal () > Modes.SEND8.ordinal ())
-                mode = Modes.PAN;
+            if (currentMode.ordinal () < Modes.SEND1.ordinal () || currentMode.ordinal () > Modes.SEND8.ordinal ())
+                mode = Modes.SEND1;
+            else
+            {
+                mode = Modes.get (currentMode, 1);
+                if (mode.ordinal () > Modes.SEND8.ordinal ())
+                    mode = Modes.PAN;
+            }
+
             // Check if Send channel exists
             final ITrackBank tb = this.model.getTrackBank ();
             if (mode.ordinal () < Modes.SEND1.ordinal () || mode.ordinal () > Modes.SEND8.ordinal () || !tb.canEditSend (mode.ordinal () - Modes.SEND1.ordinal ()))

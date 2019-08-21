@@ -71,7 +71,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     private final int []                                            noteVelocities;
 
     protected List<ITextDisplay>                                    textDisplays          = new ArrayList<> (1);
-    protected List<IGraphicDisplay>                                graphicsDisplays      = new ArrayList<> (1);
+    protected List<IGraphicDisplay>                                 graphicsDisplays      = new ArrayList<> (1);
 
     protected final PadGrid                                         pads;
     protected final Map<Integer, Map<Integer, TriggerCommandID>>    triggerCommands       = new HashMap<> ();

@@ -208,7 +208,8 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITrack t = this.model.getSelectedTrack ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack t = tb.getSelectedItem ();
         if (t == null)
             display.setRow (1, "                     Please selecta track...                        ");
         else

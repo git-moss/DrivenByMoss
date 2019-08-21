@@ -81,7 +81,7 @@ public class LabelComponent implements IComponent
         final double separatorSize = dimensions.getSeparatorSize ();
         final double menuHeight = dimensions.getMenuHeight ();
 
-        final ColorEx bgColor = getBackgroundColor (configuration);
+        final ColorEx bgColor = this.getBackgroundColor (configuration);
         final ColorEx textColor = ColorEx.calcContrastColor (bgColor);
 
         if (this.text == null || this.text.length () == 0)
@@ -243,26 +243,26 @@ public class LabelComponent implements IComponent
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.backgroundColor == null) ? 0 : this.backgroundColor.hashCode ());
-        result = prime * result + ((this.icon == null) ? 0 : this.icon.hashCode ());
+        result = prime * result + (this.backgroundColor == null ? 0 : this.backgroundColor.hashCode ());
+        result = prime * result + (this.icon == null ? 0 : this.icon.hashCode ());
         result = prime * result + (this.isActive ? 1231 : 1237);
         result = prime * result + (this.isSelected ? 1231 : 1237);
-        result = prime * result + ((this.layout == null) ? 0 : this.layout.hashCode ());
-        return prime * result + ((this.text == null) ? 0 : this.text.hashCode ());
+        result = prime * result + (this.layout == null ? 0 : this.layout.hashCode ());
+        return prime * result + (this.text == null ? 0 : this.text.hashCode ());
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public boolean equals (Object obj)
+    public boolean equals (final Object obj)
     {
         if (this == obj)
             return true;
         if (obj == null)
             return false;
-        if (getClass () != obj.getClass ())
+        if (this.getClass () != obj.getClass ())
             return false;
-        LabelComponent other = (LabelComponent) obj;
+        final LabelComponent other = (LabelComponent) obj;
         if (this.backgroundColor == null)
         {
             if (other.backgroundColor != null)

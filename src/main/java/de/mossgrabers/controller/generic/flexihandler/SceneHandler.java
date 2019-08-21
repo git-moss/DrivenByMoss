@@ -1,0 +1,113 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2019
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.controller.generic.flexihandler;
+
+import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
+import de.mossgrabers.controller.generic.controller.FlexiCommand;
+import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IScene;
+
+
+/**
+ * The handler for scene commands.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class SceneHandler extends AbstractHandler
+{
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param configuration The configuration
+     * @param relative2ValueChanger The relative value changer variant 2
+     * @param relative3ValueChanger The relative value changer variant 3
+     */
+    public SceneHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger relative2ValueChanger, final IValueChanger relative3ValueChanger)
+    {
+        super (model, surface, configuration, relative2ValueChanger, relative3ValueChanger);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public FlexiCommand [] getSupportedCommands ()
+    {
+        return new FlexiCommand []
+        {
+            FlexiCommand.SCENE_1_LAUNCH_SCENE,
+            FlexiCommand.SCENE_2_LAUNCH_SCENE,
+            FlexiCommand.SCENE_3_LAUNCH_SCENE,
+            FlexiCommand.SCENE_4_LAUNCH_SCENE,
+            FlexiCommand.SCENE_5_LAUNCH_SCENE,
+            FlexiCommand.SCENE_6_LAUNCH_SCENE,
+            FlexiCommand.SCENE_7_LAUNCH_SCENE,
+            FlexiCommand.SCENE_8_LAUNCH_SCENE,
+            FlexiCommand.SCENE_SELECT_PREVIOUS_BANK,
+            FlexiCommand.SCENE_SELECT_NEXT_BANK,
+            FlexiCommand.SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS
+        };
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getCommandValue (final FlexiCommand command)
+    {
+        return -1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void handle (final FlexiCommand command, final int knobMode, final int value)
+    {
+        final boolean isButtonPressed = this.isButtonPressed (knobMode, value);
+
+        switch (command)
+        {
+            // Scene 1-8: Launch Scene
+            case SCENE_1_LAUNCH_SCENE:
+            case SCENE_2_LAUNCH_SCENE:
+            case SCENE_3_LAUNCH_SCENE:
+            case SCENE_4_LAUNCH_SCENE:
+            case SCENE_5_LAUNCH_SCENE:
+            case SCENE_6_LAUNCH_SCENE:
+            case SCENE_7_LAUNCH_SCENE:
+            case SCENE_8_LAUNCH_SCENE:
+                if (isButtonPressed)
+                {
+                    final IScene scene = this.model.getSceneBank ().getItem (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_SCENE.ordinal ());
+                    scene.select ();
+                    scene.launch ();
+                }
+                break;
+
+            // Scene: Select Previous Bank
+            case SCENE_SELECT_PREVIOUS_BANK:
+                if (isButtonPressed)
+                    this.model.getSceneBank ().selectPreviousPage ();
+                break;
+
+            // Scene: Select Next Bank
+            case SCENE_SELECT_NEXT_BANK:
+                if (isButtonPressed)
+                    this.model.getSceneBank ().selectNextPage ();
+                break;
+
+            // Scene: Create Scene from playing Clips
+            case SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS:
+                if (isButtonPressed)
+                    this.model.getProject ().createSceneFromPlayingLauncherClips ();
+                break;
+
+            default:
+                throw new FlexiHandlerException (command);
+        }
+    }
+}

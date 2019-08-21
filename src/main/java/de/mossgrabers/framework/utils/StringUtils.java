@@ -300,7 +300,7 @@ public class StringUtils
         final int quarters = (int) Math.floor (t); // :1
         t = t - quarters; // *1
         final int eights = (int) Math.floor (t / 0.25);
-        t = t - (eights * 0.25);
+        t = t - eights * 0.25;
         final int frames = (int) Math.floor (t / 0.25 * 100.0);
         return String.format ("%d.%d.%d:%03d", Integer.valueOf (measure + startOffset), Integer.valueOf (quarters + startOffset), Integer.valueOf (eights + startOffset), Integer.valueOf (frames));
     }

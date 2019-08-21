@@ -86,7 +86,7 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
 
     /**
      * Update the display of Push 1.
-     * 
+     *
      * @param display The display to fill
      */
     public abstract void updateDisplay1 (final ITextDisplay display);
@@ -94,7 +94,7 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
 
     /**
      * Update the display of Push 2.
-     * 
+     *
      * @param display The display
      */
     public abstract void updateDisplay2 (final IGraphicDisplay display);

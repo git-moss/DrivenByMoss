@@ -75,7 +75,7 @@ public class ListComponent implements IComponent
     public int hashCode ()
     {
         final int prime = 31;
-        int result = 1;
+        final int result = 1;
         return prime * result + this.items.hashCode ();
     }
 

@@ -6,7 +6,7 @@ package de.mossgrabers.controller.generic;
 
 import de.mossgrabers.controller.generic.controller.CommandCategory;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
-import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.AbstractHandler;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -480,7 +480,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         final FlexiCommand command = slot.getCommand ();
         if (!command.isTrigger ())
             return;
-        if (!GenericFlexiControlSurface.isAbsolute (slot.getKnobMode ()) || slot.getType () == CommandSlot.TYPE_MMC)
+        if (!AbstractHandler.isAbsolute (slot.getKnobMode ()) || slot.getType () == CommandSlot.TYPE_MMC)
             this.knobModeSetting.set (OPTIONS_KNOBMODE[0]);
     }
 

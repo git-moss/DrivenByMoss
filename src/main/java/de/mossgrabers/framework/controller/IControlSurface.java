@@ -67,7 +67,7 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Get the interface to one of the text displays of the controller.
-     * 
+     *
      * @param index The index of the interface
      * @return The display interface
      */
@@ -92,7 +92,7 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Get the interface to one of the graphics displays of the controller.
-     * 
+     *
      * @param index The index of the interface
      * @return The display interface
      */
