@@ -54,7 +54,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             return;
         }
 
-        final ITextDisplay display = this.surface.getDisplay ();
+        final ITextDisplay display = this.surface.getTextDisplay ();
 
         // Select Send channels when Send button is additionally pressed
         if (this.surface.isPressed (MCUControlSurface.MCU_MODE_SENDS))

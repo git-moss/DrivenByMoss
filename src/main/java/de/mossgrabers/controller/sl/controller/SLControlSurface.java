@@ -185,7 +185,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
     @Override
     public void shutdown ()
     {
-        this.getDisplay ().clear ();
+        this.getTextDisplay ().clear ();
         this.output.sendSysex (SYSEX_AUTOMAP_OFF);
 
         super.shutdown ();

@@ -32,6 +32,15 @@ public abstract class AbstractOpenSoundControlParser implements IOpenSoundContro
     protected final IOpenSoundControlWriter        writer;
 
 
+    /**
+     * Constructor.
+     *
+     * @param host The host
+     * @param model The model
+     * @param midiInput The midi input
+     * @param configuration The configuration
+     * @param writer The writer
+     */
     protected AbstractOpenSoundControlParser (final IHost host, final IModel model, final IMidiInput midiInput, final IOpenSoundControlConfiguration configuration, final IOpenSoundControlWriter writer)
     {
         this.host = host;
@@ -47,6 +56,11 @@ public abstract class AbstractOpenSoundControlParser implements IOpenSoundContro
     }
 
 
+    /**
+     * Log a OSC message.
+     *
+     * @param message The message to log
+     */
     protected void logMessage (final IOpenSoundControlMessage message)
     {
         if (!this.configuration.shouldLogInputCommands ())

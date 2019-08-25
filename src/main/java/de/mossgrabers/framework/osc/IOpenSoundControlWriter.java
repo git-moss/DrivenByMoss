@@ -20,7 +20,7 @@ public interface IOpenSoundControlWriter
 
 
     /**
-     * Sends the message and calls flush.
+     * Adds the message to the queue and calls flush.
      *
      * @param address The OSC address
      * @param numbers Integer parameters
@@ -29,9 +29,71 @@ public interface IOpenSoundControlWriter
 
 
     /**
-     * Sends the message and calls flush.
+     * Adds the message to the queue and calls flush.
      *
      * @param address The OSC address
      */
     void fastSendOSC (String address);
+
+
+    /**
+     * Send an OSC message with a color value. Tests if the value(s) of given message is identical
+     * to that of the cache. If this is not the case or if dump is true, the message is added to the
+     * messages list.The message will be sent when flush gets called.
+     *
+     * @param address The address of the OSC message
+     * @param red The red component of the color [0-1]
+     * @param green The green component of the color [0-1]
+     * @param blue The blue component of the color [0-1]
+     * @param dump True to dump (ignore cache)
+     */
+    void sendOSCColor (String address, double red, double green, double blue, boolean dump);
+
+
+    /**
+     * Send an OSC message with a boolean value. Tests if the value(s) of given message is identical
+     * to that of the cache. If this is not the case or if dump is true, the message is added to the
+     * messages list.The message will be sent when flush gets called.
+     *
+     * @param address The address of the OSC message
+     * @param value The value to send
+     * @param dump True to dump (ignore cache)
+     */
+    void sendOSC (String address, boolean value, boolean dump);
+
+
+    /**
+     * Send an OSC message with a double value. Tests if the value(s) of given message is identical
+     * to that of the cache. If this is not the case or if dump is true, the message is added to the
+     * messages list.The message will be sent when flush gets called.
+     *
+     * @param address The address of the OSC message
+     * @param value The value to send
+     * @param dump True to dump (ignore cache)
+     */
+    void sendOSC (String address, double value, boolean dump);
+
+
+    /**
+     * Send an OSC message with an integer value. Tests if the value(s) of given message is
+     * identical to that of the cache. If this is not the case or if dump is true, the message is
+     * added to the messages list.The message will be sent when flush gets called.
+     *
+     * @param address The address of the OSC message
+     * @param value The value to send
+     * @param dump True to dump (ignore cache)
+     */
+    void sendOSC (String address, int value, boolean dump);
+
+
+    /**
+     * Send an OSC message with a string value. Tests if the value(s) of given message is identical
+     * to that of the cache. If this is not the case or if dump is true, the message is added to the
+     * messages list.The message will be sent when flush gets called.
+     *
+     * @param address The address of the OSC message
+     * @param value The value to send
+     * @param dump True to dump (ignore cache)
+     */
+    void sendOSC (String address, String value, boolean dump);
 }

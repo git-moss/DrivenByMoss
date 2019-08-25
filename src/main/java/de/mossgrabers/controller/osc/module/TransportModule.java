@@ -1,0 +1,270 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2019
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.controller.osc.module;
+
+import de.mossgrabers.controller.osc.exception.IllegalParameterException;
+import de.mossgrabers.controller.osc.exception.MissingCommandException;
+import de.mossgrabers.controller.osc.exception.UnknownCommandException;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
+
+import java.util.LinkedList;
+
+
+/**
+ * All transport related commands.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class TransportModule extends AbstractModule
+{
+    private final ITransport transport;
+
+
+    /**
+     * Constructor.
+     *
+     * @param host The host
+     * @param model The model
+     * @param writer The writer
+     */
+    public TransportModule (final IHost host, final IModel model, final IOpenSoundControlWriter writer)
+    {
+        super (host, model, writer);
+
+        this.transport = model.getTransport ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String [] getSupportedCommands ()
+    {
+        return new String []
+        {
+            "play",
+            "stop",
+            "restart",
+            "record",
+            "overdub",
+            "repeat",
+            "punchIn",
+            "punchOut",
+            "click",
+            "quantize",
+            "tempo",
+            "time",
+            "position",
+            "crossfade",
+            "autowrite",
+            "automationWriteMode",
+            "preroll"
+        };
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute (final String command, final LinkedList<String> path, final Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException
+    {
+        switch (command)
+        {
+            case "play":
+                if (isTrigger (value) && !this.transport.isPlaying ())
+                    this.transport.play ();
+                break;
+
+            case "stop":
+                if (isTrigger (value) && this.transport.isPlaying ())
+                    this.transport.play ();
+                break;
+
+            case "restart":
+                if (isTrigger (value))
+                    this.transport.restart ();
+                break;
+
+            case "record":
+                if (isTrigger (value))
+                    this.transport.record ();
+                break;
+
+            case "overdub":
+                if (isTrigger (value))
+                {
+                    if (!path.isEmpty () && "launcher".equals (path.get (0)))
+                        this.transport.toggleLauncherOverdub ();
+                    else
+                        this.transport.toggleOverdub ();
+                }
+                break;
+
+            case "repeat":
+                if (value == null)
+                    this.transport.toggleLoop ();
+                else
+                    this.transport.setLoop (isTrigger (value));
+                break;
+
+            case "punchIn":
+                if (value == null)
+                    this.transport.togglePunchIn ();
+                else
+                    this.transport.setPunchIn (isTrigger (value));
+                break;
+
+            case "punchOut":
+                if (value == null)
+                    this.transport.togglePunchOut ();
+                else
+                    this.transport.setPunchOut (isTrigger (value));
+                break;
+
+            case "click":
+                if (path.isEmpty ())
+                {
+                    if (value == null)
+                        this.transport.toggleMetronome ();
+                    else
+                        this.transport.setMetronome (isTrigger (value));
+                    break;
+                }
+                final String subCommand = getSubCommand (path);
+                switch (subCommand)
+                {
+                    case "volume":
+                        this.transport.setMetronomeVolume (toInteger (value));
+                        break;
+                    case "ticks":
+                        if (isTrigger (value))
+                            this.transport.toggleMetronomeTicks ();
+                        break;
+                    case "preroll":
+                        if (isTrigger (value))
+                            this.transport.togglePrerollMetronome ();
+                        break;
+                    default:
+                        throw new UnknownCommandException (subCommand);
+                }
+                break;
+
+            case "quantize":
+                this.getClip ().quantize (1);
+                break;
+
+            case "tempo":
+                final String tempoCommand = getSubCommand (path);
+                switch (tempoCommand)
+                {
+                    case "raw":
+                        this.transport.setTempo (toNumber (value));
+                        break;
+                    case "tap":
+                        if (isTrigger (value))
+                            this.transport.tapTempo ();
+                        break;
+                    case "+":
+                        this.transport.setTempo (this.transport.getTempo () + toNumber (value, 1.0));
+                        break;
+                    case "-":
+                        this.transport.setTempo (this.transport.getTempo () - toNumber (value, 1.0));
+                        break;
+                    default:
+                        throw new UnknownCommandException (tempoCommand);
+                }
+                break;
+
+            case "time":
+                this.transport.setPosition (toNumber (value));
+                break;
+
+            case "position":
+                if (path.isEmpty ())
+                {
+                    final double numValue = toNumber (value);
+                    this.transport.changePosition (numValue >= 0, Math.abs (numValue) <= 1);
+                    break;
+                }
+                final String positionCommand = path.get (0);
+                switch (positionCommand)
+                {
+                    case "+":
+                        this.transport.changePosition (true, true);
+                        break;
+                    case "-":
+                        this.transport.changePosition (false, true);
+                        break;
+                    case "++":
+                        this.transport.changePosition (true, false);
+                        break;
+                    case "--":
+                        this.transport.changePosition (false, false);
+                        break;
+                    case "start":
+                        this.transport.setPosition (0);
+                        break;
+                    default:
+                        throw new UnknownCommandException (positionCommand);
+                }
+                break;
+
+            case "crossfade":
+                this.transport.setCrossfade (toInteger (value));
+                break;
+
+            case "autowrite":
+                if (isTrigger (value))
+                {
+                    if (!path.isEmpty () && "launcher".equals (path.get (0)))
+                        this.transport.toggleWriteClipLauncherAutomation ();
+                    else
+                        this.transport.toggleWriteArrangerAutomation ();
+                }
+                break;
+
+            case "automationWriteMode":
+                if (value != null)
+                    this.transport.setAutomationWriteMode (value.toString ());
+                break;
+
+            case "preroll":
+                this.transport.setPrerollAsBars (toInteger (value));
+                break;
+
+            default:
+                throw new UnknownCommandException (command);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void flush (final boolean dump)
+    {
+        this.writer.sendOSC ("/play", this.transport.isPlaying (), dump);
+        this.writer.sendOSC ("/record", this.transport.isRecording (), dump);
+        this.writer.sendOSC ("/overdub", this.transport.isArrangerOverdub (), dump);
+        this.writer.sendOSC ("/overdub/launcher", this.transport.isLauncherOverdub (), dump);
+        this.writer.sendOSC ("/repeat", this.transport.isLoop (), dump);
+        this.writer.sendOSC ("/punchIn", this.transport.isPunchInEnabled (), dump);
+        this.writer.sendOSC ("/punchOut", this.transport.isPunchOutEnabled (), dump);
+        this.writer.sendOSC ("/click", this.transport.isMetronomeOn (), dump);
+        this.writer.sendOSC ("/click/ticks", this.transport.isMetronomeTicksOn (), dump);
+        this.writer.sendOSC ("/click/volume", this.transport.getMetronomeVolume (), dump);
+        this.writer.sendOSC ("/click/volumeStr", this.transport.getMetronomeVolumeStr (), dump);
+        this.writer.sendOSC ("/click/preroll", this.transport.isPrerollMetronomeEnabled (), dump);
+        this.writer.sendOSC ("/preroll", this.transport.getPrerollAsBars (), dump);
+        this.writer.sendOSC ("/tempo/raw", this.transport.getTempo (), dump);
+        this.writer.sendOSC ("/crossfade", this.transport.getCrossfade (), dump);
+        this.writer.sendOSC ("/autowrite", this.transport.isWritingArrangerAutomation (), dump);
+        this.writer.sendOSC ("/autowrite/launcher", this.transport.isWritingClipLauncherAutomation (), dump);
+        this.writer.sendOSC ("/automationWriteMode", this.transport.getAutomationWriteMode (), dump);
+        this.writer.sendOSC ("/time/str", this.transport.getPositionText (), dump);
+        this.writer.sendOSC ("/time/signature", this.transport.getNumerator () + " / " + this.transport.getDenominator (), dump);
+        this.writer.sendOSC ("/beat/str", this.transport.getBeatText (), dump);
+    }
+}

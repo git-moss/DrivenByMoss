@@ -154,9 +154,11 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public ITextDisplay getDisplay ()
+    public IDisplay getDisplay ()
     {
-        return this.getTextDisplay (0);
+        if (this.graphicsDisplays.isEmpty ())
+            return this.getTextDisplay (0);
+        return this.getGraphicsDisplay ();
     }
 
 

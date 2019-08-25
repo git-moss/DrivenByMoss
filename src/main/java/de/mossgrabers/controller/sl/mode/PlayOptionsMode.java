@@ -36,7 +36,7 @@ public class PlayOptionsMode extends AbstractMode<SLControlSurface, SLConfigurat
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ();
         d.clearRow (2).setCell (2, 0, "Oct Down").setCell (2, 1, " Oct Up").setCell (2, 2, "Res Down").setCell (2, 3, " Res Up").setCell (2, 4, "  Left").setCell (2, 5, "  Right").setCell (2, 7, "Play/Seq").clearRow (0).done (0).done (2);
     }
 

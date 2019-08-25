@@ -53,6 +53,14 @@ public interface IParameter extends IItem
 
 
     /**
+     * Sets the value. Ignores scaling.
+     *
+     * @param value The new value to set
+     */
+    void setValueImmediatly (int value);
+
+
+    /**
      * Change the value.
      *
      * @param value The control value

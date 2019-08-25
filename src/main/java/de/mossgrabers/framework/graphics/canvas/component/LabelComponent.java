@@ -89,7 +89,7 @@ public class LabelComponent implements IComponent
             if (this.layout == LabelLayout.SMALL_HEADER)
             {
                 // Remove the 2 pixels of the previous menus border line
-                info.getContext ().fillRectangle (bounds.getLeft () - separatorSize, menuHeight - 2, separatorSize, 1, bgColor);
+                info.getContext ().fillRectangle (bounds.getLeft () - separatorSize, menuHeight - 2, separatorSize, 1, configuration.getColorBorder ());
             }
             return;
         }

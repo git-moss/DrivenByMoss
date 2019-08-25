@@ -11,6 +11,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.View;
+import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -37,7 +39,15 @@ public class PageRightCommand extends AbstractTriggerCommand<PushControlSurface,
     @Override
     public void execute (final ButtonEvent event)
     {
-        final View activeView = this.surface.getViewManager ().getActiveView ();
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.isActiveView (Views.SESSION))
+        {
+            if (event == ButtonEvent.DOWN)
+                this.model.getCurrentTrackBank ().selectNextPage ();
+            return;
+        }
+
+        final View activeView = viewManager.getActiveView ();
         if (activeView instanceof AbstractSequencerView)
             ((AbstractSequencerView) activeView).onRight (event);
     }

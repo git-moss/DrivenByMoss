@@ -41,7 +41,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getDisplay ().clearRow (0).clearRow (2);
+        final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).clearRow (2);
 
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IParameterBank parameterBank = cd.getParameterBank ();

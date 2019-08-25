@@ -45,7 +45,7 @@ public class MarkerMode extends BaseMode
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
         final IMarkerBank markerBank = this.model.getMarkerBank ();
         final int extenderOffset = this.surface.getExtenderOffset ();

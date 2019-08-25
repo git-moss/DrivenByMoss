@@ -109,7 +109,7 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
             return;
         if (!this.model.canSelectedTrackHoldNotes ())
             return;
-        final ITextDisplay display = this.surface.getDisplay ();
+        final ITextDisplay display = this.surface.getTextDisplay ();
         String name;
         switch (scene)
         {

@@ -143,7 +143,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
             this.usbDevice.setKeyLED (i, 0, 0, 0);
         this.updateKeyLEDs ();
 
-        this.getDisplay ().clear ().notify ("START " + this.host.getName ().toUpperCase () + " TO PLAY");
+        this.getTextDisplay ().clear ().notify ("START " + this.host.getName ().toUpperCase () + " TO PLAY");
 
         super.shutdown ();
     }

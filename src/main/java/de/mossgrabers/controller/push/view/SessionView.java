@@ -160,8 +160,9 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     @Override
     public void updateButtons ()
     {
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_OFF);
+        final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, sceneBank.canScrollPageBackwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, sceneBank.canScrollPageForwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
     }
 
 
@@ -180,22 +181,6 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
             final IScene scene = sceneBank.getItem (7 - i);
             final int color = scene.doesExist () ? scene.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
             this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean usesButton (final int buttonID)
-    {
-        switch (buttonID)
-        {
-            case PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN:
-            case PushControlSurface.PUSH_BUTTON_OCTAVE_UP:
-                return false;
-
-            default:
-                return true;
         }
     }
 }

@@ -35,7 +35,7 @@ public class FunctionMode extends AbstractMode<SLControlSurface, SLConfiguration
     @Override
     public void updateDisplay ()
     {
-        this.surface.getDisplay ().setCell (0, 0, "  Undo").setCell (0, 1, "  Redo").setCell (0, 2, " Delete").setCell (0, 3, " Double").setCell (0, 4, "  New").setCell (0, 5, " Window ").setCell (0, 6, "Metronom").setCell (0, 7, "TapTempo").clearRow (2).done (0).done (2);
+        this.surface.getTextDisplay ().setCell (0, 0, "  Undo").setCell (0, 1, "  Redo").setCell (0, 2, " Delete").setCell (0, 3, " Double").setCell (0, 4, "  New").setCell (0, 5, " Window ").setCell (0, 6, "Metronom").setCell (0, 7, "TapTempo").clearRow (2).done (0).done (2);
     }
 
 

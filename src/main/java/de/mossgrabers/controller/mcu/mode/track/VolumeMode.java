@@ -50,7 +50,7 @@ public class VolumeMode extends AbstractTrackMode
         if (!this.drawTrackHeader ())
             return;
 
-        final ITextDisplay d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
@@ -73,7 +73,7 @@ public class VolumeMode extends AbstractTrackMode
             return true;
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITextDisplay d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ();
         final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {

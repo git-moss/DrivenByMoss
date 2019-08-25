@@ -39,7 +39,7 @@ public class TrackMode extends AbstractTrackMode<SLControlSurface, SLConfigurati
     public void updateDisplay ()
     {
         final ITrack t = this.model.getSelectedTrack ();
-        final ITextDisplay d = this.surface.getDisplay ().clearRow (0).clearRow (2);
+        final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).clearRow (2);
 
         if (t == null)
         {

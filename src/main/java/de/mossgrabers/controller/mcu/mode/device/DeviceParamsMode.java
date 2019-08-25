@@ -48,7 +48,7 @@ public class DeviceParamsMode extends BaseMode
     {
         this.drawDisplay2 ();
 
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())

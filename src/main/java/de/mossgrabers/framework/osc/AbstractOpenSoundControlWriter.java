@@ -98,7 +98,9 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
     }
 
 
-    protected void sendOSCColor (final String address, final double red, final double green, final double blue, final boolean dump)
+    /** {@inheritDoc} */
+    @Override
+    public void sendOSCColor (final String address, final double red, final double green, final double blue, final boolean dump)
     {
         final int r = (int) Math.round (red * 255.0);
         final int g = (int) Math.round (green * 255.0);
@@ -107,31 +109,48 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
     }
 
 
-    protected void sendOSC (final String address, final boolean value, final boolean dump)
+    /** {@inheritDoc} */
+    @Override
+    public void sendOSC (final String address, final boolean value, final boolean dump)
     {
         this.sendOSC (address, Boolean.valueOf (value), dump);
     }
 
 
-    protected void sendOSC (final String address, final double value, final boolean dump)
+    /** {@inheritDoc} */
+    @Override
+    public void sendOSC (final String address, final double value, final boolean dump)
     {
         // Using float here since Double seems to be always received as 0 in Max.
         this.sendOSC (address, Float.valueOf ((float) value), dump);
     }
 
 
-    protected void sendOSC (final String address, final int value, final boolean dump)
+    /** {@inheritDoc} */
+    @Override
+    public void sendOSC (final String address, final int value, final boolean dump)
     {
         this.sendOSC (address, Integer.valueOf (value), dump);
     }
 
 
-    protected void sendOSC (final String address, final String value, final boolean dump)
+    /** {@inheritDoc} */
+    @Override
+    public void sendOSC (final String address, final String value, final boolean dump)
     {
         this.sendOSC (address, (Object) StringUtils.fixASCII (value), dump);
     }
 
 
+    /**
+     * Send an OSC message with an object value. Tests if the value(s) of given message is identical
+     * to that of the cache. If this is not the case or if dump is true, the message is added to the
+     * messages list.The message will be sent when flush gets called.
+     *
+     * @param address The address of the OSC message
+     * @param value The value to send
+     * @param dump True to dump (ignore cache)
+     */
     protected void sendOSC (final String address, final Object value, final boolean dump)
     {
         this.sendOSC (address, address, value, value, dump);
@@ -139,7 +158,7 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
 
 
     /**
-     * Tests if the vlaue(s) of given message is identical to that of the cache. If this is not the
+     * Tests if the value(s) of given message is identical to that of the cache. If this is not the
      * case or if dump is true, the message is added to the messages list.The message will be sent
      * when flush gets called.
      *

@@ -115,7 +115,7 @@ public class MasterMode extends BaseMode
 
         this.drawDisplay2 ();
 
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getTextDisplay ().clear ();
         final String projectName = StringUtils.fixASCII (this.model.getProject ().getName ());
         final IMasterTrack master = this.model.getMasterTrack ();
 

@@ -38,7 +38,7 @@ public class ViewSelectMode extends AbstractMode<SLControlSurface, SLConfigurati
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ();
         final ViewManager viewManager = this.surface.getViewManager ();
         for (int i = 0; i < 2; i++)
         {

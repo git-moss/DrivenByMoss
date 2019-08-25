@@ -88,7 +88,7 @@ public class NoteRepeatMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getTextDisplay ().clear ();
         d.setBlock (2, 0, "Repeat Length:");
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         for (int i = 0; i < 8; i++)

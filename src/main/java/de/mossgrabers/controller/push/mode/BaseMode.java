@@ -78,7 +78,7 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
             return;
         }
 
-        final ITextDisplay display = this.surface.getDisplay ().clear ();
+        final ITextDisplay display = this.surface.getTextDisplay ().clear ();
         this.updateDisplay1 (display);
         display.allDone ();
     }

@@ -80,7 +80,7 @@ public class TrackMode extends AbstractTrackMode
         if (!this.drawTrackHeader ())
             return;
 
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
         final ITrack selectedTrack = this.model.getSelectedTrack ();
         if (selectedTrack == null)

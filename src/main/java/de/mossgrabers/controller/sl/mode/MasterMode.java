@@ -40,7 +40,7 @@ public class MasterMode extends AbstractMode<SLControlSurface, SLConfiguration>
     public void updateDisplay ()
     {
         final IMasterTrack master = this.model.getMasterTrack ();
-        this.surface.getDisplay ().setRow (0, MasterMode.PARAM_NAMES).clearRow (2).setCell (2, 0, master.getVolumeStr (8)).setCell (2, 1, master.getPanStr (8)).done (2);
+        this.surface.getTextDisplay ().setRow (0, MasterMode.PARAM_NAMES).clearRow (2).setCell (2, 0, master.getVolumeStr (8)).setCell (2, 1, master.getPanStr (8)).done (2);
     }
 
 

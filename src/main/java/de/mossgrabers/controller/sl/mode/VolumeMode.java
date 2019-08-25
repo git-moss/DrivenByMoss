@@ -40,7 +40,7 @@ public class VolumeMode extends AbstractTrackMode<SLControlSurface, SLConfigurat
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ();
 
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
         if (masterTrack.isSelected ())

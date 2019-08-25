@@ -38,7 +38,7 @@ public class ParameterView extends BaseView
     protected void executeFunction (final int padIndex)
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITextDisplay display = this.surface.getDisplay ();
+        final ITextDisplay display = this.surface.getTextDisplay ();
         if (!cursorDevice.doesExist ())
         {
             display.notify ("No device selected.");

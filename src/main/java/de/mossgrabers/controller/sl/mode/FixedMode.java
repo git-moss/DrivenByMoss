@@ -50,7 +50,7 @@ public class FixedMode extends AbstractMode<SLControlSurface, SLConfiguration>
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getDisplay ().clearRow (0).setBlock (0, 0, "New Clip Length:").done (0);
+        final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).setBlock (0, 0, "New Clip Length:").done (0);
         for (int i = 0; i < 8; i++)
             d.setCell (2, i, (this.surface.getConfiguration ().getNewClipLength () == i ? SLDisplay.RIGHT_ARROW : " ") + FixedMode.CLIP_LENGTHS[i]);
         d.done (2);

@@ -569,7 +569,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         surface.updateTrigger (PushControlSurface.PUSH_BUTTON_RECORD, isRecordShifted ? t.isLauncherOverdub () ? PushColors.PUSH_BUTTON_STATE_OVR_HI : PushColors.PUSH_BUTTON_STATE_OVR_ON : t.isRecording () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
 
         String repeatState = ColorManager.BUTTON_STATE_OFF;
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+        ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final ITrack selectedTrack = currentTrackBank.getSelectedItem ();
         if (selectedTrack != null)
             repeatState = this.getSurface ().getInput ().getDefaultNoteInput ().getNoteRepeat ().isActive (selectedTrack) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
         surface.updateTrigger (PushControlSurface.PUSH_BUTTON_REPEAT, repeatState);
@@ -616,9 +617,23 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             ((SceneView) activeView).updateSceneButtons ();
         }
 
-        final INoteClip clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
-        surface.updateTrigger (PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, clip != null && clip.canScrollStepsBackwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-        surface.updateTrigger (PushControlSurface.PUSH_BUTTON_DEVICE_RIGHT, clip != null && clip.canScrollStepsForwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        boolean isDeviceLeftOn = false;
+        boolean isDeviceRightOn = false;
+
+        if (viewManager.isActiveView (Views.SESSION))
+        {
+            isDeviceLeftOn = currentTrackBank.canScrollPageBackwards ();
+            isDeviceRightOn = currentTrackBank.canScrollPageForwards ();
+        }
+        else
+        {
+            final INoteClip clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
+            isDeviceLeftOn = clip != null && clip.canScrollStepsBackwards ();
+            isDeviceRightOn = clip != null && clip.canScrollStepsForwards ();
+        }
+
+        surface.updateTrigger (PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, isDeviceLeftOn ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        surface.updateTrigger (PushControlSurface.PUSH_BUTTON_DEVICE_RIGHT, isDeviceRightOn ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
     }
 
 

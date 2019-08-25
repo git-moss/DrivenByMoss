@@ -77,7 +77,7 @@ public class DeviceBrowserMode extends BaseMode
     public void updateDisplay ()
     {
         final IBrowser browser = this.model.getBrowser ();
-        final ITextDisplay d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ();
         final boolean isPresetSession = browser.isPresetContentType ();
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (isPresetSession && !(browser.isActive () && cd.doesExist ()))

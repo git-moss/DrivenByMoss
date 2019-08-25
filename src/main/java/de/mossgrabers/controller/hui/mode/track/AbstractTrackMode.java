@@ -47,7 +47,7 @@ public abstract class AbstractTrackMode extends AbstractMode<HUIControlSurface, 
     protected ITextDisplay drawTrackHeader ()
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
         // Format track names
         for (int i = 0; i < 8; i++)

@@ -7,6 +7,7 @@ package de.mossgrabers.framework.controller;
 import de.mossgrabers.framework.command.ContinuousCommandID;
 import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.grid.PadGrid;
@@ -62,7 +63,7 @@ public interface IControlSurface<C extends Configuration>
      *
      * @return The default text display
      */
-    ITextDisplay getDisplay ();
+    IDisplay getDisplay ();
 
 
     /**

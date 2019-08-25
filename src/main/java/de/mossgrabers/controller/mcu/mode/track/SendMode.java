@@ -58,7 +58,7 @@ public class SendMode extends AbstractTrackMode
         if (!this.drawTrackHeader ())
             return;
 
-        final ITextDisplay d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ();
         final int sendIndex = this.getCurrentSendIndex ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         if (!tb.canEditSend (sendIndex))
@@ -93,7 +93,7 @@ public class SendMode extends AbstractTrackMode
         if (this.surface.getConfiguration ().isDisplayTrackNames ())
             return true;
 
-        final ITextDisplay d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int sendIndex = this.getCurrentSendIndex ();
         final int extenderOffset = this.surface.getExtenderOffset ();

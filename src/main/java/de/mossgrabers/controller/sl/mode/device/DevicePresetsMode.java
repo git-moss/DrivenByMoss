@@ -118,7 +118,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ();
 
         if (!this.model.hasSelectedDevice ())
         {

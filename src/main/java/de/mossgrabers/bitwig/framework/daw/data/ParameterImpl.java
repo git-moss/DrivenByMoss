@@ -131,6 +131,14 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
 
     /** {@inheritDoc} */
     @Override
+    public void setValueImmediatly (final int value)
+    {
+        this.parameter.setImmediately (this.valueChanger.toNormalizedValue (value));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void changeValue (final int value)
     {
         this.inc (this.valueChanger.calcKnobSpeed (value));

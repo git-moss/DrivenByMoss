@@ -37,7 +37,7 @@ public abstract class AbstractTrackMode extends BaseMode
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
 
-        final ITextDisplay d = this.surface.getDisplay ().clear ();
+        final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
         // Format track names
         final int extenderOffset = this.surface.getExtenderOffset ();

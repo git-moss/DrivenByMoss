@@ -39,7 +39,7 @@ public class SessionMode extends AbstractMode<SLControlSurface, SLConfiguration>
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ();
         final ISceneBank sceneBank = this.model.getSceneBank ();
         for (int i = 0; i < 8; i++)
         {

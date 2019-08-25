@@ -92,7 +92,7 @@ public class BrowseMode extends AbstractKontrol1Mode
             return;
         }
 
-        final ITextDisplay d = this.surface.getDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ();
         final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
         {
