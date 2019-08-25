@@ -174,14 +174,6 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean isShiftPressed ()
-    {
-        return this.isPressed (this.shiftButtonId) || this.isPro () && this.isUserPressed ();
-    }
-
-
     /**
      * Is the user button pressed (mixer on MkII)?
      *

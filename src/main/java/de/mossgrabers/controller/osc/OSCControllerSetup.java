@@ -37,7 +37,8 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.KeyManager;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -162,21 +163,22 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         // Receive OSC messages
         final OSCParser parser = new OSCParser (this.host, surface, this.model, this.configuration, this.writer, input, this.keyManager);
 
-        final IModule [] modules = new IModule []
-        {
-            new TransportModule (this.host, this.model, this.writer),
-            new GlobalModule (this.host, this.model, this.writer),
-            new LayoutModule (this.host, this.model, this.writer),
-            new MarkerModule (this.host, this.model, this.writer),
-            new ProjectModule (this.host, this.model, this.writer),
-            new TrackModule (this.host, this.model, this.writer, this.configuration),
-            new SceneModule (this.host, this.model, this.writer),
-            new DeviceModule (this.host, this.model, this.writer, this.configuration),
-            new BrowserModule (this.host, this.model, this.writer),
-            new MidiModule (this.host, this.model, this.writer, this.getSurface (), this.keyManager),
-            new UserModule (this.host, this.model, this.writer)
-        };
-        Arrays.asList (modules).forEach (module -> {
+        final List<IModule> modules = new ArrayList<> ();
+        modules.add (new TransportModule (this.host, this.model, this.writer));
+        modules.add (new GlobalModule (this.host, this.model, this.writer));
+        modules.add (new LayoutModule (this.host, this.model, this.writer));
+        modules.add (new MarkerModule (this.host, this.model, this.writer));
+        modules.add (new ProjectModule (this.host, this.model, this.writer));
+        modules.add (new TrackModule (this.host, this.model, this.writer, this.configuration));
+        modules.add (new SceneModule (this.host, this.model, this.writer));
+        modules.add (new DeviceModule (this.host, this.model, this.writer, this.configuration));
+        modules.add (new BrowserModule (this.host, this.model, this.writer));
+        modules.add (new MidiModule (this.host, this.model, this.writer, this.getSurface (), this.keyManager));
+
+        if (this.host.hasUserParameters ())
+            modules.add (new UserModule (this.host, this.model, this.writer));
+
+        modules.forEach (module -> {
             this.writer.registerModule (module);
             parser.registerModule (module);
         });

@@ -60,7 +60,7 @@ public class EmptyParameter extends EmptyItem implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public void setValueImmediatly (int value)
+    public void setValueImmediatly (final int value)
     {
         // Intentionally empty
     }

@@ -60,6 +60,18 @@ public class OpenSoundControlClientImpl implements IOpenSoundControlClient
             {
                 pos = 0;
                 this.connection.endBundle ();
+
+                // Ugly hack, but we need to slow down a bit otherwise clients like Open Stage
+                // Control cannot keep up...
+                try
+                {
+                    Thread.sleep (10);
+                }
+                catch (final InterruptedException ex)
+                {
+                    Thread.currentThread ().interrupt ();
+                }
+
                 this.connection.startBundle ();
             }
         }

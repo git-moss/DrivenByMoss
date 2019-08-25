@@ -8,7 +8,8 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -50,6 +51,8 @@ public class DeviceView extends AbstractFaderView
         this.surface.setTrigger (this.surface.getSessionButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
         this.surface.setTrigger (this.surface.getNoteButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
         this.surface.setTrigger (this.surface.getDeviceButton (), LaunchpadColors.LAUNCHPAD_COLOR_AMBER);
+        if (this.surface.getConfiguration ().isPro ())
+            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_PRO_BUTTON_USER, this.model.getHost ().hasUserParameters () ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
     }
 
 
@@ -73,19 +76,10 @@ public class DeviceView extends AbstractFaderView
     @Override
     public void drawGrid ()
     {
+        final IParameterBank parameterBank = this.cursorDevice.getParameterBank ();
+        final IMidiOutput output = this.surface.getOutput ();
         for (int i = 0; i < 8; i++)
-        {
-            final IParameter param = this.cursorDevice.getParameterBank ().getItem (i);
-            this.surface.getOutput ().sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, param.getValue ());
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onGridNote (final int note, final int velocity)
-    {
-        // Intentionally empty
+            output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, parameterBank.getItem (i).getValue ());
     }
 
 

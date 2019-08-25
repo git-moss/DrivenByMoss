@@ -56,6 +56,14 @@ public interface IHost
 
 
     /**
+     * Returns true if the DAW supports user parameters.
+     *
+     * @return True if the DAW supports Drum Device options
+     */
+    boolean hasUserParameters ();
+
+
+    /**
      * Returns true if the DAW supports editing markers.
      *
      * @return True if the DAW supports editing markerst

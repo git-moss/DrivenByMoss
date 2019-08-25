@@ -121,7 +121,7 @@ public class UserParamsMode extends BaseMode
         {
             final IParameter param = this.model.getUserParameterBank ().getItem (i);
             final boolean isHi = param.getValue () > max / 2;
-            this.surface.updateTrigger (102 + i, bank.getItem (i).doesExist () ? (isHi ? colorHi : colorOn) : colorOff);
+            this.surface.updateTrigger (102 + i, bank.getItem (i).doesExist () ? isHi ? colorHi : colorOn : colorOff);
         }
     }
 

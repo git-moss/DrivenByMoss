@@ -115,14 +115,14 @@ public class UserModule extends AbstractModule
                     final String pageCommand = getSubCommand (path);
                     if ("select".equals (pageCommand) || "selected".equals (pageCommand))
                     {
-                        selectPage (parameterBank, toInteger (value) - 1);
+                        this.selectPage (parameterBank, toInteger (value) - 1);
                     }
                     else
                     {
                         try
                         {
                             final int index = Integer.parseInt (pageCommand) - 1;
-                            selectPage (parameterBank, index);
+                            this.selectPage (parameterBank, index);
                         }
                         catch (final NumberFormatException ex2)
                         {
