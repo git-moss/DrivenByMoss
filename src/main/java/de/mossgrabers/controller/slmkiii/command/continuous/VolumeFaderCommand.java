@@ -34,6 +34,7 @@ public class VolumeFaderCommand extends FaderAbsoluteCommand<SLMkIIIControlSurfa
     @Override
     public void execute (final int value)
     {
-        super.execute (this.model.getValueChanger ().toDAWValue (value));
+        if (this.surface.getConfiguration ().areFadersEnabled ())
+            super.execute (this.model.getValueChanger ().toDAWValue (value));
     }
 }

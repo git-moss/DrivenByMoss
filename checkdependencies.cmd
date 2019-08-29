@@ -1,2 +1,2 @@
 set JAVA_HOME=%JAVA_HOME8%
-mvn versions:display-dependency-updates
+mvn versions:display-plugin-updates versions:display-dependency-updates

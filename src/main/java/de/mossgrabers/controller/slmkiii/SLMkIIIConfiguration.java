@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.slmkiii;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -17,6 +18,12 @@ import de.mossgrabers.framework.daw.IHost;
  */
 public class SLMkIIIConfiguration extends AbstractConfiguration
 {
+    /** Setting for the ribbon mode. */
+    public static final Integer ENABLE_FADERS = Integer.valueOf (50);
+
+    private boolean             enableFaders  = true;
+
+
     /**
      * Constructor.
      *
@@ -39,10 +46,27 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
         this.activateBehaviourOnStopSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
 
+        final IEnumSetting enableFadersSetting = globalSettings.getEnumSetting ("Enable Faders", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        enableFadersSetting.addValueObserver (value -> {
+            this.enableFaders = "On".equals (value);
+            this.notifyObservers (ENABLE_FADERS);
+        });
+
         ///////////////////////////
         // Session
         this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateDrawRecordStripeSetting (globalSettings);
         this.activateActionForRecArmedPad (globalSettings);
+    }
+
+
+    /**
+     * Check if the faders should be active.
+     *
+     * @return True if faders are enabled
+     */
+    public boolean areFadersEnabled ()
+    {
+        return this.enableFaders;
     }
 }
