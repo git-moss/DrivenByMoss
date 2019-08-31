@@ -144,7 +144,6 @@ public abstract class AbstractBrowser implements IBrowser
     public void previousFilterItemPage (final int columnIndex)
     {
         this.columnData[columnIndex].scrollItemPageUp ();
-
     }
 
 

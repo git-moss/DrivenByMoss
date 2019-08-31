@@ -419,7 +419,10 @@ public class DeviceBrowserMode extends BaseMode
             final IBrowserColumn fc = this.getFilterColumn (index);
             if (fc != null && fc.doesExist ())
             {
-                this.filterColumn = fc.getIndex ();
+                final int fi = fc.getIndex ();
+                if (fi < 0)
+                    return;
+                this.filterColumn = fi;
                 for (int i = 0; i < count; i++)
                     browser.selectNextFilterItem (this.filterColumn);
                 // TODO Bugfix required: getSelectedFilterItemIndex gets -1
@@ -448,7 +451,10 @@ public class DeviceBrowserMode extends BaseMode
                 final IBrowserColumn fc = this.getFilterColumn (index);
                 if (fc != null && fc.doesExist ())
                 {
-                    this.filterColumn = fc.getIndex ();
+                    final int fi = fc.getIndex ();
+                    if (fi < 0)
+                        return;
+                    this.filterColumn = fi;
                     for (int j = 0; j < count; j++)
                         browser.selectPreviousFilterItem (this.filterColumn);
                     // TODO Bugfix required: getSelectedFilterItemIndex gets -1
