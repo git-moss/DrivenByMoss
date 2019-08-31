@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public class GenericControllerExtension extends ControllerExtension
 {
-    private IControllerSetup setup;
+    private IControllerSetup<?, ?> setup;
 
 
     /**
@@ -28,7 +28,7 @@ public class GenericControllerExtension extends ControllerExtension
      * @param definition A definition
      * @param host The DAW host
      */
-    public GenericControllerExtension (final IControllerSetup setup, final ControllerExtensionDefinition definition, final ControllerHost host)
+    public GenericControllerExtension (final IControllerSetup<?, ?> setup, final ControllerExtensionDefinition definition, final ControllerHost host)
     {
         super (definition, host);
         this.setup = setup;

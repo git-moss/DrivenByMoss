@@ -33,7 +33,7 @@ public class Push2ControllerExtensionDefinition extends AbstractControllerExtens
 
     /** {@inheritDoc} */
     @Override
-    protected IControllerSetup getControllerSetup (final ControllerHost host)
+    protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
     {
         return new PushControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()), true);
     }

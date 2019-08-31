@@ -11,9 +11,12 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * Interface to setting up a controller.
  *
+ * @param <C> The type of the configuration
+ * @param <S> The type of the control surface
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IControllerSetup
+public interface IControllerSetup<S extends IControlSurface<C>, C extends Configuration>
 {
     /**
      * Initialise all required functionality for the controller.
@@ -37,6 +40,23 @@ public interface IControllerSetup
      * Update cycle. Use e.g. for display updates.
      */
     void flush ();
+
+
+    /**
+     * Get the 1st surface. Convenience method for backwards compatibility.
+     *
+     * @return The 1st surface
+     */
+    S getSurface ();
+
+
+    /**
+     * Get a surface.
+     *
+     * @param index The index of the surface
+     * @return The surface
+     */
+    S getSurface (int index);
 
 
     /**

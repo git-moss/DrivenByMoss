@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C extends Configuration> implements IControllerSetup
+public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C extends Configuration> implements IControllerSetup<S, C>
 {
     protected final List<S>       surfaces    = new ArrayList<> ();
     protected final IHost         host;
@@ -63,23 +63,16 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     }
 
 
-    /**
-     * Get the 1st surface. Convenience method for backwards compatibility.
-     *
-     * @return The 1st surface
-     */
+    /** {@inheritDoc} */
+    @Override
     public S getSurface ()
     {
         return this.surfaces.get (0);
     }
 
 
-    /**
-     * Get a surface.
-     *
-     * @param index The index of the surface
-     * @return The surface
-     */
+    /** {@inheritDoc} */
+    @Override
     public S getSurface (final int index)
     {
         return this.surfaces.get (index);

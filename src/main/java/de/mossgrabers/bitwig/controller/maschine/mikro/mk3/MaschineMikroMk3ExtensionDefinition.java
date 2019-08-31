@@ -33,7 +33,7 @@ public class MaschineMikroMk3ExtensionDefinition extends AbstractControllerExten
 
     /** {@inheritDoc} */
     @Override
-    protected IControllerSetup getControllerSetup (final ControllerHost host)
+    protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
     {
         return new MaschineMikroMk3ControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()));
     }

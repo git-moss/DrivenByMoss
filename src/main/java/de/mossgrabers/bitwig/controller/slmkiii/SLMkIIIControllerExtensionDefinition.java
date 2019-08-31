@@ -33,7 +33,7 @@ public class SLMkIIIControllerExtensionDefinition extends AbstractControllerExte
 
     /** {@inheritDoc} */
     @Override
-    protected IControllerSetup getControllerSetup (final ControllerHost host)
+    protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
     {
         return new SLMkIIIControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()));
     }

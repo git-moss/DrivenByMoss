@@ -174,7 +174,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
      * @param host The host
      * @return The controller setup
      */
-    protected abstract IControllerSetup getControllerSetup (final ControllerHost host);
+    protected abstract IControllerSetup<?, ?> getControllerSetup (final ControllerHost host);
 
 
     private static UsbDeviceMatcher createDeviceMatcher (final String name, final short vendor, final short productID, final UsbInterfaceMatcher... interfaceMatchers)
