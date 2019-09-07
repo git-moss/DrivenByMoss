@@ -21,7 +21,7 @@ import com.bitwig.extension.controller.api.DeviceLayerBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LayerBankImpl extends AbstractChannelBank<DeviceLayerBank, ILayer> implements ILayerBank
+public class LayerBankImpl extends AbstractChannelBankImpl<DeviceLayerBank, ILayer> implements ILayerBank
 {
     private final CursorDeviceLayer cursorDeviceLayer;
     private int                     numDevices;
@@ -43,6 +43,8 @@ public class LayerBankImpl extends AbstractChannelBank<DeviceLayerBank, ILayer> 
         super (host, valueChanger, layerBank, numLayers, 0, numSends);
 
         this.cursorDeviceLayer = cursorDeviceLayer;
+        this.cursorDeviceLayer.hasPrevious ().markInterested ();
+        this.cursorDeviceLayer.hasNext ().markInterested ();
 
         this.numDevices = numDevices;
 
@@ -67,6 +69,9 @@ public class LayerBankImpl extends AbstractChannelBank<DeviceLayerBank, ILayer> 
     public void enableObservers (final boolean enable)
     {
         super.enableObservers (enable);
+
+        this.cursorDeviceLayer.hasPrevious ().setIsSubscribed (enable);
+        this.cursorDeviceLayer.hasNext ().setIsSubscribed (enable);
 
         for (int i = 0; i < this.getPageSize (); i++)
             this.getItem (i).enableObservers (enable);

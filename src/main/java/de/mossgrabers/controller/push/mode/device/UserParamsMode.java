@@ -99,8 +99,12 @@ public class UserParamsMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        // Toggle between the min and max value
+
         final IParameter param = this.model.getUserParameterBank ().getItem (index);
+        if (!param.doesExist ())
+            return;
+
+        // Toggle between the min and max value
         final int max = this.model.getValueChanger ().getUpperBound () - 1;
         param.setValueImmediatly (param.getValue () < max / 2 ? max : 0);
     }
@@ -121,7 +125,7 @@ public class UserParamsMode extends BaseMode
         {
             final IParameter param = this.model.getUserParameterBank ().getItem (i);
             final boolean isHi = param.getValue () > max / 2;
-            this.surface.updateTrigger (102 + i, bank.getItem (i).doesExist () ? isHi ? colorHi : colorOn : colorOff);
+            this.surface.updateTrigger (102 + i, bank.getItem (i).doesExist () ? (isHi ? colorHi : colorOn) : colorOff);
         }
     }
 

@@ -22,7 +22,7 @@ import com.bitwig.extension.controller.api.Bank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractChannelBank<B extends Bank<?>, T extends IChannel> extends AbstractBankImpl<B, T> implements IChannelBank<T>
+public abstract class AbstractChannelBankImpl<B extends Bank<?>, T extends IChannel> extends AbstractBankImpl<B, T> implements IChannelBank<T>
 {
     protected final int  numScenes;
     protected final int  numSends;
@@ -40,7 +40,7 @@ public abstract class AbstractChannelBank<B extends Bank<?>, T extends IChannel>
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractChannelBank (final IHost host, final IValueChanger valueChanger, final B bank, final int numTracks, final int numScenes, final int numSends)
+    public AbstractChannelBankImpl (final IHost host, final IValueChanger valueChanger, final B bank, final int numTracks, final int numScenes, final int numSends)
     {
         super (host, valueChanger, bank, numTracks);
 

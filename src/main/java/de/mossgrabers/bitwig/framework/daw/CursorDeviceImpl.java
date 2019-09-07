@@ -15,7 +15,6 @@ import de.mossgrabers.framework.daw.ILayerBank;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.IParameterPageBank;
 
-import com.bitwig.extension.controller.api.CursorDeviceLayer;
 import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
@@ -32,7 +31,6 @@ import java.util.Map;
 public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 {
     private final PinnableCursorDevice cursorDevice;
-    private final CursorDeviceLayer    cursorDeviceLayer;
 
     private String []                  directParameterIds;
     private Map<String, String>        directParameterNames = new HashMap<> ();
@@ -83,10 +81,6 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
         this.cursorDevice.addDirectParameterIdObserver (value -> this.directParameterIds = value);
         this.cursorDevice.addDirectParameterNameObserver (1024, (final String id, final String name) -> this.directParameterNames.put (id, name));
 
-        this.cursorDeviceLayer = this.cursorDevice.createCursorLayer ();
-        this.cursorDeviceLayer.hasPrevious ().markInterested ();
-        this.cursorDeviceLayer.hasNext ().markInterested ();
-
         if (checkedNumParams > 0)
         {
             final CursorRemoteControlsPage remoteControlsPage = this.cursorDevice.createCursorRemoteControlsPage (checkedNumParams);
@@ -106,7 +100,7 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
         this.deviceBank = new DeviceBankImpl (host, valueChanger, this, siblings, checkedNumDevices);
 
         // Monitor the layers of a container device (if any)
-        this.layerBank = new LayerBankImpl (host, valueChanger, checkedNumDeviceLayers > 0 ? this.cursorDevice.createLayerBank (checkedNumDeviceLayers) : null, this.cursorDeviceLayer, numDeviceLayers, numSends, checkedNumDevices);
+        this.layerBank = new LayerBankImpl (host, valueChanger, checkedNumDeviceLayers > 0 ? this.cursorDevice.createLayerBank (checkedNumDeviceLayers) : null, this.cursorDevice.createCursorLayer (), numDeviceLayers, numSends, checkedNumDevices);
 
         // Monitor the drum pad layers of a container device (if any)
         this.drumPadBank = new DrumPadBankImpl (host, valueChanger, checkedNumDrumPadLayers > 0 ? this.cursorDevice.createDrumPadBank (checkedNumDrumPadLayers) : null, checkedNumDrumPadLayers, numSends, checkedNumDevices);
@@ -139,9 +133,6 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
             this.parameterPageBank.enableObservers (enable);
         }
         this.deviceBank.enableObservers (enable);
-
-        this.cursorDeviceLayer.hasPrevious ().setIsSubscribed (enable);
-        this.cursorDeviceLayer.hasNext ().setIsSubscribed (enable);
 
         this.layerBank.enableObservers (enable);
         this.drumPadBank.enableObservers (enable);

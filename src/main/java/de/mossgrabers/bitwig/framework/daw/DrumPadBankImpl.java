@@ -21,7 +21,7 @@ import com.bitwig.extension.controller.api.DrumPadBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumPadBankImpl extends AbstractChannelBank<DrumPadBank, IDrumPad> implements IDrumPadBank
+public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, IDrumPad> implements IDrumPadBank
 {
     private int numDevices;
 

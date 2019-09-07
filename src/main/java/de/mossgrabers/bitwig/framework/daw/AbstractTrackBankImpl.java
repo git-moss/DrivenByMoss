@@ -23,7 +23,7 @@ import com.bitwig.extension.controller.api.TrackBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractTrackBankImpl extends AbstractChannelBank<TrackBank, ITrack> implements ITrackBank
+public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<TrackBank, ITrack> implements ITrackBank
 {
     protected final CursorTrack cursorTrack;
 
