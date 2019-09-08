@@ -107,6 +107,11 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         });
 
         ///////////////////////////
+        // Transport
+
+        this.activateBehaviourOnStopSetting (globalSettings);
+
+        ///////////////////////////
         // Accent
 
         this.activateAccentActiveSetting (globalSettings);

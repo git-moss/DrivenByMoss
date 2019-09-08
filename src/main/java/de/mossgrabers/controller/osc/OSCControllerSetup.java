@@ -164,7 +164,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         final OSCParser parser = new OSCParser (this.host, surface, this.model, this.configuration, this.writer, input, this.keyManager);
 
         final List<IModule> modules = new ArrayList<> ();
-        modules.add (new TransportModule (this.host, this.model, this.writer));
+        modules.add (new TransportModule (this.host, this.model, surface, this.writer));
         modules.add (new GlobalModule (this.host, this.model, this.writer));
         modules.add (new LayoutModule (this.host, this.model, this.writer));
         modules.add (new MarkerModule (this.host, this.model, this.writer));
@@ -173,7 +173,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         modules.add (new SceneModule (this.host, this.model, this.writer));
         modules.add (new DeviceModule (this.host, this.model, this.writer, this.configuration));
         modules.add (new BrowserModule (this.host, this.model, this.writer));
-        modules.add (new MidiModule (this.host, this.model, this.writer, this.getSurface (), this.keyManager));
+        modules.add (new MidiModule (this.host, this.model, surface, this.writer, this.keyManager));
 
         if (this.host.hasUserParameters ())
             modules.add (new UserModule (this.host, this.model, this.writer));

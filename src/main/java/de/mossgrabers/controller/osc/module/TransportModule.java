@@ -4,13 +4,17 @@
 
 package de.mossgrabers.controller.osc.module;
 
+import de.mossgrabers.controller.osc.OSCConfiguration;
+import de.mossgrabers.controller.osc.OSCControlSurface;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.LinkedList;
 
@@ -22,7 +26,8 @@ import java.util.LinkedList;
  */
 public class TransportModule extends AbstractModule
 {
-    private final ITransport transport;
+    private final ITransport                                       transport;
+    private final PlayCommand<OSCControlSurface, OSCConfiguration> playCommand;
 
 
     /**
@@ -30,13 +35,15 @@ public class TransportModule extends AbstractModule
      *
      * @param host The host
      * @param model The model
+     * @param surface The surface
      * @param writer The writer
      */
-    public TransportModule (final IHost host, final IModel model, final IOpenSoundControlWriter writer)
+    public TransportModule (final IHost host, final IModel model, final OSCControlSurface surface, final IOpenSoundControlWriter writer)
     {
         super (host, model, writer);
 
         this.transport = model.getTransport ();
+        this.playCommand = new PlayCommand<> (model, surface);
     }
 
 
@@ -47,6 +54,7 @@ public class TransportModule extends AbstractModule
         return new String []
         {
             "play",
+            "playbutton",
             "stop",
             "restart",
             "record",
@@ -76,6 +84,11 @@ public class TransportModule extends AbstractModule
             case "play":
                 if (isTrigger (value) && !this.transport.isPlaying ())
                     this.transport.play ();
+                break;
+
+            case "playbutton":
+                if (isTrigger (value))
+                    this.playCommand.execute (ButtonEvent.DOWN);
                 break;
 
             case "stop":

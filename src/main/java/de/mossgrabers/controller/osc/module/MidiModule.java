@@ -36,11 +36,11 @@ public class MidiModule extends AbstractModule
      *
      * @param host The host
      * @param model The model
-     * @param writer The writer
      * @param surface The surface
+     * @param writer The writer
      * @param keyManager The key manager
      */
-    public MidiModule (final IHost host, final IModel model, final IOpenSoundControlWriter writer, final IControlSurface<OSCConfiguration> surface, final KeyManager keyManager)
+    public MidiModule (final IHost host, final IModel model, final IControlSurface<OSCConfiguration> surface, final IOpenSoundControlWriter writer, final KeyManager keyManager)
     {
         super (host, model, writer);
 
