@@ -42,6 +42,9 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
 
     protected void changeScrollPosition (final int value)
     {
+        if (!this.isActive ())
+            return;
+
         final boolean isInc = value >= 65;
         if (isInc)
             this.getClip ().scrollStepsPageForward ();
@@ -52,9 +55,12 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
 
     protected void changeResolution (final int value)
     {
+        if (!this.isActive ())
+            return;
+
         final boolean isInc = value >= 65;
-        this.selectedIndex = Resolution.change (this.selectedIndex, isInc);
-        this.getClip ().setStepLength (Resolution.getValueAt (this.selectedIndex));
+        this.selectedResolutionIndex = Resolution.change (this.selectedResolutionIndex, isInc);
+        this.getClip ().setStepLength (Resolution.getValueAt (this.selectedResolutionIndex));
     }
 
 

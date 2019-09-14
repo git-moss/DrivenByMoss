@@ -54,7 +54,7 @@ public class DrumView extends BaseSequencerView
 
             case 13:
                 this.changeResolution (value);
-                this.surface.getDisplay ().notify (Resolution.getNameAt (this.selectedIndex));
+                this.surface.getDisplay ().notify (Resolution.getNameAt (this.selectedResolutionIndex));
                 break;
 
             // Up/Down

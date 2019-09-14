@@ -119,7 +119,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final INoteClip clip = this.getClip ();
         if (y >= this.playLines)
         {
-            if (velocity != 0)
+            if (this.isActive () && velocity != 0)
             {
                 final int col = GRID_COLUMNS * (this.allLines - 1 - y) + x;
                 clip.toggleStep (col, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
@@ -143,6 +143,9 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             this.handleButtonCombinations (playedPad);
             return;
         }
+
+        if (!this.isActive ())
+            return;
 
         // Clip length/loop area
         final int pad = (this.playLines - 1 - y) * this.halfColumns + x - this.halfColumns;
@@ -413,6 +416,8 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      */
     private void drawSequencer ()
     {
+        final boolean isActive = this.isActive ();
+
         final INoteClip clip = this.getClip ();
 
         // Clip length/loop area
@@ -430,7 +435,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         {
             final int x = this.halfColumns + pad % this.halfColumns;
             final int y = this.sequencerLines + pad / this.halfColumns;
-            padGrid.lightEx (x, y, this.getPageColor (loopStartPad, loopEndPad, currentPage, clip.getEditPage (), pad));
+            padGrid.lightEx (x, y, isActive ? this.getPageColor (loopStartPad, loopEndPad, currentPage, clip.getEditPage (), pad) : AbstractSequencerView.COLOR_NO_CONTENT);
         }
 
         // Paint the sequencer steps
@@ -441,7 +446,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;
-            padGrid.lightEx (x, y, this.getStepColor (isSet, hilite));
+            padGrid.lightEx (x, y, isActive ? this.getStepColor (isSet, hilite) : AbstractSequencerView.COLOR_NO_CONTENT);
         }
     }
 

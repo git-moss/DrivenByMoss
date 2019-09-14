@@ -10,6 +10,7 @@ import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
@@ -166,7 +167,9 @@ public class TransportModule extends AbstractModule
                 break;
 
             case "quantize":
-                this.getClip ().quantize (1);
+                final IClip clip = this.getClip ();
+                if (clip.doesExist ())
+                    clip.quantize (1);
                 break;
 
             case "tempo":

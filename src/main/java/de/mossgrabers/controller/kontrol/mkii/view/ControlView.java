@@ -4,8 +4,8 @@
 
 package de.mossgrabers.controller.kontrol.mkii.view;
 
-import de.mossgrabers.controller.kontrol.mkii.KontrolMkIIConfiguration;
-import de.mossgrabers.controller.kontrol.mkii.controller.KontrolMkIIControlSurface;
+import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
+import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.ControlOnlyView;
@@ -16,7 +16,7 @@ import de.mossgrabers.framework.view.ControlOnlyView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ControlView extends ControlOnlyView<KontrolMkIIControlSurface, KontrolMkIIConfiguration>
+public class ControlView extends ControlOnlyView<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {
     private static final int [] IDENTITY_MAP = Scales.getIdentityMatrix ();
 
@@ -27,7 +27,7 @@ public class ControlView extends ControlOnlyView<KontrolMkIIControlSurface, Kont
      * @param surface The surface
      * @param model The model
      */
-    public ControlView (final KontrolMkIIControlSurface surface, final IModel model)
+    public ControlView (final KontrolProtocolControlSurface surface, final IModel model)
     {
         super (surface, model);
     }

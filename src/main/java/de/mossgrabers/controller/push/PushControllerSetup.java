@@ -630,8 +630,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         else
         {
             final INoteClip clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
-            isDeviceLeftOn = clip != null && clip.canScrollStepsBackwards ();
-            isDeviceRightOn = clip != null && clip.canScrollStepsForwards ();
+            isDeviceLeftOn = clip != null && clip.doesExist () && clip.canScrollStepsBackwards ();
+            isDeviceRightOn = clip != null && clip.doesExist () && clip.canScrollStepsForwards ();
         }
 
         surface.updateTrigger (PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, isDeviceLeftOn ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);

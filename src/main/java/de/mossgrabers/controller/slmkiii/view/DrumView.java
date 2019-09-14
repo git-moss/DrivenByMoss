@@ -47,7 +47,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.model.canSelectedTrackHoldNotes ())
+        if (!this.isActive ())
             return;
 
         final int index = note - 36;
@@ -81,12 +81,6 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
     public void drawGrid ()
     {
         final PadGrid padGrid = this.surface.getPadGrid ();
-        if (!this.model.canSelectedTrackHoldNotes ())
-        {
-            padGrid.turnOff ();
-            return;
-        }
-
         final ICursorDevice primary = this.model.getInstrumentDevice ();
         if (this.isPlayMode)
         {
@@ -111,6 +105,12 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
                     padGrid.lightEx (x, 1 - y, this.getPadColor (index, primary, isSoloed, false));
                 }
             }
+            return;
+        }
+
+        if (!this.isActive ())
+        {
+            padGrid.turnOff ();
             return;
         }
 
@@ -162,7 +162,8 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
     public void updateSceneButtons ()
     {
         this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_1, this.isPlayMode ? SLMkIIIColors.SLMKIII_GREEN : SLMkIIIColors.SLMKIII_BLUE);
-        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_2, this.surface.getModeManager ().isActiveOrTempMode (Modes.GROOVE) ? SLMkIIIColors.SLMKIII_PINK : SLMkIIIColors.SLMKIII_DARK_GREY);
+        final int value = this.surface.getModeManager ().isActiveOrTempMode (Modes.GROOVE) ? SLMkIIIColors.SLMKIII_PINK : SLMkIIIColors.SLMKIII_DARK_GREY;
+        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_2, this.isActive () ? value : SLMkIIIColors.SLMKIII_BLACK);
     }
 
 
@@ -180,6 +181,8 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         }
         else
         {
+            if (!this.isActive ())
+                return;
             final ModeManager modeManager = this.surface.getModeManager ();
             if (modeManager.isActiveOrTempMode (Modes.GROOVE))
                 modeManager.restoreMode ();

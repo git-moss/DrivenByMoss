@@ -4,7 +4,7 @@
 
 package de.mossgrabers.controller.kontrol.mkii.controller;
 
-import de.mossgrabers.controller.kontrol.mkii.KontrolMkIIConfiguration;
+import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.kontrol.mkii.TrackType;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -23,16 +23,8 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkIIConfiguration>
+public class KontrolProtocolControlSurface extends AbstractControlSurface<KontrolProtocolConfiguration>
 {
-    /** The maximal NIHIA protocol version which is supported by this extension. */
-    public static final int MAX_VERSION                          = 3;
-
-    /** Protocol version 1. */
-    public static final int PROTOCOL_VERSION_1                   = 1;
-    /** Protocol version 2. */
-    public static final int PROTOCOL_VERSION_2                   = 2;
-
     /** Command to initialise the protocol handshake (and acknowledge). */
     public static final int CMD_HELLO                            = 0x01;
     /** Command to stop the protocol. */
@@ -129,6 +121,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
     /** Selected track muted by solo. */
     public static final int KONTROL_SELECTED_TRACK_MUTED_BY_SOLO = 0x69;
 
+    private final int       requiredVersion;
     private int             protocolVersion                      = 1;
     private ValueCache      valueCache                           = new ValueCache ();
     private final Object    cacheLock                            = new Object ();
@@ -144,11 +137,13 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
      * @param configuration The configuration
      * @param output The midi output
      * @param input The midi input
+     * @param version The version number of the NIHIA protocol to request
      */
-    public KontrolMkIIControlSurface (final IHost host, final ColorManager colorManager, final KontrolMkIIConfiguration configuration, final IMidiOutput output, final IMidiInput input)
+    public KontrolProtocolControlSurface (final IHost host, final ColorManager colorManager, final KontrolProtocolConfiguration configuration, final IMidiOutput output, final IMidiInput input, final int version)
     {
         super (host, configuration, colorManager, output, input, null);
 
+        this.requiredVersion = version;
         this.defaultMidiChannel = 15;
     }
 
@@ -165,9 +160,9 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
             this.isConnectedToNIHIA = false;
 
             for (int i = 0; i < 8; i++)
-                this.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_AVAILABLE, TrackType.EMPTY, i);
+                this.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_AVAILABLE, TrackType.EMPTY, i);
 
-            this.sendCommand (KontrolMkIIControlSurface.CMD_GOODBYE, 0);
+            this.sendCommand (KontrolProtocolControlSurface.CMD_GOODBYE, 0);
         }
     }
 
@@ -192,7 +187,7 @@ public class KontrolMkIIControlSurface extends AbstractControlSurface<KontrolMkI
      */
     public void initHandshake ()
     {
-        this.sendCommand (CMD_HELLO, MAX_VERSION);
+        this.sendCommand (CMD_HELLO, this.requiredVersion);
     }
 
 

@@ -37,6 +37,9 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
         if (event != ButtonEvent.DOWN)
             return;
 
+        if (!this.isActive ())
+            return;
+
         switch (index)
         {
             case 0:
@@ -62,7 +65,7 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
     {
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
         for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, isKeyboardEnabled && i == 7 - this.selectedIndex ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
+            this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, isKeyboardEnabled && i == 7 - this.selectedResolutionIndex ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
 
         this.canScrollUp = this.offsetY + AbstractRaindropsView.NUM_OCTAVE <= this.getClip ().getNumRows () - AbstractRaindropsView.NUM_OCTAVE;
         this.canScrollDown = this.offsetY - AbstractRaindropsView.NUM_OCTAVE >= 0;

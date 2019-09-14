@@ -15,6 +15,14 @@ import de.mossgrabers.framework.observer.ObserverManagement;
 public interface IClip extends ObserverManagement
 {
     /**
+     * Returns true if the clip exits.
+     *
+     * @return True if the clip exits.
+     */
+    boolean doesExist ();
+
+
+    /**
      * Get the color of the clip.
      *
      * @return The color

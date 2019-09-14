@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.IHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class KontrolMkIIConfiguration extends AbstractConfiguration
+public class KontrolProtocolConfiguration extends AbstractConfiguration
 {
     private static final Integer RECORD_BUTTON_FUNCTION         = Integer.valueOf (50);
     private static final Integer SHIFTED_RECORD_BUTTON_FUNCTION = Integer.valueOf (51);
@@ -64,7 +64,7 @@ public class KontrolMkIIConfiguration extends AbstractConfiguration
      * @param host The DAW host
      * @param valueChanger The value changer
      */
-    public KontrolMkIIConfiguration (final IHost host, final IValueChanger valueChanger)
+    public KontrolProtocolConfiguration (final IHost host, final IValueChanger valueChanger)
     {
         super (host, valueChanger);
     }

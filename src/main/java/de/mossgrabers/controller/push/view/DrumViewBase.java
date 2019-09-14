@@ -51,7 +51,10 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
     @Override
     public void onScene (final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        if (!this.isActive ())
             return;
 
         if (this.surface.isShiftPressed ())
@@ -90,6 +93,13 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
     @Override
     public void updateSceneButtons ()
     {
+        if (!this.isActive ())
+        {
+            for (int i = PushControlSurface.PUSH_BUTTON_SCENE1; i <= PushControlSurface.PUSH_BUTTON_SCENE8; i++)
+                this.surface.updateTrigger (i, AbstractSequencerView.COLOR_RESOLUTION_OFF);
+            return;
+        }
+
         final ColorManager colorManager = this.model.getColorManager ();
 
         if (this.surface.isShiftPressed ())
@@ -104,7 +114,7 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
         final int colorResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION);
         final int colorSelectedResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED);
         for (int i = PushControlSurface.PUSH_BUTTON_SCENE1; i <= PushControlSurface.PUSH_BUTTON_SCENE8; i++)
-            this.surface.updateTrigger (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedIndex ? colorSelectedResolution : colorResolution);
+            this.surface.updateTrigger (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedResolutionIndex ? colorSelectedResolution : colorResolution);
     }
 
 

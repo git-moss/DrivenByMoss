@@ -43,19 +43,19 @@ public abstract class DrumViewBase extends AbstractDrumView<LaunchpadControlSurf
     @Override
     public void onScene (final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
-            return;
-
-        if (!this.surface.isShiftPressed ())
+        if (this.surface.isShiftPressed ())
         {
-            super.onScene (index, event);
+            if (event != ButtonEvent.DOWN || !this.isActive ())
+                return;
+
+            final ITrackBank tb = this.model.getCurrentTrackBank ();
+            final ITrack selectedTrack = tb.getSelectedItem ();
+            if (selectedTrack != null)
+                this.onLowerScene (index);
             return;
         }
 
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        if (selectedTrack != null)
-            this.onLowerScene (index);
+        super.onScene (index, event);
     }
 
 
@@ -82,10 +82,12 @@ public abstract class DrumViewBase extends AbstractDrumView<LaunchpadControlSurf
             return;
         }
 
+        final boolean isActive = this.isActive ();
         for (int i = 0; i < 8; i++)
         {
             final int sceneButton = this.surface.getSceneTrigger (i);
-            this.surface.setTrigger (sceneButton, i == 7 - this.selectedIndex ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            final int color = i == 7 - this.selectedResolutionIndex ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN;
+            this.surface.setTrigger (sceneButton, isActive ? color : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
         }
     }
 

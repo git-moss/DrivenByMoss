@@ -8,6 +8,7 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColors;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
@@ -92,7 +93,9 @@ public class OptionsMode extends BaseMode
                 this.model.getApplication ().toggleEngineActive ();
                 break;
             case 7:
-                this.model.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+                final IClip clip = this.model.getClip ();
+                if (clip.doesExist ())
+                    clip.quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
                 break;
             default:
                 // Not used

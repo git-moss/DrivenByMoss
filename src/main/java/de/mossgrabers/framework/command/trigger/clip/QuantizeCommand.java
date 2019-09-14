@@ -7,6 +7,7 @@ package de.mossgrabers.framework.command.trigger.clip;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -44,6 +45,8 @@ public class QuantizeCommand<S extends IControlSurface<C>, C extends Configurati
 
     protected void quantize ()
     {
-        this.model.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+        final IClip clip = this.model.getClip ();
+        if (clip.doesExist ())
+            clip.quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
     }
 }

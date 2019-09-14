@@ -37,7 +37,7 @@ public class DrumView4 extends DrumViewBase
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.model.canSelectedTrackHoldNotes () || velocity == 0)
+        if (!this.isActive () || velocity == 0)
             return;
 
         final int index = note - 36;
@@ -56,7 +56,7 @@ public class DrumView4 extends DrumViewBase
     public void drawGrid ()
     {
         final PadGrid padGrid = this.surface.getPadGrid ();
-        if (!this.model.canSelectedTrackHoldNotes ())
+        if (!this.isActive ())
         {
             padGrid.turnOff ();
             return;
@@ -98,10 +98,18 @@ public class DrumView4 extends DrumViewBase
     @Override
     protected void updateLowerSceneButtons ()
     {
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, this.soundOffset == 0 ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, this.soundOffset == 4 ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, this.soundOffset == 8 ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, this.soundOffset == 12 ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        if (this.isActive ())
+        {
+            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, this.soundOffset == 0 ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, this.soundOffset == 4 ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, this.soundOffset == 8 ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, this.soundOffset == 12 ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+            return;
+        }
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
     }
 
 
@@ -109,6 +117,9 @@ public class DrumView4 extends DrumViewBase
     @Override
     protected void onLowerScene (final int index)
     {
+        if (!this.isActive ())
+            return;
+
         // 7, 6, 5, 4
         this.soundOffset = 4 * (7 - index);
         this.surface.getDisplay ().notify ("Offset: " + this.soundOffset);

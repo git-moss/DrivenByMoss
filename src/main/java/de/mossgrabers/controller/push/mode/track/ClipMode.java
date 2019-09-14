@@ -54,7 +54,9 @@ public class ClipMode extends AbstractTrackMode
         if (index == 7 && isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
-            this.model.getClip ().resetAccent ();
+            final IClip clip = this.model.getClip ();
+            if (clip.doesExist ())
+                clip.resetAccent ();
         }
     }
 
@@ -67,6 +69,9 @@ public class ClipMode extends AbstractTrackMode
             return;
 
         final IClip clip = this.model.getClip ();
+        if (!clip.doesExist ())
+            return;
+
         switch (index)
         {
             case 0:
@@ -102,6 +107,12 @@ public class ClipMode extends AbstractTrackMode
     public void updateDisplay1 (final ITextDisplay display)
     {
         final IClip clip = this.model.getClip ();
+        if (!clip.doesExist ())
+        {
+            display.notify ("Please selecta clip.       ");
+            return;
+        }
+
         display.setCell (0, 0, "PlayStrt").setCell (1, 0, this.formatMeasures (clip.getPlayStart (), 1));
         display.setCell (0, 1, "Play End").setCell (1, 1, this.formatMeasures (clip.getPlayEnd (), 1));
         display.setCell (0, 2, "LoopStrt").setCell (1, 2, this.formatMeasures (clip.getLoopStart (), 1));
@@ -125,7 +136,22 @@ public class ClipMode extends AbstractTrackMode
                 clip = ((AbstractSequencerView<?, ?>) activeView).getClip ();
             else
                 clip = this.model.getNoteClip (8, 128);
+            if (!clip.doesExist ())
+            {
+                display.addEmptyElement ();
+                display.notify ("Please select a clip.");
+                return;
+            }
+
             display.setMidiClipElement (clip, this.model.getTransport ().getQuartersPerMeasure ());
+            return;
+        }
+
+        final IClip clip = this.model.getClip ();
+        if (!clip.doesExist ())
+        {
+            display.addEmptyElement ();
+            display.notify ("Please select a clip.");
             return;
         }
 
@@ -139,7 +165,6 @@ public class ClipMode extends AbstractTrackMode
         final ITrack t6 = tb.getItem (6);
         final ITrack t7 = tb.getItem (7);
 
-        final IClip clip = this.model.getClip ();
         display.addParameterElement ("", false, t0.getName (), t0.getType (), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
         display.addParameterElement ("", false, t1.getName (), t1.getType (), t1.getColor (), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);
         display.addParameterElement ("", false, t2.getName (), t2.getType (), t2.getColor (), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart (), 1), this.isKnobTouched[2], -1);

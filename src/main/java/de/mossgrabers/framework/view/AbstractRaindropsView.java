@@ -79,17 +79,19 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.model.canSelectedTrackHoldNotes ())
+        if (!this.isActive ())
             return;
+
         if (velocity == 0)
             return;
+
         final int index = note - 36;
         final int x = index % 8;
         final int y = index / 8;
         final int stepSize = y == 0 ? 1 : 2 * y;
 
         final INoteClip clip = this.getClip ();
-        final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.selectedIndex));
+        final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.selectedResolutionIndex));
         final int distance = this.getNoteDistance (this.keyManager.map (x), length);
         clip.clearRow (this.keyManager.map (x));
         if (distance == -1 || distance != (y == 0 ? 1 : y * 2))
@@ -98,7 +100,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
             if (offset < 0)
                 return;
             for (int i = offset; i < length; i += stepSize)
-                clip.setStep (i, this.keyManager.map (x), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, Resolution.getValueAt (this.selectedIndex));
+                clip.setStep (i, this.keyManager.map (x), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, Resolution.getValueAt (this.selectedResolutionIndex));
         }
     }
 
@@ -108,7 +110,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     public void drawGrid ()
     {
         final PadGrid padGrid = this.surface.getPadGrid ();
-        if (!this.model.canSelectedTrackHoldNotes ())
+        if (!this.isActive ())
         {
             padGrid.turnOff ();
             return;
@@ -120,7 +122,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final ITrack selectedTrack = this.useTrackColor ? this.model.getSelectedTrack () : null;
 
         final INoteClip clip = this.getClip ();
-        final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.selectedIndex));
+        final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.selectedResolutionIndex));
         final int step = clip.getCurrentStep ();
         for (int x = 0; x < AbstractRaindropsView.NUM_DISPLAY_COLS; x++)
         {
@@ -153,6 +155,10 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     {
         if (event != ButtonEvent.DOWN)
             return;
+
+        if (!this.isActive ())
+            return;
+
         this.ongoingResolutionChange = true;
         super.onScene (index, event);
         this.ongoingResolutionChange = false;
@@ -165,6 +171,10 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     {
         if (event != ButtonEvent.DOWN)
             return;
+
+        if (!this.isActive ())
+            return;
+
         this.offsetY = Math.max (0, this.offsetY - AbstractRaindropsView.NUM_OCTAVE);
         this.updateScale ();
         this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify (Scales.getSequencerRangeText (this.keyManager.map (0), this.keyManager.map (7))), 10);
@@ -177,6 +187,10 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     {
         if (event != ButtonEvent.DOWN)
             return;
+
+        if (!this.isActive ())
+            return;
+
         final int numRows = this.getClip ().getNumRows ();
         this.offsetY = Math.min (numRows - AbstractRaindropsView.NUM_OCTAVE, this.offsetY + AbstractRaindropsView.NUM_OCTAVE);
         this.updateScale ();

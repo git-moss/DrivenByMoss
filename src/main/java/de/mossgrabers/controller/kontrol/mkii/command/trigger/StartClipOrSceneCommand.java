@@ -4,8 +4,8 @@
 
 package de.mossgrabers.controller.kontrol.mkii.command.trigger;
 
-import de.mossgrabers.controller.kontrol.mkii.KontrolMkIIConfiguration;
-import de.mossgrabers.controller.kontrol.mkii.controller.KontrolMkIIControlSurface;
+import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
+import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.clip.StartClipCommand;
 import de.mossgrabers.framework.command.trigger.clip.StartSceneCommand;
@@ -19,10 +19,10 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class StartClipOrSceneCommand extends AbstractTriggerCommand<KontrolMkIIControlSurface, KontrolMkIIConfiguration>
+public class StartClipOrSceneCommand extends AbstractTriggerCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {
-    private final StartClipCommand<KontrolMkIIControlSurface, KontrolMkIIConfiguration>  clipCommand;
-    private final StartSceneCommand<KontrolMkIIControlSurface, KontrolMkIIConfiguration> sceneCommand;
+    private final StartClipCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration>  clipCommand;
+    private final StartSceneCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration> sceneCommand;
 
 
     /**
@@ -31,7 +31,7 @@ public class StartClipOrSceneCommand extends AbstractTriggerCommand<KontrolMkIIC
      * @param model The model
      * @param surface The surface
      */
-    public StartClipOrSceneCommand (final IModel model, final KontrolMkIIControlSurface surface)
+    public StartClipOrSceneCommand (final IModel model, final KontrolProtocolControlSurface surface)
     {
         super (model, surface);
 

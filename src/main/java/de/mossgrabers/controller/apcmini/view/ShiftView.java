@@ -9,6 +9,7 @@ import de.mossgrabers.controller.apcmini.controller.APCminiColors;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -187,7 +188,9 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 this.surface.getDisplay ().notify ("Toggle Launcher Overdub");
                 break;
             case 46:
-                this.model.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+                final IClip clip = this.model.getClip ();
+                if (clip.doesExist ())
+                    clip.quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
                 this.surface.getDisplay ().notify ("Quantize");
                 break;
             case 38:

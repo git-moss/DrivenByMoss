@@ -12,7 +12,7 @@ package de.mossgrabers.framework.controller.display;
 public interface IDisplay
 {
     /**
-     * Displays a notification message on the screen (in the DAW).
+     * Displays a notification message on the display and in the DAW.
      *
      * @param message The message to display
      */

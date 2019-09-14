@@ -21,7 +21,8 @@ de.mossgrabers.bitwig.controller.kontrol.mki.Kontrol1S25ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.mki.Kontrol1S49ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.mki.Kontrol1S61ExtensionDefinition
 de.mossgrabers.bitwig.controller.kontrol.mki.Kontrol1S88ExtensionDefinition
-de.mossgrabers.bitwig.controller.kontrol.mkii.KontrolMkIIExtensionDefinition
+de.mossgrabers.bitwig.controller.kontrol.mkii.KontrolProtocolV1ExtensionDefinition
+de.mossgrabers.bitwig.controller.kontrol.mkii.KontrolProtocolV2ExtensionDefinition
 de.mossgrabers.bitwig.controller.maschine.mikro.mk3.MaschineMikroMk3ExtensionDefinition
 de.mossgrabers.bitwig.controller.autocolor.AutoColorExtensionDefinition
 de.mossgrabers.bitwig.controller.midimonitor.MidiMonitorExtensionDefinition

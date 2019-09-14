@@ -4,9 +4,10 @@
 
 package de.mossgrabers.controller.kontrol.mkii.mode;
 
-import de.mossgrabers.controller.kontrol.mkii.KontrolMkIIConfiguration;
+import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.kontrol.mkii.TrackType;
-import de.mossgrabers.controller.kontrol.mkii.controller.KontrolMkIIControlSurface;
+import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocol;
+import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
@@ -21,7 +22,7 @@ import de.mossgrabers.framework.mode.track.VolumeMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MixerMode extends VolumeMode<KontrolMkIIControlSurface, KontrolMkIIConfiguration>
+public class MixerMode extends VolumeMode<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {
     /**
      * Constructor.
@@ -29,7 +30,7 @@ public class MixerMode extends VolumeMode<KontrolMkIIControlSurface, KontrolMkII
      * @param surface The control surface
      * @param model The model
      */
-    public MixerMode (final KontrolMkIIControlSurface surface, final IModel model)
+    public MixerMode (final KontrolProtocolControlSurface surface, final IModel model)
     {
         super (surface, model, false);
     }
@@ -48,21 +49,21 @@ public class MixerMode extends VolumeMode<KontrolMkIIControlSurface, KontrolMkII
             final ITrack track = bank.getItem (i);
 
             // Track Available
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_AVAILABLE, TrackType.toTrackType (track.getType ()), i);
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_SELECTED, track.isSelected () ? 1 : 0, i);
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_RECARM, track.isRecArm () ? 1 : 0, i);
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, track.getVolumeStr (8));
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, track.getPanStr (8));
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_NAME, 0, i, this.formatTrackName (track));
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_AVAILABLE, TrackType.toTrackType (track.getType ()), i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_SELECTED, track.isSelected () ? 1 : 0, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_RECARM, track.isRecArm () ? 1 : 0, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, track.getVolumeStr (8));
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, track.getPanStr (8));
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_NAME, 0, i, this.formatTrackName (track));
 
             final int j = 2 * i;
             vuData[j] = valueChanger.toMidiValue (track.getVuLeft ());
             vuData[j + 1] = valueChanger.toMidiValue (track.getVuRight ());
 
-            this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME + i, valueChanger.toMidiValue (track.getVolume ()));
-            this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_TRACK_PAN + i, valueChanger.toMidiValue (track.getPan ()));
+            this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + i, valueChanger.toMidiValue (track.getVolume ()));
+            this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i, valueChanger.toMidiValue (track.getPan ()));
         }
-        this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
+        this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
 
         final ITrack selectedTrack = bank.getSelectedItem ();
         final int scrollTracksState = (bank.canScrollBackwards () ? 1 : 0) + (bank.canScrollForwards () ? 2 : 0);
@@ -75,11 +76,11 @@ public class MixerMode extends VolumeMode<KontrolMkIIControlSurface, KontrolMkII
         final ISceneBank sceneBank = bank.getSceneBank ();
         final int scrollScenesState = (sceneBank.canScrollBackwards () ? 1 : 0) + (sceneBank.canScrollForwards () ? 2 : 0);
 
-        final KontrolMkIIConfiguration configuration = this.surface.getConfiguration ();
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, (bank.canScrollPageBackwards () ? 1 : 0) + (bank.canScrollPageForwards () ? 2 : 0));
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, configuration.isFlipTrackClipNavigation () ? configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState : scrollTracksState);
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, configuration.isFlipTrackClipNavigation () ? scrollTracksState : configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState);
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, configuration.isFlipTrackClipNavigation () ? scrollTracksState : configuration.isFlipClipSceneNavigation () ? scrollClipsState : scrollScenesState);
+        final KontrolProtocolConfiguration configuration = this.surface.getConfiguration ();
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_BANKS, (bank.canScrollPageBackwards () ? 1 : 0) + (bank.canScrollPageForwards () ? 2 : 0));
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_TRACKS, configuration.isFlipTrackClipNavigation () ? configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState : scrollTracksState);
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS, configuration.isFlipTrackClipNavigation () ? scrollTracksState : configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState);
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES, configuration.isFlipTrackClipNavigation () ? scrollTracksState : configuration.isFlipClipSceneNavigation () ? scrollClipsState : scrollScenesState);
     }
 
 
@@ -88,7 +89,7 @@ public class MixerMode extends VolumeMode<KontrolMkIIControlSurface, KontrolMkII
         if (!track.doesExist ())
             return "";
         final String name = track.getName ();
-        if (this.surface.getProtocolVersion () == KontrolMkIIControlSurface.PROTOCOL_VERSION_1)
+        if (this.surface.getProtocolVersion () == KontrolProtocol.VERSION_1)
             return name;
         return "Track " + (track.getPosition () + 1) + "\n\n" + name;
     }

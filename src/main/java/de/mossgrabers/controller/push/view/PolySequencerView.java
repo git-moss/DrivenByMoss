@@ -117,7 +117,8 @@ public class PolySequencerView extends AbstractSequencerView<PushControlSurface,
     @Override
     public void onGridNote (final int key, final int velocity)
     {
-        if (!this.model.canSelectedTrackHoldNotes ())
+        final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
+        if (!isKeyboardEnabled)
             return;
 
         final int index = key - 36;
@@ -141,6 +142,10 @@ public class PolySequencerView extends AbstractSequencerView<PushControlSurface,
 
             return;
         }
+
+        // Only allow playing the notes if there is no clip
+        if (!this.isActive ())
+            return;
 
         // Toggle the note on up, so we can intercept the long presses (but not yet used)
         if (velocity > 0)
@@ -175,11 +180,27 @@ public class PolySequencerView extends AbstractSequencerView<PushControlSurface,
     @Override
     public void updateSceneButtons ()
     {
+        if (!this.isActive ())
+        {
+            for (int i = PushControlSurface.PUSH_BUTTON_SCENE1; i <= PushControlSurface.PUSH_BUTTON_SCENE8; i++)
+                this.surface.updateTrigger (i, AbstractSequencerView.COLOR_RESOLUTION_OFF);
+            return;
+        }
+
         final ColorManager colorManager = this.model.getColorManager ();
         final int colorResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION);
         final int colorSelectedResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED);
         for (int i = PushControlSurface.PUSH_BUTTON_SCENE1; i <= PushControlSurface.PUSH_BUTTON_SCENE8; i++)
-            this.surface.updateTrigger (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedIndex ? colorSelectedResolution : colorResolution);
+            this.surface.updateTrigger (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedResolutionIndex ? colorSelectedResolution : colorResolution);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateButtons ()
+    {
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_ON);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_ON);
     }
 
 
@@ -197,6 +218,7 @@ public class PolySequencerView extends AbstractSequencerView<PushControlSurface,
         }
 
         final INoteClip clip = this.getClip ();
+        final boolean isActive = this.isActive ();
         final int step = clip.getCurrentStep ();
 
         // Paint the sequencer steps
@@ -207,7 +229,7 @@ public class PolySequencerView extends AbstractSequencerView<PushControlSurface,
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;
-            padGrid.lightEx (x, y, this.getStepColor (isSet, hilite));
+            padGrid.lightEx (x, y, isActive ? this.getStepColor (isSet, hilite) : AbstractSequencerView.COLOR_NO_CONTENT);
         }
 
         // Paint the play part

@@ -227,6 +227,9 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         final APCminiControlSurface surface = this.getSurface ();
         surface.getModeManager ().setActiveMode (Modes.VOLUME);
         surface.getViewManager ().setActiveView (Views.PLAY);
+        this.host.scheduleTask ( () -> {
+            surface.getPadGrid ().forceFlush ();
+        }, 1000);
     }
 
 

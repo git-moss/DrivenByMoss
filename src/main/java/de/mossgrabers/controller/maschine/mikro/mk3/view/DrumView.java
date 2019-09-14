@@ -45,6 +45,9 @@ public class DrumView extends AbstractDrumView<MaschineMikroMk3ControlSurface, M
         if (event != ButtonEvent.DOWN)
             return;
 
+        if (!this.isActive ())
+            return;
+
         switch (index)
         {
             case 0:

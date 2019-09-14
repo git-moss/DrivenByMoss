@@ -112,7 +112,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
         // Clip length/loop area
         final int step = clip.getCurrentStep ();
         final double quartersPerPad = this.getQuartersPerPad ();
-        final int stepsPerMeasure = (int) Math.round (quartersPerPad / Resolution.getValueAt (this.selectedIndex));
+        final int stepsPerMeasure = (int) Math.round (quartersPerPad / Resolution.getValueAt (this.selectedResolutionIndex));
         final int currentMeasure = step / stepsPerMeasure;
         final double maxQuarters = quartersPerPad * 64;
         final double start = clip.getLoopStart ();

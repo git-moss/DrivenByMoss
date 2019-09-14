@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.kontrol.mkii.mode;
 
-import de.mossgrabers.controller.kontrol.mkii.KontrolMkIIConfiguration;
+import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.kontrol.mkii.TrackType;
-import de.mossgrabers.controller.kontrol.mkii.controller.KontrolMkIIControlSurface;
+import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
@@ -22,7 +22,7 @@ import de.mossgrabers.framework.mode.device.ParameterMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ParamsMode extends ParameterMode<KontrolMkIIControlSurface, KontrolMkIIConfiguration>
+public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {
     /**
      * Constructor.
@@ -30,7 +30,7 @@ public class ParamsMode extends ParameterMode<KontrolMkIIControlSurface, Kontrol
      * @param surface The control surface
      * @param model The model
      */
-    public ParamsMode (final KontrolMkIIControlSurface surface, final IModel model)
+    public ParamsMode (final KontrolProtocolControlSurface surface, final IModel model)
     {
         super (surface, model, false);
     }
@@ -42,7 +42,7 @@ public class ParamsMode extends ParameterMode<KontrolMkIIControlSurface, Kontrol
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final IParameterBank bank = this.getBank ();
-        final KontrolMkIIConfiguration configuration = this.surface.getConfiguration ();
+        final KontrolProtocolConfiguration configuration = this.surface.getConfiguration ();
 
         final ICursorDevice cursorDevice = this.cursorDevice;
         final IParameterPageBank parameterPageBank = cursorDevice.getParameterPageBank ();
@@ -54,33 +54,33 @@ public class ParamsMode extends ParameterMode<KontrolMkIIControlSurface, Kontrol
             final IParameter parameter = bank.getItem (i);
 
             // Track Available
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_AVAILABLE, TrackType.GENERIC, i);
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_SELECTED, parameter.isSelected () ? 1 : 0, i);
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_RECARM, 0, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_AVAILABLE, TrackType.GENERIC, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_SELECTED, parameter.isSelected () ? 1 : 0, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_RECARM, 0, i);
             final String info = parameter.doesExist () ? parameter.getDisplayedValue (8) : " ";
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, info);
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, info);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, info);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, info);
             final String name = parameter.doesExist () ? this.cursorDevice.getName () + "\n" + selectedPage + "\n" + parameter.getName () : "None";
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_NAME, 0, i, name);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_NAME, 0, i, name);
 
             final int j = 2 * i;
             vuData[j] = valueChanger.toMidiValue (parameter.getModulatedValue ());
             vuData[j + 1] = valueChanger.toMidiValue (parameter.getModulatedValue ());
 
-            this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME + i, valueChanger.toMidiValue (parameter.getValue ()));
-            this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_TRACK_PAN + i, valueChanger.toMidiValue (parameter.getValue ()));
+            this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + i, valueChanger.toMidiValue (parameter.getValue ()));
+            this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i, valueChanger.toMidiValue (parameter.getValue ()));
         }
-        this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
+        this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
 
         final int scrollTracksState = (bank.canScrollBackwards () ? 1 : 0) + (bank.canScrollForwards () ? 2 : 0);
 
         final IDeviceBank deviceBank = this.cursorDevice.getDeviceBank ();
         final int scrollScenesState = (deviceBank.canScrollBackwards () ? 1 : 0) + (deviceBank.canScrollForwards () ? 2 : 0);
 
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, (cursorDevice.canSelectPreviousFX () ? 1 : 0) + (cursorDevice.canSelectNextFX () ? 2 : 0));
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, configuration.isFlipTrackClipNavigation () ? scrollScenesState : scrollTracksState);
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState);
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, 0);
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_BANKS, (cursorDevice.canSelectPreviousFX () ? 1 : 0) + (cursorDevice.canSelectNextFX () ? 2 : 0));
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_TRACKS, configuration.isFlipTrackClipNavigation () ? scrollScenesState : scrollTracksState);
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS, configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState);
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES, 0);
     }
 
 

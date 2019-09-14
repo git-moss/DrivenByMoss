@@ -13,12 +13,12 @@ import de.mossgrabers.framework.mode.AbstractMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class KontrolMkIIColors
+public class KontrolProtocolColors
 {
     /**
      * Private due to utility class.
      */
-    private KontrolMkIIColors ()
+    private KontrolProtocolColors ()
     {
         // Intentionally empty
     }

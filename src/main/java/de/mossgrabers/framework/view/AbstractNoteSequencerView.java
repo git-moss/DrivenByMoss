@@ -88,8 +88,9 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.model.canSelectedTrackHoldNotes ())
+        if (!this.isActive ())
             return;
+
         final int index = note - 36;
         final int x = index % 8;
         final int y = index / 8;
@@ -143,7 +144,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     public void drawGrid ()
     {
         final PadGrid gridPad = this.surface.getPadGrid ();
-        if (!this.model.canSelectedTrackHoldNotes ())
+        if (!this.isActive ())
         {
             gridPad.turnOff ();
             return;
@@ -210,6 +211,9 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     @Override
     public void onOctaveDown (final ButtonEvent event)
     {
+        if (!this.isActive ())
+            return;
+
         if (event == ButtonEvent.DOWN)
             this.updateOctave (Math.max (0, this.offsetY - this.getScrollOffset ()));
     }
@@ -219,6 +223,9 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     @Override
     public void onOctaveUp (final ButtonEvent event)
     {
+        if (!this.isActive ())
+            return;
+
         if (event != ButtonEvent.DOWN)
             return;
         final int offset = this.getScrollOffset ();

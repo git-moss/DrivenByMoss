@@ -65,10 +65,10 @@ public class CursorClipImpl implements INoteClip
 
         // TODO Bugfix required: https://github.com/teotigraphix/Framework4Bitwig/issues/140
         this.launcherClip = host.createLauncherCursorClip (this.numSteps, this.numRows);
-        this.launcherClip.exists ().markInterested ();
 
         this.launcherClip.addStepDataObserver (this::handleStepData);
 
+        this.launcherClip.exists ().markInterested ();
         this.launcherClip.playingStep ().markInterested ();
         this.launcherClip.getPlayStart ().markInterested ();
         this.launcherClip.getPlayStop ().markInterested ();
@@ -85,6 +85,7 @@ public class CursorClipImpl implements INoteClip
 
         this.arrangerClip.addStepDataObserver (this::handleStepData);
 
+        this.arrangerClip.exists ().markInterested ();
         this.arrangerClip.playingStep ().markInterested ();
         this.arrangerClip.getPlayStart ().markInterested ();
         this.arrangerClip.getPlayStop ().markInterested ();
@@ -104,7 +105,6 @@ public class CursorClipImpl implements INoteClip
     public void enableObservers (final boolean enable)
     {
         this.launcherClip.exists ().setIsSubscribed (enable);
-
         this.launcherClip.playingStep ().setIsSubscribed (enable);
         this.launcherClip.getPlayStart ().setIsSubscribed (enable);
         this.launcherClip.getPlayStop ().setIsSubscribed (enable);
@@ -117,6 +117,7 @@ public class CursorClipImpl implements INoteClip
         this.launcherClip.canScrollStepsForwards ().setIsSubscribed (enable);
         this.launcherClip.color ().setIsSubscribed (enable);
 
+        this.arrangerClip.exists ().setIsSubscribed (enable);
         this.arrangerClip.playingStep ().setIsSubscribed (enable);
         this.arrangerClip.getPlayStart ().setIsSubscribed (enable);
         this.arrangerClip.getPlayStop ().setIsSubscribed (enable);
@@ -128,6 +129,14 @@ public class CursorClipImpl implements INoteClip
         this.arrangerClip.canScrollStepsBackwards ().setIsSubscribed (enable);
         this.arrangerClip.canScrollStepsForwards ().setIsSubscribed (enable);
         this.arrangerClip.color ().setIsSubscribed (enable);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean doesExist ()
+    {
+        return this.getClip ().exists ().get ();
     }
 
 
@@ -438,7 +447,8 @@ public class CursorClipImpl implements INoteClip
     public void setStepLength (final double length)
     {
         this.stepLength = length;
-        this.getClip ().setStepSize (length);
+        this.launcherClip.setStepSize (length);
+        this.arrangerClip.setStepSize (length);
     }
 
 

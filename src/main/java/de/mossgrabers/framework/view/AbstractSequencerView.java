@@ -50,11 +50,13 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     public static final String    COLOR_TRANSPOSE_SELECTED     = "COLOR_TRANSPOSE_SELECTED";
 
     protected int                 numSequencerRows;
-    protected int                 selectedIndex;
+    protected int                 selectedResolutionIndex;
     protected final Configuration configuration;
 
     protected final int           clipRows;
     protected final int           clipCols;
+
+    private boolean               isSequencerActive;
 
 
     /**
@@ -91,7 +93,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 
         this.configuration = this.surface.getConfiguration ();
 
-        this.selectedIndex = 4;
+        this.selectedResolutionIndex = 4;
 
         this.numSequencerRows = numSequencerRows;
 
@@ -105,8 +107,17 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     {
         super.onActivate ();
 
-        final INoteClip clip = this.getClip ();
-        clip.setStepLength (Resolution.getValueAt (this.selectedIndex));
+        this.getClip ().setStepLength (Resolution.getValueAt (this.selectedResolutionIndex));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateControlSurface ()
+    {
+        this.isSequencerActive = this.model.canSelectedTrackHoldNotes () && this.getClip ().doesExist ();
+
+        super.updateControlSurface ();
     }
 
 
@@ -114,10 +125,14 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     @Override
     public void onScene (final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
+        if (event != ButtonEvent.DOWN)
             return;
-        this.selectedIndex = 7 - index;
-        final Resolution resolution = Resolution.values ()[this.selectedIndex];
+
+        if (!this.isActive ())
+            return;
+
+        this.selectedResolutionIndex = 7 - index;
+        final Resolution resolution = Resolution.values ()[this.selectedResolutionIndex];
         this.getClip ().setStepLength (resolution.getValue ());
         this.surface.getDisplay ().notify (resolution.getName ());
     }
@@ -194,7 +209,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     protected int getLengthOfOnePage (final int numOfSteps)
     {
-        return (int) Math.floor (numOfSteps * Resolution.getValueAt (this.selectedIndex));
+        return (int) Math.floor (numOfSteps * Resolution.getValueAt (this.selectedResolutionIndex));
     }
 
 
@@ -220,5 +235,16 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
             return AbstractSequencerView.COLOR_NO_CONTENT;
 
         return AbstractSequencerView.COLOR_PAGE;
+    }
+
+
+    /**
+     * Check if there is a note clip to edit.
+     *
+     * @return Returns true if the selected track can hold notes and the selected clip exists
+     */
+    protected boolean isActive ()
+    {
+        return this.isSequencerActive;
     }
 }

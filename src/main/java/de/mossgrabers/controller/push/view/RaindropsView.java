@@ -49,6 +49,9 @@ public class RaindropsView extends AbstractRaindropsView<PushControlSurface, Pus
         if (event != ButtonEvent.DOWN)
             return;
 
+        if (!this.isActive ())
+            return;
+
         if (this.surface.isShiftPressed ())
         {
             this.getClip ().transpose (-1);
@@ -72,6 +75,9 @@ public class RaindropsView extends AbstractRaindropsView<PushControlSurface, Pus
         if (event != ButtonEvent.DOWN)
             return;
 
+        if (!this.isActive ())
+            return;
+
         if (this.surface.isShiftPressed ())
         {
             this.getClip ().transpose (1);
@@ -92,10 +98,27 @@ public class RaindropsView extends AbstractRaindropsView<PushControlSurface, Pus
     @Override
     public void updateSceneButtons ()
     {
+        if (!this.isActive ())
+        {
+            for (int i = PushControlSurface.PUSH_BUTTON_SCENE1; i <= PushControlSurface.PUSH_BUTTON_SCENE8; i++)
+                this.surface.updateTrigger (i, AbstractSequencerView.COLOR_RESOLUTION_OFF);
+            return;
+        }
+
         final ColorManager colorManager = this.model.getColorManager ();
         final int colorResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION);
         final int colorSelectedResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED);
         for (int i = PushControlSurface.PUSH_BUTTON_SCENE1; i <= PushControlSurface.PUSH_BUTTON_SCENE8; i++)
-            this.surface.updateTrigger (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedIndex ? colorSelectedResolution : colorResolution);
+            this.surface.updateTrigger (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedResolutionIndex ? colorSelectedResolution : colorResolution);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateButtons ()
+    {
+        final String color = this.isActive () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, color);
+        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, color);
     }
 }

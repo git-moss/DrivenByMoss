@@ -134,12 +134,12 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
             case 2:
                 this.changeResolution (0);
-                this.surface.getDisplay ().notify (Resolution.getNameAt (this.selectedIndex));
+                this.surface.getDisplay ().notify (Resolution.getNameAt (this.selectedResolutionIndex));
                 break;
 
             case 3:
                 this.changeResolution (127);
-                this.surface.getDisplay ().notify (Resolution.getNameAt (this.selectedIndex));
+                this.surface.getDisplay ().notify (Resolution.getNameAt (this.selectedResolutionIndex));
                 break;
 
             case 4:
@@ -306,15 +306,6 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
      */
     public void drawDrumGrid ()
     {
-        if (!this.model.canSelectedTrackHoldNotes ())
-        {
-            for (int i = 0; i < 8; i++)
-                this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW3_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
-            for (int i = 0; i < 8; i++)
-                this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW4_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
-            return;
-        }
-
         if (this.isPlayMode)
         {
             final ICursorDevice primary = this.model.getInstrumentDevice ();
@@ -347,7 +338,17 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             return;
         }
 
+        if (!this.isActive ())
+        {
+            for (int i = 0; i < 8; i++)
+                this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW3_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
+            for (int i = 0; i < 8; i++)
+                this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW4_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
+            return;
+        }
+
         final INoteClip clip = this.getClip ();
+        final boolean exists = clip.doesExist ();
         // Paint the sequencer steps
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % PlayView.NUM_DISPLAY_COLS : -1;
@@ -358,7 +359,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             final boolean hilite = col == hiStep;
             final int x = col % 8;
             final double y = col / 8.0;
-            final int color = isSet > 0 || hilite ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+            final int color = exists && (isSet > 0 || hilite) ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
             if (y == 0)
                 this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW3_1 + x, color);
             else
@@ -449,8 +450,8 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     private void changeResolution (final int value)
     {
         final boolean isInc = value >= 65;
-        this.selectedIndex = Resolution.change (this.selectedIndex, isInc);
-        this.getClip ().setStepLength (Resolution.getValueAt (this.selectedIndex));
+        this.selectedResolutionIndex = Resolution.change (this.selectedResolutionIndex, isInc);
+        this.getClip ().setStepLength (Resolution.getValueAt (this.selectedResolutionIndex));
     }
 
 

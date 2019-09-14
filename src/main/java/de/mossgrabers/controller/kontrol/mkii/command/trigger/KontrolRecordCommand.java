@@ -4,8 +4,8 @@
 
 package de.mossgrabers.controller.kontrol.mkii.command.trigger;
 
-import de.mossgrabers.controller.kontrol.mkii.KontrolMkIIConfiguration;
-import de.mossgrabers.controller.kontrol.mkii.controller.KontrolMkIIControlSurface;
+import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
+import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.daw.IModel;
@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class KontrolRecordCommand extends AbstractTriggerCommand<KontrolMkIIControlSurface, KontrolMkIIConfiguration>
+public class KontrolRecordCommand extends AbstractTriggerCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {
     private boolean isRecordButton;
 
@@ -31,7 +31,7 @@ public class KontrolRecordCommand extends AbstractTriggerCommand<KontrolMkIICont
      * @param model The model
      * @param surface The surface
      */
-    public KontrolRecordCommand (final boolean isRecordButton, final IModel model, final KontrolMkIIControlSurface surface)
+    public KontrolRecordCommand (final boolean isRecordButton, final IModel model, final KontrolProtocolControlSurface surface)
     {
         super (model, surface);
         this.isRecordButton = isRecordButton;
@@ -45,8 +45,8 @@ public class KontrolRecordCommand extends AbstractTriggerCommand<KontrolMkIICont
         if (event != ButtonEvent.DOWN)
             return;
 
-        final KontrolMkIIConfiguration configuration = this.surface.getConfiguration ();
-        final KontrolMkIIConfiguration.RecordFunction recordMode = this.isRecordButton ? configuration.getRecordButtonFunction () : configuration.getShiftedRecordButtonFunction ();
+        final KontrolProtocolConfiguration configuration = this.surface.getConfiguration ();
+        final KontrolProtocolConfiguration.RecordFunction recordMode = this.isRecordButton ? configuration.getRecordButtonFunction () : configuration.getShiftedRecordButtonFunction ();
         switch (recordMode)
         {
             case RECORD_ARRANGER:

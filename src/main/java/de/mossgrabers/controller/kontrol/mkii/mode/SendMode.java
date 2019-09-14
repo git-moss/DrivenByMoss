@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.kontrol.mkii.mode;
 
-import de.mossgrabers.controller.kontrol.mkii.KontrolMkIIConfiguration;
+import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.kontrol.mkii.TrackType;
-import de.mossgrabers.controller.kontrol.mkii.controller.KontrolMkIIControlSurface;
+import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISendBank;
@@ -21,7 +21,7 @@ import de.mossgrabers.framework.mode.track.AbstractTrackMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendMode extends AbstractTrackMode<KontrolMkIIControlSurface, KontrolMkIIConfiguration>
+public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {
     /**
      * Constructor.
@@ -29,7 +29,7 @@ public class SendMode extends AbstractTrackMode<KontrolMkIIControlSurface, Kontr
      * @param surface The control surface
      * @param model The model
      */
-    public SendMode (final KontrolMkIIControlSurface surface, final IModel model)
+    public SendMode (final KontrolProtocolControlSurface surface, final IModel model)
     {
         super ("Send", surface, model, false);
     }
@@ -63,30 +63,30 @@ public class SendMode extends AbstractTrackMode<KontrolMkIIControlSurface, Kontr
         {
             final ISend send = sendBank == null ? EmptySend.INSTANCE : sendBank.getItem (i);
 
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_AVAILABLE, send.doesExist () ? TrackType.RETURN_BUS : TrackType.EMPTY, i);
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_SELECTED, send.isSelected () ? 1 : 0, i);
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_RECARM, 0, i);
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, send.getDisplayedValue (8));
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, send.getDisplayedValue (8));
-            this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_NAME, 0, i, getName (selectedTrack, send));
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_AVAILABLE, send.doesExist () ? TrackType.RETURN_BUS : TrackType.EMPTY, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_SELECTED, send.isSelected () ? 1 : 0, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_RECARM, 0, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, send.getDisplayedValue (8));
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, send.getDisplayedValue (8));
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_NAME, 0, i, getName (selectedTrack, send));
 
             final int j = 2 * i;
             vuData[j] = valueChanger.toMidiValue (send.getModulatedValue ());
             vuData[j + 1] = valueChanger.toMidiValue (send.getModulatedValue ());
 
-            this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_TRACK_VOLUME + i, valueChanger.toMidiValue (send.getValue ()));
-            this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_TRACK_PAN + i, valueChanger.toMidiValue (send.getValue ()));
+            this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + i, valueChanger.toMidiValue (send.getValue ()));
+            this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i, valueChanger.toMidiValue (send.getValue ()));
         }
-        this.surface.sendKontrolTrackSysEx (KontrolMkIIControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
+        this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
 
         final int scrollTracksState = (sendBank != null && sendBank.canScrollPageBackwards () ? 1 : 0) + (sendBank != null && sendBank.canScrollPageForwards () ? 2 : 0);
         final int scrollScenesState = 0;
 
-        final KontrolMkIIConfiguration configuration = this.surface.getConfiguration ();
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_BANKS, scrollTracksState);
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_TRACKS, configuration.isFlipTrackClipNavigation () ? scrollScenesState : scrollTracksState);
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_CLIPS, configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState);
-        this.surface.updateContinuous (KontrolMkIIControlSurface.KONTROL_NAVIGATE_SCENES, configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState);
+        final KontrolProtocolConfiguration configuration = this.surface.getConfiguration ();
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_BANKS, scrollTracksState);
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_TRACKS, configuration.isFlipTrackClipNavigation () ? scrollScenesState : scrollTracksState);
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS, configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState);
+        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES, configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState);
     }
 
 

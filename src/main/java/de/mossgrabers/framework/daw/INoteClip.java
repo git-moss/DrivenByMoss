@@ -36,6 +36,22 @@ public interface INoteClip extends IClip
 
 
     /**
+     * Set the length of a step.
+     *
+     * @param length The length
+     */
+    void setStepLength (double length);
+
+
+    /**
+     * Get the length of a step.
+     *
+     * @return The length
+     */
+    double getStepLength ();
+
+
+    /**
      * Get the state of a note.
      *
      * @param step The step
@@ -106,22 +122,6 @@ public interface INoteClip extends IClip
      * @return The highest row or -1 if all rows are empty
      */
     int getUpperRowWithData ();
-
-
-    /**
-     * Set the length of a step.
-     *
-     * @param length The length
-     */
-    void setStepLength (double length);
-
-
-    /**
-     * Get the length of a step.
-     *
-     * @return The length
-     */
-    double getStepLength ();
 
 
     /**

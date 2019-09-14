@@ -11,6 +11,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -94,7 +95,9 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_QUANTIZE:
-                this.model.getClip ().quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+                final IClip clip = this.model.getClip ();
+                if (clip.doesExist ())
+                    clip.quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
                 break;
 
             default:

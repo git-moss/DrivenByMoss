@@ -120,7 +120,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
 
                 case MODE_CLIP:
                     final IClip clip = this.model.getClip ();
-                    if (clip != null)
+                    if (clip.doesExist ())
                         clip.setColor (entry[0], entry[1], entry[2]);
                     break;
             }
