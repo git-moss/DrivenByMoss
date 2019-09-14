@@ -1469,7 +1469,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
 
     /**
-     * Handle incoming sysexc data.
+     * Handle incoming sysex data.
      *
      * @param data The data
      */

@@ -109,7 +109,7 @@ public class ClipMode extends AbstractTrackMode
         final IClip clip = this.model.getClip ();
         if (!clip.doesExist ())
         {
-            display.notify ("Please selecta clip.       ");
+            display.notify ("Please select a clip.");
             return;
         }
 

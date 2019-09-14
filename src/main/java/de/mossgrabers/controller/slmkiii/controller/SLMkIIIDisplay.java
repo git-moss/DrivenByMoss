@@ -23,7 +23,7 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
     private static final String  MKIII_SYSEX_LAYOUT_COMMAND       = MKIII_SYSEX_HEADER + "01 %02d F7";
     private static final String  MKIII_SYSEX_PROPERTY_COMMAND     = MKIII_SYSEX_HEADER + "02 %02d %02d %02d %s F7";
     private static final String  MKIII_SYSEX_LED_COMMAND          = MKIII_SYSEX_HEADER + "03 %02X 01 %02X %02X %02X F7";
-    @SuppressWarnings("unused")
+
     private static final String  MKIII_SYSEX_NOTIFICATION_COMMAND = MKIII_SYSEX_HEADER + "04 %s F7";
 
     /** The empty layout. */
@@ -249,7 +249,24 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
     @Override
     protected void notifyOnDisplay (final String message)
     {
-        // Not supported
+        final String ascii = StringUtils.fixASCII (message);
+
+        String text1;
+        String text2;
+        if (ascii.length () > 18)
+        {
+            text1 = ascii.substring (0, 18);
+            text2 = ascii.substring (18, message.length ());
+        }
+        else
+        {
+            text1 = ascii;
+            text2 = "";
+        }
+
+        final String content = StringUtils.asciiToHex (text1) + "00 " + StringUtils.asciiToHex (text2) + "00";
+        final String msg = String.format (MKIII_SYSEX_NOTIFICATION_COMMAND, content);
+        this.output.sendSysex (msg);
     }
 
 

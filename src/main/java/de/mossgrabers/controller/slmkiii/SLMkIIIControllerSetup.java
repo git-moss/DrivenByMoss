@@ -52,6 +52,7 @@ import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -309,6 +310,8 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
 
         final ModeManager modeManager = surface.getModeManager ();
         modeManager.setActiveMode (Modes.TRACK);
+
+        this.host.scheduleTask ( () -> surface.getOutput ().sendSysex (DeviceInquiry.createQuery ()), 1000);
     }
 
 

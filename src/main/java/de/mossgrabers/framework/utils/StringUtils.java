@@ -143,6 +143,21 @@ public class StringUtils
 
 
     /**
+     * Convert an string containing only ascii characters to a hex string separated by spaces.
+     *
+     * @param asciiText The ASCII text to convert
+     * @return The formatted hex code
+     */
+    public static String asciiToHex (final String asciiText)
+    {
+        final int [] array = new int [asciiText.length ()];
+        for (int i = 0; i < asciiText.length (); i++)
+            array[i] = asciiText.charAt (i);
+        return toHexStr (array);
+    }
+
+
+    /**
      * Shortens a text to the given length.
      *
      * @param text The text to shorten

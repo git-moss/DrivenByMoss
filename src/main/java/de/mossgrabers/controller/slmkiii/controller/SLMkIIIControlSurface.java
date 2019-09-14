@@ -8,8 +8,10 @@ import de.mossgrabers.controller.slmkiii.SLMkIIIConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -127,6 +129,40 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
         this.rightButtonId = MKIII_TRACK_RIGHT;
 
         this.addTextDisplay (new SLMkIIIDisplay (host, output));
+
+        this.input.setSysexCallback (this::handleSysEx);
+    }
+
+
+    /**
+     * Handle incoming sysex data.
+     *
+     * @param data The data
+     */
+    private void handleSysEx (final String data)
+    {
+        final int [] byteData = StringUtils.fromHexStr (data);
+        final DeviceInquiry deviceInquiry = new DeviceInquiry (byteData);
+        if (deviceInquiry.isValid ())
+            this.handleDeviceInquiryResponse (deviceInquiry);
+    }
+
+
+    /**
+     * Handle the response of a device inquiry.
+     *
+     * @param deviceInquiry The parsed response
+     */
+    private void handleDeviceInquiryResponse (final DeviceInquiry deviceInquiry)
+    {
+        final int [] revisionLevel = deviceInquiry.getRevisionLevel ();
+        if (revisionLevel.length == 4)
+        {
+            final String firmwareVersion = String.format ("%d.%d.%d.%d", Integer.valueOf (revisionLevel[0]), Integer.valueOf (revisionLevel[1]), Integer.valueOf (revisionLevel[2]), Integer.valueOf (revisionLevel[3]));
+            final String text = "Firmware version: " + firmwareVersion;
+            this.host.println (text);
+            this.getTextDisplay ().notify (text);
+        }
     }
 
 

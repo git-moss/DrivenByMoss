@@ -127,10 +127,7 @@ public class Push1Display extends AbstractTextDisplay
     @Override
     public void writeLine (final int row, final String text)
     {
-        final int [] array = new int [text.length ()];
-        for (int i = 0; i < text.length (); i++)
-            array[i] = text.charAt (i);
-        this.output.sendSysex (Push1Display.SYSEX_MESSAGE[row] + toHexStr (array) + "F7");
+        this.output.sendSysex (Push1Display.SYSEX_MESSAGE[row] + StringUtils.asciiToHex (text) + "F7");
     }
 
 
@@ -257,19 +254,5 @@ public class Push1Display extends AbstractTextDisplay
             menu.add (new Pair<> (itemName, Boolean.valueOf (pos == selectedIndex)));
         }
         return menu;
-    }
-
-
-    private static String toHexStr (final int [] data)
-    {
-        final StringBuilder sysex = new StringBuilder ();
-        for (final int d: data)
-        {
-            final String v = Integer.toHexString (d).toUpperCase ();
-            if (v.length () < 2)
-                sysex.append ('0');
-            sysex.append (v).append (' ');
-        }
-        return sysex.toString ();
     }
 }
