@@ -39,12 +39,10 @@ public class TrackEditing
      *
      * @param index The index of the knob
      * @param value The knobs value
+     * @param isTurnedRight The knob is turned to the right (positive value change)
      */
-    public void onTrackKnob (final int index, final int value)
+    public void onTrackKnob (final int index, final int value, final boolean isTurnedRight)
     {
-        if (value == 64)
-            return;
-
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack selectedTrack = tb.getSelectedItem ();
         if (selectedTrack == null)
@@ -60,11 +58,11 @@ public class TrackEditing
                 break;
 
             case 2:
-                selectedTrack.setMute (value > 64);
+                selectedTrack.setMute (isTurnedRight);
                 break;
 
             case 3:
-                selectedTrack.setSolo (value > 64);
+                selectedTrack.setSolo (isTurnedRight);
                 break;
 
             case 4:
@@ -72,11 +70,11 @@ public class TrackEditing
                 break;
 
             case 5:
-                this.model.getTransport ().changeTempo (value >= 65);
+                this.model.getTransport ().changeTempo (isTurnedRight);
                 break;
 
             case 6:
-                this.model.getTransport ().changePosition (value >= 65, this.surface.isShiftPressed ());
+                this.model.getTransport ().changePosition (isTurnedRight, this.surface.isShiftPressed ());
                 break;
 
             case 7:

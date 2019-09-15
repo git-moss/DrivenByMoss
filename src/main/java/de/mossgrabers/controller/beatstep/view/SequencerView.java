@@ -48,7 +48,7 @@ public class SequencerView extends BaseSequencerView
 
     /** {@inheritDoc} */
     @Override
-    public void onKnob (final int index, final int value)
+    public void onKnob (final int index, final int value, final boolean isTurnedRight)
     {
         switch (index)
         {
@@ -64,8 +64,7 @@ public class SequencerView extends BaseSequencerView
             // Up/Down
             case 14:
                 this.keyManager.clearPressedKeys ();
-                final boolean isInc = value >= 65;
-                if (isInc)
+                if (isTurnedRight)
                 {
                     this.scales.incDrumOctave ();
                     this.model.getInstrumentDevice ().getDrumPadBank ().selectNextPage ();
@@ -89,7 +88,7 @@ public class SequencerView extends BaseSequencerView
 
             // 0-11
             default:
-                this.extensions.onTrackKnob (index, value);
+                this.extensions.onTrackKnob (index, value, isTurnedRight);
                 break;
         }
     }

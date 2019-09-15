@@ -43,12 +43,12 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
 
     /** {@inheritDoc} */
     @Override
-    public void onKnob (final int index, final int value)
+    public void onKnob (final int index, final int value, final boolean isTurnedRight)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (index < 8)
         {
-            this.extensions.onTrackKnob (index, value);
+            this.extensions.onTrackKnob (index, value, isTurnedRight);
             return;
         }
 

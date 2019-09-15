@@ -39,16 +39,15 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
 
     /** {@inheritDoc} */
     @Override
-    public void onKnob (final int index, final int value)
+    public void onKnob (final int index, final int value, final boolean isTurnedRight)
     {
-        final boolean isInc = value >= 65;
         switch (index)
         {
             // Chromatic
             case 12:
-                this.scales.setChromatic (!isInc);
-                this.surface.getConfiguration ().setScaleInKey (isInc);
-                this.surface.getDisplay ().notify (isInc ? "In Key" : "Chromatic");
+                this.scales.setChromatic (!isTurnedRight);
+                this.surface.getConfiguration ().setScaleInKey (isTurnedRight);
+                this.surface.getDisplay ().notify (isTurnedRight ? "In Key" : "Chromatic");
                 break;
 
             // Base Note
@@ -61,7 +60,7 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
 
             // Scale
             case 14:
-                if (isInc)
+                if (isTurnedRight)
                     this.scales.nextScale ();
                 else
                     this.scales.prevScale ();
@@ -73,7 +72,7 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
             // Octave
             case 15:
                 this.keyManager.clearPressedKeys ();
-                if (isInc)
+                if (isTurnedRight)
                     this.scales.incOctave ();
                 else
                     this.scales.decOctave ();
@@ -82,7 +81,7 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
 
             // 0-11
             default:
-                this.extensions.onTrackKnob (index, value);
+                this.extensions.onTrackKnob (index, value, isTurnedRight);
                 break;
         }
 

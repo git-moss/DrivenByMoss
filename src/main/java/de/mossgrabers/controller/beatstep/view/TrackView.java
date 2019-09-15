@@ -39,11 +39,11 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
     /** {@inheritDoc} */
     @Override
-    public void onKnob (final int index, final int value)
+    public void onKnob (final int index, final int value, final boolean isTurnedRight)
     {
         if (index < 12)
         {
-            this.extensions.onTrackKnob (index, value);
+            this.extensions.onTrackKnob (index, value, isTurnedRight);
             return;
         }
 

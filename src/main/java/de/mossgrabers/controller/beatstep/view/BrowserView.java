@@ -36,7 +36,7 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
 
     /** {@inheritDoc} */
     @Override
-    public void onKnob (final int index, final int value)
+    public void onKnob (final int index, final int value, final boolean isTurnedRight)
     {
         final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
@@ -46,6 +46,8 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
                 viewManager.restoreView ();
             return;
         }
+
+        final int steps = (int) Math.abs (this.model.getValueChanger ().calcKnobSpeed (value, 1));
 
         int column;
         switch (index)
@@ -58,27 +60,27 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
             case 13:
             case 14:
                 column = index - 8;
-                if (value > 64)
+                if (isTurnedRight)
                 {
-                    for (int i = 0; i < value - 64; i++)
+                    for (int i = 0; i < steps; i++)
                         browser.selectNextFilterItem (column);
                 }
                 else
                 {
-                    for (int i = 0; i < 64 - value; i++)
+                    for (int i = 0; i < steps; i++)
                         browser.selectPreviousFilterItem (column);
                 }
                 break;
 
             case 15:
-                if (value > 64)
+                if (isTurnedRight)
                 {
-                    for (int i = 0; i < value - 64; i++)
+                    for (int i = 0; i < steps; i++)
                         browser.selectNextResult ();
                 }
                 else
                 {
-                    for (int i = 0; i < 64 - value; i++)
+                    for (int i = 0; i < steps; i++)
                         browser.selectPreviousResult ();
                 }
                 break;
