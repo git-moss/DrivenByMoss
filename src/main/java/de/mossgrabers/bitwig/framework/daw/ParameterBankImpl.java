@@ -24,9 +24,9 @@ import com.bitwig.extension.controller.api.SettableIntegerValue;
  */
 public class ParameterBankImpl extends AbstractBank<IParameter> implements IParameterBank
 {
-    private CursorRemoteControlsPage remoteControls;
-    private final IValueChanger      valueChanger;
-    private IParameterPageBank       pageBank;
+    private final CursorRemoteControlsPage remoteControls;
+    private final IValueChanger            valueChanger;
+    private final IParameterPageBank       pageBank;
 
 
     /**
