@@ -33,7 +33,7 @@ public class DeviceInquiry
     public DeviceInquiry (final int [] data)
     {
         this.isResult = data.length >= 15;
-        if (data[0] != 0xF0 || data[1] != 0x7E || data[3] != 0x06 || data[4] != 0x02 || data[data.length - 1] != 0xF7)
+        if (this.isResult && (data[0] != 0xF0 || data[1] != 0x7E || data[3] != 0x06 || data[4] != 0x02 || data[data.length - 1] != 0xF7))
             this.isResult = false;
         this.data = this.isResult ? data : null;
     }
