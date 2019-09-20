@@ -34,6 +34,8 @@ public class HUISegmentDisplay extends DummyDisplay
     {
         super (null);
 
+        this.output = output;
+
         Arrays.fill (this.oldtransportBuffer, -1);
     }
 
