@@ -67,12 +67,12 @@ public class DeviceModule extends AbstractModule
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final String command, final LinkedList<String> path, final Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException
+    public void execute (final String command, final LinkedList<String> path, final Object value, final Object... voice) throws IllegalParameterException, UnknownCommandException, MissingCommandException
     {
         switch (command)
         {
             case "device":
-                this.parseDeviceValue (this.model.getCursorDevice (), path, value);
+                this.parseDeviceValue (this.model.getCursorDevice (), path, value, voice);
                 break;
 
             case "primary":
@@ -186,7 +186,7 @@ public class DeviceModule extends AbstractModule
     }
 
 
-    private void parseDeviceValue (final ICursorDevice cursorDevice, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
+    private void parseDeviceValue (final ICursorDevice cursorDevice, final LinkedList<String> path, final Object value, final Object...  voice) throws UnknownCommandException, MissingCommandException, IllegalParameterException
     {
         final String command = getSubCommand (path);
         final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
@@ -333,7 +333,7 @@ public class DeviceModule extends AbstractModule
                 break;
 
             case "layer":
-                this.parseLayerOrDrumpad (cursorDevice, path, value);
+                this.parseLayerOrDrumpad (cursorDevice, path, value, voice);
                 break;
 
             default:
@@ -343,7 +343,7 @@ public class DeviceModule extends AbstractModule
     }
 
 
-    private void parseLayerOrDrumpad (final ICursorDevice cursorDevice, final LinkedList<String> path, final Object value) throws MissingCommandException, UnknownCommandException, IllegalParameterException
+    private void parseLayerOrDrumpad (final ICursorDevice cursorDevice, final LinkedList<String> path, final Object value, final Object... voice) throws MissingCommandException, UnknownCommandException, IllegalParameterException
     {
         final String command = getSubCommand (path);
         try
@@ -356,7 +356,28 @@ public class DeviceModule extends AbstractModule
             }
             else
             {
-                layerNo = Integer.parseInt (command) - 1;
+            	/* Added minimal support for channelized OSC messages 
+            	 * 
+            	 * Some OSC clients like f.e. TC-Data (https://bitshapesoftware.com/instruments/tc-data/) 
+            	 * have the concept of OSC channels. These channels are used like MIDI channels.
+            	 * 
+            	 * One example could be the first touching finger gets channel 1, the second channel 2 and so on.
+            	 * An OSC message looks like this:
+            	 *  /device/layer/1/send/1/volume [ 371.29318, 1.0 ]
+            	 * The second value in the data array is the channel (0.0 is first channel)
+            	 * 
+            	 * The idea here is to re-write the layer id with the channel. Then in Bitwig the different fingers/channels 
+            	 * in TC-Data can be programmed with "Map to controller key" as different in global user macros.
+            	 * 
+            	 * A better solution would be to fully integrate the concept of the OSC result data array for different purposes.
+            	 * Also handling of unique OSC strings like /global/metaparameter/{1-128} would be cleaner than to misuse the
+            	 * /device/layer/. .. string for mapped user parameters. 
+            	 */
+                if (voice != null && voice.length > 0 && voice[0] != null) {
+                	layerNo = (int) Double.parseDouble(voice[0].toString())+1;
+                } else {                
+                	layerNo = Integer.parseInt (command) - 1;
+                }	
             }
             this.parseDeviceLayerValue (cursorDevice, layerNo, path, value);
         }

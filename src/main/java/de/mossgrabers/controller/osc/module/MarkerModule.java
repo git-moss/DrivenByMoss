@@ -49,7 +49,7 @@ public class MarkerModule extends AbstractModule
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final String command, final LinkedList<String> path, final Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException
+    public void execute (final String command, final LinkedList<String> path, final Object value, final Object... voice) throws IllegalParameterException, UnknownCommandException, MissingCommandException
     {
         if (!"marker".equals (command))
             throw new UnknownCommandException (command);

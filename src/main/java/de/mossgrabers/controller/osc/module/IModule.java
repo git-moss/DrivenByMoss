@@ -36,7 +36,7 @@ public interface IModule
      * @throws UnknownCommandException Unknown command
      * @throws MissingCommandException Missing sub-command
      */
-    void execute (String command, LinkedList<String> path, Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException;
+    void execute (String command, LinkedList<String> path, Object value, Object... voice) throws IllegalParameterException, UnknownCommandException, MissingCommandException;
 
 
     /**
