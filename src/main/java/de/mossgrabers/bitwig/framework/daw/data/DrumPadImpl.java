@@ -18,6 +18,9 @@ import com.bitwig.extension.controller.api.DrumPad;
  */
 public class DrumPadImpl extends LayerImpl implements IDrumPad
 {
+    private final DrumPad drumPad;
+
+
     /**
      * Constructor.
      *
@@ -31,13 +34,18 @@ public class DrumPadImpl extends LayerImpl implements IDrumPad
     public DrumPadImpl (final IHost host, final IValueChanger valueChanger, final DrumPad drumPad, final int index, final int numSends, final int numDevices)
     {
         super (host, valueChanger, drumPad, index, numSends, numDevices);
+
+        this.drumPad = drumPad;
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void browseToInsert ()
+    /**
+     * Get the Bitwig drum pad.
+     *
+     * @return The dsrum pad
+     */
+    public DrumPad getDrumPad ()
     {
-        ((DrumPad) this.deviceChain).insertionPoint ().browse ();
+        return this.drumPad;
     }
 }

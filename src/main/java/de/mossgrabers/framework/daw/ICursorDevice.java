@@ -23,24 +23,6 @@ public interface ICursorDevice extends IDevice
 
 
     /**
-     * Start the browser to replace a device.
-     */
-    void browseToReplaceDevice ();
-
-
-    /**
-     * Start the browser to insert a new device before the current one.
-     */
-    void browseToInsertBeforeDevice ();
-
-
-    /**
-     * Start the browser to insert a new device after the current one.
-     */
-    void browseToInsertAfterDevice ();
-
-
-    /**
      * Select the parent of the device.
      */
     void selectParent ();

@@ -17,7 +17,6 @@ public abstract class AbstractBrowser implements IBrowser
 {
     protected final int             numResults;
     protected final int             numFilterColumnEntries;
-    protected final ICursorDevice   cursorDevice;
     protected IBrowserColumnItem [] resultData;
     protected IBrowserColumn []     columnData;
     protected int                   selectedFilterColumn = 0;
@@ -26,13 +25,11 @@ public abstract class AbstractBrowser implements IBrowser
     /**
      * Constructor.
      *
-     * @param cursorDevice The cursor device
      * @param numFilterColumnEntries The number of entries in a filter column page
      * @param numResults The number of entries in a results column page
      */
-    public AbstractBrowser (final ICursorDevice cursorDevice, final int numFilterColumnEntries, final int numResults)
+    public AbstractBrowser (final int numFilterColumnEntries, final int numResults)
     {
-        this.cursorDevice = cursorDevice;
         this.numFilterColumnEntries = numFilterColumnEntries;
         this.numResults = numResults;
     }

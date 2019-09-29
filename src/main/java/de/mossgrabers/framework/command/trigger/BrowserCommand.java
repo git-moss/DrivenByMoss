@@ -8,6 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.Modes;
@@ -25,6 +26,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 public class BrowserCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     private final BrowserActivator<S, C> browserModeActivator;
+
 
     /**
      * Constructor.
@@ -76,14 +78,15 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
             return;
         }
 
-        if (!insertDevice && this.model.getCursorDevice ().doesExist ())
-            browser.browseForPresets ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        if (!insertDevice && cursorDevice.doesExist ())
+            browser.replace (cursorDevice);
         else
         {
             if (beforeCurrent)
-                browser.browseToInsertBeforeDevice ();
+                browser.insertBefore (cursorDevice);
             else
-                browser.browseToInsertAfterDevice ();
+                browser.insertAfter (cursorDevice);
         }
 
         this.browserModeActivator.activate ();

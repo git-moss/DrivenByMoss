@@ -6,15 +6,19 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.BrowserColumnImpl;
 import de.mossgrabers.bitwig.framework.daw.data.BrowserColumnItemImpl;
+import de.mossgrabers.bitwig.framework.daw.data.DrumPadImpl;
+import de.mossgrabers.bitwig.framework.daw.data.SlotImpl;
 import de.mossgrabers.framework.daw.AbstractBrowser;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
+import de.mossgrabers.framework.daw.data.IItem;
 
 import com.bitwig.extension.controller.api.BrowserFilterColumn;
 import com.bitwig.extension.controller.api.BrowserResultsItemBank;
 import com.bitwig.extension.controller.api.CursorBrowserResultItem;
+import com.bitwig.extension.controller.api.CursorDevice;
 import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.InsertionPoint;
 import com.bitwig.extension.controller.api.PopupBrowser;
 
 
@@ -25,12 +29,12 @@ import com.bitwig.extension.controller.api.PopupBrowser;
  */
 public class BrowserImpl extends AbstractBrowser
 {
-    private CursorTrack             cursorTrack;
-    private PopupBrowser            browser;
-    final BrowserFilterColumn []    filterColumns;
-
-    private CursorBrowserResultItem cursorResult;
-    private BrowserResultsItemBank  resultsItemBank;
+    private final CursorDevice            cursorDevice;
+    private final CursorTrack             cursorTrack;
+    private final PopupBrowser            browser;
+    private final BrowserFilterColumn []  filterColumns;
+    private final CursorBrowserResultItem cursorResult;
+    private final BrowserResultsItemBank  resultsItemBank;
 
 
     /**
@@ -42,11 +46,12 @@ public class BrowserImpl extends AbstractBrowser
      * @param numFilterColumnEntries The number of entries in a filter column page
      * @param numResults The number of entries in a results column page
      */
-    public BrowserImpl (final PopupBrowser browser, final CursorTrack cursorTrack, final ICursorDevice cursorDevice, final int numFilterColumnEntries, final int numResults)
+    public BrowserImpl (final PopupBrowser browser, final CursorTrack cursorTrack, final CursorDevice cursorDevice, final int numFilterColumnEntries, final int numResults)
     {
-        super (cursorDevice, numFilterColumnEntries, numResults);
+        super (numFilterColumnEntries, numResults);
 
         this.cursorTrack = cursorTrack;
+        this.cursorDevice = cursorDevice;
 
         this.browser = browser;
         this.browser.exists ().markInterested ();
@@ -145,35 +150,49 @@ public class BrowserImpl extends AbstractBrowser
 
     /** {@inheritDoc} */
     @Override
-    public void browseForPresets ()
+    public void replace (final IItem item)
     {
-        this.stopBrowsing (false);
-        this.cursorDevice.browseToReplaceDevice ();
+        final InsertionPoint insertionPoint;
+        if (item instanceof CursorDeviceImpl)
+            insertionPoint = this.cursorDevice.replaceDeviceInsertionPoint ();
+        else if (item instanceof SlotImpl)
+            insertionPoint = ((SlotImpl) item).getSlot ().replaceInsertionPoint ();
+        else if (item instanceof DrumPadImpl)
+            insertionPoint = ((DrumPadImpl) item).getDrumPad ().insertionPoint ();
+        else
+            return;
+
+        this.browse (insertionPoint);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void browseToInsertBeforeDevice ()
+    public void insertBefore (final IItem item)
     {
-        this.stopBrowsing (false);
-        if (this.cursorDevice.doesExist ())
-            this.cursorDevice.browseToInsertBeforeDevice ();
-        else
-            this.cursorTrack.startOfDeviceChainInsertionPoint ().browse ();
+        if (item instanceof CursorDeviceImpl)
+            this.browse (this.cursorDevice.exists ().get () ? this.cursorDevice.beforeDeviceInsertionPoint () : this.cursorTrack.startOfDeviceChainInsertionPoint ());
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void browseToInsertAfterDevice ()
+    public void insertAfter (final IItem item)
+    {
+        if (item instanceof CursorDeviceImpl)
+            this.browse (this.cursorDevice.exists ().get () ? this.cursorDevice.afterDeviceInsertionPoint () : this.cursorTrack.endOfDeviceChainInsertionPoint ());
+    }
+
+
+    private void browse (final InsertionPoint insertionPoint)
     {
         this.stopBrowsing (false);
 
-        if (this.cursorDevice.doesExist ())
-            this.cursorDevice.browseToInsertAfterDevice ();
-        else
-            this.cursorTrack.endOfDeviceChainInsertionPoint ().browse ();
+        if (insertionPoint == null)
+            return;
+
+        this.enableObservers (true);
+        insertionPoint.browse ();
     }
 
 
@@ -185,6 +204,8 @@ public class BrowserImpl extends AbstractBrowser
             this.browser.commit ();
         else
             this.browser.cancel ();
+
+        this.enableObservers (false);
     }
 
 

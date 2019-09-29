@@ -106,17 +106,17 @@ public class BrowserHandler extends AbstractHandler
             // Browser: Browse Presets
             case BROWSER_BROWSE_PRESETS:
                 if (isButtonPressed)
-                    this.model.getBrowser ().browseForPresets ();
+                    this.model.getBrowser ().replace (this.model.getCursorDevice ());
                 break;
             // Browser: Insert Device before current
             case BROWSER_INSERT_DEVICE_BEFORE_CURRENT:
                 if (isButtonPressed)
-                    this.model.getCursorDevice ().browseToInsertBeforeDevice ();
+                    this.model.getBrowser ().insertBefore (this.model.getCursorDevice ());
                 break;
             // Browser: Insert Device after current
             case BROWSER_INSERT_DEVICE_AFTER_CURRENT:
                 if (isButtonPressed)
-                    this.model.getCursorDevice ().browseToInsertAfterDevice ();
+                    this.model.getBrowser ().insertAfter (this.model.getCursorDevice ());
                 break;
             // Browser: Commit Selection
             case BROWSER_COMMIT_SELECTION:

@@ -31,6 +31,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
 {
     private final BrowserActivator<PushControlSurface, PushConfiguration> browserModeActivator;
 
+
     /**
      * Constructor.
      *
@@ -74,9 +75,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
             if (!primary.hasDrumPads ())
                 return;
 
-            final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
-            final IDrumPad drumPad = drumPadBank.getItem (playedPad);
-            drumPad.browseToInsert ();
+            this.model.getBrowser ().replace (primary.getDrumPadBank ().getItem (playedPad));
             this.browserModeActivator.activate ();
             return;
         }

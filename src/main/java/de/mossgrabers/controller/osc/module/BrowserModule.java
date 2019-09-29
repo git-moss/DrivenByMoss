@@ -60,7 +60,7 @@ public class BrowserModule extends AbstractModule
                 switch (subCommand)
                 {
                     case "preset":
-                        browser.browseForPresets ();
+                        browser.replace (this.model.getCursorDevice ());
                         break;
 
                     case "tab":
@@ -76,9 +76,9 @@ public class BrowserModule extends AbstractModule
                     case "device":
                         final String insertLocation = path.isEmpty () ? null : path.removeFirst ();
                         if (insertLocation == null || "after".equals (insertLocation))
-                            browser.browseToInsertAfterDevice ();
+                            browser.insertAfter (this.model.getCursorDevice ());
                         else
-                            browser.browseToInsertBeforeDevice ();
+                            browser.insertBefore (this.model.getCursorDevice ());
                         break;
 
                     case "commit":

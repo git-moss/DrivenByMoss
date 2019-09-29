@@ -9,6 +9,7 @@ import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -85,6 +86,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
         int viewIndex;
         View view;
+        ICursorDevice cursorDevice = this.model.getCursorDevice ();
         switch (note - 36)
         {
             // Play
@@ -114,25 +116,25 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
             // Insert device before current
             case 5:
-                this.model.getBrowser ().browseToInsertBeforeDevice ();
+                this.model.getBrowser ().insertBefore (cursorDevice);
                 this.activateBrowserView ();
                 break;
 
             // Insert device after current
             case 6:
-                this.model.getBrowser ().browseToInsertAfterDevice ();
+                this.model.getBrowser ().insertAfter (cursorDevice);
                 this.activateBrowserView ();
                 break;
 
             // Open the browser
             case 7:
-                this.model.getBrowser ().browseForPresets ();
+                this.model.getBrowser ().replace (cursorDevice);
                 this.activateBrowserView ();
                 break;
 
             // Toggle window of VSTs
             case 15:
-                this.model.getCursorDevice ().toggleWindowOpen ();
+                cursorDevice.toggleWindowOpen ();
                 break;
 
             default:

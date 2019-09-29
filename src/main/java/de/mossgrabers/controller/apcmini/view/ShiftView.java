@@ -313,7 +313,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
             case 7:
                 if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
                 {
-                    this.model.getBrowser ().browseForPresets ();
+                    this.model.getBrowser ().replace (this.model.getCursorDevice ());
                     final ViewManager viewManager = this.surface.getViewManager ();
                     final Views previousViewId = viewManager.getPreviousViewId ();
                     viewManager.setActiveView (Views.BROWSER);

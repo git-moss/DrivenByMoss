@@ -107,10 +107,4 @@ public interface ISlot extends IItem
      * Duplicate a clip.
      */
     void duplicate ();
-
-
-    /**
-     * Opens the context browser to insert a clip.
-     */
-    void browse ();
 }

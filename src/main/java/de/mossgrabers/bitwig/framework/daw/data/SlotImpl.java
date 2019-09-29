@@ -247,10 +247,13 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void browse ()
+    /**
+     * Get the Bitwig slot.
+     *
+     * @return The slot
+     */
+    public ClipLauncherSlot getSlot ()
     {
-        this.slot.browseToInsertClip ();
+        return this.slot;
     }
 }

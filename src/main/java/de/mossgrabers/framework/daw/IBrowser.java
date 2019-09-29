@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.observer.ObserverManagement;
 
 
@@ -77,21 +78,27 @@ public interface IBrowser extends ObserverManagement
 
 
     /**
-     * Open the browser to browse for presets.
+     * Open the browser to browse for items replacing the given one.
+     * 
+     * @param item The item to replace
      */
-    void browseForPresets ();
+    void replace (IItem item);
 
 
     /**
-     * Open the browser to browse for a device which will be inserted before the current one.
+     * Open the browser to browse for an item which will be inserted before the given one.
+     * 
+     * @param item An item
      */
-    void browseToInsertBeforeDevice ();
+    void insertBefore (IItem item);
 
 
     /**
-     * Open the browser to browse for a device which will be inserted after the current one.
+     * Open the browser to browse for an item which will be inserted after the given one.
+     * 
+     * @param item An item
      */
-    void browseToInsertAfterDevice ();
+    void insertAfter (IItem item);
 
 
     /**

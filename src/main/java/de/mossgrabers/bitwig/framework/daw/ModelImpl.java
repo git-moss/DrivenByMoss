@@ -125,7 +125,7 @@ public class ModelImpl extends AbstractModel
 
         final int numResults = this.modelSetup.getNumResults ();
         if (numResults > 0)
-            this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, this.cursorDevice, this.modelSetup.getNumFilterColumnEntries (), numResults);
+            this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, cd, this.modelSetup.getNumFilterColumnEntries (), numResults);
 
         this.masterTrackEqualsValue = cd.channel ().createEqualsValue (master);
         this.masterTrackEqualsValue.markInterested ();

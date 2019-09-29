@@ -24,7 +24,8 @@ import de.mossgrabers.framework.view.Views;
 public class DrumView extends DrumViewBase
 {
     private final BrowserActivator<PushControlSurface, PushConfiguration> browserModeActivator;
-    private int                                                               scrollPosition = -1;
+    private int                                                           scrollPosition = -1;
+
 
     /**
      * Constructor.
@@ -54,8 +55,7 @@ public class DrumView extends DrumViewBase
 
             final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
             this.scrollPosition = drumPadBank.getScrollPosition ();
-            final IDrumPad drumPad = drumPadBank.getItem (playedPad);
-            drumPad.browseToInsert ();
+            this.model.getBrowser ().replace (drumPadBank.getItem (playedPad));
             this.browserModeActivator.activate ();
             return;
         }

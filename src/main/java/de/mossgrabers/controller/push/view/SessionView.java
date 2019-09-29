@@ -33,6 +33,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
 {
     private final BrowserActivator<PushControlSurface, PushConfiguration> browserModeActivator;
 
+
     /**
      * Constructor.
      *
@@ -130,7 +131,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
             this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
             if (!track.doesExist ())
                 return;
-            track.getSlotBank ().getItem (s).browse ();
+            this.model.getBrowser ().replace (track.getSlotBank ().getItem (s));
             final ModeManager modeManager = this.surface.getModeManager ();
             if (!modeManager.isActiveOrTempMode (Modes.BROWSER))
                 this.browserModeActivator.activate ();

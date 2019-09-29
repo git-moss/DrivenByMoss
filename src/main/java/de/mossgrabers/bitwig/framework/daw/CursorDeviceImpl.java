@@ -367,30 +367,6 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 
     /** {@inheritDoc} */
     @Override
-    public void browseToReplaceDevice ()
-    {
-        this.cursorDevice.replaceDeviceInsertionPoint ().browse ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void browseToInsertBeforeDevice ()
-    {
-        this.cursorDevice.beforeDeviceInsertionPoint ().browse ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void browseToInsertAfterDevice ()
-    {
-        this.cursorDevice.afterDeviceInsertionPoint ().browse ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void selectParent ()
     {
         this.cursorDevice.selectParent ();
@@ -402,5 +378,16 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
     public void selectChannel ()
     {
         this.cursorDevice.channel ().selectInEditor ();
+    }
+
+
+    /**
+     * Get the Bitwig cursor device.
+     *
+     * @return The cursor device
+     */
+    PinnableCursorDevice getCursorDevice ()
+    {
+        return this.cursorDevice;
     }
 }
