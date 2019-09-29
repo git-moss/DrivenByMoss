@@ -78,6 +78,8 @@ public class BrowserImpl extends AbstractBrowser
 
         this.resultsItemBank = (BrowserResultsItemBank) this.cursorResult.createSiblingsBank (this.numResults);
         this.resultData = this.createResultData (this.numResults);
+
+        this.enableObservers (false);
     }
 
 
