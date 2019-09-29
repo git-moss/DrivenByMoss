@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.AbstractSessionView;
@@ -30,10 +31,7 @@ import de.mossgrabers.framework.view.Views;
  */
 public class SessionView extends AbstractSessionView<PushControlSurface, PushConfiguration>
 {
-    private static final int NUMBER_OF_RETRIES = 20;
-
-    protected int            startRetries;
-
+    private final BrowserActivator<PushControlSurface, PushConfiguration> browserModeActivator;
 
     /**
      * Constructor.
@@ -44,6 +42,8 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     public SessionView (final PushControlSurface surface, final IModel model)
     {
         super ("Session", surface, model, 8, 8, true);
+
+        this.browserModeActivator = new BrowserActivator<> (Modes.BROWSER, model, surface);
 
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int redLo = isPush2 ? PushColors.PUSH2_COLOR2_RED_LO : PushColors.PUSH1_COLOR2_RED_LO;
@@ -133,26 +133,11 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
             track.getSlotBank ().getItem (s).browse ();
             final ModeManager modeManager = this.surface.getModeManager ();
             if (!modeManager.isActiveOrTempMode (Modes.BROWSER))
-                this.activateMode ();
+                this.browserModeActivator.activate ();
             return;
         }
 
         super.onGridNote (note, velocity);
-    }
-
-
-    /**
-     * Tries to activate the mode 20 times.
-     */
-    protected void activateMode ()
-    {
-        if (this.model.getBrowser ().isActive ())
-            this.surface.getModeManager ().setActiveMode (Modes.BROWSER);
-        else if (this.startRetries < NUMBER_OF_RETRIES)
-        {
-            this.startRetries++;
-            this.surface.scheduleTask (this::activateMode, 200);
-        }
     }
 
 

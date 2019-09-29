@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -23,11 +24,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class BrowserCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private static final int NUMBER_OF_RETRIES = 20;
-
-    protected Modes          browserMode;
-    protected int            startRetries;
-
+    private final BrowserActivator<S, C> browserModeActivator;
 
     /**
      * Constructor.
@@ -40,7 +37,7 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
     {
         super (model, surface);
 
-        this.browserMode = browserMode;
+        this.browserModeActivator = new BrowserActivator<> (browserMode, model, surface);
     }
 
 
@@ -89,23 +86,7 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
                 browser.browseToInsertAfterDevice ();
         }
 
-        this.startRetries = 0;
-        this.activateMode ();
-    }
-
-
-    /**
-     * Tries to activate the mode 20 times.
-     */
-    protected void activateMode ()
-    {
-        if (this.model.getBrowser ().isActive ())
-            this.surface.getModeManager ().setActiveMode (this.browserMode);
-        else if (this.startRetries < NUMBER_OF_RETRIES)
-        {
-            this.startRetries++;
-            this.surface.scheduleTask (this::activateMode, 200);
-        }
+        this.browserModeActivator.activate ();
     }
 
 

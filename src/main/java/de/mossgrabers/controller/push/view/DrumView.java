@@ -4,11 +4,13 @@
 
 package de.mossgrabers.controller.push.view;
 
+import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IDrumPad;
+import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.Views;
@@ -21,11 +23,8 @@ import de.mossgrabers.framework.view.Views;
  */
 public class DrumView extends DrumViewBase
 {
-    private static final int NUMBER_OF_RETRIES = 20;
-
-    private int              startRetries;
-    private int              scrollPosition    = -1;
-
+    private final BrowserActivator<PushControlSurface, PushConfiguration> browserModeActivator;
+    private int                                                               scrollPosition = -1;
 
     /**
      * Constructor.
@@ -36,6 +35,8 @@ public class DrumView extends DrumViewBase
     public DrumView (final PushControlSurface surface, final IModel model)
     {
         super (Views.VIEW_NAME_DRUM, surface, model, 4, 4);
+
+        this.browserModeActivator = new BrowserActivator<> (Modes.BROWSER, model, surface);
     }
 
 
@@ -55,7 +56,7 @@ public class DrumView extends DrumViewBase
             this.scrollPosition = drumPadBank.getScrollPosition ();
             final IDrumPad drumPad = drumPadBank.getItem (playedPad);
             drumPad.browseToInsert ();
-            this.activateMode ();
+            this.browserModeActivator.activate ();
             return;
         }
 
@@ -113,21 +114,6 @@ public class DrumView extends DrumViewBase
         drumPad.select ();
 
         this.updateNoteMapping ();
-    }
-
-
-    /**
-     * Tries to activate the mode 20 times.
-     */
-    protected void activateMode ()
-    {
-        if (this.model.getBrowser ().isActive ())
-            this.surface.getModeManager ().setActiveMode (Modes.BROWSER);
-        else if (this.startRetries < NUMBER_OF_RETRIES)
-        {
-            this.startRetries++;
-            this.surface.scheduleTask (this::activateMode, 200);
-        }
     }
 
 

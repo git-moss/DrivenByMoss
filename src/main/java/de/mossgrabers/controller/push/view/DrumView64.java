@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
@@ -28,10 +29,7 @@ import de.mossgrabers.framework.view.AbstractSessionView;
  */
 public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfiguration>
 {
-    private static final int NUMBER_OF_RETRIES = 20;
-
-    private int              startRetries;
-
+    private final BrowserActivator<PushControlSurface, PushConfiguration> browserModeActivator;
 
     /**
      * Constructor.
@@ -42,6 +40,8 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     public DrumView64 (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
+
+        this.browserModeActivator = new BrowserActivator<> (Modes.BROWSER, model, surface);
     }
 
 
@@ -77,7 +77,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
             final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
             final IDrumPad drumPad = drumPadBank.getItem (playedPad);
             drumPad.browseToInsert ();
-            this.activateMode ();
+            this.browserModeActivator.activate ();
             return;
         }
 
@@ -182,20 +182,5 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
 
         scene.select ();
         scene.launch ();
-    }
-
-
-    /**
-     * Tries to activate the mode 20 times.
-     */
-    protected void activateMode ()
-    {
-        if (this.model.getBrowser ().isActive ())
-            this.surface.getModeManager ().setActiveMode (Modes.BROWSER);
-        else if (this.startRetries < NUMBER_OF_RETRIES)
-        {
-            this.startRetries++;
-            this.surface.scheduleTask (this::activateMode, 200);
-        }
     }
 }
