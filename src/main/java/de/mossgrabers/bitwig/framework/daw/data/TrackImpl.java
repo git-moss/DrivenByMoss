@@ -40,6 +40,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     private final CursorTrack       cursorTrack;
     private final IHost             host;
 
+
     private enum CrossfadeSetting
     {
         A,

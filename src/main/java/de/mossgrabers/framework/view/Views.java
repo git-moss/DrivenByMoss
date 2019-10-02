@@ -75,6 +75,7 @@ public enum Views
     /** View for shift options. */
     SHIFT;
 
+
     /** The name of the play view. */
     public static final String              VIEW_NAME_PLAY           = "Play";
     /** The name of the piano view. */

@@ -23,6 +23,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
     private static final Integer FLIP_TRACK_CLIP_NAVIGATION     = Integer.valueOf (52);
     private static final Integer FLIP_CLIP_SCENE_NAVIGATION     = Integer.valueOf (53);
 
+
     /** Different options for the record button. */
     public enum RecordFunction
     {
@@ -39,6 +40,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
         /** Toggle clip overdub. */
         TOGGLE_REC_ARM
     }
+
 
     private static final String    CATEGORY_NAVIGATION         = "Navigation";
 

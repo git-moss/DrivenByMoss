@@ -64,6 +64,7 @@ public enum NamedColor
     /** The color greenish blue. */
     GREENISH_BLUE("Greenish Blue", 0.2666666805744171, 0.7843137383460999, 1);
 
+
     private String name;
     private double red;
     private double green;

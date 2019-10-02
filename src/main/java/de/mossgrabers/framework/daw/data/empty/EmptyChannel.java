@@ -341,6 +341,7 @@ public class EmptyChannel extends EmptyItem implements IChannel
         // Intentionally empty
     }
 
+
     class EmptySendBank extends EmptyBank<ISend> implements ISendBank
     {
         /** {@inheritDoc} */

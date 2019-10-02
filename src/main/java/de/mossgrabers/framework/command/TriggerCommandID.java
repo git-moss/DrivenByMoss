@@ -435,6 +435,7 @@ public enum TriggerCommandID
     /** The command for a LED. */
     LED_2;
 
+
     /**
      * Get an offset command, e.g. to get F4 set F1 and 3 as parameters.
      *

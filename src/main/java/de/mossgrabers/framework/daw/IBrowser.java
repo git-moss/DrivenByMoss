@@ -79,7 +79,7 @@ public interface IBrowser extends ObserverManagement
 
     /**
      * Open the browser to browse for items replacing the given one.
-     * 
+     *
      * @param item The item to replace
      */
     void replace (IItem item);
@@ -87,7 +87,7 @@ public interface IBrowser extends ObserverManagement
 
     /**
      * Open the browser to browse for an item which will be inserted before the given one.
-     * 
+     *
      * @param item An item
      */
     void insertBefore (IItem item);
@@ -95,7 +95,7 @@ public interface IBrowser extends ObserverManagement
 
     /**
      * Open the browser to browse for an item which will be inserted after the given one.
-     * 
+     *
      * @param item An item
      */
     void insertAfter (IItem item);

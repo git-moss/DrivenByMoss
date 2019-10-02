@@ -33,6 +33,7 @@ public class LabelComponent implements IComponent
         SEPARATE_COLOR
     }
 
+
     private final String      text;
     private final String      icon;
     private final boolean     isSelected;

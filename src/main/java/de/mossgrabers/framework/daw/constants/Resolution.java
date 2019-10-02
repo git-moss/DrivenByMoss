@@ -28,6 +28,7 @@ public enum Resolution
     /** 1/32t */
     RES_1_32T("1/32t", 1.0 / 12.0);
 
+
     private static final String [] RESOLUTION_NAMES;
     static
     {

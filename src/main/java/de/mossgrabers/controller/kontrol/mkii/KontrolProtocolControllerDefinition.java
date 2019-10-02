@@ -32,7 +32,7 @@ public class KontrolProtocolControllerDefinition extends DefaultControllerDefini
 
     /**
      * Constructor.
-     * 
+     *
      * @param deviceDescriptor The NIHIA protocol version descriptor
      */
     public KontrolProtocolControllerDefinition (final IKontrolProtocolDeviceDescriptor deviceDescriptor)

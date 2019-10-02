@@ -353,6 +353,7 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
         this.protocolVersion = protocolVersion;
     }
 
+
     /**
      * Caches the values of the sysex values.
      */

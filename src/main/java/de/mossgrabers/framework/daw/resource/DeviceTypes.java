@@ -31,6 +31,7 @@ public class DeviceTypes
         ICON_USER
     }
 
+
     private static final Map<String, TypeIcon>     DEVICES      = new HashMap<> ();
     private static final EnumMap<TypeIcon, String> DEVICE_ICONS = new EnumMap<> (TypeIcon.class);
 

@@ -36,6 +36,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
         MODE_CLIP
     }
 
+
     private SelectMode mode;
 
 

@@ -39,6 +39,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         SOLO
     }
 
+
     /** Setting for the ribbon mode. */
     public static final Integer     RIBBON_MODE                     = Integer.valueOf (50);
     /** Setting for the ribbon mode midi CC. */

@@ -135,6 +135,7 @@ public class UsbMatcher
         return new ArrayList<> (this.endpoints);
     }
 
+
     /**
      * One or more endpoints on the USB device.
      */

@@ -79,8 +79,8 @@ public class AftertouchAbstractPlayViewCommand<S extends IControlSurface<C>, C e
         if (config.getConvertAftertouch () == -2)
         {
             final List<Integer> keys = this.view.getPressedKeys ();
-            for (int i = 0; i < keys.size (); i++)
-                this.onPolyAftertouch (keys.get (i).intValue (), value);
+            for (final Integer key: keys)
+                this.onPolyAftertouch (key.intValue (), value);
         }
         else
             this.onPolyAftertouch (0, value);

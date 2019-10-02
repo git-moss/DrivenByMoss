@@ -36,6 +36,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
         DOWN
     }
 
+
     protected Direction direction;
     protected boolean   canScrollLeft;
     protected boolean   canScrollRight;

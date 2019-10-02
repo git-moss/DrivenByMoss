@@ -25,6 +25,7 @@ public class BrowserActivator<S extends IControlSurface<C>, C extends Configurat
 
     private int              startRetries;
 
+
     /**
      * Constructor.
      *

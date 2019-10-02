@@ -29,6 +29,7 @@ public class KeyCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCon
         ESCAPE
     }
 
+
     protected Key key;
 
 

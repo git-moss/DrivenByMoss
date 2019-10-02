@@ -143,6 +143,7 @@ public enum Modes
     /** A user mode. */
     USER;
 
+
     private static final Set<Modes> TRACK_MODES = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);
     private static final Set<Modes> LAYER_MODES = EnumSet.range (Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_DETAILS);
     private static final Set<Modes> SEND_MODES  = EnumSet.range (Modes.SEND1, Modes.SEND8);

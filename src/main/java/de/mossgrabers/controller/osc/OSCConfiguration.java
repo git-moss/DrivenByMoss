@@ -31,6 +31,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     /** ID for value resolution setting. */
     public static final Integer VALUE_RESOLUTION = Integer.valueOf (53);
 
+
     /** The resolution for values. */
     public enum ValueResolution
     {
@@ -41,6 +42,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         /** High resolution, 16384 values. */
         HIGH
     }
+
 
     private static final String [] VALUE_RESOLUTION_OPTIONS =
     {

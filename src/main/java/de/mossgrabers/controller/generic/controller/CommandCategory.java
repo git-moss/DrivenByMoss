@@ -27,6 +27,7 @@ public enum CommandCategory
     TRANSPORT("Transport"),
     USER("User");
 
+
     private final String name;
 
 

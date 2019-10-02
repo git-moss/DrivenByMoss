@@ -695,6 +695,7 @@ public enum FlexiCommand
     USER_SELECT_PREVIOUS_PAGE(CommandCategory.USER, "User: Select Previous Page", true),
     USER_SELECT_NEXT_PAGE(CommandCategory.USER, "User: Select Next Page", true);
 
+
     private static final String []                 NAMES            = new String [FlexiCommand.values ().length];
     private static final Map<String, FlexiCommand> NAME_COMMAND_MAP = new HashMap<> (FlexiCommand.values ().length);
 

@@ -127,8 +127,9 @@ public enum Scale
 
     /** The Messiaen 7 scale. */
     MESSIAEN_7("Messiaen 7", new int []                { 0, 1, 2, 3, 5, 6, 7, 8, 9, 11 });
-    
+
     // @formatter:on
+
 
     private String                 name;
     private int []                 intervals;
@@ -142,6 +143,7 @@ public enum Scale
         for (int i = 0; i < values.length; i++)
             SCALE_NAMES[i] = values[i].name;
     }
+
 
     /**
      * Constructor.

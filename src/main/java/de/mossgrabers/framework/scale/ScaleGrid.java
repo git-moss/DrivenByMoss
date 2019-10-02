@@ -20,6 +20,7 @@ public class ScaleGrid
         ORIENT_RIGHT
     }
 
+
     private final Scale  scale;
     private final int [] matrix;
     private final int [] chromatic;

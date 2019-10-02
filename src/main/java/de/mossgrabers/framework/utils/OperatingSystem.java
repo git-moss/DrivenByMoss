@@ -23,6 +23,7 @@ public enum OperatingSystem
     /** No idea. */
     OTHER;
 
+
     private static OperatingSystem os = OTHER;
 
     static

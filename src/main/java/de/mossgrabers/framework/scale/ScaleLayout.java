@@ -32,6 +32,7 @@ public enum ScaleLayout
     /** Eighth steps centered to the right. */
     EIGHT_RIGHT_CENTER("8th > centered");
 
+
     private static final String [] scaleLayoutNames = new String [10];
     static
     {

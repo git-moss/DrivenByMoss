@@ -209,6 +209,7 @@ public class EmptyTrack extends EmptyChannel implements ITrack
         return this.slotBank;
     }
 
+
     class EmptySlotBank extends EmptyBank<ISlot> implements ISlotBank
     {
         /** {@inheritDoc} */

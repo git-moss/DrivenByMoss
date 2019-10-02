@@ -110,6 +110,7 @@ public enum ContinuousCommandID
     /** Move the track bank selection. */
     MOVE_TRACK_BANK;
 
+
     /**
      * Get an offset command, e.g. to get KNOB4 set KNOB1 and 3 as parameters.
      *

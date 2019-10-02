@@ -35,6 +35,7 @@ public class HUIMainDisplay extends AbstractTextDisplay
 
     private final LatestTaskExecutor [] executors            = new LatestTaskExecutor [2];
 
+
     /**
      * Constructor. 2 rows (0-1) with 4 blocks (0-3). Each block consists of 2 cells (0-7).
      *
@@ -169,7 +170,7 @@ public class HUIMainDisplay extends AbstractTextDisplay
         this.notify ("Please start " + this.host.getName () + "...");
 
         // Prevent further sends
-        for (int i = 0; i < this.executors.length; i++)
-            this.executors[i].shutdown ();
+        for (final LatestTaskExecutor executor: this.executors)
+            executor.shutdown ();
     }
 }

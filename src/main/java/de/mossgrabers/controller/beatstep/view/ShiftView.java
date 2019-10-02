@@ -86,7 +86,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
         int viewIndex;
         View view;
-        ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         switch (note - 36)
         {
             // Play

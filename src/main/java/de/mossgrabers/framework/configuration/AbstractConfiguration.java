@@ -147,6 +147,7 @@ public abstract class AbstractConfiguration implements Configuration
     protected static final ColorEx DEFAULT_COLOR_BACKGROUND_DARKER   = ColorEx.fromRGB (39, 39, 39);
     protected static final ColorEx DEFAULT_COLOR_BACKGROUND_LIGHTER  = ColorEx.fromRGB (118, 118, 118);
 
+
     /** The behaviour when the stop button is pressed. */
     public enum BehaviourOnStop
     {
@@ -157,6 +158,7 @@ public abstract class AbstractConfiguration implements Configuration
         /** Only pause on stop. */
         PAUSE
     }
+
 
     private static final String [] AFTERTOUCH_CONVERSION_VALUES = new String [131];
     static

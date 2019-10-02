@@ -35,6 +35,7 @@ public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> 
         MIXER
     }
 
+
     private Panels panel;
 
 
