@@ -54,9 +54,14 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
                     this.switcher.scrollUp ();
                 break;
 
-            case MCUConfiguration.SHOW_MARKER_MODE:
+            case MCUConfiguration.FOOTSWITCH_2_SHOW_MARKER_MODE:
                 if (event == ButtonEvent.DOWN)
                     this.surface.getModeManager ().setActiveMode (Modes.MARKERS);
+                break;
+
+            case MCUConfiguration.FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS:
+                if (event == ButtonEvent.DOWN)
+                    this.surface.getConfiguration ().toggleUseFadersAsKnobs ();
                 break;
 
             default:

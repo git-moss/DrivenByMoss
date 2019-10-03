@@ -50,18 +50,9 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
 
     /** {@inheritDoc} */
     @Override
-    public String getAuthor ()
+    public UUID getId ()
     {
-        return this.definition.getAuthor ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName ()
-    {
-        // Return the identical name to prevent a very long text in the selection menu
-        return this.getHardwareModel ();
+        return this.definition.getId ();
     }
 
 
@@ -75,9 +66,26 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
 
     /** {@inheritDoc} */
     @Override
-    public UUID getId ()
+    public String getHelpFilePath ()
     {
-        return this.definition.getId ();
+        return "docs/Help.html";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getAuthor ()
+    {
+        return this.definition.getAuthor ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getName ()
+    {
+        // Return the identical name to prevent a very long text in the selection menu
+        return this.getHardwareModel ();
     }
 
 

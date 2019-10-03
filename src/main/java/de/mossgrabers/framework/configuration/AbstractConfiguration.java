@@ -134,6 +134,7 @@ public abstract class AbstractConfiguration implements Configuration
     public static final int        FOOTSWITCH_2_ADD_EFFECT_TRACK     = 13;
     /** Use footswitch 2 to quantize the selected clip. */
     public static final int        FOOTSWITCH_2_QUANTIZE             = 14;
+    // Note: There are controllers who extend this list!
 
     protected static final ColorEx DEFAULT_COLOR_BACKGROUND          = ColorEx.fromRGB (83, 83, 83);
     protected static final ColorEx DEFAULT_COLOR_BORDER              = ColorEx.BLACK;
