@@ -4,10 +4,10 @@
 
 package de.mossgrabers.controller.launchpad.controller;
 
+import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefinition;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,73 +20,19 @@ import java.util.Map;
  */
 public class LaunchpadPadGrid extends PadGridImpl
 {
-    static final int []                        TRANSLATE_MATRIX         =
+    // @formatter:off
+    static final int [] TRANSLATE_MATRIX =
     {
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        71,
-        72,
-        73,
-        74,
-        75,
-        76,
-        77,
-        78,
-        81,
-        82,
-        83,
-        84,
-        85,
-        86,
-        87,
-        88
+        11, 12, 13, 14, 15, 16, 17, 18,
+        21, 22, 23, 24, 25, 26, 27, 28,
+        31, 32, 33, 34, 35, 36, 37, 38,
+        41, 42, 43, 44, 45, 46, 47, 48,
+        51, 52, 53, 54, 55, 56, 57, 58,
+        61, 62, 63, 64, 65, 66, 67, 68,
+        71, 72, 73, 74, 75, 76, 77, 78,
+        81, 82, 83, 84, 85, 86, 87, 88
     };
+    // @formatter:on
 
     private static final Map<Integer, Integer> INVERSE_TRANSLATE_MATRIX = new HashMap<> (64);
 
@@ -96,8 +42,7 @@ public class LaunchpadPadGrid extends PadGridImpl
             INVERSE_TRANSLATE_MATRIX.put (Integer.valueOf (TRANSLATE_MATRIX[i]), Integer.valueOf (36 + i));
     }
 
-    private final String  sysexHeader;
-    private final boolean isPro;
+    private final ILaunchpadControllerDefinition definition;
 
 
     /**
@@ -105,15 +50,13 @@ public class LaunchpadPadGrid extends PadGridImpl
      *
      * @param colorManager The color manager for accessing specific colors to use
      * @param output The midi output which can address the pad states
-     * @param sysexHeader The sysex header
-     * @param isPro Is Pro or MkII?
+     * @param definition The Launchpad definition
      */
-    public LaunchpadPadGrid (final ColorManager colorManager, final IMidiOutput output, final String sysexHeader, final boolean isPro)
+    public LaunchpadPadGrid (final ColorManager colorManager, final IMidiOutput output, final ILaunchpadControllerDefinition definition)
     {
         super (colorManager, output);
 
-        this.sysexHeader = sysexHeader + "23 ";
-        this.isPro = isPro;
+        this.definition = definition;
     }
 
 
@@ -121,17 +64,7 @@ public class LaunchpadPadGrid extends PadGridImpl
     @Override
     protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
     {
-        if (this.isPro)
-        {
-            this.output.sendSysex (this.sysexHeader + StringUtils.toHexStr (note) + " " + StringUtils.toHexStr (blinkColor) + " F7");
-            return;
-        }
-
-        // Start blinking on channel 2, stop it on channel 1
-        if (blinkColor == 0)
-            this.output.sendNoteEx (1, note, blinkColor);
-        else
-            this.output.sendNoteEx (2, note, blinkColor);
+        this.definition.sendBlinkState (this.output, note, blinkColor, fast);
     }
 
 

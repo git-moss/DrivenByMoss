@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.push.mode.track;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
@@ -57,7 +58,7 @@ public class SendMode extends AbstractTrackMode
         final ISend send = t.getSendBank ().getItem (sendIndex);
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
+            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
             send.resetValue ();
         }
 

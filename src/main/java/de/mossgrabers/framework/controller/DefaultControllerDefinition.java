@@ -147,14 +147,30 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
      */
     protected List<Pair<String [], String []>> createDeviceDiscoveryPairs (final String deviceName)
     {
-        final List<Pair<String [], String []>> results = new ArrayList<> ();
-        results.add (this.addDeviceDiscoveryPair (deviceName));
+        final String namePattern = "%s" + deviceName;
+        final List<Pair<String [], String []>> results = createWindowsDeviceDiscoveryPairs (namePattern, namePattern);
         for (int i = 1; i < 20; i++)
         {
-            results.add (this.addDeviceDiscoveryPair (i + "- " + deviceName));
             results.add (this.addDeviceDiscoveryPair (deviceName + " MIDI " + i));
             results.add (this.addDeviceDiscoveryPair (deviceName + " " + i + " MIDI 1"));
         }
+        return results;
+    }
+
+
+    /**
+     * Creates 20 Windows variations from the given device name for auto lookup.
+     *
+     * @param inputNamePattern The base name to use, must contain a %s
+     * @param outputNamePattern The base name to use, must contain a %s
+     * @return The created pairs
+     */
+    protected List<Pair<String [], String []>> createWindowsDeviceDiscoveryPairs (final String inputNamePattern, final String outputNamePattern)
+    {
+        final List<Pair<String [], String []>> results = new ArrayList<> ();
+        results.add (this.addDeviceDiscoveryPair (String.format (inputNamePattern, ""), String.format (outputNamePattern, "")));
+        for (int i = 1; i < 20; i++)
+            results.add (this.addDeviceDiscoveryPair (String.format (inputNamePattern, i + "- "), String.format (outputNamePattern, i + "- ")));
         return results;
     }
 

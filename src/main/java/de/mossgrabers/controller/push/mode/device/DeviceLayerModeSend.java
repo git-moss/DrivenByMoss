@@ -6,6 +6,7 @@ package de.mossgrabers.controller.push.mode.device;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
@@ -71,7 +72,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
 
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
+            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
             layer.getSendBank ().getItem (sendIndex).resetValue ();
         }
 

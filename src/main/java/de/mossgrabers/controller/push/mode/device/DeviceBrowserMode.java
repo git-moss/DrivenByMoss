@@ -7,6 +7,7 @@ package de.mossgrabers.controller.push.mode.device;
 import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IBrowser;
@@ -107,7 +108,7 @@ public class DeviceBrowserMode extends BaseMode
         {
             if (this.surface.isDeletePressed ())
             {
-                this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
+                this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
                 fc = this.getFilterColumn (index);
                 if (fc != null && fc.doesExist ())
                     this.model.getBrowser ().resetFilterColumn (fc.getIndex ());

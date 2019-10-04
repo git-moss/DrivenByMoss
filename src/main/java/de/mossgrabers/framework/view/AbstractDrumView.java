@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
@@ -360,7 +361,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected void handleDeleteButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
+        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
         this.updateNoteMapping ();
         this.getClip ().clearRow (this.scales.getDrumOffset () + playedPad);
     }
@@ -368,7 +369,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected void handleMuteButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getMuteTriggerId ());
+        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.MUTE));
         this.updateNoteMapping ();
         this.model.getInstrumentDevice ().getDrumPadBank ().getItem (playedPad).toggleMute ();
     }
@@ -376,7 +377,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected void handleSoloButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getSoloTriggerId ());
+        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.SOLO));
         this.updateNoteMapping ();
         this.model.getInstrumentDevice ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
     }
@@ -398,16 +399,16 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         if (!this.model.canSelectedTrackHoldNotes ())
             return false;
 
-        if (this.surface.isSelectPressed () && !this.surface.isTriggerConsumed (this.surface.getSelectTriggerId ()))
+        if (this.surface.isSelectPressed () && !this.surface.isTriggerConsumed (this.surface.getTriggerId (ButtonID.SELECT)))
             return false;
 
-        if (this.surface.isDeletePressed () && !this.surface.isTriggerConsumed (this.surface.getDeleteTriggerId ()))
+        if (this.surface.isDeletePressed () && !this.surface.isTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE)))
             return false;
 
-        if (this.surface.isMutePressed () && !this.surface.isTriggerConsumed (this.surface.getMuteTriggerId ()))
+        if (this.surface.isMutePressed () && !this.surface.isTriggerConsumed (this.surface.getTriggerId (ButtonID.MUTE)))
             return false;
 
-        return !this.surface.isSoloPressed () || this.surface.isTriggerConsumed (this.surface.getSoloTriggerId ());
+        return !this.surface.isSoloPressed () || this.surface.isTriggerConsumed (this.surface.getTriggerId (ButtonID.SOLO));
     }
 
 

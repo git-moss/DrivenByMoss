@@ -6,6 +6,7 @@ package de.mossgrabers.controller.kontrol.mki.controller;
 
 import de.mossgrabers.controller.kontrol.mki.Kontrol1Configuration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -129,7 +130,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
         super (host, configuration, colorManager, null, input, new Kontrol1PadGrid (colorManager, usbDevice));
 
         this.usbDevice = usbDevice;
-        this.shiftButtonId = BUTTON_SHIFT;
+        this.setTriggerId (ButtonID.SHIFT, BUTTON_SHIFT);
     }
 
 

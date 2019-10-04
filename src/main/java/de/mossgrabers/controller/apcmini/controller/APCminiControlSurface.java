@@ -6,6 +6,7 @@ package de.mossgrabers.controller.apcmini.controller;
 
 import de.mossgrabers.controller.apcmini.APCminiConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -76,7 +77,7 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
     {
         super (host, configuration, colorManager, output, input, new APCminiPadGrid (colorManager, output));
 
-        this.shiftButtonId = APC_BUTTON_SHIFT;
+        this.setTriggerId (ButtonID.SHIFT, APC_BUTTON_SHIFT);
     }
 
 

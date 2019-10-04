@@ -6,6 +6,7 @@ package de.mossgrabers.controller.push.view;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
@@ -88,7 +89,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     @Override
     protected void handleDeleteButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
+        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
         this.model.getNoteClip (8, 128).clearRow (this.offsetY + playedPad);
     }
 
@@ -174,7 +175,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
 
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
+            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
             scene.remove ();
             return;
         }

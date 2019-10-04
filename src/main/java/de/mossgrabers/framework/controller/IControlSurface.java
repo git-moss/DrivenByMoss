@@ -308,75 +308,12 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Get the midi cc of the Shift trigger.
-     *
-     * @return The midi cc
+     * Get the midi cc of the given trigger ID.
+     * 
+     * @param trigger The button ID of the trigger
+     * @return The midi cc or -1 if not set
      */
-    int getShiftTriggerId ();
-
-
-    /**
-     * Get the midi cc of the Select trigger.
-     *
-     * @return The midi cc
-     */
-    int getSelectTriggerId ();
-
-
-    /**
-     * Get the midi cc of the Delete trigger.
-     *
-     * @return The midi cc
-     */
-    int getDeleteTriggerId ();
-
-
-    /**
-     * Get the midi cc of the Mute trigger.
-     *
-     * @return The midi cc
-     */
-    int getMuteTriggerId ();
-
-
-    /**
-     * Get the midi cc of the Solo trigger.
-     *
-     * @return The midi cc
-     */
-    int getSoloTriggerId ();
-
-
-    /**
-     * Get the midi cc of the Left trigger.
-     *
-     * @return The midi cc
-     */
-    int getLeftTriggerId ();
-
-
-    /**
-     * Get the midi cc of the Right trigger.
-     *
-     * @return The midi cc
-     */
-    int getRightTriggerId ();
-
-
-    /**
-     * Get the midi cc of the Up trigger.
-     *
-     * @return The midi CC
-     */
-    int getUpTriggerId ();
-
-
-    /**
-     * Get the midi cc of the Down trigger.
-     *
-     * @return The midi CC
-     */
-    int getDownTriggerId ();
+    int getTriggerId (ButtonID trigger);
 
 
     /**
@@ -387,6 +324,15 @@ public interface IControlSurface<C extends Configuration>
      * @return The midi cc
      */
     int getSceneTrigger (final int index);
+
+
+    /**
+     * Test if the trigger with the given midi CC on the default midi channel is pressed.
+     * 
+     * @param buttonID The trigger to test (as a button ID)
+     * @return True if pressed
+     */
+    boolean isPressed (ButtonID buttonID);
 
 
     /**

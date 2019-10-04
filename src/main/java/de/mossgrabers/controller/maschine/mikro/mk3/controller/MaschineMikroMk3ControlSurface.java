@@ -6,6 +6,7 @@ package de.mossgrabers.controller.maschine.mikro.mk3.controller;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.IHost;
@@ -87,7 +88,7 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
         super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output));
 
         // Sadly, the Shift button does not send a value
-        this.shiftButtonId = -1;
+        this.setTriggerId (ButtonID.SHIFT, -1);
     }
 
 

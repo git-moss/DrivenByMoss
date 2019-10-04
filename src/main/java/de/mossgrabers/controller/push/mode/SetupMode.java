@@ -6,6 +6,7 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -72,7 +73,7 @@ public class SetupMode extends BaseMode
         if (!isTouched || !this.surface.isDeletePressed ())
             return;
 
-        this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
+        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
 
         final PushConfiguration config = this.surface.getConfiguration ();
         switch (index)

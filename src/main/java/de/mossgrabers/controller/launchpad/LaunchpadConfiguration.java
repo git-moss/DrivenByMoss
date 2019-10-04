@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.launchpad;
 
+import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefinition;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.IValueChanger;
@@ -17,7 +18,7 @@ import de.mossgrabers.framework.daw.IHost;
  */
 public class LaunchpadConfiguration extends AbstractConfiguration
 {
-    private final boolean isPro;
+    private final ILaunchpadControllerDefinition definition;
 
 
     /**
@@ -25,23 +26,12 @@ public class LaunchpadConfiguration extends AbstractConfiguration
      *
      * @param host The DAW host
      * @param valueChanger The value changer
-     * @param isPro Is Pro or MkII?
+     * @param definition The Launchpad definition
      */
-    public LaunchpadConfiguration (final IHost host, final IValueChanger valueChanger, final boolean isPro)
+    public LaunchpadConfiguration (final IHost host, final IValueChanger valueChanger, final ILaunchpadControllerDefinition definition)
     {
         super (host, valueChanger);
-        this.isPro = isPro;
-    }
-
-
-    /**
-     * Is Launchpad Pro or MkII?
-     *
-     * @return True if Pro
-     */
-    public boolean isPro ()
-    {
-        return this.isPro;
+        this.definition = definition;
     }
 
 
@@ -68,7 +58,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         this.activateBehaviourOnStopSetting (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateFlipSessionSetting (globalSettings);
-        if (this.isPro)
+        if (this.definition.isPro ())
             this.activateFlipRecordSetting (globalSettings);
         this.activateAutoSelectDrumSetting (globalSettings);
         this.activateTurnOffEmptyDrumPadsSetting (globalSettings);

@@ -8,8 +8,8 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
-import de.mossgrabers.controller.launchpad.LaunchpadControllerDefinition;
 import de.mossgrabers.controller.launchpad.LaunchpadControllerSetup;
+import de.mossgrabers.controller.launchpad.definition.LaunchpadProControllerDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -22,12 +22,15 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public class LaunchpadProControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
+    private static final LaunchpadProControllerDefinition DEFINITION = new LaunchpadProControllerDefinition ();
+
+
     /**
      * Constructor.
      */
     public LaunchpadProControllerExtensionDefinition ()
     {
-        super (new LaunchpadControllerDefinition (false));
+        super (DEFINITION);
     }
 
 
@@ -35,6 +38,6 @@ public class LaunchpadProControllerExtensionDefinition extends AbstractControlle
     @Override
     protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
     {
-        return new LaunchpadControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()), true);
+        return new LaunchpadControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()), DEFINITION);
     }
 }

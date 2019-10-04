@@ -10,6 +10,7 @@ import de.mossgrabers.controller.push.controller.PushColors;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.framework.command.TriggerCommandID;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
@@ -103,7 +104,7 @@ public class DeviceLayerMode extends BaseMode
             final ISendBank sendBank = channel.getSendBank ();
             if (this.surface.isDeletePressed ())
             {
-                this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
+                this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
                 switch (index)
                 {
                     case 0:

@@ -6,6 +6,7 @@ package de.mossgrabers.controller.slmkiii.controller;
 
 import de.mossgrabers.controller.slmkiii.SLMkIIIConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
@@ -123,10 +124,10 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
 
         this.defaultMidiChannel = 15;
 
-        this.shiftButtonId = MKIII_SHIFT;
-        this.deleteButtonId = MKIII_CLEAR;
-        this.leftButtonId = MKIII_TRACK_LEFT;
-        this.rightButtonId = MKIII_TRACK_RIGHT;
+        this.setTriggerId (ButtonID.SHIFT, MKIII_SHIFT);
+        this.setTriggerId (ButtonID.DELETE, MKIII_CLEAR);
+        this.setTriggerId (ButtonID.LEFT, MKIII_TRACK_LEFT);
+        this.setTriggerId (ButtonID.RIGHT, MKIII_TRACK_RIGHT);
 
         this.addTextDisplay (new SLMkIIIDisplay (host, output));
 

@@ -7,6 +7,7 @@ package de.mossgrabers.controller.apc.controller;
 import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.framework.command.ContinuousCommandID;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -162,11 +163,11 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
 
         this.isMkII = isMkII;
 
-        this.shiftButtonId = APC_BUTTON_SHIFT;
-        this.leftButtonId = APC_BUTTON_LEFT;
-        this.rightButtonId = APC_BUTTON_RIGHT;
-        this.upButtonId = APC_BUTTON_UP;
-        this.downButtonId = APC_BUTTON_DOWN;
+        this.setTriggerId (ButtonID.SHIFT, APC_BUTTON_SHIFT);
+        this.setTriggerId (ButtonID.LEFT, APC_BUTTON_LEFT);
+        this.setTriggerId (ButtonID.RIGHT, APC_BUTTON_RIGHT);
+        this.setTriggerId (ButtonID.UP, APC_BUTTON_UP);
+        this.setTriggerId (ButtonID.DOWN, APC_BUTTON_DOWN);
 
         // Set Mode 2
         this.output.sendSysex ("F0 47 7F " + (isMkII ? ID_APC_40_MKII : ID_APC_40) + " 60 00 04 41 08 02 01 F7");

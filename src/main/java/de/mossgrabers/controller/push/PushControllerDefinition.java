@@ -56,9 +56,9 @@ public class PushControllerDefinition extends DefaultControllerDefinition
         {
             case WINDOWS:
                 if (this.isMkII)
-                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Ableton Push 2"));
+                    midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("Ableton Push 2"));
                 else
-                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("MIDIIN2 (Ableton Push)", "MIDIOUT2 (Ableton Push)"));
+                    midiDiscoveryPairs.addAll (this.createWindowsDeviceDiscoveryPairs ("MIDIIN2 (%sAbleton Push)", "MIDIOUT2 (%sAbleton Push)"));
                 break;
 
             case LINUX:

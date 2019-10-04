@@ -6,6 +6,7 @@ package de.mossgrabers.framework.command.trigger.mode;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
@@ -98,19 +99,19 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
         final int buttonOnColor = this.getButtonOnColor ();
         final int buttonOffColor = this.getButtonOffColor ();
 
-        final int leftButtonId = this.surface.getLeftTriggerId ();
+        final int leftButtonId = this.surface.getTriggerId (ButtonID.LEFT);
         if (leftButtonId >= 0)
             this.surface.updateTrigger (leftButtonId, this.canScrollLeft ? buttonOnColor : buttonOffColor);
 
-        final int rightButtonId = this.surface.getRightTriggerId ();
+        final int rightButtonId = this.surface.getTriggerId (ButtonID.RIGHT);
         if (rightButtonId >= 0)
             this.surface.updateTrigger (rightButtonId, this.canScrollRight ? buttonOnColor : buttonOffColor);
 
-        final int upButtonId = this.surface.getUpTriggerId ();
+        final int upButtonId = this.surface.getTriggerId (ButtonID.UP);
         if (upButtonId >= 0)
             this.surface.updateTrigger (upButtonId, this.canScrollUp ? buttonOnColor : buttonOffColor);
 
-        final int downButtonId = this.surface.getDownTriggerId ();
+        final int downButtonId = this.surface.getTriggerId (ButtonID.DOWN);
         if (downButtonId >= 0)
             this.surface.updateTrigger (downButtonId, this.canScrollDown ? buttonOnColor : buttonOffColor);
     }

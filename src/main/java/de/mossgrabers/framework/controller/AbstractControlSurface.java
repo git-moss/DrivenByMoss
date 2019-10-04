@@ -27,6 +27,7 @@ import de.mossgrabers.framework.view.ViewManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,16 +57,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     protected int                                                   defaultMidiChannel    = 0;
 
-    protected int                                                   selectButtonId        = -1;
-    protected int                                                   shiftButtonId         = -1;
-    protected int                                                   deleteButtonId        = -1;
-    protected int                                                   soloButtonId          = -1;
-    protected int                                                   muteButtonId          = -1;
-    protected int                                                   leftButtonId          = -1;
-    protected int                                                   rightButtonId         = -1;
-    protected int                                                   upButtonId            = -1;
-    protected int                                                   downButtonId          = -1;
-
+    protected final EnumMap<ButtonID, Integer>                      buttonIDs             = new EnumMap<> (ButtonID.class);
     private final TriggerInfo [] []                                 triggerInfos          = new TriggerInfo [16] [NUM_INFOS];
     private final ContinuousInfo [] []                              continuousInfos       = new ContinuousInfo [16] [NUM_INFOS];
     private final int []                                            noteVelocities;
@@ -369,17 +361,17 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public boolean isSelectPressed ()
+    public boolean isShiftPressed ()
     {
-        return this.isPressed (this.selectButtonId);
+        return this.isPressed (ButtonID.SHIFT);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public boolean isShiftPressed ()
+    public boolean isSelectPressed ()
     {
-        return this.isPressed (this.shiftButtonId);
+        return this.isPressed (ButtonID.SELECT);
     }
 
 
@@ -387,7 +379,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public boolean isDeletePressed ()
     {
-        return this.isPressed (this.deleteButtonId);
+        return this.isPressed (ButtonID.DELETE);
     }
 
 
@@ -395,7 +387,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public boolean isSoloPressed ()
     {
-        return this.isPressed (this.soloButtonId);
+        return this.isPressed (ButtonID.SOLO);
     }
 
 
@@ -403,7 +395,16 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public boolean isMutePressed ()
     {
-        return this.isPressed (this.muteButtonId);
+        return this.isPressed (ButtonID.MUTE);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isPressed (final ButtonID buttonID)
+    {
+        final Integer cc = this.buttonIDs.get (buttonID);
+        return cc != null && this.isPressed (cc.intValue ());
     }
 
 
@@ -447,73 +448,16 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public int getShiftTriggerId ()
+    public int getTriggerId (final ButtonID trigger)
     {
-        return this.shiftButtonId;
+        final Integer cc = this.buttonIDs.get (trigger);
+        return cc == null ? -1 : cc.intValue ();
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public int getSelectTriggerId ()
+    protected void setTriggerId (final ButtonID trigger, final int cc)
     {
-        return this.selectButtonId;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getDeleteTriggerId ()
-    {
-        return this.deleteButtonId;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getMuteTriggerId ()
-    {
-        return this.muteButtonId;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getSoloTriggerId ()
-    {
-        return this.soloButtonId;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getLeftTriggerId ()
-    {
-        return this.leftButtonId;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getRightTriggerId ()
-    {
-        return this.rightButtonId;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getUpTriggerId ()
-    {
-        return this.upButtonId;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getDownTriggerId ()
-    {
-        return this.downButtonId;
+        this.buttonIDs.put (trigger, Integer.valueOf (cc));
     }
 
 

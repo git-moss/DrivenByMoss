@@ -8,7 +8,6 @@ import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +41,6 @@ public class APCControllerDefinition extends DefaultControllerDefinition
     @Override
     public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
     {
-        return Collections.singletonList (this.addDeviceDiscoveryPair (this.isMkII ? "APC40 mkII" : "Akai APC40"));
+        return this.createDeviceDiscoveryPairs (this.isMkII ? "APC40 mkII" : "Akai APC40");
     }
 }

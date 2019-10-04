@@ -7,6 +7,8 @@ package de.mossgrabers.controller.launchpad.view;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.controller.launchpad.definition.LaunchpadProControllerDefinition;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IModel;
@@ -68,11 +70,11 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
     protected void delayedUpdateArrowButtons ()
     {
-        this.surface.setTrigger (this.surface.getSessionButton (), LaunchpadColors.LAUNCHPAD_COLOR_LIME);
-        this.surface.setTrigger (this.surface.getNoteButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        this.surface.setTrigger (this.surface.getDeviceButton (), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        if (this.surface.getConfiguration ().isPro ())
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_PRO_BUTTON_USER, this.model.getHost ().hasUserParameters () ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.surface.setTrigger (this.surface.getTriggerId (ButtonID.SESSION), LaunchpadColors.LAUNCHPAD_COLOR_LIME);
+        this.surface.setTrigger (this.surface.getTriggerId (ButtonID.NOTE), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        this.surface.setTrigger (this.surface.getTriggerId (ButtonID.DEVICE), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        if (this.surface.isPro ())
+            this.surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_PRO_BUTTON_USER, this.model.getHost ().hasUserParameters () ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
     }
 
 
@@ -97,9 +99,10 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             final int t = index % this.columns;
 
             // Duplicate a clip
-            if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
+            final int duplicateTriggerId = this.surface.getTriggerId (ButtonID.DUPLICATE);
+            if (this.surface.isPressed (duplicateTriggerId))
             {
-                this.surface.setTriggerConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
+                this.surface.setTriggerConsumed (duplicateTriggerId);
                 final ITrackBank tb = this.model.getCurrentTrackBank ();
                 final ITrack track = tb.getItem (t);
                 if (track.doesExist ())
@@ -248,9 +251,10 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final int index = note - 36;
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
 
-        if (this.surface.isPressed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE))
+        final int duplicateTriggerId = this.surface.getTriggerId (ButtonID.DUPLICATE);
+        if (this.surface.isPressed (duplicateTriggerId))
         {
-            this.surface.setTriggerConsumed (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE);
+            this.surface.setTriggerConsumed (duplicateTriggerId);
             track.duplicate ();
             return;
         }

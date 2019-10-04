@@ -25,6 +25,8 @@ import de.mossgrabers.controller.launchpad.command.trigger.VolumeCommand;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadScales;
+import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefinition;
+import de.mossgrabers.controller.launchpad.definition.LaunchpadProControllerDefinition;
 import de.mossgrabers.controller.launchpad.mode.RecArmMode;
 import de.mossgrabers.controller.launchpad.mode.SendMode;
 import de.mossgrabers.controller.launchpad.mode.StopClipMode;
@@ -58,6 +60,7 @@ import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -87,14 +90,14 @@ import de.mossgrabers.framework.view.Views;
 
 
 /**
- * Support for the Novation Launchpad Pro and Launchpad MkII controllers.
+ * Support for several Novation Launchpad controllers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadControlSurface, LaunchpadConfiguration>
 {
-    private final boolean isPro;
-    private int           frontColor = -1;
+    private final ILaunchpadControllerDefinition definition;
+    private int                                  frontColor = -1;
 
 
     /**
@@ -104,16 +107,17 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
      * @param factory The factory
      * @param globalSettings The global settings
      * @param documentSettings The document (project) specific settings
-     * @param isPro True if Launchpad Pro
+     * @param definition The Launchpad definition
      */
-    public LaunchpadControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final boolean isPro)
+    public LaunchpadControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final ILaunchpadControllerDefinition definition)
     {
         super (factory, host, globalSettings, documentSettings);
-        this.isPro = isPro;
+
+        this.definition = definition;
         this.colorManager = new ColorManager ();
         LaunchpadColors.addColors (this.colorManager);
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new LaunchpadConfiguration (host, this.valueChanger, isPro);
+        this.configuration = new LaunchpadConfiguration (host, this.valueChanger, definition);
     }
 
 
@@ -144,7 +148,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput ("Pads", "80????" /* Note off */,
                 "90????" /* Note on */);
-        final LaunchpadControlSurface surface = new LaunchpadControlSurface (this.host, this.colorManager, this.configuration, output, input, this.isPro);
+        final LaunchpadControlSurface surface = new LaunchpadControlSurface (this.host, this.colorManager, this.configuration, output, input, this.definition);
         this.surfaces.add (surface);
         surface.setLaunchpadToStandalone ();
     }
@@ -197,7 +201,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
         viewManager.registerView (Views.TRACK_VOLUME, new VolumeView (surface, this.model));
         viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
-        if (this.isPro && this.host.hasUserParameters ())
+        if (this.definition.isPro () && this.host.hasUserParameters ())
             viewManager.registerView (Views.CONTROL, new UserView (surface, this.model));
     }
 
@@ -208,41 +212,43 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     {
         final LaunchpadControlSurface surface = this.getSurface ();
 
-        this.addTriggerCommand (TriggerCommandID.SHIFT, surface.getShiftTriggerId (), new ShiftCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.SHIFT, surface.getTriggerId (ButtonID.SHIFT), new ShiftCommand (this.model, surface));
 
-        if (this.isPro && this.host.hasUserParameters ())
-            this.addTriggerCommand (TriggerCommandID.USER, surface.getUserButtonId (), new ViewMultiSelectCommand<> (this.model, surface, true, Views.CONTROL));
-
-        this.addTriggerCommand (TriggerCommandID.METRONOME, LaunchpadControlSurface.LAUNCHPAD_BUTTON_CLICK, new ClickCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.UNDO, LaunchpadControlSurface.LAUNCHPAD_BUTTON_UNDO, new UndoCommand<> (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.DELETE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DELETE, new DeleteCommand<> (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.QUANTIZE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_QUANTIZE, new QuantizeCommand<> (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.DUPLICATE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE, new LaunchpadDuplicateCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.DOUBLE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_DOUBLE, new PlayAndNewCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.RECORD, LaunchpadControlSurface.LAUNCHPAD_BUTTON_RECORD, new RecordCommand<> (this.model, surface));
+        if (this.definition.isPro () && this.host.hasUserParameters ())
+            this.addTriggerCommand (TriggerCommandID.USER, surface.getTriggerId (ButtonID.USER), new ViewMultiSelectCommand<> (this.model, surface, true, Views.CONTROL));
 
         final ViewManager viewManager = surface.getViewManager ();
         viewManager.registerTriggerCommand (TriggerCommandID.PLAY, new PlayCommand<> (this.model, surface));
         viewManager.registerTriggerCommand (TriggerCommandID.NEW, new NewCommand<> (this.model, surface));
 
-        this.addTriggerCommand (TriggerCommandID.SELECT_SESSION_VIEW, surface.getSessionButton (), new SelectSessionViewCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.SELECT_PLAY_VIEW, surface.getNoteButton (), new SelectNoteViewCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.DEVICE, surface.getDeviceButton (), new SelectDeviceViewCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.REC_ARM, LaunchpadControlSurface.LAUNCHPAD_BUTTON_REC_ARM, new RecordArmCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.TRACK, LaunchpadControlSurface.LAUNCHPAD_BUTTON_TRACK, new TrackSelectCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.MUTE, LaunchpadControlSurface.LAUNCHPAD_BUTTON_MUTE, new MuteCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.SOLO, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SOLO, new SoloCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.VOLUME, LaunchpadControlSurface.LAUNCHPAD_BUTTON_VOLUME, new VolumeCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.PAN_SEND, LaunchpadControlSurface.LAUNCHPAD_BUTTON_PAN, new PanCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.SENDS, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SENDS, new SendsCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.STOP_CLIP, LaunchpadControlSurface.LAUNCHPAD_BUTTON_STOP_CLIP, new StopClipCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ARROW_DOWN, surface.getTriggerId (ButtonID.DOWN), new LaunchpadCursorCommand (Direction.DOWN, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ARROW_UP, surface.getTriggerId (ButtonID.UP), new LaunchpadCursorCommand (Direction.UP, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ARROW_LEFT, surface.getTriggerId (ButtonID.LEFT), new LaunchpadCursorCommand (Direction.LEFT, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.ARROW_RIGHT, surface.getTriggerId (ButtonID.RIGHT), new LaunchpadCursorCommand (Direction.RIGHT, this.model, surface));
 
-        this.addTriggerCommand (TriggerCommandID.ARROW_DOWN, surface.getDownTriggerId (), new LaunchpadCursorCommand (Direction.DOWN, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.ARROW_UP, surface.getUpTriggerId (), new LaunchpadCursorCommand (Direction.UP, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.ARROW_LEFT, surface.getLeftTriggerId (), new LaunchpadCursorCommand (Direction.LEFT, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.ARROW_RIGHT, surface.getRightTriggerId (), new LaunchpadCursorCommand (Direction.RIGHT, this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.SELECT_SESSION_VIEW, surface.getTriggerId (ButtonID.SESSION), new SelectSessionViewCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.SELECT_PLAY_VIEW, surface.getTriggerId (ButtonID.NOTE), new SelectNoteViewCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.DEVICE, surface.getTriggerId (ButtonID.DEVICE), new SelectDeviceViewCommand (this.model, surface));
 
-        if (this.isPro)
+        // The following buttons are only available on the Pro but the commands are used by all
+        // Launchpad models!
+        this.addTriggerCommand (TriggerCommandID.METRONOME, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_CLICK, new ClickCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.UNDO, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_UNDO, new UndoCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.DELETE, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_DELETE, new DeleteCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.QUANTIZE, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_QUANTIZE, new QuantizeCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.DUPLICATE, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_DUPLICATE, new LaunchpadDuplicateCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.DOUBLE, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_DOUBLE, new PlayAndNewCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.RECORD, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_RECORD, new RecordCommand<> (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.REC_ARM, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_REC_ARM, new RecordArmCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.TRACK, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_TRACK, new TrackSelectCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.MUTE, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_MUTE, new MuteCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.SOLO, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_SOLO, new SoloCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.VOLUME, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_VOLUME, new VolumeCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.PAN_SEND, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_PAN, new PanCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.SENDS, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_SENDS, new SendsCommand (this.model, surface));
+        this.addTriggerCommand (TriggerCommandID.STOP_CLIP, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_STOP_CLIP, new StopClipCommand (this.model, surface));
+
+        if (this.definition.isPro ())
         {
             this.addTriggerCommand (TriggerCommandID.SCENE1, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, new LPSceneCommand (0, this.model, surface));
             this.addTriggerCommand (TriggerCommandID.SCENE2, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, new LPSceneCommand (1, this.model, surface));
@@ -303,7 +309,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
             ((SceneView) activeView).updateSceneButtons ();
         }
 
-        if (!this.isPro)
+        if (!this.definition.isPro ())
             return;
 
         final boolean isShift = surface.isShiftPressed ();
@@ -313,24 +319,24 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final ModeManager modeManager = surface.getModeManager ();
         final ITransport transport = this.model.getTransport ();
 
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SHIFT, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_CLICK, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING : transport.isMetronomeOn () ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_UNDO, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DELETE, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_QUANTIZE, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DUPLICATE, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_DOUBLE, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_SHIFT, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_CLICK, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING : transport.isMetronomeOn () ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_UNDO, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_DELETE, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_QUANTIZE, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_DUPLICATE, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_DOUBLE, isShift ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO);
         final boolean flipRecord = surface.getConfiguration ().isFlipRecord ();
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_RECORD, isShift && !flipRecord || !isShift && flipRecord ? transport.isLauncherOverdub () ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : LaunchpadColors.LAUNCHPAD_COLOR_RED_AMBER : transport.isRecording () ? LaunchpadColors.LAUNCHPAD_COLOR_RED_HI : LaunchpadColors.LAUNCHPAD_COLOR_RED_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_RECORD, isShift && !flipRecord || !isShift && flipRecord ? transport.isLauncherOverdub () ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : LaunchpadColors.LAUNCHPAD_COLOR_RED_AMBER : transport.isRecording () ? LaunchpadColors.LAUNCHPAD_COLOR_RED_HI : LaunchpadColors.LAUNCHPAD_COLOR_RED_LO);
 
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_REC_ARM, modeManager.isActiveOrTempMode (Modes.REC_ARM) ? LaunchpadColors.LAUNCHPAD_COLOR_RED : index == 0 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_TRACK, modeManager.isActiveOrTempMode (Modes.TRACK_SELECT) ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN : index == 1 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_MUTE, modeManager.isActiveOrTempMode (Modes.MUTE) ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : index == 2 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SOLO, modeManager.isActiveOrTempMode (Modes.SOLO) ? LaunchpadColors.LAUNCHPAD_COLOR_BLUE : index == 3 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_VOLUME, viewManager.isActiveView (Views.TRACK_VOLUME) ? LaunchpadColors.LAUNCHPAD_COLOR_CYAN : index == 4 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_PAN, viewManager.isActiveView (Views.TRACK_PAN) ? LaunchpadColors.LAUNCHPAD_COLOR_SKY : index == 5 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SENDS, viewManager.isActiveView (Views.TRACK_SENDS) ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : index == 6 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_STOP_CLIP, modeManager.isActiveOrTempMode (Modes.STOP_CLIP) ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : index == 7 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_REC_ARM, modeManager.isActiveOrTempMode (Modes.REC_ARM) ? LaunchpadColors.LAUNCHPAD_COLOR_RED : index == 0 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_TRACK, modeManager.isActiveOrTempMode (Modes.TRACK_SELECT) ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN : index == 1 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_MUTE, modeManager.isActiveOrTempMode (Modes.MUTE) ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : index == 2 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_SOLO, modeManager.isActiveOrTempMode (Modes.SOLO) ? LaunchpadColors.LAUNCHPAD_COLOR_BLUE : index == 3 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_VOLUME, viewManager.isActiveView (Views.TRACK_VOLUME) ? LaunchpadColors.LAUNCHPAD_COLOR_CYAN : index == 4 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_PAN, viewManager.isActiveView (Views.TRACK_PAN) ? LaunchpadColors.LAUNCHPAD_COLOR_SKY : index == 5 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_SENDS, viewManager.isActiveView (Views.TRACK_SENDS) ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : index == 6 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+        surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_STOP_CLIP, modeManager.isActiveOrTempMode (Modes.STOP_CLIP) ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : index == 7 ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
 
         // Update the front LED with the color of the current track
         final ITrack track = index == -1 ? null : this.model.getCurrentTrackBank ().getItem (index);

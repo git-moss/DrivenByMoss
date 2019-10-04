@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.DAWColors;
@@ -81,7 +82,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
+            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
             scene.remove ();
             return;
         }
@@ -116,7 +117,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         // Delete selected clip
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
+            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
             slot.remove ();
             return;
         }

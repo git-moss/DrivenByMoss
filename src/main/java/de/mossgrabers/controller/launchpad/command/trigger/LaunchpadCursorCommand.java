@@ -12,6 +12,7 @@ import de.mossgrabers.controller.launchpad.view.DrumView64;
 import de.mossgrabers.controller.launchpad.view.RaindropsView;
 import de.mossgrabers.controller.launchpad.view.SequencerView;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -106,7 +107,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         if (viewManager.isActiveView (Views.SEQUENCER) || viewManager.isActiveView (Views.RAINDROPS))
         {
-            final INoteClip clip = ((AbstractSequencerView<?, ?>) viewManager.getView (Views.DRUM)).getClip ();
+            final INoteClip clip = ((AbstractSequencerView<?, ?>) viewManager.getActiveView ()).getClip ();
             final int octave = this.model.getScales ().getOctave ();
             this.canScrollUp = octave < Scales.OCTAVE_RANGE;
             this.canScrollDown = octave > -Scales.OCTAVE_RANGE;
@@ -390,17 +391,17 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         if (this.surface.isPro ())
         {
-            this.surface.setTrigger (this.surface.getLeftTriggerId (), this.canScrollLeft ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.setTrigger (this.surface.getRightTriggerId (), this.canScrollRight ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.setTrigger (this.surface.getUpTriggerId (), this.canScrollUp ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.setTrigger (this.surface.getDownTriggerId (), this.canScrollDown ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.setTrigger (this.surface.getTriggerId (ButtonID.LEFT), this.canScrollLeft ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.setTrigger (this.surface.getTriggerId (ButtonID.RIGHT), this.canScrollRight ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.setTrigger (this.surface.getTriggerId (ButtonID.UP), this.canScrollUp ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.setTrigger (this.surface.getTriggerId (ButtonID.DOWN), this.canScrollDown ? this.getButtonOnColor () : this.getButtonOffColor ());
         }
         else
         {
-            this.surface.updateTrigger (this.surface.getLeftTriggerId (), this.canScrollLeft ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.updateTrigger (this.surface.getRightTriggerId (), this.canScrollRight ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.updateTrigger (this.surface.getUpTriggerId (), this.canScrollUp ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.updateTrigger (this.surface.getDownTriggerId (), this.canScrollDown ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.updateTrigger (this.surface.getTriggerId (ButtonID.LEFT), this.canScrollLeft ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.updateTrigger (this.surface.getTriggerId (ButtonID.RIGHT), this.canScrollRight ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.updateTrigger (this.surface.getTriggerId (ButtonID.UP), this.canScrollUp ? this.getButtonOnColor () : this.getButtonOffColor ());
+            this.surface.updateTrigger (this.surface.getTriggerId (ButtonID.DOWN), this.canScrollDown ? this.getButtonOnColor () : this.getButtonOffColor ());
         }
     }
 }

@@ -9,6 +9,7 @@ import de.mossgrabers.framework.command.continuous.FaderAbsoluteCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
@@ -293,12 +294,12 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
     {
         super (host, configuration, colorManager, output, input, null);
 
-        this.shiftButtonId = HUI_KEY_SHIFT_AD;
-        this.selectButtonId = HUI_KEY_OPTION_A;
-        this.leftButtonId = HUI_CURSOR_LEFT;
-        this.rightButtonId = HUI_CURSOR_RIGHT;
-        this.upButtonId = HUI_CURSOR_UP;
-        this.downButtonId = HUI_CURSOR_DOWN;
+        this.setTriggerId (ButtonID.SHIFT, HUI_KEY_SHIFT_AD);
+        this.setTriggerId (ButtonID.SELECT, HUI_KEY_OPTION_A);
+        this.setTriggerId (ButtonID.LEFT, HUI_CURSOR_LEFT);
+        this.setTriggerId (ButtonID.RIGHT, HUI_CURSOR_RIGHT);
+        this.setTriggerId (ButtonID.UP, HUI_CURSOR_UP);
+        this.setTriggerId (ButtonID.DOWN, HUI_CURSOR_DOWN);
 
         Arrays.fill (this.knobValues, -1);
 

@@ -6,6 +6,7 @@ package de.mossgrabers.controller.mcu.controller;
 
 import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -223,12 +224,12 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         this.extenderOffset = extenderOffset;
         this.isMainDevice = isMainDevice;
 
-        this.shiftButtonId = MCU_SHIFT;
-        this.selectButtonId = MCU_OPTION;
-        this.leftButtonId = MCU_ARROW_LEFT;
-        this.rightButtonId = MCU_ARROW_RIGHT;
-        this.upButtonId = MCU_ARROW_UP;
-        this.downButtonId = MCU_ARROW_DOWN;
+        this.setTriggerId (ButtonID.SHIFT, MCU_SHIFT);
+        this.setTriggerId (ButtonID.SELECT, MCU_OPTION);
+        this.setTriggerId (ButtonID.LEFT, MCU_ARROW_LEFT);
+        this.setTriggerId (ButtonID.RIGHT, MCU_ARROW_RIGHT);
+        this.setTriggerId (ButtonID.UP, MCU_ARROW_UP);
+        this.setTriggerId (ButtonID.DOWN, MCU_ARROW_DOWN);
 
         Arrays.fill (this.knobValues, -1);
     }

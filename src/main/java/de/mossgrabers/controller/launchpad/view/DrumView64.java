@@ -7,6 +7,7 @@ package de.mossgrabers.controller.launchpad.view;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractDrumView64;
 
@@ -34,7 +35,7 @@ public class DrumView64 extends AbstractDrumView64<LaunchpadControlSurface, Laun
     @Override
     protected void handleDeleteButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getDeleteTriggerId ());
+        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
         this.model.getNoteClip (8, 128).clearRow (this.offsetY + playedPad);
     }
 

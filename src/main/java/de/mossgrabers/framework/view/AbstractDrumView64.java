@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -295,14 +296,14 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
 
     protected void handleMuteButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getMuteTriggerId ());
+        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.MUTE));
         this.model.getDrumDevice64 ().getDrumPadBank ().getItem (playedPad).toggleMute ();
     }
 
 
     protected void handleSoloButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getSoloTriggerId ());
+        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.SOLO));
         this.model.getDrumDevice64 ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
     }
 

@@ -14,7 +14,7 @@ import de.mossgrabers.framework.view.AbstractSequencerView;
 
 
 /**
- * Different colors to use for the pads and buttons of Launchpad 1 and Launchpad 2.
+ * Different colors to use for the pads and buttons of Launchpad.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
