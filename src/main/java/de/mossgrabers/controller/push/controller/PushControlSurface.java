@@ -1132,16 +1132,17 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     {
         super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output));
 
+        this.setTriggerId (ButtonID.SHIFT, PUSH_BUTTON_SHIFT);
         this.setTriggerId (ButtonID.SELECT, PUSH_BUTTON_SELECT);
 
-        this.setTriggerId (ButtonID.SELECT, PUSH_BUTTON_SHIFT);
-        this.setTriggerId (ButtonID.DELETE, PUSH_BUTTON_DELETE);
-        this.setTriggerId (ButtonID.SOLO, PUSH_BUTTON_SOLO);
-        this.setTriggerId (ButtonID.MUTE, PUSH_BUTTON_MUTE);
         this.setTriggerId (ButtonID.LEFT, PUSH_BUTTON_LEFT);
         this.setTriggerId (ButtonID.RIGHT, PUSH_BUTTON_RIGHT);
         this.setTriggerId (ButtonID.UP, PUSH_BUTTON_UP);
         this.setTriggerId (ButtonID.DOWN, PUSH_BUTTON_DOWN);
+
+        this.setTriggerId (ButtonID.DELETE, PUSH_BUTTON_DELETE);
+        this.setTriggerId (ButtonID.SOLO, PUSH_BUTTON_SOLO);
+        this.setTriggerId (ButtonID.MUTE, PUSH_BUTTON_MUTE);
 
         this.input.setSysexCallback (this::handleSysEx);
     }

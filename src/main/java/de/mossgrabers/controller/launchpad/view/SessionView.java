@@ -33,6 +33,7 @@ import de.mossgrabers.framework.view.Views;
 public class SessionView extends AbstractSessionView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     protected boolean isTemporary;
+    private boolean   isBirdsEyeViewActive = false;
 
 
     /**
@@ -48,11 +49,14 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final SessionColor isRecording = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_RED_HI, LaunchpadColors.LAUNCHPAD_COLOR_RED_HI, false);
         final SessionColor isRecordingQueued = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_RED_HI, LaunchpadColors.LAUNCHPAD_COLOR_BLACK, true);
         final SessionColor isPlaying = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_GREEN, LaunchpadColors.LAUNCHPAD_COLOR_GREEN, false);
-        final SessionColor isPlayingQueued = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_GREEN, LaunchpadColors.LAUNCHPAD_COLOR_BLACK, true);
+        final SessionColor isPlayingQueued = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_GREEN, LaunchpadColors.LAUNCHPAD_COLOR_GREEN, true);
         final SessionColor hasContent = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_AMBER, -1, false);
         final SessionColor noContent = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_BLACK, -1, false);
         final SessionColor recArmed = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_RED_LO, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+
+        this.birdColorHasContent = hasContent;
+        this.birdColorSelected = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_GREEN, -1, false);
     }
 
 
@@ -74,7 +78,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         this.surface.setTrigger (this.surface.getTriggerId (ButtonID.NOTE), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
         this.surface.setTrigger (this.surface.getTriggerId (ButtonID.DEVICE), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
         if (this.surface.isPro ())
-            this.surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_PRO_BUTTON_USER, this.model.getHost ().hasUserParameters () ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+            this.surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_USER, this.model.getHost ().hasUserParameters () ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
     }
 
 
@@ -88,7 +92,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final boolean isNotRow1 = note >= 44;
         if (activeModeId == null || isNotRow1)
         {
-            if (this.surface.isShiftPressed ())
+            if (this.isBirdsEyeActive ())
             {
                 this.onGridNoteBankSelection (note, velocity, isNotRow1);
                 return;
@@ -167,6 +171,17 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     }
 
 
+    /**
+     * Set the birds eye view in-/active.
+     *
+     * @param isBirdsEyeActive True to activate
+     */
+    public void setBirdsEyeActive (final boolean isBirdsEyeActive)
+    {
+        this.isBirdsEyeViewActive = isBirdsEyeActive;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void updateSceneButtons ()
@@ -217,34 +232,37 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     }
 
 
-    protected void onGridNoteBankSelection (final int note, final int velocity, final boolean isOffset)
+    /** {@inheritDoc} */
+    @Override
+    public boolean isBirdsEyeActive ()
     {
-        if (velocity == 0)
-            return;
-
-        final int n = isOffset ? note : note - 8;
-        final int index = n - 36;
-        final int x = index % this.columns;
-        final int y = this.rows - 1 - index / this.columns;
-
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ISceneBank sceneBank = tb.getSceneBank ();
-
-        // Calculate page offsets
-        final int trackPosition = tb.getItem (0).getPosition () / tb.getPageSize ();
-        final int scenePosition = sceneBank.getScrollPosition () / sceneBank.getPageSize ();
-        final boolean flip = this.surface.getConfiguration ().isFlipSession ();
-        final int selX = flip ? scenePosition : trackPosition;
-        final int selY = flip ? trackPosition : scenePosition;
-        final int padsX = flip ? this.rows : this.columns;
-        final int padsY = flip ? this.columns : isOffset ? this.rows + 1 : this.rows;
-        final int offsetX = selX / padsX * padsX;
-        final int offsetY = selY / padsY * padsY;
-        tb.scrollTo (offsetX * tb.getPageSize () + (flip ? y : x) * padsX);
-        sceneBank.scrollTo (offsetY * sceneBank.getPageSize () + (flip ? x : y) * padsY);
+        return this.isBirdsEyeViewActive;
     }
 
 
+    /**
+     * Handle pad presses in the birds eye view.
+     *
+     * @param note The note of the pad
+     * @param velocity The velocity of the press
+     * @param isNotOffset Apply row 1 note offset if false
+     */
+    protected void onGridNoteBankSelection (final int note, final int velocity, final boolean isNotOffset)
+    {
+        if (velocity == 0)
+            return;
+        final int n = isNotOffset ? note : note - 8;
+        final int index = n - 36;
+        this.onGridNoteBirdsEyeView (index % this.columns, this.rows - 1 - index / this.columns, isNotOffset ? 0 : 1);
+    }
+
+
+    /**
+     * Execute the functions of row 1 if active.
+     *
+     * @param note The pressed note on the first row
+     * @param modeManager The mode manager
+     */
     private void handleFirstRowModes (final int note, final ModeManager modeManager)
     {
         // First row mode handling

@@ -10,7 +10,6 @@ import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
@@ -42,6 +41,22 @@ public class PanView extends AbstractFaderView
 
     /** {@inheritDoc} */
     @Override
+    protected int smoothFaderValue (final int index, final int row, final int value)
+    {
+        return row == 3 || row == 4 ? 64 : value;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected int getFaderValue (int index)
+    {
+        return this.model.getCurrentTrackBank ().getItem (index).getPan ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void switchLaunchpadMode ()
     {
         this.surface.setLaunchpadToPanMode ();
@@ -54,7 +69,6 @@ public class PanView extends AbstractFaderView
     {
         final ColorManager cm = this.model.getColorManager ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final IMidiOutput output = this.surface.getOutput ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getItem (i);
@@ -64,7 +78,7 @@ public class PanView extends AbstractFaderView
                 this.trackColors[i] = color;
                 this.setupFader (i);
             }
-            output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, track.doesExist () ? track.getPan () : 64);
+            this.surface.setFaderValue (i, track.doesExist () ? track.getPan () : 64);
         }
     }
 
@@ -74,6 +88,6 @@ public class PanView extends AbstractFaderView
     public void setupFader (final int index)
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        this.surface.setupPanFader (index, this.model.getColorManager ().getColor (DAWColors.getColorIndex (track.getColor ())));
+        this.surface.setupFader (index, this.model.getColorManager ().getColor (DAWColors.getColorIndex (track.getColor ())), true);
     }
 }

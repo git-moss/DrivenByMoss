@@ -55,11 +55,14 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         final SessionColor isRecording = new SessionColor (redHi, redHi, false);
         final SessionColor isRecordingQueued = new SessionColor (redHi, black, true);
         final SessionColor isPlaying = new SessionColor (green, green, false);
-        final SessionColor isPlayingQueued = new SessionColor (green, black, true);
+        final SessionColor isPlayingQueued = new SessionColor (green, green, true);
         final SessionColor hasContent = new SessionColor (amber, -1, false);
         final SessionColor noContent = new SessionColor (black, -1, false);
         final SessionColor recArmed = new SessionColor (redLo, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+
+        this.birdColorHasContent = hasContent;
+        this.birdColorSelected = isPlaying;
     }
 
 
@@ -75,39 +78,23 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         }
 
         final int index = note - 36;
-        int t = index % this.columns;
-        int s = this.rows - 1 - index / this.columns;
+        int x = index % this.columns;
+        int y = this.rows - 1 - index / this.columns;
+
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
-        if (flipSession)
-        {
-            final int dummy = t;
-            t = s;
-            s = dummy;
-        }
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
+
+        int t = flipSession ? y : x;
+        int s = flipSession ? x : y;
 
         // Birds-eye-view navigation
         if (this.surface.isShiftPressed ())
         {
-            final ISceneBank sceneBank = tb.getSceneBank ();
-
-            // Calculate page offsets
-            final int numTracks = tb.getPageSize ();
-            final int numScenes = sceneBank.getPageSize ();
-            final int trackPosition = tb.getItem (0).getPosition () / numTracks;
-            final int scenePosition = sceneBank.getScrollPosition () / numScenes;
-            final int selX = flipSession ? scenePosition : trackPosition;
-            final int selY = flipSession ? trackPosition : scenePosition;
-            final int padsX = flipSession ? this.rows : this.columns;
-            final int padsY = flipSession ? this.columns : this.rows;
-            final int offsetX = selX / padsX * padsX;
-            final int offsetY = selY / padsY * padsY;
-            tb.scrollTo (offsetX * numTracks + t * padsX);
-            sceneBank.scrollTo (offsetY * numScenes + s * padsY);
+            this.onGridNoteBirdsEyeView (x, y, 0);
             return;
         }
 
         // Duplicate a clip
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack track = tb.getItem (t);
         if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
         {

@@ -309,7 +309,7 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Get the midi cc of the given trigger ID.
-     * 
+     *
      * @param trigger The button ID of the trigger
      * @return The midi cc or -1 if not set
      */
@@ -328,7 +328,7 @@ public interface IControlSurface<C extends Configuration>
 
     /**
      * Test if the trigger with the given midi CC on the default midi channel is pressed.
-     * 
+     *
      * @param buttonID The trigger to test (as a button ID)
      * @return True if pressed
      */

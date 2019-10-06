@@ -12,7 +12,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -45,11 +44,18 @@ public class VolumeView extends AbstractFaderView
 
     /** {@inheritDoc} */
     @Override
+    protected int getFaderValue (int index)
+    {
+        return this.model.getCurrentTrackBank ().getItem (index).getVolume ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void drawGrid ()
     {
         final ColorManager cm = this.model.getColorManager ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final IMidiOutput output = this.surface.getOutput ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getItem (i);
@@ -59,7 +65,7 @@ public class VolumeView extends AbstractFaderView
                 this.trackColors[i] = color;
                 this.setupFader (i);
             }
-            output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, track.getVolume ());
+            this.surface.setFaderValue (i, track.getVolume ());
         }
     }
 

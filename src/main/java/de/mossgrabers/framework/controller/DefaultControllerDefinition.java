@@ -148,7 +148,7 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
     protected List<Pair<String [], String []>> createDeviceDiscoveryPairs (final String deviceName)
     {
         final String namePattern = "%s" + deviceName;
-        final List<Pair<String [], String []>> results = createWindowsDeviceDiscoveryPairs (namePattern, namePattern);
+        final List<Pair<String [], String []>> results = this.createWindowsDeviceDiscoveryPairs (namePattern, namePattern);
         for (int i = 1; i < 20; i++)
         {
             results.add (this.addDeviceDiscoveryPair (deviceName + " MIDI " + i));

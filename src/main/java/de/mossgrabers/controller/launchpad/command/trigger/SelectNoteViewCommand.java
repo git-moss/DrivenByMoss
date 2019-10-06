@@ -14,6 +14,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Collections;
+import java.util.EnumSet;
+
 
 /**
  * Command to select the session view.
@@ -24,6 +27,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
 {
     private final ViewMultiSelectCommand<LaunchpadControlSurface, LaunchpadConfiguration> playSelect;
     private final ViewMultiSelectCommand<LaunchpadControlSurface, LaunchpadConfiguration> seqSelect;
+    private final EnumSet<Views>                                                          views = EnumSet.noneOf (Views.class);
 
 
     /**
@@ -40,11 +44,13 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         {
             this.playSelect = new ViewMultiSelectCommand<> (model, surface, true, Views.PLAY, Views.PIANO, Views.DRUM, Views.DRUM4, Views.DRUM8, Views.DRUM64);
             this.seqSelect = new ViewMultiSelectCommand<> (model, surface, true, Views.SEQUENCER, Views.RAINDROPS);
+            Collections.addAll (this.views, Views.PLAY, Views.PIANO, Views.DRUM, Views.DRUM4, Views.DRUM8, Views.DRUM64, Views.SEQUENCER, Views.RAINDROPS);
         }
         else
         {
             this.playSelect = new ViewMultiSelectCommand<> (model, surface, true, Views.PLAY, Views.PIANO, Views.DRUM64);
             this.seqSelect = this.playSelect;
+            Collections.addAll (this.views, Views.PLAY, Views.PIANO, Views.DRUM64);
         }
     }
 
@@ -65,7 +71,9 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         }
 
         final boolean isShifted = this.surface.isShiftPressed ();
-        if (Views.isNoteView (isShifted ? viewManager.getPreviousViewId () : viewManager.getActiveViewId ()))
+        final Views viewId = isShifted ? viewManager.getPreviousViewId () : viewManager.getActiveViewId ();
+
+        if (this.views.contains (viewId))
         {
             if (isShifted)
                 this.seqSelect.executeNormal (event);
@@ -75,10 +83,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         else
         {
             final Views viewID = viewManager.getPreferredView (sel.getPosition ());
-            if (viewID == null)
-                this.seqSelect.executeNormal (event);
-            else
-                viewManager.setActiveView (viewID);
+            viewManager.setActiveView (viewID == null ? Views.PLAY : viewID);
         }
 
         viewManager.setPreferredView (sel.getPosition (), viewManager.getActiveViewId ());

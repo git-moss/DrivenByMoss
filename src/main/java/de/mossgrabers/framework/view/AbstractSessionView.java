@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
@@ -44,6 +45,9 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     protected SessionColor     clipColorHasContent        = new SessionColor (4, -1, false);
     protected SessionColor     clipColorHasNoContent      = new SessionColor (5, -1, false);
     protected SessionColor     clipColorIsRecArmed        = new SessionColor (6, -1, false);
+
+    protected SessionColor     birdColorHasContent        = new SessionColor (4, -1, false);
+    protected SessionColor     birdColorSelected          = new SessionColor (2, -1, false);
 
     protected int              rows;
     protected int              columns;
@@ -168,14 +172,55 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     }
 
 
+    /**
+     * Handle pad presses in the birds eye view (session page selection).
+     *
+     * @param x The x position of the pad
+     * @param y The y position of the pad
+     * @param yOffset Optional offset in y-direction
+     */
+    protected void onGridNoteBirdsEyeView (final int x, final int y, final int yOffset)
+    {
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = tb.getSceneBank ();
+        final boolean flip = this.surface.getConfiguration ().isFlipSession ();
+
+        // Calculate page offsets
+        final int numTracks = tb.getPageSize ();
+        final int numScenes = sceneBank.getPageSize ();
+        final int trackPosition = tb.getItem (0).getPosition () / numTracks;
+        final int scenePosition = sceneBank.getScrollPosition () / numScenes;
+        final int selX = flip ? scenePosition : trackPosition;
+        final int selY = flip ? trackPosition : scenePosition;
+        final int padsX = flip ? this.rows : this.columns;
+        final int padsY = flip ? this.columns : this.rows + yOffset;
+        final int offsetX = selX / padsX * padsX;
+        final int offsetY = selY / padsY * padsY;
+        tb.scrollTo (offsetX * numTracks + (flip ? y : x) * padsX);
+        sceneBank.scrollTo (offsetY * numScenes + (flip ? x : y) * padsY);
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void drawGrid ()
     {
-        if (this.surface.isShiftPressed ())
+        if (this.isBirdsEyeActive ())
             this.drawBirdsEyeGrid ();
         else
             this.drawSessionGrid ();
+    }
+
+
+    /**
+     * Is the birds eye view active? Default implementation checks for Shift button. Override for
+     * different behaviour.
+     *
+     * @return True if birds eye view should be active
+     */
+    public boolean isBirdsEyeActive ()
+    {
+        return this.surface.isShiftPressed ();
     }
 
 
@@ -225,15 +270,16 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         selX -= offsetX;
         selY -= offsetY;
 
+        final PadGrid padGrid = this.surface.getPadGrid ();
         for (int x = 0; x < this.columns; x++)
         {
-            final SessionColor rowColor = x < maxX ? this.clipColorHasContent : this.clipColorHasNoContent;
+            final SessionColor rowColor = x < maxX ? this.birdColorHasContent : this.clipColorHasNoContent;
             for (int y = 0; y < this.rows; y++)
             {
                 SessionColor color = y < maxY ? rowColor : this.clipColorHasNoContent;
                 if (selX == x && selY == y)
-                    color = this.clipColorIsPlaying;
-                this.surface.getPadGrid ().lightEx (x, y, color.getColor (), color.getBlink (), color.isFast ());
+                    color = this.birdColorSelected;
+                padGrid.lightEx (x, y, color.getColor (), color.getBlink (), color.isFast ());
             }
         }
     }
@@ -294,7 +340,11 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         }
 
         if (slot.isPlayingQueued ())
+        {
+            if (this.useClipColor && colorIndex != null)
+                return new SessionColor (cm.getColor (colorIndex), this.clipColorIsPlayingQueued.getBlink (), this.clipColorIsPlayingQueued.isFast ());
             return this.clipColorIsPlayingQueued;
+        }
 
         if (slot.isPlaying ())
         {

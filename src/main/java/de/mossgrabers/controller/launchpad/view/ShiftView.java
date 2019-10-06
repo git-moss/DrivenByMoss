@@ -9,6 +9,7 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -53,69 +54,63 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     {
         final PadGrid padGrid = this.surface.getPadGrid ();
 
-        if (this.surface.isPro ())
-        {
-            for (int i = 36; i < 97; i++)
-                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        }
-        else
-        {
-            padGrid.light (36, LaunchpadColors.LAUNCHPAD_COLOR_RED);
-            padGrid.light (37, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-            padGrid.light (38, LaunchpadColors.LAUNCHPAD_COLOR_YELLOW);
-            padGrid.light (39, LaunchpadColors.LAUNCHPAD_COLOR_BLUE);
-            padGrid.light (40, LaunchpadColors.LAUNCHPAD_COLOR_CYAN);
-            padGrid.light (41, LaunchpadColors.LAUNCHPAD_COLOR_SKY);
-            padGrid.light (42, LaunchpadColors.LAUNCHPAD_COLOR_ORCHID);
-            padGrid.light (43, LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
-
-            padGrid.light (44, LaunchpadColors.LAUNCHPAD_COLOR_RED);
-            padGrid.light (45, LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
-
-            for (int i = 46; i < 51; i++)
-                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-
-            padGrid.light (51, LaunchpadColors.LAUNCHPAD_COLOR_RED);
-            padGrid.light (52, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-            padGrid.light (53, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
-
-            for (int i = 54; i < 60; i++)
-                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-
-            padGrid.light (60, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-            padGrid.light (61, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
-
-            for (int i = 62; i < 68; i++)
-                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-
-            padGrid.light (68, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-            padGrid.light (69, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-
-            for (int i = 70; i < 76; i++)
-                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-
-            padGrid.light (76, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-            padGrid.light (77, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-
-            for (int i = 78; i < 84; i++)
-                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-
-            padGrid.light (84, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-            padGrid.light (85, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
-
-            for (int i = 86; i < 92; i++)
-                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-
-            padGrid.light (92, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-            padGrid.light (93, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
-
-            for (int i = 94; i < 97; i++)
-                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        }
-
         padGrid.light (97, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
         padGrid.light (98, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
         padGrid.light (99, LaunchpadColors.LAUNCHPAD_COLOR_TURQUOISE_CYAN);
+
+        final int clipLengthIndex = this.surface.getConfiguration ().getNewClipLength ();
+        for (int i = 0; i < 8; i++)
+            padGrid.light (36 + i, i == clipLengthIndex ? LaunchpadColors.LAUNCHPAD_COLOR_WHITE : LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
+
+        if (this.surface.isPro ())
+        {
+            for (int i = 44; i < 97; i++)
+                padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+            return;
+        }
+
+        padGrid.light (44, LaunchpadColors.LAUNCHPAD_COLOR_RED);
+        padGrid.light (45, LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
+
+        for (int i = 46; i < 51; i++)
+            padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+        padGrid.light (51, LaunchpadColors.LAUNCHPAD_COLOR_RED);
+        padGrid.light (52, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        padGrid.light (53, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
+
+        for (int i = 54; i < 60; i++)
+            padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+        padGrid.light (60, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        padGrid.light (61, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
+
+        for (int i = 62; i < 68; i++)
+            padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+        padGrid.light (68, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        padGrid.light (69, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+        for (int i = 70; i < 76; i++)
+            padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+        padGrid.light (76, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        padGrid.light (77, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+        for (int i = 78; i < 84; i++)
+            padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+        padGrid.light (84, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        padGrid.light (85, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
+
+        for (int i = 86; i < 92; i++)
+            padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+        padGrid.light (92, LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        padGrid.light (93, LaunchpadColors.LAUNCHPAD_COLOR_GREEN_SPRING);
+
+        for (int i = 94; i < 97; i++)
+            padGrid.light (i, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
     }
 
 
@@ -123,74 +118,24 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.surface.isPro () && this.handleControlModes (note, velocity))
+        if (velocity == 0)
             return;
-        if (velocity > 0)
-            this.handleFunctions (note);
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSceneButtons ()
-    {
-        final boolean isPro = this.surface.isPro ();
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_CYAN);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_SKY);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_ORCHID);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_YELLOW);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_BLUE);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_RED);
-    }
-
-
-    private boolean handleControlModes (final int note, final int velocity)
-    {
-        final ButtonEvent event = velocity == 0 ? ButtonEvent.UP : ButtonEvent.DOWN;
-        final View view = this.surface.getViewManager ().getActiveView ();
         switch (note)
         {
             case 36:
-                view.getTriggerCommand (TriggerCommandID.REC_ARM).execute (event);
-                break;
             case 37:
-                view.getTriggerCommand (TriggerCommandID.TRACK).execute (event);
-                break;
             case 38:
-                view.getTriggerCommand (TriggerCommandID.MUTE).execute (event);
-                break;
             case 39:
-                view.getTriggerCommand (TriggerCommandID.SOLO).execute (event);
-                break;
             case 40:
-                view.getTriggerCommand (TriggerCommandID.VOLUME).execute (event);
-                break;
             case 41:
-                view.getTriggerCommand (TriggerCommandID.PAN_SEND).execute (event);
-                break;
             case 42:
-                view.getTriggerCommand (TriggerCommandID.SENDS).execute (event);
-                break;
             case 43:
-                view.getTriggerCommand (TriggerCommandID.STOP_CLIP).execute (event);
+                final int newClipLength = note - 36;
+                this.surface.getConfiguration ().setNewClipLength (newClipLength);
+                this.surface.getDisplay ().notify ("New clip length: " + AbstractConfiguration.getNewClipLengthValue (newClipLength));
                 break;
-            default:
-                return false;
-        }
-        final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeOrTempModeId = modeManager.getActiveOrTempModeId ();
-        if (activeOrTempModeId != null && activeOrTempModeId.equals (modeManager.getPreviousModeId ()))
-            modeManager.setActiveMode (null);
-        return true;
-    }
 
-
-    private void handleFunctions (final int note)
-    {
-        switch (note)
-        {
             case 97:
                 this.model.getApplication ().addInstrumentTrack ();
                 return;
@@ -253,6 +198,63 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 // Not used
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateSceneButtons ()
+    {
+        final boolean isPro = this.surface.isPro ();
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_CYAN);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_SKY);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_ORCHID);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_ROSE);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_YELLOW);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_BLUE);
+        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, isPro ? LaunchpadColors.LAUNCHPAD_COLOR_BLACK : LaunchpadColors.LAUNCHPAD_COLOR_RED);
+    }
+
+
+    private boolean handleControlModes (final int note, final int velocity)
+    {
+        final ButtonEvent event = velocity == 0 ? ButtonEvent.UP : ButtonEvent.DOWN;
+        final View view = this.surface.getViewManager ().getActiveView ();
+        switch (note)
+        {
+            case 36:
+                view.getTriggerCommand (TriggerCommandID.REC_ARM).execute (event);
+                break;
+            case 37:
+                view.getTriggerCommand (TriggerCommandID.TRACK).execute (event);
+                break;
+            case 38:
+                view.getTriggerCommand (TriggerCommandID.MUTE).execute (event);
+                break;
+            case 39:
+                view.getTriggerCommand (TriggerCommandID.SOLO).execute (event);
+                break;
+            case 40:
+                view.getTriggerCommand (TriggerCommandID.VOLUME).execute (event);
+                break;
+            case 41:
+                view.getTriggerCommand (TriggerCommandID.PAN_SEND).execute (event);
+                break;
+            case 42:
+                view.getTriggerCommand (TriggerCommandID.SENDS).execute (event);
+                break;
+            case 43:
+                view.getTriggerCommand (TriggerCommandID.STOP_CLIP).execute (event);
+                break;
+            default:
+                return false;
+        }
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final Modes activeOrTempModeId = modeManager.getActiveOrTempModeId ();
+        if (activeOrTempModeId != null && activeOrTempModeId.equals (modeManager.getPreviousModeId ()))
+            modeManager.setActiveMode (null);
+        return true;
     }
 
 

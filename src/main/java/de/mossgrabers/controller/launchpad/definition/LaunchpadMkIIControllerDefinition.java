@@ -6,13 +6,17 @@ package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.controller.grid.PadInfo;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
+import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 
@@ -23,17 +27,17 @@ import java.util.UUID;
  */
 public class LaunchpadMkIIControllerDefinition extends DefaultControllerDefinition implements ILaunchpadControllerDefinition
 {
-    private static final UUID   EXTENSION_ID                  = UUID.fromString ("4E01A0B0-67B1-11E5-A837-0800200C9A66");
-    private static final String SYSEX_HEADER                  = "F0 00 20 29 02 18 ";
+    private static final UUID   EXTENSION_ID             = UUID.fromString ("4E01A0B0-67B1-11E5-A837-0800200C9A66");
+    private static final String SYSEX_HEADER             = "F0 00 20 29 02 18 ";
 
-    private static final int    LAUNCHPAD_MKII_BUTTON_UP      = 104;
-    private static final int    LAUNCHPAD_MKII_BUTTON_DOWN    = 105;
-    private static final int    LAUNCHPAD_MKII_BUTTON_LEFT    = 106;
-    private static final int    LAUNCHPAD_MKII_BUTTON_RIGHT   = 107;
-    private static final int    LAUNCHPAD_MKII_BUTTON_SESSION = 108;
-    private static final int    LAUNCHPAD_MKII_BUTTON_USER1   = 109;
-    private static final int    LAUNCHPAD_MKII_BUTTON_USER2   = 110;
-    private static final int    LAUNCHPAD_MKII_BUTTON_MIXER   = 111;
+    private static final int    LAUNCHPAD_BUTTON_UP      = 104;
+    private static final int    LAUNCHPAD_BUTTON_DOWN    = 105;
+    private static final int    LAUNCHPAD_BUTTON_LEFT    = 106;
+    private static final int    LAUNCHPAD_BUTTON_RIGHT   = 107;
+    private static final int    LAUNCHPAD_BUTTON_SESSION = 108;
+    private static final int    LAUNCHPAD_BUTTON_USER1   = 109;
+    private static final int    LAUNCHPAD_BUTTON_USER2   = 110;
+    private static final int    LAUNCHPAD_BUTTON_MIXER   = 111;
 
 
     /**
@@ -65,9 +69,49 @@ public class LaunchpadMkIIControllerDefinition extends DefaultControllerDefiniti
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasFaderSupport ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getSysExHeader ()
     {
         return SYSEX_HEADER;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getStandaloneModeCommand ()
+    {
+        return "21 01";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getProgramModeCommand ()
+    {
+        return "22 00";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getFaderModeCommand ()
+    {
+        return this.getProgramModeCommand ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getPanModeCommand ()
+    {
+        return this.getProgramModeCommand ();
     }
 
 
@@ -85,14 +129,58 @@ public class LaunchpadMkIIControllerDefinition extends DefaultControllerDefiniti
     public Map<ButtonID, Integer> getButtonIDs ()
     {
         final Map<ButtonID, Integer> buttonIDs = new EnumMap<> (ButtonID.class);
-        buttonIDs.put (ButtonID.SHIFT, Integer.valueOf (LAUNCHPAD_MKII_BUTTON_MIXER));
-        buttonIDs.put (ButtonID.LEFT, Integer.valueOf (LAUNCHPAD_MKII_BUTTON_LEFT));
-        buttonIDs.put (ButtonID.RIGHT, Integer.valueOf (LAUNCHPAD_MKII_BUTTON_RIGHT));
-        buttonIDs.put (ButtonID.UP, Integer.valueOf (LAUNCHPAD_MKII_BUTTON_UP));
-        buttonIDs.put (ButtonID.DOWN, Integer.valueOf (LAUNCHPAD_MKII_BUTTON_DOWN));
-        buttonIDs.put (ButtonID.SESSION, Integer.valueOf (LAUNCHPAD_MKII_BUTTON_SESSION));
-        buttonIDs.put (ButtonID.DEVICE, Integer.valueOf (LAUNCHPAD_MKII_BUTTON_USER2));
-        buttonIDs.put (ButtonID.NOTE, Integer.valueOf (LAUNCHPAD_MKII_BUTTON_USER1));
+        buttonIDs.put (ButtonID.SHIFT, Integer.valueOf (LAUNCHPAD_BUTTON_MIXER));
+        buttonIDs.put (ButtonID.LEFT, Integer.valueOf (LAUNCHPAD_BUTTON_LEFT));
+        buttonIDs.put (ButtonID.RIGHT, Integer.valueOf (LAUNCHPAD_BUTTON_RIGHT));
+        buttonIDs.put (ButtonID.UP, Integer.valueOf (LAUNCHPAD_BUTTON_UP));
+        buttonIDs.put (ButtonID.DOWN, Integer.valueOf (LAUNCHPAD_BUTTON_DOWN));
+        buttonIDs.put (ButtonID.SESSION, Integer.valueOf (LAUNCHPAD_BUTTON_SESSION));
+        buttonIDs.put (ButtonID.DEVICE, Integer.valueOf (LAUNCHPAD_BUTTON_USER2));
+        buttonIDs.put (ButtonID.NOTE, Integer.valueOf (LAUNCHPAD_BUTTON_USER1));
         return buttonIDs;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean sceneButtonsUseCC ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<String> buildLEDUpdate (final Map<Integer, PadInfo> padInfos)
+    {
+        final StringBuilder sbNormal = new StringBuilder ();
+        final StringBuilder sbFlash = new StringBuilder ();
+        final StringBuilder sbPulse = new StringBuilder ();
+
+        for (final Entry<Integer, PadInfo> e: padInfos.entrySet ())
+        {
+            final int note = e.getKey ().intValue ();
+            final PadInfo info = e.getValue ();
+
+            sbNormal.append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getColor ())).append (' ');
+
+            if (info.getBlinkColor () > 0)
+            {
+                // Note: The MkII has an additional prefixed 00 instead of the Pro!
+                if (info.isFast ())
+                    sbFlash.append ("00 ").append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getBlinkColor ())).append (' ');
+                else
+                    sbPulse.append ("00 ").append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getBlinkColor ())).append (' ');
+            }
+        }
+
+        final List<String> result = new ArrayList<> (3);
+        if (sbNormal.length () > 0)
+            result.add (new StringBuilder (this.getSysExHeader ()).append ("0A ").append (sbNormal).append ("F7").toString ());
+        if (sbFlash.length () > 0)
+            result.add (new StringBuilder (this.getSysExHeader ()).append ("23 ").append (sbFlash).append ("F7").toString ());
+        if (sbPulse.length () > 0)
+            result.add (new StringBuilder (this.getSysExHeader ()).append ("28 ").append (sbPulse).append ("F7").toString ());
+        return result;
     }
 }

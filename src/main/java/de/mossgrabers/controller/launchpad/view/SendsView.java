@@ -12,7 +12,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -49,6 +48,16 @@ public class SendsView extends AbstractFaderView
 
     /** {@inheritDoc} */
     @Override
+    protected int getFaderValue (int index)
+    {
+        if (this.model.isEffectTrackBankActive ())
+            return 0;
+        return this.model.getTrackBank ().getItem (index).getSendBank ().getItem (this.selectedSend).getValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void onScene (final int scene, final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
@@ -62,7 +71,6 @@ public class SendsView extends AbstractFaderView
     {
         final ColorManager cm = this.model.getColorManager ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final IMidiOutput output = this.surface.getOutput ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getItem (i);
@@ -71,9 +79,9 @@ public class SendsView extends AbstractFaderView
             if (this.trackColors[i] != color)
             {
                 this.trackColors[i] = color;
-                this.setupFader (i);
+                this.surface.setupFader (i, color, false);
             }
-            output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, send.getValue ());
+            this.surface.setFaderValue (i, send.getValue ());
         }
     }
 

@@ -7,10 +7,12 @@ package de.mossgrabers.controller.launchpad.controller;
 import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefinition;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
+import de.mossgrabers.framework.controller.grid.PadInfo;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -35,7 +37,6 @@ public class LaunchpadPadGrid extends PadGridImpl
     // @formatter:on
 
     private static final Map<Integer, Integer> INVERSE_TRANSLATE_MATRIX = new HashMap<> (64);
-
     static
     {
         for (int i = 0; i < TRANSLATE_MATRIX.length; i++)
@@ -43,6 +44,7 @@ public class LaunchpadPadGrid extends PadGridImpl
     }
 
     private final ILaunchpadControllerDefinition definition;
+    private final Map<Integer, PadInfo>          padInfos = new TreeMap<> ();
 
 
     /**
@@ -62,14 +64,6 @@ public class LaunchpadPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
-    {
-        this.definition.sendBlinkState (this.output, note, blinkColor, fast);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public int translateToGrid (final int note)
     {
         final Integer value = INVERSE_TRANSLATE_MATRIX.get (Integer.valueOf (note));
@@ -77,15 +71,51 @@ public class LaunchpadPadGrid extends PadGridImpl
     }
 
 
-    /**
-     * Translates note range 36-100 to launchpad grid (11-18, 21-28, ...)
-     *
-     * @param note The note to translate
-     * @return The translated note
-     */
+    /** {@inheritDoc} */
     @Override
     public int translateToController (final int note)
     {
+        // Translates note range 36-100 to launchpad grid (11-18, 21-28, ...)
         return TRANSLATE_MATRIX[note - 36];
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void flush ()
+    {
+        synchronized (this.padInfos)
+        {
+            super.flush ();
+            if (this.padInfos.isEmpty ())
+                return;
+            for (final String update: this.definition.buildLEDUpdate (this.padInfos))
+                this.output.sendSysex (update);
+            this.padInfos.clear ();
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void sendNoteState (final int note, final int color)
+    {
+        synchronized (this.padInfos)
+        {
+            this.padInfos.computeIfAbsent (Integer.valueOf (note), key -> new PadInfo ()).setColor (color);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
+    {
+        synchronized (this.padInfos)
+        {
+            final PadInfo info = this.padInfos.computeIfAbsent (Integer.valueOf (note), key -> new PadInfo ());
+            info.setBlinkColor (blinkColor);
+            info.setFast (fast);
+        }
     }
 }

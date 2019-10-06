@@ -160,9 +160,7 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
         if (revisionLevel.length == 4)
         {
             final String firmwareVersion = String.format ("%d%d%d%d", Integer.valueOf (revisionLevel[0]), Integer.valueOf (revisionLevel[1]), Integer.valueOf (revisionLevel[2]), Integer.valueOf (revisionLevel[3]));
-            final String text = "Firmware version: " + firmwareVersion;
-            this.host.println (text);
-            this.getTextDisplay ().notify (text);
+            this.host.println ("Firmware version: " + (firmwareVersion.charAt (0) == '0' ? firmwareVersion.substring (1) : firmwareVersion));
         }
     }
 

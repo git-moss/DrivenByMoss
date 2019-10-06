@@ -9,7 +9,9 @@ import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefini
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.grid.PadGrid;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -23,68 +25,40 @@ import de.mossgrabers.framework.utils.StringUtils;
 @SuppressWarnings("javadoc")
 public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadConfiguration>
 {
-    public static final int                      LAUNCHPAD_BUTTON_SCENE1            = 89;                      // 1/4
-    public static final int                      LAUNCHPAD_BUTTON_SCENE2            = 79;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE3            = 69;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE4            = 59;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE5            = 49;                      // ...
-    public static final int                      LAUNCHPAD_BUTTON_SCENE6            = 39;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE7            = 29;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE8            = 19;                      // 1/32T
+    public static final int                      LAUNCHPAD_BUTTON_SCENE1    = 89;             // 1/4
+    public static final int                      LAUNCHPAD_BUTTON_SCENE2    = 79;
+    public static final int                      LAUNCHPAD_BUTTON_SCENE3    = 69;
+    public static final int                      LAUNCHPAD_BUTTON_SCENE4    = 59;
+    public static final int                      LAUNCHPAD_BUTTON_SCENE5    = 49;             // ...
+    public static final int                      LAUNCHPAD_BUTTON_SCENE6    = 39;
+    public static final int                      LAUNCHPAD_BUTTON_SCENE7    = 29;
+    public static final int                      LAUNCHPAD_BUTTON_SCENE8    = 19;             // 1/32T
 
-    public static final int                      LAUNCHPAD_FADER_1                  = 21;
-    public static final int                      LAUNCHPAD_FADER_2                  = 22;
-    public static final int                      LAUNCHPAD_FADER_3                  = 23;
-    public static final int                      LAUNCHPAD_FADER_4                  = 24;
-    public static final int                      LAUNCHPAD_FADER_5                  = 25;
-    public static final int                      LAUNCHPAD_FADER_6                  = 26;
-    public static final int                      LAUNCHPAD_FADER_7                  = 27;
-    public static final int                      LAUNCHPAD_FADER_8                  = 28;
+    public static final int                      LAUNCHPAD_FADER_1          = 21;
+    public static final int                      LAUNCHPAD_FADER_2          = 22;
+    public static final int                      LAUNCHPAD_FADER_3          = 23;
+    public static final int                      LAUNCHPAD_FADER_4          = 24;
+    public static final int                      LAUNCHPAD_FADER_5          = 25;
+    public static final int                      LAUNCHPAD_FADER_6          = 26;
+    public static final int                      LAUNCHPAD_FADER_7          = 27;
+    public static final int                      LAUNCHPAD_FADER_8          = 28;
 
-    public static final int                      LAUNCHPAD_BUTTON_STATE_OFF         = 0;
-    public static final int                      LAUNCHPAD_BUTTON_STATE_ON          = 1;
-    public static final int                      LAUNCHPAD_BUTTON_STATE_HI          = 4;
+    public static final int                      LAUNCHPAD_LOGO             = 99;
 
-    public static final int                      CONTROL_MODE_OFF                   = 0;
-    public static final int                      CONTROL_MODE_REC_ARM               = 1;
-    public static final int                      CONTROL_MODE_TRACK_SELECT          = 2;
-    public static final int                      CONTROL_MODE_MUTE                  = 3;
-    public static final int                      CONTROL_MODE_SOLO                  = 4;
-    public static final int                      CONTROL_MODE_STOP_CLIP             = 5;
+    public static final int                      LAUNCHPAD_BUTTON_STATE_OFF = 0;
+    public static final int                      LAUNCHPAD_BUTTON_STATE_ON  = 1;
+    public static final int                      LAUNCHPAD_BUTTON_STATE_HI  = 4;
 
-    public static final String                   LAUNCHPAD_PRO_PRG_MODE             = "2C 03";
-    public static final String                   LAUNCHPAD_PRO_FADER_MODE           = "2C 02";
-    public static final String                   LAUNCHPAD_PRO_PAN_MODE             = LAUNCHPAD_PRO_FADER_MODE;
-
-    public static final String                   LAUNCHPAD_MKII_PRG_MODE            = "22 00";
-    public static final String                   LAUNCHPAD_MKII_FADER_MODE          = "22 04";
-    public static final String                   LAUNCHPAD_MKII_PAN_MODE            = "22 05";
-
-    private static final byte []                 LAUNCHPAD_VERSION_INQUIRY          =
-    {
-        (byte) 0xF0,
-        (byte) 0x00,
-        (byte) 0x20,
-        (byte) 0x29,
-        (byte) 0x00,
-        (byte) 0x70,
-        (byte) 0xF7
-    };
-
-    private static final int []                  LAUNCHPAD_VERSION_INQUIRY_RESPONSE =
-    {
-        0xF0,
-        0x00,
-        0x20,
-        0x29,
-        0x00,
-        0x70
-    };
+    public static final int                      CONTROL_MODE_OFF           = 0;
+    public static final int                      CONTROL_MODE_REC_ARM       = 1;
+    public static final int                      CONTROL_MODE_TRACK_SELECT  = 2;
+    public static final int                      CONTROL_MODE_MUTE          = 3;
+    public static final int                      CONTROL_MODE_SOLO          = 4;
+    public static final int                      CONTROL_MODE_STOP_CLIP     = 5;
 
     private final ILaunchpadControllerDefinition definition;
-    private final String                         prgMode;
-    private final String                         faderMode;
-    private final String                         panMode;
+    private final int []                         faderColorCache            = new int [8];
+    private final boolean []                     faderPanCache              = new boolean [8];
 
 
     /**
@@ -103,15 +77,11 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
 
         this.definition = definition;
 
-        // TODO
-        this.prgMode = this.definition.isPro () ? LAUNCHPAD_PRO_PRG_MODE : LAUNCHPAD_MKII_PRG_MODE;
-        this.faderMode = this.definition.isPro () ? LAUNCHPAD_PRO_FADER_MODE : LAUNCHPAD_MKII_FADER_MODE;
-        this.panMode = this.definition.isPro () ? LAUNCHPAD_PRO_PAN_MODE : LAUNCHPAD_MKII_PAN_MODE;
-
         this.buttonIDs.putAll (this.definition.getButtonIDs ());
 
         this.input.setSysexCallback (this::handleSysEx);
-        this.output.sendSysex (LAUNCHPAD_VERSION_INQUIRY);
+
+        this.output.sendSysex (DeviceInquiry.createQuery ());
     }
 
 
@@ -131,7 +101,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setLaunchpadToStandalone ()
     {
-        this.sendLaunchpadSysEx ("21 01");
+        this.sendLaunchpadSysEx (this.definition.getStandaloneModeCommand ());
     }
 
 
@@ -140,7 +110,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setLaunchpadToPrgMode ()
     {
-        this.sendLaunchpadSysEx (this.prgMode);
+        this.sendLaunchpadSysEx (this.definition.getProgramModeCommand ());
         // Ensure that grid gets redrawn, switch modes is especially very slow on the MkII
         this.host.scheduleTask (this.getPadGrid ()::forceFlush, 200);
     }
@@ -151,7 +121,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setLaunchpadToFaderMode ()
     {
-        this.sendLaunchpadSysEx (this.faderMode);
+        this.sendLaunchpadSysEx (this.definition.getFaderModeCommand ());
         // Ensure that grid gets redrawn, switch modes is especially very slow on the MkII
         this.host.scheduleTask (this.getPadGrid ()::forceFlush, 200);
     }
@@ -162,7 +132,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setLaunchpadToPanMode ()
     {
-        this.sendLaunchpadSysEx (this.panMode);
+        this.sendLaunchpadSysEx (this.definition.getPanModeCommand ());
         // Ensure that grid gets redrawn, switch modes is especially very slow on the MkII
         this.host.scheduleTask (this.getPadGrid ()::forceFlush, 200);
     }
@@ -171,24 +141,86 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     /**
      * Set the color of a fader (8 vertical pads).
      *
-     * @param number The number of the fader (0-7)
+     * @param index The number of the fader (0-7)
      * @param color The color to set
+     * @param isPan True for panorama layout
      */
-    public void setupFader (final int number, final int color)
+    public void setupFader (final int index, final int color, final boolean isPan)
     {
-        this.sendLaunchpadSysEx ("2B 0" + Integer.toString (number) + " 00 " + StringUtils.toHexStr (color) + " 00");
+        if (this.faderColorCache[index] == color && this.faderPanCache[index] == isPan)
+            return;
+
+        this.faderColorCache[index] = color;
+        this.faderPanCache[index] = isPan;
+
+        // Configure the emulated fader if there is native hardware support
+        if (this.definition.hasFaderSupport ())
+            this.sendLaunchpadSysEx ("2B 0" + Integer.toString (index) + (isPan ? " 01 " : " 00 ") + StringUtils.toHexStr (color) + " 00");
     }
 
 
     /**
-     * Set the color of a panorama fader (8 vertical pads).
+     * Set the faders value.
      *
-     * @param number The number of the fader (0-7)
-     * @param color The color to set
+     * @param index The index of the fader (0-7)
+     * @param value The value to set
      */
-    public void setupPanFader (final int number, final int color)
+    public void setFaderValue (final int index, final int value)
     {
-        this.sendLaunchpadSysEx ("2B 0" + Integer.toString (number) + " 01 " + StringUtils.toHexStr (color) + " 00");
+        if (this.definition.hasFaderSupport ())
+            this.output.sendCC (LAUNCHPAD_FADER_1 + index, value);
+        else
+        {
+            final PadGrid padGrid = this.getPadGrid ();
+
+            if (this.faderPanCache[index])
+            {
+                // Simulate pan fader
+                if (value == 64)
+                {
+                    for (int i = 0; i < 8; i++)
+                        padGrid.lightEx (index, i, i == 3 || i == 4 ? this.faderColorCache[index] : 0);
+                }
+                else if (value < 64)
+                {
+                    for (int i = 4; i < 8; i++)
+                        padGrid.lightEx (index, 7 - i, 0);
+
+                    final double numPads = 4.0 * value / 64.0 - 1;
+                    for (int i = 0; i < 4; i++)
+                        padGrid.lightEx (index, 7 - i, i > numPads ? this.faderColorCache[index] : 0);
+                }
+                else
+                {
+                    for (int i = 0; i < 4; i++)
+                        padGrid.lightEx (index, 7 - i, 0);
+
+                    final double numPads = 4.0 * (value - 64) / 64.0;
+                    for (int i = 4; i < 8; i++)
+                        padGrid.lightEx (index, 7 - i, i - 4 < numPads ? this.faderColorCache[index] : 0);
+                }
+            }
+            else
+            {
+                // Simulate normal fader
+                final double numPads = 8.0 * value / 127.0;
+                for (int i = 0; i < 8; i++)
+                    padGrid.lightEx (index, 7 - i, i < numPads ? this.faderColorCache[index] : 0);
+            }
+        }
+    }
+
+
+    /**
+     * Clear the faders cache.
+     */
+    public void clearFaders ()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            this.faderColorCache[i] = -1;
+            this.faderPanCache[i] = false;
+        }
     }
 
 
@@ -196,8 +228,22 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     @Override
     public void shutdown ()
     {
-        // Turn off front LED
-        this.sendLaunchpadSysEx ("0A 63 00");
+        if (this.definition.isPro ())
+        {
+            // Turn off front LED
+            this.sendLaunchpadSysEx ("0A 63 00");
+        }
+        else
+            this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_LOGO, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
 
         super.shutdown ();
     }
@@ -244,37 +290,39 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     }
 
 
-    private void handleSysEx (final String data)
+    /**
+     * Does it provide support for fader simulation?
+     *
+     * @return True if supported
+     */
+    public boolean hasFaderSupport ()
     {
-        final int [] resultData = StringUtils.fromHexStr (data);
-
-        if (compareInts (LAUNCHPAD_VERSION_INQUIRY_RESPONSE, resultData, LAUNCHPAD_VERSION_INQUIRY_RESPONSE.length))
-        {
-            // Returns the current bootloader and firmware versions and size of bootloader in KB
-            // f0 00 20 29 00 70 - 00 - 00 01 05 04 - 00 - 00 01 07 03 - 19 01 - f7
-
-            final int bootloaderVersion = resultData[8] * 100 + resultData[9] * 10 + resultData[10];
-            final int firmwareVersion = resultData[13] * 100 + resultData[14] * 10 + resultData[15];
-            this.host.println ("Bootloader: " + bootloaderVersion);
-            this.host.println ("Firmware: " + firmwareVersion);
-        }
-
-        // Further received data, which is not used:
-        // - Mode status: f000202902102dxxf7
-        // - Standalone Layout status: f000202902102fyyf7
+        return this.definition.hasFaderSupport ();
     }
 
 
-    private static boolean compareInts (final int [] array1, final int [] array2, final int length)
+    private void handleSysEx (final String data)
     {
-        if (array1.length < length || array2.length < length)
-            return false;
+        final int [] byteData = StringUtils.fromHexStr (data);
 
-        for (int i = 0; i < length; i++)
+        final DeviceInquiry deviceInquiry = new DeviceInquiry (byteData);
+        if (deviceInquiry.isValid ())
+            this.handleDeviceInquiryResponse (deviceInquiry);
+    }
+
+
+    /**
+     * Handle the response of a device inquiry.
+     *
+     * @param deviceInquiry The parsed response
+     */
+    private void handleDeviceInquiryResponse (final DeviceInquiry deviceInquiry)
+    {
+        final int [] revisionLevel = deviceInquiry.getRevisionLevel ();
+        if (revisionLevel.length == 4)
         {
-            if (array1[i] != array2[i])
-                return false;
+            final String firmwareVersion = String.format ("%d%d%d%d", Integer.valueOf (revisionLevel[0]), Integer.valueOf (revisionLevel[1]), Integer.valueOf (revisionLevel[2]), Integer.valueOf (revisionLevel[3]));
+            this.host.println ("Firmware version: " + (firmwareVersion.charAt (0) == '0' ? firmwareVersion.substring (1) : firmwareVersion));
         }
-        return true;
     }
 }

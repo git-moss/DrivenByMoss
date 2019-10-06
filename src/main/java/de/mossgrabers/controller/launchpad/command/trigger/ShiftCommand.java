@@ -48,10 +48,7 @@ public class ShiftCommand extends AbstractTriggerCommand<LaunchpadControlSurface
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        final ViewManager viewManager = this.surface.getViewManager ();
-        if (!viewManager.isActiveView (Views.SESSION))
-            viewManager.setActiveView (Views.SHIFT);
+        if (event == ButtonEvent.DOWN)
+            this.surface.getViewManager ().setActiveView (Views.SHIFT);
     }
 }

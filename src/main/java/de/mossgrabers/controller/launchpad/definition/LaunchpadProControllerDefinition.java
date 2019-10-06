@@ -6,14 +6,17 @@ package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.controller.grid.PadInfo;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 
@@ -25,35 +28,35 @@ import java.util.UUID;
 @SuppressWarnings("javadoc")
 public class LaunchpadProControllerDefinition extends DefaultControllerDefinition implements ILaunchpadControllerDefinition
 {
-    private static final UUID   EXTENSION_ID                 = UUID.fromString ("80B63970-64F1-11E5-A837-0800200C9A66");
-    private static final String SYSEX_HEADER                 = "F0 00 20 29 02 10 ";
+    private static final UUID   EXTENSION_ID               = UUID.fromString ("80B63970-64F1-11E5-A837-0800200C9A66");
+    private static final String SYSEX_HEADER               = "F0 00 20 29 02 10 ";
 
-    public static final int     LAUNCHPAD_BUTTON_SHIFT       = 80;
-    public static final int     LAUNCHPAD_BUTTON_CLICK       = 70;
-    public static final int     LAUNCHPAD_BUTTON_UNDO        = 60;
-    public static final int     LAUNCHPAD_BUTTON_DELETE      = 50;
-    public static final int     LAUNCHPAD_BUTTON_QUANTIZE    = 40;
-    public static final int     LAUNCHPAD_BUTTON_DUPLICATE   = 30;
-    public static final int     LAUNCHPAD_BUTTON_DOUBLE      = 20;
-    public static final int     LAUNCHPAD_BUTTON_RECORD      = 10;
+    public static final int     LAUNCHPAD_BUTTON_SHIFT     = 80;
+    public static final int     LAUNCHPAD_BUTTON_CLICK     = 70;
+    public static final int     LAUNCHPAD_BUTTON_UNDO      = 60;
+    public static final int     LAUNCHPAD_BUTTON_DELETE    = 50;
+    public static final int     LAUNCHPAD_BUTTON_QUANTIZE  = 40;
+    public static final int     LAUNCHPAD_BUTTON_DUPLICATE = 30;
+    public static final int     LAUNCHPAD_BUTTON_DOUBLE    = 20;
+    public static final int     LAUNCHPAD_BUTTON_RECORD    = 10;
 
-    public static final int     LAUNCHPAD_BUTTON_REC_ARM     = 1;
-    public static final int     LAUNCHPAD_BUTTON_TRACK       = 2;
-    public static final int     LAUNCHPAD_BUTTON_MUTE        = 3;
-    public static final int     LAUNCHPAD_BUTTON_SOLO        = 4;
-    public static final int     LAUNCHPAD_BUTTON_VOLUME      = 5;
-    public static final int     LAUNCHPAD_BUTTON_PAN         = 6;
-    public static final int     LAUNCHPAD_BUTTON_SENDS       = 7;
-    public static final int     LAUNCHPAD_BUTTON_STOP_CLIP   = 8;
+    public static final int     LAUNCHPAD_BUTTON_REC_ARM   = 1;
+    public static final int     LAUNCHPAD_BUTTON_TRACK     = 2;
+    public static final int     LAUNCHPAD_BUTTON_MUTE      = 3;
+    public static final int     LAUNCHPAD_BUTTON_SOLO      = 4;
+    public static final int     LAUNCHPAD_BUTTON_VOLUME    = 5;
+    public static final int     LAUNCHPAD_BUTTON_PAN       = 6;
+    public static final int     LAUNCHPAD_BUTTON_SENDS     = 7;
+    public static final int     LAUNCHPAD_BUTTON_STOP_CLIP = 8;
 
-    public static final int     LAUNCHPAD_PRO_BUTTON_UP      = 91;
-    public static final int     LAUNCHPAD_PRO_BUTTON_DOWN    = 92;
-    public static final int     LAUNCHPAD_PRO_BUTTON_LEFT    = 93;
-    public static final int     LAUNCHPAD_PRO_BUTTON_RIGHT   = 94;
-    public static final int     LAUNCHPAD_PRO_BUTTON_SESSION = 95;
-    public static final int     LAUNCHPAD_PRO_BUTTON_NOTE    = 96;
-    public static final int     LAUNCHPAD_PRO_BUTTON_DEVICE  = 97;
-    public static final int     LAUNCHPAD_PRO_BUTTON_USER    = 98;
+    public static final int     LAUNCHPAD_BUTTON_UP        = 91;
+    public static final int     LAUNCHPAD_BUTTON_DOWN      = 92;
+    public static final int     LAUNCHPAD_BUTTON_LEFT      = 93;
+    public static final int     LAUNCHPAD_BUTTON_RIGHT     = 94;
+    public static final int     LAUNCHPAD_BUTTON_SESSION   = 95;
+    public static final int     LAUNCHPAD_BUTTON_NOTE      = 96;
+    public static final int     LAUNCHPAD_BUTTON_DEVICE    = 97;
+    public static final int     LAUNCHPAD_BUTTON_USER      = 98;
 
 
     /**
@@ -102,9 +105,49 @@ public class LaunchpadProControllerDefinition extends DefaultControllerDefinitio
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasFaderSupport ()
+    {
+        return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getSysExHeader ()
     {
         return SYSEX_HEADER;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getStandaloneModeCommand ()
+    {
+        return "21 01";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getProgramModeCommand ()
+    {
+        return "2C 03";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getFaderModeCommand ()
+    {
+        return "2C 02";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getPanModeCommand ()
+    {
+        return this.getFaderModeCommand ();
     }
 
 
@@ -123,10 +166,10 @@ public class LaunchpadProControllerDefinition extends DefaultControllerDefinitio
         final Map<ButtonID, Integer> buttonIDs = new EnumMap<> (ButtonID.class);
         buttonIDs.put (ButtonID.SHIFT, Integer.valueOf (LAUNCHPAD_BUTTON_SHIFT));
 
-        buttonIDs.put (ButtonID.LEFT, Integer.valueOf (LAUNCHPAD_PRO_BUTTON_LEFT));
-        buttonIDs.put (ButtonID.RIGHT, Integer.valueOf (LAUNCHPAD_PRO_BUTTON_RIGHT));
-        buttonIDs.put (ButtonID.UP, Integer.valueOf (LAUNCHPAD_PRO_BUTTON_UP));
-        buttonIDs.put (ButtonID.DOWN, Integer.valueOf (LAUNCHPAD_PRO_BUTTON_DOWN));
+        buttonIDs.put (ButtonID.LEFT, Integer.valueOf (LAUNCHPAD_BUTTON_LEFT));
+        buttonIDs.put (ButtonID.RIGHT, Integer.valueOf (LAUNCHPAD_BUTTON_RIGHT));
+        buttonIDs.put (ButtonID.UP, Integer.valueOf (LAUNCHPAD_BUTTON_UP));
+        buttonIDs.put (ButtonID.DOWN, Integer.valueOf (LAUNCHPAD_BUTTON_DOWN));
 
         buttonIDs.put (ButtonID.DELETE, Integer.valueOf (LAUNCHPAD_BUTTON_DELETE));
         buttonIDs.put (ButtonID.DUPLICATE, Integer.valueOf (LAUNCHPAD_BUTTON_DUPLICATE));
@@ -134,10 +177,53 @@ public class LaunchpadProControllerDefinition extends DefaultControllerDefinitio
         buttonIDs.put (ButtonID.SOLO, Integer.valueOf (LAUNCHPAD_BUTTON_SOLO));
         buttonIDs.put (ButtonID.MUTE, Integer.valueOf (LAUNCHPAD_BUTTON_MUTE));
 
-        buttonIDs.put (ButtonID.SESSION, Integer.valueOf (LAUNCHPAD_PRO_BUTTON_SESSION));
-        buttonIDs.put (ButtonID.DEVICE, Integer.valueOf (LAUNCHPAD_PRO_BUTTON_DEVICE));
-        buttonIDs.put (ButtonID.USER, Integer.valueOf (LAUNCHPAD_PRO_BUTTON_USER));
-        buttonIDs.put (ButtonID.NOTE, Integer.valueOf (LAUNCHPAD_PRO_BUTTON_NOTE));
+        buttonIDs.put (ButtonID.SESSION, Integer.valueOf (LAUNCHPAD_BUTTON_SESSION));
+        buttonIDs.put (ButtonID.DEVICE, Integer.valueOf (LAUNCHPAD_BUTTON_DEVICE));
+        buttonIDs.put (ButtonID.USER, Integer.valueOf (LAUNCHPAD_BUTTON_USER));
+        buttonIDs.put (ButtonID.NOTE, Integer.valueOf (LAUNCHPAD_BUTTON_NOTE));
         return buttonIDs;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean sceneButtonsUseCC ()
+    {
+        return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<String> buildLEDUpdate (final Map<Integer, PadInfo> padInfos)
+    {
+        final StringBuilder sbNormal = new StringBuilder ();
+        final StringBuilder sbFlash = new StringBuilder ();
+        final StringBuilder sbPulse = new StringBuilder ();
+
+        for (final Entry<Integer, PadInfo> e: padInfos.entrySet ())
+        {
+            final int note = e.getKey ().intValue ();
+            final PadInfo info = e.getValue ();
+
+            sbNormal.append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getColor ())).append (' ');
+
+            if (info.getBlinkColor () > 0)
+            {
+                if (info.isFast ())
+                    sbFlash.append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getBlinkColor ())).append (' ');
+                else
+                    sbPulse.append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getBlinkColor ())).append (' ');
+            }
+        }
+
+        final List<String> result = new ArrayList<> (3);
+        if (sbNormal.length () > 0)
+            result.add (new StringBuilder (this.getSysExHeader ()).append ("0A ").append (sbNormal).append ("F7").toString ());
+        if (sbFlash.length () > 0)
+            result.add (new StringBuilder (this.getSysExHeader ()).append ("23 ").append (sbFlash).append ("F7").toString ());
+        if (sbPulse.length () > 0)
+            result.add (new StringBuilder (this.getSysExHeader ()).append ("28 ").append (sbPulse).append ("F7").toString ());
+        return result;
     }
 }
