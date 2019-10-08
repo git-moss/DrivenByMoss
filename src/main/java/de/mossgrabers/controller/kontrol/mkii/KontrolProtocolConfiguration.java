@@ -120,6 +120,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
         // Workflow
 
         this.activateNewClipLengthSetting (globalSettings);
+        this.activateKnobSpeedSetting (globalSettings, 4);
     }
 
 
