@@ -134,6 +134,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
+        ms.setHasFullFlatTrackList (true);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));

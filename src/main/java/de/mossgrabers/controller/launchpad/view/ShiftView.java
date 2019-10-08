@@ -217,39 +217,10 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     }
 
 
-    private boolean handleControlModes (final int note, final int velocity)
+    private boolean handleControlModes (final TriggerCommandID commandID)
     {
-        final ButtonEvent event = velocity == 0 ? ButtonEvent.UP : ButtonEvent.DOWN;
         final View view = this.surface.getViewManager ().getActiveView ();
-        switch (note)
-        {
-            case 36:
-                view.getTriggerCommand (TriggerCommandID.REC_ARM).execute (event);
-                break;
-            case 37:
-                view.getTriggerCommand (TriggerCommandID.TRACK).execute (event);
-                break;
-            case 38:
-                view.getTriggerCommand (TriggerCommandID.MUTE).execute (event);
-                break;
-            case 39:
-                view.getTriggerCommand (TriggerCommandID.SOLO).execute (event);
-                break;
-            case 40:
-                view.getTriggerCommand (TriggerCommandID.VOLUME).execute (event);
-                break;
-            case 41:
-                view.getTriggerCommand (TriggerCommandID.PAN_SEND).execute (event);
-                break;
-            case 42:
-                view.getTriggerCommand (TriggerCommandID.SENDS).execute (event);
-                break;
-            case 43:
-                view.getTriggerCommand (TriggerCommandID.STOP_CLIP).execute (event);
-                break;
-            default:
-                return false;
-        }
+        view.getTriggerCommand (commandID).execute (ButtonEvent.DOWN);
         final ModeManager modeManager = this.surface.getModeManager ();
         final Modes activeOrTempModeId = modeManager.getActiveOrTempModeId ();
         if (activeOrTempModeId != null && activeOrTempModeId.equals (modeManager.getPreviousModeId ()))
@@ -268,28 +239,28 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         switch (scene)
         {
             case 0:
-                this.handleControlModes (40, 127);
+                this.handleControlModes (TriggerCommandID.VOLUME);
                 break;
             case 1:
-                this.handleControlModes (41, 127);
+                this.handleControlModes (TriggerCommandID.PAN_SEND);
                 break;
             case 2:
-                this.handleControlModes (42, 127);
+                this.handleControlModes (TriggerCommandID.SENDS);
                 break;
             case 3:
-                this.handleControlModes (37, 127);
+                this.handleControlModes (TriggerCommandID.TRACK);
                 break;
             case 4:
-                this.handleControlModes (43, 127);
+                this.handleControlModes (TriggerCommandID.STOP_CLIP);
                 break;
             case 5:
-                this.handleControlModes (38, 127);
+                this.handleControlModes (TriggerCommandID.MUTE);
                 break;
             case 6:
-                this.handleControlModes (39, 127);
+                this.handleControlModes (TriggerCommandID.SOLO);
                 break;
             case 7:
-                this.handleControlModes (36, 127);
+                this.handleControlModes (TriggerCommandID.REC_ARM);
                 break;
             default:
                 // Not used

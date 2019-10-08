@@ -33,7 +33,7 @@ public class StopClipCommand extends AbstractTrackCommand
     @Override
     public void execute (final ButtonEvent event)
     {
-        if (this.surface.isShiftPressed ())
+        if (this.surface.isPro () && this.surface.isShiftPressed ())
         {
             this.model.getCurrentTrackBank ().stop ();
             return;
