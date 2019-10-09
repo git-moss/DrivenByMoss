@@ -25,4 +25,12 @@ public class EmptyLayer extends EmptyChannel implements ILayer
     {
         // Intentionally empty
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasDevices ()
+    {
+        return false;
+    }
 }

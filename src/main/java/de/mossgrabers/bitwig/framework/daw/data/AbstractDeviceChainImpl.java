@@ -58,4 +58,15 @@ public abstract class AbstractDeviceChainImpl<T extends DeviceChain> extends Abs
     {
         this.deviceChain.name ().addValueObserver (observer::update);
     }
+
+
+    /**
+     * Get the device chain.
+     *
+     * @return The device chain
+     */
+    public T getDeviceChain ()
+    {
+        return this.deviceChain;
+    }
 }

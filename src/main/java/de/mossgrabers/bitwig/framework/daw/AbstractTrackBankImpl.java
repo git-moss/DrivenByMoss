@@ -15,6 +15,7 @@ import de.mossgrabers.framework.observer.IIndexedValueObserver;
 import com.bitwig.extension.controller.api.Channel;
 import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
 import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 
 
@@ -25,7 +26,9 @@ import com.bitwig.extension.controller.api.TrackBank;
  */
 public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<TrackBank, ITrack> implements ITrackBank
 {
-    protected final CursorTrack cursorTrack;
+    private final ApplicationImpl application;
+    protected final CursorTrack   cursorTrack;
+    private final Track           rootGroup;
 
 
     /**
@@ -33,17 +36,21 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
      *
      * @param host The DAW host
      * @param valueChanger The value changer
-     * @param cursorTrack The cursor track assigned to this track bank
      * @param bank The bank to encapsulate
+     * @param cursorTrack The cursor track assigned to this track bank
+     * @param rootGroup The root track
+     * @param application The application
      * @param numTracks The number of tracks of a bank page
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractTrackBankImpl (final IHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final TrackBank bank, final int numTracks, final int numScenes, final int numSends)
+    public AbstractTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numTracks, final int numScenes, final int numSends)
     {
         super (host, valueChanger, bank, numTracks, numScenes, numSends);
 
+        this.application = application;
         this.cursorTrack = cursorTrack;
+        this.rootGroup = rootGroup;
 
         this.initItems ();
 
@@ -110,6 +117,6 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
     protected void initItems ()
     {
         for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new TrackImpl (this.host, this.valueChanger, this.cursorTrack, this.bank.getItemAt (i), i, this.numSends, this.numScenes));
+            this.items.add (new TrackImpl (this.host, this.valueChanger, this.application, this.cursorTrack, this.rootGroup, this.bank.getItemAt (i), i, this.numSends, this.numScenes));
     }
 }

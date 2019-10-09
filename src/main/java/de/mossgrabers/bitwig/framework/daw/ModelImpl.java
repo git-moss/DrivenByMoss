@@ -66,6 +66,7 @@ public class ModelImpl extends AbstractModel
         final Application app = controllerHost.createApplication ();
         this.application = new ApplicationImpl (app);
         final Project proj = controllerHost.getProject ();
+        this.rootTrackGroup = proj.getRootTrackGroup ();
         this.project = new ProjectImpl (proj, app);
 
         final Arranger bwArranger = controllerHost.createArranger ();
@@ -77,11 +78,12 @@ public class ModelImpl extends AbstractModel
         this.mixer = new MixerImpl (controllerHost.createMixer ());
         this.transport = new TransportImpl (controllerHost, this.valueChanger);
         this.groove = new GrooveImpl (controllerHost, this.valueChanger);
-        final MasterTrack master = controllerHost.createMasterTrack (0);
-        this.masterTrack = new MasterTrackImpl (this.host, this.valueChanger, master);
 
         this.cursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", 0, 0, true);
         this.cursorTrack.isPinned ().markInterested ();
+
+        final MasterTrack master = controllerHost.createMasterTrack (0);
+        this.masterTrack = new MasterTrackImpl (this.host, this.valueChanger, master, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application);
 
         final TrackBank tb;
         final int numTracks = this.modelSetup.getNumTracks ();
@@ -98,10 +100,9 @@ public class ModelImpl extends AbstractModel
         else
             tb = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
 
-        this.rootTrackGroup = proj.getRootTrackGroup ();
-        this.trackBank = new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, this.rootTrackGroup, numTracks, numScenes, numSends);
+        this.trackBank = new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numTracks, numScenes, numSends);
         final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numTracks, numScenes);
-        this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, this.cursorTrack, effectTrackBank, numTracks, numScenes, this.trackBank);
+        this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numTracks, numScenes, this.trackBank);
 
         this.muteSoloTrackBank = controllerHost.createTrackBank (ALL_TRACKS, 0, 0, true);
         for (int i = 0; i < ALL_TRACKS; i++)
@@ -136,12 +137,36 @@ public class ModelImpl extends AbstractModel
 
     /** {@inheritDoc} */
     @Override
+    public boolean isCursorTrackPinned ()
+    {
+        return this.cursorTrack.isPinned ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleCursorTrackPinned ()
+    {
+        this.cursorTrack.isPinned ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isCursorDeviceOnMasterTrack ()
+    {
+        return this.masterTrackEqualsValue.get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public ISceneBank createSceneBank (final int numScenes)
     {
         return this.sceneBanks.computeIfAbsent (Integer.valueOf (numScenes), key -> {
             final TrackBank tb = this.controllerHost.createMainTrackBank (1, this.modelSetup.getNumSends (), numScenes);
             tb.followCursorTrack (this.cursorTrack);
-            return new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, this.rootTrackGroup, 1, numScenes, 0).getSceneBank ();
+            return new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, 1, numScenes, 0).getSceneBank ();
         });
     }
 
@@ -192,30 +217,6 @@ public class ModelImpl extends AbstractModel
         if (this.cursorClips.isEmpty ())
             throw new FrameworkException ("No cursor clip created!");
         return this.cursorClips.values ().iterator ().next ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isCursorTrackPinned ()
-    {
-        return this.cursorTrack.isPinned ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleCursorTrackPinned ()
-    {
-        this.cursorTrack.isPinned ().toggle ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isCursorDeviceOnMasterTrack ()
-    {
-        return this.masterTrackEqualsValue.get ();
     }
 
 

@@ -58,7 +58,7 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             if (this.surface.isShiftPressed () || !cursorDevice.doesExist ())
-                this.model.getBrowser ().insertAfter (cursorDevice);
+                this.model.getBrowser ().insertAfterCursorDevice ();
             else
                 this.model.getBrowser ().replace (cursorDevice);
 

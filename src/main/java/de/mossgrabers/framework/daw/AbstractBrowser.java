@@ -20,6 +20,7 @@ public abstract class AbstractBrowser implements IBrowser
     protected IBrowserColumnItem [] resultData;
     protected IBrowserColumn []     columnData;
     protected int                   selectedFilterColumn = 0;
+    protected String                infoText             = "";
 
 
     /**
@@ -203,5 +204,13 @@ public abstract class AbstractBrowser implements IBrowser
     public int getNumFilterColumnEntries ()
     {
         return this.numFilterColumnEntries;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getInfoText ()
+    {
+        return this.infoText;
     }
 }

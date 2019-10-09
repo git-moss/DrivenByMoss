@@ -178,15 +178,21 @@ public class DeviceBrowserMode extends BaseMode
         switch (this.selectionMode)
         {
             case DeviceBrowserMode.SELECTION_OFF:
-                final String selectedResult = browser.getSelectedResult ();
-                final String deviceName = this.model.getCursorDevice ().getName ();
                 String selectedContentType = browser.getSelectedContentType ();
                 if (this.filterColumn == -1)
                     selectedContentType = Push1Display.SELECT_ARROW + selectedContentType;
 
-                display.setCell (0, 7, selectedContentType).setBlock (3, 0, " Selected Device:").setBlock (3, 1, deviceName.length () == 0 ? "None" : deviceName);
-                final boolean isPresetSession = browser.isPresetContentType ();
-                display.setBlock (3, 2, isPresetSession ? " Selected Preset:" : "").setBlock (3, 3, isPresetSession ? selectedResult == null || selectedResult.length () == 0 ? "None" : selectedResult : "");
+                String selectedResult = browser.getSelectedResult ();
+                selectedResult = selectedResult == null || selectedResult.length () == 0 ? "Selection: None" : "Selection: " + selectedResult;
+
+                final String infoText = browser.getInfoText ();
+                final String info1 = infoText.length () > 17 ? infoText.substring (0, 17) : infoText;
+                final String info2 = infoText.length () > 17 ? infoText.substring (17, infoText.length ()) : "";
+                display.setCell (0, 7, selectedContentType).setBlock (3, 0, info1).setBlock (3, 1, info2);
+
+                final String sel1 = selectedResult.length () > 17 ? selectedResult.substring (0, 17) : selectedResult;
+                final String sel2 = selectedResult.length () > 17 ? selectedResult.substring (17, selectedResult.length ()) : "";
+                display.setBlock (3, 2, sel1).setBlock (3, 3, sel2);
 
                 for (int i = 0; i < 7; i++)
                 {
@@ -252,15 +258,12 @@ public class DeviceBrowserMode extends BaseMode
         {
             case DeviceBrowserMode.SELECTION_OFF:
                 String selectedResult = browser.getSelectedResult ();
-                if (selectedResult == null || selectedResult.length () == 0)
-                    selectedResult = "None";
-                final boolean isPresetSession = browser.isPresetContentType ();
-                final String deviceName = this.model.getCursorDevice ().getName ();
+                selectedResult = selectedResult == null || selectedResult.length () == 0 ? "Selection: None" : "Selection: " + selectedResult;
                 for (int i = 0; i < 7; i++)
                 {
                     final IBrowserColumn column = this.getFilterColumn (i);
-                    final String headerTopName = i == 0 ? "Device: " + (deviceName.isEmpty () ? "None" : deviceName) : "";
-                    final String headerBottomName = i == 0 && isPresetSession ? "Preset: " + selectedResult : "";
+                    final String headerTopName = i == 0 ? browser.getInfoText () : "";
+                    final String headerBottomName = i == 0 ? selectedResult : "";
                     final String menuBottomName = getColumnName (column);
                     display.addOptionElement (headerTopName, column == null ? "" : column.getName (), i == this.filterColumn, headerBottomName, menuBottomName, !menuBottomName.equals (" "), false);
                 }

@@ -21,6 +21,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -159,7 +160,7 @@ public class DeviceLayerMode extends BaseMode
 
             final int offset = getDrumPadIndex (cd);
             final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
-            final IChannel layer = bank.getItem (offset + index);
+            final ILayer layer = (ILayer) bank.getItem (offset + index);
             if (!layer.doesExist ())
                 return;
 
@@ -170,6 +171,10 @@ public class DeviceLayerMode extends BaseMode
                 return;
             }
 
+            // Only select if it exists otherwise the parent device is selected which is confusing
+            // to the user
+            if (!layer.hasDevices ())
+                return;
             layer.enter ();
             final ModeManager modeManager = this.surface.getModeManager ();
             modeManager.setActiveMode (Modes.DEVICE_PARAMS);

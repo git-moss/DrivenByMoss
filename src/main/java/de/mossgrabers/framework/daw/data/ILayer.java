@@ -11,5 +11,10 @@ package de.mossgrabers.framework.daw.data;
  */
 public interface ILayer extends IChannel
 {
-    // Intentionally empty
+    /**
+     * Check if the layer contains devices.
+     *
+     * @return True if there is at least one device
+     */
+    boolean hasDevices ();
 }

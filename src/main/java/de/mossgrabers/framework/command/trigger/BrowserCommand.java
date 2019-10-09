@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -69,27 +70,65 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
      */
     public void startBrowser (final boolean insertDevice, final boolean beforeCurrent)
     {
-        final IBrowser browser = this.model.getBrowser ();
-
         // Patch Browser already active?
-        if (browser.isActive ())
+        if (this.model.getBrowser ().isActive ())
         {
             this.discardBrowser (this.getCommit ());
             return;
         }
 
+        if (this.activateBrowser (insertDevice, beforeCurrent))
+            this.browserModeActivator.activate ();
+    }
+
+
+    /**
+     * Activate the browser depending on the parameters and the currently active mode.
+     *
+     * @param insertDevice Insert a device if true otherwise select preset
+     * @param beforeCurrent Insert the device before the current device if any
+     * @return True if activated
+     */
+    private boolean activateBrowser (final boolean insertDevice, final boolean beforeCurrent)
+    {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (!insertDevice && cursorDevice.doesExist ())
-            browser.replace (cursorDevice);
-        else
+        final boolean hasCursorDevice = cursorDevice.doesExist ();
+
+        final IBrowser browser = this.model.getBrowser ();
+
+        if (hasCursorDevice)
         {
+            // Replace the cursor device
+            if (!insertDevice)
+            {
+                browser.replace (cursorDevice);
+                return true;
+            }
+
+            // Add device to layer or track
+
+            if (Modes.isLayerMode (this.surface.getModeManager ().getActiveOrTempModeId ()))
+            {
+                final IChannel layer = cursorDevice.getLayerOrDrumPadBank ().getSelectedItem ();
+                if (layer == null)
+                    return false;
+                browser.addDevice (layer);
+                return true;
+            }
+
             if (beforeCurrent)
-                browser.insertBefore (cursorDevice);
+                browser.insertBeforeCursorDevice ();
             else
-                browser.insertAfter (cursorDevice);
+                browser.insertAfterCursorDevice ();
+            return true;
         }
 
-        this.browserModeActivator.activate ();
+        // No cursor device, add to the selected channel, if any
+        final IChannel channel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (channel == null)
+            return false;
+        browser.addDevice (channel);
+        return true;
     }
 
 

@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.observer.ObserverManagement;
 
@@ -86,19 +87,23 @@ public interface IBrowser extends ObserverManagement
 
 
     /**
-     * Open the browser to browse for an item which will be inserted before the given one.
+     * Browse to add a new device to the given channel.
      *
-     * @param item An item
+     * @param channel The channel to which to add a new device
      */
-    void insertBefore (IItem item);
+    void addDevice (IChannel channel);
+
+
+    /**
+     * Open the browser to browse for an item which will be inserted before the given one.
+     */
+    void insertBeforeCursorDevice ();
 
 
     /**
      * Open the browser to browse for an item which will be inserted after the given one.
-     *
-     * @param item An item
      */
-    void insertAfter (IItem item);
+    void insertAfterCursorDevice ();
 
 
     /**
@@ -253,4 +258,13 @@ public interface IBrowser extends ObserverManagement
      * @return The number oif results.
      */
     int getNumFilterColumnEntries ();
+
+
+    /**
+     * Get an info text about what the browser is currently itendended to browse. E.g. 'Insert
+     * device'.
+     *
+     * @return The info text
+     */
+    String getInfoText ();
 }

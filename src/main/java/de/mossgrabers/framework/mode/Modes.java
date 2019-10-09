@@ -85,8 +85,6 @@ public enum Modes
     DEVICE_LAYER_SEND7,
     /** Edit Send 8 of all layers. */
     DEVICE_LAYER_SEND8,
-    /** Edit Sends of all layers. */
-    DEVICE_LAYER_SEND,
     /** Edit layer details. */
     DEVICE_LAYER_DETAILS,
 

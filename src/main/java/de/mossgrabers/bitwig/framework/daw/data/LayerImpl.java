@@ -10,6 +10,7 @@ import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 
 import com.bitwig.extension.controller.api.Channel;
+import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.DeviceBank;
 
 
@@ -20,7 +21,7 @@ import com.bitwig.extension.controller.api.DeviceBank;
  */
 public class LayerImpl extends ChannelImpl implements ILayer
 {
-    private final DeviceBank deviceBank;
+    private final Device firstItem;
 
 
     /**
@@ -37,8 +38,21 @@ public class LayerImpl extends ChannelImpl implements ILayer
     {
         super (host, valueChanger, layer, index, numSends);
 
-        this.deviceBank = layer.createDeviceBank (numDevices);
         layer.addIsSelectedInEditorObserver (this::setSelected);
+
+        final DeviceBank deviceBank = layer.createDeviceBank (numDevices);
+        this.firstItem = deviceBank.getItemAt (0);
+        this.firstItem.exists ().markInterested ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void enableObservers (final boolean enable)
+    {
+        super.enableObservers (enable);
+
+        this.firstItem.exists ().setIsSubscribed (enable);
     }
 
 
@@ -52,8 +66,16 @@ public class LayerImpl extends ChannelImpl implements ILayer
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasDevices ()
+    {
+        return this.firstItem.exists ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void enter ()
     {
-        this.deviceBank.getItemAt (0).selectInEditor ();
+        this.firstItem.selectInEditor ();
     }
 }

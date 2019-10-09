@@ -6,11 +6,13 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.BrowserColumnImpl;
 import de.mossgrabers.bitwig.framework.daw.data.BrowserColumnItemImpl;
+import de.mossgrabers.bitwig.framework.daw.data.ChannelImpl;
 import de.mossgrabers.bitwig.framework.daw.data.DrumPadImpl;
 import de.mossgrabers.bitwig.framework.daw.data.SlotImpl;
 import de.mossgrabers.framework.daw.AbstractBrowser;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IItem;
 
 import com.bitwig.extension.controller.api.BrowserFilterColumn;
@@ -164,25 +166,40 @@ public class BrowserImpl extends AbstractBrowser
         else
             return;
 
+        final String name = item.getName ();
+        this.infoText = "Replace: " + (name.length () == 0 ? "Empty" : name);
+
         this.browse (insertionPoint);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void insertBefore (final IItem item)
+    public void addDevice (final IChannel channel)
     {
-        if (item instanceof CursorDeviceImpl)
-            this.browse (this.cursorDevice.exists ().get () ? this.cursorDevice.beforeDeviceInsertionPoint () : this.cursorTrack.startOfDeviceChainInsertionPoint ());
+        this.infoText = "Add device to: " + channel.getName ();
+
+        this.browse (((ChannelImpl) channel).getDeviceChain ().startOfDeviceChainInsertionPoint ());
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void insertAfter (final IItem item)
+    public void insertBeforeCursorDevice ()
     {
-        if (item instanceof CursorDeviceImpl)
-            this.browse (this.cursorDevice.exists ().get () ? this.cursorDevice.afterDeviceInsertionPoint () : this.cursorTrack.endOfDeviceChainInsertionPoint ());
+        this.infoText = "Insert device before: " + this.cursorDevice.name ().get ();
+
+        this.browse (this.cursorDevice.exists ().get () ? this.cursorDevice.beforeDeviceInsertionPoint () : this.cursorTrack.startOfDeviceChainInsertionPoint ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void insertAfterCursorDevice ()
+    {
+        this.infoText = "Insert device after: " + this.cursorDevice.name ().get ();
+
+        this.browse (this.cursorDevice.exists ().get () ? this.cursorDevice.afterDeviceInsertionPoint () : this.cursorTrack.endOfDeviceChainInsertionPoint ());
     }
 
 

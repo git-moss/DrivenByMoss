@@ -76,9 +76,9 @@ public class BrowserModule extends AbstractModule
                     case "device":
                         final String insertLocation = path.isEmpty () ? null : path.removeFirst ();
                         if (insertLocation == null || "after".equals (insertLocation))
-                            browser.insertAfter (this.model.getCursorDevice ());
+                            browser.insertAfterCursorDevice ();
                         else
-                            browser.insertBefore (this.model.getCursorDevice ());
+                            browser.insertBeforeCursorDevice ();
                         break;
 
                     case "commit":

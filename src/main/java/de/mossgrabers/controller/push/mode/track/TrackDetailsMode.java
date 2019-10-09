@@ -156,26 +156,26 @@ public class TrackDetailsMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITrack deviceChain = this.getSelectedTrack ();
-        if (deviceChain == null)
+        final ITrack track = this.getSelectedTrack ();
+        if (track == null)
         {
             display.setRow (1, "                     Please selecta track...                        ");
             return;
         }
 
-        final String trackName = deviceChain.getName ();
-        display.setBlock (0, 0, "Track: " + trackName);
+        final String trackName = track.getName ();
+        display.setBlock (0, 0, getTrackTitle (track) + trackName);
         if (trackName.length () > 10)
             display.setBlock (0, 1, trackName.substring (10));
-        display.setCell (2, 0, "Active").setCell (3, 0, deviceChain.isActivated () ? "On" : "Off");
+        display.setCell (2, 0, "Active").setCell (3, 0, track.isActivated () ? "On" : "Off");
         display.setCell (2, 1, "Rec Arm");
-        display.setCell (3, 1, deviceChain.isRecArm () ? "On" : "Off");
-        display.setCell (2, 2, "Mute").setCell (3, 2, deviceChain.isMute () ? "On" : "Off");
-        display.setCell (2, 3, "Solo").setCell (3, 3, deviceChain.isSolo () ? "On" : "Off");
+        display.setCell (3, 1, track.isRecArm () ? "On" : "Off");
+        display.setCell (2, 2, "Mute").setCell (3, 2, track.isMute () ? "On" : "Off");
+        display.setCell (2, 3, "Solo").setCell (3, 3, track.isSolo () ? "On" : "Off");
         display.setCell (2, 4, "Monitor");
-        display.setCell (3, 4, deviceChain.isMonitor () ? "On" : "Off");
+        display.setCell (3, 4, track.isMonitor () ? "On" : "Off");
         display.setCell (2, 5, "Auto Monitor");
-        display.setCell (3, 5, deviceChain.isAutoMonitor () ? "On" : "Off");
+        display.setCell (3, 5, track.isAutoMonitor () ? "On" : "Off");
         final boolean hasPinning = this.model.getHost ().hasPinning ();
         display.setCell (2, 6, hasPinning ? "Pin Trck" : "");
         display.setCell (3, 6, hasPinning ? this.model.isCursorTrackPinned () ? "On" : "Off" : "");
@@ -187,25 +187,45 @@ public class TrackDetailsMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final ITrack deviceChain = this.getSelectedTrack ();
-        if (deviceChain == null)
+        final ITrack track = this.getSelectedTrack ();
+        if (track == null)
         {
             display.setMessage (3, "Please select a track...");
             return;
         }
 
-        display.addOptionElement ("Track: " + deviceChain.getName (), "", false, "", "Active", deviceChain.isActivated (), false);
-        display.addOptionElement ("", "", false, "", "Rec Arm", deviceChain.isRecArm (), false);
-        display.addOptionElement ("", "", false, "", "Mute", deviceChain.isMute (), false);
-        display.addOptionElement ("", "", false, "", "Solo", deviceChain.isSolo (), false);
-        display.addOptionElement ("", "", false, "", "Monitor", deviceChain.isMonitor (), false);
-        display.addOptionElement ("", "", false, "", "Auto Monitor", deviceChain.isAutoMonitor (), false);
+        display.addOptionElement (getTrackTitle (track) + track.getName (), "", false, "", "Active", track.isActivated (), false);
+        display.addOptionElement ("", "", false, "", "Rec Arm", track.isRecArm (), false);
+        display.addOptionElement ("", "", false, "", "Mute", track.isMute (), false);
+        display.addOptionElement ("", "", false, "", "Solo", track.isSolo (), false);
+        display.addOptionElement ("", "", false, "", "Monitor", track.isMonitor (), false);
+        display.addOptionElement ("", "", false, "", "Auto Monitor", track.isAutoMonitor (), false);
         final boolean hasPinning = this.model.getHost ().hasPinning ();
         display.addOptionElement ("", "", false, "", hasPinning ? "Pin Track" : "", hasPinning && this.model.isCursorTrackPinned (), false);
         display.addOptionElement ("", "", false, "", "Select Color", false, false);
     }
 
 
+    /**
+     * Get a label for the track.
+     * 
+     * @param track The track
+     * @return The label
+     */
+    private static String getTrackTitle (final ITrack track)
+    {
+        if (track.hasParent ())
+            return "Child Track: ";
+        return "Track: ";
+    }
+
+
+    /**
+     * Get the currently selected track. If none is selected in the bank the master track is
+     * returned.
+     *
+     * @return The selected track
+     */
     private ITrack getSelectedTrack ()
     {
         final ITrack t = this.model.getSelectedTrack ();
