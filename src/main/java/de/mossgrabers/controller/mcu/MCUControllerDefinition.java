@@ -35,7 +35,6 @@ public class MCUControllerDefinition extends DefaultControllerDefinition
         "MCU - Control Universal + 3 Extenders"
     };
 
-
     /**
      * Constructor.
      *
@@ -60,6 +59,7 @@ public class MCUControllerDefinition extends DefaultControllerDefinition
                 pairs.addAll (this.createDeviceDiscoveryPairs ("Platform M V1.14"));
                 pairs.addAll (this.createDeviceDiscoveryPairs ("Platform M+ V1.07"));
                 pairs.addAll (this.createDeviceDiscoveryPairs ("X-Touch One"));
+                pairs.addAll (this.createDeviceDiscoveryPairs ("ZOOM R16_R24"));
                 pairs.addAll (this.createDeviceDiscoveryPairs ("ZOOM R16_R24 Audio Interface"));
                 break;
 
