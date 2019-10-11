@@ -9,6 +9,7 @@ import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.mode.Modes;
@@ -56,7 +57,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
 
         final ITextDisplay display = this.surface.getTextDisplay ();
 
-        // Select Send channels when Send button is additionally pressed
+        // Select Send channels if Send button is pressed
         if (this.surface.isPressed (MCUControlSurface.MCU_MODE_SENDS))
         {
             final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
@@ -71,6 +72,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             return;
         }
 
+        // Select clip length if Shift is pressed
         if (this.surface.isShiftPressed ())
         {
             final MCUConfiguration configuration = this.surface.getConfiguration ();
@@ -79,9 +81,26 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             return;
         }
 
+        // Execute stop if Select is pressed
         if (this.surface.isSelectPressed ())
         {
             this.model.getCurrentTrackBank ().getItem (this.channel).stop ();
+            return;
+        }
+
+        // Select marker if marker mode is active
+        if (this.surface.getModeManager ().isActiveOrTempMode (Modes.MARKERS))
+        {
+            this.model.getMarkerBank ().getItem (this.channel).select ();
+            return;
+        }
+
+        // Select parameter if device mode is active
+        if (this.surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_PARAMS))
+        {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (cursorDevice.doesExist ())
+                cursorDevice.getParameterBank ().getItem (this.channel).select ();
             return;
         }
 

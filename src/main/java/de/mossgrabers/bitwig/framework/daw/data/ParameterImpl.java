@@ -175,4 +175,12 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     {
         this.parameter.touch (isBeingTouched);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void select ()
+    {
+        // Parameters cannot be selected but should also not crash
+    }
 }

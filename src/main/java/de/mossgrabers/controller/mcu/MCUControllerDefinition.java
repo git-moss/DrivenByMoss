@@ -5,7 +5,10 @@
 package de.mossgrabers.controller.mcu;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -41,5 +44,41 @@ public class MCUControllerDefinition extends DefaultControllerDefinition
     public MCUControllerDefinition (final int numMCUExtenders)
     {
         super (EXTENSION_ID[numMCUExtenders], HARDWARE_MODEL[numMCUExtenders], "Mackie", numMCUExtenders + 1, numMCUExtenders + 1);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
+    {
+        final List<Pair<String [], String []>> pairs = super.getMidiDiscoveryPairs (os);
+
+        switch (this.getNumMidiInPorts ())
+        {
+            case 1:
+                pairs.addAll (this.createDeviceDiscoveryPairs ("iCON QCON Pro X V1.15"));
+                pairs.addAll (this.createDeviceDiscoveryPairs ("Platform M V1.14"));
+                pairs.addAll (this.createDeviceDiscoveryPairs ("Platform M+ V1.07"));
+                pairs.addAll (this.createDeviceDiscoveryPairs ("X-Touch One"));
+                pairs.addAll (this.createDeviceDiscoveryPairs ("ZOOM R16_R24 Audio Interface"));
+                break;
+
+            case 2:
+                this.addDeviceDiscoveryPair (new String []
+                {
+                    "iCON QCON Pro X V1.15",
+                    "iCON QCON Pro XS1 V1.08"
+                }, new String []
+                {
+                    "iCON QCON Pro X V1.15",
+                    "iCON QCON Pro XS1 V1.08"
+                });
+                break;
+
+            default:
+                break;
+        }
+
+        return pairs;
     }
 }

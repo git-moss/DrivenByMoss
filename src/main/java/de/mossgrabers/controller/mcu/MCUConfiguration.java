@@ -53,6 +53,7 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final int        FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS = 18;
 
     private static final String    DEVICE_SELECT                           = "<Select a profile>";
+    private static final String    DEVICE_BEHRINGER_X_TOUCH_ONE            = "Behringer X-Touch One";
     private static final String    DEVICE_ICON_PLATFORM_M                  = "icon Platform M / M+";
     private static final String    DEVICE_ICON_QCON_PRO_X                  = "icon QConPro X";
     private static final String    DEVICE_MACKIE_MCU_PRO                   = "Mackie MCU Pro";
@@ -61,6 +62,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private static final String [] DEVICE_OPTIONS                          =
     {
         DEVICE_SELECT,
+        DEVICE_BEHRINGER_X_TOUCH_ONE,
         DEVICE_ICON_PLATFORM_M,
         DEVICE_ICON_QCON_PRO_X,
         DEVICE_MACKIE_MCU_PRO,
@@ -193,6 +195,18 @@ public class MCUConfiguration extends AbstractConfiguration
         profileSetting.addValueObserver (value -> {
             switch (value)
             {
+                case DEVICE_BEHRINGER_X_TOUCH_ONE:
+                    this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
+                    this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
+                    this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
+                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
+                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
+                    this.setVUMetersEnabled (true);
+                    break;
+
                 case DEVICE_ICON_PLATFORM_M:
                     this.hasDisplay1Setting.set (ON_OFF_OPTIONS[0]);
                     this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
