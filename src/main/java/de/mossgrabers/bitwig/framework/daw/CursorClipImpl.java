@@ -21,16 +21,17 @@ import java.util.Arrays;
  */
 public class CursorClipImpl implements INoteClip
 {
-    private int             numSteps;
-    private int             numRows;
+    private final ControllerHost host;
+    private IValueChanger        valueChanger;
+    private int                  numSteps;
+    private int                  numRows;
 
-    private final int [] [] launcherData;
-    private final int [] [] arrangerData;
-    private Clip            launcherClip;
-    private Clip            arrangerClip;
-    private IValueChanger   valueChanger;
-    private int             editPage = 0;
-    private double          stepLength;
+    private final int [] []      launcherData;
+    private final int [] []      arrangerData;
+    private Clip                 launcherClip;
+    private Clip                 arrangerClip;
+    private int                  editPage = 0;
+    private double               stepLength;
 
 
     /**
@@ -44,6 +45,7 @@ public class CursorClipImpl implements INoteClip
     public CursorClipImpl (final ControllerHost host, final IValueChanger valueChanger, final int numSteps, final int numRows)
     {
         this.valueChanger = valueChanger;
+        this.host = host;
 
         this.numSteps = numSteps;
         this.numRows = numRows;
@@ -551,8 +553,21 @@ public class CursorClipImpl implements INoteClip
 
     private void handleStepData (final int col, final int row, final int state)
     {
+        final int [] [] data = this.getData ();
+
+        if (col >= data.length)
+        {
+            this.host.errorln ("Step data was sent for column " + col + " (zero based) but only " + this.numSteps + " were requested.");
+            return;
+        }
+        if (row >= data[col].length)
+        {
+            this.host.errorln ("Step data was sent for row " + row + " (zero based) but only " + this.numRows + " were requested.");
+            return;
+        }
+
         // state: step is empty (0) or a note continues playing (1) or starts playing (2)
-        this.getData ()[col][row] = state;
+        data[col][row] = state;
     }
 
 

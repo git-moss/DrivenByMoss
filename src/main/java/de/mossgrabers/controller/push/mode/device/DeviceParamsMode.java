@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.IParameterPageBank;
@@ -38,19 +39,20 @@ import de.mossgrabers.framework.view.View;
  */
 public class DeviceParamsMode extends BaseMode
 {
-    private static final String [] MENU =
+    private static final String [] MENU     =
     {
         "On",
         "Parameters",
         "Expanded",
-        null,
+        "Chains",
         "Banks",
         "Pin Device",
         "Window",
         "Up"
     };
 
-    private boolean                showDevices;
+    protected final String []      hostMenu = new String [MENU.length];
+    protected boolean              showDevices;
 
 
     /**
@@ -65,6 +67,13 @@ public class DeviceParamsMode extends BaseMode
 
         this.isTemporary = false;
         this.showDevices = true;
+
+        System.arraycopy (MENU, 0, this.hostMenu, 0, MENU.length);
+        final IHost host = this.model.getHost ();
+        if (!host.hasPinning ())
+            this.hostMenu[5] = "";
+        if (!host.hasSlotChains ())
+            this.hostMenu[3] = "";
     }
 
 
@@ -180,9 +189,16 @@ public class DeviceParamsMode extends BaseMode
      */
     protected void moveUp ()
     {
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (modeManager.isActiveOrTempMode (Modes.DEVICE_CHAINS))
+        {
+            modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+            return;
+        }
+
         // There is no device on the track move upwards to the track view
-        final ICursorDevice cd = this.model.getCursorDevice ();
         final View activeView = this.surface.getViewManager ().getActiveView ();
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
         {
             activeView.executeTriggerCommand (TriggerCommandID.TRACK, ButtonEvent.DOWN);
@@ -190,7 +206,6 @@ public class DeviceParamsMode extends BaseMode
         }
 
         // Parameter banks are shown -> show devices
-        final ModeManager modeManager = this.surface.getModeManager ();
         final DeviceParamsMode deviceParamsMode = (DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS);
         if (!deviceParamsMode.isShowDevices ())
         {
@@ -202,9 +217,14 @@ public class DeviceParamsMode extends BaseMode
         if (cd.isNested ())
         {
             cd.selectParent ();
-            modeManager.setActiveMode (Modes.DEVICE_LAYER);
-            deviceParamsMode.setShowDevices (false);
-            cd.selectChannel ();
+            this.model.getHost ().scheduleTask ( () -> {
+                if (cd.hasLayers ())
+                    modeManager.setActiveMode (Modes.DEVICE_LAYER);
+                else
+                    modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+                deviceParamsMode.setShowDevices (false);
+                cd.selectChannel ();
+            }, 300);
             return;
         }
 
@@ -257,6 +277,7 @@ public class DeviceParamsMode extends BaseMode
         if (event != ButtonEvent.DOWN)
             return;
         final ICursorDevice device = this.model.getCursorDevice ();
+        final ModeManager modeManager = this.surface.getModeManager ();
         switch (index)
         {
             case 0:
@@ -271,9 +292,20 @@ public class DeviceParamsMode extends BaseMode
                 if (device.doesExist ())
                     device.toggleExpanded ();
                 break;
+            case 3:
+                if (!this.model.getHost ().hasSlotChains ())
+                    return;
+                if (modeManager.isActiveOrTempMode (Modes.DEVICE_CHAINS))
+                    modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+                else
+                    modeManager.setActiveMode (Modes.DEVICE_CHAINS);
+                break;
             case 4:
-                if (device.doesExist ())
-                    this.showDevices = !this.showDevices;
+                if (!device.doesExist ())
+                    return;
+                if (!modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
+                    modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+                this.showDevices = !this.showDevices;
                 break;
             case 5:
                 if (device.doesExist ())
@@ -316,7 +348,7 @@ public class DeviceParamsMode extends BaseMode
         this.surface.updateTrigger (102, cd.isEnabled () ? green : grey);
         this.surface.updateTrigger (103, cd.isParameterPageSectionVisible () ? orange : white);
         this.surface.updateTrigger (104, cd.isExpanded () ? orange : white);
-        this.surface.updateTrigger (105, off);
+        this.surface.updateTrigger (105, this.surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_CHAINS) ? orange : white);
         this.surface.updateTrigger (106, this.showDevices ? white : orange);
         this.surface.updateTrigger (107, this.model.getHost ().hasPinning () ? cd.isPinned () ? turquoise : grey : off);
         this.surface.updateTrigger (108, cd.isWindowOpen () ? turquoise : grey);
@@ -329,11 +361,8 @@ public class DeviceParamsMode extends BaseMode
     public void updateDisplay1 (final ITextDisplay display)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
-        {
-            display.setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
+        if (!this.checkExists1 (display, cd))
             return;
-        }
 
         // Row 1 & 2
         final IParameterBank parameterBank = cd.getParameterBank ();
@@ -379,53 +408,21 @@ public class DeviceParamsMode extends BaseMode
     public void updateDisplay2 (final IGraphicDisplay display)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
-        {
-            for (int i = 0; i < 8; i++)
-                display.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
+        if (!this.checkExists2 (display, cd))
             return;
-        }
 
         final String color = this.model.getCurrentTrackBank ().getSelectedChannelColorEntry ();
-        final IValueChanger valueChanger = this.model.getValueChanger ();
+        final double [] bottomMenuColor = DAWColors.getColorEntry (color);
 
         final IDeviceBank deviceBank = cd.getDeviceBank ();
         final IParameterBank parameterBank = cd.getParameterBank ();
         final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
         final int selectedPage = parameterPageBank.getSelectedItemIndex ();
-
         final boolean hasPinning = this.model.getHost ().hasPinning ();
+        final IValueChanger valueChanger = this.model.getValueChanger ();
         for (int i = 0; i < parameterBank.getPageSize (); i++)
         {
-            boolean isTopMenuOn;
-            switch (i)
-            {
-                case 0:
-                    isTopMenuOn = cd.isEnabled ();
-                    break;
-                case 1:
-                    isTopMenuOn = cd.isParameterPageSectionVisible ();
-                    break;
-                case 2:
-                    isTopMenuOn = cd.isExpanded ();
-                    break;
-                case 4:
-                    isTopMenuOn = !this.showDevices;
-                    break;
-                case 5:
-                    isTopMenuOn = hasPinning && cd.isPinned ();
-                    break;
-                case 6:
-                    isTopMenuOn = cd.isWindowOpen ();
-                    break;
-                case 7:
-                    isTopMenuOn = true;
-                    break;
-                default:
-                    // Not used
-                    isTopMenuOn = false;
-                    break;
-            }
+            final boolean isTopMenuOn = getTopMenuEnablement (cd, hasPinning, i);
 
             String bottomMenu;
             final String bottomMenuIcon;
@@ -447,7 +444,6 @@ public class DeviceParamsMode extends BaseMode
                 isBottomMenuOn = i == selectedPage;
             }
 
-            final double [] bottomMenuColor = DAWColors.getColorEntry (color);
             final IParameter param = parameterBank.getItem (i);
             final boolean exists = param.doesExist ();
             final String parameterName = exists ? param.getName (9) : "";
@@ -456,7 +452,53 @@ public class DeviceParamsMode extends BaseMode
             final boolean parameterIsActive = this.isKnobTouched[i];
             final int parameterModulatedValue = valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1);
 
-            display.addParameterElement (i != 5 || hasPinning ? MENU[i] : "", isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+            display.addParameterElement (this.hostMenu[i], isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+        }
+    }
+
+
+    protected boolean checkExists1 (final ITextDisplay display, final ICursorDevice cd)
+    {
+        if (cd.doesExist ())
+            return true;
+        display.setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
+        return false;
+    }
+
+
+    protected boolean checkExists2 (final IGraphicDisplay display, final ICursorDevice cd)
+    {
+        if (cd.doesExist ())
+            return true;
+        for (int i = 0; i < 8; i++)
+            display.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
+        return false;
+    }
+
+
+    protected boolean getTopMenuEnablement (final ICursorDevice cd, final boolean hasPinning, int index)
+    {
+        switch (index)
+        {
+            case 0:
+                return cd.isEnabled ();
+            case 1:
+                return cd.isParameterPageSectionVisible ();
+            case 2:
+                return cd.isExpanded ();
+            case 3:
+                return this.surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_CHAINS);
+            case 4:
+                return !this.surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_CHAINS) && !this.showDevices;
+            case 5:
+                return hasPinning && cd.isPinned ();
+            case 6:
+                return cd.isWindowOpen ();
+            case 7:
+                return true;
+            default:
+                // Not used
+                return false;
         }
     }
 

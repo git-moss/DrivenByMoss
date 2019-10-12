@@ -98,6 +98,14 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasSlotChains ()
+    {
+        return true;
+    }
+
+
+     /** {@inheritDoc} */
+    @Override
     public boolean canEditMarkers ()
     {
         return false;

@@ -39,5 +39,6 @@ public class ToggleDuplicateButtonCommand extends AbstractTriggerCommand<Maschin
 
         final MaschineMikroMk3Configuration configuration = this.surface.getConfiguration ();
         configuration.setDuplicateEnabled (!configuration.isDuplicateEnabled ());
+        this.surface.getDisplay ().notify ("Duplicate enabled. Press a pad...");
     }
 }

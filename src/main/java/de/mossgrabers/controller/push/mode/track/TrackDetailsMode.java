@@ -208,7 +208,7 @@ public class TrackDetailsMode extends BaseMode
 
     /**
      * Get a label for the track.
-     * 
+     *
      * @param track The track
      * @return The label
      */

@@ -18,7 +18,7 @@ import de.mossgrabers.controller.beatstep.view.ShiftView;
 import de.mossgrabers.controller.beatstep.view.TrackView;
 import de.mossgrabers.framework.command.ContinuousCommandID;
 import de.mossgrabers.framework.command.TriggerCommandID;
-import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
+import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -196,7 +196,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         }
         this.addContinuousCommand (ContinuousCommandID.MASTER_KNOB, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, new PlayPositionCommand<> (this.model, surface));
         final PlayView playView = (PlayView) viewManager.getView (Views.PLAY);
-        playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, surface));
+        playView.registerAftertouchCommand (new AftertouchAbstractViewCommand<> (playView, this.model, surface));
     }
 
 

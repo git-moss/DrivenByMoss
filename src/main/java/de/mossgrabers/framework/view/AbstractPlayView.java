@@ -13,7 +13,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -146,17 +145,6 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
         this.scales.incOctave ();
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getRangeText ());
-    }
-
-
-    /**
-     * Get the currently pressed keys.
-     *
-     * @return The list with the keys
-     */
-    public List<Integer> getPressedKeys ()
-    {
-        return this.keyManager.getPressedKeys ();
     }
 
 

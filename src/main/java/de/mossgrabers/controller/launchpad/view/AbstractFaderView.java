@@ -27,7 +27,7 @@ public abstract class AbstractFaderView extends SessionView
     private final int []        faderMoveDestination = new int [8];
 
     // @formatter:off
-    private static final int [] SPEED_SCALE          = 
+    private static final int [] SPEED_SCALE          =
     {
         1,   1,  1,  1,  1,  1,  1,  1,
         1,   1,  1,  1,  1,  1,  1,  1,
@@ -107,7 +107,7 @@ public abstract class AbstractFaderView extends SessionView
 
     /**
      * Special handling of pads for smoothing the fader, e.g. special handling of 1st row.
-     * 
+     *
      * @param index The fader index
      * @param row The row of the pressed pad
      * @param value The calculated value
@@ -122,7 +122,7 @@ public abstract class AbstractFaderView extends SessionView
 
     /**
      * Hook for getting the fader value.
-     * 
+     *
      * @param index The index of the fader
      * @return The fader value
      */

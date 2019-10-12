@@ -49,7 +49,7 @@ import de.mossgrabers.controller.launchpad.view.VolumeView;
 import de.mossgrabers.framework.command.ContinuousCommandID;
 import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.TriggerCommandID;
-import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
+import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
@@ -83,6 +83,7 @@ import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SoloMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
@@ -275,6 +276,11 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings(
+    {
+        "rawtypes",
+        "unchecked"
+    })
     @Override
     protected void registerContinuousCommands ()
     {
@@ -282,10 +288,19 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         for (int i = 0; i < 8; i++)
             this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.KNOB1, i), LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, new FaderCommand (i, this.model, surface));
         final ViewManager viewManager = surface.getViewManager ();
-        final PlayView playView = (PlayView) viewManager.getView (Views.PLAY);
-        playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, surface));
-        final PianoView pianoView = (PianoView) viewManager.getView (Views.PIANO);
-        pianoView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (pianoView, this.model, surface));
+
+        Views [] views =
+        {
+            Views.PLAY,
+            Views.PIANO,
+            Views.DRUM,
+            Views.DRUM64
+        };
+        for (final Views viewID: views)
+        {
+            final AbstractView view = (AbstractView) viewManager.getView (viewID);
+            view.registerAftertouchCommand (new AftertouchAbstractViewCommand (view, this.model, surface));
+        }
     }
 
 

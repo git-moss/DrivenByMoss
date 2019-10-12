@@ -56,6 +56,7 @@ import de.mossgrabers.controller.push.mode.SessionViewSelectMode;
 import de.mossgrabers.controller.push.mode.SetupMode;
 import de.mossgrabers.controller.push.mode.TransportMode;
 import de.mossgrabers.controller.push.mode.device.DeviceBrowserMode;
+import de.mossgrabers.controller.push.mode.device.DeviceChainsMode;
 import de.mossgrabers.controller.push.mode.device.DeviceLayerMode;
 import de.mossgrabers.controller.push.mode.device.DeviceLayerModePan;
 import de.mossgrabers.controller.push.mode.device.DeviceLayerModeSend;
@@ -88,7 +89,7 @@ import de.mossgrabers.controller.push.view.SessionView;
 import de.mossgrabers.framework.command.ContinuousCommandID;
 import de.mossgrabers.framework.command.SceneCommand;
 import de.mossgrabers.framework.command.TriggerCommandID;
-import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractPlayViewCommand;
+import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand;
 import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
@@ -136,6 +137,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
@@ -284,6 +286,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.TRANSPORT, new TransportMode (surface, this.model));
 
         modeManager.registerMode (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
+        modeManager.registerMode (Modes.DEVICE_CHAINS, new DeviceChainsMode (surface, this.model));
         modeManager.registerMode (Modes.DEVICE_LAYER, new DeviceLayerMode ("Layer", surface, this.model));
 
         modeManager.registerMode (Modes.BROWSER, new DeviceBrowserMode (surface, this.model));
@@ -484,6 +487,11 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings(
+    {
+        "rawtypes",
+        "unchecked"
+    })
     @Override
     protected void registerContinuousCommands ()
     {
@@ -512,10 +520,18 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final ViewManager viewManager = surface.getViewManager ();
         viewManager.registerPitchbendCommand (new PitchbendCommand (this.model, surface));
 
-        final PlayView playView = (PlayView) viewManager.getView (Views.PLAY);
-        playView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (playView, this.model, surface));
-        final PlayView pianoView = (PlayView) viewManager.getView (Views.PIANO);
-        pianoView.registerAftertouchCommand (new AftertouchAbstractPlayViewCommand<> (pianoView, this.model, surface));
+        Views [] views =
+        {
+            Views.PLAY,
+            Views.PIANO,
+            Views.DRUM,
+            Views.DRUM64
+        };
+        for (final Views viewID: views)
+        {
+            final AbstractView view = (AbstractView) viewManager.getView (viewID);
+            view.registerAftertouchCommand (new AftertouchAbstractViewCommand<> (view, this.model, surface));
+        }
 
         viewManager.getView (Views.SESSION).registerPitchbendCommand (new PitchbendSessionCommand (this.model, surface));
     }

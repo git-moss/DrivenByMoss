@@ -39,7 +39,7 @@ public class SoloView extends BaseView
         if (configuration.isDuplicateEnabled ())
         {
             track.duplicate ();
-            configuration.setDuplicateEnabled (false);
+            this.disableDuplicate ();
             return;
         }
 

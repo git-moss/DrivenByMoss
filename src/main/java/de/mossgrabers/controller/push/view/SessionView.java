@@ -78,13 +78,13 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         }
 
         final int index = note - 36;
-        int x = index % this.columns;
-        int y = this.rows - 1 - index / this.columns;
+        final int x = index % this.columns;
+        final int y = this.rows - 1 - index / this.columns;
 
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
 
-        int t = flipSession ? y : x;
-        int s = flipSession ? x : y;
+        final int t = flipSession ? y : x;
+        final int s = flipSession ? x : y;
 
         // Birds-eye-view navigation
         if (this.surface.isShiftPressed ())

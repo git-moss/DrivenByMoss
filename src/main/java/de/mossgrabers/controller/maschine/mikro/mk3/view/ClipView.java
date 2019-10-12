@@ -45,7 +45,7 @@ public class ClipView extends BaseView
         if (configuration.isDuplicateEnabled ())
         {
             slot.duplicate ();
-            configuration.setDuplicateEnabled (false);
+            this.disableDuplicate ();
             return;
         }
 

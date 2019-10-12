@@ -48,7 +48,7 @@ public class SendsView extends AbstractFaderView
 
     /** {@inheritDoc} */
     @Override
-    protected int getFaderValue (int index)
+    protected int getFaderValue (final int index)
     {
         if (this.model.isEffectTrackBankActive ())
             return 0;

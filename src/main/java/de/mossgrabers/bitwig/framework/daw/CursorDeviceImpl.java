@@ -77,6 +77,7 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
         this.cursorDevice.hasLayers ().markInterested ();
         this.cursorDevice.hasSlots ().markInterested ();
         this.cursorDevice.isPinned ().markInterested ();
+        this.cursorDevice.slotNames ().markInterested ();
 
         this.cursorDevice.addDirectParameterIdObserver (value -> this.directParameterIds = value);
         this.cursorDevice.addDirectParameterNameObserver (1024, (final String id, final String name) -> this.directParameterNames.put (id, name));
@@ -126,6 +127,7 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
         this.cursorDevice.hasLayers ().setIsSubscribed (enable);
         this.cursorDevice.hasSlots ().setIsSubscribed (enable);
         this.cursorDevice.isPinned ().setIsSubscribed (enable);
+        this.cursorDevice.slotNames ().setIsSubscribed (enable);
 
         if (this.parameterBank != null)
         {
@@ -378,6 +380,22 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
     public void selectChannel ()
     {
         this.cursorDevice.channel ().selectInEditor ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String [] getSlotChains ()
+    {
+        return this.cursorDevice.slotNames ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectSlotChain (final String slotChainName)
+    {
+        this.cursorDevice.selectFirstInSlot (slotChainName);
     }
 
 

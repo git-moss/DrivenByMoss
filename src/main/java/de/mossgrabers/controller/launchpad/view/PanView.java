@@ -49,7 +49,7 @@ public class PanView extends AbstractFaderView
 
     /** {@inheritDoc} */
     @Override
-    protected int getFaderValue (int index)
+    protected int getFaderValue (final int index)
     {
         return this.model.getCurrentTrackBank ().getItem (index).getPan ();
     }

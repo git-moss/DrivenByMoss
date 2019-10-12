@@ -62,6 +62,8 @@ public enum Modes
 
     /** Edit device parameters. */
     DEVICE_PARAMS,
+    /** Edit device slot chains. */
+    DEVICE_CHAINS,
 
     /** Edit layer parameters. */
     DEVICE_LAYER,

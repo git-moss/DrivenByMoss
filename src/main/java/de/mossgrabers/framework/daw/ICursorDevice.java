@@ -218,4 +218,20 @@ public interface ICursorDevice extends IDevice
      * @return The bank
      */
     IChannelBank<?> getLayerOrDrumPadBank ();
+
+
+    /**
+     * Get the names of slot chains of a device.
+     *
+     * @return The names or an empty array
+     */
+    String [] getSlotChains ();
+
+
+    /**
+     * Select the first device of a slot chain.
+     *
+     * @param slotChainName One of the slot chain names retrieved with {@link #getSlotChains()}.
+     */
+    void selectSlotChain (String slotChainName);
 }

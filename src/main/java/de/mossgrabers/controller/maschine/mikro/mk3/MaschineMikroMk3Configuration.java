@@ -77,6 +77,12 @@ public class MaschineMikroMk3Configuration extends AbstractConfiguration
         this.activateScaleLayoutSetting (documentSettings);
 
         ///////////////////////////
+        // Transport
+
+        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateFlipRecordSetting (globalSettings);
+
+        ///////////////////////////
         // Play and Sequence
 
         this.activateAccentActiveSetting (globalSettings);
@@ -92,7 +98,6 @@ public class MaschineMikroMk3Configuration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
-        this.activateBehaviourOnStopSetting (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
     }

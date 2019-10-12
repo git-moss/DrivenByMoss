@@ -67,7 +67,7 @@ public class DeviceView extends AbstractFaderView
 
     /** {@inheritDoc} */
     @Override
-    protected int getFaderValue (int index)
+    protected int getFaderValue (final int index)
     {
         return this.cursorDevice.getParameterBank ().getItem (index).getValue ();
     }

@@ -8,22 +8,22 @@ import de.mossgrabers.framework.command.core.AbstractAftertouchCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.AbstractView;
 
 import java.util.List;
 
 
 /**
- * Command to handle the aftertouch of the play view.
+ * Command to handle the aftertouch on a view.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class AftertouchAbstractPlayViewCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractAftertouchCommand<S, C>
+public class AftertouchAbstractViewCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractAftertouchCommand<S, C>
 {
-    private AbstractPlayView<S, C> view;
+    private AbstractView<S, C> view;
 
 
     /**
@@ -33,7 +33,7 @@ public class AftertouchAbstractPlayViewCommand<S extends IControlSurface<C>, C e
      * @param model The model
      * @param surface The surface
      */
-    public AftertouchAbstractPlayViewCommand (final AbstractPlayView<S, C> view, final IModel model, final S surface)
+    public AftertouchAbstractViewCommand (final AbstractView<S, C> view, final IModel model, final S surface)
     {
         super (model, surface);
         this.view = view;
@@ -78,7 +78,7 @@ public class AftertouchAbstractPlayViewCommand<S extends IControlSurface<C>, C e
         final Configuration config = this.surface.getConfiguration ();
         if (config.getConvertAftertouch () == -2)
         {
-            final List<Integer> keys = this.view.getPressedKeys ();
+            final List<Integer> keys = this.view.getKeyManager ().getPressedKeys ();
             for (final Integer key: keys)
                 this.onPolyAftertouch (key.intValue (), value);
         }

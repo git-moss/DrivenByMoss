@@ -40,7 +40,7 @@ public class SceneView extends BaseView
         if (configuration.isDuplicateEnabled ())
         {
             scene.duplicate ();
-            configuration.setDuplicateEnabled (false);
+            this.disableDuplicate ();
             return;
         }
 

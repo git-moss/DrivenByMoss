@@ -82,4 +82,11 @@ public abstract class BaseView extends AbstractView<MaschineMikroMk3ControlSurfa
                 break;
         }
     }
+
+
+    protected void disableDuplicate ()
+    {
+        this.surface.getConfiguration ().setDuplicateEnabled (false);
+        this.surface.getDisplay ().notify ("Duplicated.");
+    }
 }
