@@ -52,11 +52,13 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        if (!isTouched)
-            return;
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        if (track != null)
+        if (track == null)
+            return;
+
+        if (isTouched && this.surface.isDeletePressed ())
             track.resetVolume ();
+        track.touchVolume (isTouched);
     }
 
 

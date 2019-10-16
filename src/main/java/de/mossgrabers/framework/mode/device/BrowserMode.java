@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.mode.device;
 
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
@@ -53,7 +54,6 @@ public class BrowserMode<S extends IControlSurface<C>, C extends Configuration> 
             browser.selectNextFilterItem (index);
         else
             browser.selectPreviousFilterItem (index);
-
     }
 
 
@@ -61,11 +61,13 @@ public class BrowserMode<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        if (!isTouched)
-            return;
-        final IBrowser browser = this.model.getBrowser ();
-        if (browser != null)
-            browser.resetFilterColumn (index);
+        if (isTouched && this.surface.isDeletePressed ())
+        {
+            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+            final IBrowser browser = this.model.getBrowser ();
+            if (browser != null)
+                browser.resetFilterColumn (index);
+        }
     }
 
 

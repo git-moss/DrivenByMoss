@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.mode.track;
 
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -47,10 +48,15 @@ public class SelectedPanMode<S extends IControlSurface<C>, C extends Configurati
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        if (!isTouched)
-            return;
         final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedTrack != null)
+        if (selectedTrack == null)
+            return;
+
+        if (isTouched && this.surface.isDeletePressed ())
+        {
+            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
             selectedTrack.resetPan ();
+        }
+        selectedTrack.touchPan (isTouched);
     }
 }

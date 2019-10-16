@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.mode.device;
 
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -65,13 +66,18 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        if (!isTouched)
-            return;
         if (this.cursorDevice == null)
             return;
         final IParameter item = this.cursorDevice.getParameterBank ().getItem (index);
-        if (item.doesExist ())
+        if (!item.doesExist ())
+            return;
+
+        if (isTouched && this.surface.isDeletePressed ())
+        {
+            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
             item.resetValue ();
+        }
+        item.touchValue (isTouched);
     }
 
 

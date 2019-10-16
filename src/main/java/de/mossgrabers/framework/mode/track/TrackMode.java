@@ -73,23 +73,28 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        if (!isTouched)
-            return;
         final ITrack track = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (track == null)
             return;
+
         switch (index)
         {
             case 0:
-                track.resetVolume ();
+                if (isTouched && this.surface.isDeletePressed ())
+                    track.resetVolume ();
+                track.touchVolume (isTouched);
                 break;
 
             case 1:
-                track.resetPan ();
+                if (isTouched && this.surface.isDeletePressed ())
+                    track.resetPan ();
                 break;
 
             default:
-                track.getSendBank ().getItem (index - 2).resetValue ();
+                final ISend item = track.getSendBank ().getItem (index - 2);
+                if (isTouched && this.surface.isDeletePressed ())
+                    item.resetValue ();
+                item.touchValue (isTouched);
                 break;
         }
     }

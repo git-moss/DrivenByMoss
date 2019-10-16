@@ -108,7 +108,12 @@ public enum ContinuousCommandID
     /** Move the track selection. */
     MOVE_TRACK,
     /** Move the track bank selection. */
-    MOVE_TRACK_BANK;
+    MOVE_TRACK_BANK,
+
+    /** Select a mode. */
+    MODE_SELECTION,
+    /** Select a view. */
+    VIEW_SELECTION;
 
 
     /**

@@ -2,33 +2,33 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.bitwig.controller.launchpad;
+package de.mossgrabers.bitwig.controller.launchkey;
 
 import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
-import de.mossgrabers.controller.launchpad.LaunchpadControllerSetup;
-import de.mossgrabers.controller.launchpad.definition.LaunchpadMkIIControllerDefinition;
+import de.mossgrabers.controller.launchkey.LaunchkeyMiniMk3ControllerDefinition;
+import de.mossgrabers.controller.launchkey.LaunchkeyMiniMk3ControllerSetup;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
- * Definition class for the Launchpad MkII controller extension.
+ * Definition class for the Launchkey Mini Mk3 controller extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchpadMkIIControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+public class LaunchkeyMiniMk3ControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
-    private static final LaunchpadMkIIControllerDefinition DEFINITION = new LaunchpadMkIIControllerDefinition ();
+    private static final LaunchkeyMiniMk3ControllerDefinition DEFINITION = new LaunchkeyMiniMk3ControllerDefinition ();
 
 
     /**
      * Constructor.
      */
-    public LaunchpadMkIIControllerExtensionDefinition ()
+    public LaunchkeyMiniMk3ControllerExtensionDefinition ()
     {
         super (DEFINITION);
     }
@@ -38,6 +38,6 @@ public class LaunchpadMkIIControllerExtensionDefinition extends AbstractControll
     @Override
     protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
     {
-        return new LaunchpadControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()), DEFINITION);
+        return new LaunchkeyMiniMk3ControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()));
     }
 }

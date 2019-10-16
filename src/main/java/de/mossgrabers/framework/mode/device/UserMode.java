@@ -2,43 +2,41 @@
 // (c) 2017-2019
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.mode.track;
+package de.mossgrabers.framework.mode.device;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ISend;
-import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.mode.AbstractMode;
 
 
 /**
- * Mode for editing Send volumes. The knobs control the volumes of the given send on the selected
- * track.
+ * Mode for editing user control parameters.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractTrackMode<S, C>
+public class UserMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
 {
-    private int sendIndex;
-
-
     /**
      * Constructor.
      *
-     * @param sendIndex The send index
      * @param surface The control surface
      * @param model The model
      * @param isAbsolute If true the value change is happending with a setter otherwise relative
      *            change method is used
      */
-    public SendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute)
+    public UserMode (final S surface, final IModel model, final boolean isAbsolute)
     {
-        super ("Send " + (sendIndex + 1), surface, model, isAbsolute);
-        this.sendIndex = sendIndex;
+        super ("User Controls", surface, model);
+
+        this.isTemporary = false;
     }
 
 
@@ -46,10 +44,9 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        if (track == null)
+        final IParameter item = this.model.getUserParameterBank ().getItem (index);
+        if (item == null || !item.doesExist ())
             return;
-        final ISend item = track.getSendBank ().getItem (this.sendIndex);
         if (this.isAbsolute)
             item.setValue (value);
         else
@@ -61,27 +58,23 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        if (track == null)
-            return;
-        final ISend item = track.getSendBank ().getItem (this.sendIndex);
-        if (!item.doesExist ())
+        final IParameter param = this.model.getUserParameterBank ().getItem (index);
+        if (!param.doesExist ())
             return;
 
         if (isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
-            item.resetValue ();
+            param.resetValue ();
         }
-        item.touchValue (isTouched);
+        param.touchValue (isTouched);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public int getKnobValue (final int index)
+    protected IBank<? extends IItem> getBank ()
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        return track == null ? -1 : track.getSendBank ().getItem (this.sendIndex).getValue ();
+        return this.model.getUserParameterBank ();
     }
 }
