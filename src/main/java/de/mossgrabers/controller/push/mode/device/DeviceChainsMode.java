@@ -124,9 +124,9 @@ public class DeviceChainsMode extends DeviceParamsMode
         for (int i = 0; i < 8; i++)
         {
             final boolean isTopMenuOn = this.getTopMenuEnablement (cd, hasPinning, i);
-            String bottomMenu = i < slotChains.length ? slotChains[i] : "";
+            final String bottomMenu = i < slotChains.length ? slotChains[i] : "";
             final String bottomMenuIcon = "";
-            boolean isBottomMenuOn = i < slotChains.length;
+            final boolean isBottomMenuOn = i < slotChains.length;
             display.addParameterElement (this.hostMenu[i], isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, "", 0, "", false, -1);
         }
     }

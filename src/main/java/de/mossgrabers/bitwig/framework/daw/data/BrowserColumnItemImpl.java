@@ -99,7 +99,7 @@ public class BrowserColumnItemImpl extends AbstractItemImpl implements IBrowserC
     @Override
     public int getHitCount ()
     {
-        return this.item instanceof BrowserFilterItem ? safeGetInteger (((BrowserFilterItem) this.item).hitCount ()) : 0;
+        return this.item instanceof BrowserFilterItem ? this.safeGetInteger (((BrowserFilterItem) this.item).hitCount ()) : 0;
     }
 
 

@@ -289,7 +289,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
             this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.KNOB1, i), LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i, new FaderCommand (i, this.model, surface));
         final ViewManager viewManager = surface.getViewManager ();
 
-        Views [] views =
+        final Views [] views =
         {
             Views.PLAY,
             Views.PIANO,

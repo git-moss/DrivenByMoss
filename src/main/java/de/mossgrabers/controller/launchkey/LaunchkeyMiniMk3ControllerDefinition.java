@@ -21,6 +21,7 @@ public class LaunchkeyMiniMk3ControllerDefinition extends DefaultControllerDefin
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("5359D5B1-28CD-4457-B49D-F8D3D7BC52B9");
 
+
     /**
      * Constructor.
      */
@@ -61,6 +62,14 @@ public class LaunchkeyMiniMk3ControllerDefinition extends DefaultControllerDefin
                 break;
 
             case LINUX:
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "MK3 [hw:1,0,1]",
+                    "MK3 [hw:1,0,0]"
+                }, new String []
+                {
+                    "MK3 [hw:1,0,1]"
+                }));
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                 {
                     "MK3 [hw:2,0,1]",

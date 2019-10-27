@@ -422,7 +422,7 @@ public class DeviceParamsMode extends BaseMode
         final IValueChanger valueChanger = this.model.getValueChanger ();
         for (int i = 0; i < parameterBank.getPageSize (); i++)
         {
-            final boolean isTopMenuOn = getTopMenuEnablement (cd, hasPinning, i);
+            final boolean isTopMenuOn = this.getTopMenuEnablement (cd, hasPinning, i);
 
             String bottomMenu;
             final String bottomMenuIcon;
@@ -476,7 +476,7 @@ public class DeviceParamsMode extends BaseMode
     }
 
 
-    protected boolean getTopMenuEnablement (final ICursorDevice cd, final boolean hasPinning, int index)
+    protected boolean getTopMenuEnablement (final ICursorDevice cd, final boolean hasPinning, final int index)
     {
         switch (index)
         {

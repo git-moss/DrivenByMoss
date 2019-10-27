@@ -358,8 +358,8 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     protected Pair<Integer, Integer> getPad (final int note)
     {
         final int index = note - 36;
-        int t = index % this.columns;
-        int s = this.rows - 1 - index / this.columns;
+        final int t = index % this.columns;
+        final int s = this.rows - 1 - index / this.columns;
         final C configuration = this.surface.getConfiguration ();
         return configuration.isFlipSession () ? new Pair<> (Integer.valueOf (s), Integer.valueOf (t)) : new Pair<> (Integer.valueOf (t), Integer.valueOf (s));
     }

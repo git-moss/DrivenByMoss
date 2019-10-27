@@ -104,7 +104,7 @@ public class HostImpl implements IHost
     }
 
 
-     /** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public boolean canEditMarkers ()
     {
