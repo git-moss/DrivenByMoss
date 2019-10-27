@@ -63,11 +63,11 @@ public class LaunchkeyMiniMk3ControllerDefinition extends DefaultControllerDefin
             case LINUX:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                 {
-                    "MIDIIN2 (Launchkey Mini MK3)",
-                    "Launchkey Mini MK3"
+                    "MK3 [hw:2,0,1]",
+                    "MK3 [hw:2,0,0]"
                 }, new String []
                 {
-                    "MIDIOUT2 (Launchkey Mini MK3)"
+                    "MK3 [hw:2,0,1]"
                 }));
                 break;
         }
