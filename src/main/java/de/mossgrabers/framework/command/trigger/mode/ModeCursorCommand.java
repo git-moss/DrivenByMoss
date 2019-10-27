@@ -81,6 +81,12 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
                 this.scrollDown ();
                 break;
         }
+
+        this.model.getHost ().scheduleTask ( () -> {
+            final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
+            if (activeMode != null)
+                this.surface.getDisplay ().notify (activeMode.getSelectedItemName ());
+        }, 200);
     }
 
 

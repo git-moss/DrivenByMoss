@@ -131,7 +131,8 @@
                           "left": "auto",
                           "top": "auto",
                           "height": "auto",
-                          "steps": ""
+                          "steps": "",
+                          "sensitivity": 1
                         },
                         {
                           "type": "push",
@@ -1043,7 +1044,8 @@
                   "bypass": false,
                   "left": "auto",
                   "top": "auto",
-                  "height": "auto"
+                  "height": "auto",
+                  "asYouType": false
                 },
                 {
                   "type": "text",
@@ -1162,7 +1164,8 @@
                           "left": "auto",
                           "top": "auto",
                           "width": "auto",
-                          "steps": ""
+                          "steps": "",
+                          "sensitivity": 1
                         },
                         {
                           "type": "fader",
@@ -1201,7 +1204,8 @@
                           "left": "auto",
                           "top": "auto",
                           "width": "auto",
-                          "steps": ""
+                          "steps": "",
+                          "sensitivity": 1
                         },
                         {
                           "type": "fader",
@@ -1240,7 +1244,8 @@
                           "left": "auto",
                           "top": "auto",
                           "width": "auto",
-                          "steps": ""
+                          "steps": "",
+                          "sensitivity": 1
                         },
                         {
                           "type": "fader",
@@ -1279,7 +1284,8 @@
                           "left": "auto",
                           "top": "auto",
                           "width": "auto",
-                          "steps": ""
+                          "steps": "",
+                          "sensitivity": 1
                         },
                         {
                           "type": "fader",
@@ -1318,7 +1324,8 @@
                           "left": "auto",
                           "top": "auto",
                           "width": "auto",
-                          "steps": ""
+                          "steps": "",
+                          "sensitivity": 1
                         },
                         {
                           "type": "fader",
@@ -1357,7 +1364,8 @@
                           "left": "auto",
                           "top": "auto",
                           "width": "auto",
-                          "steps": ""
+                          "steps": "",
+                          "sensitivity": 1
                         },
                         {
                           "type": "fader",
@@ -1396,7 +1404,8 @@
                           "left": "auto",
                           "top": "auto",
                           "width": "auto",
-                          "steps": ""
+                          "steps": "",
+                          "sensitivity": 1
                         },
                         {
                           "type": "fader",
@@ -1435,7 +1444,8 @@
                           "left": "auto",
                           "top": "auto",
                           "width": "auto",
-                          "steps": ""
+                          "steps": "",
+                          "sensitivity": 1
                         },
                         {
                           "type": "modal",
@@ -1520,7 +1530,8 @@
                                       "left": "auto",
                                       "top": "auto",
                                       "height": "auto",
-                                      "steps": ""
+                                      "steps": "",
+                                      "sensitivity": 1
                                     }
                                   ],
                                   "id": "modal_strip_text_send8_@{parent.variables.n}",
@@ -1606,7 +1617,8 @@
                                       "left": "auto",
                                       "top": "auto",
                                       "height": "auto",
-                                      "steps": ""
+                                      "steps": "",
+                                      "sensitivity": 1
                                     }
                                   ],
                                   "id": "modal_strip_text_send7_@{parent.variables.n}",
@@ -1692,7 +1704,8 @@
                                       "left": "auto",
                                       "top": "auto",
                                       "height": "auto",
-                                      "steps": ""
+                                      "steps": "",
+                                      "sensitivity": 1
                                     }
                                   ],
                                   "id": "modal_strip_text_send6_@{parent.variables.n}",
@@ -1778,7 +1791,8 @@
                                       "left": "auto",
                                       "top": "auto",
                                       "height": "auto",
-                                      "steps": ""
+                                      "steps": "",
+                                      "sensitivity": 1
                                     }
                                   ],
                                   "id": "modal_strip_text_send5_@{parent.variables.n}",
@@ -1864,7 +1878,8 @@
                                       "left": "auto",
                                       "top": "auto",
                                       "height": "auto",
-                                      "steps": ""
+                                      "steps": "",
+                                      "sensitivity": 1
                                     }
                                   ],
                                   "id": "modal_strip_text_send4_@{parent.variables.n}",
@@ -1950,7 +1965,8 @@
                                       "left": "auto",
                                       "top": "auto",
                                       "height": "auto",
-                                      "steps": ""
+                                      "steps": "",
+                                      "sensitivity": 1
                                     }
                                   ],
                                   "id": "modal_strip_text_send3_@{parent.variables.n}",
@@ -2036,7 +2052,8 @@
                                       "left": "auto",
                                       "top": "auto",
                                       "height": "auto",
-                                      "steps": ""
+                                      "steps": "",
+                                      "sensitivity": 1
                                     }
                                   ],
                                   "id": "modal_strip_text_send2_@{parent.variables.n}",
@@ -2122,7 +2139,8 @@
                                       "left": "auto",
                                       "top": "auto",
                                       "height": "auto",
-                                      "steps": ""
+                                      "steps": "",
+                                      "sensitivity": 1
                                     }
                                   ],
                                   "id": "modal_strip_text_send1_@{parent.variables.n}",
@@ -2331,7 +2349,8 @@
                       "left": "auto",
                       "top": "auto",
                       "width": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     },
                     {
                       "type": "strip",
@@ -2409,7 +2428,8 @@
                           "left": "auto",
                           "top": "auto",
                           "height": "auto",
-                          "steps": ""
+                          "steps": "",
+                          "sensitivity": 1
                         }
                       ],
                       "height": "auto",
@@ -3285,7 +3305,8 @@
                   "left": "auto",
                   "top": "auto",
                   "width": "auto",
-                  "steps": ""
+                  "steps": "",
+                  "sensitivity": 1
                 },
                 {
                   "type": "strip",
@@ -3363,7 +3384,8 @@
                       "left": "auto",
                       "top": "auto",
                       "height": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     }
                   ],
                   "height": "auto",
@@ -3514,7 +3536,8 @@
                   "left": "auto",
                   "top": "auto",
                   "width": "auto",
-                  "steps": ""
+                  "steps": "",
+                  "sensitivity": 1
                 },
                 {
                   "type": "led",
@@ -3982,7 +4005,8 @@
                       "left": "auto",
                       "top": "auto",
                       "height": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     }
                   ],
                   "id": "fader_param_strip_@{parent.variables.n}",
@@ -7399,6 +7423,27 @@
                       "bypass": false,
                       "doubleTap": false,
                       "value": ""
+                    },
+                    {
+                      "type": "script",
+                      "top": 520,
+                      "left": 1150,
+                      "id": "script_1",
+                      "linkId": "",
+                      "width": "auto",
+                      "height": "auto",
+                      "label": "auto",
+                      "color": "auto",
+                      "css": "visibility:hidden",
+                      "condition": 1,
+                      "script": "JS{{\nif (value[0] || value[1]) {\n  set('push_device_add', 0)\n}\n}}",
+                      "default": "",
+                      "value": "[@{browser_commit}, @{browser_cancel}]",
+                      "precision": 2,
+                      "address": "/script_1",
+                      "preArgs": "",
+                      "target": "",
+                      "bypass": false
                     }
                   ],
                   "scroll": true,
@@ -7836,7 +7881,8 @@
                       "left": "auto",
                       "top": "auto",
                       "width": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     },
                     {
                       "type": "fader",
@@ -7875,7 +7921,8 @@
                       "left": "auto",
                       "top": "auto",
                       "width": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     },
                     {
                       "type": "fader",
@@ -7914,7 +7961,8 @@
                       "left": "auto",
                       "top": "auto",
                       "width": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     },
                     {
                       "type": "fader",
@@ -7953,7 +8001,8 @@
                       "left": "auto",
                       "top": "auto",
                       "width": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     },
                     {
                       "type": "fader",
@@ -7992,7 +8041,8 @@
                       "left": "auto",
                       "top": "auto",
                       "width": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     },
                     {
                       "type": "fader",
@@ -8031,7 +8081,8 @@
                       "left": "auto",
                       "top": "auto",
                       "width": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     },
                     {
                       "type": "fader",
@@ -8070,7 +8121,8 @@
                       "left": "auto",
                       "top": "auto",
                       "width": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     },
                     {
                       "type": "fader",
@@ -8109,7 +8161,8 @@
                       "left": "auto",
                       "top": "auto",
                       "width": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     },
                     {
                       "type": "modal",
@@ -8194,7 +8247,8 @@
                                   "left": "auto",
                                   "top": "auto",
                                   "height": "auto",
-                                  "steps": ""
+                                  "steps": "",
+                                  "sensitivity": 1
                                 }
                               ],
                               "id": "modal_strip_text_send8_@{parent.variables.n}",
@@ -8280,7 +8334,8 @@
                                   "left": "auto",
                                   "top": "auto",
                                   "height": "auto",
-                                  "steps": ""
+                                  "steps": "",
+                                  "sensitivity": 1
                                 }
                               ],
                               "id": "modal_strip_text_send7_@{parent.variables.n}",
@@ -8366,7 +8421,8 @@
                                   "left": "auto",
                                   "top": "auto",
                                   "height": "auto",
-                                  "steps": ""
+                                  "steps": "",
+                                  "sensitivity": 1
                                 }
                               ],
                               "id": "modal_strip_text_send6_@{parent.variables.n}",
@@ -8452,7 +8508,8 @@
                                   "left": "auto",
                                   "top": "auto",
                                   "height": "auto",
-                                  "steps": ""
+                                  "steps": "",
+                                  "sensitivity": 1
                                 }
                               ],
                               "id": "modal_strip_text_send5_@{parent.variables.n}",
@@ -8538,7 +8595,8 @@
                                   "left": "auto",
                                   "top": "auto",
                                   "height": "auto",
-                                  "steps": ""
+                                  "steps": "",
+                                  "sensitivity": 1
                                 }
                               ],
                               "id": "modal_strip_text_send4_@{parent.variables.n}",
@@ -8624,7 +8682,8 @@
                                   "left": "auto",
                                   "top": "auto",
                                   "height": "auto",
-                                  "steps": ""
+                                  "steps": "",
+                                  "sensitivity": 1
                                 }
                               ],
                               "id": "modal_strip_text_send3_@{parent.variables.n}",
@@ -8710,7 +8769,8 @@
                                   "left": "auto",
                                   "top": "auto",
                                   "height": "auto",
-                                  "steps": ""
+                                  "steps": "",
+                                  "sensitivity": 1
                                 }
                               ],
                               "id": "modal_strip_text_send2_@{parent.variables.n}",
@@ -8796,7 +8856,8 @@
                                   "left": "auto",
                                   "top": "auto",
                                   "height": "auto",
-                                  "steps": ""
+                                  "steps": "",
+                                  "sensitivity": 1
                                 }
                               ],
                               "id": "modal_strip_text_send1_@{parent.variables.n}",
@@ -8908,7 +8969,8 @@
                   "input": false,
                   "dashed": false,
                   "doubleTap": true,
-                  "steps": ""
+                  "steps": "",
+                  "sensitivity": 1
                 },
                 {
                   "type": "strip",
@@ -8999,7 +9061,8 @@
                       "left": "auto",
                       "top": "auto",
                       "height": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     }
                   ],
                   "border": true,
@@ -9651,7 +9714,8 @@
                       "left": "auto",
                       "top": "auto",
                       "height": "auto",
-                      "steps": ""
+                      "steps": "",
+                      "sensitivity": 1
                     }
                   ],
                   "id": "fader_user_strip_@{parent.variables.n}",

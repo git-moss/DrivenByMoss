@@ -7,6 +7,7 @@ package de.mossgrabers.controller.launchkey.controller;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -16,6 +17,9 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  */
 public class LaunchkeyPadGrid extends PadGridImpl
 {
+    private Views activeView;
+
+
     /**
      * Constructor.
      *
@@ -32,12 +36,31 @@ public class LaunchkeyPadGrid extends PadGridImpl
     @Override
     public int translateToGrid (final int note)
     {
-        // Row 2 (upper) sends notes: 0x60 - 0x67; returns 44-51
-        if (note < 0x70)
-            return note - 52;
+        if (this.activeView == null)
+            return note;
 
-        // Row 1 sends notes: 0x70 - 0x77; returns 36-43
-        return note - 76;
+        switch (this.activeView)
+        {
+            case SESSION:
+                // Row 2 (upper) sends notes: 0x60 - 0x67; returns 44-51
+                if (note < 0x70)
+                    return note - 52;
+                // Row 1 sends notes: 0x70 - 0x77; returns 36-43
+                return note - 76;
+
+            case DRUM:
+                // 40 41 42 43 48 49 50 51
+                // 36 37 38 39 44 45 46 47
+                if (note >= 44 && note < 48)
+                    return note - 4;
+                if (note >= 40 && note < 44)
+                    return note + 4;
+                return note;
+
+            default:
+                // Unsupported view
+                return note;
+        }
     }
 
 
@@ -45,9 +68,29 @@ public class LaunchkeyPadGrid extends PadGridImpl
     @Override
     public int translateToController (final int note)
     {
-        if (note > 43)
-            return note + 52;
-        return note + 76;
+        if (this.activeView == null)
+            return note;
+
+        switch (this.activeView)
+        {
+            case SESSION:
+                if (note > 43)
+                    return note + 52;
+                return note + 76;
+
+            case DRUM:
+                // 40 41 42 43 48 49 50 51
+                // 36 37 38 39 44 45 46 47
+                if (note >= 44 && note < 48)
+                    return note - 4;
+                if (note >= 40 && note < 44)
+                    return note + 4;
+                return note;
+
+            default:
+                // Unsupported view
+                return note;
+        }
     }
 
 
@@ -55,7 +98,20 @@ public class LaunchkeyPadGrid extends PadGridImpl
     @Override
     protected void sendNoteState (final int note, final int color)
     {
-        this.output.sendNote (note, color);
+        if (this.activeView == null)
+            return;
+
+        switch (this.activeView)
+        {
+            case DRUM:
+                this.output.sendNoteEx (0x09, note, color);
+                break;
+
+            case SESSION:
+            default:
+                this.output.sendNote (note, color);
+                break;
+        }
     }
 
 
@@ -63,6 +119,30 @@ public class LaunchkeyPadGrid extends PadGridImpl
     @Override
     protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
     {
-        this.output.sendNoteEx (fast ? 1 : 2, note, blinkColor);
+        if (this.activeView == null)
+            return;
+
+        switch (this.activeView)
+        {
+            case DRUM:
+                this.output.sendNoteEx (0x09 + (fast ? 1 : 2), note, blinkColor);
+                break;
+
+            case SESSION:
+            default:
+                this.output.sendNoteEx (fast ? 1 : 2, note, blinkColor);
+                break;
+        }
+    }
+
+
+    /**
+     * Set the active view since the Launchkey has different key mappings in the different views.
+     *
+     * @param view The active view
+     */
+    public void setView (final Views view)
+    {
+        this.activeView = view;
     }
 }

@@ -10,6 +10,7 @@ import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.BrowserFilterItem;
 import com.bitwig.extension.controller.api.BrowserItem;
+import com.bitwig.extension.controller.api.IntegerValue;
 
 
 /**
@@ -98,6 +99,14 @@ public class BrowserColumnItemImpl extends AbstractItemImpl implements IBrowserC
     @Override
     public int getHitCount ()
     {
-        return this.item instanceof BrowserFilterItem ? ((BrowserFilterItem) this.item).hitCount ().get () : 0;
+        return this.item instanceof BrowserFilterItem ? safeGetInteger (((BrowserFilterItem) this.item).hitCount ()) : 0;
+    }
+
+
+    protected int safeGetInteger (final IntegerValue value)
+    {
+        if (value.isSubscribed ())
+            return value.get ();
+        return 0;
     }
 }

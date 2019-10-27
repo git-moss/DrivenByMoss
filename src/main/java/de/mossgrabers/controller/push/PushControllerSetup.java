@@ -740,9 +740,12 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             parameterBank.getItem (i).setIndication (isDevice);
         }
 
-        final IParameterBank userParameterBank = this.model.getUserParameterBank ();
-        for (int i = 0; i < userParameterBank.getPageSize (); i++)
-            userParameterBank.getItem (i).setIndication (isUserMode);
+        if (this.host.hasUserParameters ())
+        {
+            final IParameterBank userParameterBank = this.model.getUserParameterBank ();
+            for (int i = 0; i < userParameterBank.getPageSize (); i++)
+                userParameterBank.getItem (i).setIndication (isUserMode);
+        }
     }
 
 

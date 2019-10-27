@@ -180,10 +180,10 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 this.executeShifted (TriggerCommandID.DUPLICATE, ButtonEvent.DOWN);
                 break;
             case 52:
-                this.executeNormal (TriggerCommandID.NEW, ButtonEvent.DOWN);
+                this.executeNormal (TriggerCommandID.PLAY, ButtonEvent.DOWN);
                 break;
             case 53:
-                this.executeNormal (TriggerCommandID.PLAY, ButtonEvent.DOWN);
+                this.executeNormal (TriggerCommandID.NEW, ButtonEvent.DOWN);
                 break;
             case 44:
                 this.executeNormal (TriggerCommandID.RECORD, ButtonEvent.UP);

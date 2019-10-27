@@ -773,6 +773,11 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
                 this.handleCC (channel, data1, data2);
                 break;
 
+            // Program Change
+            case 0xC0:
+                this.handleProgramChange (channel, data1, data2);
+                break;
+
             // Channel Aftertouch
             case 0xD0:
                 this.handleChannelAftertouch (data1);
@@ -844,6 +849,19 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         final View view = this.viewManager.getActiveView ();
         if (view != null)
             view.executeAftertouchCommand (data1, data2);
+    }
+
+
+    /**
+     * Handle program change.
+     *
+     * @param channel The MIDI channel
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    protected void handleProgramChange (final int channel, final int data1, final int data2)
+    {
+        // Intentionally empty
     }
 
 

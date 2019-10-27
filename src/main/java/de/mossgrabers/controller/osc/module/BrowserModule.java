@@ -135,7 +135,12 @@ public class BrowserModule extends AbstractModule
         final String browserAddress = "/browser/";
         final IBrowser browser = this.model.getBrowser ();
 
-        this.writer.sendOSC (browserAddress + "isActive", browser.isActive (), dump);
+        final boolean isActive = browser.isActive ();
+        this.writer.sendOSC (browserAddress + "isActive", isActive, dump);
+
+        if (!isActive)
+            return;
+
         this.writer.sendOSC (browserAddress + "tab", browser.getSelectedContentType (), dump);
 
         IBrowserColumn column;

@@ -33,20 +33,9 @@ public class LaunchkeyMiniMk3Configuration extends AbstractConfiguration
     @Override
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        // TODO
-
-        ///////////////////////////
-        // Scale
-
-        this.activateScaleSetting (documentSettings);
-        this.activateScaleBaseSetting (documentSettings);
-        this.activateScaleInScaleSetting (documentSettings);
-        this.activateScaleLayoutSetting (documentSettings);
-
         ///////////////////////////
         // Workflow
 
-        this.activateBehaviourOnStopSetting (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
     }
 }

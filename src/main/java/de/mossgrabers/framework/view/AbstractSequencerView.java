@@ -125,16 +125,8 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     @Override
     public void onScene (final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (!this.isActive ())
-            return;
-
-        this.selectedResolutionIndex = 7 - index;
-        final Resolution resolution = Resolution.values ()[this.selectedResolutionIndex];
-        this.getClip ().setStepLength (resolution.getValue ());
-        this.surface.getDisplay ().notify (resolution.getName ());
+        if (event == ButtonEvent.DOWN && this.isActive ())
+            this.setResolutionIndex (7 - index);
     }
 
 
@@ -170,6 +162,31 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     public final INoteClip getClip ()
     {
         return this.model.getNoteClip (this.clipCols, this.clipRows);
+    }
+
+
+    /**
+     * Set the resolution index.
+     *
+     * @param selectedResolutionIndex The index 0-7
+     */
+    public void setResolutionIndex (final int selectedResolutionIndex)
+    {
+        this.selectedResolutionIndex = selectedResolutionIndex;
+        final Resolution resolution = Resolution.values ()[this.selectedResolutionIndex];
+        this.getClip ().setStepLength (resolution.getValue ());
+        this.surface.getDisplay ().notify (resolution.getName ());
+    }
+
+
+    /**
+     * Get the resolution index.
+     *
+     * @return The index 0-7
+     */
+    public int getResolutionIndex ()
+    {
+        return this.selectedResolutionIndex;
     }
 
 

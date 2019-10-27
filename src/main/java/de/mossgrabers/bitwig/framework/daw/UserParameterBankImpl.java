@@ -224,7 +224,7 @@ public class UserParameterBankImpl implements IParameterBank
     @Override
     public void selectNextPage ()
     {
-        // Intentionally empty
+        this.scrollForwards ();
     }
 
 
@@ -232,6 +232,6 @@ public class UserParameterBankImpl implements IParameterBank
     @Override
     public void selectPreviousPage ()
     {
-        // Intentionally empty
+        this.scrollBackwards ();
     }
 }

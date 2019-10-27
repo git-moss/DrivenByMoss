@@ -113,6 +113,17 @@ public class ModeManager
 
 
     /**
+     * Set the previous mode. Will be used for restoreMode.
+     *
+     * @param mode The previous mode
+     */
+    public void setPreviousMode (final Modes mode)
+    {
+        this.previousModeId = mode;
+    }
+
+
+    /**
      * Get the ID of the active mode.
      *
      * @return The ID

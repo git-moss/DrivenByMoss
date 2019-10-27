@@ -430,8 +430,6 @@ public class TrackModule extends AbstractModule
     private static void parseClipValue (final ITrack track, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException
     {
         final String command = getSubCommand (path);
-        if (!"clip".equals (command))
-            throw new UnknownCommandException (command);
 
         try
         {
