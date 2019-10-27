@@ -21,7 +21,6 @@ public class LaunchkeyMiniMk3ControllerDefinition extends DefaultControllerDefin
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("5359D5B1-28CD-4457-B49D-F8D3D7BC52B9");
 
-
     /**
      * Constructor.
      */
@@ -36,14 +35,42 @@ public class LaunchkeyMiniMk3ControllerDefinition extends DefaultControllerDefin
     public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
     {
         final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
-        midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+        switch (os)
         {
-            "MIDIIN2 (Launchkey Mini MK3)",
-            "Launchkey Mini MK3"
-        }, new String []
-        {
-            "MIDIOUT2 (Launchkey Mini MK3)"
-        }));
+            default:
+            case WINDOWS:
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "MIDIIN2 (Launchkey Mini MK3)",
+                    "Launchkey Mini MK3"
+                }, new String []
+                {
+                    "MIDIOUT2 (Launchkey Mini MK3)"
+                }));
+                break;
+
+            case MAC:
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Launchkey Mini MK3 DAW Port",
+                    "Launchkey Mini MK3 MIDI Port"
+                }, new String []
+                {
+                    "Launchkey Mini MK3 DAW Port"
+                }));
+                break;
+
+            case LINUX:
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "MIDIIN2 (Launchkey Mini MK3)",
+                    "Launchkey Mini MK3"
+                }, new String []
+                {
+                    "MIDIOUT2 (Launchkey Mini MK3)"
+                }));
+                break;
+        }
         return midiDiscoveryPairs;
     }
 }
