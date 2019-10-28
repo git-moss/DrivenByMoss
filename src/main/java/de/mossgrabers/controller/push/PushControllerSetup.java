@@ -586,11 +586,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         surface.updateTrigger (PushControlSurface.PUSH_BUTTON_AUTOMATION, isWriting ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
         surface.updateTrigger (PushControlSurface.PUSH_BUTTON_RECORD, isRecordShifted ? t.isLauncherOverdub () ? PushColors.PUSH_BUTTON_STATE_OVR_HI : PushColors.PUSH_BUTTON_STATE_OVR_ON : t.isRecording () ? PushColors.PUSH_BUTTON_STATE_REC_HI : PushColors.PUSH_BUTTON_STATE_REC_ON);
 
-        String repeatState = ColorManager.BUTTON_STATE_OFF;
-        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = currentTrackBank.getSelectedItem ();
-        if (selectedTrack != null)
-            repeatState = this.getSurface ().getInput ().getDefaultNoteInput ().getNoteRepeat ().isActive (selectedTrack) ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
+        final String repeatState = this.getSurface ().getInput ().getDefaultNoteInput ().getNoteRepeat ().isActive () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
         surface.updateTrigger (PushControlSurface.PUSH_BUTTON_REPEAT, repeatState);
         surface.updateTrigger (PushControlSurface.PUSH_BUTTON_ACCENT, this.configuration.isAccentActive () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON);
 
@@ -640,6 +636,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         if (viewManager.isActiveView (Views.SESSION))
         {
+            final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
             isDeviceLeftOn = currentTrackBank.canScrollPageBackwards ();
             isDeviceRightOn = currentTrackBank.canScrollPageForwards ();
         }

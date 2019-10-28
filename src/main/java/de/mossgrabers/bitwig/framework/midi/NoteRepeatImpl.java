@@ -4,7 +4,6 @@
 
 package de.mossgrabers.bitwig.framework.midi;
 
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 
 
@@ -26,7 +25,7 @@ public class NoteRepeatImpl implements INoteRepeat
 
     /** {@inheritDoc} */
     @Override
-    public boolean isActive (final ITrack track)
+    public boolean isActive ()
     {
         // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/20
         return false;
@@ -35,7 +34,7 @@ public class NoteRepeatImpl implements INoteRepeat
 
     /** {@inheritDoc} */
     @Override
-    public void toggleActive (final ITrack track)
+    public void toggleActive ()
     {
         // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/20
     }
@@ -43,7 +42,7 @@ public class NoteRepeatImpl implements INoteRepeat
 
     /** {@inheritDoc} */
     @Override
-    public void setPeriod (final ITrack track, final double length)
+    public void setPeriod (final double length)
     {
         // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/20
     }
@@ -51,7 +50,7 @@ public class NoteRepeatImpl implements INoteRepeat
 
     /** {@inheritDoc} */
     @Override
-    public double getPeriod (final ITrack track)
+    public double getPeriod ()
     {
         // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/20
         return 1.0;

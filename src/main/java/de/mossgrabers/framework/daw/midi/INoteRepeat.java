@@ -4,9 +4,6 @@
 
 package de.mossgrabers.framework.daw.midi;
 
-import de.mossgrabers.framework.daw.data.ITrack;
-
-
 /**
  * Implementation for a note repeat.
  *
@@ -16,35 +13,30 @@ public interface INoteRepeat
 {
     /**
      * Toggle if note repeat is active.
-     *
-     * @param track The track for which to toggle the note repeat
      */
-    void toggleActive (ITrack track);
+    void toggleActive ();
 
 
     /**
      * True if note repeat is enabled.
      *
-     * @param track The track
      * @return True if note repeat is enabled
      */
-    boolean isActive (ITrack track);
+    boolean isActive ();
 
 
     /**
      * Set the note repeat length.
      *
-     * @param track The track
      * @param length The length
      */
-    void setPeriod (ITrack track, double length);
+    void setPeriod (double length);
 
 
     /**
      * Get the note repeat length.
      *
-     * @param track The track
      * @return The length
      */
-    double getPeriod (ITrack track);
+    double getPeriod ();
 }

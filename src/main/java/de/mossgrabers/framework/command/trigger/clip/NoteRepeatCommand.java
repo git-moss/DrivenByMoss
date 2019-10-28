@@ -67,6 +67,6 @@ public class NoteRepeatCommand<S extends IControlSurface<C>, C extends Configura
 
         final INoteInput defaultNoteInput = this.surface.getInput ().getDefaultNoteInput ();
         if (defaultNoteInput != null)
-            defaultNoteInput.getNoteRepeat ().toggleActive (selectedTrack);
+            defaultNoteInput.getNoteRepeat ().toggleActive ();
     }
 }

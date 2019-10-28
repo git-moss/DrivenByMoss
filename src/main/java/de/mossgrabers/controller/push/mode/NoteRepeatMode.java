@@ -43,12 +43,9 @@ public class NoteRepeatMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedTrack == null)
-            return;
         final INoteInput defaultNoteInput = this.surface.getInput ().getDefaultNoteInput ();
         if (defaultNoteInput != null)
-            defaultNoteInput.getNoteRepeat ().setPeriod (selectedTrack, Resolution.getValueAt (index));
+            defaultNoteInput.getNoteRepeat ().setPeriod (Resolution.getValueAt (index));
         this.surface.getModeManager ().restoreMode ();
     }
 
@@ -80,7 +77,7 @@ public class NoteRepeatMode extends BaseMode
         if (defaultNoteInput == null)
             return false;
 
-        return Math.abs (defaultNoteInput.getNoteRepeat ().getPeriod (track) - Resolution.getValueAt (index)) < 0.001;
+        return Math.abs (defaultNoteInput.getNoteRepeat ().getPeriod () - Resolution.getValueAt (index)) < 0.001;
     }
 
 
