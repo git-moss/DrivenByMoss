@@ -99,7 +99,8 @@ public abstract class AbstractBrowser implements IBrowser
     @Override
     public void selectPreviousFilterItem (final int columnIndex)
     {
-        this.columnData[columnIndex].selectPreviousItem ();
+        if (columnIndex >= 0)
+            this.columnData[columnIndex].selectPreviousItem ();
     }
 
 
@@ -133,7 +134,8 @@ public abstract class AbstractBrowser implements IBrowser
     @Override
     public void selectNextFilterItem (final int columnIndex)
     {
-        this.columnData[columnIndex].selectNextItem ();
+        if (columnIndex >= 0)
+            this.columnData[columnIndex].selectNextItem ();
     }
 
 
@@ -141,7 +143,8 @@ public abstract class AbstractBrowser implements IBrowser
     @Override
     public void previousFilterItemPage (final int columnIndex)
     {
-        this.columnData[columnIndex].scrollItemPageUp ();
+        if (columnIndex >= 0)
+            this.columnData[columnIndex].scrollItemPageUp ();
     }
 
 
@@ -149,7 +152,8 @@ public abstract class AbstractBrowser implements IBrowser
     @Override
     public void nextFilterItemPage (final int columnIndex)
     {
-        this.columnData[columnIndex].scrollItemPageDown ();
+        if (columnIndex >= 0)
+            this.columnData[columnIndex].scrollItemPageDown ();
     }
 
 
@@ -171,7 +175,8 @@ public abstract class AbstractBrowser implements IBrowser
      */
     public void setSelectedFilterItemIndex (final int columnIndex, final int index)
     {
-        this.columnData[columnIndex].setCursorIndex (index);
+        if (columnIndex >= 0)
+            this.columnData[columnIndex].setCursorIndex (index);
     }
 
 
