@@ -164,7 +164,29 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
             super.onGridNote (note, velocity);
         else
             this.handleFirstRowModes (padPos.getKey ().intValue ());
-    }
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void onGridNoteLongPress (final int note)
+	{
+		final SessionView view = (SessionView) this.surface.getViewManager ().getView (Views.SESSION);
+		final Modes padMode = view.getPadMode ();
+
+		final Pair<Integer, Integer> padPos = this.getPad (note);
+		final int column = padPos.getKey ().intValue ();
+		final int row = padPos.getValue ().intValue ();
+		
+		if(padMode != null && row == -1){
+			// we have a padmode selected and longpressing on a second row pad, do nothing
+			return;
+		}else{
+			// long press stop the track
+			final ITrack track = this.model.getCurrentTrackBank ().getItem (column);
+			track.stop ();
+		}
+	}
+	
 
 
     /** {@inheritDoc} */
