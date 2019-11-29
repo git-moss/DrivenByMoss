@@ -139,11 +139,11 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
     {
         boolean isInc = this.lastPrgChange - data1 < 0;
         if (this.lastPrgChange == 127 && data1 == 0)
-            isInc = false;
-        else if (this.lastPrgChange == 0 && data1 == 127)
             isInc = true;
+        else if (this.lastPrgChange == 0 && data1 == 127)
+            isInc = false;
         this.lastPrgChange = data1;
-        this.pageAdjuster.execute (isInc ? 1 : -1);
+        this.pageAdjuster.execute (isInc ? -1 : 1);
     }
 
 
