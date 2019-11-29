@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
@@ -181,10 +182,63 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
 			// we have a padmode selected and longpressing on a second row pad, do nothing
 			return;
 		}else{
-			// long press stop the track
+			// long press stop the track, TODO do it with scene button also. How ??
+
 			final ITrack track = this.model.getCurrentTrackBank ().getItem (column);
-			track.stop ();
+			final ISlot slot = track.getSlotBank ().getItem (row);
+
+		
+
+			if (slot.hasContent ())
+			{
+				track.stop ();
+			}else{
+				if (!slot.isRecording ()){
+					// turn off recArms of every track, and recArm the selected one.
+					
+					final ITrackBank bank = this.model.getTrackBank ();
+
+					int pageSize = bank.getPageSize();
+
+					// TODO disabling for all tracks not just in the pageSize
+					// int scrollPosition = bank.getScrollPosition();
+					// bank.scrollTo(0);
+					// for(int i=0; i< bank.getItemCount(); i++){
+					// 	bank.getItem (i%pageSize).setRecArm(i == column);
+					// 	if(!bank.canScrollForwards()){
+					// 		bank.scrollForwards();
+					// 	}
+					// }
+					// bank.scrollTo(scrollPosition);
+
+
+					for(int i=0; i< pageSize; i++){
+						bank.getItem (i).setRecArm(i == column);
+					}
+
+					track.setRecArm(true);
+					slot.record ();
+
+				}
+			}
 		}
+
+			/* TODO : if scene empty, launch record
+			final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
+			getSlotBank
+	
+			final ISlot selectedSlot = this.model.getSelectedSlot ();
+			if (selectedSlot != null)
+				selectedSlot.record ();
+	
+			if (slot.hasContent ())
+			{
+				slot.stop ();
+				return;
+			}else{
+				slot.record ();
+			}
+	*/
 	}
 	
 
