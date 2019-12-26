@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.daw.IArranger;
 
 import com.bitwig.extension.controller.api.Arranger;
@@ -42,13 +43,13 @@ public class ArrangerImpl implements IArranger
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.arranger.areCueMarkersVisible ().setIsSubscribed (enable);
-        this.arranger.isPlaybackFollowEnabled ().setIsSubscribed (enable);
-        this.arranger.hasDoubleRowTrackHeight ().setIsSubscribed (enable);
-        this.arranger.isClipLauncherVisible ().setIsSubscribed (enable);
-        this.arranger.isTimelineVisible ().setIsSubscribed (enable);
-        this.arranger.isIoSectionVisible ().setIsSubscribed (enable);
-        this.arranger.areEffectTracksVisible ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.arranger.areCueMarkersVisible (), enable);
+        Util.setIsSubscribed (this.arranger.isPlaybackFollowEnabled (), enable);
+        Util.setIsSubscribed (this.arranger.hasDoubleRowTrackHeight (), enable);
+        Util.setIsSubscribed (this.arranger.isClipLauncherVisible (), enable);
+        Util.setIsSubscribed (this.arranger.isTimelineVisible (), enable);
+        Util.setIsSubscribed (this.arranger.isIoSectionVisible (), enable);
+        Util.setIsSubscribed (this.arranger.areEffectTracksVisible (), enable);
     }
 
 

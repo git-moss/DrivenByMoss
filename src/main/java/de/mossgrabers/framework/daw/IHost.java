@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.daw;
 
+import de.mossgrabers.framework.controller.hardware.IHwSurfaceFactory;
+import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
@@ -72,11 +74,12 @@ public interface IHost
 
 
     /**
-     * Returns true if the DAW supports editing markers.
+     * Returns true if the DAW supports editing a specific property.
      *
-     * @return True if the DAW supports editing markerst
+     * @param capability The capability to check
+     * @return True if the DAW supports editing
      */
-    boolean canEditMarkers ();
+    boolean canEdit (EditCapability capability);
 
 
     /**
@@ -119,6 +122,16 @@ public interface IHost
      * @param message The message to display
      */
     void showNotification (String message);
+
+
+    /**
+     * Create a factory for creating hardware surface elements like buttons and knobs.
+     *
+     * @param width The width of the controller device
+     * @param height The height of the controller device
+     * @return Create a new factory.
+     */
+    IHwSurfaceFactory createSurfaceFactory (final double width, final double height);
 
 
     /**

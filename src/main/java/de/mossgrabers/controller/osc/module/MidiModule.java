@@ -12,7 +12,10 @@ import de.mossgrabers.controller.osc.exception.UnknownCommandException;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.INoteInput;
+import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.KeyManager;
@@ -86,14 +89,52 @@ public class MidiModule extends AbstractModule
             final double [] color = this.getNoteColor (i);
             this.writer.sendOSCColor (noteAddress + i + "/color", color[0], color[1], color[2], dump);
         }
+
+        final INoteInput noteInput = this.surface.getMidiInput ().getDefaultNoteInput ();
+        if (noteInput == null)
+            return;
+        final INoteRepeat noteRepeat = noteInput.getNoteRepeat ();
+        final String noteRepeatAddress = "/vkb_midi/noterepeat/";
+
+        this.writer.sendOSC (noteRepeatAddress + "isActive", noteRepeat.isActive (), dump);
+        this.writer.sendOSC (noteRepeatAddress + "period", Resolution.getNameAt (Resolution.getMatch (noteRepeat.getPeriod ())), dump);
+        this.writer.sendOSC (noteRepeatAddress + "length", Resolution.getNameAt (Resolution.getMatch (noteRepeat.getNoteLength ())), dump);
     }
 
 
+    /**
+     * Parse virtual MIDI note commands.
+     *
+     * @param path The rest of the path
+     * @param value The value
+     * @throws MissingCommandException Could not find the sub-command
+     * @throws UnknownCommandException Unknown sub-command
+     * @throws IllegalParameterException Added an illegal parameter
+     */
     private void parseMidi (final LinkedList<String> path, final Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException
     {
         final OSCConfiguration conf = this.surface.getConfiguration ();
 
         final String command = getSubCommand (path);
+
+        switch (command)
+        {
+            case "velocity":
+                final int numValue = toInteger (value);
+                conf.setAccentEnabled (numValue > 0);
+                if (numValue > 0)
+                    conf.setAccentValue (numValue);
+                return;
+
+            case "noterepeat":
+                this.parseNoteRepeat (path, value);
+                return;
+
+            default:
+                // Fall through
+                break;
+        }
+
         int midiChannel;
         try
         {
@@ -101,23 +142,11 @@ public class MidiModule extends AbstractModule
         }
         catch (final NumberFormatException ex)
         {
-            switch (command)
-            {
-                case "velocity":
-                    final int numValue = toInteger (value);
-                    conf.setAccentEnabled (numValue > 0);
-                    if (numValue > 0)
-                        conf.setAccentValue (numValue);
-                    break;
-
-                default:
-                    throw new UnknownCommandException (command);
-            }
-            return;
+            throw new UnknownCommandException (command);
         }
 
         final String subCommand = getSubCommand (path);
-        final IMidiInput input = this.surface.getInput ();
+        final IMidiInput input = this.surface.getMidiInput ();
         final Scales scales = this.model.getScales ();
         switch (subCommand)
         {
@@ -223,6 +252,54 @@ public class MidiModule extends AbstractModule
 
             default:
                 throw new UnknownCommandException (command);
+        }
+    }
+
+
+    /**
+     * Parse note repeat parameters.
+     *
+     * @param path The rest of the path
+     * @param value The value
+     * @throws MissingCommandException Could not find the sub-command
+     * @throws UnknownCommandException Unknown sub-command
+     * @throws IllegalParameterException Added an illegal parameter
+     */
+    private void parseNoteRepeat (final LinkedList<String> path, final Object value) throws MissingCommandException, UnknownCommandException, IllegalParameterException
+    {
+        final INoteInput noteInput = this.surface.getMidiInput ().getDefaultNoteInput ();
+        if (noteInput == null)
+            return;
+        final INoteRepeat noteRepeat = noteInput.getNoteRepeat ();
+
+        final String subCommand = getSubCommand (path);
+        switch (subCommand)
+        {
+
+            case "isActive":
+                noteRepeat.setActive (toInteger (value) > 0);
+                break;
+
+            case "period":
+                if (value == null)
+                    throw new IllegalParameterException ("Value must not be empty.");
+                final Resolution period = Resolution.getByName (value.toString ());
+                if (period == null)
+                    throw new IllegalParameterException ("Value must be one of {1/4, 1/4t, 1/8, 1/8t, 1/16, 1/16t, 1/32, 1/32t}.");
+                noteRepeat.setPeriod (period.getValue ());
+                break;
+
+            case "length":
+                if (value == null)
+                    throw new IllegalParameterException ("Value must not be empty.");
+                final Resolution length = Resolution.getByName (value.toString ());
+                if (length == null)
+                    throw new IllegalParameterException ("Value must be one of {1/4, 1/4t, 1/8, 1/8t, 1/16, 1/16t, 1/32, 1/32t}.");
+                noteRepeat.setNoteLength (length.getValue ());
+                break;
+
+            default:
+                throw new UnknownCommandException (subCommand);
         }
     }
 

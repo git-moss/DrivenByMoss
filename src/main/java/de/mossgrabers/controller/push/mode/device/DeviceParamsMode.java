@@ -5,15 +5,15 @@
 package de.mossgrabers.controller.push.mode.device;
 
 import de.mossgrabers.controller.push.controller.Push1Display;
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
-import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
@@ -29,7 +29,6 @@ import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
-import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -117,7 +116,7 @@ public class DeviceParamsMode extends BaseMode
         final IParameter param = cd.getParameterBank ().getItem (index);
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             param.resetValue ();
         }
         param.touchValue (isTouched);
@@ -144,16 +143,16 @@ public class DeviceParamsMode extends BaseMode
                 return;
             }
 
-            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
+            if (this.surface.isPressed (ButtonID.DUPLICATE))
             {
-                this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
+                this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
                 cd.duplicate ();
                 return;
             }
 
-            if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DELETE))
+            if (this.surface.isPressed (ButtonID.DELETE))
             {
-                this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+                this.surface.setTriggerConsumed (ButtonID.DELETE);
                 cd.getDeviceBank ().getItem (index).remove ();
                 return;
             }
@@ -179,7 +178,7 @@ public class DeviceParamsMode extends BaseMode
         }
 
         // LONG press - move upwards
-        this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_ROW1_1 + index);
+        this.surface.setTriggerConsumed (ButtonID.get (ButtonID.ROW1_1, index));
         this.moveUp ();
     }
 
@@ -197,11 +196,10 @@ public class DeviceParamsMode extends BaseMode
         }
 
         // There is no device on the track move upwards to the track view
-        final View activeView = this.surface.getViewManager ().getActiveView ();
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
         {
-            activeView.executeTriggerCommand (TriggerCommandID.TRACK, ButtonEvent.DOWN);
+            this.surface.getButton (ButtonID.TRACK).trigger (ButtonEvent.DOWN);
             return;
         }
 
@@ -230,43 +228,74 @@ public class DeviceParamsMode extends BaseMode
 
         // Move up to the track
         if (this.model.isCursorDeviceOnMasterTrack ())
-        {
-            activeView.executeTriggerCommand (TriggerCommandID.MASTERTRACK, ButtonEvent.DOWN);
-            activeView.executeTriggerCommand (TriggerCommandID.MASTERTRACK, ButtonEvent.UP);
-        }
+            this.surface.getButton (ButtonID.MASTERTRACK).trigger (ButtonEvent.DOWN);
         else
-            activeView.executeTriggerCommand (TriggerCommandID.TRACK, ButtonEvent.DOWN);
+            this.surface.getButton (ButtonID.TRACK).trigger (ButtonEvent.DOWN);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public int getButtonColor (final ButtonID buttonID)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
-        {
-            this.disableFirstRow ();
-            return;
-        }
 
-        final int selectedColor = this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI;
-        final int existsColor = this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_LO : PushColors.PUSH1_COLOR_YELLOW_LO;
-        final int offColor = this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
+        int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
+        {
+            if (!cd.doesExist ())
+                return super.getButtonColor (buttonID);
 
-        if (this.showDevices)
-        {
-            final IDeviceBank bank = cd.getDeviceBank ();
-            for (int i = 0; i < bank.getPageSize (); i++)
-                this.surface.updateTrigger (20 + i, bank.getItem (i).doesExist () ? i == cd.getIndex () ? selectedColor : existsColor : offColor);
-        }
-        else
-        {
+            final int selectedColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI;
+            final int existsColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
+            final int offColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+
+            if (this.showDevices)
+            {
+                final IDeviceBank bank = cd.getDeviceBank ();
+                return bank.getItem (index).doesExist () ? index == cd.getIndex () ? selectedColor : existsColor : offColor;
+            }
             final IParameterPageBank bank = cd.getParameterPageBank ();
             final int selectedItemIndex = bank.getSelectedItemIndex ();
-            for (int i = 0; i < bank.getPageSize (); i++)
-                this.surface.updateTrigger (20 + i, !bank.getItem (i).isEmpty () ? i == selectedItemIndex ? selectedColor : existsColor : offColor);
+            return !bank.getItem (index).isEmpty () ? index == selectedItemIndex ? selectedColor : existsColor : offColor;
         }
+
+        index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            final int white = this.isPush2 ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH1_COLOR2_WHITE;
+            if (!cd.doesExist ())
+                return index == 7 ? white : super.getButtonColor (buttonID);
+
+            final int green = this.isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH1_COLOR2_GREEN;
+            final int grey = this.isPush2 ? PushColorManager.PUSH2_COLOR2_GREY_LO : PushColorManager.PUSH1_COLOR2_GREY_LO;
+            final int orange = this.isPush2 ? PushColorManager.PUSH2_COLOR2_ORANGE : PushColorManager.PUSH1_COLOR2_ORANGE;
+            final int off = this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+            final int turquoise = this.isPush2 ? PushColorManager.PUSH2_COLOR2_TURQUOISE_HI : PushColorManager.PUSH1_COLOR2_TURQUOISE_HI;
+
+            switch (index)
+            {
+                case 0:
+                    return cd.isEnabled () ? green : grey;
+                case 1:
+                    return cd.isParameterPageSectionVisible () ? orange : white;
+                case 2:
+                    return cd.isExpanded () ? orange : white;
+                case 3:
+                    return this.surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_CHAINS) ? orange : white;
+                case 4:
+                    return this.showDevices ? white : orange;
+                case 5:
+                    return this.model.getHost ().hasPinning () ? cd.isPinned () ? turquoise : grey : off;
+                case 6:
+                    return cd.isWindowOpen () ? turquoise : grey;
+                default:
+                case 7:
+                    return white;
+            }
+        }
+
+        return super.getButtonColor (buttonID);
     }
 
 
@@ -327,37 +356,6 @@ public class DeviceParamsMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateSecondRow ()
-    {
-        final int white = this.isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE;
-
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
-        {
-            this.disableSecondRow ();
-            this.surface.updateTrigger (109, white);
-            return;
-        }
-
-        final int green = this.isPush2 ? PushColors.PUSH2_COLOR2_GREEN : PushColors.PUSH1_COLOR2_GREEN;
-        final int grey = this.isPush2 ? PushColors.PUSH2_COLOR2_GREY_LO : PushColors.PUSH1_COLOR2_GREY_LO;
-        final int orange = this.isPush2 ? PushColors.PUSH2_COLOR2_ORANGE : PushColors.PUSH1_COLOR2_ORANGE;
-        final int off = this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
-        final int turquoise = this.isPush2 ? PushColors.PUSH2_COLOR2_TURQUOISE_HI : PushColors.PUSH1_COLOR2_TURQUOISE_HI;
-
-        this.surface.updateTrigger (102, cd.isEnabled () ? green : grey);
-        this.surface.updateTrigger (103, cd.isParameterPageSectionVisible () ? orange : white);
-        this.surface.updateTrigger (104, cd.isExpanded () ? orange : white);
-        this.surface.updateTrigger (105, this.surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_CHAINS) ? orange : white);
-        this.surface.updateTrigger (106, this.showDevices ? white : orange);
-        this.surface.updateTrigger (107, this.model.getHost ().hasPinning () ? cd.isPinned () ? turquoise : grey : off);
-        this.surface.updateTrigger (108, cd.isWindowOpen () ? turquoise : grey);
-        this.surface.updateTrigger (109, white);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
@@ -412,7 +410,7 @@ public class DeviceParamsMode extends BaseMode
             return;
 
         final String color = this.model.getCurrentTrackBank ().getSelectedChannelColorEntry ();
-        final double [] bottomMenuColor = DAWColors.getColorEntry (color);
+        final ColorEx bottomMenuColor = DAWColor.getColorEntry (color);
 
         final IDeviceBank deviceBank = cd.getDeviceBank ();
         final IParameterBank parameterBank = cd.getParameterBank ();

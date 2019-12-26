@@ -5,8 +5,7 @@
 package de.mossgrabers.controller.beatstep;
 
 import de.mossgrabers.controller.beatstep.command.continuous.KnobRowViewCommand;
-import de.mossgrabers.controller.beatstep.command.trigger.StepCommand;
-import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
+import de.mossgrabers.controller.beatstep.controller.BeatstepColorManager;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.controller.beatstep.view.BrowserView;
 import de.mossgrabers.controller.beatstep.view.DeviceView;
@@ -16,15 +15,16 @@ import de.mossgrabers.controller.beatstep.view.SequencerView;
 import de.mossgrabers.controller.beatstep.view.SessionView;
 import de.mossgrabers.controller.beatstep.view.ShiftView;
 import de.mossgrabers.controller.beatstep.view.TrackView;
-import de.mossgrabers.framework.command.ContinuousCommandID;
-import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
-import de.mossgrabers.framework.controller.Relative3ValueChanger;
-import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -39,6 +39,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
@@ -64,8 +65,6 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     };
     // @formatter:on
 
-    private final boolean       isPro;
-
 
     /**
      * Constructor.
@@ -74,17 +73,14 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
      * @param factory The factory
      * @param globalSettings The global settings
      * @param documentSettings The document (project) specific settings
-     * @param isPro True if Beatstep Pro
      */
-    public BeatstepControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final boolean isPro)
+    public BeatstepControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         super (factory, host, globalSettings, documentSettings);
 
-        this.isPro = isPro;
-        this.colorManager = new ColorManager ();
-        BeatstepColors.addColors (this.colorManager);
-        this.valueChanger = new Relative3ValueChanger (128, 1, 0.5);
-        this.configuration = new BeatstepConfiguration (host, this.valueChanger, isPro);
+        this.colorManager = new BeatstepColorManager ();
+        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
+        this.configuration = new BeatstepConfiguration (host, this.valueChanger);
     }
 
 
@@ -118,27 +114,16 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
         // Sequencer 1 is on channel 1
         final INoteInput seqNoteInput = input.createNoteInput ("Seq. 1", "90????", "80????");
-        if (!this.isPro)
-        {
-            final Integer [] table = new Integer [128];
-            for (int i = 0; i < 128; i++)
-            {
-                // Block the Shift key
-                table[i] = Integer.valueOf (i == 7 ? -1 : i);
-            }
-            seqNoteInput.setKeyTranslationTable (table);
-        }
 
-        // Setup the 2 note sequencers and 1 drum sequencer
-        if (this.isPro)
+        final Integer [] table = new Integer [128];
+        for (int i = 0; i < 128; i++)
         {
-            // Sequencer 2 is on channel 2
-            input.createNoteInput ("Seq. 2", "91????", "81????");
-            // Drum Sequencer is on channel 10
-            input.createNoteInput ("Drums", "99????", "89????");
+            // Block the Shift key
+            table[i] = Integer.valueOf (i == 7 ? -1 : i);
         }
+        seqNoteInput.setKeyTranslationTable (table);
 
-        this.surfaces.add (new BeatstepControlSurface (this.host, this.colorManager, this.configuration, output, input, this.isPro));
+        this.surfaces.add (new BeatstepControlSurface (this.host, this.colorManager, this.configuration, output, input));
     }
 
 
@@ -172,14 +157,31 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
     /** {@inheritDoc} */
     @Override
+    protected BindType getTriggerBindType (final ButtonID buttonID)
+    {
+        return BindType.NOTE;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected void registerTriggerCommands ()
     {
-        if (!this.isPro)
-            return;
-
         final BeatstepControlSurface surface = this.getSurface ();
-        for (int i = 0; i < 16; i++)
-            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW1_1, i), BeatstepControlSurface.BEATSTEP_PRO_STEP1 + i, new StepCommand (i, this.model, surface));
+        final ViewManager viewManager = surface.getViewManager ();
+
+        this.addButton (ButtonID.SHIFT, "Shift", (event, value) -> {
+
+            if (event == ButtonEvent.DOWN)
+            {
+                viewManager.setActiveView (Views.SHIFT);
+                return;
+            }
+
+            if (event == ButtonEvent.UP && viewManager.isActiveView (Views.SHIFT))
+                viewManager.restoreView ();
+
+        }, BeatstepControlSurface.BEATSTEP_SHIFT);
     }
 
 
@@ -191,12 +193,61 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         final ViewManager viewManager = surface.getViewManager ();
         for (int i = 0; i < 8; i++)
         {
-            this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.KNOB1, i), BeatstepControlSurface.BEATSTEP_KNOB_1 + i, new KnobRowViewCommand (i, this.model, surface));
-            this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.DEVICE_KNOB1, i), BeatstepControlSurface.BEATSTEP_KNOB_9 + i, new KnobRowViewCommand (i + 8, this.model, surface));
+            this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowViewCommand (i, this.model, surface), BindType.CC, 2, BeatstepControlSurface.BEATSTEP_KNOB_1 + i, RelativeEncoding.OFFSET_BINARY);
+            this.addRelativeKnob (ContinuousID.get (ContinuousID.DEVICE_KNOB1, i), "Knob " + (i + 9), new KnobRowViewCommand (i + 8, this.model, surface), BindType.CC, 2, BeatstepControlSurface.BEATSTEP_KNOB_9 + i, RelativeEncoding.OFFSET_BINARY);
         }
-        this.addContinuousCommand (ContinuousCommandID.MASTER_KNOB, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, new PlayPositionCommand<> (this.model, surface));
+
+        this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", new PlayPositionCommand<> (this.model, surface), BindType.CC, 2, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, RelativeEncoding.OFFSET_BINARY);
+
         final PlayView playView = (PlayView) viewManager.getView (Views.PLAY);
         playView.registerAftertouchCommand (new AftertouchAbstractViewCommand<> (playView, this.model, surface));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void layoutControls ()
+    {
+        final BeatstepControlSurface surface = this.getSurface ();
+
+        surface.getButton (ButtonID.PAD1).setBounds (145.25, 232.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD2).setBounds (222.5, 232.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD3).setBounds (302.75, 232.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD4).setBounds (382.75, 232.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD5).setBounds (463.0, 232.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD6).setBounds (543.0, 232.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD7).setBounds (623.25, 232.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD8).setBounds (703.25, 232.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD9).setBounds (145.25, 151.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD10).setBounds (222.5, 151.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD11).setBounds (302.75, 151.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD12).setBounds (382.75, 151.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD13).setBounds (463.0, 151.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD14).setBounds (543.0, 151.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD15).setBounds (623.25, 151.75, 57.0, 55.5);
+        surface.getButton (ButtonID.PAD16).setBounds (703.25, 151.75, 57.0, 55.5);
+
+        surface.getButton (ButtonID.SHIFT).setBounds (45.5, 262.0, 30.25, 30.25);
+
+        surface.getContinuous (ContinuousID.DEVICE_KNOB1).setBounds (155.25, 92.25, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB2).setBounds (237.0, 92.25, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB3).setBounds (318.75, 92.25, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB4).setBounds (400.5, 92.25, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB5).setBounds (482.25, 92.25, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB6).setBounds (564.0, 92.25, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB7).setBounds (646.0, 92.25, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB8).setBounds (727.75, 92.25, 35.0, 32.5);
+
+        surface.getContinuous (ContinuousID.KNOB1).setBounds (155.25, 19.5, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.KNOB2).setBounds (237.0, 19.5, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.KNOB3).setBounds (318.75, 19.5, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.KNOB4).setBounds (400.5, 19.5, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.KNOB5).setBounds (482.25, 19.5, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.KNOB6).setBounds (564.0, 19.5, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.KNOB7).setBounds (646.0, 19.5, 35.0, 32.5);
+        surface.getContinuous (ContinuousID.KNOB8).setBounds (727.75, 19.5, 35.0, 32.5);
+
+        surface.getContinuous (ContinuousID.MASTER_KNOB).setBounds (39.75, 30.5, 75.5, 77.75);
     }
 
 
@@ -206,7 +257,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     {
         // Enable Shift button to send Midi Note 07
         final BeatstepControlSurface surface = this.getSurface ();
-        surface.getOutput ().sendSysex ("F0 00 20 6B 7F 42 02 00 01 5E 09 F7");
+        surface.getMidiOutput ().sendSysex ("F0 00 20 6B 7F 42 02 00 01 5E 09 F7");
         surface.getViewManager ().setActiveView (Views.TRACK);
     }
 

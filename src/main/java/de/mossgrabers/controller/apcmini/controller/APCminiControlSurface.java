@@ -6,7 +6,6 @@ package de.mossgrabers.controller.apcmini.controller;
 
 import de.mossgrabers.controller.apcmini.APCminiConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -75,9 +74,7 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
      */
     public APCminiControlSurface (final IHost host, final ColorManager colorManager, final APCminiConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, new APCminiPadGrid (colorManager, output));
-
-        this.setTriggerId (ButtonID.SHIFT, APC_BUTTON_SHIFT);
+        super (host, configuration, colorManager, output, input, new APCminiPadGrid (colorManager, output), 110, 106);
     }
 
 
@@ -85,24 +82,30 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
     @Override
     public void setTrigger (final int channel, final int cc, final int state)
     {
+        // Shift has no light
+        if (cc == APC_BUTTON_SHIFT)
+            return;
+
         this.output.sendNoteEx (channel, cc, state);
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void setContinuous (final int channel, final int cc, final int state)
-    {
-        this.output.sendNoteEx (channel, cc, state);
-    }
-
-
+    /**
+     * Get the mode of the track button (Select, Rec Arm, Solo, Mute, ...)
+     *
+     * @return The new state
+     */
     public int getTrackState ()
     {
         return this.trackState;
     }
 
 
+    /**
+     * Sets the mode of the track button (Select, Rec Arm, Solo, Mute, ...)
+     *
+     * @param trackState The new state
+     */
     public void setTrackState (final int trackState)
     {
         this.trackState = trackState;

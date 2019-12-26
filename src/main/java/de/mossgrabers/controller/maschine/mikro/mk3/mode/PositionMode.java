@@ -34,7 +34,8 @@ public class PositionMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        this.model.getTransport ().changePosition (value > 0, this.isSlow);
+        final double speed = this.model.getValueChanger ().calcKnobSpeed (value);
+        this.model.getTransport ().changePosition (speed > 0, this.isSlow);
     }
 
 
@@ -43,6 +44,15 @@ public class PositionMode extends BaseMode
     public void onKnobTouch (final int index, final boolean isTouched)
     {
         if (isTouched)
-            this.isSlow = !this.isSlow;
+            this.toggleSpeed ();
+    }
+
+
+    /**
+     * Toggle the scroll speed.
+     */
+    public void toggleSpeed ()
+    {
+        this.isSlow = !this.isSlow;
     }
 }

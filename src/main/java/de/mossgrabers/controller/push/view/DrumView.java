@@ -6,6 +6,7 @@ package de.mossgrabers.controller.push.view;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
@@ -45,9 +46,9 @@ public class DrumView extends DrumViewBase
     @Override
     protected void handleButtonCombinations (final int playedPad)
     {
-        if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_BROWSE))
+        if (this.surface.isPressed (ButtonID.BROWSE))
         {
-            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
+            this.surface.setTriggerConsumed (ButtonID.BROWSE);
 
             final ICursorDevice primary = this.model.getInstrumentDevice ();
             if (!primary.hasDrumPads ())

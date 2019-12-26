@@ -21,24 +21,30 @@ import de.mossgrabers.framework.mode.Modes;
  */
 public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlSurface, MCUConfiguration>
 {
+    private int channel;
+
+
     /**
      * Constructor.
      *
+     * @param channel The channel on which to change the volume (0-8, 8 = Master)
      * @param model The model
      * @param surface The surface
      */
-    public PitchbendVolumeCommand (final IModel model, final MCUControlSurface surface)
+    public PitchbendVolumeCommand (final int channel, final IModel model, final MCUControlSurface surface)
     {
         super (model, surface);
+
+        this.channel = channel;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onPitchbend (final int channel, final int data1, final int data2)
+    public void onPitchbend (final int data1, final int data2)
     {
         final int value = Math.min (data2 * 127 + data1, this.model.getValueChanger ().getUpperBound () - 1);
-        if (channel == 8)
+        if (this.channel == 8)
         {
             if (this.surface.isShiftPressed ())
                 this.model.getTransport ().setMetronomeVolume (value);
@@ -49,7 +55,7 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
 
         final int extenderOffset = this.surface.getExtenderOffset ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getItem (extenderOffset + channel);
+        final ITrack track = tb.getItem (extenderOffset + this.channel);
         if (this.surface.getConfiguration ().useFadersAsKnobs ())
         {
             final ModeManager modeManager = this.surface.getModeManager ();
@@ -58,7 +64,7 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
             else if (modeManager.isActiveOrTempMode (Modes.PAN))
                 track.setPan (value);
             else if (modeManager.isActiveOrTempMode (Modes.TRACK))
-                this.handleTrack (channel, value);
+                this.handleTrack (this.channel, value);
             else if (modeManager.isActiveOrTempMode (Modes.SEND1))
                 track.getSendBank ().getItem (0).setValue (value);
             else if (modeManager.isActiveOrTempMode (Modes.SEND2))
@@ -76,7 +82,7 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
             else if (modeManager.isActiveOrTempMode (Modes.SEND8))
                 track.getSendBank ().getItem (7).setValue (value);
             else if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
-                this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + channel).setValue (value);
+                this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + this.channel).setValue (value);
             return;
         }
 

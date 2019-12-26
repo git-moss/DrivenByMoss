@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.daw.constants;
 
+import java.util.HashMap;
+import java.util.Map;
+
+
 /**
  * Resolutions for grid, beat repeat, etc..
  *
@@ -29,13 +33,17 @@ public enum Resolution
     RES_1_32T("1/32t", 1.0 / 12.0);
 
 
-    private static final String [] RESOLUTION_NAMES;
+    private static final String []               RESOLUTION_NAMES;
+    private static final Map<String, Resolution> RESOLUTION_BY_NAME = new HashMap<> ();
     static
     {
         final Resolution [] values = values ();
         RESOLUTION_NAMES = new String [values.length];
         for (int i = 0; i < values.length; i++)
+        {
             RESOLUTION_NAMES[i] = values[i].name;
+            RESOLUTION_BY_NAME.put (RESOLUTION_NAMES[i], values[i]);
+        }
     }
 
     private final String name;
@@ -102,6 +110,18 @@ public enum Resolution
 
 
     /**
+     * Get a resolution by its name.
+     *
+     * @param name The name
+     * @return The resolution
+     */
+    public static Resolution getByName (final String name)
+    {
+        return RESOLUTION_BY_NAME.get (name);
+    }
+
+
+    /**
      * Test if the given value matches the value at the given index.
      *
      * @param index The index
@@ -123,12 +143,18 @@ public enum Resolution
     public static int getMatch (final double value)
     {
         final Resolution [] resolutions = values ();
+        double min = 1.0;
+        int result = 0;
         for (int i = 0; i < resolutions.length; i++)
         {
-            if (Math.abs (value - getValueAt (i)) < 0.001)
-                return i;
+            final double diff = Math.abs (value - getValueAt (i));
+            if (diff < min)
+            {
+                min = diff;
+                result = i;
+            }
         }
-        return 0;
+        return result;
     }
 
 

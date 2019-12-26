@@ -10,8 +10,8 @@ import de.mossgrabers.framework.configuration.IColorSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.mode.Modes;
@@ -292,6 +292,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
         this.activateDefaultNoteViewSetting (globalSettings);
+        this.activateMidiEditChannelSetting (documentSettings);
 
         ///////////////////////////
         // Drum Sequencer

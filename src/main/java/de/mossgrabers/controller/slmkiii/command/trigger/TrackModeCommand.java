@@ -40,7 +40,7 @@ public class TrackModeCommand extends AbstractTriggerCommand<SLMkIIIControlSurfa
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event != ButtonEvent.UP)
             return;
@@ -49,6 +49,6 @@ public class TrackModeCommand extends AbstractTriggerCommand<SLMkIIIControlSurfa
         if (browser != null && browser.isActive ())
             browser.stopBrowsing (!this.surface.isShiftPressed ());
 
-        this.modeSelectCommand.execute (ButtonEvent.DOWN);
+        this.modeSelectCommand.execute (ButtonEvent.DOWN, 127);
     }
 }

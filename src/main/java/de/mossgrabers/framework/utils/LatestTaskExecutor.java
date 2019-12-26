@@ -7,6 +7,7 @@ package de.mossgrabers.framework.utils;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -61,5 +62,21 @@ public class LatestTaskExecutor implements Executor
     public boolean isShutdown ()
     {
         return this.executor.isShutdown ();
+    }
+
+
+    /**
+     * Blocks until all tasks have completed execution after a shutdown request, or the timeout
+     * occurs, or the current thread is interrupted, whichever happens first.
+     *
+     * @param timeout the maximum time to wait
+     * @param unit the time unit of the timeout argument
+     * @return {@code true} if this executor terminated and {@code false} if the timeout elapsed
+     *         before termination
+     * @throws InterruptedException if interrupted while waiting
+     */
+    public boolean awaitTermination (final long timeout, final TimeUnit unit) throws InterruptedException
+    {
+        return this.executor.awaitTermination (timeout, unit);
     }
 }

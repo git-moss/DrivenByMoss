@@ -7,6 +7,7 @@ package de.mossgrabers.controller.sl.controller;
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.controller.hardware.IHwTextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -20,7 +21,10 @@ import de.mossgrabers.framework.utils.StringUtils;
 public class SLDisplay extends AbstractTextDisplay
 {
     /** The right arrow. */
-    public static final String RIGHT_ARROW = ">";
+    public static final String   RIGHT_ARROW = ">";
+
+    private final IHwTextDisplay hwTextDisplay1;
+    private final IHwTextDisplay hwTextDisplay2;
 
 
     /**
@@ -29,10 +33,32 @@ public class SLDisplay extends AbstractTextDisplay
      *
      * @param host The host
      * @param output The midi output which addresses the display
+     * @param hwTextDisplay2
+     * @param hwTextDisplay1
      */
-    public SLDisplay (final IHost host, final IMidiOutput output)
+    public SLDisplay (final IHost host, final IMidiOutput output, final IHwTextDisplay hwTextDisplay1, final IHwTextDisplay hwTextDisplay2)
     {
         super (host, output, 4 /* No of rows */, 8 /* No of cells */, 8);
+
+        this.hwTextDisplay1 = hwTextDisplay1;
+        this.hwTextDisplay2 = hwTextDisplay2;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateLine (final int row, final String text)
+    {
+        if (row == 0)
+            this.hwTextDisplay1.setLine (0, this.convertCharacterset (text));
+        else if (row == 1)
+            this.hwTextDisplay2.setLine (0, this.convertCharacterset (text));
+        else if (row == 2)
+            this.hwTextDisplay1.setLine (1, this.convertCharacterset (text));
+        else if (row == 3)
+            this.hwTextDisplay2.setLine (1, this.convertCharacterset (text));
+
+        this.writeLine (row, text);
     }
 
 
@@ -114,5 +140,27 @@ public class SLDisplay extends AbstractTextDisplay
         final int upper = x >> 4 & 0x7;
         final int lower = x & 0xF;
         return Integer.toString (upper, 16) + Integer.toString (lower, 16) + " ";
+    }
+
+
+    /**
+     * Get the 1st hardware display.
+     *
+     * @return The display
+     */
+    public IHwTextDisplay getHwTextDisplay1 ()
+    {
+        return this.hwTextDisplay1;
+    }
+
+
+    /**
+     * Get the 2nd hardware display.
+     *
+     * @return The display
+     */
+    public IHwTextDisplay getHwTextDisplay2 ()
+    {
+        return this.hwTextDisplay2;
     }
 }

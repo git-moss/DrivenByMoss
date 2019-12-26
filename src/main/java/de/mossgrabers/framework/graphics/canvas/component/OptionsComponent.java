@@ -45,13 +45,10 @@ public class OptionsComponent implements IComponent
      * @param useSmallTopMenu Draw the small version of the top menu if true
      * @param isBottomHeaderSelected True to draw the lower header selected
      */
-    public OptionsComponent (final String headerTop, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottom, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu, final boolean isBottomHeaderSelected)
+    public OptionsComponent (final String headerTop, final String menuTopName, final boolean isMenuTopSelected, final ColorEx menuTopColor, final String headerBottom, final String menuBottomName, final boolean isMenuBottomSelected, final ColorEx menuBottomColor, final boolean useSmallTopMenu, final boolean isBottomHeaderSelected)
     {
-        final ColorEx topColor = menuTopColor == null ? null : new ColorEx (menuTopColor[0], menuTopColor[1], menuTopColor[2]);
-        final ColorEx bottomColor = menuBottomColor == null ? null : new ColorEx (menuBottomColor[0], menuBottomColor[1], menuBottomColor[2]);
-
-        this.header = new LabelComponent (menuTopName, null, topColor, isMenuTopSelected, true, useSmallTopMenu ? LabelLayout.SMALL_HEADER : LabelLayout.PLAIN);
-        this.footer = new LabelComponent (menuBottomName, null, bottomColor, isMenuBottomSelected, true, LabelLayout.PLAIN);
+        this.header = new LabelComponent (menuTopName, null, menuTopColor, isMenuTopSelected, true, useSmallTopMenu ? LabelLayout.SMALL_HEADER : LabelLayout.PLAIN);
+        this.footer = new LabelComponent (menuBottomName, null, menuBottomColor, isMenuBottomSelected, true, LabelLayout.PLAIN);
 
         this.headerTop = headerTop;
         this.headerBottom = headerBottom;

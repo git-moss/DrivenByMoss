@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
@@ -20,7 +21,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractSequencerView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
+public abstract class AbstractSequencerView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C>
 {
     /** The color for highlighting a step with no content. */
     public static final String    COLOR_STEP_HILITE_NO_CONTENT = "COLOR_STEP_HILITE_NO_CONTENT";
@@ -123,10 +124,12 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int index, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN && this.isActive ())
-            this.setResolutionIndex (7 - index);
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.isActive ())
+            return;
+        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        this.setResolutionIndex (7 - index);
     }
 
 
@@ -187,6 +190,16 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     public int getResolutionIndex ()
     {
         return this.selectedResolutionIndex;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getButtonColorID (final ButtonID buttonID)
+    {
+        if (!this.isActive ())
+            return AbstractSequencerView.COLOR_RESOLUTION_OFF;
+        return buttonID == ButtonID.get (ButtonID.SCENE1, 7 - this.selectedResolutionIndex) ? AbstractSequencerView.COLOR_RESOLUTION_SELECTED : AbstractSequencerView.COLOR_RESOLUTION;
     }
 
 

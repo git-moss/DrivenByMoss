@@ -39,7 +39,7 @@ public abstract class AbstractTriggerCommand<S extends IControlSurface<C>, C ext
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (this.surface.isShiftPressed ())
             this.executeShifted (event);

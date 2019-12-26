@@ -17,7 +17,23 @@ import de.mossgrabers.framework.view.Views;
  */
 public class LaunchkeyPadGrid extends PadGridImpl
 {
-    private Views activeView;
+    // @formatter:off
+    private static final int [] MAP_DRUM =
+    {
+        36, 37, 38, 39, 44, 45, 46, 47,
+        40, 41, 42, 43, 48, 49, 50, 51
+    };
+
+    private static final int [] MAP_SESSION =
+    {
+        112, 113, 114, 115, 116, 117, 118, 119,
+         96,  97,  98,  99, 100, 101, 102, 103
+    };
+
+
+    // @formatter:on
+
+    private Views               activeView;
 
 
     /**
@@ -66,73 +82,55 @@ public class LaunchkeyPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    public int translateToController (final int note)
+    public int [] translateToController (final int note)
     {
-        if (this.activeView == null)
-            return note;
+        return translateToController (this.activeView, note);
+    }
 
-        switch (this.activeView)
+
+    /**
+     * Plug for grids not sending notes in the range of 36-100.
+     *
+     * @param view The view
+     * @param note The outgoing note
+     * @return The midi channel (index 0) and note (index 1) scaled to the controller
+     */
+    public static int [] translateToController (final Views view, final int note)
+    {
+        final int [] result = new int [2];
+        if (view == null || view == Views.SESSION)
         {
-            case SESSION:
-                if (note > 43)
-                    return note + 52;
-                return note + 76;
-
-            case DRUM:
-                // 40 41 42 43 48 49 50 51
-                // 36 37 38 39 44 45 46 47
-                if (note >= 44 && note < 48)
-                    return note - 4;
-                if (note >= 40 && note < 44)
-                    return note + 4;
-                return note;
-
-            default:
-                // Unsupported view
-                return note;
+            result[0] = 0;
+            result[1] = MAP_SESSION[note - 36];
         }
+        else
+        {
+            result[0] = 9;
+            result[1] = MAP_DRUM[note - 36];
+        }
+        return result;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    protected void sendNoteState (final int note, final int color)
+    protected void sendNoteState (final int channel, final int note, final int color)
     {
-        if (this.activeView == null)
-            return;
-
-        switch (this.activeView)
-        {
-            case DRUM:
-                this.output.sendNoteEx (0x09, note, color);
-                break;
-
-            case SESSION:
-            default:
-                this.output.sendNote (note, color);
-                break;
-        }
+        if (this.activeView != null && this.activeView == Views.DRUM)
+            this.output.sendNoteEx (0x09, note, color);
+        else
+            this.output.sendNote (note, color);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
+    protected void sendBlinkState (final int channel, final int note, final int blinkColor, final boolean fast)
     {
-        if (this.activeView == null)
-            return;
-
-        switch (this.activeView)
-        {
-            case DRUM:
-                this.output.sendNoteEx (0x09 + (fast ? 1 : 2), note, blinkColor);
-                break;
-
-            case SESSION:
-            default:
-                this.output.sendNoteEx (fast ? 1 : 2, note, blinkColor);
-                break;
-        }
+        if (this.activeView != null && this.activeView == Views.DRUM)
+            this.output.sendNoteEx (0x09 + (fast ? 1 : 2), note, blinkColor);
+        else
+            this.output.sendNoteEx (fast ? 1 : 2, note, blinkColor);
     }
 
 

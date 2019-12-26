@@ -11,7 +11,6 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -64,22 +63,6 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
     public void onKnobValue (final int index, final int value)
     {
         this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
-    }
-
-
-    /**
-     * Set the button LEDs.
-     */
-    public void setLEDs ()
-    {
-        final boolean hasDevice = this.model.hasSelectedDevice ();
-        final IMidiOutput output = this.surface.getOutput ();
-        final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
-        for (int i = 0; i < 8; i++)
-        {
-            final int value = hasDevice ? parameterBank.getItem (i).getValue () : 0;
-            output.sendCC (0x70 + i, Math.min (value * 11 / 127, 11));
-        }
     }
 
 

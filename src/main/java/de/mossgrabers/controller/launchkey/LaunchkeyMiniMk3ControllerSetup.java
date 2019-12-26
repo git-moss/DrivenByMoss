@@ -4,27 +4,32 @@
 
 package de.mossgrabers.controller.launchkey;
 
-import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3Colors;
+import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ColorManager;
 import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ControlSurface;
 import de.mossgrabers.controller.launchkey.view.DrumConfigView;
 import de.mossgrabers.controller.launchkey.view.DrumView;
 import de.mossgrabers.controller.launchkey.view.PadModeSelectView;
 import de.mossgrabers.controller.launchkey.view.SessionView;
 import de.mossgrabers.controller.launchkey.view.UserPadView;
-import de.mossgrabers.framework.command.ContinuousCommandID;
-import de.mossgrabers.framework.command.SceneCommand;
-import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
+import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
+import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
+import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
-import de.mossgrabers.framework.controller.DefaultValueChanger;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
-import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.OutputID;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.hardware.IHwLight;
+import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -45,13 +50,9 @@ import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SendMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -75,22 +76,6 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     };
     // @formatter:on
 
-    private static final Map<Integer, Modes> MODES_SELECT = new HashMap<> ();
-    private static final Map<Integer, Views> VIEWS_SELECT = new HashMap<> ();
-    static
-    {
-        MODES_SELECT.put (Integer.valueOf (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_CUSTOM), Modes.USER);
-        MODES_SELECT.put (Integer.valueOf (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_VOLUME), Modes.VOLUME);
-        MODES_SELECT.put (Integer.valueOf (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_PARAMS), Modes.DEVICE_PARAMS);
-        MODES_SELECT.put (Integer.valueOf (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_PAN), Modes.PAN);
-        MODES_SELECT.put (Integer.valueOf (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_SEND1), Modes.SEND1);
-        MODES_SELECT.put (Integer.valueOf (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_SEND2), Modes.SEND2);
-
-        VIEWS_SELECT.put (Integer.valueOf (LaunchkeyMiniMk3ControlSurface.PAD_MODE_CUSTOM), Views.PLAY);
-        VIEWS_SELECT.put (Integer.valueOf (LaunchkeyMiniMk3ControlSurface.PAD_MODE_DRUM), Views.DRUM);
-        VIEWS_SELECT.put (Integer.valueOf (LaunchkeyMiniMk3ControlSurface.PAD_MODE_SESSION), Views.SESSION);
-    }
-
 
     /**
      * Constructor.
@@ -104,8 +89,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     {
         super (factory, host, globalSettings, documentSettings);
 
-        this.colorManager = new ColorManager ();
-        LaunchkeyMiniMk3Colors.addColors (this.colorManager);
+        this.colorManager = new LaunchkeyMiniMk3ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
         this.configuration = new LaunchkeyMiniMk3Configuration (host, this.valueChanger);
     }
@@ -148,7 +132,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final LaunchkeyMiniMk3ControlSurface surface = new LaunchkeyMiniMk3ControlSurface (this.host, this.colorManager, this.configuration, output, input, inputKeys, this::processProgramChangeAction);
         this.surfaces.add (surface);
 
-        surface.setLaunchpadToDAW (true);
+        surface.addPianoKeyboard (25, inputKeys);
     }
 
 
@@ -197,17 +181,94 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     protected void registerTriggerCommands ()
     {
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
+        final ITransport t = this.model.getTransport ();
+        final ModeManager modeManager = surface.getModeManager ();
+        final ViewManager viewManager = surface.getViewManager ();
 
-        this.addTriggerCommand (TriggerCommandID.SHIFT, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SHIFT, NopCommand.INSTANCE);
+        this.addButton (ButtonID.SHIFT, "Shift", NopCommand.INSTANCE, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SHIFT);
 
-        this.addTriggerCommand (TriggerCommandID.PLAY, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_PLAY, 15, new PlayCommand<> (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.RECORD, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RECORD, 15, new RecordCommand<> (this.model, surface));
+        this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_PLAY, t::isPlaying);
+        this.addButton (ButtonID.RECORD, "Record", new RecordCommand<> (this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RECORD, () -> t.isLauncherOverdub () || t.isRecording ());
 
-        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_LEFT, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_LEFT, 15, new ModeCursorCommand<> (Direction.LEFT, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_RIGHT, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RIGHT, 15, new ModeCursorCommand<> (Direction.RIGHT, this.model, surface));
+        this.addButton (ButtonID.MOVE_TRACK_LEFT, "Previous", new ModeCursorCommand<> (Direction.LEFT, this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_LEFT, () -> {
 
-        this.addTriggerCommand (TriggerCommandID.SCENE1, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE1, new SceneCommand<> (0, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.SCENE2, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE2, new SceneCommand<> (1, this.model, surface));
+            final Mode mode = modeManager.getActiveOrTempMode ();
+            if (mode == null)
+                return false;
+            if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
+                return this.model.getCursorDevice ().canSelectPreviousFX ();
+            return mode.hasPreviousItem ();
+
+        });
+        this.addButton (ButtonID.MOVE_TRACK_RIGHT, "Next", new ModeCursorCommand<> (Direction.RIGHT, this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RIGHT, () -> {
+
+            final Mode mode = modeManager.getActiveOrTempMode ();
+            if (mode == null)
+                return false;
+            if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
+                return this.model.getCursorDevice ().canSelectNextFX ();
+            return mode.hasNextItem ();
+
+        });
+
+        this.addButton (ButtonID.SCENE1, "Scene 1", new ViewButtonCommand<> (ButtonID.SCENE1, this.model, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE1, () -> {
+            final View activeView = viewManager.getActiveView ();
+            return activeView != null ? activeView.getButtonColor (ButtonID.SCENE1) : 0;
+        });
+        this.addButton (ButtonID.SCENE2, "Scene 2", new ViewButtonCommand<> (ButtonID.SCENE2, this.model, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE2, () -> {
+            final View activeView = viewManager.getActiveView ();
+            return activeView != null ? activeView.getButtonColor (ButtonID.SCENE2) : 0;
+        });
+
+        this.createViewButton (ButtonID.ROW2_1, OutputID.LED_RING1, "Session", Views.SESSION, LaunchkeyMiniMk3ControlSurface.PAD_MODE_SESSION);
+        this.createViewButton (ButtonID.ROW2_2, OutputID.LED_RING2, "Drum", Views.DRUM, LaunchkeyMiniMk3ControlSurface.PAD_MODE_DRUM);
+        this.createViewButton (ButtonID.ROW2_3, OutputID.LED_RING3, "Custom", Views.PLAY, LaunchkeyMiniMk3ControlSurface.PAD_MODE_CUSTOM);
+
+        this.createModeButton (ButtonID.ROW1_1, OutputID.LED1, "Device", Modes.DEVICE_PARAMS, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_PARAMS);
+        this.createModeButton (ButtonID.ROW1_2, OutputID.LED2, "Volume", Modes.VOLUME, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_VOLUME);
+        this.createModeButton (ButtonID.ROW1_3, OutputID.LED3, "Pan", Modes.PAN, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_PAN);
+        this.createModeButton (ButtonID.ROW1_4, OutputID.LED4, "Send 1", Modes.SEND1, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_SEND1);
+        this.createModeButton (ButtonID.ROW1_5, OutputID.LED5, "Send 2", Modes.SEND2, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_SEND2);
+        this.createModeButton (ButtonID.ROW1_6, OutputID.LED6, "Custom", Modes.USER, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_CUSTOM);
+
+        this.addButton (ButtonID.CONTROL, "DAW Online", (event, velocity) -> surface.setDAWConnected (velocity > 0), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_DAW_ONLINE, surface::isDAWConnected);
+    }
+
+
+    private void createViewButton (final ButtonID buttonID, final OutputID outputID, final String label, final Views view, final int viewIndex)
+    {
+        final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
+        final ViewMultiSelectCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> viewSelectCommand = new ViewMultiSelectCommand<> (this.model, surface, true, view);
+        this.addButton (surface, buttonID, label, (event, velocity) -> {
+            viewSelectCommand.executeNormal (event);
+            surface.getPadGrid ().setView (view);
+        }, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_VIEW_SELECT, viewIndex, false, null);
+        final IHwLight light = surface.createLight (outputID, () -> surface.getViewManager ().isActiveView (view) ? ColorEx.ORANGE : ColorEx.DARK_ORANGE, color -> {
+            // Intentionally empty
+        });
+        surface.getButton (buttonID).addLight (light);
+    }
+
+
+    private void createModeButton (final ButtonID buttonID, final OutputID outputID, final String label, final Modes mode, final int modeIndex)
+    {
+        final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
+        final ModeSelectCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> modeSelectCommand = new ModeSelectCommand<> (this.model, surface, mode);
+        this.addButton (surface, buttonID, label, (event, velocity) -> modeSelectCommand.executeNormal (event), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_MODE_SELECT, modeIndex, false, null);
+        final IHwLight light = surface.createLight (outputID, () -> surface.getModeManager ().isActiveOrTempMode (mode) ? ColorEx.GREEN : ColorEx.DARK_GREEN, color -> {
+            // Intentionally empty
+        });
+        surface.getButton (buttonID).addLight (light);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected BindType getTriggerBindType (final ButtonID buttonID)
+    {
+        if (buttonID == ButtonID.CONTROL)
+            return BindType.NOTE;
+        return super.getTriggerBindType (buttonID);
     }
 
 
@@ -219,34 +280,81 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         for (int i = 0; i < 8; i++)
         {
             final KnobRowModeCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> command = new KnobRowModeCommand<> (i, this.model, surface);
-            this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.KNOB1, i), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i, 15, command);
-            this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.KNOB1, i), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i, command);
+            this.addAbsoluteKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), command, BindType.CC, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
         }
+    }
 
-        this.addContinuousCommand (ContinuousCommandID.MODE_SELECTION, 0x09, 0x0F, value -> {
-            final Modes mode = MODES_SELECT.get (Integer.valueOf (value));
-            if (mode == null)
-            {
-                this.host.println ("Unknown knob mode " + value);
-                return;
-            }
-            final ModeManager modeManager = this.getSurface ().getModeManager ();
-            modeManager.setActiveMode (mode);
-            surface.getDisplay ().notify (modeManager.getActiveOrTempMode ().getName ());
-        });
 
-        this.addContinuousCommand (ContinuousCommandID.VIEW_SELECTION, 0x03, 0x0F, value -> {
-            final Views view = VIEWS_SELECT.get (Integer.valueOf (value));
-            if (view == null)
-            {
-                this.host.println ("Unknown pad mode " + value);
-                return;
-            }
-            final ViewManager viewManager = this.getSurface ().getViewManager ();
-            viewManager.setActiveView (view);
-            surface.getDisplay ().notify (viewManager.getActiveView ().getName ());
-            surface.getPadGrid ().setView (view);
-        });
+    /** {@inheritDoc} */
+    @Override
+    protected void layoutControls ()
+    {
+        final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
+
+        surface.getButton (ButtonID.PAD1).setBounds (193.5, 127.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD2).setBounds (247.0, 127.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD3).setBounds (301.0, 127.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD4).setBounds (354.75, 127.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD5).setBounds (408.0, 127.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD6).setBounds (462.5, 127.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD7).setBounds (516.25, 127.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD8).setBounds (570.0, 127.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD9).setBounds (193.5, 75.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD10).setBounds (247.0, 75.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD11).setBounds (301.0, 75.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD12).setBounds (354.75, 75.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD13).setBounds (408.0, 75.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD14).setBounds (462.5, 75.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD15).setBounds (516.25, 75.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD16).setBounds (570.0, 75.5, 47.0, 46.5);
+
+        surface.getButton (ButtonID.PAD17).setBounds (193.5, 257.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD18).setBounds (247.0, 257.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD19).setBounds (301.0, 257.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD20).setBounds (354.75, 257.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD21).setBounds (408.0, 257.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD22).setBounds (462.5, 257.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD23).setBounds (516.25, 257.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD24).setBounds (570.0, 257.5, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD25).setBounds (193.5, 203.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD26).setBounds (247.0, 203.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD27).setBounds (301.0, 203.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD28).setBounds (354.75, 203.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD29).setBounds (408.0, 203.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD30).setBounds (462.5, 203.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD31).setBounds (516.25, 203.75, 47.0, 46.5);
+        surface.getButton (ButtonID.PAD32).setBounds (570.0, 203.75, 47.0, 46.5);
+
+        surface.getButton (ButtonID.ROW1_1).setBounds (354.75, 333.25, 47.0, 46.5);
+        surface.getButton (ButtonID.ROW1_2).setBounds (408.0, 333.25, 47.0, 46.5);
+        surface.getButton (ButtonID.ROW1_3).setBounds (462.5, 333.25, 47.0, 46.5);
+        surface.getButton (ButtonID.ROW1_4).setBounds (516.25, 333.25, 47.0, 46.5);
+        surface.getButton (ButtonID.ROW1_5).setBounds (570.0, 333.25, 47.0, 46.5);
+        surface.getButton (ButtonID.ROW1_6).setBounds (624.0, 333.25, 47.0, 46.5);
+        surface.getButton (ButtonID.ROW2_1).setBounds (193.5, 333.25, 47.0, 46.5);
+        surface.getButton (ButtonID.ROW2_2).setBounds (247.0, 333.25, 47.0, 46.5);
+        surface.getButton (ButtonID.ROW2_3).setBounds (301.0, 333.25, 47.0, 46.5);
+
+        surface.getButton (ButtonID.SHIFT).setBounds (138.0, 31.0, 38.5, 19.25);
+        surface.getButton (ButtonID.PLAY).setBounds (687.0, 155.0, 38.5, 19.25);
+        surface.getButton (ButtonID.RECORD).setBounds (732.25, 155.0, 38.5, 19.25);
+        surface.getButton (ButtonID.MOVE_TRACK_LEFT).setBounds (687.0, 102.75, 38.5, 19.25);
+        surface.getButton (ButtonID.MOVE_TRACK_RIGHT).setBounds (732.25, 102.75, 38.5, 19.25);
+        surface.getButton (ButtonID.SCENE1).setBounds (623.75, 75.5, 47.0, 46.5);
+        surface.getButton (ButtonID.SCENE2).setBounds (623.75, 127.75, 47.0, 46.5);
+
+        surface.getButton (ButtonID.CONTROL).setBounds (15.5, 26.5, 49.75, 29.0);
+
+        surface.getContinuous (ContinuousID.KNOB1).setBounds (203.0, 25.25, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB2).setBounds (256.75, 25.25, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB3).setBounds (310.75, 25.25, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB4).setBounds (364.5, 25.25, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB5).setBounds (418.5, 25.25, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB6).setBounds (472.25, 25.25, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB7).setBounds (526.25, 25.25, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB8).setBounds (580.0, 25.25, 25.5, 25.0);
+
+        surface.getPianoKeyboard ().setBounds (40.0, 422.0, 726.75, 175.75);
     }
 
 
@@ -255,46 +363,14 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     public void startup ()
     {
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
+
+        surface.setLaunchpadToDAW (true);
+
         surface.getPadGrid ().setView (Views.SESSION);
         surface.getViewManager ().setActiveView (Views.SESSION);
         surface.getModeManager ().setActiveMode (Modes.VOLUME);
         surface.setKnobMode (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_VOLUME);
         surface.setPadMode (LaunchkeyMiniMk3ControlSurface.PAD_MODE_SESSION);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateButtons ()
-    {
-        final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
-        final ITransport t = this.model.getTransport ();
-
-        final int colorLow = this.colorManager.getColor (ColorManager.BUTTON_STATE_ON);
-        final int colorHi = this.colorManager.getColor (ColorManager.BUTTON_STATE_HI);
-
-        surface.updateTrigger (15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_PLAY, t.isPlaying () ? colorHi : colorLow);
-        surface.updateTrigger (15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RECORD, t.isLauncherOverdub () || t.isRecording () ? colorHi : colorLow);
-
-        final ModeManager modeManager = this.getSurface ().getModeManager ();
-        final Mode mode = modeManager.getActiveOrTempMode ();
-        if (mode == null)
-            return;
-        boolean hasPrevItem = mode.hasPreviousItem ();
-        boolean hasNextItem = mode.hasNextItem ();
-        if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
-        {
-            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            hasPrevItem = cursorDevice.canSelectPreviousFX ();
-            hasNextItem = cursorDevice.canSelectNextFX ();
-        }
-        surface.updateTrigger (15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_LEFT, hasPrevItem ? colorHi : colorLow);
-        surface.updateTrigger (15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RIGHT, hasNextItem ? colorHi : colorLow);
-
-        final ViewManager viewManager = surface.getViewManager ();
-        final View activeView = viewManager.getActiveView ();
-        if (activeView instanceof SceneView)
-            ((SceneView) activeView).updateSceneButtons ();
     }
 
 

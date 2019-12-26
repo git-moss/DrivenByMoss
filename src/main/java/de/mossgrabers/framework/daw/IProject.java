@@ -45,4 +45,114 @@ public interface IProject extends ObserverManagement
      * Save the current project.
      */
     void save ();
+
+
+    /**
+     * Get the cue volume as a formatted text.
+     *
+     * @return The cue volume text
+     */
+    String getCueVolumeStr ();
+
+
+    /**
+     * Get the cue volume as a formatted text.
+     *
+     * @param limit Limit the text to this length
+     * @return The cue volume text
+     */
+    String getCueVolumeStr (int limit);
+
+
+    /**
+     * Get the cue volume.
+     *
+     * @return The cue volume
+     */
+    int getCueVolume ();
+
+
+    /**
+     * Change the cue volume.
+     *
+     * @param control The control value
+     */
+    void changeCueVolume (int control);
+
+
+    /**
+     * Set the cue volume.
+     *
+     * @param value The new value
+     */
+    void setCueVolume (int value);
+
+
+    /**
+     * Reset the cue volume to its default value.
+     */
+    void resetCueVolume ();
+
+
+    /**
+     * Signal that the cue volume fader/knob is touched for automation recording.
+     *
+     * @param isBeingTouched True if touched
+     */
+    void touchCueVolume (boolean isBeingTouched);
+
+
+    /**
+     * Get the cue mix as a formatted text
+     *
+     * @return The cue mix text
+     */
+    String getCueMixStr ();
+
+
+    /**
+     * Get the cue mix as a formatted text
+     *
+     * @param limit Limit the text to this length
+     * @return The cue mix text
+     */
+    String getCueMixStr (int limit);
+
+
+    /**
+     * Get the cue mix.
+     *
+     * @return The cue mix
+     */
+    int getCueMix ();
+
+
+    /**
+     * Change the cue mix.
+     *
+     * @param control The control value
+     */
+    void changeCueMix (int control);
+
+
+    /**
+     * Set the cue mix.
+     *
+     * @param value The new value
+     */
+    void setCueMix (int value);
+
+
+    /**
+     * Reset the cue mix to its default value.
+     */
+    void resetCueMix ();
+
+
+    /**
+     * Signal that the cue mix fader/knob is touched for automation recording.
+     *
+     * @param isBeingTouched True if touched
+     */
+    void touchCueMix (boolean isBeingTouched);
 }

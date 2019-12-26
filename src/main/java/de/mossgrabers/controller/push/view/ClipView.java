@@ -5,13 +5,14 @@
 package de.mossgrabers.controller.push.view;
 
 import de.mossgrabers.controller.push.PushConfiguration;
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 
@@ -50,22 +51,6 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     public void updateNoteMapping ()
     {
         this.delayedUpdateNoteMapping (EMPTY_TABLE);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean usesButton (final int buttonID)
-    {
-        switch (buttonID)
-        {
-            case PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN:
-            case PushControlSurface.PUSH_BUTTON_OCTAVE_UP:
-                return false;
-
-            default:
-                return true;
-        }
     }
 
 
@@ -119,9 +104,9 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
         final int loopStartPad = (int) Math.floor (Math.max (0, start) / quartersPerPad);
         final int loopEndPad = (int) Math.ceil (Math.min (maxQuarters, start + clip.getLoopLength ()) / quartersPerPad);
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int white = isPush2 ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH1_COLOR2_WHITE;
-        final int green = isPush2 ? PushColors.PUSH2_COLOR2_GREEN : PushColors.PUSH1_COLOR2_GREEN;
-        final int off = isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
+        final int white = isPush2 ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH1_COLOR2_WHITE;
+        final int green = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH1_COLOR2_GREEN;
+        final int off = isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
         for (int pad = 0; pad < 64; pad++)
             this.surface.getPadGrid ().lightEx (pad % 8, pad / 8, pad >= loopStartPad && pad < loopEndPad ? pad == currentMeasure ? green : white : off, -1, false);
     }
@@ -129,40 +114,31 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int index, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        final int res = 7 - index;
-        if (res > 3)
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
             return;
 
-        this.padResolution = res;
+        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        if (index >= 3)
+            return;
+
+        this.padResolution = index;
         this.surface.getDisplay ().notify ("1/" + this.padResolutions[this.padResolution]);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        final ColorManager colorManager = this.model.getColorManager ();
-        final int colorResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION);
-        final int colorSelectedResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED);
-        final int colorOff = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
-        for (int i = 0; i < 3; i++)
-            this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1 + i, i == this.padResolution ? colorSelectedResolution : colorResolution);
-        for (int i = 3; i < 8; i++)
-            this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1 + i, colorOff);
-    }
+        final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        if (scene < 0 || scene >= 8)
+            return AbstractMode.BUTTON_COLOR_OFF;
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateButtons ()
-    {
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_OFF);
+        if (scene < 3)
+            return scene == this.padResolution ? AbstractSequencerView.COLOR_RESOLUTION_SELECTED : AbstractSequencerView.COLOR_RESOLUTION;
+        return AbstractSequencerView.COLOR_RESOLUTION_OFF;
     }
 
 

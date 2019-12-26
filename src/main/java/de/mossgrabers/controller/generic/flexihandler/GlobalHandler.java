@@ -8,7 +8,7 @@ import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.command.trigger.ToggleKnobSpeedCommand;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -110,7 +110,7 @@ public class GlobalHandler extends AbstractHandler
             // Global: Shift Button
             case GLOBAL_SHIFT_BUTTON:
                 this.surface.setShiftPressed (isButtonPressed);
-                this.knobSpeedCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP);
+                this.knobSpeedCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP, isButtonPressed ? 127 : 0);
                 break;
 
             default:

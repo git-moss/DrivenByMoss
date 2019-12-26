@@ -5,8 +5,9 @@
 package de.mossgrabers.controller.kontrol.mki.mode;
 
 import de.mossgrabers.controller.kontrol.mki.Kontrol1Configuration;
-import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1Colors;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -36,25 +37,21 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getSelectedItem ();
-        final int selIndex = t != null ? t.getIndex () : -1;
-        final boolean canScrollLeft = selIndex > 0 || tb.canScrollPageBackwards ();
-        final boolean canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollPageForwards ();
-        final boolean canScrollUp = tb.canScrollPageForwards ();
-        final boolean canScrollDown = tb.canScrollPageBackwards ();
+        final ITrack t = this.model.getCurrentTrackBank ().getSelectedItem ();
 
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, canScrollUp ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, canScrollDown ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_BACK, t != null && t.isMute () ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_ENTER, t != null && t.isSolo () ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_BROWSE, Kontrol1Colors.BUTTON_STATE_ON);
+        switch (buttonID)
+        {
+            case MUTE:
+                return t != null && t.isMute () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
+            case SOLO:
+                return t != null && t.isSolo () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
+            case BROWSE:
+                return ColorManager.BUTTON_STATE_ON;
+            default:
+                return ColorManager.BUTTON_STATE_OFF;
+        }
     }
 
 

@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.controller.display;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.controller.hardware.IHwGraphicsDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.IScene;
@@ -50,13 +51,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 {
-    private static final double []         COLOR_BLACK                     = new double []
-    {
-        0,
-        0,
-        0
-    };
-
     /** Display only a channel name for selection. */
     public static final int                GRID_ELEMENT_CHANNEL_SELECTION  = 0;
     /** Display a channel, edit volume. */
@@ -90,6 +84,8 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     protected final IGraphicsConfiguration configuration;
     protected final IGraphicsDimensions    dimensions;
     protected final IBitmap                image;
+
+    private IHwGraphicsDisplay             hardwareDisplay;
 
 
     /**
@@ -205,15 +201,23 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final boolean isActive)
+    public void addEmptyElement (final boolean hasSmallEmptyMenu)
     {
-        this.columns.add (new ChannelSelectComponent (type, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, isActive));
+        this.addOptionElement ("", " ", false, "", "", false, true);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode)
+    public void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final boolean isActive)
+    {
+        this.columns.add (new ChannelSelectComponent (type, topMenu, isTopMenuOn, bottomMenu, bottomMenuColor, isBottomMenuOn, isActive));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode)
     {
         this.addChannelElement (GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode);
     }
@@ -221,7 +225,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode)
+    public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode)
     {
         int editType;
         switch (channelType)
@@ -239,15 +243,15 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
                 editType = ChannelComponent.EDIT_TYPE_ALL;
                 break;
         }
-        this.columns.add (new ChannelComponent (editType, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode));
+        this.columns.add (new ChannelComponent (editType, topMenu, isTopMenuOn, bottomMenu, bottomMenuColor, isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final SendData [] sendData, final boolean isTrackMode, final boolean isSendActive, final boolean isChannelLabelActive)
+    public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final SendData [] sendData, final boolean isTrackMode, final boolean isSendActive, final boolean isChannelLabelActive)
     {
-        this.columns.add (new SendsComponent (sendData, topMenu, isTopMenuOn, bottomMenu, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, type, isTrackMode, isSendActive, isChannelLabelActive));
+        this.columns.add (new SendsComponent (sendData, topMenu, isTopMenuOn, bottomMenu, bottomMenuColor, isBottomMenuOn, type, isTrackMode, isSendActive, isChannelLabelActive));
     }
 
 
@@ -255,33 +259,31 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void addParameterElement (final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        this.addParameterElement ("", false, "", (ChannelType) null, COLOR_BLACK, false, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+        this.addParameterElement ("", false, "", (ChannelType) null, ColorEx.BLACK, false, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        final ColorEx bottomColor = bottomMenuColor == null ? null : new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]);
-        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, type, bottomColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void addParameterElementWithPlainMenu (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    public void addParameterElementWithPlainMenu (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        final ColorEx bottomColor = bottomMenuColor == null ? null : new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]);
-        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, null, bottomColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive, LabelLayout.PLAIN));
+        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, null, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive, LabelLayout.PLAIN));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String deviceName, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
+    public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String deviceName, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, deviceName, new ColorEx (bottomMenuColor[0], bottomMenuColor[1], bottomMenuColor[2]), isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, deviceName, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
     }
 
 
@@ -295,7 +297,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu)
+    public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final ColorEx menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final ColorEx menuBottomColor, final boolean useSmallTopMenu)
     {
         this.addOptionElement (headerTopName, menuTopName, isMenuTopSelected, menuTopColor, headerBottomName, menuBottomName, isMenuBottomSelected, menuBottomColor, useSmallTopMenu, false);
     }
@@ -303,7 +305,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu, final boolean isBottomHeaderSelected)
+    public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final ColorEx menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final ColorEx menuBottomColor, final boolean useSmallTopMenu, final boolean isBottomHeaderSelected)
     {
         this.columns.add (new OptionsComponent (headerTopName, menuTopName, isMenuTopSelected, menuTopColor, headerBottomName, menuBottomName, isMenuBottomSelected, menuBottomColor, useSmallTopMenu, isBottomHeaderSelected));
     }
@@ -349,6 +351,30 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     public void addSlotListElement (final List<Pair<ITrack, ISlot>> slots)
     {
         this.columns.add (new ClipListComponent (slots));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setHardwareDisplay (final IHwGraphicsDisplay display)
+    {
+        this.hardwareDisplay = display;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IHwGraphicsDisplay getHardwareDisplay ()
+    {
+        return this.hardwareDisplay;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IBitmap getImage ()
+    {
+        return this.image;
     }
 
 

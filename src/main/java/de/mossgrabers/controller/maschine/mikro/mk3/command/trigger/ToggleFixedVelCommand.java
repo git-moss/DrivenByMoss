@@ -32,7 +32,7 @@ public class ToggleFixedVelCommand extends AbstractTriggerCommand<MaschineMikroM
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event != ButtonEvent.DOWN)
             return;

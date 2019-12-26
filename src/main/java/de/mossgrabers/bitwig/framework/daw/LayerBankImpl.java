@@ -5,8 +5,9 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.LayerImpl;
-import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.bitwig.framework.daw.data.Util;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ILayerBank;
 import de.mossgrabers.framework.daw.data.ILayer;
@@ -70,8 +71,8 @@ public class LayerBankImpl extends AbstractChannelBankImpl<DeviceLayerBank, ILay
     {
         super.enableObservers (enable);
 
-        this.cursorDeviceLayer.hasPrevious ().setIsSubscribed (enable);
-        this.cursorDeviceLayer.hasNext ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.cursorDeviceLayer.hasPrevious (), enable);
+        Util.setIsSubscribed (this.cursorDeviceLayer.hasNext (), enable);
 
         for (int i = 0; i < this.getPageSize (); i++)
             this.getItem (i).enableObservers (enable);
@@ -97,9 +98,8 @@ public class LayerBankImpl extends AbstractChannelBankImpl<DeviceLayerBank, ILay
     {
         final ILayer sel = this.getSelectedItem ();
         if (sel == null)
-            return DAWColors.COLOR_OFF;
-        final double [] color = sel.getColor ();
-        return DAWColors.getColorIndex (color[0], color[1], color[2]);
+            return DAWColor.COLOR_OFF.name ();
+        return DAWColor.getColorIndex (sel.getColor ());
     }
 
 

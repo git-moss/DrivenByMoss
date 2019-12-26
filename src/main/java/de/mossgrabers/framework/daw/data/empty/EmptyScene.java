@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.daw.data.empty;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IScene;
 
 
@@ -29,15 +30,15 @@ public class EmptyScene extends EmptyItem implements IScene
 
     /** {@inheritDoc} */
     @Override
-    public double [] getColor ()
+    public ColorEx getColor ()
     {
-        return COLOR_OFF;
+        return ColorEx.BLACK;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setColor (final double red, final double green, final double blue)
+    public void setColor (final ColorEx color)
     {
         // Intentionally empty
     }

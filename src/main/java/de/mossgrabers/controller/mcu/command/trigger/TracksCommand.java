@@ -7,6 +7,7 @@ package de.mossgrabers.controller.mcu.command.trigger;
 import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -33,15 +34,15 @@ public class TracksCommand extends ModeMultiSelectCommand<MCUControlSurface, MCU
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
-        if (this.surface.isPressed (MCUControlSurface.MCU_OPTION))
+        if (this.surface.isPressed (ButtonID.SELECT))
         {
             if (event == ButtonEvent.DOWN)
                 this.model.toggleCursorTrackPinned ();
             return;
         }
 
-        super.execute (event);
+        super.execute (event, velocity);
     }
 }

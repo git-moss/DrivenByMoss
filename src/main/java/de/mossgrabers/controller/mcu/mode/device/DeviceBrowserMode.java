@@ -156,7 +156,7 @@ public class DeviceBrowserMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    protected void updateKnobLEDs ()
+    public void updateKnobLEDs ()
     {
         for (int i = 0; i < 8; i++)
             this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, 0, 1);

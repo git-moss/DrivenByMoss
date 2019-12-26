@@ -32,7 +32,7 @@ public class Push1Display extends AbstractTextDisplay
     /** Push character codes for value bars - two bars. */
     public static final String     BARS_TWO      = Character.toString ((char) 5);
     /** Push character codes for value bars - one bar to the left. */
-    private static final String    BARS_ONE_L    = Character.toString ((char) 4);
+    public static final String     BARS_ONE_L    = Character.toString ((char) 4);
     /** Push character codes for value bars - four dashes. */
     private static final String    NON_4         = BARS_NON + BARS_NON + BARS_NON + BARS_NON;
     /** Push character codes for value bars - the right arrow. */
@@ -120,6 +120,26 @@ public class Push1Display extends AbstractTextDisplay
     {
         this.cells[row * 8 + cell] = StringUtils.pad (value, 8, ' ') + (cell % 2 == 0 ? " " : "");
         return this;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected String convertCharacterset (final String text)
+    {
+        final String t = text.replace (Push1Display.BARS_NON, "-").replace (Push1Display.BARS_ONE, "|").replace (Push1Display.BARS_TWO, "|").replace (Push1Display.BARS_ONE_L, "|").replace (Push1Display.SELECT_ARROW, ">").replace (Push1Display.RIGHT_ARROW, ">");
+        final StringBuilder sb = new StringBuilder (t.length ());
+        int beginIndex = 0;
+        int endIndex = 17;
+        for (int i = 0; i < 4; i++)
+        {
+            sb.append (t.substring (beginIndex, endIndex));
+            beginIndex += 17;
+            endIndex += 17;
+            if (i != 3)
+                sb.append (' ');
+        }
+        return sb.toString ();
     }
 
 

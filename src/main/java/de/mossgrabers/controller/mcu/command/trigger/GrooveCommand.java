@@ -33,7 +33,7 @@ public class GrooveCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event != ButtonEvent.DOWN)
             return;

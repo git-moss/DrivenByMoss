@@ -4,7 +4,8 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.bitwig.framework.daw.data.Util;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -75,31 +76,31 @@ public class TransportImpl implements ITransport
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.transport.isPlaying ().setIsSubscribed (enable);
-        this.transport.isArrangerRecordEnabled ().setIsSubscribed (enable);
-        this.transport.isArrangerOverdubEnabled ().setIsSubscribed (enable);
-        this.transport.isClipLauncherAutomationWriteEnabled ().setIsSubscribed (enable);
-        this.transport.isClipLauncherOverdubEnabled ().setIsSubscribed (enable);
-        this.transport.isArrangerAutomationWriteEnabled ().setIsSubscribed (enable);
-        this.transport.automationWriteMode ().setIsSubscribed (enable);
-        this.transport.isArrangerLoopEnabled ().setIsSubscribed (enable);
-        this.transport.isPunchInEnabled ().setIsSubscribed (enable);
-        this.transport.isPunchOutEnabled ().setIsSubscribed (enable);
-        this.transport.isMetronomeEnabled ().setIsSubscribed (enable);
-        this.transport.isMetronomeTickPlaybackEnabled ().setIsSubscribed (enable);
-        this.transport.isMetronomeAudibleDuringPreRoll ().setIsSubscribed (enable);
-        this.transport.preRoll ().setIsSubscribed (enable);
-        this.transport.tempo ().value ().setIsSubscribed (enable);
-        this.transport.getPosition ().setIsSubscribed (enable);
-        this.transport.crossfade ().value ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.transport.isPlaying (), enable);
+        Util.setIsSubscribed (this.transport.isArrangerRecordEnabled (), enable);
+        Util.setIsSubscribed (this.transport.isArrangerOverdubEnabled (), enable);
+        Util.setIsSubscribed (this.transport.isClipLauncherAutomationWriteEnabled (), enable);
+        Util.setIsSubscribed (this.transport.isClipLauncherOverdubEnabled (), enable);
+        Util.setIsSubscribed (this.transport.isArrangerAutomationWriteEnabled (), enable);
+        Util.setIsSubscribed (this.transport.automationWriteMode (), enable);
+        Util.setIsSubscribed (this.transport.isArrangerLoopEnabled (), enable);
+        Util.setIsSubscribed (this.transport.isPunchInEnabled (), enable);
+        Util.setIsSubscribed (this.transport.isPunchOutEnabled (), enable);
+        Util.setIsSubscribed (this.transport.isMetronomeEnabled (), enable);
+        Util.setIsSubscribed (this.transport.isMetronomeTickPlaybackEnabled (), enable);
+        Util.setIsSubscribed (this.transport.isMetronomeAudibleDuringPreRoll (), enable);
+        Util.setIsSubscribed (this.transport.preRoll (), enable);
+        Util.setIsSubscribed (this.transport.tempo ().value (), enable);
+        Util.setIsSubscribed (this.transport.getPosition (), enable);
+        Util.setIsSubscribed (this.transport.crossfade ().value (), enable);
 
         final SettableRangedValue metronomeVolume = this.transport.metronomeVolume ();
-        metronomeVolume.setIsSubscribed (enable);
-        metronomeVolume.displayedValue ().setIsSubscribed (enable);
+        Util.setIsSubscribed (metronomeVolume, enable);
+        Util.setIsSubscribed (metronomeVolume.displayedValue (), enable);
 
         final TimeSignatureValue ts = this.transport.timeSignature ();
-        ts.numerator ().setIsSubscribed (enable);
-        ts.denominator ().setIsSubscribed (enable);
+        Util.setIsSubscribed (ts.numerator (), enable);
+        Util.setIsSubscribed (ts.denominator (), enable);
     }
 
 

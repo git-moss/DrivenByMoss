@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.launchpad.view;
 
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -131,14 +131,6 @@ public abstract class AbstractFaderView extends SessionView
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onActivate ()
     {
         super.onActivate ();
@@ -159,16 +151,9 @@ public abstract class AbstractFaderView extends SessionView
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
     }
 
 
@@ -180,7 +165,7 @@ public abstract class AbstractFaderView extends SessionView
     public void setupFader (final int index)
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        final int color = this.model.getColorManager ().getColor (DAWColors.getColorIndex (track.getColor ()));
+        final int color = this.model.getColorManager ().getColorIndex (DAWColor.getColorIndex (track.getColor ()));
         this.surface.setupFader (index, color, false);
     }
 }

@@ -90,7 +90,7 @@ public class VolumeMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    protected void updateKnobLEDs ()
+    public void updateKnobLEDs ()
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();

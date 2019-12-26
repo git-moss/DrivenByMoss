@@ -4,10 +4,11 @@
 
 package de.mossgrabers.controller.slmkiii.mode;
 
-import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColors;
+import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.controller.slmkiii.view.DrumView;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -58,12 +59,20 @@ public class SequencerResolutionMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public int getKnobValue (final int index)
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getButtonColor (final ButtonID buttonID)
     {
         final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
         final int match = Resolution.getMatch (drumView.getClip ().getStepLength ());
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, match == i ? SLMkIIIColors.SLMKIII_PINK : SLMkIIIColors.SLMKIII_DARK_GREY);
+        final int index = buttonID.ordinal () - ButtonID.ROW1_1.ordinal ();
+        return match == index ? SLMkIIIColorManager.SLMKIII_PINK : SLMkIIIColorManager.SLMKIII_DARK_GREY;
     }
 
 
@@ -81,16 +90,22 @@ public class SequencerResolutionMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             d.setCell (3, i, Resolution.getNameAt (i));
-            d.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_PINK);
+            d.setPropertyColor (i, 2, SLMkIIIColorManager.SLMKIII_PINK);
             d.setPropertyValue (i, 1, match == i ? 1 : 0);
         }
 
         d.setCell (0, 8, "Sequencer");
-        d.setCell (1, 8, "Resoltion");
-        d.setPropertyColor (8, 0, SLMkIIIColors.SLMKIII_PINK);
+        d.setCell (1, 8, "Resolutin");
 
         this.setButtonInfo (d);
-
         d.allDone ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getModeColor ()
+    {
+        return SLMkIIIColorManager.SLMKIII_PINK;
     }
 }

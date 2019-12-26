@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.launchpad.view;
 
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 
@@ -47,7 +47,8 @@ public class DrumView8 extends DrumViewBase
         final int sound = y + this.soundOffset;
         final int col = x;
 
-        this.getClip ().toggleStep (col, this.scales.getDrumOffset () + this.selectedPad + sound, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        this.getClip ().toggleStep (editMidiChannel, col, this.scales.getDrumOffset () + this.selectedPad + sound, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
     }
 
 
@@ -55,7 +56,7 @@ public class DrumView8 extends DrumViewBase
     @Override
     public void drawGrid ()
     {
-        final PadGrid padGrid = this.surface.getPadGrid ();
+        final IPadGrid padGrid = this.surface.getPadGrid ();
         if (!this.isActive ())
         {
             padGrid.turnOff ();
@@ -69,16 +70,17 @@ public class DrumView8 extends DrumViewBase
         // Paint the sequencer steps
         final int hiStep = this.isInXRange (step) ? step % DrumView8.NUM_DISPLAY_COLS : -1;
         final int offsetY = this.scales.getDrumOffset ();
+        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
         for (int sound = 0; sound < 8; sound++)
         {
             for (int col = 0; col < DrumView8.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = clip.getStep (col, offsetY + this.selectedPad + sound + this.soundOffset);
+                final int isSet = clip.getStep (editMidiChannel, col, offsetY + this.selectedPad + sound + this.soundOffset).getState ();
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
                 int y = col / 8;
                 y += sound;
-                padGrid.lightEx (x, 7 - y, isSet > 0 ? hilite ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLUE_HI : hilite ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+                padGrid.lightEx (x, 7 - y, isSet > 0 ? hilite ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : hilite ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
             }
         }
     }
@@ -94,18 +96,15 @@ public class DrumView8 extends DrumViewBase
 
     /** {@inheritDoc} */
     @Override
-    protected void updateLowerSceneButtons ()
+    protected int updateLowerSceneButtons (final int scene)
     {
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
         if (this.isActive ())
         {
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, this.soundOffset == 0 ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, this.soundOffset == 8 ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW : LaunchpadColors.LAUNCHPAD_COLOR_GREEN);
-            return;
+            if (scene == 7 && this.soundOffset == 0 || scene == 6 && this.soundOffset == 8)
+                return LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW;
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
         }
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
     }
 
 

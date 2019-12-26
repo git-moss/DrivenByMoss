@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.scale;
 
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.scale.ScaleGrid.Orientation;
 
 import java.util.Arrays;

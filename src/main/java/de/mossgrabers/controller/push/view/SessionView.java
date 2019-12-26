@@ -6,22 +6,23 @@ package de.mossgrabers.controller.push.view;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.command.trigger.SelectSessionViewCommand;
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.core.TriggerCommand;
-import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
-import de.mossgrabers.framework.view.Views;
+import de.mossgrabers.framework.view.TransposeView;
 
 
 /**
@@ -29,7 +30,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SessionView extends AbstractSessionView<PushControlSurface, PushConfiguration>
+public class SessionView extends AbstractSessionView<PushControlSurface, PushConfiguration> implements TransposeView
 {
     private final BrowserActivator<PushControlSurface, PushConfiguration> browserModeActivator;
 
@@ -47,11 +48,11 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         this.browserModeActivator = new BrowserActivator<> (Modes.BROWSER, model, surface);
 
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int redLo = isPush2 ? PushColors.PUSH2_COLOR2_RED_LO : PushColors.PUSH1_COLOR2_RED_LO;
-        final int redHi = isPush2 ? PushColors.PUSH2_COLOR2_RED_HI : PushColors.PUSH1_COLOR2_RED_HI;
-        final int black = isPush2 ? PushColors.PUSH2_COLOR2_BLACK : PushColors.PUSH1_COLOR2_BLACK;
-        final int green = isPush2 ? PushColors.PUSH2_COLOR2_GREEN : PushColors.PUSH1_COLOR2_GREEN;
-        final int amber = isPush2 ? PushColors.PUSH2_COLOR2_AMBER : PushColors.PUSH1_COLOR2_AMBER;
+        final int redLo = isPush2 ? PushColorManager.PUSH2_COLOR2_RED_LO : PushColorManager.PUSH1_COLOR2_RED_LO;
+        final int redHi = isPush2 ? PushColorManager.PUSH2_COLOR2_RED_HI : PushColorManager.PUSH1_COLOR2_RED_HI;
+        final int black = isPush2 ? PushColorManager.PUSH2_COLOR2_BLACK : PushColorManager.PUSH1_COLOR2_BLACK;
+        final int green = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH1_COLOR2_GREEN;
+        final int amber = isPush2 ? PushColorManager.PUSH2_COLOR2_AMBER : PushColorManager.PUSH1_COLOR2_AMBER;
         final SessionColor isRecording = new SessionColor (redHi, redHi, false);
         final SessionColor isRecordingQueued = new SessionColor (redHi, black, true);
         final SessionColor isPlaying = new SessionColor (green, green, false);
@@ -72,7 +73,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     {
         if (velocity == 0)
         {
-            final TriggerCommand triggerCommand = this.surface.getViewManager ().getView (Views.SESSION).getTriggerCommand (TriggerCommandID.SELECT_SESSION_VIEW);
+            final TriggerCommand triggerCommand = this.surface.getButton (ButtonID.SESSION).getCommand ();
             ((SelectSessionViewCommand) triggerCommand).setTemporary ();
             return;
         }
@@ -96,26 +97,26 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         // Duplicate a clip
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack track = tb.getItem (t);
-        if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_DUPLICATE))
+        if (this.surface.isPressed (ButtonID.DUPLICATE))
         {
-            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DUPLICATE);
+            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
             if (track.doesExist ())
                 track.getSlotBank ().getItem (s).duplicate ();
             return;
         }
 
         // Stop clip
-        if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_CLIP_STOP))
+        if (this.surface.isPressed (ButtonID.STOP_CLIP))
         {
-            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_CLIP_STOP);
+            this.surface.setTriggerConsumed (ButtonID.STOP_CLIP);
             track.stop ();
             return;
         }
 
         // Browse for clips
-        if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_BROWSE))
+        if (this.surface.isPressed (ButtonID.BROWSE))
         {
-            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_BROWSE);
+            this.surface.setTriggerConsumed (ButtonID.BROWSE);
             if (!track.doesExist ())
                 return;
             this.model.getBrowser ().replace (track.getSlotBank ().getItem (s));
@@ -131,29 +132,50 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
 
     /** {@inheritDoc} */
     @Override
-    public void updateButtons ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, sceneBank.canScrollPageBackwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, sceneBank.canScrollPageForwards () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
+        final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        if (scene < 0 || scene >= 8)
+            return AbstractMode.BUTTON_COLOR_OFF;
+
+        final ISceneBank sceneBank = this.model.getSceneBank ();
+        final IScene s = sceneBank.getItem (scene);
+        if (s.doesExist ())
+            return s.isSelected () ? AbstractSessionView.COLOR_SELECTED_SCENE : AbstractSessionView.COLOR_SCENE;
+        return AbstractSessionView.COLOR_SCENE_OFF;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public void onOctaveDown (final ButtonEvent event)
     {
-        final ColorManager colorManager = this.model.getColorManager ();
-        final int colorScene = colorManager.getColor (AbstractSessionView.COLOR_SCENE);
-        final int colorSceneSelected = colorManager.getColor (AbstractSessionView.COLOR_SELECTED_SCENE);
-        final int colorSceneOff = colorManager.getColor (AbstractSessionView.COLOR_SCENE_OFF);
+        if (event == ButtonEvent.DOWN)
+            this.model.getCurrentTrackBank ().getSceneBank ().selectNextPage ();
+    }
 
-        final ISceneBank sceneBank = this.model.getSceneBank ();
-        for (int i = 0; i < 8; i++)
-        {
-            final IScene scene = sceneBank.getItem (7 - i);
-            final int color = scene.doesExist () ? scene.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
-            this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1 + i, color);
-        }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onOctaveUp (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.DOWN)
+            this.model.getCurrentTrackBank ().getSceneBank ().selectPreviousPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isOctaveUpButtonOn ()
+    {
+        return this.model.getCurrentTrackBank ().getSceneBank ().canScrollPageForwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isOctaveDownButtonOn ()
+    {
+        return this.model.getCurrentTrackBank ().getSceneBank ().canScrollPageBackwards ();
     }
 }

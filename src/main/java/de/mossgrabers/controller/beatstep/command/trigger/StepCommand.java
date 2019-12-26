@@ -38,7 +38,7 @@ public class StepCommand extends AbstractTriggerCommand<BeatstepControlSurface, 
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         this.surface.getViewManager ().getView (Views.SHIFT).onGridNote (36 + this.step, event == ButtonEvent.DOWN ? 127 : 0);
     }

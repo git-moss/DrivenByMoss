@@ -4,9 +4,10 @@
 
 package de.mossgrabers.controller.launchpad.definition;
 
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
-import de.mossgrabers.framework.controller.grid.PadInfo;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
@@ -156,6 +157,16 @@ public class LaunchpadMiniMkIIIControllerDefinition extends DefaultControllerDef
         buttonIDs.put (ButtonID.SESSION, Integer.valueOf (LAUNCHPAD_BUTTON_SESSION));
         buttonIDs.put (ButtonID.NOTE, Integer.valueOf (LAUNCHPAD_BUTTON_DRUMS));
         buttonIDs.put (ButtonID.DEVICE, Integer.valueOf (LAUNCHPAD_BUTTON_KEYS));
+
+        buttonIDs.put (ButtonID.SCENE1, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1));
+        buttonIDs.put (ButtonID.SCENE2, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2));
+        buttonIDs.put (ButtonID.SCENE3, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3));
+        buttonIDs.put (ButtonID.SCENE4, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4));
+        buttonIDs.put (ButtonID.SCENE5, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5));
+        buttonIDs.put (ButtonID.SCENE6, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6));
+        buttonIDs.put (ButtonID.SCENE7, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7));
+        buttonIDs.put (ButtonID.SCENE8, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8));
+
         return buttonIDs;
     }
 
@@ -170,13 +181,13 @@ public class LaunchpadMiniMkIIIControllerDefinition extends DefaultControllerDef
 
     /** {@inheritDoc} */
     @Override
-    public List<String> buildLEDUpdate (final Map<Integer, PadInfo> padInfos)
+    public List<String> buildLEDUpdate (final Map<Integer, LightInfo> padInfos)
     {
         final StringBuilder sb = new StringBuilder (this.getSysExHeader ()).append ("03 ");
-        for (final Entry<Integer, PadInfo> e: padInfos.entrySet ())
+        for (final Entry<Integer, LightInfo> e: padInfos.entrySet ())
         {
             final int note = e.getKey ().intValue ();
-            final PadInfo info = e.getValue ();
+            final LightInfo info = e.getValue ();
 
             if (info.getBlinkColor () <= 0)
             {

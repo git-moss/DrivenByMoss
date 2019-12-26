@@ -65,4 +65,15 @@ public class BitmapImpl implements IBitmap
         final ByteBuffer imageBuffer = this.bitmap.getMemoryBlock ().createByteBuffer ();
         encoder.encode (imageBuffer, this.bitmap.getWidth (), this.bitmap.getHeight ());
     }
+
+
+    /**
+     * Get the Bitwig bitmap.
+     *
+     * @return The bitmap
+     */
+    public Bitmap getBitmap ()
+    {
+        return this.bitmap;
+    }
 }

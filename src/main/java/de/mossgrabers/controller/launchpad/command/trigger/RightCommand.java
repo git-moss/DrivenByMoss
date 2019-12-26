@@ -35,7 +35,7 @@ public class RightCommand extends MetronomeCommand<LaunchpadControlSurface, Laun
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack sel = tb.getSelectedItem ();

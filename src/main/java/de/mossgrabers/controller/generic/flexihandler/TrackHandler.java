@@ -9,7 +9,7 @@ import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -573,7 +573,7 @@ public class TrackHandler extends AbstractHandler
         {
             case TRACK_TOGGLE_TRACK_BANK:
                 if (isButtonPressed)
-                    this.toggleTrackBankCommand.execute (ButtonEvent.DOWN);
+                    this.toggleTrackBankCommand.execute (ButtonEvent.DOWN, 127);
                 break;
             // Track: Add Audio Track
             case TRACK_ADD_AUDIO_TRACK:

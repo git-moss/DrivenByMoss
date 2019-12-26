@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -73,7 +74,7 @@ public class SetupMode extends BaseMode
         if (!isTouched || !this.surface.isDeletePressed ())
             return;
 
-        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+        this.surface.setTriggerConsumed (ButtonID.DELETE);
 
         final PushConfiguration config = this.surface.getConfiguration ();
         switch (index)
@@ -102,12 +103,18 @@ public class SetupMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateSecondRow ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        this.surface.updateTrigger (102, AbstractMode.BUTTON_COLOR_HI);
-        this.surface.updateTrigger (103, AbstractMode.BUTTON_COLOR_ON);
-        for (int i = 2; i < 8; i++)
-            this.surface.updateTrigger (102 + i, AbstractMode.BUTTON_COLOR_OFF);
+        final int index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            if (index == 0)
+                return AbstractMode.BUTTON_COLOR_HI;
+            if (index == 1)
+                return AbstractMode.BUTTON_COLOR_ON;
+        }
+
+        return AbstractMode.BUTTON_COLOR_OFF;
     }
 
 
@@ -143,11 +150,11 @@ public class SetupMode extends BaseMode
 
         display.addOptionElement ("", "Setup", true, "", "", false, true);
         display.addOptionElement ("Brightness", "Info", false, "", "", false, true);
-        display.addParameterElement ("Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched[2], -1);
-        display.addParameterElement ("LEDs", ledBrightness * 1023 / 100, ledBrightness + "%", this.isKnobTouched[3], -1);
-        display.addOptionElement ("        Pads", "", false, "", "", false, false);
-        display.addParameterElement ("Sensitivity", padSensitivity * 1023 / 10, Integer.toString (padSensitivity), this.isKnobTouched[5], -1);
-        display.addParameterElement ("Gain", padGain * 1023 / 10, Integer.toString (padGain), this.isKnobTouched[6], -1);
-        display.addParameterElement ("Dynamics", padDynamics * 1023 / 10, Integer.toString (padDynamics), this.isKnobTouched[7], -1);
+        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched[2], -1);
+        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "LEDs", ledBrightness * 1023 / 100, ledBrightness + "%", this.isKnobTouched[3], -1);
+        display.addOptionElement ("        Pads", " ", false, "", "", false, true);
+        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Sensitivity", padSensitivity * 1023 / 10, Integer.toString (padSensitivity), this.isKnobTouched[5], -1);
+        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Gain", padGain * 1023 / 10, Integer.toString (padGain), this.isKnobTouched[6], -1);
+        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Dynamics", padDynamics * 1023 / 10, Integer.toString (padDynamics), this.isKnobTouched[7], -1);
     }
 }

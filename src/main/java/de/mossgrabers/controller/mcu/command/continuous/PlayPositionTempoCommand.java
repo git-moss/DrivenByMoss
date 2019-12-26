@@ -7,6 +7,7 @@ package de.mossgrabers.controller.mcu.command.continuous;
 import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 
 
@@ -33,7 +34,7 @@ public class PlayPositionTempoCommand extends PlayPositionCommand<MCUControlSurf
     @Override
     public void execute (final int value)
     {
-        if (this.surface.isPressed (MCUControlSurface.MCU_OPTION))
+        if (this.surface.isPressed (ButtonID.SELECT))
             this.model.getTransport ().changeTempo (this.model.getValueChanger ().calcKnobSpeed (value) > 0);
         else
             super.execute (value);

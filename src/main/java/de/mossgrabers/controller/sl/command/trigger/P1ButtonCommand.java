@@ -38,7 +38,7 @@ public class P1ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SL
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         ((SLView) this.surface.getViewManager ().getActiveView ()).onButtonP1 (this.isUp, event);
     }

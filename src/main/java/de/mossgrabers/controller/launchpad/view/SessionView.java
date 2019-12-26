@@ -5,17 +5,17 @@
 package de.mossgrabers.controller.launchpad.view;
 
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.controller.launchpad.definition.LaunchpadProControllerDefinition;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -46,17 +46,17 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     {
         super ("Session", surface, model, 8, 8, true);
 
-        final SessionColor isRecording = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_RED_HI, LaunchpadColors.LAUNCHPAD_COLOR_RED_HI, false);
-        final SessionColor isRecordingQueued = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_RED_HI, LaunchpadColors.LAUNCHPAD_COLOR_BLACK, true);
-        final SessionColor isPlaying = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_GREEN, LaunchpadColors.LAUNCHPAD_COLOR_GREEN, false);
-        final SessionColor isPlayingQueued = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_GREEN, LaunchpadColors.LAUNCHPAD_COLOR_GREEN, true);
-        final SessionColor hasContent = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_AMBER, -1, false);
-        final SessionColor noContent = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_BLACK, -1, false);
-        final SessionColor recArmed = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_RED_LO, -1, false);
+        final SessionColor isRecording = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, false);
+        final SessionColor isRecordingQueued = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, true);
+        final SessionColor isPlaying = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, false);
+        final SessionColor isPlayingQueued = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, true);
+        final SessionColor hasContent = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER, -1, false);
+        final SessionColor noContent = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, -1, false);
+        final SessionColor recArmed = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
 
         this.birdColorHasContent = hasContent;
-        this.birdColorSelected = new SessionColor (LaunchpadColors.LAUNCHPAD_COLOR_GREEN, -1, false);
+        this.birdColorSelected = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, -1, false);
     }
 
 
@@ -67,18 +67,6 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         this.switchLaunchpadMode ();
 
         super.onActivate ();
-
-        this.surface.scheduleTask (this::delayedUpdateArrowButtons, 150);
-    }
-
-
-    protected void delayedUpdateArrowButtons ()
-    {
-        this.surface.setTrigger (this.surface.getTriggerId (ButtonID.SESSION), LaunchpadColors.LAUNCHPAD_COLOR_LIME);
-        this.surface.setTrigger (this.surface.getTriggerId (ButtonID.NOTE), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        this.surface.setTrigger (this.surface.getTriggerId (ButtonID.DEVICE), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        if (this.surface.isPro ())
-            this.surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_USER, this.model.getHost ().hasUserParameters () ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
     }
 
 
@@ -103,10 +91,9 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             final int t = index % this.columns;
 
             // Duplicate a clip
-            final int duplicateTriggerId = this.surface.getTriggerId (ButtonID.DUPLICATE);
-            if (this.surface.isPressed (duplicateTriggerId))
+            if (this.surface.isPressed (ButtonID.DUPLICATE))
             {
-                this.surface.setTriggerConsumed (duplicateTriggerId);
+                this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
                 final ITrackBank tb = this.model.getCurrentTrackBank ();
                 final ITrack track = tb.getItem (t);
                 if (track.doesExist ())
@@ -141,22 +128,22 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             return;
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final PadGrid pads = this.surface.getPadGrid ();
+        final IPadGrid pads = this.surface.getPadGrid ();
         final ModeManager modeManager = this.surface.getModeManager ();
         for (int x = 0; x < this.columns; x++)
         {
             final ITrack track = tb.getItem (x);
             final boolean exists = track.doesExist ();
             if (modeManager.isActiveOrTempMode (Modes.REC_ARM))
-                pads.lightEx (x, 7, exists ? track.isRecArm () ? LaunchpadColors.LAUNCHPAD_COLOR_RED_HI : LaunchpadColors.LAUNCHPAD_COLOR_RED_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+                pads.lightEx (x, 7, exists ? track.isRecArm () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
             else if (modeManager.isActiveOrTempMode (Modes.TRACK_SELECT))
-                pads.lightEx (x, 7, exists ? track.isSelected () ? LaunchpadColors.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColors.LAUNCHPAD_COLOR_GREEN_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+                pads.lightEx (x, 7, exists ? track.isSelected () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
             else if (modeManager.isActiveOrTempMode (Modes.MUTE))
-                pads.lightEx (x, 7, exists ? track.isMute () ? LaunchpadColors.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColors.LAUNCHPAD_COLOR_YELLOW_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+                pads.lightEx (x, 7, exists ? track.isMute () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
             else if (modeManager.isActiveOrTempMode (Modes.SOLO))
-                pads.lightEx (x, 7, exists ? track.isSolo () ? LaunchpadColors.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColors.LAUNCHPAD_COLOR_BLUE_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+                pads.lightEx (x, 7, exists ? track.isSolo () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
             else if (modeManager.isActiveOrTempMode (Modes.STOP_CLIP))
-                pads.lightEx (x, 7, exists ? LaunchpadColors.LAUNCHPAD_COLOR_ROSE : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+                pads.lightEx (x, 7, exists ? LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         }
     }
 
@@ -184,18 +171,30 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ISceneBank sceneBank = tb.getSceneBank ();
-        for (int i = 0; i < 8; i++)
+        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        if (index >= 0 || index < 8)
         {
-            final IScene scene = sceneBank.getItem (i);
-            if (scene.doesExist ())
-                this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1 - i * 10, DAWColors.getColorIndex (scene.getColor ()));
-            else
-                this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1 - i * 10, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+            final ITrackBank tb = this.model.getCurrentTrackBank ();
+            final ISceneBank sceneBank = tb.getSceneBank ();
+            final IScene s = sceneBank.getItem (index);
+
+            if (s.doesExist ())
+                return DAWColor.getColorIndex (s.getColor ());
         }
+
+        return AbstractMode.BUTTON_COLOR_OFF;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getButtonColor (final ButtonID buttonID)
+    {
+        if (this.surface.getButton (buttonID).isPressed ())
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE;
+        return super.getButtonColor (buttonID);
     }
 
 
@@ -269,10 +268,9 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final int index = note - 36;
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
 
-        final int duplicateTriggerId = this.surface.getTriggerId (ButtonID.DUPLICATE);
-        if (this.surface.isPressed (duplicateTriggerId))
+        if (this.surface.isPressed (ButtonID.DUPLICATE))
         {
-            this.surface.setTriggerConsumed (duplicateTriggerId);
+            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
             track.duplicate ();
             return;
         }

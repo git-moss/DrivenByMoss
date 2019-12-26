@@ -62,16 +62,16 @@ public class BrowserColumnImpl extends AbstractItemImpl implements IBrowserColum
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.column.exists ().setIsSubscribed (enable);
-        this.column.name ().setIsSubscribed (enable);
-        this.column.getWildcardItem ().name ().setIsSubscribed (enable);
-        this.itemBank.cursorIndex ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.column.exists (), enable);
+        Util.setIsSubscribed (this.column.name (), enable);
+        Util.setIsSubscribed (this.column.getWildcardItem ().name (), enable);
+        Util.setIsSubscribed (this.itemBank.cursorIndex (), enable);
 
         for (final IBrowserColumnItem item: this.items)
             item.enableObservers (enable);
 
-        this.cursorResult.exists ().setIsSubscribed (enable);
-        this.cursorResult.name ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.cursorResult.exists (), enable);
+        Util.setIsSubscribed (this.cursorResult.name (), enable);
     }
 
 

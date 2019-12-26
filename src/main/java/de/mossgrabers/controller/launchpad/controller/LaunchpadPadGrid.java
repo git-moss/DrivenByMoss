@@ -6,8 +6,8 @@ package de.mossgrabers.controller.launchpad.controller;
 
 import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefinition;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
-import de.mossgrabers.framework.controller.grid.PadInfo;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 import java.util.HashMap;
@@ -44,7 +44,7 @@ public class LaunchpadPadGrid extends PadGridImpl
     }
 
     private final ILaunchpadControllerDefinition definition;
-    private final Map<Integer, PadInfo>          padInfos = new TreeMap<> ();
+    private final Map<Integer, LightInfo>        padInfos = new TreeMap<> ();
 
 
     /**
@@ -73,20 +73,24 @@ public class LaunchpadPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    public int translateToController (final int note)
+    public int [] translateToController (final int note)
     {
         // Translates note range 36-100 to launchpad grid (11-18, 21-28, ...)
-        return TRANSLATE_MATRIX[note - 36];
+        return new int []
+        {
+            0,
+            TRANSLATE_MATRIX[note - 36]
+        };
     }
 
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Flush the changed pad LEDs using sysex.
+     */
     public void flush ()
     {
         synchronized (this.padInfos)
         {
-            super.flush ();
             if (this.padInfos.isEmpty ())
                 return;
             for (final String update: this.definition.buildLEDUpdate (this.padInfos))
@@ -98,22 +102,22 @@ public class LaunchpadPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    protected void sendNoteState (final int note, final int color)
+    protected void sendNoteState (final int channel, final int note, final int color)
     {
         synchronized (this.padInfos)
         {
-            this.padInfos.computeIfAbsent (Integer.valueOf (note), key -> new PadInfo ()).setColor (color);
+            this.padInfos.computeIfAbsent (Integer.valueOf (note), key -> new LightInfo ()).setColor (color);
         }
     }
 
 
     /** {@inheritDoc} */
     @Override
-    protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
+    protected void sendBlinkState (final int channel, final int note, final int blinkColor, final boolean fast)
     {
         synchronized (this.padInfos)
         {
-            final PadInfo info = this.padInfos.computeIfAbsent (Integer.valueOf (note), key -> new PadInfo ());
+            final LightInfo info = this.padInfos.computeIfAbsent (Integer.valueOf (note), key -> new LightInfo ());
             info.setBlinkColor (blinkColor);
             info.setFast (fast);
         }

@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.beatstep.view;
 
-import de.mossgrabers.controller.beatstep.controller.BeatstepColors;
+import de.mossgrabers.controller.beatstep.controller.BeatstepColorManager;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
-import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -117,7 +117,7 @@ public class SequencerView extends BaseSequencerView
         else
         {
             if (velocity != 0)
-                this.getClip ().toggleStep (index < 8 ? index + 8 : index - 8, /* this.noteMap[] */ this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                this.getClip ().toggleStep (this.surface.getConfiguration ().getMidiEditChannel (), index < 8 ? index + 8 : index - 8, this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
         }
     }
 
@@ -134,7 +134,7 @@ public class SequencerView extends BaseSequencerView
     @Override
     public void drawGrid ()
     {
-        final PadGrid padGrid = this.surface.getPadGrid ();
+        final IPadGrid padGrid = this.surface.getPadGrid ();
         if (!this.model.canSelectedTrackHoldNotes ())
         {
             padGrid.turnOff ();
@@ -145,7 +145,7 @@ public class SequencerView extends BaseSequencerView
         {
             for (int i = 36; i < 52; i++)
             {
-                padGrid.light (i, this.keyManager.isKeyPressed (i) || this.selectedPad == i - 36 ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : this.model.getColorManager ().getColor (this.keyManager.getColor (i)));
+                padGrid.light (i, this.keyManager.isKeyPressed (i) || this.selectedPad == i - 36 ? BeatstepColorManager.BEATSTEP_BUTTON_STATE_PINK : this.model.getColorManager ().getColorIndex (this.keyManager.getColor (i)));
             }
         }
         else
@@ -154,9 +154,10 @@ public class SequencerView extends BaseSequencerView
             // Paint the sequencer steps
             final int step = clip.getCurrentStep ();
             final int hiStep = this.isInXRange (step) ? step % SequencerView.NUM_DISPLAY_COLS : -1;
+            final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
             for (int col = 0; col < SequencerView.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = clip.getStep (col, this.offsetY + this.selectedPad);
+                final int isSet = clip.getStep (editMidiChannel, col, this.offsetY + this.selectedPad).getState ();
                 padGrid.lightEx (col % 8, 1 - col / 8, getSequencerColor (isSet, col == hiStep));
             }
         }
@@ -166,8 +167,8 @@ public class SequencerView extends BaseSequencerView
     private static int getSequencerColor (final int isSet, final boolean hilite)
     {
         if (isSet > 0)
-            return hilite ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_BLUE;
-        return hilite ? BeatstepColors.BEATSTEP_BUTTON_STATE_PINK : BeatstepColors.BEATSTEP_BUTTON_STATE_OFF;
+            return hilite ? BeatstepColorManager.BEATSTEP_BUTTON_STATE_PINK : BeatstepColorManager.BEATSTEP_BUTTON_STATE_BLUE;
+        return hilite ? BeatstepColorManager.BEATSTEP_BUTTON_STATE_PINK : BeatstepColorManager.BEATSTEP_BUTTON_STATE_OFF;
     }
 
 

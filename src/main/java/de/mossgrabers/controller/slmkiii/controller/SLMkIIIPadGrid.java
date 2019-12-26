@@ -43,17 +43,25 @@ public class SLMkIIIPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    public int translateToController (final int note)
+    public int [] translateToController (final int note)
     {
         if (note > 43)
-            return note + 52;
-        return note + 76;
+            return new int []
+            {
+                15,
+                note + 52
+            };
+        return new int []
+        {
+            15,
+            note + 76
+        };
     }
 
 
     /** {@inheritDoc} */
     @Override
-    protected void sendNoteState (final int note, final int color)
+    protected void sendNoteState (final int channel, final int note, final int color)
     {
         this.output.sendNoteEx (15, note, color);
     }
@@ -61,7 +69,7 @@ public class SLMkIIIPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
+    protected void sendBlinkState (final int channel, final int note, final int blinkColor, final boolean fast)
     {
         this.output.sendNoteEx (fast ? 1 : 2, note, blinkColor);
     }

@@ -35,7 +35,7 @@ public class SaveCommand<S extends IControlSurface<C>, C extends Configuration> 
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event == ButtonEvent.DOWN)
             this.model.getProject ().save ();

@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw.data;
 
 import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.constants.RecordQuantization;
 
 
 /**
@@ -167,6 +168,15 @@ public interface ITrack extends IChannel
 
 
     /**
+     * Creates a new clip at the given track and slot index (or greater).
+     *
+     * @param slotIndex The index of the slot
+     * @param lengthInBeats The length of the new clip
+     */
+    void createClip (int slotIndex, int lengthInBeats);
+
+
+    /**
      * Returns true if a clip is playing on the track.
      *
      * @return True if a clip is playing on the track.
@@ -184,4 +194,34 @@ public interface ITrack extends IChannel
      * Switch playback back to the arrangement.
      */
     void returnToArrangement ();
+
+
+    /**
+     * Test if record quantization for note lengths is enabled.
+     *
+     * @return True if enabled
+     */
+    boolean isRecordQuantizationNoteLength ();
+
+
+    /**
+     * Toggle record quantization note length enablement.
+     */
+    void toggleRecordQuantizationNoteLength ();
+
+
+    /**
+     * Get the record quantization grid.
+     *
+     * @return The record quantization grid resolution
+     */
+    RecordQuantization getRecordQuantizationGrid ();
+
+
+    /**
+     * Set the record quantization grid.
+     *
+     * @param recordQuantization The record quantization grid resolution
+     */
+    void setRecordQuantizationGrid (RecordQuantization recordQuantization);
 }

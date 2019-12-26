@@ -7,7 +7,7 @@ package de.mossgrabers.controller.kontrol.mkii.mode;
 import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.kontrol.mkii.TrackType;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -52,6 +52,48 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
 
     /** {@inheritDoc} */
     @Override
+    public int getKnobValue (final int index)
+    {
+        // Note: Since we need multiple value (more than 8), index is the MIDI CC of the knob
+
+        final IValueChanger valueChanger = this.model.getValueChanger ();
+        final ITrack selectedTrack = this.getBank ().getSelectedItem ();
+        final ISendBank sendBank = selectedTrack == null ? null : selectedTrack.getSendBank ();
+
+        if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME && index < KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + 8)
+        {
+            final ISend send = sendBank == null ? EmptySend.INSTANCE : sendBank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME);
+            return valueChanger.toMidiValue (send.getValue ());
+        }
+
+        if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_PAN && index < KontrolProtocolControlSurface.KONTROL_TRACK_PAN + 8)
+        {
+            final ISend send = sendBank == null ? EmptySend.INSTANCE : sendBank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_PAN);
+            return valueChanger.toMidiValue (send.getValue ());
+        }
+
+        final int scrollTracksState = (sendBank != null && sendBank.canScrollPageBackwards () ? 1 : 0) + (sendBank != null && sendBank.canScrollPageForwards () ? 2 : 0);
+        final int scrollScenesState = 0;
+
+        final KontrolProtocolConfiguration configuration = this.surface.getConfiguration ();
+        switch (index)
+        {
+            case KontrolProtocolControlSurface.KONTROL_NAVIGATE_BANKS:
+                return scrollTracksState;
+            case KontrolProtocolControlSurface.KONTROL_NAVIGATE_TRACKS:
+                return configuration.isFlipTrackClipNavigation () ? scrollScenesState : scrollTracksState;
+            case KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS:
+                return configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState;
+            case KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES:
+                return configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState;
+            default:
+                return 0;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void updateDisplay ()
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
@@ -73,20 +115,8 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
             final int j = 2 * i;
             vuData[j] = valueChanger.toMidiValue (send.getModulatedValue ());
             vuData[j + 1] = valueChanger.toMidiValue (send.getModulatedValue ());
-
-            this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + i, valueChanger.toMidiValue (send.getValue ()));
-            this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i, valueChanger.toMidiValue (send.getValue ()));
         }
         this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
-
-        final int scrollTracksState = (sendBank != null && sendBank.canScrollPageBackwards () ? 1 : 0) + (sendBank != null && sendBank.canScrollPageForwards () ? 2 : 0);
-        final int scrollScenesState = 0;
-
-        final KontrolProtocolConfiguration configuration = this.surface.getConfiguration ();
-        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_BANKS, scrollTracksState);
-        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_TRACKS, configuration.isFlipTrackClipNavigation () ? scrollScenesState : scrollTracksState);
-        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS, configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState);
-        this.surface.updateContinuous (KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES, configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState);
     }
 
 

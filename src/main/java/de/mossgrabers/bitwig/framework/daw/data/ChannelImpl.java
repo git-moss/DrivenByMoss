@@ -5,12 +5,14 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.bitwig.framework.daw.SendBankImpl;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.Channel;
 import com.bitwig.extension.controller.api.SettableColorValue;
@@ -38,7 +40,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
      * Constructor.
      *
      * @param host The DAW host
-     * @param valueChanger The valueChanger
+     * @param valueChanger The value changer
      * @param channel The channel
      * @param index The index of the channel in the page
      * @param numSends The number of sends of a bank
@@ -74,12 +76,12 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.deviceChain.exists ().setIsSubscribed (enable);
-        this.deviceChain.name ().setIsSubscribed (enable);
-        this.deviceChain.isActivated ().setIsSubscribed (enable);
-        this.deviceChain.mute ().setIsSubscribed (enable);
-        this.deviceChain.solo ().setIsSubscribed (enable);
-        this.deviceChain.color ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.deviceChain.exists (), enable);
+        Util.setIsSubscribed (this.deviceChain.name (), enable);
+        Util.setIsSubscribed (this.deviceChain.isActivated (), enable);
+        Util.setIsSubscribed (this.deviceChain.mute (), enable);
+        Util.setIsSubscribed (this.deviceChain.solo (), enable);
+        Util.setIsSubscribed (this.deviceChain.color (), enable);
 
         this.volumeParameter.enableObservers (enable);
         this.panParameter.enableObservers (enable);
@@ -322,23 +324,18 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     /** {@inheritDoc} */
     @Override
-    public double [] getColor ()
+    public ColorEx getColor ()
     {
         final SettableColorValue color = this.deviceChain.color ();
-        return new double []
-        {
-            color.red (),
-            color.green (),
-            color.blue ()
-        };
+        return new ColorEx (color.red (), color.green (), color.blue ());
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setColor (final double red, final double green, final double blue)
+    public void setColor (final ColorEx color)
     {
-        this.deviceChain.color ().set ((float) red, (float) green, (float) blue);
+        this.deviceChain.color ().set ((float) color.getRed (), (float) color.getGreen (), (float) color.getBlue ());
     }
 
 
@@ -370,8 +367,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     @Override
     public void remove ()
     {
-        // TODO Requires API 9
-        // this.deviceChain.removeChannel ();
+        this.deviceChain.deleteObject ();
     }
 
 
@@ -407,6 +403,14 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     public void enter ()
     {
         // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addColorObserver (final IValueObserver<ColorEx> observer)
+    {
+        this.deviceChain.color ().addValueObserver ( (red, green, blue) -> observer.update (new ColorEx (red, green, blue)));
     }
 
 

@@ -34,7 +34,7 @@ public class TransportButtonCommand extends AbstractTriggerCommand<SLControlSurf
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         // Note: The Transport button sends DOWN on first press and UP on the next press
         if (event == ButtonEvent.LONG)

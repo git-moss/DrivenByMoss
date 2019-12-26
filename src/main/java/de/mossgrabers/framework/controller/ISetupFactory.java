@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.controller;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;

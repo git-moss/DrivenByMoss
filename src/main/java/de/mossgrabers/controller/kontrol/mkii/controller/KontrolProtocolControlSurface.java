@@ -141,7 +141,7 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
      */
     public KontrolProtocolControlSurface (final IHost host, final ColorManager colorManager, final KontrolProtocolConfiguration configuration, final IMidiOutput output, final IMidiInput input, final int version)
     {
-        super (host, configuration, colorManager, output, input, null);
+        super (host, configuration, colorManager, output, input, null, 800, 300);
 
         this.requiredVersion = version;
         this.defaultMidiChannel = 15;
@@ -150,9 +150,9 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
 
     /** {@inheritDoc} */
     @Override
-    public void shutdown ()
+    protected void internalShutdown ()
     {
-        super.shutdown ();
+        super.internalShutdown ();
 
         synchronized (this.handshakeLock)
         {
@@ -218,14 +218,6 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void setContinuous (final int channel, final int cc, final int value)
-    {
-        this.sendCommand (cc, value);
-    }
-
-
     /**
      * Send a command to the Komplete Kontrol.
      *
@@ -265,16 +257,16 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
     }
 
 
-    /**
-     * Clear all cached values.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void clearCache ()
     {
         synchronized (this.cacheLock)
         {
             this.valueCache.clearCache ();
-            this.clearTriggerCache ();
         }
+
+        super.clearCache ();
     }
 
 
@@ -302,33 +294,6 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
             data[3 + i] = info[i];
 
         this.output.sendSysex ("F0 00 21 09 00 00 44 43 01 00 " + StringUtils.toHexStr (data) + "F7");
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void handleCC (final int channel, final int cc, final int value)
-    {
-        // All NIHIA MIDI communication is on MIDI channel 16
-        if (channel != 15)
-            return;
-
-        // Emulate a proper button press, NIHIA only sends value 1
-        if (this.isTrigger (cc))
-        {
-            super.handleCC (channel, cc, 127);
-            super.handleCC (channel, cc, 0);
-        }
-        else
-            super.handleCC (channel, cc, value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void checkButtonState (final int channel, final int buttonID)
-    {
-        // No long presses on the Komplete Kontrol MkII
     }
 
 

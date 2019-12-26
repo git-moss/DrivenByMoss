@@ -5,9 +5,10 @@
 package de.mossgrabers.controller.apcmini;
 
 import de.mossgrabers.controller.apcmini.command.trigger.TrackSelectCommand;
-import de.mossgrabers.controller.apcmini.controller.APCminiColors;
+import de.mossgrabers.controller.apcmini.controller.APCminiColorManager;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.controller.apcmini.controller.APCminiScales;
+import de.mossgrabers.controller.apcmini.view.APCminiView;
 import de.mossgrabers.controller.apcmini.view.BrowserView;
 import de.mossgrabers.controller.apcmini.view.DrumView;
 import de.mossgrabers.controller.apcmini.view.PlayView;
@@ -15,18 +16,19 @@ import de.mossgrabers.controller.apcmini.view.RaindropsView;
 import de.mossgrabers.controller.apcmini.view.SequencerView;
 import de.mossgrabers.controller.apcmini.view.SessionView;
 import de.mossgrabers.controller.apcmini.view.ShiftView;
-import de.mossgrabers.framework.command.ContinuousCommandID;
-import de.mossgrabers.framework.command.SceneCommand;
-import de.mossgrabers.framework.command.TriggerCommandID;
+import de.mossgrabers.controller.apcmini.view.TrackButtons;
+import de.mossgrabers.controller.maschine.mikro.mk3.view.SceneView;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
-import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
+import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
-import de.mossgrabers.framework.controller.DefaultValueChanger;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
-import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISendBank;
@@ -42,7 +44,6 @@ import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SendMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
-import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -58,6 +59,30 @@ import java.util.Map;
  */
 public class APCminiControllerSetup extends AbstractControllerSetup<APCminiControlSurface, APCminiConfiguration>
 {
+    private static final String []          ROW_NAMES        =
+    {
+        "Track 1\nUp",
+        "Track 2\nDown",
+        "Track 3\nLeft",
+        "Track 4\nRight",
+        "Track 5\nVolume",
+        "Track 6\nPan",
+        "Track 7\nSend",
+        "Track 8\nDevice",
+    };
+
+    private static final String []          COL_NAMES        =
+    {
+        "Scene 1\n Clip Stop",
+        "Scene 2\nSolo",
+        "Scene 3\nRec Arm",
+        "Scene 4\nMute",
+        "Scene 5\nSelect",
+        "Scene 6\n-",
+        "Scene 7\n-",
+        "Scene 8\nStop All Clips",
+    };
+
     private static final Map<String, Modes> FADER_CTRL_MODES = new HashMap<> ();
     static
     {
@@ -86,8 +111,8 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     public APCminiControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         super (factory, host, globalSettings, documentSettings);
-        this.colorManager = new ColorManager ();
-        APCminiColors.addColors (this.colorManager);
+
+        this.colorManager = new APCminiColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
         this.configuration = new APCminiConfiguration (host, this.valueChanger);
     }
@@ -172,11 +197,13 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     {
         final APCminiControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
+        final TrackButtons trackButtons = new TrackButtons (surface, this.model);
+
+        viewManager.registerView (Views.PLAY, new PlayView (surface, this.model, trackButtons));
         viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
         viewManager.registerView (Views.BROWSER, new BrowserView (surface, this.model));
 
-        viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
+        viewManager.registerView (Views.SESSION, new SessionView (surface, this.model, trackButtons));
         viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
         viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
         viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
@@ -188,23 +215,41 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     protected void registerTriggerCommands ()
     {
         final APCminiControlSurface surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
 
-        // Nop triggers are added to support the CC button updates
-
-        this.addNoteCommand (TriggerCommandID.SHIFT, APCminiControlSurface.APC_BUTTON_SHIFT, new ToggleShiftViewCommand<> (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.SHIFT, APCminiControlSurface.APC_BUTTON_SHIFT, NopCommand.INSTANCE);
+        this.addButton (ButtonID.SHIFT, "Shift", new ToggleShiftViewCommand<> (this.model, surface), APCminiControlSurface.APC_BUTTON_SHIFT);
 
         for (int i = 0; i < 8; i++)
         {
-            final TriggerCommandID commandID1 = TriggerCommandID.get (TriggerCommandID.ROW_SELECT_1, i);
-            final TriggerCommandID commandID2 = TriggerCommandID.get (TriggerCommandID.SCENE1, i);
+            final int index = i;
 
-            this.addNoteCommand (commandID1, APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, new TrackSelectCommand (i, this.model, surface));
-            this.addNoteCommand (commandID2, APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, new SceneCommand<> (i, this.model, surface));
+            final ButtonID buttonID = ButtonID.get (ButtonID.SCENE1, i);
+            this.addButton (buttonID, COL_NAMES[i], new ViewButtonCommand<> (buttonID, this.model, surface), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, () -> {
+                final View view = viewManager.getActiveView ();
+                if (view instanceof SceneView)
+                    return view.getButtonColor (ButtonID.get (ButtonID.SCENE1, index));
+                return APCminiColorManager.APC_COLOR_BLACK;
+            });
 
-            this.addTriggerCommand (commandID1, APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, NopCommand.INSTANCE);
-            this.addTriggerCommand (commandID2, APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, NopCommand.INSTANCE);
+            this.addButton (ButtonID.get (ButtonID.ROW_SELECT_1, i), ROW_NAMES[i], new TrackSelectCommand (i, this.model, surface), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, () -> {
+                final View view = viewManager.getActiveView ();
+                if (view instanceof APCminiView)
+                {
+                    final int trackButtonColor = ((APCminiView) view).getTrackButtonColor (index);
+                    // Track buttons are only red!
+                    return trackButtonColor > 0 ? APCminiColorManager.APC_COLOR_RED : 0;
+                }
+                return APCminiColorManager.APC_COLOR_BLACK;
+            });
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected BindType getTriggerBindType (final ButtonID buttonID)
+    {
+        return BindType.NOTE;
     }
 
 
@@ -213,10 +258,39 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     protected void registerContinuousCommands ()
     {
         final APCminiControlSurface surface = this.getSurface ();
-        this.addContinuousCommand (ContinuousCommandID.MASTER_KNOB, APCminiControlSurface.APC_KNOB_MASTER_LEVEL, new MasterFaderAbsoluteCommand<> (this.model, surface));
+        this.addFader (ContinuousID.FADER_MASTER, "Master", new MasterFaderAbsoluteCommand<> (this.model, surface), BindType.CC, APCminiControlSurface.APC_KNOB_MASTER_LEVEL);
+        for (int i = 0; i < 8; i++)
+            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), BindType.CC, APCminiControlSurface.APC_KNOB_TRACK_LEVEL1 + i);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void layoutControls ()
+    {
+        final double width = 10;
+        final double height = 6;
+        final double space = 2;
+        final double stepX = width + space;
+        final double stepY = height + space;
+
+        final APCminiControlSurface surface = this.getSurface ();
+
+        surface.getButton (ButtonID.SHIFT).setBounds (space + 8 * stepX, space + 8 * stepY, width, height);
+        surface.getContinuous (ContinuousID.FADER_MASTER).setBounds (space + 8 * stepX, space + 9 * stepY, width, width * 3);
 
         for (int i = 0; i < 8; i++)
-            this.addContinuousCommand (ContinuousCommandID.get (ContinuousCommandID.FADER1, i), APCminiControlSurface.APC_KNOB_TRACK_LEVEL1 + i, new KnobRowModeCommand<> (i, this.model, surface));
+        {
+            final double x = i * stepX;
+            final double y = i * stepY;
+
+            for (int k = 0; k < 8; k++)
+                surface.getButton (ButtonID.get (ButtonID.PAD1, k * 8 + i)).setBounds (space + x, space + (7 - k) * stepY, width, height);
+
+            surface.getButton (ButtonID.get (ButtonID.SCENE1, i)).setBounds (space + 8.0 * stepX, space + y, width, height);
+            surface.getButton (ButtonID.get (ButtonID.ROW_SELECT_1, i)).setBounds (space + x, space + 8.0 * stepY, width, height);
+            surface.getContinuous (ContinuousID.get (ContinuousID.FADER1, i)).setBounds (space + x, space + 9.0 * stepY, width, width * 3);
+        }
     }
 
 
@@ -228,17 +302,6 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         surface.getModeManager ().setActiveMode (Modes.VOLUME);
         surface.getViewManager ().setActiveView (Views.PLAY);
         this.host.scheduleTask (surface.getPadGrid ()::forceFlush, 1000);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateButtons ()
-    {
-        final APCminiControlSurface surface = this.getSurface ();
-        final View activeView = surface.getViewManager ().getActiveView ();
-        if (activeView != null)
-            ((SceneView) activeView).updateSceneButtons ();
     }
 
 

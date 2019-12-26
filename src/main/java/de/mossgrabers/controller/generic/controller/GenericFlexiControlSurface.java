@@ -22,10 +22,10 @@ import de.mossgrabers.controller.generic.flexihandler.TrackHandler;
 import de.mossgrabers.controller.generic.flexihandler.TransportHandler;
 import de.mossgrabers.controller.generic.flexihandler.UserHandler;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
-import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.controller.Relative2ValueChanger;
-import de.mossgrabers.framework.controller.Relative3ValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.Relative2ValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.Relative3ValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -70,7 +70,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     public GenericFlexiControlSurface (final IHost host, final IModel model, final ColorManager colorManager, final GenericFlexiConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, null);
+        super (host, configuration, colorManager, output, input, null, 10, 10);
 
         this.model = model;
 
@@ -378,12 +378,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         {
             case CommandSlot.TYPE_CC:
                 if (value >= 0 && value <= 127)
-                    this.getOutput ().sendCCEx (slot.getMidiChannel (), slot.getNumber (), value);
+                    this.getMidiOutput ().sendCCEx (slot.getMidiChannel (), slot.getNumber (), value);
                 break;
 
             case CommandSlot.TYPE_PITCH_BEND:
                 if (value >= 0 && value <= 127)
-                    this.getOutput ().sendPitchbend (slot.getMidiChannel (), 0, value);
+                    this.getMidiOutput ().sendPitchbend (slot.getMidiChannel (), 0, value);
                 break;
 
             default:

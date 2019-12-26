@@ -4,15 +4,18 @@
 
 package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.controller.push.view.ColorView;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IChannelBank;
+import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -72,24 +75,66 @@ public class LayerDetailsMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public void onSecondRow (final int index, final ButtonEvent event)
+    {
+        if (event != ButtonEvent.UP)
+            return;
+        final IChannelBank<?> bank = this.model.getCursorDevice ().getLayerOrDrumPadBank ();
+        if (bank == null)
+            return;
+
+        switch (index)
+        {
+            case 6:
+                if (bank instanceof IDrumPadBank)
+                    ((IDrumPadBank) bank).clearMute ();
+                break;
+            case 7:
+                if (bank instanceof IDrumPadBank)
+                    ((IDrumPadBank) bank).clearSolo ();
+                break;
+            default:
+                // Not used
+                break;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getButtonColor (final ButtonID buttonID)
     {
         final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
         if (deviceChain == null)
+            return super.getButtonColor (buttonID);
+
+        int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
         {
-            this.disableFirstRow ();
-            return;
+            switch (index)
+            {
+                case 0:
+                    return deviceChain.isActivated () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_MD : PushColorManager.PUSH1_COLOR_YELLOW_MD : this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
+                case 2:
+                    return deviceChain.isMute () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
+                case 3:
+                    return deviceChain.isSolo () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
+                case 7:
+                    return this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI;
+                default:
+                    return this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+            }
         }
 
-        final int off = this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
-        this.surface.updateTrigger (20, deviceChain.isActivated () ? this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_MD : PushColors.PUSH1_COLOR_YELLOW_MD : this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_LO : PushColors.PUSH1_COLOR_YELLOW_LO);
-        this.surface.updateTrigger (21, off);
-        this.surface.updateTrigger (22, deviceChain.isMute () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_LO : PushColors.PUSH1_COLOR_ORANGE_LO);
-        this.surface.updateTrigger (23, deviceChain.isSolo () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_LO : PushColors.PUSH1_COLOR_ORANGE_LO);
-        this.surface.updateTrigger (24, off);
-        this.surface.updateTrigger (25, off);
-        this.surface.updateTrigger (26, off);
-        this.surface.updateTrigger (27, this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_HI : PushColors.PUSH1_COLOR_GREEN_HI);
+        index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            if (index >= 6)
+                return this.model.getColorManager ().getColorIndex (this.model.getCursorDevice ().getLayerOrDrumPadBank () instanceof IDrumPadBank ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF);
+            return this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+        }
+
+        return super.getButtonColor (buttonID);
     }
 
 
@@ -117,6 +162,8 @@ public class LayerDetailsMode extends BaseMode
         display.setCell (3, 4, "");
         display.setCell (2, 5, "");
         display.setCell (3, 5, "");
+        display.setCell (0, 6, "Clr Mute");
+        display.setCell (0, 7, "Clr Solo");
         display.setCell (2, 7, "Select");
         display.setCell (3, 7, "Color");
     }
@@ -139,8 +186,8 @@ public class LayerDetailsMode extends BaseMode
         display.addOptionElement ("", "", false, "", "Solo", deviceChain.isSolo (), false);
         display.addEmptyElement ();
         display.addEmptyElement ();
-        display.addEmptyElement ();
-        display.addOptionElement ("", "", false, "", "Select Color", false, false);
+        display.addOptionElement ("", "Clear Mute", false, "", "", false, false);
+        display.addOptionElement ("", "Clear Solo", false, "", "Select Color", false, false);
     }
 
 

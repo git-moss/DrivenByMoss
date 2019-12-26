@@ -12,24 +12,56 @@ package de.mossgrabers.framework.controller.color;
 public class ColorEx
 {
     /** Color black. */
-    public static final ColorEx BLACK      = ColorEx.fromRGB (0, 0, 0);
+    public static final ColorEx BLACK       = ColorEx.fromRGB (0, 0, 0);
     /** Color white. */
-    public static final ColorEx WHITE      = ColorEx.fromRGB (255, 255, 255);
+    public static final ColorEx WHITE       = ColorEx.fromRGB (255, 255, 255);
     /** Color light gray. */
-    public static final ColorEx LIGHT_GRAY = ColorEx.fromRGB (182, 182, 182);
+    public static final ColorEx LIGHT_GRAY  = ColorEx.fromRGB (182, 182, 182);
     /** Color gray. */
-    public static final ColorEx GRAY       = ColorEx.fromRGB (128, 128, 128);
+    public static final ColorEx GRAY        = ColorEx.fromRGB (128, 128, 128);
     /** Color dark gray. */
-    public static final ColorEx DARK_GRAY  = ColorEx.fromRGB (89, 89, 89);
+    public static final ColorEx DARK_GRAY   = ColorEx.fromRGB (89, 89, 89);
     /** Color red. */
-    public static final ColorEx RED        = ColorEx.fromRGB (255, 0, 0);
+    public static final ColorEx RED         = ColorEx.fromRGB (255, 0, 0);
+    /** Color dark red. */
+    public static final ColorEx DARK_RED    = ColorEx.fromRGB (128, 0, 0);
     /** Color green. */
-    public static final ColorEx GREEN      = ColorEx.fromRGB (0, 255, 0);
+    public static final ColorEx GREEN       = ColorEx.fromRGB (0, 255, 0);
+    /** Color dark green. */
+    public static final ColorEx DARK_GREEN  = ColorEx.fromRGB (0, 128, 0);
+    /** Color blue. */
+    public static final ColorEx BLUE        = ColorEx.fromRGB (0, 0, 255);
+    /** Color dark blue. */
+    public static final ColorEx DARK_BLUE   = ColorEx.fromRGB (0, 0, 128);
     /** Color yellow. */
-    public static final ColorEx YELLOW     = ColorEx.fromRGB (255, 255, 0);
+    public static final ColorEx YELLOW      = ColorEx.fromRGB (255, 255, 0);
+    /** Color orange. */
+    public static final ColorEx ORANGE      = ColorEx.fromRGB (255, 130, 0);
+    /** Color dark orange. */
+    public static final ColorEx DARK_ORANGE = ColorEx.fromRGB (128, 65, 0);
+    /** Color pink. */
+    public static final ColorEx PINK        = ColorEx.fromRGB (255, 0, 220);
+    /** Color skin. */
+    public static final ColorEx SKIN        = ColorEx.fromRGB (255, 127, 127);
+    /** Color brown. */
+    public static final ColorEx BROWN       = ColorEx.fromRGB (183, 73, 0);
+    /** Color dark brown. */
+    public static final ColorEx DARK_BROWN  = ColorEx.fromRGB (127, 0, 0);
+    /** Color mint. */
+    public static final ColorEx MINT        = ColorEx.fromRGB (170, 240, 209);
+    /** Color olive. */
+    public static final ColorEx OLIVE       = ColorEx.fromRGB (128, 128, 0);
+    /** Color sky blue. */
+    public static final ColorEx SKY_BLUE    = ColorEx.fromRGB (97, 238, 255);
+    /** Color purple. */
+    public static final ColorEx PURPLE      = ColorEx.fromRGB (116, 80, 164);
+    /** Color dark purple. */
+    public static final ColorEx DARK_PURPLE = ColorEx.evenDarker (PURPLE);
+    /** Color red wine. */
+    public static final ColorEx RED_WINE    = ColorEx.fromRGB (123, 42, 57);
 
-    private static final double FACTOR     = 0.7;
-    private static final double FACTOR2    = 0.4;
+    private static final double FACTOR      = 0.7;
+    private static final double FACTOR2     = 0.4;
 
     private final double        redValue;
     private final double        greenValue;
@@ -39,7 +71,7 @@ public class ColorEx
     /**
      * Constructor.
      *
-     * @param color The red, gree and blue components
+     * @param color The red, gree and blue components (0..1)
      */
     public ColorEx (final double [] color)
     {
@@ -50,9 +82,9 @@ public class ColorEx
     /**
      * Constructor.
      *
-     * @param red The red component
-     * @param green The green component
-     * @param blue The blue component
+     * @param red The red component (0..1)
+     * @param green The green component (0..1)
+     * @param blue The blue component (0..1)
      */
     public ColorEx (final double red, final double green, final double blue)
     {
@@ -73,6 +105,54 @@ public class ColorEx
     public static ColorEx fromRGB (final int red, final int green, final int blue)
     {
         return new ColorEx (red / 255.0, green / 255.0, blue / 255.0);
+    }
+
+
+    /**
+     * Convert the internal color state to 3 integer RGB values.
+     *
+     * @return The 3 int (0-255) values
+     */
+    public int [] toIntRGB255 ()
+    {
+        return new int []
+        {
+            (int) Math.round (this.redValue * 255.0),
+            (int) Math.round (this.greenValue * 255.0),
+            (int) Math.round (this.blueValue * 255.0)
+        };
+    }
+
+
+    /**
+     * Convert the internal color state to 3 integer RGB values.
+     *
+     * @return The 3 int (0-127) values
+     */
+    public int [] toIntRGB127 ()
+    {
+        return new int []
+        {
+            (int) Math.round (this.redValue * 127.0),
+            (int) Math.round (this.greenValue * 127.0),
+            (int) Math.round (this.blueValue * 127.0)
+        };
+    }
+
+
+    /**
+     * Convert the internal color state to 3 double RGB values.
+     *
+     * @return The 3 int (0-1) values
+     */
+    public double [] toDoubleRGB ()
+    {
+        return new double []
+        {
+            this.redValue,
+            this.greenValue,
+            this.blueValue
+        };
     }
 
 
@@ -136,7 +216,19 @@ public class ColorEx
 
 
     /**
-     * Dim the color (evenDarker) and convert it to a gray scale color.
+     * Dim the color.
+     *
+     * @param hue The brightness intensity (0-1), 0 is black, 1 is no change
+     * @return The dimmed color
+     */
+    public ColorEx dim (final double hue)
+    {
+        return new ColorEx (this.redValue * hue, this.greenValue * hue, this.blueValue * hue);
+    }
+
+
+    /**
+     * Dim the color (calls evenDarker) and convert it to a gray scale color.
      *
      * @param color The color to dim
      * @return The dimmed color
@@ -154,6 +246,19 @@ public class ColorEx
         }
 
         return ColorEx.evenDarker (color);
+    }
+
+
+    /**
+     * Calculate the difference between colors. See https://www.compuphase.com/cmetric.htm
+     *
+     * @param color1 The first color
+     * @param color2 The second color
+     * @return The distance
+     */
+    public static double calcDistance (final ColorEx color1, final ColorEx color2)
+    {
+        return calcDistance (color1.toDoubleRGB (), color2.toDoubleRGB ());
     }
 
 
@@ -185,6 +290,35 @@ public class ColorEx
         // The formula is based on the W3C Accessibility Guidelines - https://www.w3.org/TR/WCAG20/
         final double l = 0.2126 * c.getRed () + 0.7152 * c.getGreen () + 0.0722 * c.getBlue ();
         return l > 0.179 ? ColorEx.BLACK : ColorEx.WHITE;
+    }
+
+
+    /**
+     * Encodes the red, green and blue values as 3 byte values into an integer. Red is the least
+     * significant byte.
+     *
+     * @return The encoded color
+     */
+    public int encode ()
+    {
+        final int [] c = this.toIntRGB255 ();
+        return c[0] + (c[1] << 8) + (c[2] << 16);
+    }
+
+
+    /**
+     * Decodes the red, green and blue values as 3 byte values from an integer. Red is the least
+     * significant byte.
+     *
+     * @param encodedColor The encoded color
+     * @return The decoded color
+     */
+    public static ColorEx decode (final int encodedColor)
+    {
+        final int red = encodedColor & 0xFF;
+        final int green = encodedColor >> 8 & 0xFF;
+        final int blue = encodedColor >> 16 & 0xFF;
+        return fromRGB (red, green, blue);
     }
 
 

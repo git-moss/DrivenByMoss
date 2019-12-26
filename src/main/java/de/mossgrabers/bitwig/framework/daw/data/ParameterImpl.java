@@ -4,7 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.observer.IValueObserver;
@@ -49,11 +49,11 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.parameter.exists ().setIsSubscribed (enable);
-        this.parameter.name ().setIsSubscribed (enable);
-        this.parameter.displayedValue ().setIsSubscribed (enable);
-        this.parameter.value ().setIsSubscribed (enable);
-        this.parameter.modulatedValue ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.parameter.exists (), enable);
+        Util.setIsSubscribed (this.parameter.name (), enable);
+        Util.setIsSubscribed (this.parameter.displayedValue (), enable);
+        Util.setIsSubscribed (this.parameter.value (), enable);
+        Util.setIsSubscribed (this.parameter.modulatedValue (), enable);
     }
 
 

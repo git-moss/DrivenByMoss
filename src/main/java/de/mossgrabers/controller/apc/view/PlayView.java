@@ -6,13 +6,11 @@ package de.mossgrabers.controller.apc.view;
 
 import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
-import de.mossgrabers.framework.view.SceneView;
 
 
 /**
@@ -20,7 +18,7 @@ import de.mossgrabers.framework.view.SceneView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PlayView extends AbstractPlayView<APCControlSurface, APCConfiguration> implements SceneView
+public class PlayView extends AbstractPlayView<APCControlSurface, APCConfiguration>
 {
     /**
      * Constructor.
@@ -51,60 +49,47 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1, ColorManager.BUTTON_STATE_ON);
-        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_2, ColorManager.BUTTON_STATE_ON);
-        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_3, ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_4, ColorManager.BUTTON_STATE_ON);
-        this.surface.updateTrigger (APCControlSurface.APC_BUTTON_SCENE_LAUNCH_5, ColorManager.BUTTON_STATE_ON);
+        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        if (index >= 0 && index < 8)
+            return index == 2 ? ColorManager.BUTTON_STATE_OFF : ColorManager.BUTTON_STATE_ON;
+
+        return ColorManager.BUTTON_STATE_OFF;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateArrows ()
+    public void onButton (final ButtonID buttonID, final ButtonEvent event)
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedItem ();
-        this.canScrollLeft = sel != null && sel.getIndex () > 0 || tb.canScrollPageBackwards ();
-        this.canScrollRight = sel != null && sel.getIndex () < 7 || tb.canScrollPageForwards ();
-
-        super.updateArrows ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onScene (final int scene, final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
             return;
 
-        switch (scene)
+        switch (buttonID)
         {
-            case 0:
+            case SCENE1:
                 this.scales.nextScale ();
                 this.updateScale ();
                 break;
 
-            case 1:
+            case SCENE2:
                 this.scales.prevScale ();
                 this.updateScale ();
                 break;
 
-            case 2:
+            case SCENE3:
                 this.scales.toggleChromatic ();
                 final boolean isChromatic = this.scales.isChromatic ();
                 this.surface.getConfiguration ().setScaleInKey (!isChromatic);
                 this.surface.getDisplay ().notify (isChromatic ? "Chromatic" : "In Key");
                 break;
 
-            case 3:
+            case SCENE4:
                 this.onOctaveUp (event);
                 break;
 
-            case 4:
+            case SCENE5:
                 this.onOctaveDown (event);
                 break;
 

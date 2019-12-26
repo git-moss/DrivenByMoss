@@ -4,12 +4,15 @@
 
 package de.mossgrabers.framework.daw.midi;
 
+import de.mossgrabers.framework.observer.ObserverManagement;
+
+
 /**
  * Implementation for a note repeat.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface INoteRepeat
+public interface INoteRepeat extends ObserverManagement
 {
     /**
      * Toggle if note repeat is active.
@@ -26,17 +29,136 @@ public interface INoteRepeat
 
 
     /**
-     * Set the note repeat length.
+     * Set de-/active.
      *
-     * @param length The length
+     * @param active True to activate
      */
-    void setPeriod (double length);
+    void setActive (boolean active);
 
 
     /**
-     * Get the note repeat length.
+     * Set the note repeat period.
+     *
+     * @param period The period
+     */
+    void setPeriod (double period);
+
+
+    /**
+     * Get the note repeat period.
+     *
+     * @return The period
+     */
+    double getPeriod ();
+
+
+    /**
+     * Get the note length.
+     *
+     * @param length The length
+     */
+    void setNoteLength (double length);
+
+
+    /**
+     * Get the note length.
      *
      * @return The length
      */
-    double getPeriod ();
+    double getNoteLength ();
+
+
+    /**
+     * Check if shuffle is active.
+     *
+     * @return True if active
+     */
+    boolean isShuffle ();
+
+
+    /**
+     * Toggle if shuffle is active.
+     *
+     * for which to toggle the note repeat shuffle
+     */
+    void toggleShuffle ();
+
+
+    /**
+     * Check if use pressure as the velocity for new notes is active.
+     *
+     * @return True if active
+     */
+    boolean usePressure ();
+
+
+    /**
+     * Use the pressure as the velocity for new notes.
+     *
+     * for which to toggle use pressure
+     */
+    void toggleUsePressure ();
+
+
+    /**
+     * Get the arpeggiator octaves.
+     *
+     * @return The octaves (0-8)
+     */
+    int getOctaves ();
+
+
+    /**
+     * Set the arpeggiator octaves.
+     *
+     * @param octaves The octaves (0-8)
+     */
+    void setOctaves (int octaves);
+
+
+    /**
+     * Get the arpeggiator mode.
+     *
+     * @return The mode
+     */
+    ArpeggiatorMode getMode ();
+
+
+    /**
+     * Get the available arpeggiator modes.
+     *
+     * @return The modes
+     */
+    ArpeggiatorMode [] getModes ();
+
+
+    /**
+     * Set the arpeggiator mode.
+     *
+     * @param mode The mode
+     */
+    void setMode (String mode);
+
+
+    /**
+     * Change the arpeggiator mode.
+     *
+     * @param increase True to increase otherwise descrease
+     */
+    void changeMode (boolean increase);
+
+
+    /**
+     * Is the note repeat arpeggiator free running?
+     *
+     *
+     * @return True if free running
+     */
+    boolean isFreeRunning ();
+
+
+    /**
+     * Toggle the free running state.
+     */
+    void toggleIsFreeRunning ();
 }

@@ -59,7 +59,7 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
 
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             track.resetPan ();
         }
         track.touchPan (isTouched);

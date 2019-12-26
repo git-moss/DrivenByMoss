@@ -8,6 +8,7 @@ import de.mossgrabers.controller.osc.OSCConfiguration;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
@@ -181,8 +182,8 @@ public class DeviceModule extends AbstractModule
         if (this.configuration.isEnableVUMeters ())
             writer.sendOSC (deviceAddress + "vu", channel.getVu (), dump);
 
-        final double [] color = channel.getColor ();
-        writer.sendOSCColor (deviceAddress + "color", color[0], color[1], color[2], dump);
+        final ColorEx color = channel.getColor ();
+        writer.sendOSCColor (deviceAddress + "color", color.getRed (), color.getGreen (), color.getBlue (), dump);
     }
 
 

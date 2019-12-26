@@ -12,7 +12,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to flip through the different panel layouts. Toggles the cursor device window if shifted.
+ * Command to toggle the cursor device window. Flips through the different panel layouts if shifted.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

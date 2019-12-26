@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.controller.display;
 
+import de.mossgrabers.framework.controller.hardware.IHwTextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 
 
@@ -14,7 +15,7 @@ import de.mossgrabers.framework.daw.IHost;
  */
 public class DummyDisplay implements ITextDisplay
 {
-    private IHost host;
+    private final IHost host;
 
 
     /**
@@ -154,5 +155,29 @@ public class DummyDisplay implements ITextDisplay
     public void shutdown ()
     {
         // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNoOfLines ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setHardwareDisplay (final IHwTextDisplay display)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IHwTextDisplay getHardwareDisplay ()
+    {
+        return null;
     }
 }

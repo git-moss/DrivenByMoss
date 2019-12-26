@@ -40,7 +40,7 @@ public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, Pus
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event != ButtonEvent.DOWN)
             return;

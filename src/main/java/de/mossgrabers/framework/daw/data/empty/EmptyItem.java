@@ -15,14 +15,6 @@ import de.mossgrabers.framework.observer.IValueObserver;
  */
 public class EmptyItem implements IItem
 {
-    protected static final double [] COLOR_OFF =
-    {
-        0.0,
-        0.0,
-        0.0
-    };
-
-
     /** {@inheritDoc} */
     @Override
     public boolean doesExist ()

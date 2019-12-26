@@ -45,7 +45,7 @@ public class ButtonRowViewCommand<S extends IControlSurface<C>, C extends Config
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         final View view = this.surface.getViewManager ().getActiveView ();
         if (view == null)

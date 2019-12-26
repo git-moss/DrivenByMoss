@@ -39,7 +39,7 @@ public class BeatstepPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    protected void sendNoteState (final int note, final int color)
+    protected void sendNoteState (final int channel, final int note, final int color)
     {
         final int n = note - 36;
         final int pad = n < this.cols ? BeatstepControlSurface.BEATSTEP_PAD_9 + n : BeatstepControlSurface.BEATSTEP_PAD_1 + n - this.cols;
@@ -54,16 +54,10 @@ public class BeatstepPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    public void flush ()
+    public int [] translateToController (final int note)
     {
-        for (int i = 36; i < 52; i++)
-        {
-            final int note = this.translateToController (i);
-            if (this.currentButtonColors[i] != this.buttonColors[i])
-            {
-                this.currentButtonColors[i] = this.buttonColors[i];
-                this.sendNoteState (note, this.buttonColors[i]);
-            }
-        }
+        final int [] translate = super.translateToController (note);
+        translate[0] = 2;
+        return translate;
     }
 }

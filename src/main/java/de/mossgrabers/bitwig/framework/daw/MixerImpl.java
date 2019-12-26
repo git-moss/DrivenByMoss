@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.daw.IMixer;
 
 import com.bitwig.extension.controller.api.Mixer;
@@ -41,12 +42,12 @@ public class MixerImpl implements IMixer
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.mixer.isClipLauncherSectionVisible ().setIsSubscribed (enable);
-        this.mixer.isCrossFadeSectionVisible ().setIsSubscribed (enable);
-        this.mixer.isDeviceSectionVisible ().setIsSubscribed (enable);
-        this.mixer.isIoSectionVisible ().setIsSubscribed (enable);
-        this.mixer.isMeterSectionVisible ().setIsSubscribed (enable);
-        this.mixer.isSendSectionVisible ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.mixer.isClipLauncherSectionVisible (), enable);
+        Util.setIsSubscribed (this.mixer.isCrossFadeSectionVisible (), enable);
+        Util.setIsSubscribed (this.mixer.isDeviceSectionVisible (), enable);
+        Util.setIsSubscribed (this.mixer.isIoSectionVisible (), enable);
+        Util.setIsSubscribed (this.mixer.isMeterSectionVisible (), enable);
+        Util.setIsSubscribed (this.mixer.isSendSectionVisible (), enable);
     }
 
 

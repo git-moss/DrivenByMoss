@@ -6,15 +6,15 @@ package de.mossgrabers.controller.slmkiii.view;
 
 import de.mossgrabers.controller.slmkiii.SLMkIIIConfiguration;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
-import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.AbstractView;
-import de.mossgrabers.framework.view.SceneView;
 
 
 /**
@@ -22,7 +22,7 @@ import de.mossgrabers.framework.view.SceneView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ColorView extends AbstractView<SLMkIIIControlSurface, SLMkIIIConfiguration> implements SceneView
+public class ColorView extends AbstractView<SLMkIIIControlSurface, SLMkIIIConfiguration>
 {
     private boolean flip = false;
 
@@ -43,11 +43,12 @@ public class ColorView extends AbstractView<SLMkIIIControlSurface, SLMkIIIConfig
     @Override
     public void drawGrid ()
     {
-        final PadGrid padGrid = this.surface.getPadGrid ();
+        final IPadGrid padGrid = this.surface.getPadGrid ();
+        final DAWColor [] dawColors = DAWColor.values ();
         for (int i = 0; i < 16; i++)
         {
             final int pos = (this.flip ? 16 : 0) + i;
-            padGrid.light (36 + i, pos < DAWColors.DAW_COLORS.length ? DAWColors.DAW_COLORS[pos] : PadGrid.GRID_OFF);
+            padGrid.light (36 + i, pos < dawColors.length ? dawColors[pos].name () : IPadGrid.GRID_OFF);
         }
     }
 
@@ -60,18 +61,19 @@ public class ColorView extends AbstractView<SLMkIIIControlSurface, SLMkIIIConfig
             return;
 
         final int color = note - 36 + (this.flip ? 16 : 0);
-        if (color < DAWColors.DAW_COLORS.length)
+        final DAWColor [] dawColors = DAWColor.values ();
+        if (color < dawColors.length)
         {
-            final double [] entry = DAWColors.getColorEntry (DAWColors.DAW_COLORS[color]);
+            final ColorEx entry = dawColors[color].getColor ();
             final ITrack t = this.model.getSelectedTrack ();
             if (t == null)
             {
                 final IMasterTrack master = this.model.getMasterTrack ();
                 if (master.isSelected ())
-                    master.setColor (entry[0], entry[1], entry[2]);
+                    master.setColor (entry);
             }
             else
-                t.setColor (entry[0], entry[1], entry[2]);
+                t.setColor (entry);
         }
         this.surface.getViewManager ().restoreView ();
     }
@@ -79,19 +81,9 @@ public class ColorView extends AbstractView<SLMkIIIControlSurface, SLMkIIIConfig
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSceneButtons ()
-    {
-        final int colorOff = this.model.getColorManager ().getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
-        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_1, colorOff);
-        this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_2, colorOff);
+        return AbstractSequencerView.COLOR_RESOLUTION_OFF;
     }
 
 

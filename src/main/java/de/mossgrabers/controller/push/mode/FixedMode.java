@@ -9,7 +9,7 @@ import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -54,29 +54,23 @@ public class FixedMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        new TemporaryNewCommand<> (index, this.model, this.surface).execute (ButtonEvent.DOWN);
+        new TemporaryNewCommand<> (index, this.model, this.surface).execute (ButtonEvent.DOWN, 127);
         this.surface.getModeManager ().restoreMode ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        final ColorManager colorManager = this.model.getColorManager ();
-        final Configuration configuration = this.surface.getConfiguration ();
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (20 + i, colorManager.getColor (configuration.getNewClipLength () == i ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
-    }
+        final int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
+        {
+            final Configuration configuration = this.surface.getConfiguration ();
+            return this.colorManager.getColorIndex (configuration.getNewClipLength () == index ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+        }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSecondRow ()
-    {
-        final ColorManager colorManager = this.model.getColorManager ();
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (102 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_ON));
+        return this.colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_ON);
     }
 
 

@@ -70,7 +70,7 @@ public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> 
                 application.toggleAutomationEditor ();
                 break;
             case DEVICE:
-                this.model.getCursorDevice ().toggleWindowOpen ();
+                application.toggleDevices ();
                 break;
             case MIXER:
                 application.toggleMixer ();

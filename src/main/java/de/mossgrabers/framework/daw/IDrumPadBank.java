@@ -14,5 +14,14 @@ import de.mossgrabers.framework.daw.data.IDrumPad;
  */
 public interface IDrumPadBank extends IChannelBank<IDrumPad>
 {
-    // Intentionally empty
+    /**
+     * Clears mute on all drum pads.
+     */
+    void clearMute ();
+
+
+    /**
+     * Clears solo on all drum pads.
+     */
+    void clearSolo ();
 }

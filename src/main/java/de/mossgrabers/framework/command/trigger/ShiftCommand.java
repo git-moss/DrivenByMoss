@@ -35,7 +35,7 @@ public class ShiftCommand<S extends IControlSurface<C>, C extends Configuration>
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         this.model.getValueChanger ().setSpeed (this.surface.isShiftPressed ());
     }

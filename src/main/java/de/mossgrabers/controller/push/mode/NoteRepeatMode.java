@@ -6,15 +6,23 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.daw.midi.INoteInput;
+import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.Pair;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -24,6 +32,10 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class NoteRepeatMode extends BaseMode
 {
+    private final IHost       host;
+    private final INoteRepeat noteRepeat;
+
+
     /**
      * Constructor.
      *
@@ -33,7 +45,102 @@ public class NoteRepeatMode extends BaseMode
     public NoteRepeatMode (final PushControlSurface surface, final IModel model)
     {
         super ("Note Repeat", surface, model);
+
         this.isTemporary = true;
+        this.host = this.model.getHost ();
+
+        final INoteInput defaultNoteInput = surface.getMidiInput ().getDefaultNoteInput ();
+        this.noteRepeat = defaultNoteInput == null ? null : defaultNoteInput.getNoteRepeat ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onActivate ()
+    {
+        this.model.getGroove ().enableObservers (true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDeactivate ()
+    {
+        this.model.getGroove ().enableObservers (false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobValue (final int index, final int value)
+    {
+        switch (index)
+        {
+            case 0:
+            case 1:
+                final int sel = Resolution.change (Resolution.getMatch (this.noteRepeat.getPeriod ()), this.model.getValueChanger ().calcKnobSpeed (value) > 0);
+                this.noteRepeat.setPeriod (Resolution.getValueAt (sel));
+                break;
+
+            case 2:
+            case 3:
+                if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+                {
+                    final int sel2 = Resolution.change (Resolution.getMatch (this.noteRepeat.getNoteLength ()), this.model.getValueChanger ().calcKnobSpeed (value) > 0);
+                    this.noteRepeat.setNoteLength (Resolution.getValueAt (sel2));
+                }
+                break;
+
+            case 5:
+                if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+                    this.noteRepeat.changeMode (this.model.getValueChanger ().calcKnobSpeed (value) > 0);
+                break;
+
+            case 6:
+                if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+                    this.noteRepeat.setOctaves (this.noteRepeat.getOctaves () + (this.model.getValueChanger ().calcKnobSpeed (value) > 0 ? 1 : -1));
+                break;
+
+            case 7:
+                if (this.host.canEdit (EditCapability.NOTE_REPEAT_SWING))
+                    this.model.getGroove ().getParameters ()[1].changeValue (value);
+                break;
+
+            default:
+                // Not used
+                break;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.isKnobTouched[index] = isTouched;
+
+        if (isTouched && this.surface.isDeletePressed ())
+        {
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
+
+            switch (index)
+            {
+                case 5:
+                    if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+                        this.noteRepeat.setMode ("up");
+                    break;
+
+                case 6:
+                    if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+                        this.noteRepeat.setOctaves (1);
+                    break;
+
+                case 7:
+                    if (this.host.canEdit (EditCapability.NOTE_REPEAT_SWING))
+                        this.model.getGroove ().getParameters ()[1].resetValue ();
+                    break;
+            }
+        }
     }
 
 
@@ -41,43 +148,125 @@ public class NoteRepeatMode extends BaseMode
     @Override
     public void onFirstRow (final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.UP)
+        if (event != ButtonEvent.UP || this.noteRepeat == null)
             return;
-        final INoteInput defaultNoteInput = this.surface.getInput ().getDefaultNoteInput ();
-        if (defaultNoteInput != null)
-            defaultNoteInput.getNoteRepeat ().setPeriod (Resolution.getValueAt (index));
-        this.surface.getModeManager ().restoreMode ();
+
+        switch (index)
+        {
+            case 0:
+            case 1:
+                final int sel = Resolution.change (Resolution.getMatch (this.noteRepeat.getPeriod ()), index == 1);
+                this.noteRepeat.setPeriod (Resolution.getValueAt (sel));
+                break;
+
+            case 2:
+            case 3:
+                if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+                {
+                    final int sel2 = Resolution.change (Resolution.getMatch (this.noteRepeat.getNoteLength ()), index == 3);
+                    this.noteRepeat.setNoteLength (Resolution.getValueAt (sel2));
+                }
+                break;
+
+            case 5:
+                if (this.host.canEdit (EditCapability.NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY))
+                    this.noteRepeat.toggleUsePressure ();
+                break;
+
+            case 6:
+                if (this.host.canEdit (EditCapability.NOTE_REPEAT_IS_FREE_RUNNING))
+                    this.noteRepeat.toggleIsFreeRunning ();
+                break;
+
+            case 7:
+                if (this.host.canEdit (EditCapability.NOTE_REPEAT_SWING))
+                    this.noteRepeat.toggleShuffle ();
+                break;
+
+            default:
+                // Unused
+                break;
+        }
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public void onSecondRow (final int index, final ButtonEvent event)
     {
-        final ColorManager colorManager = this.model.getColorManager ();
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (20 + i, colorManager.getColor (this.isPeriodSelected (selectedTrack, i) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+        if (event != ButtonEvent.UP || this.noteRepeat == null)
+            return;
+
+        switch (index)
+        {
+            case 7:
+                if (this.host.canEdit (EditCapability.NOTE_REPEAT_SWING))
+                {
+                    final IParameter grooveEnabled = this.model.getGroove ().getParameters ()[0];
+                    grooveEnabled.setValue (grooveEnabled.getValue () == 0 ? this.model.getValueChanger ().getUpperBound () : 0);
+                }
+                break;
+
+            default:
+                // Unused
+                break;
+        }
     }
 
 
-    /**
-     * Check if the n-th period is enabled.
-     *
-     * @param track The selected track on which the period should be checked
-     * @param index The index of the period to check
-     * @return True if selected
-     */
-    private boolean isPeriodSelected (final ITrack track, final int index)
+    /** {@inheritDoc} */
+    @Override
+    public int getButtonColor (final ButtonID buttonID)
     {
-        if (track == null)
-            return false;
+        int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
+        {
+            final ColorManager colorManager = this.model.getColorManager ();
+            final int offColor = colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_OFF);
+            final int onColor = colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_ON);
+            final int hiColor = colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_HI);
 
-        final INoteInput defaultNoteInput = this.surface.getInput ().getDefaultNoteInput ();
-        if (defaultNoteInput == null)
-            return false;
+            switch (index)
+            {
+                default:
+                case 0:
+                case 1:
+                    return onColor;
+                case 2:
+                    return this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH) ? onColor : offColor;
+                case 3:
+                    return this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH) ? onColor : offColor;
 
-        return Math.abs (defaultNoteInput.getNoteRepeat ().getPeriod () - Resolution.getValueAt (index)) < 0.001;
+                case 4:
+                    return offColor;
+
+                case 5:
+                    if (this.host.canEdit (EditCapability.NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY))
+                        return this.noteRepeat.usePressure () ? hiColor : onColor;
+                    return offColor;
+
+                case 6:
+                    if (this.host.canEdit (EditCapability.NOTE_REPEAT_IS_FREE_RUNNING))
+                        return !this.noteRepeat.isFreeRunning () ? hiColor : onColor;
+                    return offColor;
+
+                case 7:
+                    if (this.host.canEdit (EditCapability.NOTE_REPEAT_SWING))
+                        return this.noteRepeat.isShuffle () ? hiColor : onColor;
+                    return offColor;
+            }
+        }
+
+        index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            final ColorManager colorManager = this.model.getColorManager ();
+            if (index < 7)
+                return colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_OFF);
+            return this.model.getGroove ().getParameters ()[0].getValue () > 0 ? colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_HI) : colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_ON);
+        }
+
+        return super.getButtonColor (buttonID);
     }
 
 
@@ -85,12 +274,58 @@ public class NoteRepeatMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITextDisplay d = this.surface.getTextDisplay ().clear ();
-        d.setBlock (2, 0, "Repeat Length:");
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        for (int i = 0; i < 8; i++)
-            d.setCell (3, i, (this.isPeriodSelected (selectedTrack, i) ? Push1Display.SELECT_ARROW : "") + Resolution.getNameAt (i));
-        d.allDone ();
+        display.setCell (0, 0, "Period:");
+        final int selPeriodIndex = this.getSelectedPeriodIndex ();
+        int pos = 0;
+        for (final Pair<String, Boolean> p: Push1Display.createMenuList (4, Resolution.getNames (), selPeriodIndex))
+        {
+            display.setCell (pos, 1, (p.getValue ().booleanValue () ? Push1Display.SELECT_ARROW : " ") + p.getKey ());
+            pos++;
+        }
+
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+        {
+            display.setCell (0, 2, "Length:");
+            final int selLengthIndex = this.getSelectedNoteLengthIndex ();
+            pos = 0;
+            for (final Pair<String, Boolean> p: Push1Display.createMenuList (4, Resolution.getNames (), selLengthIndex))
+            {
+                display.setCell (pos, 3, (p.getValue ().booleanValue () ? Push1Display.SELECT_ARROW : " ") + p.getKey ());
+                pos++;
+            }
+        }
+
+        final int upperBound = this.model.getValueChanger ().getUpperBound ();
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+        {
+            final String bottomMenu = this.host.canEdit (EditCapability.NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY) ? "Use Pressure" : "";
+            final ArpeggiatorMode mode = this.noteRepeat.getMode ();
+            final int value = mode.getIndex () * upperBound / (this.noteRepeat.getModes ().length - 1);
+            display.setCell (0, 5, "Mode");
+            display.setCell (1, 5, StringUtils.optimizeName (mode.getName (), 8));
+            display.setCell (2, 5, value, Format.FORMAT_VALUE);
+            display.setCell (3, 5, bottomMenu);
+        }
+
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+        {
+            final String bottomMenu = this.host.canEdit (EditCapability.NOTE_REPEAT_IS_FREE_RUNNING) ? "Sync" : "";
+            final int octaves = this.noteRepeat.getOctaves ();
+            final int value = octaves * upperBound / 8;
+            display.setCell (0, 6, "Octaves");
+            display.setCell (1, 6, Integer.toString (octaves));
+            display.setCell (2, 6, value, Format.FORMAT_VALUE);
+            display.setCell (3, 6, bottomMenu);
+        }
+
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_SWING))
+        {
+            final IParameter shuffleParam = this.model.getGroove ().getParameters ()[1];
+            display.setCell (0, 7, shuffleParam.getName (10));
+            display.setCell (1, 7, shuffleParam.getDisplayedValue (8));
+            display.setCell (2, 7, shuffleParam.getValue (), Format.FORMAT_VALUE);
+            display.setCell (3, 7, "Shuffle");
+        }
     }
 
 
@@ -98,8 +333,80 @@ public class NoteRepeatMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        for (int i = 0; i < 8; i++)
-            display.addOptionElement ("", "", false, i == 0 ? "Repeat Length" : "", Resolution.getNameAt (i), this.isPeriodSelected (selectedTrack, i), false);
+        if (this.noteRepeat == null)
+            return;
+
+        display.addOptionElement ("Period", "", false, "", "", false, false);
+        final int selPeriodIndex = this.getSelectedPeriodIndex ();
+        display.addListElement (6, Resolution.getNames (), selPeriodIndex);
+
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+        {
+            display.addOptionElement ("  Length", "", false, "", "", false, false);
+            final int selLengthIndex = this.getSelectedNoteLengthIndex ();
+            display.addListElement (6, Resolution.getNames (), selLengthIndex);
+        }
+        else
+        {
+            display.addEmptyElement ();
+            display.addEmptyElement ();
+        }
+
+        display.addEmptyElement ();
+
+        final int upperBound = this.model.getValueChanger ().getUpperBound ();
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+        {
+            final String bottomMenu = this.host.canEdit (EditCapability.NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY) ? "Use Pressure" : "";
+            final boolean isBottomMenuEnabled = this.noteRepeat.usePressure ();
+            final ArpeggiatorMode mode = this.noteRepeat.getMode ();
+            final int value = mode.getIndex () * upperBound / (this.noteRepeat.getModes ().length - 1);
+            display.addParameterElementWithPlainMenu ("", false, bottomMenu, null, isBottomMenuEnabled, "Mode", value, StringUtils.optimizeName (mode.getName (), 8), this.isKnobTouched[5], -1);
+        }
+        else
+            display.addEmptyElement ();
+
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+        {
+            final String bottomMenu = this.host.canEdit (EditCapability.NOTE_REPEAT_IS_FREE_RUNNING) ? "Sync" : "";
+            final boolean isBottomMenuEnabled = !this.noteRepeat.isFreeRunning ();
+            final int octaves = this.noteRepeat.getOctaves ();
+            final int value = octaves * upperBound / 8;
+            display.addParameterElementWithPlainMenu ("", false, bottomMenu, null, isBottomMenuEnabled, "Octaves", value, Integer.toString (octaves), this.isKnobTouched[6], -1);
+        }
+        else
+            display.addEmptyElement ();
+
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_SWING))
+        {
+            final IParameter [] grooveParameters = this.model.getGroove ().getParameters ();
+            final IParameter shuffleParam = grooveParameters[1];
+            final int value = grooveParameters[0].getValue ();
+            display.addParameterElementWithPlainMenu ("Groove " + grooveParameters[0].getDisplayedValue (8), value != 0, "Shuffle", null, this.noteRepeat.isShuffle (), shuffleParam.getName (10), shuffleParam.getValue (), shuffleParam.getDisplayedValue (8), this.isKnobTouched[7], -1);
+        }
+        else
+            display.addEmptyElement ();
+    }
+
+
+    /**
+     * Get the index of the selected period.
+     *
+     * @return The selected period index
+     */
+    private int getSelectedPeriodIndex ()
+    {
+        return this.noteRepeat == null ? -1 : Resolution.getMatch (this.noteRepeat.getPeriod ());
+    }
+
+
+    /**
+     * Get the index of the selected length.
+     *
+     * @return The selected lenth index
+     */
+    private int getSelectedNoteLengthIndex ()
+    {
+        return this.noteRepeat == null ? -1 : Resolution.getMatch (this.noteRepeat.getNoteLength ());
     }
 }

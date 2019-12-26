@@ -44,7 +44,7 @@ public class ButtonRowModeCommand<S extends IControlSurface<C>, C extends Config
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         final Mode m = this.surface.getModeManager ().getActiveOrTempMode ();
         if (m != null)

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.view;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
@@ -26,7 +26,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView, TransposeView
+public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements TransposeView
 {
     protected static final int    DRUM_START_KEY = 36;
     protected static final int    GRID_COLUMNS   = 8;
@@ -77,14 +77,6 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         final ITrackBank tb = model.getTrackBank ();
         tb.addSelectionObserver ( (final int index, final boolean isSelected) -> this.clearPressedKeys ());
         tb.addNoteObserver (this::updateNote);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onScene (final int index, final ButtonEvent event)
-    {
-        // Intentionally empty
     }
 
 
@@ -193,7 +185,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
 
     protected String getPadContentColor (final IChannel drumPad)
     {
-        return DAWColors.getColorIndex (drumPad.getColor ());
+        return DAWColor.getColorIndex (drumPad.getColor ());
     }
 
 
@@ -260,6 +252,22 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean isOctaveUpButtonOn ()
+    {
+        return this.drumOctave < 1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isOctaveDownButtonOn ()
+    {
+        return this.drumOctave > Scales.DRUM_OCTAVE_LOWER;
+    }
+
+
     protected void handleButtonCombinations (final int playedPad)
     {
         if (this.surface.isDeletePressed ())
@@ -296,14 +304,14 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
 
     protected void handleMuteButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.MUTE));
+        this.surface.setTriggerConsumed (ButtonID.MUTE);
         this.model.getDrumDevice64 ().getDrumPadBank ().getItem (playedPad).toggleMute ();
     }
 
 
     protected void handleSoloButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.SOLO));
+        this.surface.setTriggerConsumed (ButtonID.SOLO);
         this.model.getDrumDevice64 ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
     }
 

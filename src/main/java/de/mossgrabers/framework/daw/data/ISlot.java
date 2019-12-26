@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
+
+
 /**
  * Interface to a slot.
  *
@@ -64,17 +67,15 @@ public interface ISlot extends IItem
      *
      * @return The color
      */
-    double [] getColor ();
+    ColorEx getColor ();
 
 
     /**
-     * Set the color of the clip.
+     * Set the color of the slot.
      *
-     * @param red The red
-     * @param green The green
-     * @param blue The blue
+     * @param color The color
      */
-    void setColor (double red, double green, double blue);
+    void setColor (ColorEx color);
 
 
     /**
@@ -87,14 +88,6 @@ public interface ISlot extends IItem
      * Record a clip.
      */
     void record ();
-
-
-    /**
-     * Create a clip.
-     *
-     * @param length The length of the clip
-     */
-    void create (final int length);
 
 
     /**

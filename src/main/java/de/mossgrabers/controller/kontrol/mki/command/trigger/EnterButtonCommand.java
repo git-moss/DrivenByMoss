@@ -33,7 +33,7 @@ public class EnterButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSu
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event == ButtonEvent.DOWN)
             ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTempMode ()).onEnter ();

@@ -27,7 +27,7 @@ public class BeatstepControllerExtensionDefinition extends AbstractControllerExt
      */
     public BeatstepControllerExtensionDefinition ()
     {
-        super (new BeatstepControllerDefinition (false));
+        super (new BeatstepControllerDefinition ());
     }
 
 
@@ -35,6 +35,6 @@ public class BeatstepControllerExtensionDefinition extends AbstractControllerExt
     @Override
     protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
     {
-        return new BeatstepControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()), false);
+        return new BeatstepControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()));
     }
 }

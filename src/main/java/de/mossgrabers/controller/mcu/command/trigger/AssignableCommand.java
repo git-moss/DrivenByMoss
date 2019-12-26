@@ -40,7 +40,7 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         switch (this.getSetting ())
         {
@@ -65,7 +65,7 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
                 break;
 
             default:
-                super.execute (event);
+                super.execute (event, velocity);
                 break;
         }
     }

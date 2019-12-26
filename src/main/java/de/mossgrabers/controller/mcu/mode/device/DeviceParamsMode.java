@@ -72,7 +72,7 @@ public class DeviceParamsMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    protected void updateKnobLEDs ()
+    public void updateKnobLEDs ()
     {
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         final ICursorDevice cd = this.model.getCursorDevice ();

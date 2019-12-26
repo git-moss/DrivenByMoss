@@ -5,18 +5,19 @@
 package de.mossgrabers.controller.hui.controller;
 
 import de.mossgrabers.controller.hui.HUIConfiguration;
-import de.mossgrabers.framework.command.continuous.FaderAbsoluteCommand;
-import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
-import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -260,24 +261,19 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
         Arrays.fill (HUI_BUTTON_UPDATE, false);
     }
 
-    public static final int                                                    KNOB_LED_MODE_OFF        = -1;
-    public static final int                                                    KNOB_LED_MODE_SINGLE_DOT = 0;
-    public static final int                                                    KNOB_LED_MODE_BOOST_CUT  = 1;
-    public static final int                                                    KNOB_LED_MODE_WRAP       = 2;
-    public static final int                                                    KNOB_LED_MODE_SPREAD     = 3;
+    public static final int         KNOB_LED_MODE_OFF        = -1;
+    public static final int         KNOB_LED_MODE_SINGLE_DOT = 0;
+    public static final int         KNOB_LED_MODE_BOOST_CUT  = 1;
+    public static final int         KNOB_LED_MODE_WRAP       = 2;
+    public static final int         KNOB_LED_MODE_SPREAD     = 3;
 
-    private int []                                                             knobValues               = new int [8];
+    private int []                  knobValues               = new int [8];
 
     // The currently selected zone (area of a group of buttons)
-    private int                                                                zone;
+    private int                     zone;
 
-    @SuppressWarnings("unchecked")
-    private final FaderAbsoluteCommand<HUIControlSurface, HUIConfiguration> [] faderCommands            = new FaderAbsoluteCommand [8];
-    @SuppressWarnings("unchecked")
-    private final KnobRowModeCommand<HUIControlSurface, HUIConfiguration> []   knobCommands             = new KnobRowModeCommand [8];
-    private final PlayPositionCommand<HUIControlSurface, HUIConfiguration>     playPositionCommand;
-
-    private final int []                                                       faderHiValues            = new int [8];
+    private final int []            faderHiValues            = new int [9];
+    private Map<Integer, IHwButton> huiButtons               = new HashMap<> ();
 
 
     /**
@@ -292,23 +288,9 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
      */
     public HUIControlSurface (final IHost host, final ColorManager colorManager, final HUIConfiguration configuration, final IMidiOutput output, final IMidiInput input, final IModel model)
     {
-        super (host, configuration, colorManager, output, input, null);
-
-        this.setTriggerId (ButtonID.SHIFT, HUI_KEY_SHIFT_AD);
-        this.setTriggerId (ButtonID.SELECT, HUI_KEY_OPTION_A);
-        this.setTriggerId (ButtonID.LEFT, HUI_CURSOR_LEFT);
-        this.setTriggerId (ButtonID.RIGHT, HUI_CURSOR_RIGHT);
-        this.setTriggerId (ButtonID.UP, HUI_CURSOR_UP);
-        this.setTriggerId (ButtonID.DOWN, HUI_CURSOR_DOWN);
+        super (host, configuration, colorManager, output, input, null, 1000, 1000);
 
         Arrays.fill (this.knobValues, -1);
-
-        for (int i = 0; i < 8; i++)
-        {
-            this.faderCommands[i] = new FaderAbsoluteCommand<> (i, model, this);
-            this.knobCommands[i] = new KnobRowModeCommand<> (i, model, this);
-        }
-        this.playPositionCommand = new PlayPositionCommand<> (model, this);
     }
 
 
@@ -380,11 +362,12 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
             case 0x05:
             case 0x06:
             case 0x07:
+            case 0x08:
                 this.faderHiValues[data1] = data2;
                 break;
 
             case 0x0d:
-                this.playPositionCommand.execute (data2);
+                this.getContinuous (ContinuousID.PLAY_POSITION).getCommand ().execute (data2);
                 break;
 
             // Button zone selection
@@ -403,15 +386,22 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
             case 0x27:
                 final int chnl = data1 - 0x20;
                 final int value = (this.faderHiValues[chnl] << 7) + data2;
-                this.faderCommands[chnl].execute (value);
+                this.getContinuous (ContinuousID.get (ContinuousID.FADER1, chnl)).getCommand ().execute (value);
+                break;
+            case 0x28:
+                final int masterValue = (this.faderHiValues[8] << 7) + data2;
+                this.getContinuous (ContinuousID.FADER_MASTER).getCommand ().execute (masterValue);
                 break;
 
             // Button port up/down (a button in the selected row)
             case 0x2F:
                 final boolean isDown = data2 >= 0x40;
-                final int cc = this.zone * 8 + data2 % 8;
-                if (this.isTrigger (cc))
-                    this.handleCC (0, cc, isDown ? 127 : 0);
+                final int buttonIndex = this.zone * 8 + data2 % 8;
+                final IHwButton button = this.huiButtons.get (Integer.valueOf (buttonIndex));
+                if (button == null)
+                    this.host.error ("Button " + buttonIndex + " not supported (Zone: " + this.zone + " Index: " + data2 % 8 + ")");
+                else
+                    button.trigger (isDown ? ButtonEvent.DOWN : ButtonEvent.UP);
                 break;
 
             case 0x40:
@@ -423,7 +413,7 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
             case 0x46:
             case 0x47:
                 final int channel = data1 - 0x40;
-                this.knobCommands[channel].execute (data2);
+                this.getContinuous (ContinuousID.get (ContinuousID.KNOB1, channel)).getCommand ().execute (data2);
                 break;
 
             default:
@@ -440,25 +430,13 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
      */
     public HUISegmentDisplay getSegmentDisplay ()
     {
-        return (HUISegmentDisplay) this.getTextDisplay (2);
+        return (HUISegmentDisplay) this.getTextDisplay (1);
     }
 
 
-    /**
-     * Get the main display.
-     *
-     * @return The main display
-     */
-    public HUIMainDisplay getMainDisplay ()
+    public void addHuiButton (final Integer huiControl, final IHwButton button)
     {
-        return (HUIMainDisplay) this.getTextDisplay (1);
+        this.huiButtons.put (huiControl, button);
     }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isGridNote (final int note)
-    {
-        return false;
-    }
 }

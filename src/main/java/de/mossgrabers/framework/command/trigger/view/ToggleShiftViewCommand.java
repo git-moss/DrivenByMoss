@@ -37,7 +37,7 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event == ButtonEvent.LONG)
             return;

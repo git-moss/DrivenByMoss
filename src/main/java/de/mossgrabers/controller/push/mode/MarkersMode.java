@@ -6,10 +6,12 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IMarkerBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.data.IMarker;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -35,6 +37,8 @@ public class MarkersMode extends BaseMode
         "Launch",
     };
 
+    private final IMarkerBank      markerBank;
+    private final boolean          canEditMarkers;
     private boolean                actionModeLaunch = true;
 
 
@@ -47,6 +51,9 @@ public class MarkersMode extends BaseMode
     public MarkersMode (final PushControlSurface surface, final IModel model)
     {
         super ("Marker", surface, model);
+
+        this.canEditMarkers = model.getHost ().canEdit (EditCapability.MARKERS);
+        this.markerBank = model.getMarkerBank ();
     }
 
 
@@ -57,7 +64,7 @@ public class MarkersMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        final IMarker marker = this.model.getMarkerBank ().getItem (index);
+        final IMarker marker = this.markerBank.getItem (index);
         if (!marker.doesExist ())
             return;
 
@@ -75,19 +82,17 @@ public class MarkersMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        final boolean canEditMarkers = this.model.getHost ().canEditMarkers ();
-
         switch (index)
         {
             case 0:
-                this.model.getMarkerBank ().addMarker ();
+                this.markerBank.addMarker ();
                 break;
             case 6:
-                if (canEditMarkers)
+                if (this.canEditMarkers)
                     this.actionModeLaunch = false;
                 break;
             case 7:
-                if (canEditMarkers)
+                if (this.canEditMarkers)
                     this.actionModeLaunch = true;
                 break;
             default:
@@ -101,25 +106,22 @@ public class MarkersMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final boolean canEditMarkers = this.model.getHost ().canEditMarkers ();
-        final IMarkerBank markerBank = this.model.getMarkerBank ();
-
         display.setCell (2, 0, "Markers:");
 
         for (int i = 0; i < 8; i++)
         {
-            if (canEditMarkers)
+            if (this.canEditMarkers)
             {
                 final boolean isMenuTopSelected = i == 6 && !this.actionModeLaunch || i == 7 && this.actionModeLaunch;
                 display.setCell (0, i, (isMenuTopSelected ? Push1Display.SELECT_ARROW : "") + EDIT_MENU[i]);
             }
 
-            final IMarker marker = markerBank.getItem (i);
+            final IMarker marker = this.markerBank.getItem (i);
             if (marker.doesExist ())
                 display.setCell (3, i, StringUtils.shortenAndFixASCII (marker.getName (), 8));
         }
 
-        if (canEditMarkers)
+        if (this.canEditMarkers)
             display.setCell (0, 5, "Action:");
     }
 
@@ -128,14 +130,12 @@ public class MarkersMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final boolean canEditMarkers = this.model.getHost ().canEditMarkers ();
-        final IMarkerBank markerBank = this.model.getMarkerBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IMarker marker = markerBank.getItem (i);
-            final String menuTopName = canEditMarkers ? EDIT_MENU[i] : "";
+            final IMarker marker = this.markerBank.getItem (i);
+            final String menuTopName = this.canEditMarkers ? EDIT_MENU[i] : "";
             final String headerBottomName = i == 0 ? "Markers" : "";
-            final String headerTopName = canEditMarkers && i == 6 ? "Action" : "";
+            final String headerTopName = this.canEditMarkers && i == 6 ? "Action" : "";
             final boolean isMenuTopSelected = i == 6 && !this.actionModeLaunch || i == 7 && this.actionModeLaunch;
             display.addOptionElement (headerTopName, menuTopName, isMenuTopSelected, null, headerBottomName, marker.doesExist () ? marker.getName (12) : "", false, marker.getColor (), false);
         }
@@ -144,21 +144,17 @@ public class MarkersMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        final IMarkerBank markerBank = this.model.getMarkerBank ();
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (20 + i, markerBank.getItem (i).doesExist () ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR_OFF);
-    }
+        int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
+            return this.markerBank.getItem (index).doesExist () ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR_OFF;
 
+        index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+            return this.canEditMarkers && !EDIT_MENU[index].isEmpty () ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF;
 
-    /** {@inheritDoc} */
-    @Override
-    public void updateSecondRow ()
-    {
-        final boolean canEditMarkers = this.model.getHost ().canEditMarkers ();
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (102 + i, canEditMarkers && !EDIT_MENU[i].isEmpty () ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF);
+        return AbstractMode.BUTTON_COLOR_OFF;
     }
 
 
@@ -166,6 +162,6 @@ public class MarkersMode extends BaseMode
     @Override
     protected IMarkerBank getBank ()
     {
-        return this.model.getMarkerBank ();
+        return this.markerBank;
     }
 }

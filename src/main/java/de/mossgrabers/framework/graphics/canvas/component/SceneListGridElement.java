@@ -64,7 +64,7 @@ public class SceneListGridElement implements IComponent
             final double itemTop = i * itemHeight;
 
             final IScene scene = this.scenes.get (i);
-            final ColorEx backgroundColor = new ColorEx (scene.getColor ());
+            final ColorEx backgroundColor = scene.getColor ();
             gc.fillRectangle (itemLeft, itemTop + separatorSize, itemWidth, itemHeight - 2 * separatorSize, backgroundColor);
             if (scene.doesExist ())
                 gc.drawTextInBounds (scene.getName (), itemLeft + inset, itemTop - 1, itemWidth - 2 * inset, itemHeight, Align.LEFT, ColorEx.calcContrastColor (backgroundColor), itemHeight / 2);

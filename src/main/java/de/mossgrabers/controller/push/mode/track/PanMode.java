@@ -51,7 +51,7 @@ public class PanMode extends AbstractTrackMode
         final ITrack t = this.model.getCurrentTrackBank ().getItem (index);
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             t.resetPan ();
         }
 

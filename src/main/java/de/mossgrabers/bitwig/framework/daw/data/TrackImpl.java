@@ -6,13 +6,15 @@ package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
 import de.mossgrabers.bitwig.framework.daw.SlotBankImpl;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.NoteObserver;
 
+import com.bitwig.extension.controller.api.BooleanValue;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.PlayingNote;
 import com.bitwig.extension.controller.api.Track;
@@ -35,6 +37,8 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     protected final Track           track;
 
+    private final BooleanValue      isTopGroup;
+    private final ApplicationImpl   application;
     private final ISlotBank         slotBank;
     private final int []            noteCache     = new int [128];
     private final Set<NoteObserver> noteObservers = new HashSet<> ();
@@ -71,6 +75,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         this.host = host;
         this.cursorTrack = cursorTrack;
         this.track = track;
+        this.application = application;
 
         track.trackType ().markInterested ();
         track.position ().markInterested ();
@@ -84,6 +89,9 @@ public class TrackImpl extends ChannelImpl implements ITrack
         track.isStopped ().markInterested ();
         track.playingNotes ().addValueObserver (this::handleNotes);
 
+        this.isTopGroup = track.createParentTrack (0, 0).createEqualsValue (rootGroup);
+        this.isTopGroup.markInterested ();
+
         this.slotBank = new SlotBankImpl (host, valueChanger, this, track.clipLauncherSlotBank (), numScenes);
 
         Arrays.fill (this.noteCache, NOTE_OFF);
@@ -96,17 +104,17 @@ public class TrackImpl extends ChannelImpl implements ITrack
     {
         super.enableObservers (enable);
 
-        this.track.trackType ().setIsSubscribed (enable);
-        this.track.position ().setIsSubscribed (enable);
-        this.track.isGroup ().setIsSubscribed (enable);
-        this.track.arm ().setIsSubscribed (enable);
-        this.track.monitor ().setIsSubscribed (enable);
-        this.track.autoMonitor ().setIsSubscribed (enable);
-        this.track.crossFadeMode ().setIsSubscribed (enable);
-        this.track.canHoldNoteData ().setIsSubscribed (enable);
-        this.track.canHoldAudioData ().setIsSubscribed (enable);
-        this.track.isStopped ().setIsSubscribed (enable);
-        this.track.playingNotes ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.track.trackType (), enable);
+        Util.setIsSubscribed (this.track.position (), enable);
+        Util.setIsSubscribed (this.track.isGroup (), enable);
+        Util.setIsSubscribed (this.track.arm (), enable);
+        Util.setIsSubscribed (this.track.monitor (), enable);
+        Util.setIsSubscribed (this.track.autoMonitor (), enable);
+        Util.setIsSubscribed (this.track.crossFadeMode (), enable);
+        Util.setIsSubscribed (this.track.canHoldNoteData (), enable);
+        Util.setIsSubscribed (this.track.canHoldAudioData (), enable);
+        Util.setIsSubscribed (this.track.isStopped (), enable);
+        Util.setIsSubscribed (this.track.playingNotes (), enable);
 
         this.slotBank.enableObservers (enable);
     }
@@ -163,7 +171,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public boolean hasParent ()
     {
-        return true;
+        return !this.isTopGroup.get ();
     }
 
 
@@ -355,6 +363,46 @@ public class TrackImpl extends ChannelImpl implements ITrack
     public ISlotBank getSlotBank ()
     {
         return this.slotBank;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void createClip (final int slotIndex, final int lengthInBeats)
+    {
+        this.track.createNewLauncherClip (slotIndex, lengthInBeats);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isRecordQuantizationNoteLength ()
+    {
+        return this.application.isRecordQuantizationNoteLength ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleRecordQuantizationNoteLength ()
+    {
+        this.application.toggleRecordQuantizationNoteLength ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public RecordQuantization getRecordQuantizationGrid ()
+    {
+        return this.application.getRecordQuantizationGrid ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setRecordQuantizationGrid (final RecordQuantization recordQuantization)
+    {
+        this.application.setRecordQuantizationGrid (recordQuantization);
     }
 
 

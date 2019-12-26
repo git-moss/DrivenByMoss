@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -46,12 +47,17 @@ public class InfoMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateSecondRow ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        this.surface.updateTrigger (102, AbstractMode.BUTTON_COLOR_ON);
-        this.surface.updateTrigger (103, AbstractMode.BUTTON_COLOR_HI);
-        for (int i = 2; i < 8; i++)
-            this.surface.updateTrigger (102 + i, AbstractMode.BUTTON_COLOR_OFF);
+        final int index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            if (index == 0)
+                return AbstractMode.BUTTON_COLOR_ON;
+            if (index == 1)
+                return AbstractMode.BUTTON_COLOR_HI;
+        }
+        return AbstractMode.BUTTON_COLOR_OFF;
     }
 
 
@@ -69,11 +75,11 @@ public class InfoMode extends BaseMode
     {
         display.addOptionElement ("  Firmware: " + this.surface.getMajorVersion () + "." + this.surface.getMinorVersion () + " Build " + this.surface.getBuildNumber (), "Setup", false, "", "", false, true);
         display.addOptionElement ("", "Info", true, "", "", false, true);
-        display.addEmptyElement ();
-        display.addOptionElement ("Board Revision: " + this.surface.getBoardRevision (), "", false, "", "", false, false);
-        display.addEmptyElement ();
-        display.addOptionElement ("        Serial Number: " + this.surface.getSerialNumber (), "", false, "", "", false, false);
-        display.addEmptyElement ();
-        display.addEmptyElement ();
+        display.addEmptyElement (true);
+        display.addOptionElement ("Board Revision: " + this.surface.getBoardRevision (), " ", false, "", "", false, true);
+        display.addEmptyElement (true);
+        display.addOptionElement ("        Serial Number: " + this.surface.getSerialNumber (), " ", false, "", "", false, true);
+        display.addEmptyElement (true);
+        display.addEmptyElement (true);
     }
 }

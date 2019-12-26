@@ -78,7 +78,7 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
             case DOWN:
                 if (viewManager.isActiveView (view))
                 {
-                    viewManager.restoreView ();
+                    this.surface.getViewManager ().setActiveView (Views.SESSION);
                     return;
                 }
                 this.temporaryView = false;

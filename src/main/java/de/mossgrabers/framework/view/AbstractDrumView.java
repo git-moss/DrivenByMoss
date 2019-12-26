@@ -7,12 +7,13 @@ package de.mossgrabers.framework.view;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -123,7 +124,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             if (this.isActive () && velocity != 0)
             {
                 final int col = GRID_COLUMNS * (this.allLines - 1 - y) + x;
-                clip.toggleStep (col, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                clip.toggleStep (this.surface.getConfiguration ().getMidiEditChannel (), col, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
             }
             return;
         }
@@ -189,7 +190,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     @Override
     public void drawGrid ()
     {
-        final PadGrid padGrid = this.surface.getPadGrid ();
+        final IPadGrid padGrid = this.surface.getPadGrid ();
         if (!this.model.canSelectedTrackHoldNotes ())
         {
             padGrid.turnOff ();
@@ -222,7 +223,8 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             }
         }
 
-        this.drawSequencer ();
+        if (this.sequencerLines > 0)
+            this.drawSequencer ();
     }
 
 
@@ -249,7 +251,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected String getPadContentColor (final IChannel drumPad)
     {
-        return DAWColors.getColorIndex (drumPad.getColor ());
+        return DAWColor.getColorIndex (drumPad.getColor ());
     }
 
 
@@ -258,10 +260,10 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         switch (isSet)
         {
             // Note continues
-            case INoteClip.NOTE_CONTINUE:
+            case IStepInfo.NOTE_CONTINUE:
                 return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT_CONT;
             // Note starts
-            case INoteClip.NOTE_START:
+            case IStepInfo.NOTE_START:
                 return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT;
             // Empty
             default:
@@ -291,6 +293,22 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     public void onOctaveUp (final ButtonEvent event)
     {
         this.changeOctave (event, true, this.surface.isShiftPressed () ? 4 : this.scales.getDrumDefaultOffset ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isOctaveUpButtonOn ()
+    {
+        return this.scales.canScrollDrumOctaveUp ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isOctaveDownButtonOn ()
+    {
+        return this.scales.canScrollDrumOctaveDown ();
     }
 
 
@@ -361,15 +379,16 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected void handleDeleteButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+        this.surface.setTriggerConsumed (ButtonID.DELETE);
         this.updateNoteMapping ();
-        this.getClip ().clearRow (this.scales.getDrumOffset () + playedPad);
+        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        this.getClip ().clearRow (editMidiChannel, this.scales.getDrumOffset () + playedPad);
     }
 
 
     protected void handleMuteButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.MUTE));
+        this.surface.setTriggerConsumed (ButtonID.MUTE);
         this.updateNoteMapping ();
         this.model.getInstrumentDevice ().getDrumPadBank ().getItem (playedPad).toggleMute ();
     }
@@ -377,7 +396,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected void handleSoloButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.SOLO));
+        this.surface.setTriggerConsumed (ButtonID.SOLO);
         this.updateNoteMapping ();
         this.model.getInstrumentDevice ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
     }
@@ -399,16 +418,16 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         if (!this.model.canSelectedTrackHoldNotes ())
             return false;
 
-        if (this.surface.isSelectPressed () && !this.surface.isTriggerConsumed (this.surface.getTriggerId (ButtonID.SELECT)))
+        if (this.surface.isSelectPressed () && !this.surface.isTriggerConsumed (ButtonID.SELECT))
             return false;
 
-        if (this.surface.isDeletePressed () && !this.surface.isTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE)))
+        if (this.surface.isDeletePressed () && !this.surface.isTriggerConsumed (ButtonID.DELETE))
             return false;
 
-        if (this.surface.isMutePressed () && !this.surface.isTriggerConsumed (this.surface.getTriggerId (ButtonID.MUTE)))
+        if (this.surface.isMutePressed () && !this.surface.isTriggerConsumed (ButtonID.MUTE))
             return false;
 
-        return !this.surface.isSoloPressed () || this.surface.isTriggerConsumed (this.surface.getTriggerId (ButtonID.SOLO));
+        return !this.surface.isSoloPressed () || this.surface.isTriggerConsumed (ButtonID.SOLO);
     }
 
 
@@ -431,7 +450,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final int currentPage = step / this.sequencerSteps;
 
         final int numOfPages = this.halfColumns * this.playLines;
-        final PadGrid padGrid = this.surface.getPadGrid ();
+        final IPadGrid padGrid = this.surface.getPadGrid ();
         for (int pad = 0; pad < numOfPages; pad++)
         {
             final int x = this.halfColumns + pad % this.halfColumns;
@@ -441,9 +460,10 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
         // Paint the sequencer steps
         final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
+        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
         for (int col = 0; col < this.sequencerSteps; col++)
         {
-            final int isSet = clip.getStep (col, this.scales.getDrumOffset () + this.selectedPad);
+            final int isSet = clip.getStep (editMidiChannel, col, this.scales.getDrumOffset () + this.selectedPad).getState ();
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;

@@ -14,11 +14,10 @@ public interface PitchbendCommand
     /**
      * Execute the pitchbend command.
      *
-     * @param channel The midi channel
      * @param data1 The first pitchbend byte
      * @param data2 The second pitchbend byte
      */
-    void onPitchbend (final int channel, final int data1, int data2);
+    void onPitchbend (final int data1, int data2);
 
 
     /**

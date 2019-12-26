@@ -27,6 +27,6 @@ public class DummyControlSurface<C extends Configuration> extends AbstractContro
      */
     public DummyControlSurface (final IHost host, final ColorManager colorManager, final C configuration)
     {
-        super (host, configuration, colorManager, null, null, null);
+        super (host, configuration, colorManager, null, null, null, 10, 10);
     }
 }

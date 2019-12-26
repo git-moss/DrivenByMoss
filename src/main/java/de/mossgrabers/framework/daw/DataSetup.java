@@ -4,8 +4,8 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 
 
 /**

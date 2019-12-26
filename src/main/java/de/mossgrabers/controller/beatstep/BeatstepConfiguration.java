@@ -6,7 +6,7 @@ package de.mossgrabers.controller.beatstep;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 
 
@@ -17,31 +17,15 @@ import de.mossgrabers.framework.daw.IHost;
  */
 public class BeatstepConfiguration extends AbstractConfiguration
 {
-    private final boolean isPro;
-
-
     /**
      * Constructor.
      *
      * @param host The DAW host
      * @param valueChanger The value changer
-     * @param isPro Is Pro or MkII?
      */
-    public BeatstepConfiguration (final IHost host, final IValueChanger valueChanger, final boolean isPro)
+    public BeatstepConfiguration (final IHost host, final IValueChanger valueChanger)
     {
         super (host, valueChanger);
-        this.isPro = isPro;
-    }
-
-
-    /**
-     * Is it Beatstep Pro?
-     *
-     * @return True if Pro
-     */
-    public boolean isPro ()
-    {
-        return this.isPro;
     }
 
 

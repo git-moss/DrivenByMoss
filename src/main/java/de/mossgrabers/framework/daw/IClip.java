@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.daw;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.observer.ObserverManagement;
 
 
@@ -27,17 +28,15 @@ public interface IClip extends ObserverManagement
      *
      * @return The color
      */
-    double [] getColor ();
+    ColorEx getColor ();
 
 
     /**
      * Set the color of the clip.
      *
-     * @param red The red
-     * @param green The green
-     * @param blue The blue
+     * @param color The color
      */
-    void setColor (double red, double green, double blue);
+    void setColor (ColorEx color);
 
 
     /**

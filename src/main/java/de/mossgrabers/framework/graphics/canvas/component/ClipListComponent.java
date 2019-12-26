@@ -78,7 +78,7 @@ public class ClipListComponent implements IComponent
             final double boxTop = itemTop + (itemHeight - fontHeight) / 2;
 
             // Draw the background
-            final ColorEx clipBackgroundColor = new ColorEx (slot.getColor ());
+            final ColorEx clipBackgroundColor = slot.getColor ();
             if (track.isGroup ())
             {
                 if (name.isEmpty ())

@@ -4,7 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -52,7 +52,7 @@ public class LayerImpl extends ChannelImpl implements ILayer
     {
         super.enableObservers (enable);
 
-        this.firstItem.exists ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.firstItem.exists (), enable);
     }
 
 

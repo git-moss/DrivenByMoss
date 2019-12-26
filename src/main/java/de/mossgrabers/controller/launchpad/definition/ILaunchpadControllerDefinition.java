@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.grid.PadInfo;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 import java.util.List;
@@ -108,5 +108,5 @@ public interface ILaunchpadControllerDefinition
      * @param padInfos The info how to update the pads
      * @return The sysex string
      */
-    List<String> buildLEDUpdate (Map<Integer, PadInfo> padInfos);
+    List<String> buildLEDUpdate (Map<Integer, LightInfo> padInfos);
 }

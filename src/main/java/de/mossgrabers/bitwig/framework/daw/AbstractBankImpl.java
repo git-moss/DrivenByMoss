@@ -4,7 +4,8 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.bitwig.framework.daw.data.Util;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.AbstractBank;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IItem;
@@ -71,10 +72,10 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
         if (this.bank == null)
             return;
 
-        this.bank.scrollPosition ().setIsSubscribed (enable);
-        this.bank.canScrollBackwards ().setIsSubscribed (enable);
-        this.bank.canScrollForwards ().setIsSubscribed (enable);
-        this.bank.itemCount ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.bank.scrollPosition (), enable);
+        Util.setIsSubscribed (this.bank.canScrollBackwards (), enable);
+        Util.setIsSubscribed (this.bank.canScrollForwards (), enable);
+        Util.setIsSubscribed (this.bank.itemCount (), enable);
     }
 
 

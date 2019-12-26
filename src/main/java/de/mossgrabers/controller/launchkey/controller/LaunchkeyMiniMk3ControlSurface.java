@@ -9,11 +9,14 @@ import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -26,40 +29,45 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
 {
     // Buttons & Knobs
 
-    public static final int         LAUNCHKEY_KNOB_1 = 0x15;
-    public static final int         LAUNCHKEY_KNOB_2 = 0x16;
-    public static final int         LAUNCHKEY_KNOB_3 = 0x17;
-    public static final int         LAUNCHKEY_KNOB_4 = 0x18;
-    public static final int         LAUNCHKEY_KNOB_5 = 0x19;
-    public static final int         LAUNCHKEY_KNOB_6 = 0x1A;
-    public static final int         LAUNCHKEY_KNOB_7 = 0x1B;
-    public static final int         LAUNCHKEY_KNOB_8 = 0x1C;
+    public static final int         LAUNCHKEY_VIEW_SELECT = 0x03;
+    public static final int         LAUNCHKEY_MODE_SELECT = 0x09;
+    public static final int         LAUNCHKEY_DAW_ONLINE  = 0x0C;
 
-    public static final int         LAUNCHKEY_RIGHT  = 0x66;
-    public static final int         LAUNCHKEY_LEFT   = 0x67;
+    public static final int         LAUNCHKEY_KNOB_1      = 0x15;
+    public static final int         LAUNCHKEY_KNOB_2      = 0x16;
+    public static final int         LAUNCHKEY_KNOB_3      = 0x17;
+    public static final int         LAUNCHKEY_KNOB_4      = 0x18;
+    public static final int         LAUNCHKEY_KNOB_5      = 0x19;
+    public static final int         LAUNCHKEY_KNOB_6      = 0x1A;
+    public static final int         LAUNCHKEY_KNOB_7      = 0x1B;
+    public static final int         LAUNCHKEY_KNOB_8      = 0x1C;
 
-    public static final int         LAUNCHKEY_SCENE1 = 0x68;
-    public static final int         LAUNCHKEY_SCENE2 = 0x69;
+    public static final int         LAUNCHKEY_RIGHT       = 0x66;
+    public static final int         LAUNCHKEY_LEFT        = 0x67;
 
-    public static final int         LAUNCHKEY_SHIFT  = 0x6C;
-    public static final int         LAUNCHKEY_PLAY   = 0x73;
-    public static final int         LAUNCHKEY_RECORD = 0x75;
+    public static final int         LAUNCHKEY_SCENE1      = 0x68;
+    public static final int         LAUNCHKEY_SCENE2      = 0x69;
+
+    public static final int         LAUNCHKEY_SHIFT       = 0x6C;
+    public static final int         LAUNCHKEY_PLAY        = 0x73;
+    public static final int         LAUNCHKEY_RECORD      = 0x75;
 
     // Knob Modes
-    public static final int         KNOB_MODE_CUSTOM = 0;
-    public static final int         KNOB_MODE_VOLUME = 1;
-    public static final int         KNOB_MODE_PARAMS = 2;
-    public static final int         KNOB_MODE_PAN    = 3;
-    public static final int         KNOB_MODE_SEND1  = 4;
-    public static final int         KNOB_MODE_SEND2  = 5;
+    public static final int         KNOB_MODE_CUSTOM      = 0;
+    public static final int         KNOB_MODE_VOLUME      = 1;
+    public static final int         KNOB_MODE_PARAMS      = 2;
+    public static final int         KNOB_MODE_PAN         = 3;
+    public static final int         KNOB_MODE_SEND1       = 4;
+    public static final int         KNOB_MODE_SEND2       = 5;
 
     // Pad Modes
-    public static final int         PAD_MODE_CUSTOM  = 0;
-    public static final int         PAD_MODE_DRUM    = 1;
-    public static final int         PAD_MODE_SESSION = 2;
+    public static final int         PAD_MODE_CUSTOM       = 0;
+    public static final int         PAD_MODE_DRUM         = 1;
+    public static final int         PAD_MODE_SESSION      = 2;
 
     private final ContinuousCommand pageAdjuster;
-    private int                     lastPrgChange    = -1;
+    private int                     lastPrgChange         = -1;
+    private boolean                 isDAWConnected        = false;
 
 
     /**
@@ -74,11 +82,22 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
      */
     public LaunchkeyMiniMk3ControlSurface (final IHost host, final ColorManager colorManager, final LaunchkeyMiniMk3Configuration configuration, final IMidiOutput output, final IMidiInput input, final IMidiInput inputKeys, final ContinuousCommand pageAdjuster)
     {
-        super (host, configuration, colorManager, output, input, new LaunchkeyPadGrid (colorManager, output));
+        super (host, configuration, colorManager, output, input, new LaunchkeyPadGrid (colorManager, output), 800, 600);
+
+        final int size = this.pads.getRows () * this.pads.getCols ();
+        for (int i = 0; i < size; i++)
+        {
+            final int note = this.pads.getStartNote () + i;
+
+            final ButtonID buttonID = ButtonID.get (ButtonID.PAD17, i);
+            final IHwButton pad = this.createButton (buttonID, "D " + (i + 1));
+            pad.addLight (this.surfaceFactory.createLight (this.surfaceID, null, () -> this.pads.getLightInfo (note).getEncoded (), state -> this.pads.sendState (note), colorIndex -> this.colorManager.getColor (colorIndex, buttonID), null));
+            final int [] translated = LaunchkeyPadGrid.translateToController (Views.DRUM, note);
+            pad.bind (input, BindType.NOTE, translated[0], translated[1]);
+            pad.bind ( (event, velocity) -> this.handleGridNote (event, note, velocity));
+        }
 
         this.pageAdjuster = pageAdjuster;
-
-        this.setTriggerId (ButtonID.SHIFT, LAUNCHKEY_SHIFT);
 
         this.input.setSysexCallback (this::handleSysEx);
         this.output.sendSysex (DeviceInquiry.createQuery ());
@@ -94,17 +113,15 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
     @Override
     public boolean isShiftPressed ()
     {
-        return super.isShiftPressed () && !this.isPressed (0x0F, LAUNCHKEY_LEFT) && !this.isPressed (0x0F, LAUNCHKEY_RIGHT);
+        return super.isShiftPressed () && !this.isPressed (ButtonID.MOVE_TRACK_LEFT) && !this.isPressed (ButtonID.MOVE_TRACK_RIGHT);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void shutdown ()
+    protected void internalShutdown ()
     {
         this.setLaunchpadToDAW (false);
-
-        super.shutdown ();
     }
 
 
@@ -166,6 +183,28 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
     public void setPadMode (final int padMode)
     {
         this.output.sendCCEx (0x0F, 0x03, padMode);
+    }
+
+
+    /**
+     * True if the DAW is online.
+     *
+     * @return True if the DAW is online.
+     */
+    public boolean isDAWConnected ()
+    {
+        return this.isDAWConnected;
+    }
+
+
+    /**
+     * Set if the DAW is online.
+     *
+     * @param isDAWConnected True to set the online state
+     */
+    public void setDAWConnected (final boolean isDAWConnected)
+    {
+        this.isDAWConnected = isDAWConnected;
     }
 
 

@@ -200,4 +200,23 @@ public class Kontrol1Display extends AbstractTextDisplay
             this.forceFlush ();
         }, AbstractTextDisplay.NOTIFICATION_TIME);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected String convertCharacterset (final String text)
+    {
+        final StringBuilder sb = new StringBuilder (text.length ());
+        int beginIndex = 0;
+        int endIndex = 8;
+        for (int i = 0; i < 9; i++)
+        {
+            sb.append (text.substring (beginIndex, endIndex));
+            beginIndex += 8;
+            endIndex += 8;
+            if (i != 8)
+                sb.append (' ');
+        }
+        return sb.toString ();
+    }
 }

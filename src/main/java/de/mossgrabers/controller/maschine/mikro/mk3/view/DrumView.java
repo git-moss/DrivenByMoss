@@ -32,14 +32,6 @@ public class DrumView extends AbstractDrumView<MaschineMikroMk3ControlSurface, M
 
     /** {@inheritDoc} */
     @Override
-    public void drawGrid ()
-    {
-        // LEDs cannot be controlled
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onButton (final int index, final ButtonEvent event)
     {
         if (event != ButtonEvent.DOWN)
@@ -66,14 +58,6 @@ public class DrumView extends AbstractDrumView<MaschineMikroMk3ControlSurface, M
                 // Not used
                 break;
         }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSceneButtons ()
-    {
-        // Not used
     }
 
 

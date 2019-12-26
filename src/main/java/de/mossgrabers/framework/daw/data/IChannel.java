@@ -4,8 +4,10 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.observer.IValueObserver;
 
 
 /**
@@ -192,17 +194,15 @@ public interface IChannel extends IItem
      *
      * @return The color in RGB
      */
-    double [] getColor ();
+    ColorEx getColor ();
 
 
     /**
      * Set the color of the channel as a RGB value.
      *
-     * @param red The red part of the color
-     * @param green The green part of the color
-     * @param blue The blue part of the color
+     * @param color The color
      */
-    void setColor (double red, double green, double blue);
+    void setColor (ColorEx color);
 
 
     /**
@@ -297,4 +297,12 @@ public interface IChannel extends IItem
      * Enter sub-channels of the channel, if any.
      */
     void enter ();
+
+
+    /**
+     * Add an observer for the color.
+     *
+     * @param observer The observer to notify on a color change
+     */
+    void addColorObserver (IValueObserver<ColorEx> observer);
 }

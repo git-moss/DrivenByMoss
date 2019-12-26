@@ -7,7 +7,7 @@ package de.mossgrabers.controller.push.mode;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -133,17 +133,30 @@ public class SessionViewSelectMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        final ColorManager colorManager = this.model.getColorManager ();
-        final ViewManager viewManager = this.surface.getViewManager ();
-        for (int i = 0; i < VIEWS.length; i++)
-            this.surface.updateTrigger (20 + i, colorManager.getColor (VIEWS[i] == null ? AbstractMode.BUTTON_COLOR_OFF : this.isSelected (viewManager, i) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+        final int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
+        {
+            if (index < VIEWS.length)
+            {
+                if (VIEWS[index] == null)
+                    return AbstractMode.BUTTON_COLOR_OFF;
+                final ViewManager viewManager = this.surface.getViewManager ();
+                return this.isSelected (viewManager, index) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON;
+            }
 
-        this.surface.updateTrigger (25, AbstractMode.BUTTON_COLOR_OFF);
-        this.surface.updateTrigger (26, AbstractMode.BUTTON_COLOR_ON);
-        final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.SESSION);
-        this.surface.updateTrigger (27, isOn ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+            if (index == 6)
+                return AbstractMode.BUTTON_COLOR_ON;
+            if (index == 7)
+            {
+                final boolean isOn = this.surface.getModeManager ().isActiveMode (Modes.SESSION);
+                return isOn ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON;
+            }
+            return AbstractMode.BUTTON_COLOR_OFF;
+        }
+
+        return AbstractMode.BUTTON_COLOR_OFF;
     }
 
 

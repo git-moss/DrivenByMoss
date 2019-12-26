@@ -6,7 +6,6 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -133,44 +132,6 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
     public void onSecondRow (final int index, final ButtonEvent event)
     {
         // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateFirstRow ()
-    {
-        this.disableFirstRow ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSecondRow ()
-    {
-        this.disableSecondRow ();
-    }
-
-
-    /**
-     * Turn off all buttons of the first row.
-     */
-    protected void disableFirstRow ()
-    {
-        final ColorManager colorManager = this.model.getColorManager ();
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (20 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
-    }
-
-
-    /**
-     * Turn off all buttons of the second row.
-     */
-    protected void disableSecondRow ()
-    {
-        final ColorManager colorManager = this.model.getColorManager ();
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (102 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
     }
 
 

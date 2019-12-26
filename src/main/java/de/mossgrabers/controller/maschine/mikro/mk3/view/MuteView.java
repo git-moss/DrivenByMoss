@@ -5,9 +5,14 @@
 package de.mossgrabers.controller.maschine.mikro.mk3.view;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
+import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ColorManager;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.AbstractMode;
 
 
 /**
@@ -44,5 +49,30 @@ public class MuteView extends BaseView
         }
 
         track.toggleMute ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void drawGrid ()
+    {
+        final IPadGrid padGrid = this.surface.getPadGrid ();
+
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        for (int i = 0; i < 16; i++)
+        {
+            final ITrack item = tb.getItem (i);
+            final int x = i % 4;
+            final int y = 3 - i / 4;
+            if (item.doesExist ())
+            {
+                if (item.isMute ())
+                    padGrid.lightEx (x, y, MaschineMikroMk3ColorManager.COLOR_GREY);
+                else
+                    padGrid.lightEx (x, y, DAWColor.getColorIndex (item.getColor ()));
+            }
+            else
+                padGrid.lightEx (x, y, AbstractMode.BUTTON_COLOR_OFF);
+        }
     }
 }

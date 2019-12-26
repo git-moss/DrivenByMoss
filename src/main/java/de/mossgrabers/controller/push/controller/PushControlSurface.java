@@ -6,16 +6,13 @@ package de.mossgrabers.controller.push.controller;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
-import de.mossgrabers.framework.daw.DAWColors;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
-import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -26,7 +23,7 @@ import de.mossgrabers.framework.view.View;
 public class PushControlSurface extends AbstractControlSurface<PushConfiguration>
 {
     /** The names for the dynamic curves. */
-    public static final String []    PUSH_PAD_CURVES_NAME          =
+    public static final String []  PUSH_PAD_CURVES_NAME          =
     {
         "Linear",
         "Log 1 (Default)",
@@ -37,7 +34,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     };
 
     /** The names for the pad thresholds. */
-    public static final String []    PUSH_PAD_THRESHOLDS_NAME      =
+    public static final String []  PUSH_PAD_THRESHOLDS_NAME      =
     {
         "-20",
         "-19",
@@ -83,218 +80,202 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     };
 
     /** The tap button. */
-    public static final int          PUSH_BUTTON_TAP               = 3;
+    public static final int        PUSH_BUTTON_TAP               = 3;
     /** The metronome button. */
-    public static final int          PUSH_BUTTON_METRONOME         = 9;
+    public static final int        PUSH_BUTTON_METRONOME         = 9;
     /** The small knob 1. */
-    public static final int          PUSH_SMALL_KNOB1              = 14;
+    public static final int        PUSH_SMALL_KNOB1              = 14;
     /** The small knob 2. */
-    public static final int          PUSH_SMALL_KNOB2              = 15;
+    public static final int        PUSH_SMALL_KNOB2              = 15;
     /** The button 1 in row 1. */
-    public static final int          PUSH_BUTTON_ROW1_1            = 20;
+    public static final int        PUSH_BUTTON_ROW1_1            = 20;
     /** The button 2 in row 1. */
-    public static final int          PUSH_BUTTON_ROW1_2            = 21;
+    public static final int        PUSH_BUTTON_ROW1_2            = 21;
     /** The button 3 in row 1. */
-    public static final int          PUSH_BUTTON_ROW1_3            = 22;
+    public static final int        PUSH_BUTTON_ROW1_3            = 22;
     /** The button 4 in row 1. */
-    public static final int          PUSH_BUTTON_ROW1_4            = 23;
+    public static final int        PUSH_BUTTON_ROW1_4            = 23;
     /** The button 5 in row 1. */
-    public static final int          PUSH_BUTTON_ROW1_5            = 24;
+    public static final int        PUSH_BUTTON_ROW1_5            = 24;
     /** The button 6 in row 1. */
-    public static final int          PUSH_BUTTON_ROW1_6            = 25;
+    public static final int        PUSH_BUTTON_ROW1_6            = 25;
     /** The button 7 in row 1. */
-    public static final int          PUSH_BUTTON_ROW1_7            = 26;
+    public static final int        PUSH_BUTTON_ROW1_7            = 26;
     /** The button 8 in row 1. */
-    public static final int          PUSH_BUTTON_ROW1_8            = 27;
+    public static final int        PUSH_BUTTON_ROW1_8            = 27;
     /** The master button. */
-    public static final int          PUSH_BUTTON_MASTER            = 28;
+    public static final int        PUSH_BUTTON_MASTER            = 28;
     /** The clip stop button. */
-    public static final int          PUSH_BUTTON_CLIP_STOP         = 29;
+    public static final int        PUSH_BUTTON_STOP_CLIP         = 29;
     /** The setup button - only Push 2. */
-    public static final int          PUSH_BUTTON_SETUP             = 30;
+    public static final int        PUSH_BUTTON_SETUP             = 30;
     /** The layout button - only Push 2. */
-    public static final int          PUSH_BUTTON_LAYOUT            = 31;
+    public static final int        PUSH_BUTTON_LAYOUT            = 31;
     /** The convert button - only Push 2. */
-    public static final int          PUSH_BUTTON_CONVERT           = 35;
+    public static final int        PUSH_BUTTON_CONVERT           = 35;
     /** The scene 1 button. */
-    public static final int          PUSH_BUTTON_SCENE1            = 36;                    // 1/4
+    public static final int        PUSH_BUTTON_SCENE1            = 36;                    // 1/4
     /** The scene 2 button. */
-    public static final int          PUSH_BUTTON_SCENE2            = 37;
+    public static final int        PUSH_BUTTON_SCENE2            = 37;
     /** The scene 3 button. */
-    public static final int          PUSH_BUTTON_SCENE3            = 38;
+    public static final int        PUSH_BUTTON_SCENE3            = 38;
     /** The scene 4 button. */
-    public static final int          PUSH_BUTTON_SCENE4            = 39;
+    public static final int        PUSH_BUTTON_SCENE4            = 39;
     /** The scene 5 button. */
-    public static final int          PUSH_BUTTON_SCENE5            = 40;                    // ...
+    public static final int        PUSH_BUTTON_SCENE5            = 40;                    // ...
     /** The scene 6 button. */
-    public static final int          PUSH_BUTTON_SCENE6            = 41;
+    public static final int        PUSH_BUTTON_SCENE6            = 41;
     /** The scene 7 button. */
-    public static final int          PUSH_BUTTON_SCENE7            = 42;
+    public static final int        PUSH_BUTTON_SCENE7            = 42;
     /** The scene 8 button. */
-    public static final int          PUSH_BUTTON_SCENE8            = 43;                    // 1/32T
+    public static final int        PUSH_BUTTON_SCENE8            = 43;                    // 1/32T
     /** The cursor left button. */
-    public static final int          PUSH_BUTTON_LEFT              = 44;
+    public static final int        PUSH_BUTTON_LEFT              = 44;
     /** The cursor right button. */
-    public static final int          PUSH_BUTTON_RIGHT             = 45;
+    public static final int        PUSH_BUTTON_RIGHT             = 45;
     /** The cursor up button. */
-    public static final int          PUSH_BUTTON_UP                = 46;
+    public static final int        PUSH_BUTTON_UP                = 46;
     /** The cursor down button. */
-    public static final int          PUSH_BUTTON_DOWN              = 47;
+    public static final int        PUSH_BUTTON_DOWN              = 47;
     /** The select button. */
-    public static final int          PUSH_BUTTON_SELECT            = 48;
+    public static final int        PUSH_BUTTON_SELECT            = 48;
     /** The shift button. */
-    public static final int          PUSH_BUTTON_SHIFT             = 49;
+    public static final int        PUSH_BUTTON_SHIFT             = 49;
     /** The note button. */
-    public static final int          PUSH_BUTTON_NOTE              = 50;
+    public static final int        PUSH_BUTTON_NOTE              = 50;
     /** The session button. */
-    public static final int          PUSH_BUTTON_SESSION           = 51;
+    public static final int        PUSH_BUTTON_SESSION           = 51;
     /** The add effect button. */
-    public static final int          PUSH_BUTTON_ADD_EFFECT        = 52;
+    public static final int        PUSH_BUTTON_ADD_EFFECT        = 52;
     /** The add track button. */
-    public static final int          PUSH_BUTTON_ADD_TRACK         = 53;
+    public static final int        PUSH_BUTTON_ADD_TRACK         = 53;
     /** The octave down button. */
-    public static final int          PUSH_BUTTON_OCTAVE_DOWN       = 54;
+    public static final int        PUSH_BUTTON_OCTAVE_DOWN       = 54;
     /** The octave up button. */
-    public static final int          PUSH_BUTTON_OCTAVE_UP         = 55;
+    public static final int        PUSH_BUTTON_OCTAVE_UP         = 55;
     /** The repeat button. */
-    public static final int          PUSH_BUTTON_REPEAT            = 56;
+    public static final int        PUSH_BUTTON_REPEAT            = 56;
     /** The accent button. */
-    public static final int          PUSH_BUTTON_ACCENT            = 57;
+    public static final int        PUSH_BUTTON_ACCENT            = 57;
     /** The scales button. */
-    public static final int          PUSH_BUTTON_SCALES            = 58;
+    public static final int        PUSH_BUTTON_SCALES            = 58;
     /** The user mode button. */
-    public static final int          PUSH_BUTTON_USER_MODE         = 59;
+    public static final int        PUSH_BUTTON_USER_MODE         = 59;
     /** The mute button. */
-    public static final int          PUSH_BUTTON_MUTE              = 60;
+    public static final int        PUSH_BUTTON_MUTE              = 60;
     /** The solo button. */
-    public static final int          PUSH_BUTTON_SOLO              = 61;
+    public static final int        PUSH_BUTTON_SOLO              = 61;
     /** The device left button. */
-    public static final int          PUSH_BUTTON_DEVICE_LEFT       = 62;
+    public static final int        PUSH_BUTTON_DEVICE_LEFT       = 62;
     /** The device right button. */
-    public static final int          PUSH_BUTTON_DEVICE_RIGHT      = 63;
+    public static final int        PUSH_BUTTON_DEVICE_RIGHT      = 63;
     /** The footswitch 1. */
-    public static final int          PUSH_FOOTSWITCH1              = 64;
+    public static final int        PUSH_FOOTSWITCH1              = 64;
     /** The footswitch 2. */
-    public static final int          PUSH_FOOTSWITCH2              = 69;
+    public static final int        PUSH_FOOTSWITCH2              = 69;
     /** The knob 1. */
-    public static final int          PUSH_KNOB1                    = 71;
+    public static final int        PUSH_KNOB1                    = 71;
     /** The knob 2. */
-    public static final int          PUSH_KNOB2                    = 72;
+    public static final int        PUSH_KNOB2                    = 72;
     /** The knob 3. */
-    public static final int          PUSH_KNOB3                    = 73;
+    public static final int        PUSH_KNOB3                    = 73;
     /** The knob 4. */
-    public static final int          PUSH_KNOB4                    = 74;
+    public static final int        PUSH_KNOB4                    = 74;
     /** The knob 5. */
-    public static final int          PUSH_KNOB5                    = 75;
+    public static final int        PUSH_KNOB5                    = 75;
     /** The knob 6. */
-    public static final int          PUSH_KNOB6                    = 76;
+    public static final int        PUSH_KNOB6                    = 76;
     /** The knob 7. */
-    public static final int          PUSH_KNOB7                    = 77;
+    public static final int        PUSH_KNOB7                    = 77;
     /** The knob 8. */
-    public static final int          PUSH_KNOB8                    = 78;
+    public static final int        PUSH_KNOB8                    = 78;
     /** The knob 9 - master knob. */
-    public static final int          PUSH_KNOB9                    = 79;
+    public static final int        PUSH_KNOB9                    = 79;
     /** The play button. */
-    public static final int          PUSH_BUTTON_PLAY              = 85;
+    public static final int        PUSH_BUTTON_PLAY              = 85;
     /** The record button. */
-    public static final int          PUSH_BUTTON_RECORD            = 86;
+    public static final int        PUSH_BUTTON_RECORD            = 86;
     /** The new button. */
-    public static final int          PUSH_BUTTON_NEW               = 87;
+    public static final int        PUSH_BUTTON_NEW               = 87;
     /** The duplicate button. */
-    public static final int          PUSH_BUTTON_DUPLICATE         = 88;
+    public static final int        PUSH_BUTTON_DUPLICATE         = 88;
     /** The automation button. */
-    public static final int          PUSH_BUTTON_AUTOMATION        = 89;
+    public static final int        PUSH_BUTTON_AUTOMATION        = 89;
     /** The fixed length button. */
-    public static final int          PUSH_BUTTON_FIXED_LENGTH      = 90;
+    public static final int        PUSH_BUTTON_FIXED_LENGTH      = 90;
     /** The second row button 1. */
-    public static final int          PUSH_BUTTON_ROW2_1            = 102;
+    public static final int        PUSH_BUTTON_ROW2_1            = 102;
     /** The second row button 2. */
-    public static final int          PUSH_BUTTON_ROW2_2            = 103;
+    public static final int        PUSH_BUTTON_ROW2_2            = 103;
     /** The second row button 3. */
-    public static final int          PUSH_BUTTON_ROW2_3            = 104;
+    public static final int        PUSH_BUTTON_ROW2_3            = 104;
     /** The second row button 4. */
-    public static final int          PUSH_BUTTON_ROW2_4            = 105;
+    public static final int        PUSH_BUTTON_ROW2_4            = 105;
     /** The second row button 5. */
-    public static final int          PUSH_BUTTON_ROW2_5            = 106;
+    public static final int        PUSH_BUTTON_ROW2_5            = 106;
     /** The second row button 6. */
-    public static final int          PUSH_BUTTON_ROW2_6            = 107;
+    public static final int        PUSH_BUTTON_ROW2_6            = 107;
     /** The second row button 7. */
-    public static final int          PUSH_BUTTON_ROW2_7            = 108;
+    public static final int        PUSH_BUTTON_ROW2_7            = 108;
     /** The second row button 8. */
-    public static final int          PUSH_BUTTON_ROW2_8            = 109;
+    public static final int        PUSH_BUTTON_ROW2_8            = 109;
     /** The device button. */
-    public static final int          PUSH_BUTTON_DEVICE            = 110;
+    public static final int        PUSH_BUTTON_DEVICE            = 110;
     /** The browse button. */
-    public static final int          PUSH_BUTTON_BROWSE            = 111;
+    public static final int        PUSH_BUTTON_BROWSE            = 111;
     /** The track / mix button. */
-    public static final int          PUSH_BUTTON_TRACK             = 112;
+    public static final int        PUSH_BUTTON_TRACK             = 112;
     /** The clip button. */
-    public static final int          PUSH_BUTTON_CLIP              = 113;
+    public static final int        PUSH_BUTTON_CLIP              = 113;
     /** The volume button - only Push 1. */
-    public static final int          PUSH_BUTTON_VOLUME            = 114;
+    public static final int        PUSH_BUTTON_VOLUME            = 114;
     /** The pan/send button - only Push 1. */
-    public static final int          PUSH_BUTTON_PAN_SEND          = 115;
+    public static final int        PUSH_BUTTON_PAN_SEND          = 115;
     /** The quantize button. */
-    public static final int          PUSH_BUTTON_QUANTIZE          = 116;
+    public static final int        PUSH_BUTTON_QUANTIZE          = 116;
     /** The double button. */
-    public static final int          PUSH_BUTTON_DOUBLE            = 117;
+    public static final int        PUSH_BUTTON_DOUBLE            = 117;
     /** The delete button. */
-    public static final int          PUSH_BUTTON_DELETE            = 118;
+    public static final int        PUSH_BUTTON_DELETE            = 118;
     /** The undo button. */
-    public static final int          PUSH_BUTTON_UNDO              = 119;
+    public static final int        PUSH_BUTTON_UNDO              = 119;
 
     /** The note sent when touching knob 1. */
-    public static final int          PUSH_KNOB1_TOUCH              = 0;
+    public static final int        PUSH_KNOB1_TOUCH              = 0;
     /** The note sent when touching knob 2. */
-    public static final int          PUSH_KNOB2_TOUCH              = 1;
+    public static final int        PUSH_KNOB2_TOUCH              = 1;
     /** The note sent when touching knob 3. */
-    public static final int          PUSH_KNOB3_TOUCH              = 2;
+    public static final int        PUSH_KNOB3_TOUCH              = 2;
     /** The note sent when touching knob 4. */
-    public static final int          PUSH_KNOB4_TOUCH              = 3;
+    public static final int        PUSH_KNOB4_TOUCH              = 3;
     /** The note sent when touching knob 5. */
-    public static final int          PUSH_KNOB5_TOUCH              = 4;
+    public static final int        PUSH_KNOB5_TOUCH              = 4;
     /** The note sent when touching knob 6. */
-    public static final int          PUSH_KNOB6_TOUCH              = 5;
+    public static final int        PUSH_KNOB6_TOUCH              = 5;
     /** The note sent when touching knob 7. */
-    public static final int          PUSH_KNOB7_TOUCH              = 6;
+    public static final int        PUSH_KNOB7_TOUCH              = 6;
     /** The note sent when touching knob 8. */
-    public static final int          PUSH_KNOB8_TOUCH              = 7;
+    public static final int        PUSH_KNOB8_TOUCH              = 7;
     /** The note sent when touching the master knob. */
-    public static final int          PUSH_KNOB9_TOUCH              = 8;
+    public static final int        PUSH_KNOB9_TOUCH              = 8;
     /** The note sent when touching the small knob 1. */
-    public static final int          PUSH_SMALL_KNOB1_TOUCH        = 10;
+    public static final int        PUSH_SMALL_KNOB1_TOUCH        = 10;
     /** The note sent when touching the small knob 2. */
-    public static final int          PUSH_SMALL_KNOB2_TOUCH        = 9;
-
-    private static final int []      PUSH_BUTTON_UPDATE            =
-    {
-        PUSH_BUTTON_TAP,
-        PUSH_BUTTON_SELECT,
-        PUSH_BUTTON_SHIFT,
-        PUSH_BUTTON_ADD_EFFECT,
-        PUSH_BUTTON_ADD_TRACK,
-        PUSH_BUTTON_NEW,
-        PUSH_BUTTON_DUPLICATE,
-        PUSH_BUTTON_QUANTIZE,
-        PUSH_BUTTON_DOUBLE,
-        PUSH_BUTTON_DELETE,
-        PUSH_BUTTON_UNDO,
-        PUSH_BUTTON_LAYOUT
-    };
+    public static final int        PUSH_SMALL_KNOB2_TOUCH        = 9;
 
     /** The midi note which is sent when touching the ribbon. */
-    public static final int          PUSH_RIBBON_TOUCH             = 12;
+    public static final int        PUSH_RIBBON_TOUCH             = 12;
 
     /** Configure Ribbon as pitchbend. */
-    public static final int          PUSH_RIBBON_PITCHBEND         = 0;
+    public static final int        PUSH_RIBBON_PITCHBEND         = 0;
     /** Configure Ribbon as volume slider. */
-    public static final int          PUSH_RIBBON_VOLUME            = 1;
+    public static final int        PUSH_RIBBON_VOLUME            = 1;
     /** Configure Ribbon as panorama. */
-    public static final int          PUSH_RIBBON_PAN               = 2;
+    public static final int        PUSH_RIBBON_PAN               = 2;
     /** Configure Ribbon discrete values. */
-    public static final int          PUSH_RIBBON_DISCRETE          = 3;
+    public static final int        PUSH_RIBBON_DISCRETE          = 3;
 
-    private static final String []   PUSH_PAD_CURVES_DATA          =
+    private static final String [] PUSH_PAD_CURVES_DATA          =
     {
         "00 00 00 01 08 06 0A 00 00 00 00 00 0A 0F 0C 08 00 00 00 00 00 00 00 00",
         "00 00 00 01 04 0C 00 08 00 00 00 01 0D 04 0C 00 00 00 00 00 0E 0A 06 00",
@@ -304,7 +285,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         "00 00 00 02 02 02 0E 00 00 00 00 01 0D 04 0C 00 00 00 00 00 00 00 00 00"
     };
 
-    private static final String []   PUSH_PAD_THRESHOLDS_DATA      =
+    private static final String [] PUSH_PAD_THRESHOLDS_DATA      =
     {
         // 4 Byte: peak_sampling_time, 4 Byte: aftertouch_gate_time
         "00 00 00 0A 00 00 00 0A",
@@ -350,7 +331,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         "00 01 07 02 00 01 09 0A"
     };
 
-    private static final int []      MAXW                          =
+    private static final int []    MAXW                          =
     {
         1700,
         1660,
@@ -364,7 +345,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         640,
         400
     };
-    private static final int []      PUSH2_CPMIN                   =
+    private static final int []    PUSH2_CPMIN                   =
     {
         1650,
         1580,
@@ -378,7 +359,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         800,
         700
     };
-    private static final int []      PUSH2_CPMAX                   =
+    private static final int []    PUSH2_CPMAX                   =
     {
         2050,
         1950,
@@ -392,7 +373,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         1240,
         1180
     };
-    private static final double []   GAMMA                         =
+    private static final double [] GAMMA                         =
     {
         0.7,
         0.64,
@@ -406,7 +387,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         0.32,
         0.25
     };
-    private static final int []      MINV                          =
+    private static final int []    MINV                          =
     {
         1,
         1,
@@ -420,7 +401,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         24,
         36
     };
-    private static final int []      MAXV                          =
+    private static final int []    MAXV                          =
     {
         96,
         102,
@@ -434,7 +415,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         127,
         127
     };
-    private static final int []      ALPHA                         =
+    private static final int []    ALPHA                         =
     {
         90,
         70,
@@ -449,655 +430,10 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         -90
     };
 
-    /** The default color palette (like fixed on Push 1) */
-    protected static final int [] [] DEFAULT_PALETTE               =
-    {
-        {
-            0x00,
-            0x00,
-            0x00
-        },
-        {
-            0x1E,
-            0x1E,
-            0x1E
-        },
-        {
-            0x7F,
-            0x7F,
-            0x7F
-        },
-        {
-            0xFF,
-            0xFF,
-            0xFF
-        },
-        {
-            0xFF,
-            0x4C,
-            0x4C
-        },
-        {
-            0xFF,
-            0x00,
-            0x00
-        },
-        {
-            0x59,
-            0x00,
-            0x00
-        },
-        {
-            0x19,
-            0x00,
-            0x00
-        },
-        {
-            0xFF,
-            0xBD,
-            0x6C
-        },
-        {
-            0xFF,
-            0x54,
-            0x00
-        },
-        {
-            0x59,
-            0x1D,
-            0x00
-        },
-        {
-            0x27,
-            0x1B,
-            0x00
-        },
-        {
-            0xFF,
-            0xFF,
-            0x4C
-        },
-        {
-            0xFF,
-            0xFF,
-            0x00
-        },
-        {
-            0x59,
-            0x59,
-            0x00
-        },
-        {
-            0x19,
-            0x19,
-            0x00
-        },
-        {
-            0x88,
-            0xFF,
-            0x4C
-        },
-        {
-            0x54,
-            0xFF,
-            0x00
-        },
-        {
-            0x1D,
-            0x59,
-            0x00
-        },
-        {
-            0x14,
-            0x2B,
-            0x00
-        },
-        {
-            0x4C,
-            0xFF,
-            0x4C
-        },
-        {
-            0x00,
-            0xFF,
-            0x00
-        },
-        {
-            0x00,
-            0x59,
-            0x00
-        },
-        {
-            0x00,
-            0x19,
-            0x00
-        },
-        {
-            0x4C,
-            0xFF,
-            0x5E
-        },
-        {
-            0x00,
-            0xFF,
-            0x19
-        },
-        {
-            0x00,
-            0x59,
-            0x0D
-        },
-        {
-            0x00,
-            0x19,
-            0x02
-        },
-        {
-            0x4C,
-            0xFF,
-            0x88
-        },
-        {
-            0x00,
-            0xFF,
-            0x55
-        },
-        {
-            0x00,
-            0x59,
-            0x1D
-        },
-        {
-            0x00,
-            0x1F,
-            0x12
-        },
-        {
-            0x4C,
-            0xFF,
-            0xB7
-        },
-        {
-            0x00,
-            0xFF,
-            0x99
-        },
-        {
-            0x00,
-            0x59,
-            0x35
-        },
-        {
-            0x00,
-            0x19,
-            0x12
-        },
-        {
-            0x4C,
-            0xC3,
-            0xFF
-        },
-        {
-            0x00,
-            0xA9,
-            0xFF
-        },
-        {
-            0x00,
-            0x41,
-            0x52
-        },
-        {
-            0x00,
-            0x10,
-            0x19
-        },
-        {
-            0x4C,
-            0x88,
-            0xFF
-        },
-        {
-            0x00,
-            0x55,
-            0xFF
-        },
-        {
-            0x00,
-            0x1D,
-            0x59
-        },
-        {
-            0x00,
-            0x08,
-            0x19
-        },
-        {
-            0x4C,
-            0x4C,
-            0xFF
-        },
-        {
-            0x00,
-            0x00,
-            0xFF
-        },
-        {
-            0x00,
-            0x00,
-            0x59
-        },
-        {
-            0x00,
-            0x00,
-            0x19
-        },
-        {
-            0x87,
-            0x4C,
-            0xFF
-        },
-        {
-            0x54,
-            0x00,
-            0xFF
-        },
-        {
-            0x19,
-            0x00,
-            0x64
-        },
-        {
-            0x0F,
-            0x00,
-            0x30
-        },
-        {
-            0xFF,
-            0x4C,
-            0xFF
-        },
-        {
-            0xFF,
-            0x00,
-            0xFF
-        },
-        {
-            0x59,
-            0x00,
-            0x59
-        },
-        {
-            0x19,
-            0x00,
-            0x19
-        },
-        {
-            0xFF,
-            0x4C,
-            0x87
-        },
-        {
-            0xFF,
-            0x00,
-            0x54
-        },
-        {
-            0x59,
-            0x00,
-            0x1D
-        },
-        {
-            0x22,
-            0x00,
-            0x13
-        },
-        {
-            0xFF,
-            0x15,
-            0x00
-        },
-        {
-            0x99,
-            0x35,
-            0x00
-        },
-        {
-            0x79,
-            0x51,
-            0x00
-        },
-        {
-            0x43,
-            0x64,
-            0x00
-        },
-        {
-            0x03,
-            0x39,
-            0x00
-        },
-        {
-            0x00,
-            0x57,
-            0x35
-        },
-        {
-            0x00,
-            0x54,
-            0x7F
-        },
-        {
-            0x00,
-            0x00,
-            0xFF
-        },
-        {
-            0x00,
-            0x45,
-            0x4F
-        },
-        {
-            0x25,
-            0x00,
-            0xCC
-        },
-        {
-            0x7F,
-            0x7F,
-            0x7F
-        },
-        {
-            0x20,
-            0x20,
-            0x20
-        },
-        {
-            0xFF,
-            0x00,
-            0x00
-        },
-        {
-            0xBD,
-            0xFF,
-            0x2D
-        },
-        {
-            0xAF,
-            0xED,
-            0x06
-        },
-        {
-            0x64,
-            0xFF,
-            0x09
-        },
-        {
-            0x10,
-            0x8B,
-            0x00
-        },
-        {
-            0x00,
-            0xFF,
-            0x87
-        },
-        {
-            0x00,
-            0xA9,
-            0xFF
-        },
-        {
-            0x00,
-            0x2A,
-            0xFF
-        },
-        {
-            0x3F,
-            0x00,
-            0xFF
-        },
-        {
-            0x7A,
-            0x00,
-            0xFF
-        },
-        {
-            0xB2,
-            0x1A,
-            0x7D
-        },
-        {
-            0x40,
-            0x21,
-            0x00
-        },
-        {
-            0xFF,
-            0x4A,
-            0x00
-        },
-        {
-            0x88,
-            0xE1,
-            0x06
-        },
-        {
-            0x72,
-            0xFF,
-            0x15
-        },
-        {
-            0x00,
-            0xFF,
-            0x00
-        },
-        {
-            0x3B,
-            0xFF,
-            0x26
-        },
-        {
-            0x59,
-            0xFF,
-            0x71
-        },
-        {
-            0x38,
-            0xFF,
-            0xCC
-        },
-        {
-            0x5B,
-            0x8A,
-            0xFF
-        },
-        {
-            0x31,
-            0x51,
-            0xC6
-        },
-        {
-            0x87,
-            0x7F,
-            0xE9
-        },
-        {
-            0xD3,
-            0x1D,
-            0xFF
-        },
-        {
-            0xFF,
-            0x00,
-            0x5D
-        },
-        {
-            0xFF,
-            0x7F,
-            0x00
-        },
-        {
-            0xB9,
-            0xB0,
-            0x00
-        },
-        {
-            0x90,
-            0xFF,
-            0x00
-        },
-        {
-            0x83,
-            0x5D,
-            0x07
-        },
-        {
-            0x39,
-            0x2B,
-            0x00
-        },
-        {
-            0x14,
-            0x4C,
-            0x10
-        },
-        {
-            0x0D,
-            0x50,
-            0x38
-        },
-        {
-            0x15,
-            0x15,
-            0x2A
-        },
-        {
-            0x16,
-            0x20,
-            0x5A
-        },
-        {
-            0x69,
-            0x3C,
-            0x1C
-        },
-        {
-            0xA8,
-            0x00,
-            0x0A
-        },
-        {
-            0xDE,
-            0x51,
-            0x3D
-        },
-        {
-            0xD8,
-            0x6A,
-            0x1C
-        },
-        {
-            0xFF,
-            0xE1,
-            0x26
-        },
-        {
-            0x9E,
-            0xE1,
-            0x2F
-        },
-        {
-            0x67,
-            0xB5,
-            0x0F
-        },
-        {
-            0x1E,
-            0x1E,
-            0x30
-        },
-        {
-            0xDC,
-            0xFF,
-            0x6B
-        },
-        {
-            0x80,
-            0xFF,
-            0xBD
-        },
-        {
-            0x9A,
-            0x99,
-            0xFF
-        },
-        {
-            0x8E,
-            0x66,
-            0xFF
-        },
-        {
-            0x40,
-            0x40,
-            0x40
-        },
-        {
-            0x75,
-            0x75,
-            0x75
-        },
-        {
-            0xE0,
-            0xFF,
-            0xFF
-        },
-        {
-            0xA0,
-            0x00,
-            0x00
-        },
-        {
-            0x35,
-            0x00,
-            0x00
-        },
-        {
-            0x1A,
-            0xD0,
-            0x00
-        },
-        {
-            0x07,
-            0x42,
-            0x00
-        },
-        {
-            0xB9,
-            0xB0,
-            0x00
-        },
-        {
-            0x3F,
-            0x31,
-            0x00
-        },
-        {
-            0xB3,
-            0x5F,
-            0x00
-        },
-        {
-            0x4B,
-            0x15,
-            0x02
-        }
-    };
+    private static final int       PAD_VELOCITY_CURVE_CHUNK_SIZE = 16;
+    private static final int       NUM_VELOCITY_CURVE_ENTRIES    = 128;
 
-    private static final int         PAD_VELOCITY_CURVE_CHUNK_SIZE = 16;
-    private static final int         NUM_VELOCITY_CURVE_ENTRIES    = 128;
-
-    private static final int []      SYSEX_HEADER                  =
+    private static final int []    SYSEX_HEADER                  =
     {
         0xF0,
         0x00,
@@ -1107,16 +443,16 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         0x01
     };
 
-    private final PaletteEntry []    colorPalette                  = new PaletteEntry [128];
+    private final PaletteEntry []  colorPalette                  = new PaletteEntry [128];
 
-    private int                      ribbonMode                    = -1;
-    private int                      ribbonValue                   = -1;
+    private int                    ribbonMode                    = -1;
+    private int                    ribbonValue                   = -1;
 
-    private int                      majorVersion                  = -1;
-    private int                      minorVersion                  = -1;
-    private int                      buildNumber                   = -1;
-    private int                      serialNumber                  = -1;
-    private int                      boardRevision                 = -1;
+    private int                    majorVersion                  = -1;
+    private int                    minorVersion                  = -1;
+    private int                    buildNumber                   = -1;
+    private int                    serialNumber                  = -1;
+    private int                    boardRevision                 = -1;
 
 
     /**
@@ -1130,29 +466,9 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      */
     public PushControlSurface (final IHost host, final ColorManager colorManager, final PushConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output));
-
-        this.setTriggerId (ButtonID.SHIFT, PUSH_BUTTON_SHIFT);
-        this.setTriggerId (ButtonID.SELECT, PUSH_BUTTON_SELECT);
-
-        this.setTriggerId (ButtonID.LEFT, PUSH_BUTTON_LEFT);
-        this.setTriggerId (ButtonID.RIGHT, PUSH_BUTTON_RIGHT);
-        this.setTriggerId (ButtonID.UP, PUSH_BUTTON_UP);
-        this.setTriggerId (ButtonID.DOWN, PUSH_BUTTON_DOWN);
-
-        this.setTriggerId (ButtonID.DELETE, PUSH_BUTTON_DELETE);
-        this.setTriggerId (ButtonID.SOLO, PUSH_BUTTON_SOLO);
-        this.setTriggerId (ButtonID.MUTE, PUSH_BUTTON_MUTE);
+        super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output), 200, 156);
 
         this.input.setSysexCallback (this::handleSysEx);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getSceneTrigger (final int index)
-    {
-        return PUSH_BUTTON_SCENE1 + index;
     }
 
 
@@ -1180,15 +496,12 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void shutdown ()
+    protected void internalShutdown ()
     {
-        // Turn off 1st/2nd row buttons
-        for (int i = 20; i < 28; i++)
-            this.setTrigger (i, 0);
-        for (int i = 102; i < 110; i++)
-            this.setTrigger (i, 0);
+        this.setRibbonMode (PUSH_RIBBON_PITCHBEND);
+        this.setRibbonValue (0);
 
-        super.shutdown ();
+        super.internalShutdown ();
     }
 
 
@@ -1511,7 +824,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             }
 
             // Already set?
-            if (this.colorPalette[index].update (getPaletteColor (index)))
+            if (this.colorPalette[index].update (PushColorManager.getPaletteColorRGB (index)))
             {
                 if (this.colorPalette[index].hasMaxNumberOfRetriesReached ())
                 {
@@ -1555,22 +868,6 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         }
 
         return data[data.length - 1] == 0xF7;
-    }
-
-
-    private static int [] getPaletteColor (final int index)
-    {
-        if (index >= 70 && index <= 96)
-        {
-            final double [] colorEntry = DAWColors.getColorEntry (index - 70);
-            return new int []
-            {
-                (int) Math.round (colorEntry[0] * 255.0),
-                (int) Math.round (colorEntry[1] * 255.0),
-                (int) Math.round (colorEntry[2] * 255.0)
-            };
-        }
-        return DEFAULT_PALETTE[index];
     }
 
 
@@ -1721,18 +1018,5 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             }
 
         }, 1000);
-    }
-
-
-    /**
-     * Update all view controlled button states.
-     */
-    public void updateButtons ()
-    {
-        final View view = this.viewManager.getActiveView ();
-        if (view == null)
-            return;
-        for (final int button: PUSH_BUTTON_UPDATE)
-            this.setTrigger (button, view.usesButton (button) ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
     }
 }

@@ -7,7 +7,6 @@ package de.mossgrabers.controller.push.command.trigger;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -35,14 +34,12 @@ public class SelectCommand extends AbstractTriggerCommand<PushControlSurface, Pu
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         // Update for key combinations
         this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
 
         final boolean isUp = event == ButtonEvent.UP;
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SELECT, isUp ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_HI);
-
         final ModeManager modeManager = this.surface.getModeManager ();
         if (event == ButtonEvent.DOWN)
         {

@@ -4,10 +4,11 @@
 
 package de.mossgrabers.controller.launchpad.view;
 
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -58,10 +59,17 @@ public class SendsView extends AbstractFaderView
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.selectedSend = scene;
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
+            return;
+
+        this.selectedSend = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+
+        final ITrackBank tb = this.model.getTrackBank ();
+        final String sendName = tb.getEditSendName (this.selectedSend);
+        final String message = "Send " + (this.selectedSend + 1) + ": " + (sendName.isEmpty () ? "None" : sendName);
+        this.surface.getTextDisplay ().notify (message);
     }
 
 
@@ -75,7 +83,7 @@ public class SendsView extends AbstractFaderView
         {
             final ITrack track = tb.getItem (i);
             final ISend send = track.getSendBank ().getItem (this.selectedSend);
-            final int color = cm.getColor (DAWColors.getColorIndex (track.getColor ()));
+            final int color = cm.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
             if (this.trackColors[i] != color)
             {
                 this.trackColors[i] = color;
@@ -88,16 +96,22 @@ public class SendsView extends AbstractFaderView
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, this.selectedSend == 0 ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, this.selectedSend == 1 ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, this.selectedSend == 2 ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, this.selectedSend == 3 ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, this.selectedSend == 4 ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, this.selectedSend == 5 ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, this.selectedSend == 6 ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, this.selectedSend == 7 ? LaunchpadColors.LAUNCHPAD_COLOR_ORCHID : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        final int ordinal = buttonID.ordinal ();
+        if (ordinal < ButtonID.SCENE1.ordinal () || ordinal > ButtonID.SCENE8.ordinal ())
+            return 0;
+
+        final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+
+        if (this.selectedSend == scene)
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID;
+
+        final ITrackBank tb = this.model.getTrackBank ();
+        if (tb.canEditSend (scene))
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+
+        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
     }
 
 

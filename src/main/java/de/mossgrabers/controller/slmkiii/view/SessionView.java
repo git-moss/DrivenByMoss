@@ -5,8 +5,9 @@
 package de.mossgrabers.controller.slmkiii.view;
 
 import de.mossgrabers.controller.slmkiii.SLMkIIIConfiguration;
-import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColors;
+import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
@@ -34,13 +35,13 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
     {
         super ("Session", surface, model, 2, 8, true);
 
-        final SessionColor isRecording = new SessionColor (SLMkIIIColors.SLMKIII_RED, SLMkIIIColors.SLMKIII_RED, false);
-        final SessionColor isRecordingQueued = new SessionColor (SLMkIIIColors.SLMKIII_RED_HALF, SLMkIIIColors.SLMKIII_RED_HALF, true);
-        final SessionColor isPlaying = new SessionColor (SLMkIIIColors.SLMKIII_GREEN_GRASS, SLMkIIIColors.SLMKIII_GREEN, false);
-        final SessionColor isPlayingQueued = new SessionColor (SLMkIIIColors.SLMKIII_GREEN_GRASS, SLMkIIIColors.SLMKIII_GREEN, true);
-        final SessionColor hasContent = new SessionColor (SLMkIIIColors.SLMKIII_AMBER, -1, false);
-        final SessionColor noContent = new SessionColor (SLMkIIIColors.SLMKIII_BLACK, -1, false);
-        final SessionColor recArmed = new SessionColor (SLMkIIIColors.SLMKIII_RED_HALF, -1, false);
+        final SessionColor isRecording = new SessionColor (SLMkIIIColorManager.SLMKIII_RED, SLMkIIIColorManager.SLMKIII_RED, false);
+        final SessionColor isRecordingQueued = new SessionColor (SLMkIIIColorManager.SLMKIII_RED_HALF, SLMkIIIColorManager.SLMKIII_RED_HALF, true);
+        final SessionColor isPlaying = new SessionColor (SLMkIIIColorManager.SLMKIII_GREEN_GRASS, SLMkIIIColorManager.SLMKIII_GREEN, false);
+        final SessionColor isPlayingQueued = new SessionColor (SLMkIIIColorManager.SLMKIII_GREEN_GRASS, SLMkIIIColorManager.SLMKIII_GREEN, true);
+        final SessionColor hasContent = new SessionColor (SLMkIIIColorManager.SLMKIII_AMBER, -1, false);
+        final SessionColor noContent = new SessionColor (SLMkIIIColorManager.SLMKIII_BLACK, -1, false);
+        final SessionColor recArmed = new SessionColor (SLMkIIIColorManager.SLMKIII_RED_HALF, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
     }
 
@@ -77,9 +78,9 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
 
         // Duplicate a clip
         final ITrack track = tb.getItem (t);
-        if (this.surface.isPressed (SLMkIIIControlSurface.MKIII_DUPLICATE))
+        if (this.surface.isPressed (ButtonID.DUPLICATE))
         {
-            this.surface.setTriggerConsumed (SLMkIIIControlSurface.MKIII_DUPLICATE);
+            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
             if (track.doesExist ())
                 track.getSlotBank ().getItem (s).duplicate ();
             return;
@@ -91,19 +92,15 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        final ColorManager colorManager = this.model.getColorManager ();
-        final int colorScene = colorManager.getColor (AbstractSessionView.COLOR_SCENE);
-        final int colorSceneSelected = colorManager.getColor (AbstractSessionView.COLOR_SELECTED_SCENE);
-        final int colorSceneOff = colorManager.getColor (AbstractSessionView.COLOR_SCENE_OFF);
+        if (!ButtonID.isSceneButton (buttonID))
+            return super.getButtonColor (buttonID);
 
-        final ISceneBank sceneBank = this.model.getSceneBank ();
-        for (int i = 0; i < sceneBank.getPageSize (); i++)
-        {
-            final IScene scene = sceneBank.getItem (i);
-            final int color = scene.doesExist () ? scene.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
-            this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_SCENE_1 + i, color);
-        }
+        final ColorManager colorManager = this.model.getColorManager ();
+        final IScene s = this.model.getSceneBank ().getItem (buttonID.ordinal () - ButtonID.SCENE1.ordinal ());
+        if (!s.doesExist ())
+            return colorManager.getColorIndex (AbstractSessionView.COLOR_SCENE_OFF);
+        return colorManager.getColorIndex (s.isSelected () ? AbstractSessionView.COLOR_SELECTED_SCENE : AbstractSessionView.COLOR_SCENE);
     }
 }

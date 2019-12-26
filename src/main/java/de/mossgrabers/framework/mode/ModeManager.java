@@ -169,6 +169,23 @@ public class ModeManager
 
 
     /**
+     * Checks if one of the mode IDs is the active mode or the temporary mode.
+     *
+     * @param modeIds Several IDs
+     * @return True if active
+     */
+    public boolean isActiveOrTempMode (final Modes... modeIds)
+    {
+        for (final Modes modeID: modeIds)
+        {
+            if (this.isActiveOrTempMode (modeID))
+                return true;
+        }
+        return false;
+    }
+
+
+    /**
      * Checks if the mode with the given ID is the active mode or the temporary mode if active.
      *
      * @param modeId An ID

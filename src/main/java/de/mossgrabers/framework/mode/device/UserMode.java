@@ -64,7 +64,7 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
 
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             param.resetValue ();
         }
         param.touchValue (isTouched);

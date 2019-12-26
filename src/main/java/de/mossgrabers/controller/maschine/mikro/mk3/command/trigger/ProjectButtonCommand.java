@@ -34,7 +34,7 @@ public class ProjectButtonCommand extends AddTrackCommand<MaschineMikroMk3Contro
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event != ButtonEvent.DOWN)
             return;
@@ -43,6 +43,6 @@ public class ProjectButtonCommand extends AddTrackCommand<MaschineMikroMk3Contro
         if (browser.isActive ())
             browser.stopBrowsing (false);
         else
-            super.execute (event);
+            super.execute (event, velocity);
     }
 }

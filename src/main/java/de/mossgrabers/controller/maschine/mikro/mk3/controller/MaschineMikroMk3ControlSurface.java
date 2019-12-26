@@ -6,7 +6,6 @@ package de.mossgrabers.controller.maschine.mikro.mk3.controller;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.IHost;
@@ -70,9 +69,6 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
     public static final int MIKRO_3_SOLO         = 91;
     public static final int MIKRO_3_MUTE         = 92;
 
-    public static final int MIKRO_3_STATE_OFF    = 0;
-    public static final int MIKRO_3_STATE_ON     = 127;
-
 
     /**
      * Constructor.
@@ -85,55 +81,13 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
      */
     public MaschineMikroMk3ControlSurface (final IHost host, final ColorManager colorManager, final MaschineMikroMk3Configuration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output));
-
-        // Sadly, the Shift button does not send a value
-        this.setTriggerId (ButtonID.SHIFT, -1);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void handleCC (final int channel, final int cc, final int value)
-    {
-        if (cc == MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER)
-        {
-            // Change absolute into relative value
-
-            this.getOutput ().sendCC (MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER, 63);
-
-            final int relativeValue = value - 63;
-            super.handleCC (channel, cc, relativeValue);
-
-            return;
-        }
-
-        if (cc == MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP)
-        {
-            super.handleCC (channel, cc, value);
-            return;
-        }
-
-        // All buttons are toggle buttons (first press sends 127, second 0)
-        // Therefore, turn any received message into a proper button press and release
-        super.handleCC (channel, cc, 127);
-        super.handleCC (channel, cc, 0);
-
-        this.clearTriggerCache (channel, cc);
+        super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output, 4, 4, 36), 800, 440);
     }
 
 
     /** {@inheritDoc} */
     @Override
     public void setTrigger (final int channel, final int cc, final int state)
-    {
-        this.output.sendCCEx (channel, cc, state);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setContinuous (final int channel, final int cc, final int state)
     {
         this.output.sendCCEx (channel, cc, state);
     }

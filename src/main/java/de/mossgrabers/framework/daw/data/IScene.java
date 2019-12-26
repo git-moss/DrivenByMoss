@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
+
+
 /**
  * Interface to a scene.
  *
@@ -14,19 +17,17 @@ public interface IScene extends IItem
     /**
      * Get the color of the scene.
      *
-     * @return The color in RGB
+     * @return The color
      */
-    double [] getColor ();
+    ColorEx getColor ();
 
 
     /**
-     * Set the color of the scene as a RGB value.
+     * Set the color of the scene.
      *
-     * @param red The red part of the color
-     * @param green The green part of the color
-     * @param blue The blue part of the color
+     * @param color The color
      */
-    void setColor (double red, double green, double blue);
+    void setColor (ColorEx color);
 
 
     /**

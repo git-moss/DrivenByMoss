@@ -8,6 +8,7 @@ import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -58,7 +59,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         final ITextDisplay display = this.surface.getTextDisplay ();
 
         // Select Send channels if Send button is pressed
-        if (this.surface.isPressed (MCUControlSurface.MCU_MODE_SENDS))
+        if (this.surface.isPressed (ButtonID.SENDS))
         {
             final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
             if (effectTrackBank != null && effectTrackBank.getItem (this.channel).doesExist ())
@@ -68,7 +69,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             }
             else
                 display.notify ("Send channel " + (this.channel + 1) + " does not exist.");
-            this.surface.setTriggerConsumed (MCUControlSurface.MCU_MODE_SENDS);
+            this.surface.setTriggerConsumed (ButtonID.SENDS);
             return;
         }
 

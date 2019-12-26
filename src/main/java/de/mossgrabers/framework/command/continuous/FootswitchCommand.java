@@ -4,11 +4,10 @@
 
 package de.mossgrabers.framework.command.continuous;
 
-import de.mossgrabers.framework.command.TriggerCommandID;
-import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
-import de.mossgrabers.framework.command.core.TriggerCommand;
+import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IClip;
@@ -17,7 +16,6 @@ import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -28,7 +26,7 @@ import de.mossgrabers.framework.view.View;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FootswitchCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C> implements TriggerCommand
+public class FootswitchCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -44,15 +42,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final int value)
-    {
-        this.execute (value == 127 ? ButtonEvent.DOWN : ButtonEvent.UP);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (this.handleViewCommand (event))
             return;
@@ -126,27 +116,26 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
      */
     private boolean handleViewCommand (final ButtonEvent event)
     {
-        final View activeView = this.surface.getViewManager ().getActiveView ();
         switch (this.getSetting ())
         {
             case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_PLAY:
-                activeView.executeTriggerCommand (TriggerCommandID.PLAY, event);
+                this.surface.getButton (ButtonID.PLAY).trigger (event);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_RECORD:
-                activeView.executeTriggerCommand (TriggerCommandID.RECORD, event);
+                this.surface.getButton (ButtonID.RECORD).trigger (event);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_UNDO:
-                activeView.executeTriggerCommand (TriggerCommandID.UNDO, event);
+                this.surface.getButton (ButtonID.UNDO).trigger (event);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_TAP_TEMPO:
-                activeView.executeTriggerCommand (TriggerCommandID.TAP_TEMPO, event);
+                this.surface.getButton (ButtonID.TAP_TEMPO).trigger (event);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_NEW_BUTTON:
-                activeView.executeTriggerCommand (TriggerCommandID.NEW, event);
+                this.surface.getButton (ButtonID.NEW).trigger (event);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
@@ -189,7 +178,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
             {
                 // If there is no clip in the selected slot, create a clip and begin record
                 // mode. Releasing it ends record mode.
-                this.surface.getViewManager ().getActiveView ().executeTriggerCommand (TriggerCommandID.NEW, event);
+                this.surface.getButton (ButtonID.NEW).trigger (event);
                 slot.select ();
                 this.model.getTransport ().setLauncherOverdub (true);
             }

@@ -8,6 +8,7 @@ import de.mossgrabers.controller.osc.OSCConfiguration;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
@@ -157,12 +158,12 @@ public class TrackModule extends AbstractModule
             writer.sendOSC (clipAddress + "isRecordingQueued", slot.isRecordingQueued (), dump);
             writer.sendOSC (clipAddress + "isStopQueued", slot.isStopQueued (), dump);
 
-            final double [] color = slot.getColor ();
-            writer.sendOSCColor (clipAddress + "color", color[0], color[1], color[2], dump);
+            final ColorEx color = slot.getColor ();
+            writer.sendOSCColor (clipAddress + "color", color.getRed (), color.getGreen (), color.getBlue (), dump);
         }
 
-        final double [] color = track.getColor ();
-        writer.sendOSCColor (trackAddress + "color", color[0], color[1], color[2], dump);
+        final ColorEx color = track.getColor ();
+        writer.sendOSCColor (trackAddress + "color", color.getRed (), color.getGreen (), color.getBlue (), dump);
 
         final String crossfadeMode = track.getCrossfadeMode ();
         writer.sendOSC (trackAddress + "crossfadeMode/A", "A".equals (crossfadeMode), dump);
@@ -418,7 +419,7 @@ public class TrackModule extends AbstractModule
                     return;
                 final int count = matcher.groupCount ();
                 if (count == 7)
-                    track.setColor (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0);
+                    track.setColor (new ColorEx (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0));
                 break;
 
             default:
@@ -458,7 +459,7 @@ public class TrackModule extends AbstractModule
                     final int count = matcher.groupCount ();
                     if (count != 7)
                         return;
-                    slot.setColor (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0);
+                    slot.setColor (new ColorEx (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0));
                     break;
                 default:
                     throw new UnknownCommandException (clipCommand);

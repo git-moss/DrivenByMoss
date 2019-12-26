@@ -7,6 +7,7 @@ package de.mossgrabers.controller.push.command.trigger;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -34,20 +35,20 @@ public class PushQuantizeCommand extends QuantizeCommand<PushControlSurface, Pus
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         if (event == ButtonEvent.LONG || event == ButtonEvent.DOWN && this.surface.isShiftPressed ())
         {
-            modeManager.setActiveMode (Modes.GROOVE);
-            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_QUANTIZE);
+            modeManager.setActiveMode (Modes.REC_ARM);
+            this.surface.setTriggerConsumed (ButtonID.QUANTIZE);
             return;
         }
 
         if (event != ButtonEvent.UP)
             return;
 
-        if (Modes.GROOVE.equals (modeManager.getActiveOrTempModeId ()))
+        if (Modes.REC_ARM.equals (modeManager.getActiveOrTempModeId ()))
             modeManager.restoreMode ();
         else
             this.quantize ();

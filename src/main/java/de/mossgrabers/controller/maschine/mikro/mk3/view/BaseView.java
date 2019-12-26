@@ -33,14 +33,6 @@ public abstract class BaseView extends AbstractView<MaschineMikroMk3ControlSurfa
 
     /** {@inheritDoc} */
     @Override
-    public void drawGrid ()
-    {
-        // LEDs cannot be controlled
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onGridNote (final int note, final int velocity)
     {
         if (velocity > 0)

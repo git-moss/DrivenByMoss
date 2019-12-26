@@ -6,12 +6,15 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.graphics.BitmapImpl;
 import de.mossgrabers.bitwig.framework.graphics.ImageImpl;
+import de.mossgrabers.bitwig.framework.hardware.HwSurfaceFactoryImpl;
 import de.mossgrabers.bitwig.framework.osc.OpenSoundControlClientImpl;
 import de.mossgrabers.bitwig.framework.osc.OpenSoundControlMessageImpl;
 import de.mossgrabers.bitwig.framework.osc.OpenSoundControlServerImpl;
 import de.mossgrabers.bitwig.framework.usb.UsbDeviceImpl;
+import de.mossgrabers.framework.controller.hardware.IHwSurfaceFactory;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
+import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
@@ -106,8 +109,33 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public boolean canEditMarkers ()
+    public boolean canEdit (final EditCapability capability)
     {
+        switch (capability)
+        {
+            case MARKERS:
+                return false;
+
+            case NOTE_REPEAT_LENGTH:
+            case NOTE_REPEAT_SWING:
+            case NOTE_REPEAT_MODE:
+            case NOTE_REPEAT_OCTAVES:
+            case NOTE_REPEAT_IS_FREE_RUNNING:
+            case NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY:
+                return true;
+
+            case NOTE_EDIT_RELEASE_VELOCITY:
+            case NOTE_EDIT_PRESSURE:
+            case NOTE_EDIT_TIMBRE:
+            case NOTE_EDIT_PANORAMA:
+            case NOTE_EDIT_TRANSPOSE:
+            case NOTE_EDIT_GAIN:
+                return true;
+
+            case QUANTIZE_INPUT_NOTE_LENGTH:
+            case QUANTIZE_AMOUNT:
+                return true;
+        }
         return false;
     }
 
@@ -175,10 +203,7 @@ public class HostImpl implements IHost
         final OscModule oscModule = this.host.getOscModule ();
         final OscAddressSpace addressSpace = oscModule.createAddressSpace ();
         addressSpace.registerDefaultMethod ( (source, message) -> callback.handle (new OpenSoundControlMessageImpl (message)));
-        // Requires API 9
-        // return new OpenSoundControlServerImpl (oscModule.createUdpServer2 (addressSpace));
-        oscModule.createUdpServer (8000, addressSpace);
-        return new OpenSoundControlServerImpl ();
+        return new OpenSoundControlServerImpl (oscModule.createUdpServer (addressSpace));
     }
 
 
@@ -246,5 +271,24 @@ public class HostImpl implements IHost
     {
         for (final IUsbDevice usbDevice: this.usbDevices)
             usbDevice.release ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IHwSurfaceFactory createSurfaceFactory (final double width, final double height)
+    {
+        return new HwSurfaceFactoryImpl (this, width, height);
+    }
+
+
+    /**
+     * Get the Bitwig controller host.
+     *
+     * @return The host
+     */
+    public ControllerHost getControllerHost ()
+    {
+        return this.host;
     }
 }

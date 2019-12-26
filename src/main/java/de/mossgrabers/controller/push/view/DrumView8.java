@@ -4,9 +4,8 @@
 
 package de.mossgrabers.controller.push.view;
 
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.Views;
@@ -48,7 +47,8 @@ public class DrumView8 extends DrumViewBase
         final int sound = y + this.soundOffset;
         final int col = x;
 
-        this.getClip ().toggleStep (col, this.scales.getDrumOffset () + this.selectedPad + sound, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        this.getClip ().toggleStep (editMidiChannel, col, this.scales.getDrumOffset () + this.selectedPad + sound, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
     }
 
 
@@ -67,17 +67,18 @@ public class DrumView8 extends DrumViewBase
 
         // Paint the sequencer steps
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int blueHi = isPush2 ? PushColors.PUSH2_COLOR2_BLUE_HI : PushColors.PUSH1_COLOR2_BLUE_HI;
-        final int greenLo = isPush2 ? PushColors.PUSH2_COLOR2_GREEN_LO : PushColors.PUSH1_COLOR2_GREEN_LO;
-        final int greenHi = isPush2 ? PushColors.PUSH2_COLOR2_GREEN_HI : PushColors.PUSH1_COLOR2_GREEN_HI;
-        final int off = isPush2 ? PushColors.PUSH2_COLOR2_BLACK : PushColors.PUSH1_COLOR2_BLACK;
+        final int blueHi = isPush2 ? PushColorManager.PUSH2_COLOR2_BLUE_HI : PushColorManager.PUSH1_COLOR2_BLUE_HI;
+        final int greenLo = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN_LO : PushColorManager.PUSH1_COLOR2_GREEN_LO;
+        final int greenHi = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN_HI : PushColorManager.PUSH1_COLOR2_GREEN_HI;
+        final int off = isPush2 ? PushColorManager.PUSH2_COLOR2_BLACK : PushColorManager.PUSH1_COLOR2_BLACK;
         final int hiStep = this.isInXRange (step) ? step % DrumView8.NUM_DISPLAY_COLS : -1;
         final int offsetY = this.scales.getDrumOffset ();
+        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
         for (int sound = 0; sound < 8; sound++)
         {
             for (int col = 0; col < DrumView8.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = this.getClip ().getStep (col, offsetY + this.selectedPad + sound + this.soundOffset);
+                final int isSet = this.getClip ().getStep (editMidiChannel, col, offsetY + this.selectedPad + sound + this.soundOffset).getState ();
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
                 int y = col / 8;
@@ -98,25 +99,18 @@ public class DrumView8 extends DrumViewBase
 
     /** {@inheritDoc} */
     @Override
-    public void updateButtons ()
+    protected String updateLowerSceneButtons (final int scene)
     {
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, ColorManager.BUTTON_STATE_ON);
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, ColorManager.BUTTON_STATE_ON);
-    }
+        if (scene > 1)
+            return AbstractSequencerView.COLOR_RESOLUTION_OFF;
 
+        final int [] offsets =
+        {
+            0,
+            8
+        };
 
-    /** {@inheritDoc} */
-    @Override
-    protected void updateLowerSceneButtons ()
-    {
-        final ColorManager colorManager = this.model.getColorManager ();
-        final int colorTranspose = colorManager.getColor (AbstractSequencerView.COLOR_TRANSPOSE);
-        final int colorSelectedTranspose = colorManager.getColor (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED);
-        final int colorOff = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE1, this.soundOffset == 0 ? colorSelectedTranspose : colorTranspose);
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE2, this.soundOffset == 8 ? colorSelectedTranspose : colorTranspose);
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE3, colorOff);
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SCENE4, colorOff);
+        return this.soundOffset == offsets[scene] ? AbstractSequencerView.COLOR_TRANSPOSE_SELECTED : AbstractSequencerView.COLOR_TRANSPOSE;
     }
 
 
@@ -124,10 +118,10 @@ public class DrumView8 extends DrumViewBase
     @Override
     protected void onLowerScene (final int index)
     {
-        // 7, 6, 5, 4
-        if (index < 6)
+        // 0, 8
+        if (index > 1)
             return;
-        this.soundOffset = index == 7 ? 0 : 8;
+        this.soundOffset = index == 0 ? 0 : 8;
         this.surface.getDisplay ().notify ("Offset: " + this.soundOffset);
     }
 }

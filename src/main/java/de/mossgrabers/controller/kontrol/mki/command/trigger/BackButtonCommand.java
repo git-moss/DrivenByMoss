@@ -33,7 +33,7 @@ public class BackButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSur
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event == ButtonEvent.DOWN)
             ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTempMode ()).onBack ();

@@ -8,6 +8,7 @@ import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -113,12 +114,13 @@ public class TrackMode extends AbstractTrackMode
             d.setCell (1, 2, "A".equals (crossfadeMode) ? "A" : "B".equals (crossfadeMode) ? "     B" : "  <>  ");
         }
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
+        final ISendBank sendBank = selectedTrack.getSendBank ();
         for (int i = 0; i < sendCount; i++)
         {
             final int pos = sendStart + i;
-            if (!isEffectTrackBankActive)
+            if (!isEffectTrackBankActive && i < sendBank.getItemCount ())
             {
-                final ISend send = selectedTrack.getSendBank ().getItem (i);
+                final ISend send = sendBank.getItem (i);
                 if (send.doesExist ())
                 {
                     if (!displayTrackNames)
@@ -136,7 +138,7 @@ public class TrackMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    protected void updateKnobLEDs ()
+    public void updateKnobLEDs ()
     {
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
 

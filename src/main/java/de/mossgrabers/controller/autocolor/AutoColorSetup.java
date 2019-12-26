@@ -6,13 +6,15 @@ package de.mossgrabers.controller.autocolor;
 
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
-import de.mossgrabers.framework.controller.DefaultValueChanger;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -106,15 +108,25 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
         });
 
         // Monitor all color regex settings
-        final NamedColor [] colors = NamedColor.values ();
+        final DAWColor [] colors = DAWColor.values ();
         for (int i = 0; i < colors.length; i++)
         {
-            final NamedColor color = colors[i];
+            final DAWColor color = colors[i];
             this.configuration.addSettingObserver (Integer.valueOf (AutoColorConfiguration.COLOR_REGEX.intValue () + i), () -> this.autoColor.handleRegExChange (color, this.configuration.getColorRegExValue (color)));
         }
 
         // Add name observers to all tracks
-        this.model.getTrackBank ().addNameObserver (this.autoColor::matchTrackName);
+        final ITrackBank tb = this.model.getTrackBank ();
+
+        for (int index = 0; index < tb.getPageSize (); index++)
+        {
+            final int i = index;
+            final ITrack track = tb.getItem (index);
+            track.addNameObserver (name -> this.autoColor.matchTrackName (i, name));
+            track.addColorObserver (name -> {
+                this.autoColor.matchTrackName (i, track.getName ());
+            });
+        }
     }
 
 

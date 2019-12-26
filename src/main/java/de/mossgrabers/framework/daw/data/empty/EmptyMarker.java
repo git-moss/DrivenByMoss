@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.daw.data.empty;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IMarker;
 
 
@@ -29,9 +30,9 @@ public class EmptyMarker extends EmptyItem implements IMarker
 
     /** {@inheritDoc} */
     @Override
-    public double [] getColor ()
+    public ColorEx getColor ()
     {
-        return COLOR_OFF;
+        return ColorEx.BLACK;
     }
 
 

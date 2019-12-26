@@ -9,6 +9,7 @@ import de.mossgrabers.bitwig.framework.daw.data.BrowserColumnItemImpl;
 import de.mossgrabers.bitwig.framework.daw.data.ChannelImpl;
 import de.mossgrabers.bitwig.framework.daw.data.DrumPadImpl;
 import de.mossgrabers.bitwig.framework.daw.data.SlotImpl;
+import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.daw.AbstractBrowser;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
@@ -87,15 +88,15 @@ public class BrowserImpl extends AbstractBrowser
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.browser.exists ().setIsSubscribed (enable);
-        this.browser.selectedContentTypeIndex ().setIsSubscribed (enable);
-        this.browser.selectedContentTypeName ().setIsSubscribed (enable);
-        this.browser.contentTypeNames ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.browser.exists (), enable);
+        Util.setIsSubscribed (this.browser.selectedContentTypeIndex (), enable);
+        Util.setIsSubscribed (this.browser.selectedContentTypeName (), enable);
+        Util.setIsSubscribed (this.browser.contentTypeNames (), enable);
 
         for (final IBrowserColumn column: this.columnData)
             column.enableObservers (enable);
 
-        this.cursorResult.name ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.cursorResult.name (), enable);
 
         for (final IBrowserColumnItem item: this.resultData)
             item.enableObservers (enable);

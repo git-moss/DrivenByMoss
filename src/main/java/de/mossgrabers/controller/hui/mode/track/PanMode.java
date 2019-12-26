@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.hui.mode.track;
 
 import de.mossgrabers.controller.hui.controller.HUIControlSurface;
-import de.mossgrabers.controller.hui.controller.HUIMainDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -44,20 +43,12 @@ public class PanMode extends AbstractTrackMode
     {
         if (this.surface.getConfiguration ().hasDisplay1 ())
             this.drawTrackHeader ().setCell (0, 8, "Pans").done (0);
-
-        if (this.surface.getConfiguration ().hasDisplay2 ())
-        {
-            final HUIMainDisplay d = this.surface.getMainDisplay ();
-            d.clear ().setCell (0, 0, "Hello");
-            d.setCell (0, 1, "World");
-            d.allDone ();
-        }
     }
 
 
     /** {@inheritDoc} */
     @Override
-    protected void updateKnobLEDs ()
+    public void updateKnobLEDs ()
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();

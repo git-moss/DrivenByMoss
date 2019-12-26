@@ -31,7 +31,7 @@ public class MuteCommand extends AbstractTrackCommand
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         this.onModeButton (event, Modes.MUTE, "Mute");
     }

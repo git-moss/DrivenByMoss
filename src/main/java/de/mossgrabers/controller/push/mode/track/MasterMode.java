@@ -4,17 +4,19 @@
 
 package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
-import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -29,9 +31,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class MasterMode extends BaseMode
 {
-    static final String PARAM_NAMES = "Volume   Pan                                       Project:         ";
-
-
     /**
      * Constructor.
      *
@@ -66,10 +65,24 @@ public class MasterMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        if (index == 0)
-            this.model.getMasterTrack ().changeVolume (value);
-        else if (index == 1)
-            this.model.getMasterTrack ().changePan (value);
+        switch (index)
+        {
+            case 0:
+                this.model.getMasterTrack ().changeVolume (value);
+                break;
+            case 1:
+                this.model.getMasterTrack ().changePan (value);
+                break;
+            case 2:
+                this.model.getProject ().changeCueVolume (value);
+                break;
+            case 3:
+                this.model.getProject ().changeCueMix (value);
+                break;
+            default:
+                // Not used
+                break;
+        }
     }
 
 
@@ -81,18 +94,46 @@ public class MasterMode extends BaseMode
 
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
-            if (index == 0)
-                this.model.getMasterTrack ().resetVolume ();
-            else if (index == 1)
-                this.model.getMasterTrack ().resetPan ();
-            return;
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
+
+            switch (index)
+            {
+                case 0:
+                    this.model.getMasterTrack ().resetVolume ();
+                    break;
+                case 1:
+                    this.model.getMasterTrack ().resetPan ();
+                    break;
+                case 2:
+                    this.model.getProject ().resetCueVolume ();
+                    break;
+                case 3:
+                    this.model.getProject ().resetCueMix ();
+                    break;
+                default:
+                    // Not used
+                    break;
+            }
         }
 
-        if (index == 0)
-            this.model.getMasterTrack ().touchVolume (isTouched);
-        else if (index == 1)
-            this.model.getMasterTrack ().touchPan (isTouched);
+        switch (index)
+        {
+            case 0:
+                this.model.getMasterTrack ().touchVolume (isTouched);
+                break;
+            case 1:
+                this.model.getMasterTrack ().touchPan (isTouched);
+                break;
+            case 2:
+                this.model.getProject ().touchCueVolume (isTouched);
+                break;
+            case 3:
+                this.model.getProject ().touchCueMix (isTouched);
+                break;
+            default:
+                // Not used
+                break;
+        }
 
         this.checkStopAutomationOnKnobRelease (isTouched);
     }
@@ -103,11 +144,16 @@ public class MasterMode extends BaseMode
     public void updateDisplay1 (final ITextDisplay display)
     {
         final IMasterTrack master = this.model.getMasterTrack ();
-        display.setRow (0, MasterMode.PARAM_NAMES).setCell (1, 0, master.getVolumeStr (8)).setCell (1, 1, master.getPanStr (8));
+        final IProject project = this.model.getProject ();
+
+        display.setCell (0, 0, "Volume").setCell (0, 1, "Pan").setCell (0, 2, "Volume").setCell (0, 3, "Mix").setCell (0, 6, "Project:");
+        display.setCell (1, 0, master.getVolumeStr (8)).setCell (1, 1, master.getPanStr (8)).setCell (1, 2, project.getCueVolumeStr (8)).setCell (1, 3, project.getCueMixStr (8));
         display.setBlock (1, 2, "Audio Engine").setBlock (1, 3, this.model.getProject ().getName ());
         display.setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : master.getVolume (), Format.FORMAT_VALUE);
         display.setCell (2, 1, master.getPan (), Format.FORMAT_PAN);
-        display.setCell (3, 0, master.getName ()).setCell (3, 4, this.model.getApplication ().isEngineActive () ? "Active" : "Off");
+        display.setCell (2, 2, project.getCueVolume (), Format.FORMAT_VALUE);
+        display.setCell (2, 3, project.getCueMix (), Format.FORMAT_VALUE);
+        display.setCell (3, 0, master.getName ()).setCell (3, 2, "Cue").setCell (3, 4, this.model.getApplication ().isEngineActive () ? "Active" : "Off");
         display.setCell (3, 6, "Previous").setCell (3, 7, "Next");
     }
 
@@ -117,21 +163,18 @@ public class MasterMode extends BaseMode
     public void updateDisplay2 (final IGraphicDisplay display)
     {
         final IMasterTrack master = this.model.getMasterTrack ();
+        final IProject project = this.model.getProject ();
+
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final boolean enableVUMeters = this.surface.getConfiguration ().isEnableVUMeters ();
         final int vuR = valueChanger.toDisplayValue (enableVUMeters ? master.getVuRight () : 0);
         final int vuL = valueChanger.toDisplayValue (enableVUMeters ? master.getVuLeft () : 0);
-        display.addChannelElement ("Volume", false, master.getName (), ChannelType.MASTER, master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", vuL, vuR, master.isMute (), master.isSolo (), master.isRecArm (), master.isActivated (), 0);
 
-        for (int i = 1; i < 4; i++)
-        {
-            display.addChannelSelectorElement (i == 1 ? "Pan" : "", false, "", null, new double []
-            {
-                0.0,
-                0.0,
-                0.0
-            }, false, master.isActivated ());
-        }
+        display.addChannelElement ("Volume", false, master.getName (), ChannelType.MASTER, master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", vuL, vuR, master.isMute (), master.isSolo (), master.isRecArm (), master.isActivated (), 0);
+        display.addChannelSelectorElement ("Pan", false, "", null, ColorEx.BLACK, false, master.isActivated ());
+
+        display.addChannelElement ("Cue Volume", false, "Cue", ChannelType.MASTER, ColorEx.GRAY, false, valueChanger.toDisplayValue (project.getCueVolume ()), -1, this.isKnobTouched[2] ? project.getCueVolumeStr (8) : "", valueChanger.toDisplayValue (project.getCueMix ()), -1, this.isKnobTouched[3] ? project.getCueMixStr (8) : "", 0, 0, false, false, false, true, 0);
+        display.addChannelSelectorElement ("Cue Mix", false, "", null, ColorEx.BLACK, false, true);
 
         display.addOptionElement ("", "", false, "Audio Engine", this.model.getApplication ().isEngineActive () ? "Active" : "Off", false, false);
         display.addOptionElement ("", "", false, "", "", false, false);
@@ -147,9 +190,9 @@ public class MasterMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        if (this.surface.isPressed (PushControlSurface.PUSH_BUTTON_RECORD))
+        if (this.surface.isPressed (ButtonID.RECORD))
         {
-            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_RECORD);
+            this.surface.setTriggerConsumed (ButtonID.RECORD);
             this.model.getMasterTrack ().toggleRecArm ();
             return;
         }
@@ -157,7 +200,7 @@ public class MasterMode extends BaseMode
         switch (index)
         {
             case 0:
-                this.surface.getViewManager ().getActiveView ().executeTriggerCommand (TriggerCommandID.DEVICE, ButtonEvent.DOWN);
+                this.surface.getButton (ButtonID.DEVICE).trigger (ButtonEvent.DOWN);
                 break;
 
             case 4:
@@ -181,17 +224,42 @@ public class MasterMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        this.surface.updateTrigger (20, this.getTrackButtonColor ());
-        for (int i = 1; i < 4; i++)
-            this.surface.updateTrigger (20 + i, AbstractMode.BUTTON_COLOR_OFF);
-        final int red = isPush2 ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH1_COLOR_RED_HI;
-        this.surface.updateTrigger (24, this.model.getApplication ().isEngineActive () ? this.model.getColorManager ().getColor (AbstractMode.BUTTON_COLOR_ON) : red);
-        this.surface.updateTrigger (25, AbstractMode.BUTTON_COLOR_OFF);
-        this.surface.updateTrigger (26, AbstractMode.BUTTON_COLOR_ON);
-        this.surface.updateTrigger (27, AbstractMode.BUTTON_COLOR_ON);
+        int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
+        {
+            final ColorManager colorManager = this.model.getColorManager ();
+
+            final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
+            if (index == 0)
+                return this.getTrackButtonColor ();
+            if (index < 4 || index == 5)
+                return colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_OFF);
+            if (index > 5)
+                return colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_ON);
+
+            final int red = isPush2 ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI;
+            return this.model.getApplication ().isEngineActive () ? colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_ON) : red;
+        }
+
+        index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            final int off = this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+
+            if (this.isPush2 || index > 0)
+                return off;
+
+            final boolean muteState = this.surface.getConfiguration ().isMuteState ();
+            final IMasterTrack master = this.model.getMasterTrack ();
+            if (muteState)
+                return master.isMute () ? off : PushColorManager.PUSH1_COLOR2_YELLOW_HI;
+            return master.isSolo () ? PushColorManager.PUSH1_COLOR2_BLUE_HI : PushColorManager.PUSH1_COLOR2_GREY_LO;
+        }
+
+        return super.getButtonColor (buttonID);
+
     }
 
 
@@ -215,46 +283,14 @@ public class MasterMode extends BaseMode
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void updateSecondRow ()
-    {
-        final int off = this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
-
-        if (this.isPush2)
-        {
-            for (int i = 0; i < 8; i++)
-                this.surface.updateTrigger (102 + i, off);
-            return;
-        }
-
-        final boolean muteState = this.surface.getConfiguration ().isMuteState ();
-
-        final IMasterTrack master = this.model.getMasterTrack ();
-
-        int color = off;
-        if (muteState)
-        {
-            if (!master.isMute ())
-                color = PushColors.PUSH1_COLOR2_YELLOW_HI;
-        }
-        else
-            color = master.isSolo () ? PushColors.PUSH1_COLOR2_BLUE_HI : PushColors.PUSH1_COLOR2_GREY_LO;
-
-        this.surface.updateTrigger (102, color);
-        for (int i = 1; i < 8; i++)
-            this.surface.updateTrigger (102 + i, off);
-    }
-
-
     private int getTrackButtonColor ()
     {
         final IMasterTrack track = this.model.getMasterTrack ();
         if (!track.isActivated ())
-            return this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
+            return this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
         if (track.isRecArm ())
-            return this.isPush2 ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH1_COLOR_RED_HI;
-        return this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI;
+            return this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI;
+        return this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI;
     }
 
 

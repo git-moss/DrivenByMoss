@@ -4,6 +4,14 @@
 
 package de.mossgrabers.framework.daw.midi;
 
+import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
+import de.mossgrabers.framework.controller.hardware.IHwButton;
+import de.mossgrabers.framework.controller.hardware.IHwFader;
+import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
+import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
+
+
 /**
  * Interface to a MIDI input.
  *
@@ -56,4 +64,83 @@ public interface IMidiInput
      * @param data2 The MIDI data byte 2
      */
     void sendRawMidiEvent (int status, int data1, int data2);
+
+
+    /**
+     * Bind the given button to a MIDI command received on this midi input.
+     *
+     * @param button The button to bind
+     * @param type The MIDI binding type
+     * @param channel The MIDI channel
+     * @param control The MIDI command (CC, Note, ...)
+     */
+    void bind (IHwButton button, BindType type, int channel, int control);
+
+
+    /**
+     * Bind a midi command coming from a MIDI input to the button.
+     *
+     * @param button The button to bind
+     * @param type How to bind
+     * @param channel The MIDI channel
+     * @param control The MIDI CC or note to bind
+     * @param value The specific value of the control to bind to
+     */
+    void bind (IHwButton button, BindType type, int channel, int control, int value);
+
+
+    /**
+     * Bind the given fader to a MIDI command received on this midi input.
+     *
+     * @param fader The fader to bind
+     * @param type The MIDI binding type
+     * @param channel The MIDI channel
+     * @param control The MIDI command (CC, Note, ...)
+     */
+    void bind (IHwFader fader, BindType type, int channel, int control);
+
+
+    /**
+     * Bind the given absolute knob to a MIDI command received on this midi input.
+     *
+     * @param absoluteKnob The absolute knob to bind
+     * @param type The MIDI binding type
+     * @param channel The MIDI channel
+     * @param control The MIDI command (CC, Note, ...)
+     */
+    void bind (IHwAbsoluteKnob absoluteKnob, BindType type, int channel, int control);
+
+
+    /**
+     * Bind the given relative knob to a MIDI command received on this midi input.
+     *
+     * @param relativeKnob The relative knob to bind
+     * @param type The MIDI binding type
+     * @param channel The MIDI channel
+     * @param control The MIDI command (CC, Note, ...)
+     * @param encoding The encoding of the relative value
+     */
+    void bind (IHwRelativeKnob relativeKnob, BindType type, int channel, int control, RelativeEncoding encoding);
+
+
+    /**
+     * Bind the given relative knob to a MIDI command received on this midi input as a touch action.
+     *
+     * @param relativeKnob The relative knob to bind
+     * @param type The MIDI binding type
+     * @param channel The MIDI channel
+     * @param control The MIDI command (CC, Note, ...)
+     */
+    void bindTouch (IHwRelativeKnob relativeKnob, BindType type, int channel, int control);
+
+
+    /**
+     * Bind the given fader to a MIDI command received on this midi input as a touch action.
+     *
+     * @param fader The fader to bind
+     * @param type The MIDI binding type
+     * @param channel The MIDI channel
+     * @param control The MIDI command (CC, Note, ...)
+     */
+    void bindTouch (IHwFader fader, BindType type, int channel, int control);
 }

@@ -35,7 +35,7 @@ public class PunchOutCommand<S extends IControlSurface<C>, C extends Configurati
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event == ButtonEvent.DOWN)
             this.model.getTransport ().togglePunchOut ();

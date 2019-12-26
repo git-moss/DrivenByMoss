@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.EmptyBank;
 import de.mossgrabers.framework.daw.ISlotBank;
+import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 
@@ -215,6 +216,46 @@ public class EmptyTrack extends EmptyChannel implements ITrack
     {
         // Intentionally empty
         return this.slotBank;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void createClip (final int slotIndex, final int lengthInBeats)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isRecordQuantizationNoteLength ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleRecordQuantizationNoteLength ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public RecordQuantization getRecordQuantizationGrid ()
+    {
+        return RecordQuantization.RES_OFF;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setRecordQuantizationGrid (final RecordQuantization recordQuantization)
+    {
+        // Intentionally empty
     }
 
 

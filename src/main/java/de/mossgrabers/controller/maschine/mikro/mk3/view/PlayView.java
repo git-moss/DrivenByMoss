@@ -38,14 +38,6 @@ public class PlayView extends AbstractPlayView<MaschineMikroMk3ControlSurface, M
 
     /** {@inheritDoc} */
     @Override
-    public void drawGrid ()
-    {
-        // LEDs cannot be controlled
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onButton (final int index, final ButtonEvent event)
     {
         if (event != ButtonEvent.DOWN)

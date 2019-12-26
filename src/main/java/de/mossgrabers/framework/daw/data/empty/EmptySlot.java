@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.daw.data.empty;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.ISlot;
 
 
@@ -77,15 +78,15 @@ public class EmptySlot extends EmptyItem implements ISlot
 
     /** {@inheritDoc} */
     @Override
-    public double [] getColor ()
+    public ColorEx getColor ()
     {
-        return COLOR_OFF;
+        return ColorEx.BLACK;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setColor (final double red, final double green, final double blue)
+    public void setColor (final ColorEx color)
     {
         // Intentionally empty
     }
@@ -102,14 +103,6 @@ public class EmptySlot extends EmptyItem implements ISlot
     /** {@inheritDoc} */
     @Override
     public void record ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void create (final int length)
     {
         // Intentionally empty
     }

@@ -7,6 +7,7 @@ package de.mossgrabers.controller.push.mode;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -105,13 +106,26 @@ public class RibbonMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        final int ribbonMode = this.surface.getConfiguration ().getRibbonMode ();
-        for (int i = 0; i < 5; i++)
-            this.surface.updateTrigger (20 + i, ribbonMode == PushConfiguration.RIBBON_MODE_PITCH + i ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
-        for (int i = 5; i < 8; i++)
-            this.surface.updateTrigger (20 + i, AbstractMode.BUTTON_COLOR_OFF);
+        int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
+        {
+            final int ribbonMode = this.surface.getConfiguration ().getRibbonMode ();
+            if (index < 5)
+                return ribbonMode == PushConfiguration.RIBBON_MODE_PITCH + index ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON;
+            return AbstractMode.BUTTON_COLOR_OFF;
+        }
+
+        index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            if (index < 4)
+                return this.isPush2 ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR2_ON;
+            return AbstractMode.BUTTON_COLOR_OFF;
+        }
+
+        return AbstractMode.BUTTON_COLOR_OFF;
     }
 
 
@@ -125,17 +139,6 @@ public class RibbonMode extends BaseMode
             this.surface.getConfiguration ().setRibbonModeCC (RibbonMode.MIDI_CCS[index]);
         else
             this.surface.getModeManager ().restoreMode ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSecondRow ()
-    {
-        for (int i = 0; i < 4; i++)
-            this.surface.updateTrigger (102 + i, this.isPush2 ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR2_ON);
-        for (int i = 4; i < 8; i++)
-            this.surface.updateTrigger (102 + i, AbstractMode.BUTTON_COLOR_OFF);
     }
 
 

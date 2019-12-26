@@ -5,9 +5,9 @@
 package de.mossgrabers.controller.launchpad.view;
 
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractDrumView64;
 
@@ -35,16 +35,16 @@ public class DrumView64 extends AbstractDrumView64<LaunchpadControlSurface, Laun
     @Override
     protected void handleDeleteButton (final int playedPad)
     {
-        this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
-        this.model.getNoteClip (8, 128).clearRow (this.offsetY + playedPad);
+        this.surface.setTriggerConsumed (ButtonID.DELETE);
+        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        this.model.getNoteClip (8, 128).clearRow (editMidiChannel, this.offsetY + playedPad);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        for (int i = 0; i < 8; i++)
-            this.surface.setTrigger (this.surface.getSceneTrigger (i), LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        return ColorManager.BUTTON_STATE_OFF;
     }
 }

@@ -60,7 +60,8 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public String getVersion ()
     {
-        return this.definition.getVersion (Package.getPackage ("de.mossgrabers.framework.daw"));
+        final ClassLoader l = this.getClass ().getClassLoader ();
+        return this.definition.getVersion (l.getDefinedPackage ("de.mossgrabers.framework.daw"));
     }
 
 
@@ -109,8 +110,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public int getRequiredAPIVersion ()
     {
-        // TODO Requires API 9
-        return 7;
+        return 10;
     }
 
 

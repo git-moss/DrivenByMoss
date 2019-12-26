@@ -63,7 +63,7 @@ public class BrowserMode<S extends IControlSurface<C>, C extends Configuration> 
     {
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             final IBrowser browser = this.model.getBrowser ();
             if (browser != null)
                 browser.resetFilterColumn (index);

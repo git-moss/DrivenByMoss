@@ -4,7 +4,8 @@
 
 package de.mossgrabers.controller.mcu.controller;
 
-import de.mossgrabers.framework.controller.display.DummyDisplay;
+import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
@@ -13,42 +14,37 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MCUSegmentDisplay extends DummyDisplay
+public class MCUSegmentDisplay extends AbstractTextDisplay
 {
-    private IMidiOutput output;
-    private int []      transportBuffer  = new int [10];
-    private int []      assignmentBuffer = new int [2];
+    private int [] transportBuffer = new int [10];
 
 
     /**
      * Constructor.
      *
+     * @param host The host
      * @param output The midi output which addresses the display
      */
-    public MCUSegmentDisplay (final IMidiOutput output)
+    public MCUSegmentDisplay (final IHost host, final IMidiOutput output)
     {
-        super (null);
-
-        this.output = output;
+        super (host, output, 1, 1, 20);
     }
 
 
-    /**
-     * Sets the position string. Must only contain numbers and ':'.
-     *
-     * @param position The string
-     */
-    public void setTransportPositionDisplay (final String position)
+    /** {@inheritDoc} */
+    @Override
+    public void writeLine (final int row, final String text)
     {
+        // Sets the position string. Must only contain numbers and ':'.
         boolean addDot = false;
-        int pos = position.length () - 1;
+        int pos = text.length () - 1;
         int i = 0;
         while (i < 10)
         {
             int c = 0x20;
             if (pos >= 0)
             {
-                final char singleDigit = position.charAt (pos);
+                final char singleDigit = text.charAt (pos);
                 pos--;
                 final boolean isDot = singleDigit == ':';
                 if (isDot)
@@ -69,26 +65,6 @@ public class MCUSegmentDisplay extends DummyDisplay
             }
             i++;
             addDot = false;
-        }
-    }
-
-
-    /**
-     * Sets the assignment (mode) string. Must only contain 2 upper case letters.
-     *
-     * @param mode The string
-     */
-    public void setAssignmentDisplay (final String mode)
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            final char c = mode.charAt (i);
-            if (this.assignmentBuffer[i] != c)
-            {
-                final int value = c >= 0x40 ? c - 0x40 : c;
-                this.output.sendCC (0x4B - i, value);
-                this.assignmentBuffer[i] = c;
-            }
         }
     }
 

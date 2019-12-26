@@ -144,9 +144,11 @@ public enum Modes
     USER;
 
 
-    private static final Set<Modes> TRACK_MODES = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);
-    private static final Set<Modes> LAYER_MODES = EnumSet.range (Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_DETAILS);
-    private static final Set<Modes> SEND_MODES  = EnumSet.range (Modes.SEND1, Modes.SEND8);
+    private static final Set<Modes> TRACK_MODES  = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);
+    private static final Set<Modes> LAYER_MODES  = EnumSet.range (Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_DETAILS);
+    private static final Set<Modes> SEND_MODES   = EnumSet.range (Modes.SEND1, Modes.SEND8);
+    private static final Set<Modes> MIX_MODES    = EnumSet.range (Modes.TRACK, Modes.SEND);
+    private static final Set<Modes> MASTER_MODES = EnumSet.of (Modes.MASTER, Modes.MASTER_TEMP, Modes.FRAME);
 
     static
     {
@@ -188,6 +190,18 @@ public enum Modes
 
 
     /**
+     * Returns true if the given mode ID is one of the mix modes.
+     *
+     * @param modeId The mode ID to test
+     * @return True if it is a mix mode
+     */
+    public static boolean isMixMode (final Modes modeId)
+    {
+        return MIX_MODES.contains (modeId);
+    }
+
+
+    /**
      * Returns true if the given mode ID is one of the device layer modes.
      *
      * @param modeId The mode ID to test
@@ -196,6 +210,18 @@ public enum Modes
     public static boolean isLayerMode (final Modes modeId)
     {
         return LAYER_MODES.contains (modeId);
+    }
+
+
+    /**
+     * Returns true if the given mode ID is one of the master modes.
+     *
+     * @param modeId The mode ID to test
+     * @return True if it is a master mode
+     */
+    public static boolean isMasterMode (final Modes modeId)
+    {
+        return MASTER_MODES.contains (modeId);
     }
 
 

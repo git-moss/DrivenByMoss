@@ -218,18 +218,11 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      */
     public MCUControlSurface (final List<MCUControlSurface> surfaces, final IHost host, final ColorManager colorManager, final MCUConfiguration configuration, final IMidiOutput output, final IMidiInput input, final int extenderOffset, final boolean isMainDevice)
     {
-        super (host, configuration, colorManager, output, input, null);
+        super (surfaces.size (), host, configuration, colorManager, output, input, null, surfaces.isEmpty () ? 1000 : 600, 1000);
 
         this.surfaces = surfaces;
         this.extenderOffset = extenderOffset;
         this.isMainDevice = isMainDevice;
-
-        this.setTriggerId (ButtonID.SHIFT, MCU_SHIFT);
-        this.setTriggerId (ButtonID.SELECT, MCU_OPTION);
-        this.setTriggerId (ButtonID.LEFT, MCU_ARROW_LEFT);
-        this.setTriggerId (ButtonID.RIGHT, MCU_ARROW_RIGHT);
-        this.setTriggerId (ButtonID.UP, MCU_ARROW_UP);
-        this.setTriggerId (ButtonID.DOWN, MCU_ARROW_DOWN);
 
         Arrays.fill (this.knobValues, -1);
     }
@@ -237,9 +230,9 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void shutdown ()
+    protected void internalShutdown ()
     {
-        final IMidiOutput output = this.getOutput ();
+        final IMidiOutput output = this.getMidiOutput ();
         for (int i = 0; i < 8; i++)
         {
             output.sendChannelAftertouch (0x10 * i, 0);
@@ -249,21 +242,13 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         output.sendChannelAftertouch (1, 0x10, 0);
         output.sendPitchbend (8, 0, 0);
 
-        super.shutdown ();
+        super.internalShutdown ();
     }
 
 
     /** {@inheritDoc} */
     @Override
     public void setTrigger (final int channel, final int cc, final int value)
-    {
-        this.output.sendNoteEx (channel, cc, value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setContinuous (final int channel, final int cc, final int value)
     {
         this.output.sendNoteEx (channel, cc, value);
     }
@@ -303,54 +288,6 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    protected void handleMidi (final int status, final int data1, final int data2)
-    {
-        final int code = status & 0xF0;
-        switch (code)
-        {
-            // Note on/off
-            case 0x80:
-            case 0x90:
-                // Reroute all notes to CC buttons
-                this.handleCC (0, data1, data2);
-                break;
-
-            case 0xB0:
-                // Handle knobs and jog wheel
-                this.handleCC (1, data1, data2);
-                break;
-
-            default:
-                super.handleMidi (status, data1, data2);
-                break;
-        }
-    }
-
-
-    /**
-     * Get the second display (only on icon QCon Pro X).
-     *
-     * @return The second display
-     */
-    public MCUDisplay getSecondDisplay ()
-    {
-        return (MCUDisplay) this.getTextDisplay (1);
-    }
-
-
-    /**
-     * Get the segment display.
-     *
-     * @return The segment display
-     */
-    public MCUSegmentDisplay getSegmentDisplay ()
-    {
-        return (MCUSegmentDisplay) this.getTextDisplay (2);
-    }
-
-
     /**
      * Get the channel/bank offset if multiple extenders are used.
      *
@@ -375,7 +312,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
             else
                 this.activeVuMode = VUMODE_LED;
         }
-        final IMidiOutput out = this.getOutput ();
+        final IMidiOutput out = this.getMidiOutput ();
         // the mcu changes the vu-meter mode when receiving the
         // corresponding sysex message
         switch (this.activeVuMode)
@@ -418,28 +355,20 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public boolean isGridNote (final int note)
+    public boolean isPressed (final ButtonID buttonID)
     {
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isPressed (final int button)
-    {
-        // Check on all MSU surfaces for state button presses
+        // Check on all MCU surfaces for state button presses
 
         for (final MCUControlSurface surface: this.surfaces)
-            if (surface.isTrigger (button) && surface.isSinglePressed (button))
+            if (surface.isSinglePressed (buttonID))
                 return true;
         return false;
     }
 
 
-    private boolean isSinglePressed (final int button)
+    private boolean isSinglePressed (final ButtonID buttonID)
     {
-        return super.isPressed (button);
+        return super.isPressed (buttonID);
     }
 
 

@@ -6,7 +6,7 @@ package de.mossgrabers.controller.slmkiii.controller;
 
 import de.mossgrabers.controller.slmkiii.SLMkIIIConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
@@ -23,90 +23,83 @@ import de.mossgrabers.framework.utils.StringUtils;
 @SuppressWarnings("javadoc")
 public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfiguration>
 {
-    public static final int        MKIII_KNOB_1            = 0x15;
-    public static final int        MKIII_KNOB_2            = 0x16;
-    public static final int        MKIII_KNOB_3            = 0x17;
-    public static final int        MKIII_KNOB_4            = 0x18;
-    public static final int        MKIII_KNOB_5            = 0x19;
-    public static final int        MKIII_KNOB_6            = 0x1A;
-    public static final int        MKIII_KNOB_7            = 0x1B;
-    public static final int        MKIII_KNOB_8            = 0x1C;
+    public static final int MKIII_KNOB_1            = 0x15;
+    public static final int MKIII_KNOB_2            = 0x16;
+    public static final int MKIII_KNOB_3            = 0x17;
+    public static final int MKIII_KNOB_4            = 0x18;
+    public static final int MKIII_KNOB_5            = 0x19;
+    public static final int MKIII_KNOB_6            = 0x1A;
+    public static final int MKIII_KNOB_7            = 0x1B;
+    public static final int MKIII_KNOB_8            = 0x1C;
 
-    public static final int        MKIII_FADER_1           = 0x29;
-    public static final int        MKIII_FADER_2           = 0x2A;
-    public static final int        MKIII_FADER_3           = 0x2B;
-    public static final int        MKIII_FADER_4           = 0x2C;
-    public static final int        MKIII_FADER_5           = 0x2D;
-    public static final int        MKIII_FADER_6           = 0x2E;
-    public static final int        MKIII_FADER_7           = 0x2F;
-    public static final int        MKIII_FADER_8           = 0x30;
+    public static final int MKIII_FADER_1           = 0x29;
+    public static final int MKIII_FADER_2           = 0x2A;
+    public static final int MKIII_FADER_3           = 0x2B;
+    public static final int MKIII_FADER_4           = 0x2C;
+    public static final int MKIII_FADER_5           = 0x2D;
+    public static final int MKIII_FADER_6           = 0x2E;
+    public static final int MKIII_FADER_7           = 0x2F;
+    public static final int MKIII_FADER_8           = 0x30;
 
-    public static final int        MKIII_DISPLAY_BUTTON_1  = 0x33;
-    public static final int        MKIII_DISPLAY_BUTTON_2  = 0x34;
-    public static final int        MKIII_DISPLAY_BUTTON_3  = 0x35;
-    public static final int        MKIII_DISPLAY_BUTTON_4  = 0x36;
-    public static final int        MKIII_DISPLAY_BUTTON_5  = 0x37;
-    public static final int        MKIII_DISPLAY_BUTTON_6  = 0x38;
-    public static final int        MKIII_DISPLAY_BUTTON_7  = 0x39;
-    public static final int        MKIII_DISPLAY_BUTTON_8  = 0x3A;
+    public static final int MKIII_DISPLAY_BUTTON_1  = 0x33;
+    public static final int MKIII_DISPLAY_BUTTON_2  = 0x34;
+    public static final int MKIII_DISPLAY_BUTTON_3  = 0x35;
+    public static final int MKIII_DISPLAY_BUTTON_4  = 0x36;
+    public static final int MKIII_DISPLAY_BUTTON_5  = 0x37;
+    public static final int MKIII_DISPLAY_BUTTON_6  = 0x38;
+    public static final int MKIII_DISPLAY_BUTTON_7  = 0x39;
+    public static final int MKIII_DISPLAY_BUTTON_8  = 0x3A;
 
-    public static final int        MKIII_BUTTON_ROW1_1     = 0x3B;
-    public static final int        MKIII_BUTTON_ROW1_2     = 0x3C;
-    public static final int        MKIII_BUTTON_ROW1_3     = 0x3D;
-    public static final int        MKIII_BUTTON_ROW1_4     = 0x3E;
-    public static final int        MKIII_BUTTON_ROW1_5     = 0x3F;
-    public static final int        MKIII_BUTTON_ROW1_6     = 0x40;
-    public static final int        MKIII_BUTTON_ROW1_7     = 0x41;
-    public static final int        MKIII_BUTTON_ROW1_8     = 0x42;
+    public static final int MKIII_BUTTON_ROW1_1     = 0x3B;
+    public static final int MKIII_BUTTON_ROW1_2     = 0x3C;
+    public static final int MKIII_BUTTON_ROW1_3     = 0x3D;
+    public static final int MKIII_BUTTON_ROW1_4     = 0x3E;
+    public static final int MKIII_BUTTON_ROW1_5     = 0x3F;
+    public static final int MKIII_BUTTON_ROW1_6     = 0x40;
+    public static final int MKIII_BUTTON_ROW1_7     = 0x41;
+    public static final int MKIII_BUTTON_ROW1_8     = 0x42;
 
-    public static final int        MKIII_BUTTON_ROW2_1     = 0x43;
-    public static final int        MKIII_BUTTON_ROW2_2     = 0x44;
-    public static final int        MKIII_BUTTON_ROW2_3     = 0x45;
-    public static final int        MKIII_BUTTON_ROW2_4     = 0x46;
-    public static final int        MKIII_BUTTON_ROW2_5     = 0x47;
-    public static final int        MKIII_BUTTON_ROW2_6     = 0x48;
-    public static final int        MKIII_BUTTON_ROW2_7     = 0x49;
-    public static final int        MKIII_BUTTON_ROW2_8     = 0x4A;
+    public static final int MKIII_BUTTON_ROW2_1     = 0x43;
+    public static final int MKIII_BUTTON_ROW2_2     = 0x44;
+    public static final int MKIII_BUTTON_ROW2_3     = 0x45;
+    public static final int MKIII_BUTTON_ROW2_4     = 0x46;
+    public static final int MKIII_BUTTON_ROW2_5     = 0x47;
+    public static final int MKIII_BUTTON_ROW2_6     = 0x48;
+    public static final int MKIII_BUTTON_ROW2_7     = 0x49;
+    public static final int MKIII_BUTTON_ROW2_8     = 0x4A;
 
-    public static final int        MKIII_DISPLAY_UP        = 0x51;
-    public static final int        MKIII_DISPLAY_DOWN      = 0x52;
-    public static final int        MKIII_SCENE_1           = 0x53;
-    public static final int        MKIII_SCENE_2           = 0x54;
-    public static final int        MKIII_SCENE_UP          = 0x55;
-    public static final int        MKIII_SCENE_DOWN        = 0x56;
+    public static final int MKIII_DISPLAY_UP        = 0x51;
+    public static final int MKIII_DISPLAY_DOWN      = 0x52;
+    public static final int MKIII_SCENE_1           = 0x53;
+    public static final int MKIII_SCENE_2           = 0x54;
+    public static final int MKIII_SCENE_UP          = 0x55;
+    public static final int MKIII_SCENE_DOWN        = 0x56;
 
-    public static final int        MKIII_BUTTONS_UP        = 0x57;
-    public static final int        MKIII_BUTTONS_DOWN      = 0x58;
+    public static final int MKIII_BUTTONS_UP        = 0x57;
+    public static final int MKIII_BUTTONS_DOWN      = 0x58;
 
-    public static final int        MKIII_GRID              = 0x59;
-    public static final int        MKIII_OPTIONS           = 0x5A;
-    public static final int        MKIII_SHIFT             = 0x5B;
-    public static final int        MKIII_DUPLICATE         = 0x5C;
-    public static final int        MKIII_CLEAR             = 0x5D;
+    public static final int MKIII_GRID              = 0x59;
+    public static final int MKIII_OPTIONS           = 0x5A;
+    public static final int MKIII_SHIFT             = 0x5B;
+    public static final int MKIII_DUPLICATE         = 0x5C;
+    public static final int MKIII_CLEAR             = 0x5D;
 
-    public static final int        MKIII_TRACK_LEFT        = 0x66;
-    public static final int        MKIII_TRACK_RIGHT       = 0x67;
+    public static final int MKIII_TRACK_LEFT        = 0x66;
+    public static final int MKIII_TRACK_RIGHT       = 0x67;
 
-    public static final int        MKIII_TRANSPORT_REWIND  = 0x70;
-    public static final int        MKIII_TRANSPORT_FORWARD = 0x71;
-    public static final int        MKIII_TRANSPORT_STOP    = 0x72;
-    public static final int        MKIII_TRANSPORT_PLAY    = 0x73;
-    public static final int        MKIII_TRANSPORT_LOOP    = 0x74;
-    public static final int        MKIII_TRANSPORT_RECORD  = 0x75;
+    public static final int MKIII_TRANSPORT_REWIND  = 0x70;
+    public static final int MKIII_TRANSPORT_FORWARD = 0x71;
+    public static final int MKIII_TRANSPORT_STOP    = 0x72;
+    public static final int MKIII_TRANSPORT_PLAY    = 0x73;
+    public static final int MKIII_TRANSPORT_LOOP    = 0x74;
+    public static final int MKIII_TRANSPORT_RECORD  = 0x75;
 
-    public static final int        MKIII_FADER_LED_1       = 0x36;
+    public static final int MKIII_FADER_LED_1       = 0x36;
 
-    public static final int        MKIII_BUTTON_STATE_OFF  = 0;
-    public static final int        MKIII_BUTTON_STATE_ON   = 1;
+    public static final int MKIII_BUTTON_STATE_OFF  = 0;
+    public static final int MKIII_BUTTON_STATE_ON   = 1;
 
-    private static final double [] BLACK                   = new double []
-    {
-        0,
-        0,
-        0
-    };
-
-    private boolean                isMuteSolo              = true;
+    private boolean         isMuteSolo              = true;
 
 
     /**
@@ -120,14 +113,9 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
      */
     public SLMkIIIControlSurface (final IHost host, final ColorManager colorManager, final SLMkIIIConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, new SLMkIIIPadGrid (colorManager, output));
+        super (host, configuration, colorManager, output, input, new SLMkIIIPadGrid (colorManager, output), 1000, 360);
 
         this.defaultMidiChannel = 15;
-
-        this.setTriggerId (ButtonID.SHIFT, MKIII_SHIFT);
-        this.setTriggerId (ButtonID.DELETE, MKIII_CLEAR);
-        this.setTriggerId (ButtonID.LEFT, MKIII_TRACK_LEFT);
-        this.setTriggerId (ButtonID.RIGHT, MKIII_TRACK_RIGHT);
 
         this.addTextDisplay (new SLMkIIIDisplay (host, output));
 
@@ -175,28 +163,13 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
 
     /** {@inheritDoc} */
     @Override
-    public void setContinuous (final int channel, final int cc, final int value)
+    protected void internalShutdown ()
     {
-        this.output.sendCCEx (channel, cc, value);
-    }
+        super.internalShutdown ();
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void shutdown ()
-    {
         final SLMkIIIDisplay d = this.getDisplay ();
         for (int i = 0; i < 8; i++)
-            d.setFaderLEDColor (MKIII_FADER_LED_1 + i, 0, BLACK);
-
-        super.shutdown ();
-    }
-
-
-    public void clearKnobCache ()
-    {
-        for (int i = 0; i < 8; i++)
-            this.clearContinuousCache (MKIII_KNOB_1 + i);
+            d.setFaderLEDColor (MKIII_FADER_LED_1 + i, ColorEx.BLACK);
     }
 
 

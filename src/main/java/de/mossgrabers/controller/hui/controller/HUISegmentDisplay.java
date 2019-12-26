@@ -4,7 +4,8 @@
 
 package de.mossgrabers.controller.hui.controller;
 
-import de.mossgrabers.framework.controller.display.DummyDisplay;
+import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -16,11 +17,10 @@ import java.util.Arrays;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class HUISegmentDisplay extends DummyDisplay
+public class HUISegmentDisplay extends AbstractTextDisplay
 {
     private static final String SYSEX_HDR          = "F0 00 00 66 05 00 11 ";
 
-    private IMidiOutput         output;
     private int []              transportBuffer    = new int [8];
     private int []              oldtransportBuffer = new int [8];
 
@@ -28,33 +28,30 @@ public class HUISegmentDisplay extends DummyDisplay
     /**
      * Constructor.
      *
+     * @param host The host
      * @param output The midi output which addresses the display
      */
-    public HUISegmentDisplay (final IMidiOutput output)
+    public HUISegmentDisplay (final IHost host, final IMidiOutput output)
     {
-        super (null);
-
-        this.output = output;
+        super (host, output, 1, 1, 20);
 
         Arrays.fill (this.oldtransportBuffer, -1);
     }
 
 
-    /**
-     * Sets the position string. Must only contain numbers and ':'.
-     *
-     * @param position The string
-     */
-    public void setTransportPositionDisplay (final String position)
+    /** {@inheritDoc} */
+    @Override
+    public void writeLine (final int row, final String text)
     {
-        final String text = position.toLowerCase ();
+        // Sets the position string. Must only contain numbers and ':'
+        final String lowerText = text.toLowerCase ();
         Arrays.fill (this.transportBuffer, 0);
 
         // Convert string to display character codes
         int index = 0;
-        for (int i = text.length () - 1; i >= 0; i--)
+        for (int i = lowerText.length () - 1; i >= 0; i--)
         {
-            final char c = text.charAt (i);
+            final char c = lowerText.charAt (i);
 
             // Set a dot
             if (c == ':')
@@ -89,5 +86,13 @@ public class HUISegmentDisplay extends DummyDisplay
         System.arraycopy (this.transportBuffer, 0, data, 0, data.length);
         final String msg = SYSEX_HDR + StringUtils.toHexStr (data) + "F7";
         this.output.sendSysex (msg);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void shutdown ()
+    {
+        // Intentionally empty
     }
 }

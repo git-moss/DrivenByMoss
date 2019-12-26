@@ -5,16 +5,16 @@
 package de.mossgrabers.controller.launchkey.view;
 
 import de.mossgrabers.controller.launchkey.LaunchkeyMiniMk3Configuration;
-import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3Colors;
+import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ColorManager;
 import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ControlSurface;
-import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
-import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -23,7 +23,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> implements SceneView
+public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration>
 {
     private static final String [] PAD_MODE_NAMES =
     {
@@ -54,21 +54,21 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurfa
     @Override
     public void drawGrid ()
     {
-        final PadGrid pads = this.surface.getPadGrid ();
+        final IPadGrid pads = this.surface.getPadGrid ();
         for (int x = 0; x < 8; x++)
-            pads.lightEx (x, 0, LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_BLACK);
+            pads.lightEx (x, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
 
         final SessionView view = (SessionView) this.surface.getViewManager ().getView (Views.SESSION);
         final Modes padMode = view.getPadMode ();
-        pads.lightEx (0, 1, padMode == null ? LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_GREEN_HI : LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_GREEN_LO);
-        pads.lightEx (1, 1, padMode == Modes.REC_ARM ? LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_RED_HI : LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_RED_LO);
-        pads.lightEx (2, 1, padMode == Modes.TRACK_SELECT ? LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_WHITE : LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_GREY_LO);
-        pads.lightEx (3, 1, padMode == Modes.MUTE ? LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_AMBER_HI : LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_AMBER_LO);
-        pads.lightEx (4, 1, padMode == Modes.SOLO ? LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_YELLOW_HI : LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_YELLOW_LO);
-        pads.lightEx (5, 1, padMode == Modes.STOP_CLIP ? LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_PINK_HI : LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_ROSE);
+        pads.lightEx (0, 1, padMode == null ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_LO);
+        pads.lightEx (1, 1, padMode == Modes.REC_ARM ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO);
+        pads.lightEx (2, 1, padMode == Modes.TRACK_SELECT ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_WHITE : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO);
+        pads.lightEx (3, 1, padMode == Modes.MUTE ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_LO);
+        pads.lightEx (4, 1, padMode == Modes.SOLO ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_LO);
+        pads.lightEx (5, 1, padMode == Modes.STOP_CLIP ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_PINK_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_ROSE);
 
-        pads.lightEx (6, 1, LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_BLACK);
-        pads.lightEx (7, 1, LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_BLACK);
+        pads.lightEx (6, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+        pads.lightEx (7, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
     }
 
 
@@ -93,8 +93,11 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurfa
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int sceneIndex, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event)
     {
+        if (!ButtonID.isSceneButton (buttonID))
+            return;
+
         if (event == ButtonEvent.UP)
         {
             this.surface.getViewManager ().restoreView ();
@@ -103,7 +106,8 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurfa
                 return;
 
             final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
-            final IScene scene = sceneBank.getItem (sceneIndex);
+            final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+            final IScene scene = sceneBank.getItem (index);
             scene.select ();
             scene.launch ();
         }
@@ -114,10 +118,11 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurfa
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        this.surface.updateTrigger (LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE1, LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_BLACK);
-        this.surface.updateTrigger (LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE2, LaunchkeyMiniMk3Colors.LAUNCHKEY_COLOR_WHITE);
+        if (buttonID == ButtonID.SCENE1)
+            return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
+        return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_WHITE;
     }
 
 

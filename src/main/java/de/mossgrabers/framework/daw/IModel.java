@@ -4,8 +4,8 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -210,6 +210,53 @@ public interface IModel
 
 
     /**
+     * Returns true if the current track can hold notes. Convenience method.
+     *
+     * @return True if the current track can hold notes.
+     */
+    boolean canSelectedTrackHoldNotes ();
+
+
+    /**
+     * Returns true if the cursor track is pinned (aka does not follow the track selection in the
+     * DAW).
+     *
+     * @return True if the cursor track is pinned
+     */
+    boolean isCursorTrackPinned ();
+
+
+    /**
+     * Toggles if the cursor track is pinned.
+     */
+    void toggleCursorTrackPinned ();
+
+
+    /**
+     * Returns true if the cursor device is pointing to a device on the master track.
+     *
+     * @return True if the cursor device is pointing to a device on the master track
+     */
+    boolean isCursorDeviceOnMasterTrack ();
+
+
+    /**
+     * Get the selected track from the current track bank, if any.
+     *
+     * @return The selected track or null
+     */
+    ITrack getSelectedTrack ();
+
+
+    /**
+     * Get the selected slot on the selected track, if any.
+     *
+     * @return The slot or null
+     */
+    ISlot getSelectedSlot ();
+
+
+    /**
      * Creates a new bank for monitoring scenes.
      *
      * @param numScenes The number of scenes in a bank page
@@ -248,6 +295,26 @@ public interface IModel
     INoteClip getNoteClip (int cols, int rows);
 
 
+    /**
+     * Create a new note clip of the given length and acivates and starts overdubbing.
+     *
+     * @param track The track which contains the slot
+     * @param slot The slot in which to create a clip
+     * @param lengthInBeats The length of the new clip
+     * @param overdub If true, overdub is enabled
+     */
+    void createNoteClip (ITrack track, ISlot slot, int lengthInBeats, boolean overdub);
+
+
+    /**
+     * Record a new note clip.
+     *
+     * @param track The track which contains the slot
+     * @param slot The slot in which to create a clip
+     */
+    void recordNoteClip (ITrack track, ISlot slot);
+
+
     /***
      * Create or get the default cursor clip.
      *
@@ -264,54 +331,6 @@ public interface IModel
 
 
     /**
-     * Creates a new clip at the given track and slot index.
-     *
-     * @param slot The slot in which to create a clip
-     * @param clipLength The length of the new clip as read from the configuration
-     */
-    void createClip (ISlot slot, int clipLength);
-
-
-    /**
-     * Returns true if session recording is enabled, a clip is recording or overdub is enabled.
-     *
-     * @return True if recording
-     */
-    boolean hasRecordingState ();
-
-
-    /**
-     * Returns true if the current track can hold notes. Convenience method.
-     *
-     * @return True if the current track can hold notes.
-     */
-    boolean canSelectedTrackHoldNotes ();
-
-
-    /**
-     * Returns true if the cursor track is pinned (aka does not follow the track selection in the
-     * DAW).
-     *
-     * @return True if the cursor track is pinned
-     */
-    boolean isCursorTrackPinned ();
-
-
-    /**
-     * Toggles if the cursor track is pinned.
-     */
-    void toggleCursorTrackPinned ();
-
-
-    /**
-     * Returns true if the cursor device is pointing to a device on the master track.
-     *
-     * @return True if the cursor device is pointing to a device on the master track
-     */
-    boolean isCursorDeviceOnMasterTrack ();
-
-
-    /**
      * Returns true if there is a selected audio clip which can be split.
      *
      * @return True if can be split
@@ -320,17 +339,9 @@ public interface IModel
 
 
     /**
-     * Get the selected track from the current track bank, if any.
+     * Returns true if session recording is enabled, a clip is recording or overdub is enabled.
      *
-     * @return The selected track or null
+     * @return True if recording
      */
-    ITrack getSelectedTrack ();
-
-
-    /**
-     * Get the selected slot on the selected track, if any.
-     *
-     * @return The slot or null
-     */
-    ISlot getSelectedSlot ();
+    boolean hasRecordingState ();
 }

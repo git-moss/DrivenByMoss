@@ -89,7 +89,7 @@ public class TransportModule extends AbstractModule
 
             case "playbutton":
                 if (isTrigger (value))
-                    this.playCommand.execute (ButtonEvent.DOWN);
+                    this.playCommand.execute (ButtonEvent.DOWN, 127);
                 break;
 
             case "stop":

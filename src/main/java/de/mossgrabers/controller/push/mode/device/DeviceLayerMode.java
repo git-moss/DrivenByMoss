@@ -6,15 +6,15 @@ package de.mossgrabers.controller.push.mode.device;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.Push1Display;
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
-import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -105,7 +105,7 @@ public class DeviceLayerMode extends BaseMode
             final ISendBank sendBank = channel.getSendBank ();
             if (this.surface.isDeletePressed ())
             {
-                this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+                this.surface.setTriggerConsumed (ButtonID.DELETE);
                 switch (index)
                 {
                     case 0:
@@ -183,7 +183,7 @@ public class DeviceLayerMode extends BaseMode
         }
 
         // LONG press
-        this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_ROW1_1 + index);
+        this.surface.setTriggerConsumed (ButtonID.get (ButtonID.ROW1_1, index));
         this.moveUp ();
     }
 
@@ -197,7 +197,7 @@ public class DeviceLayerMode extends BaseMode
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
         {
-            this.surface.getViewManager ().getActiveView ().executeTriggerCommand (TriggerCommandID.TRACK, ButtonEvent.DOWN);
+            this.surface.getButton (ButtonID.TRACK).trigger (ButtonEvent.DOWN);
             return;
         }
 
@@ -409,7 +409,7 @@ public class DeviceLayerMode extends BaseMode
 
             // Channel info
             final String bottomMenu = layer.doesExist () ? layer.getName (12) : "";
-            final double [] bottomMenuColor = layer.getColor ();
+            final ColorEx bottomMenuColor = layer.getColor ();
             final boolean isBottomMenuOn = layer.isSelected ();
 
             if (layer.isSelected ())
@@ -536,98 +536,84 @@ public class DeviceLayerMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public int getButtonColor (final ButtonID buttonID)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (cd == null || !cd.hasLayers ())
-        {
-            this.disableFirstRow ();
-            return;
-        }
+            return super.getButtonColor (buttonID);
 
-        final int offset = getDrumPadIndex (cd);
-        final IChannelBank<?> bank = this.model.getCursorDevice ().getLayerOrDrumPadBank ();
-        for (int i = 0; i < 8; i++)
-        {
-            final IChannel dl = bank.getItem (offset + i);
-            this.surface.updateTrigger (20 + i, dl.doesExist () && dl.isActivated () ? dl.isSelected () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_LO : PushColors.PUSH1_COLOR_YELLOW_LO : this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK);
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSecondRow ()
-    {
-        final ICursorDevice cd = this.model.getCursorDevice ();
         final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+        // Drum Pad Bank has size of 16, layers only 8
+        final int offset = getDrumPadIndex (cd);
 
-        final PushConfiguration config = this.surface.getConfiguration ();
-        final boolean muteState = config.isMuteState ();
-        if (this.isPush2)
+        int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
         {
-            if (config.isMuteLongPressed () || config.isSoloLongPressed () || config.isMuteSoloLocked ())
+            final IChannel dl = bank.getItem (offset + buttonID.ordinal () - ButtonID.ROW1_1.ordinal ());
+            if (dl.doesExist () && dl.isActivated ())
             {
-                // Drum Pad Bank has size of 16, layers only 8
-                final int offset = getDrumPadIndex (cd);
+                if (dl.isSelected ())
+                    return this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI;
+                return this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
+            }
+            return super.getButtonColor (buttonID);
+        }
 
-                for (int i = 0; i < 8; i++)
+        index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            final PushConfiguration config = this.surface.getConfiguration ();
+            final boolean muteState = config.isMuteState ();
+            final IChannel layer = bank.getItem (offset + index);
+            if (this.isPush2)
+            {
+                if (config.isMuteLongPressed () || config.isSoloLongPressed () || config.isMuteSoloLocked ())
                 {
-                    final IChannel layer = bank.getItem (offset + i);
-
-                    int color = PushColors.PUSH2_COLOR_BLACK;
                     if (layer.doesExist ())
                     {
                         if (muteState)
                         {
                             if (layer.isMute ())
-                                color = PushColors.PUSH2_COLOR2_AMBER_LO;
+                                return PushColorManager.PUSH2_COLOR2_AMBER_LO;
                         }
                         else if (layer.isSolo ())
-                            color = PushColors.PUSH2_COLOR2_YELLOW_HI;
+                            return PushColorManager.PUSH2_COLOR2_YELLOW_HI;
                     }
-
-                    this.surface.updateTrigger (102 + i, color);
+                    return PushColorManager.PUSH2_COLOR_BLACK;
                 }
-                return;
+
+                final ModeManager modeManager = this.surface.getModeManager ();
+                switch (index)
+                {
+                    case 0:
+                        return modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_VOLUME) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                    case 1:
+                        return modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_PAN) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                    case 4:
+                        return modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND5 : Modes.DEVICE_LAYER_SEND1) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                    case 5:
+                        return modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND6 : Modes.DEVICE_LAYER_SEND2) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                    case 6:
+                        return modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND7 : Modes.DEVICE_LAYER_SEND3) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                    case 7:
+                        return modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND8 : Modes.DEVICE_LAYER_SEND4) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                    default:
+                        return PushColorManager.PUSH2_COLOR_BLACK;
+                }
             }
 
-            final ModeManager modeManager = this.surface.getModeManager ();
-            this.surface.updateTrigger (102, modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_VOLUME) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (103, modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_PAN) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (104, PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (105, PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (106, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND5 : Modes.DEVICE_LAYER_SEND1) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (107, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND6 : Modes.DEVICE_LAYER_SEND2) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (108, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND7 : Modes.DEVICE_LAYER_SEND3) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            this.surface.updateTrigger (109, modeManager.isActiveOrTempMode (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND8 : Modes.DEVICE_LAYER_SEND4) ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
-            return;
-        }
+            if (!cd.hasLayers ())
+                return index == 7 ? PushColorManager.PUSH1_COLOR2_WHITE : super.getButtonColor (buttonID);
 
-        if (!cd.hasLayers ())
-        {
-            this.disableSecondRow ();
-            this.surface.updateTrigger (109, PushColors.PUSH1_COLOR2_WHITE);
-            return;
-        }
-
-        final int offset = getDrumPadIndex (cd);
-        for (int i = 0; i < 8; i++)
-        {
-            final IChannel dl = bank.getItem (offset + i);
-            int color = PushColors.PUSH1_COLOR_BLACK;
-            if (dl.doesExist ())
+            if (layer.doesExist ())
             {
                 if (muteState)
-                {
-                    if (!dl.isMute ())
-                        color = PushColors.PUSH1_COLOR2_YELLOW_HI;
-                }
-                else
-                    color = dl.isSolo () ? PushColors.PUSH1_COLOR2_BLUE_HI : PushColors.PUSH1_COLOR2_GREY_LO;
+                    return layer.isMute () ? PushColorManager.PUSH1_COLOR_BLACK : PushColorManager.PUSH1_COLOR2_YELLOW_HI;
+                return layer.isSolo () ? PushColorManager.PUSH1_COLOR2_BLUE_HI : PushColorManager.PUSH1_COLOR2_GREY_LO;
             }
-            this.surface.updateTrigger (102 + i, color);
         }
+
+        return super.getButtonColor (buttonID);
     }
 
 

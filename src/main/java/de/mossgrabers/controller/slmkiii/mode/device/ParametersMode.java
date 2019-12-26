@@ -5,12 +5,12 @@
 package de.mossgrabers.controller.slmkiii.mode.device;
 
 import de.mossgrabers.controller.slmkiii.SLMkIIIConfiguration;
-import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColors;
+import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.controller.slmkiii.mode.BaseMode;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
@@ -88,6 +88,15 @@ public class ParametersMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
+    public int getKnobValue (final int index)
+    {
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        return cd.doesExist () ? cd.getParameterBank ().getItem (index).getValue () : 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void onButton (final int row, final int index, final ButtonEvent event)
     {
         if (event != ButtonEvent.UP)
@@ -151,16 +160,16 @@ public class ParametersMode extends BaseMode
             return;
         }
 
-        if (this.surface.isPressed (SLMkIIIControlSurface.MKIII_DUPLICATE))
+        if (this.surface.isPressed (ButtonID.DUPLICATE))
         {
-            this.surface.setTriggerConsumed (SLMkIIIControlSurface.MKIII_DUPLICATE);
+            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
             cd.duplicate ();
             return;
         }
 
-        if (this.surface.isPressed (SLMkIIIControlSurface.MKIII_CLEAR))
+        if (this.surface.isPressed (ButtonID.DELETE))
         {
-            this.surface.setTriggerConsumed (SLMkIIIControlSurface.MKIII_CLEAR);
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             cd.getDeviceBank ().getItem (index).remove ();
             return;
         }
@@ -174,67 +183,56 @@ public class ParametersMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public int getButtonColor (final ButtonID buttonID)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-
         if (this.surface.isShiftPressed ())
         {
             if (!cd.doesExist ())
             {
-                for (int i = 0; i < 7; i++)
-                    this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, SLMkIIIColors.SLMKIII_BLACK);
-                if (this.model.getSelectedTrack () != null)
-                    this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_8, SLMkIIIColors.SLMKIII_RED_HALF);
-            }
-            else
-            {
-                this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1, cd.isEnabled () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-                this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_2, cd.isParameterPageSectionVisible () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-                this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_3, cd.isExpanded () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-                this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_4, cd.isWindowOpen () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-                this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_5, cd.isPinned () ? SLMkIIIColors.SLMKIII_RED : SLMkIIIColors.SLMKIII_RED_HALF);
-                this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_6, SLMkIIIColors.SLMKIII_RED_HALF);
-                this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_7, SLMkIIIColors.SLMKIII_RED_HALF);
-                this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_8, SLMkIIIColors.SLMKIII_RED_HALF);
+                if (buttonID == ButtonID.ROW1_8 && this.model.getSelectedTrack () != null)
+                    return SLMkIIIColorManager.SLMKIII_RED_HALF;
+                return SLMkIIIColorManager.SLMKIII_BLACK;
             }
 
-            return;
+            switch (buttonID)
+            {
+                case ROW1_1:
+                    return cd.isEnabled () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                case ROW1_2:
+                    return cd.isParameterPageSectionVisible () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                case ROW1_3:
+                    return cd.isExpanded () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                case ROW1_4:
+                    return cd.isWindowOpen () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                case ROW1_5:
+                    return cd.isPinned () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                case ROW1_6:
+                case ROW1_7:
+                case ROW1_8:
+                default:
+                    return SLMkIIIColorManager.SLMKIII_RED_HALF;
+            }
         }
 
         if (!cd.doesExist ())
-        {
-            this.disableFirstRow ();
-            return;
-        }
+            return 0;
 
+        final int index = buttonID.ordinal () - ButtonID.ROW1_1.ordinal ();
         if (this.showDevices)
         {
-            final int selectedColor = SLMkIIIColors.SLMKIII_MINT;
-            final int existsColor = SLMkIIIColors.SLMKIII_MINT_HALF;
-            final int offColor = SLMkIIIColors.SLMKIII_BLACK;
-
             final IDeviceBank bank = cd.getDeviceBank ();
-            for (int i = 0; i < bank.getPageSize (); i++)
-            {
-                final IDevice item = bank.getItem (i);
-                this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, item.doesExist () ? i == cd.getIndex () ? selectedColor : existsColor : offColor);
-            }
+            final IDevice item = bank.getItem (index);
+            if (!item.doesExist ())
+                return SLMkIIIColorManager.SLMKIII_BLACK;
+            return index == cd.getIndex () ? SLMkIIIColorManager.SLMKIII_MINT : SLMkIIIColorManager.SLMKIII_MINT_HALF;
         }
-        else
-        {
-            final int selectedColor = SLMkIIIColors.SLMKIII_PURPLE;
-            final int existsColor = SLMkIIIColors.SLMKIII_PURPLE_HALF;
-            final int offColor = SLMkIIIColors.SLMKIII_BLACK;
 
-            final IParameterPageBank bank = cd.getParameterPageBank ();
-            final int selectedItemIndex = bank.getSelectedItemIndex ();
-            for (int i = 0; i < bank.getPageSize (); i++)
-            {
-                final String item = bank.getItem (i);
-                this.surface.updateTrigger (SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, !item.isEmpty () ? i == selectedItemIndex ? selectedColor : existsColor : offColor);
-            }
-        }
+        final IParameterPageBank bank = cd.getParameterPageBank ();
+        final int selectedItemIndex = bank.getSelectedItemIndex ();
+        if (bank.getItem (index).isEmpty ())
+            return SLMkIIIColorManager.SLMKIII_BLACK;
+        return index == selectedItemIndex ? SLMkIIIColorManager.SLMKIII_PURPLE : SLMkIIIColorManager.SLMKIII_PURPLE_HALF;
     }
 
 
@@ -258,7 +256,6 @@ public class ParametersMode extends BaseMode
         }
         else
         {
-            final IValueChanger valueChanger = this.model.getValueChanger ();
             final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
             final String selectedPage = parameterPageBank.getSelectedItem ();
             d.setCell (0, 8, cd.getName (9)).setCell (1, 8, selectedPage);
@@ -270,9 +267,7 @@ public class ParametersMode extends BaseMode
                 final IParameter param = parameterBank.getItem (i);
                 d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (9)) : "").setCell (1, i, param.getDisplayedValue (9));
 
-                this.surface.updateContinuous (SLMkIIIControlSurface.MKIII_KNOB_1 + i, valueChanger.toMidiValue (param.getValue ()));
-
-                final int color = param.doesExist () ? SLMkIIIColors.SLMKIII_PURPLE : SLMkIIIColors.SLMKIII_BLACK;
+                final int color = param.doesExist () ? SLMkIIIColorManager.SLMKIII_PURPLE : SLMkIIIColorManager.SLMKIII_BLACK;
                 d.setPropertyColor (i, 0, color);
                 d.setPropertyColor (i, 1, color);
             }
@@ -280,8 +275,6 @@ public class ParametersMode extends BaseMode
             // Row 4
             this.drawRow4 (d, cd, parameterPageBank);
         }
-
-        d.setPropertyColor (8, 0, SLMkIIIColors.SLMKIII_PURPLE);
 
         this.setButtonInfo (d);
         d.allDone ();
@@ -300,7 +293,7 @@ public class ParametersMode extends BaseMode
         {
             for (int i = 0; i < 8; i++)
             {
-                d.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_BLACK);
+                d.setPropertyColor (i, 2, SLMkIIIColorManager.SLMKIII_BLACK);
                 d.setPropertyValue (i, 1, 0);
             }
             return;
@@ -317,7 +310,7 @@ public class ParametersMode extends BaseMode
                     sb.append (device.getName (9));
                 d.setCell (3, i, sb.toString ());
 
-                d.setPropertyColor (i, 2, device.doesExist () ? SLMkIIIColors.SLMKIII_MINT : SLMkIIIColors.SLMKIII_BLACK);
+                d.setPropertyColor (i, 2, device.doesExist () ? SLMkIIIColorManager.SLMKIII_MINT : SLMkIIIColorManager.SLMKIII_BLACK);
                 d.setPropertyValue (i, 1, device.doesExist () && i == cd.getIndex () ? 1 : 0);
             }
         }
@@ -328,7 +321,7 @@ public class ParametersMode extends BaseMode
                 final String item = parameterPageBank.getItem (i);
                 d.setCell (3, i, item.isEmpty () ? "" : item);
 
-                d.setPropertyColor (i, 2, item.isEmpty () ? SLMkIIIColors.SLMKIII_BLACK : SLMkIIIColors.SLMKIII_PURPLE);
+                d.setPropertyColor (i, 2, item.isEmpty () ? SLMkIIIColorManager.SLMKIII_BLACK : SLMkIIIColorManager.SLMKIII_PURPLE);
                 d.setPropertyValue (i, 1, parameterPageBank.getSelectedItemIndex () == i ? 1 : 0);
             }
         }
@@ -340,38 +333,38 @@ public class ParametersMode extends BaseMode
         if (cd.doesExist ())
         {
             d.setCell (3, 0, "On/Off");
-            d.setPropertyColor (0, 2, SLMkIIIColors.SLMKIII_RED);
+            d.setPropertyColor (0, 2, SLMkIIIColorManager.SLMKIII_RED);
             d.setPropertyValue (0, 1, cd.isEnabled () ? 1 : 0);
 
             d.setCell (3, 1, "Params");
-            d.setPropertyColor (1, 2, SLMkIIIColors.SLMKIII_RED);
+            d.setPropertyColor (1, 2, SLMkIIIColorManager.SLMKIII_RED);
             d.setPropertyValue (1, 1, cd.isParameterPageSectionVisible () ? 1 : 0);
 
             d.setCell (3, 2, "Expanded");
-            d.setPropertyColor (2, 2, SLMkIIIColors.SLMKIII_RED);
+            d.setPropertyColor (2, 2, SLMkIIIColorManager.SLMKIII_RED);
             d.setPropertyValue (2, 1, cd.isExpanded () ? 1 : 0);
 
             d.setCell (3, 3, "Window");
-            d.setPropertyColor (3, 2, SLMkIIIColors.SLMKIII_RED);
+            d.setPropertyColor (3, 2, SLMkIIIColorManager.SLMKIII_RED);
             d.setPropertyValue (3, 1, cd.isWindowOpen () ? 1 : 0);
 
             d.setCell (3, 4, "Pin");
-            d.setPropertyColor (4, 2, SLMkIIIColors.SLMKIII_RED);
+            d.setPropertyColor (4, 2, SLMkIIIColorManager.SLMKIII_RED);
             d.setPropertyValue (4, 1, cd.isPinned () ? 1 : 0);
 
             d.setCell (3, 5, "<< Insert");
-            d.setPropertyColor (5, 2, SLMkIIIColors.SLMKIII_RED);
+            d.setPropertyColor (5, 2, SLMkIIIColorManager.SLMKIII_RED);
             d.setPropertyValue (5, 1, 0);
 
             d.setCell (3, 6, "Replace");
-            d.setPropertyColor (6, 2, SLMkIIIColors.SLMKIII_RED);
+            d.setPropertyColor (6, 2, SLMkIIIColorManager.SLMKIII_RED);
             d.setPropertyValue (6, 1, 0);
         }
         else
         {
             for (int i = 0; i < 7; i++)
             {
-                d.setPropertyColor (i, 2, SLMkIIIColors.SLMKIII_BLACK);
+                d.setPropertyColor (i, 2, SLMkIIIColorManager.SLMKIII_BLACK);
                 d.setPropertyValue (i, 1, 0);
             }
         }
@@ -379,7 +372,7 @@ public class ParametersMode extends BaseMode
         if (this.model.getSelectedTrack () != null)
         {
             d.setCell (3, 7, "Insert >>");
-            d.setPropertyColor (7, 2, SLMkIIIColors.SLMKIII_RED);
+            d.setPropertyColor (7, 2, SLMkIIIColorManager.SLMKIII_RED);
             d.setPropertyValue (7, 1, 0);
         }
     }
@@ -393,5 +386,13 @@ public class ParametersMode extends BaseMode
         if (cursorDevice == null)
             return null;
         return this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getModeColor ()
+    {
+        return SLMkIIIColorManager.SLMKIII_PURPLE;
     }
 }

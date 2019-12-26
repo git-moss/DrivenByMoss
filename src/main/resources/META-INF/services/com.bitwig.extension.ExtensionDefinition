@@ -2,7 +2,6 @@ de.mossgrabers.bitwig.controller.apc.APCmkIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.apc.APCmkIIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.apcmini.APCminiControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.beatstep.BeatstepControllerExtensionDefinition
-de.mossgrabers.bitwig.controller.beatstep.BeatstepProControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.generic.GenericFlexiControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.hui.HUIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.launchkey.LaunchkeyMiniMk3ControllerExtensionDefinition

@@ -1,2 +1,2 @@
-set JAVA_HOME=%JAVA_HOME8%
+set JAVA_HOME=%JAVA_HOME12%
 mvn clean install package -Dbitwig.extension.directory=target

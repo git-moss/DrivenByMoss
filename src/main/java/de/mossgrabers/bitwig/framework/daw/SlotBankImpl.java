@@ -5,7 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.SlotImpl;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -62,6 +62,6 @@ public class SlotBankImpl extends AbstractBankImpl<ClipLauncherSlotBank, ISlot> 
     protected void initItems ()
     {
         for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new SlotImpl (this.track, this.bank, this.bank.getItemAt (i), i));
+            this.items.add (new SlotImpl (this.track, this.bank.getItemAt (i), i));
     }
 }

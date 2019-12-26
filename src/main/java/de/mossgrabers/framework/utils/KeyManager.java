@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.utils;
 
-import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.observer.NoteObserver;
@@ -22,11 +22,11 @@ import java.util.List;
  */
 public class KeyManager implements NoteObserver
 {
-    private final int []  pressedKeys = new int [128];
-    private final IModel  model;
-    private final Scales  scales;
-    private final PadGrid padGrid;
-    private int []        noteMap     = Scales.getEmptyMatrix ();
+    private final int []   pressedKeys = new int [128];
+    private final IModel   model;
+    private final Scales   scales;
+    private final IPadGrid padGrid;
+    private int []         noteMap     = Scales.getEmptyMatrix ();
 
 
     /**
@@ -35,7 +35,7 @@ public class KeyManager implements NoteObserver
      * @param model The model
      * @param padGrid A pad grid, can be null
      */
-    public KeyManager (final IModel model, final PadGrid padGrid)
+    public KeyManager (final IModel model, final IPadGrid padGrid)
     {
         this.model = model;
         this.scales = this.model.getScales ();

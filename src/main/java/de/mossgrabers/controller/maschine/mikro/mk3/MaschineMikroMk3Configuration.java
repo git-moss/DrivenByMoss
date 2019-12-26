@@ -7,7 +7,7 @@ package de.mossgrabers.controller.maschine.mikro.mk3;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 
 
@@ -75,6 +75,11 @@ public class MaschineMikroMk3Configuration extends AbstractConfiguration
         this.activateScaleBaseSetting (documentSettings);
         this.activateScaleInScaleSetting (documentSettings);
         this.activateScaleLayoutSetting (documentSettings);
+
+        ///////////////////////////
+        // Note Repeat
+
+        this.activateNoteRepeatSetting (documentSettings);
 
         ///////////////////////////
         // Transport

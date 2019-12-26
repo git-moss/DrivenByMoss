@@ -9,12 +9,15 @@ import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefini
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
+
+import java.util.Map.Entry;
 
 
 /**
@@ -73,14 +76,11 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public LaunchpadControlSurface (final IHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final IMidiOutput output, final IMidiInput input, final ILaunchpadControllerDefinition definition)
     {
-        super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, definition));
+        super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, definition), 800, 800);
 
         this.definition = definition;
 
-        this.buttonIDs.putAll (this.definition.getButtonIDs ());
-
         this.input.setSysexCallback (this::handleSysEx);
-
         this.output.sendSysex (DeviceInquiry.createQuery ());
     }
 
@@ -110,9 +110,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setLaunchpadToPrgMode ()
     {
-        this.sendLaunchpadSysEx (this.definition.getProgramModeCommand ());
-        // Ensure that grid gets redrawn, switch modes is especially very slow on the MkII
-        this.host.scheduleTask (this.getPadGrid ()::forceFlush, 200);
+        this.setLaunchpadMode (this.definition.getProgramModeCommand ());
     }
 
 
@@ -121,9 +119,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setLaunchpadToFaderMode ()
     {
-        this.sendLaunchpadSysEx (this.definition.getFaderModeCommand ());
-        // Ensure that grid gets redrawn, switch modes is especially very slow on the MkII
-        this.host.scheduleTask (this.getPadGrid ()::forceFlush, 200);
+        this.setLaunchpadMode (this.definition.getFaderModeCommand ());
     }
 
 
@@ -132,9 +128,21 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setLaunchpadToPanMode ()
     {
-        this.sendLaunchpadSysEx (this.definition.getPanModeCommand ());
-        // Ensure that grid gets redrawn, switch modes is especially very slow on the MkII
-        this.host.scheduleTask (this.getPadGrid ()::forceFlush, 200);
+        this.setLaunchpadMode (this.definition.getPanModeCommand ());
+    }
+
+
+    private void setLaunchpadMode (final String data)
+    {
+        this.sendLaunchpadSysEx (data);
+
+        for (final Entry<ButtonID, IHwButton> entry: this.getButtons ().entrySet ())
+        {
+            final ButtonID key = entry.getKey ();
+            final int keyValue = key.ordinal ();
+            if (ButtonID.PAD1.ordinal () < keyValue || ButtonID.PAD64.ordinal () > keyValue)
+                entry.getValue ().getLight ().clearCache ();
+        }
     }
 
 
@@ -171,7 +179,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
             this.output.sendCC (LAUNCHPAD_FADER_1 + index, value);
         else
         {
-            final PadGrid padGrid = this.getPadGrid ();
+            final IPadGrid padGrid = this.getPadGrid ();
 
             if (this.faderPanCache[index])
             {
@@ -226,7 +234,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
 
     /** {@inheritDoc} */
     @Override
-    public void shutdown ()
+    protected void internalShutdown ()
     {
         if (this.definition.isPro ())
         {
@@ -234,18 +242,18 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
             this.sendLaunchpadSysEx ("0A 63 00");
         }
         else
-            this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_LOGO, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+            this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_LOGO, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
-        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
-        super.shutdown ();
+        super.internalShutdown ();
     }
 
 
@@ -260,6 +268,16 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    protected void flushHardware ()
+    {
+        super.flushHardware ();
+
+        ((LaunchpadPadGrid) this.pads).flush ();
+    }
+
+
     /**
      * Send sysex data to the launchpad.
      *
@@ -268,14 +286,6 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public void sendLaunchpadSysEx (final String data)
     {
         this.output.sendSysex (this.definition.getSysExHeader () + data + " F7");
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getSceneTrigger (final int index)
-    {
-        return LAUNCHPAD_BUTTON_SCENE1 - 10 * index;
     }
 
 

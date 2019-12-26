@@ -4,12 +4,6 @@
 
 package de.mossgrabers.framework.view;
 
-import de.mossgrabers.framework.command.ContinuousCommandID;
-import de.mossgrabers.framework.command.TriggerCommandID;
-import de.mossgrabers.framework.command.core.AftertouchCommand;
-import de.mossgrabers.framework.command.core.ContinuousCommand;
-import de.mossgrabers.framework.command.core.PitchbendCommand;
-import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.utils.FrameworkException;
 
 import java.util.ArrayList;
@@ -162,64 +156,6 @@ public class ViewManager
     public void addViewChangeListener (final ViewChangeListener listener)
     {
         this.viewChangeListeners.add (listener);
-    }
-
-
-    /**
-     * Register a (global) trigger command for all views.
-     *
-     * @param commandID The ID of the command to register
-     * @param command The command to register
-     */
-    public void registerTriggerCommand (final TriggerCommandID commandID, final TriggerCommand command)
-    {
-        this.views.forEach ( (viewID, view) -> view.registerTriggerCommand (commandID, command));
-    }
-
-
-    /**
-     * Register a (global) continuous command for all views.
-     *
-     * @param commandID The ID of the command to register
-     * @param command The command to register
-     */
-    public void registerContinuousCommand (final ContinuousCommandID commandID, final ContinuousCommand command)
-    {
-        this.views.forEach ( (viewID, view) -> view.registerContinuousCommand (commandID, command));
-    }
-
-
-    /**
-     * Register a (global) note (trigger) command for all views.
-     *
-     * @param commandID The ID of the command to register
-     * @param command The command to register
-     */
-    public void registerNoteCommand (final TriggerCommandID commandID, final TriggerCommand command)
-    {
-        this.views.forEach ( (viewID, view) -> view.registerNoteCommand (commandID, command));
-    }
-
-
-    /**
-     * Register a pitchbend command for all views.
-     *
-     * @param command The command to register
-     */
-    public void registerPitchbendCommand (final PitchbendCommand command)
-    {
-        this.views.forEach ( (viewID, view) -> view.registerPitchbendCommand (command));
-    }
-
-
-    /**
-     * Register an aftertouch command for all views.
-     *
-     * @param command The command to register
-     */
-    public void registerAftertouchCommand (final AftertouchCommand command)
-    {
-        this.views.forEach ( (viewID, view) -> view.registerAftertouchCommand (command));
     }
 
 

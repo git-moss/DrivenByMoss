@@ -7,7 +7,6 @@ package de.mossgrabers.controller.push.command.trigger;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -35,16 +34,13 @@ public class ShiftCommand extends AbstractTriggerCommand<PushControlSurface, Pus
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
-        final boolean isUp = event == ButtonEvent.UP;
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_SHIFT, isUp ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_HI);
-
         final ModeManager modeManager = this.surface.getModeManager ();
         final Modes cm = modeManager.getActiveOrTempModeId ();
         if (event == ButtonEvent.DOWN && Modes.SCALES.equals (cm))
             modeManager.setActiveMode (Modes.SCALE_LAYOUT);
-        else if (isUp && Modes.SCALE_LAYOUT.equals (cm))
+        else if (event == ButtonEvent.UP && Modes.SCALE_LAYOUT.equals (cm))
             modeManager.restoreMode ();
 
         this.model.getValueChanger ().setSpeed (this.surface.isShiftPressed ());

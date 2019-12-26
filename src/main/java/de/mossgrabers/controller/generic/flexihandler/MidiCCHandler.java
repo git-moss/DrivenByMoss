@@ -7,7 +7,7 @@ package de.mossgrabers.controller.generic.flexihandler;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 
 
@@ -313,7 +313,7 @@ public class MidiCCHandler extends AbstractHandler
             case MIDI_CC_125:
             case MIDI_CC_126:
             case MIDI_CC_127:
-                this.surface.getInput ().sendRawMidiEvent (0xB0, command.ordinal () - FlexiCommand.MIDI_CC_0.ordinal (), value);
+                this.surface.getMidiInput ().sendRawMidiEvent (0xB0, command.ordinal () - FlexiCommand.MIDI_CC_0.ordinal (), value);
                 break;
 
             default:

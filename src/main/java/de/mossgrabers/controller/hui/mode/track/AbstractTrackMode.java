@@ -36,14 +36,6 @@ public abstract class AbstractTrackMode extends AbstractMode<HUIControlSurface, 
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void updateFirstRow ()
-    {
-        this.updateKnobLEDs ();
-    }
-
-
     protected ITextDisplay drawTrackHeader ()
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
@@ -77,7 +69,10 @@ public abstract class AbstractTrackMode extends AbstractMode<HUIControlSurface, 
     }
 
 
-    protected abstract void updateKnobLEDs ();
+    /**
+     * Update the knob LEDs.
+     */
+    public abstract void updateKnobLEDs ();
 
 
     protected abstract void resetParameter (int index);

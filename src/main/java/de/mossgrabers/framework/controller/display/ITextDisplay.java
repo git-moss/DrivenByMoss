@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.controller.display;
 
+import de.mossgrabers.framework.controller.hardware.IHwTextDisplay;
+
+
 /**
  * Interface to a text only display.
  *
@@ -11,6 +14,14 @@ package de.mossgrabers.framework.controller.display;
  */
 public interface ITextDisplay extends IDisplay
 {
+    /**
+     * Get the number of lines of the display.
+     *
+     * @return The number of lines (rows)
+     */
+    int getNoOfLines ();
+
+
     /**
      * Clears the display.
      *
@@ -137,4 +148,20 @@ public interface ITextDisplay extends IDisplay
      * Forces the recreation of all row texts. The next call to flush will then send all rows.
      */
     void forceFlush ();
+
+
+    /**
+     * Assign a proxy to the hardware display, which gets filled by this text display.
+     *
+     * @param display The hardware display
+     */
+    void setHardwareDisplay (IHwTextDisplay display);
+
+
+    /**
+     * Get the hardware display.
+     *
+     * @return The hardware display
+     */
+    IHwTextDisplay getHardwareDisplay ();
 }

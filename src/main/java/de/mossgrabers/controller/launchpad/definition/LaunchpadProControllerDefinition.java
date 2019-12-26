@@ -4,9 +4,10 @@
 
 package de.mossgrabers.controller.launchpad.definition;
 
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
-import de.mossgrabers.framework.controller.grid.PadInfo;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
@@ -181,6 +182,15 @@ public class LaunchpadProControllerDefinition extends DefaultControllerDefinitio
         buttonIDs.put (ButtonID.DEVICE, Integer.valueOf (LAUNCHPAD_BUTTON_DEVICE));
         buttonIDs.put (ButtonID.USER, Integer.valueOf (LAUNCHPAD_BUTTON_USER));
         buttonIDs.put (ButtonID.NOTE, Integer.valueOf (LAUNCHPAD_BUTTON_NOTE));
+
+        buttonIDs.put (ButtonID.SCENE1, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1));
+        buttonIDs.put (ButtonID.SCENE2, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2));
+        buttonIDs.put (ButtonID.SCENE3, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3));
+        buttonIDs.put (ButtonID.SCENE4, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4));
+        buttonIDs.put (ButtonID.SCENE5, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5));
+        buttonIDs.put (ButtonID.SCENE6, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6));
+        buttonIDs.put (ButtonID.SCENE7, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7));
+        buttonIDs.put (ButtonID.SCENE8, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8));
         return buttonIDs;
     }
 
@@ -195,16 +205,16 @@ public class LaunchpadProControllerDefinition extends DefaultControllerDefinitio
 
     /** {@inheritDoc} */
     @Override
-    public List<String> buildLEDUpdate (final Map<Integer, PadInfo> padInfos)
+    public List<String> buildLEDUpdate (final Map<Integer, LightInfo> padInfos)
     {
         final StringBuilder sbNormal = new StringBuilder ();
         final StringBuilder sbFlash = new StringBuilder ();
         final StringBuilder sbPulse = new StringBuilder ();
 
-        for (final Entry<Integer, PadInfo> e: padInfos.entrySet ())
+        for (final Entry<Integer, LightInfo> e: padInfos.entrySet ())
         {
             final int note = e.getKey ().intValue ();
-            final PadInfo info = e.getValue ();
+            final LightInfo info = e.getValue ();
 
             sbNormal.append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getColor ())).append (' ');
 

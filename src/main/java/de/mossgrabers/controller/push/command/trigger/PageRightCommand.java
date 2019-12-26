@@ -37,7 +37,7 @@ public class PageRightCommand extends AbstractTriggerCommand<PushControlSurface,
     /** {@inheritDoc} */
     @SuppressWarnings("rawtypes")
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         final ViewManager viewManager = this.surface.getViewManager ();
         if (viewManager.isActiveView (Views.SESSION))

@@ -6,8 +6,10 @@ package de.mossgrabers.controller.sl.controller;
 
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
+import de.mossgrabers.framework.controller.hardware.IHwTextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -131,15 +133,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
      */
     public SLControlSurface (final IHost host, final ColorManager colorManager, final SLConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isMkII)
     {
-        super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output, 1, 8, 36)
-        {
-            /** {@inheritDoc} */
-            @Override
-            public void flush ()
-            {
-                // The drum pads do not have LEDs
-            }
-        });
+        super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output, 1, 8, 36), 800, 490);
 
         this.isMkII = isMkII;
 
@@ -147,7 +141,9 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
         // since it comprises part of the temp value
         this.lastCC94Value = 0;
 
-        this.addTextDisplay (new SLDisplay (host, output));
+        final IHwTextDisplay hwTextDisplay1 = this.surfaceFactory.createTextDisplay (this.surfaceID, OutputID.DISPLAY1, 2);
+        final IHwTextDisplay hwTextDisplay2 = this.surfaceFactory.createTextDisplay (this.surfaceID, OutputID.DISPLAY2, 2);
+        this.textDisplays.add (new SLDisplay (host, output, hwTextDisplay1, hwTextDisplay2));
 
         // Switch to Ableton Automap mode
         this.output.sendSysex (SYSEX_AUTOMAP_ON);
@@ -183,12 +179,12 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void shutdown ()
+    protected void internalShutdown ()
     {
         this.getTextDisplay ().clear ();
         this.output.sendSysex (SYSEX_AUTOMAP_OFF);
 
-        super.shutdown ();
+        super.internalShutdown ();
     }
 
 

@@ -6,7 +6,7 @@ package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -99,7 +99,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         if (y < this.numSequencerRows)
         {
             if (velocity != 0)
-                clip.toggleStep (x, this.keyManager.map (y), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                clip.toggleStep (this.surface.getConfiguration ().getMidiEditChannel (), x, this.keyManager.map (y), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
             return;
         }
 
@@ -143,7 +143,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     @Override
     public void drawGrid ()
     {
-        final PadGrid gridPad = this.surface.getPadGrid ();
+        final IPadGrid gridPad = this.surface.getPadGrid ();
         if (!this.isActive ())
         {
             gridPad.turnOff ();
@@ -156,12 +156,14 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final INoteClip clip = this.getClip ();
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % this.numDisplayCols : -1;
+        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
         for (int x = 0; x < this.numDisplayCols; x++)
         {
             for (int y = 0; y < this.numSequencerRows; y++)
             {
                 // 0: not set, 1: note continues playing, 2: start of note
-                final int isSet = clip.getStep (x, this.keyManager.map (y));
+                final int map = this.keyManager.map (y);
+                final int isSet = map < 0 ? 0 : clip.getStep (editMidiChannel, x, map).getState ();
                 gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (isSet, x == hiStep, y, selectedTrack));
             }
         }
@@ -202,7 +204,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             default:
                 if (hilite)
                     return COLOR_STEP_HILITE_NO_CONTENT;
-                return this.getColor (note, this.useTrackColor ? track : null);
+                return this.getPadColor (note, this.useTrackColor ? track : null);
         }
     }
 
@@ -231,6 +233,22 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final int offset = this.getScrollOffset ();
         if (this.offsetY + offset < this.getClip ().getNumRows ())
             this.updateOctave (this.offsetY + offset);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isOctaveUpButtonOn ()
+    {
+        return this.isActive ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isOctaveDownButtonOn ()
+    {
+        return this.isActive ();
     }
 
 

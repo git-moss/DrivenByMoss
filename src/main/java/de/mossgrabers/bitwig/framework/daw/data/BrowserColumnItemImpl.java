@@ -47,11 +47,11 @@ public class BrowserColumnItemImpl extends AbstractItemImpl implements IBrowserC
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.item.exists ().setIsSubscribed (enable);
-        this.item.name ().setIsSubscribed (enable);
-        this.item.isSelected ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.item.exists (), enable);
+        Util.setIsSubscribed (this.item.name (), enable);
+        Util.setIsSubscribed (this.item.isSelected (), enable);
         if (this.item instanceof BrowserFilterItem)
-            ((BrowserFilterItem) this.item).hitCount ().setIsSubscribed (enable);
+            Util.setIsSubscribed (((BrowserFilterItem) this.item).hitCount (), enable);
     }
 
 

@@ -4,11 +4,15 @@
 
 package de.mossgrabers.controller.maschine.mikro.mk3.view;
 
+import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ColorManager;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -45,7 +49,13 @@ public class ParameterView extends BaseView
             return;
         }
 
-        ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.DEVICE_PARAMS)).selectParameter (padIndex);
+        if (padIndex >= 8)
+            return;
+
+        // Flip row 2 and 1 to look the same as in the Bitwig device display
+        final int selectedParameter = padIndex < 4 ? padIndex + 4 : padIndex - 4;
+
+        ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.DEVICE_PARAMS)).selectParameter (selectedParameter);
         this.model.getHost ().scheduleTask ( () -> {
 
             final StringBuilder message = new StringBuilder ();
@@ -97,6 +107,36 @@ public class ParameterView extends BaseView
             default:
                 // Not used
                 break;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void drawGrid ()
+    {
+        final IPadGrid padGrid = this.surface.getPadGrid ();
+
+        for (int i = 8; i < 16; i++)
+            padGrid.lightEx (i % 4, 3 - i / 4, AbstractMode.BUTTON_COLOR_OFF);
+
+        final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
+        for (int i = 0; i < 8; i++)
+        {
+            final int x = i % 4;
+            final int y = 2 + i / 4;
+
+            final IParameter item = parameterBank.getItem (i);
+            if (item.doesExist ())
+            {
+                final int selectedIndex = ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.DEVICE_PARAMS)).getSelectedParameter ();
+                if (selectedIndex == i)
+                    padGrid.lightEx (x, y, MaschineMikroMk3ColorManager.COLOR_PINK);
+                else
+                    padGrid.lightEx (x, y, MaschineMikroMk3ColorManager.COLOR_PURPLE);
+            }
+            else
+                padGrid.lightEx (x, y, AbstractMode.BUTTON_COLOR_OFF);
         }
     }
 }

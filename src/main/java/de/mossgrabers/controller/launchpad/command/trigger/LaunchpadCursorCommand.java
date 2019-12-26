@@ -5,14 +5,12 @@
 package de.mossgrabers.controller.launchpad.command.trigger;
 
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.launchpad.view.DrumView;
 import de.mossgrabers.controller.launchpad.view.DrumView64;
 import de.mossgrabers.controller.launchpad.view.RaindropsView;
 import de.mossgrabers.controller.launchpad.view.SequencerView;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -119,8 +117,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.DEVICE))
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            this.canScrollUp = cursorDevice.canSelectNextFX ();
-            this.canScrollDown = cursorDevice.canSelectPreviousFX ();
+            this.canScrollUp = cursorDevice.canSelectPreviousFX ();
+            this.canScrollDown = cursorDevice.canSelectNextFX ();
             final IParameterBank parameterBank = cursorDevice.getParameterBank ();
             this.canScrollLeft = parameterBank.canScrollPageBackwards ();
             this.canScrollRight = parameterBank.canScrollPageForwards ();
@@ -159,35 +157,6 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
 
     /** {@inheritDoc} */
-    @Override
-    protected int getButtonOnColor ()
-    {
-        final ViewManager viewManager = this.surface.getViewManager ();
-
-        if (viewManager.isActiveView (Views.SESSION) || viewManager.isActiveView (Views.TRACK_VOLUME) || viewManager.isActiveView (Views.TRACK_PAN) || viewManager.isActiveView (Views.TRACK_SENDS))
-            return LaunchpadColors.LAUNCHPAD_COLOR_LIME;
-
-        if (viewManager.isActiveView (Views.RAINDROPS))
-            return LaunchpadColors.LAUNCHPAD_COLOR_GREEN;
-
-        if (viewManager.isActiveView (Views.SEQUENCER))
-            return LaunchpadColors.LAUNCHPAD_COLOR_BLUE;
-
-        if (viewManager.isActiveView (Views.DEVICE))
-            return LaunchpadColors.LAUNCHPAD_COLOR_AMBER;
-
-        if (viewManager.isActiveView (Views.DRUM) || viewManager.isActiveView (Views.DRUM4) || viewManager.isActiveView (Views.DRUM8) || viewManager.isActiveView (Views.DRUM64))
-            return LaunchpadColors.LAUNCHPAD_COLOR_YELLOW;
-
-        if (viewManager.isActiveView (Views.BROWSER))
-            return LaunchpadColors.LAUNCHPAD_COLOR_TURQUOISE;
-
-        // VIEW_PLAY, VIEW_PIANO, VIEW_SHIFT
-        return LaunchpadColors.LAUNCHPAD_COLOR_OCEAN_HI;
-    }
-
-
-    /** {@inheritDoc} */
     @SuppressWarnings("rawtypes")
     @Override
     protected void scrollLeft ()
@@ -208,7 +177,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             cursorDevice.getParameterBank ().scrollBackwards ();
-            this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
+            this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ()), 100);
             return;
         }
 
@@ -257,7 +226,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             cursorDevice.getParameterBank ().scrollForwards ();
-            this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
+            this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ()), 100);
             return;
         }
 
@@ -323,7 +292,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         if (viewManager.isActiveView (Views.DEVICE))
         {
-            this.model.getCursorDevice ().selectNext ();
+            this.model.getCursorDevice ().selectPrevious ();
             return;
         }
 
@@ -373,7 +342,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         if (viewManager.isActiveView (Views.DEVICE))
         {
-            this.model.getCursorDevice ().selectPrevious ();
+            this.model.getCursorDevice ().selectNext ();
             return;
         }
 
@@ -382,26 +351,5 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
         // VIEW_SESSION, VIEW_VOLUME, VIEW_PAN, VIEW_SENDS
         super.scrollDown ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void delayedUpdateArrows ()
-    {
-        if (this.surface.isPro ())
-        {
-            this.surface.setTrigger (this.surface.getTriggerId (ButtonID.LEFT), this.canScrollLeft ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.setTrigger (this.surface.getTriggerId (ButtonID.RIGHT), this.canScrollRight ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.setTrigger (this.surface.getTriggerId (ButtonID.UP), this.canScrollUp ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.setTrigger (this.surface.getTriggerId (ButtonID.DOWN), this.canScrollDown ? this.getButtonOnColor () : this.getButtonOffColor ());
-        }
-        else
-        {
-            this.surface.updateTrigger (this.surface.getTriggerId (ButtonID.LEFT), this.canScrollLeft ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.updateTrigger (this.surface.getTriggerId (ButtonID.RIGHT), this.canScrollRight ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.updateTrigger (this.surface.getTriggerId (ButtonID.UP), this.canScrollUp ? this.getButtonOnColor () : this.getButtonOffColor ());
-            this.surface.updateTrigger (this.surface.getTriggerId (ButtonID.DOWN), this.canScrollDown ? this.getButtonOnColor () : this.getButtonOffColor ());
-        }
     }
 }

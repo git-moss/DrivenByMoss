@@ -5,8 +5,10 @@
 package de.mossgrabers.controller.apcmini.view;
 
 import de.mossgrabers.controller.apcmini.APCminiConfiguration;
-import de.mossgrabers.controller.apcmini.controller.APCminiColors;
+import de.mossgrabers.controller.apcmini.controller.APCminiColorManager;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -31,11 +33,12 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
      *
      * @param surface The surface
      * @param model The model
+     * @param trackButtons The track button control
      */
-    public SessionView (final APCminiControlSurface surface, final IModel model)
+    public SessionView (final APCminiControlSurface surface, final IModel model, final TrackButtons trackButtons)
     {
         super ("Session", surface, model, 8, 8, false);
-        this.extensions = new TrackButtons (surface, model);
+        this.extensions = trackButtons;
     }
 
 
@@ -66,18 +69,18 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
     @Override
     public void drawPad (final ISlot slot, final int x, final int y, final boolean isArmed)
     {
-        int color = APCminiColors.APC_COLOR_BLACK;
+        int color = APCminiColorManager.APC_COLOR_BLACK;
 
         if (slot.isRecording ())
-            color = APCminiColors.APC_COLOR_RED;
+            color = APCminiColorManager.APC_COLOR_RED;
         else if (slot.isRecordingQueued ())
-            color = APCminiColors.APC_COLOR_RED_BLINK;
+            color = APCminiColorManager.APC_COLOR_RED_BLINK;
         else if (slot.isPlaying ())
-            color = APCminiColors.APC_COLOR_GREEN;
+            color = APCminiColorManager.APC_COLOR_GREEN;
         else if (slot.isPlayingQueued ())
-            color = APCminiColors.APC_COLOR_GREEN_BLINK;
+            color = APCminiColorManager.APC_COLOR_GREEN_BLINK;
         else if (slot.hasContent ())
-            color = APCminiColors.APC_COLOR_YELLOW;
+            color = APCminiColorManager.APC_COLOR_YELLOW;
 
         this.surface.getPadGrid ().light (36 + (7 - y) * 8 + x, color);
     }
@@ -85,12 +88,9 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        for (int i = APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1; i <= APCminiControlSurface.APC_BUTTON_SCENE_BUTTON8; i++)
-            this.surface.updateTrigger (i, this.surface.getNoteVelocity (i) > 0 ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-
-        this.extensions.updateTrackButtons ();
+        return this.surface.getButton (buttonID).isPressed () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
     }
 
 
@@ -99,5 +99,13 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
     public void onSelectTrack (final int index, final ButtonEvent event)
     {
         this.extensions.onSelectTrack (index, event);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getTrackButtonColor (final int index)
+    {
+        return this.extensions.getTrackButtonColor (index);
     }
 }

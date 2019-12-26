@@ -5,10 +5,11 @@
 package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.controller.Push1Display;
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.track.AbstractTrackMode;
-import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -115,16 +116,23 @@ public class SessionMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateSecondRow ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        final ColorManager colorManager = this.model.getColorManager ();
-        this.surface.updateTrigger (102, colorManager.getColor (this.rowDisplayMode == RowDisplayMode.UPPER ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
-        this.surface.updateTrigger (103, colorManager.getColor (this.rowDisplayMode == RowDisplayMode.LOWER ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
-        for (int i = 0; i < 5; i++)
-            this.surface.updateTrigger (104 + i, colorManager.getColor (AbstractMode.BUTTON_COLOR_OFF));
+        final int index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            if (index == 0)
+                return this.colorManager.getColorIndex (this.rowDisplayMode == RowDisplayMode.UPPER ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+            if (index == 1)
+                return this.colorManager.getColorIndex (this.rowDisplayMode == RowDisplayMode.LOWER ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+            if (index < 5)
+                return this.colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_OFF);
 
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        this.surface.updateTrigger (109, tb.hasParent () ? PushColors.PUSH2_COLOR2_WHITE : PushColors.PUSH2_COLOR_BLACK);
+            final ITrackBank tb = this.model.getCurrentTrackBank ();
+            return tb.hasParent () ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+        }
+
+        return super.getButtonColor (buttonID);
     }
 
 
@@ -219,8 +227,8 @@ public class SessionMode extends AbstractTrackMode
                     // https://github.com/teotigraphix/Framework4Bitwig/issues/193
                     if (name.isEmpty ())
                     {
-                        final double [] color = slot.getColor ();
-                        if (color[0] != 0 || color[1] != 0 || color[2] != 0)
+                        final ColorEx color = slot.getColor ();
+                        if (color.getRed () != 0 || color.getGreen () != 0 || color.getBlue () != 0)
                             name = "--------";
                     }
                 }

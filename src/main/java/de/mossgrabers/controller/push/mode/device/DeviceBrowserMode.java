@@ -108,7 +108,7 @@ public class DeviceBrowserMode extends BaseMode
         {
             if (this.surface.isDeletePressed ())
             {
-                this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+                this.surface.setTriggerConsumed (ButtonID.DELETE);
                 fc = this.getFilterColumn (index);
                 if (fc != null && fc.doesExist ())
                     this.model.getBrowser ().resetFilterColumn (fc.getIndex ());
@@ -323,27 +323,27 @@ public class DeviceBrowserMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        for (int i = 0; i < 7; i++)
+        int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
         {
-            final IBrowserColumn col = this.getFilterColumn (i);
-            this.surface.updateTrigger (20 + i, col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR_OFF);
+            if (index == 7)
+                return AbstractMode.BUTTON_COLOR_ON;
+            final IBrowserColumn col = this.getFilterColumn (index);
+            return col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR_OFF;
         }
-        this.surface.updateTrigger (27, AbstractMode.BUTTON_COLOR_ON);
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSecondRow ()
-    {
-        for (int i = 0; i < 7; i++)
+        index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
         {
-            final IBrowserColumn col = this.getFilterColumn (i);
-            this.surface.updateTrigger (102 + i, col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF);
+            if (index == 7)
+                return AbstractMode.BUTTON_COLOR2_ON;
+            final IBrowserColumn col = this.getFilterColumn (index);
+            return col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF;
         }
-        this.surface.updateTrigger (109, AbstractMode.BUTTON_COLOR2_ON);
+
+        return AbstractMode.BUTTON_COLOR_OFF;
     }
 
 

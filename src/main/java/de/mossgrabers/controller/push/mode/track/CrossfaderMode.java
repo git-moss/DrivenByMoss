@@ -47,7 +47,7 @@ public class CrossfaderMode extends AbstractTrackMode
             {
                 if (this.surface.isDeletePressed ())
                 {
-                    this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+                    this.surface.setTriggerConsumed (ButtonID.DELETE);
                     t.setCrossfadeMode ("AB");
                     return;
                 }

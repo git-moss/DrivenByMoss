@@ -4,10 +4,11 @@
 
 package de.mossgrabers.controller.launchpad.view;
 
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
@@ -59,7 +60,7 @@ public class VolumeView extends AbstractFaderView
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getItem (i);
-            final int color = cm.getColor (DAWColors.getColorIndex (track.getColor ()));
+            final int color = cm.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
             if (this.trackColors[i] != color)
             {
                 this.trackColors[i] = color;
@@ -72,26 +73,26 @@ public class VolumeView extends AbstractFaderView
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public int getButtonColor (final ButtonID buttonID)
     {
+        final int scene = 7 - (buttonID.ordinal () - ButtonID.SCENE1.ordinal ());
+
         final ColorManager cm = this.model.getColorManager ();
         final IMasterTrack track = this.model.getMasterTrack ();
         final int sceneMax = 9 * track.getVolume () / this.model.getValueChanger ().getUpperBound ();
-        for (int i = 0; i < 8; i++)
-        {
-            final int color = cm.getColor (DAWColors.getColorIndex (track.getColor ()));
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8 + 10 * i, i < sceneMax ? color : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        }
+        final int color = cm.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
+        return scene < sceneMax ? color : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
             return;
         final IMasterTrack track = this.model.getMasterTrack ();
-        track.setVolume (Math.min (127, (7 - scene) * this.model.getValueChanger ().getUpperBound () / 7));
+        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        track.setVolume (Math.min (127, (7 - index) * this.model.getValueChanger ().getUpperBound () / 7));
     }
 }

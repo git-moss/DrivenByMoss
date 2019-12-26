@@ -4,11 +4,14 @@
 
 package de.mossgrabers.framework.controller.display;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.controller.hardware.IHwGraphicsDisplay;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -39,7 +42,7 @@ public interface IGraphicDisplay extends IDisplay
      *
      * @param message The text to display
      */
-    void setNotificationMessage (final String message);
+    void setNotificationMessage (String message);
 
 
     /**
@@ -48,7 +51,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param clip The clip to display
      * @param quartersPerMeasure The quarters of a measure
      */
-    void setMidiClipElement (final INoteClip clip, final int quartersPerMeasure);
+    void setMidiClipElement (INoteClip clip, int quartersPerMeasure);
 
 
     /**
@@ -58,13 +61,21 @@ public interface IGraphicDisplay extends IDisplay
      * @param text The text to display
      * @return The display
      */
-    public IGraphicDisplay setMessage (final int column, final String text);
+    public IGraphicDisplay setMessage (int column, String text);
 
 
     /**
      * Adds an empty element.
      */
     void addEmptyElement ();
+
+
+    /**
+     * Adds an empty element.
+     *
+     * @param hasSmallEmptyMenu If true draws an empty small menu
+     */
+    void addEmptyElement (boolean hasSmallEmptyMenu);
 
 
     /**
@@ -78,7 +89,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param isBottomMenuOn True if the bottom menu is selected
      * @param isActive True if channel is activated
      */
-    void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final boolean isActive);
+    void addChannelSelectorElement (String topMenu, boolean isTopMenuOn, String bottomMenu, ChannelType type, ColorEx bottomMenuColor, boolean isBottomMenuOn, boolean isActive);
 
 
     /**
@@ -104,7 +115,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param isActive True if channel is activated
      * @param crossfadeMode Crossfade mode (0-2)
      */
-    void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode);
+    void addChannelElement (String topMenu, boolean isTopMenuOn, String bottomMenu, ChannelType type, ColorEx bottomMenuColor, boolean isBottomMenuOn, int volume, int modulatedVolume, String volumeStr, int pan, int modulatedPan, String panStr, int vuLeft, int vuRight, boolean mute, boolean solo, boolean recarm, boolean isActive, int crossfadeMode);
 
 
     /**
@@ -131,7 +142,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param isActive True if channel is activated
      * @param crossfadeMode Crossfade mode (0-2)
      */
-    void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode);
+    void addChannelElement (int channelType, String topMenu, boolean isTopMenuOn, String bottomMenu, ChannelType type, ColorEx bottomMenuColor, boolean isBottomMenuOn, int volume, int modulatedVolume, String volumeStr, int pan, int modulatedPan, String panStr, int vuLeft, int vuRight, boolean mute, boolean solo, boolean recarm, boolean isActive, int crossfadeMode);
 
 
     /**
@@ -148,7 +159,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param isSendActive True if the upper send part is activated
      * @param isChannelLabelActive True if channel is activated
      */
-    void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final SendData [] sendData, final boolean isTrackMode, final boolean isSendActive, final boolean isChannelLabelActive);
+    void addSendsElement (String topMenu, boolean isTopMenuOn, String bottomMenu, ChannelType type, ColorEx bottomMenuColor, boolean isBottomMenuOn, SendData [] sendData, boolean isTrackMode, boolean isSendActive, boolean isChannelLabelActive);
 
 
     /**
@@ -160,7 +171,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param parameterIsActive The parameter is currently edited
      * @param parameterModulatedValue The modulated numeric value
      */
-    void addParameterElement (final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue);
+    void addParameterElement (String parameterName, int parameterValue, String parameterValueStr, boolean parameterIsActive, int parameterModulatedValue);
 
 
     /**
@@ -178,7 +189,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param parameterIsActive The parameter is currently edited
      * @param parameterModulatedValue The modulated numeric value
      */
-    void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue);
+    void addParameterElement (String topMenu, boolean isTopMenuOn, String bottomMenu, ChannelType type, ColorEx bottomMenuColor, boolean isBottomMenuOn, String parameterName, int parameterValue, String parameterValueStr, boolean parameterIsActive, int parameterModulatedValue);
 
 
     /**
@@ -195,7 +206,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param parameterIsActive The parameter is currently edited
      * @param parameterModulatedValue The modulated numeric value
      */
-    void addParameterElementWithPlainMenu (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue);
+    void addParameterElementWithPlainMenu (String topMenu, boolean isTopMenuOn, String bottomMenu, ColorEx bottomMenuColor, boolean isBottomMenuOn, String parameterName, int parameterValue, String parameterValueStr, boolean parameterIsActive, int parameterModulatedValue);
 
 
     /**
@@ -213,7 +224,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param parameterIsActive The parameter is currently edited
      * @param parameterModulatedValue The modulated numeric value
      */
-    void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String deviceName, final double [] bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue);
+    void addParameterElement (String topMenu, boolean isTopMenuOn, String bottomMenu, String deviceName, ColorEx bottomMenuColor, boolean isBottomMenuOn, String parameterName, int parameterValue, String parameterValueStr, boolean parameterIsActive, int parameterModulatedValue);
 
 
     /**
@@ -227,7 +238,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param isMenuBottomSelected True if the bottom menu is selected (on)
      * @param useSmallTopMenu If true use small menus
      */
-    void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final boolean useSmallTopMenu);
+    void addOptionElement (String headerTopName, String menuTopName, boolean isMenuTopSelected, String headerBottomName, String menuBottomName, boolean isMenuBottomSelected, boolean useSmallTopMenu);
 
 
     /**
@@ -243,7 +254,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param menuBottomColor The color to use for the background bottom menu, may be null
      * @param useSmallTopMenu If true use small menus
      */
-    void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu);
+    void addOptionElement (String headerTopName, String menuTopName, boolean isMenuTopSelected, ColorEx menuTopColor, String headerBottomName, String menuBottomName, boolean isMenuBottomSelected, ColorEx menuBottomColor, boolean useSmallTopMenu);
 
 
     /**
@@ -260,7 +271,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param useSmallTopMenu If true use small menus
      * @param isBottomHeaderSelected True to draw the lower header selected
      */
-    void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final double [] menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final double [] menuBottomColor, final boolean useSmallTopMenu, final boolean isBottomHeaderSelected);
+    void addOptionElement (String headerTopName, String menuTopName, boolean isMenuTopSelected, ColorEx menuTopColor, String headerBottomName, String menuBottomName, boolean isMenuBottomSelected, ColorEx menuBottomColor, boolean useSmallTopMenu, boolean isBottomHeaderSelected);
 
 
     /**
@@ -270,7 +281,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param elements The list with all items
      * @param selectedIndex The selected index in the list
      */
-    void addListElement (final int displaySize, final String [] elements, final int selectedIndex);
+    void addListElement (int displaySize, String [] elements, int selectedIndex);
 
 
     /**
@@ -279,7 +290,7 @@ public interface IGraphicDisplay extends IDisplay
      * @param items Must contain X number of texts
      * @param selected Must contain X number of states
      */
-    void addListElement (final String [] items, final boolean [] selected);
+    void addListElement (String [] items, boolean [] selected);
 
 
     /**
@@ -287,7 +298,7 @@ public interface IGraphicDisplay extends IDisplay
      *
      * @param scenes The scenes
      */
-    void addSceneListElement (final List<IScene> scenes);
+    void addSceneListElement (List<IScene> scenes);
 
 
     /**
@@ -295,5 +306,29 @@ public interface IGraphicDisplay extends IDisplay
      *
      * @param slots Must contain X number of slot items
      */
-    void addSlotListElement (final List<Pair<ITrack, ISlot>> slots);
+    void addSlotListElement (List<Pair<ITrack, ISlot>> slots);
+
+
+    /**
+     * Assign a proxy to the hardware display, which gets filled by this text display.
+     *
+     * @param display The hardware display
+     */
+    void setHardwareDisplay (IHwGraphicsDisplay display);
+
+
+    /**
+     * Get the hardware display.
+     *
+     * @return The hardware display
+     */
+    IHwGraphicsDisplay getHardwareDisplay ();
+
+
+    /**
+     * Get the bitmap into which the image gets drawn.
+     *
+     * @return The bitmap
+     */
+    IBitmap getImage ();
 }

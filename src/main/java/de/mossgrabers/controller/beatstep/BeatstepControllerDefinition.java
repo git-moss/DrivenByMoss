@@ -19,21 +19,15 @@ import java.util.UUID;
  */
 public class BeatstepControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID EXTENSION_ID     = UUID.fromString ("F7FF1750-7EC3-11E4-B4A9-0800200C9A66");
-    private static final UUID EXTENSION_ID_PRO = UUID.fromString ("7264A210-5EFE-11E5-A837-0800200C9A66");
-
-    private final boolean     isPro;
+    private static final UUID EXTENSION_ID = UUID.fromString ("F7FF1750-7EC3-11E4-B4A9-0800200C9A66");
 
 
     /**
      * Constructor.
-     *
-     * @param isPro True if it is the Beatstep Pro otherwise normal Beatstep
      */
-    public BeatstepControllerDefinition (final boolean isPro)
+    public BeatstepControllerDefinition ()
     {
-        super (isPro ? EXTENSION_ID_PRO : EXTENSION_ID, isPro ? "Beatstep Pro" : "Beatstep", "Arturia", 1, 1);
-        this.isPro = isPro;
+        super (EXTENSION_ID, "Beatstep", "Arturia", 1, 1);
     }
 
 
@@ -41,6 +35,6 @@ public class BeatstepControllerDefinition extends DefaultControllerDefinition
     @Override
     public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
     {
-        return this.createDeviceDiscoveryPairs (this.isPro ? "Arturia BeatStep Pro" : "Arturia BeatStep");
+        return this.createDeviceDiscoveryPairs ("Arturia BeatStep");
     }
 }

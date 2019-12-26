@@ -6,9 +6,9 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.Push1Display;
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -79,15 +79,30 @@ public class ScalesMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        final int offset = this.scales.getScaleOffset ();
-        final ColorManager cm = this.model.getColorManager ();
-        for (int i = 0; i < 8; i++)
+        int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
         {
-            final boolean isFirstOrLast = i == 0 || i == 7;
-            this.surface.updateTrigger (20 + i, i == 7 ? cm.getColor (AbstractMode.BUTTON_COLOR_OFF) : isFirstOrLast ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_LO : PushColors.PUSH1_COLOR_ORANGE_LO : cm.getColor (offset == i - 1 ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON));
+            if (index == 7)
+                return this.colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_OFF);
+
+            final int offset = this.scales.getScaleOffset ();
+            final boolean isFirstOrLast = index == 0 || index == 7;
+            return isFirstOrLast ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO : this.colorManager.getColorIndex (offset == index - 1 ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
         }
+
+        index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            final int offset = this.scales.getScaleOffset ();
+            final boolean isFirstOrLast = index == 0 || index == 7;
+            if (isFirstOrLast)
+                return this.isPush2 ? PushColorManager.PUSH2_COLOR2_AMBER : PushColorManager.PUSH1_COLOR2_AMBER;
+            return this.colorManager.getColorIndex (offset == index - 1 + 6 ? AbstractMode.BUTTON_COLOR2_HI : AbstractMode.BUTTON_COLOR2_ON);
+        }
+
+        return super.getButtonColor (buttonID);
     }
 
 
@@ -109,20 +124,6 @@ public class ScalesMode extends BaseMode
         else
             this.scales.setScaleOffset (index + 5);
         this.update ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSecondRow ()
-    {
-        final int offset = this.scales.getScaleOffset ();
-        final ColorManager cm = this.model.getColorManager ();
-        for (int i = 0; i < 8; i++)
-        {
-            final boolean isFirstOrLast = i == 0 || i == 7;
-            this.surface.updateTrigger (102 + i, isFirstOrLast ? this.isPush2 ? PushColors.PUSH2_COLOR2_AMBER : PushColors.PUSH1_COLOR2_AMBER : cm.getColor (offset == i - 1 + 6 ? AbstractMode.BUTTON_COLOR2_HI : AbstractMode.BUTTON_COLOR2_ON));
-        }
     }
 
 

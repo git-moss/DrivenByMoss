@@ -14,6 +14,10 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
+/**
+ *
+ * @author mos (Fraunhofer IOSB)
+ */
 public class APCPadGrid extends PadGridImpl
 {
     private final boolean isMkII;
@@ -35,36 +39,40 @@ public class APCPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    protected void sendNoteState (final int note, final int color)
+    protected void sendBlinkState (final int channel, final int note, final int blinkColor, final boolean fast)
     {
-        final int i = note - 36;
         if (this.isMkII)
-        {
-            this.output.sendNote (i, color);
-        }
+            this.output.sendNoteEx (fast ? 12 : 10, note, blinkColor);
         else
-        {
-            final int x = i % 8;
-            final int y = 4 - i / 8;
-            this.output.sendNoteEx (x, APCControlSurface.APC_BUTTON_CLIP_LAUNCH_1 + y, color);
-        }
+            this.output.sendNoteEx (channel, note, blinkColor);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
+    public int translateToGrid (final int note)
     {
-        final int i = note - 36;
+        return note + 36;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int [] translateToController (final int note)
+    {
+        final int n = note - 36;
+
         if (this.isMkII)
+            return new int []
+            {
+                0,
+                n
+            };
+
+        return new int []
         {
-            this.output.sendNoteEx (fast ? 12 : 10, i, blinkColor);
-        }
-        else
-        {
-            final int x = i % 8;
-            final int y = 4 - i / 8;
-            this.output.sendNoteEx (x, APCControlSurface.APC_BUTTON_CLIP_LAUNCH_1 + y, blinkColor);
-        }
+            n % 8,
+            0x39 - n / 8
+        };
     }
 }

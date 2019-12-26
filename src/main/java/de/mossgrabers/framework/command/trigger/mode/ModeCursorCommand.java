@@ -6,9 +6,7 @@ package de.mossgrabers.framework.command.trigger.mode;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -61,7 +59,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event != ButtonEvent.DOWN)
             return;
@@ -91,57 +89,27 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
 
 
     /**
-     * Update the arrow buttons.
+     * Test if the cursor can be scrolled in the set direction.
+     *
+     * @return True if it can be scrolled
      */
-    public void updateArrows ()
+    public boolean canScroll ()
     {
         this.updateArrowStates ();
-        this.surface.scheduleTask (this::delayedUpdateArrows, 150);
-    }
 
-
-    protected void delayedUpdateArrows ()
-    {
-        final int buttonOnColor = this.getButtonOnColor ();
-        final int buttonOffColor = this.getButtonOffColor ();
-
-        final int leftButtonId = this.surface.getTriggerId (ButtonID.LEFT);
-        if (leftButtonId >= 0)
-            this.surface.updateTrigger (leftButtonId, this.canScrollLeft ? buttonOnColor : buttonOffColor);
-
-        final int rightButtonId = this.surface.getTriggerId (ButtonID.RIGHT);
-        if (rightButtonId >= 0)
-            this.surface.updateTrigger (rightButtonId, this.canScrollRight ? buttonOnColor : buttonOffColor);
-
-        final int upButtonId = this.surface.getTriggerId (ButtonID.UP);
-        if (upButtonId >= 0)
-            this.surface.updateTrigger (upButtonId, this.canScrollUp ? buttonOnColor : buttonOffColor);
-
-        final int downButtonId = this.surface.getTriggerId (ButtonID.DOWN);
-        if (downButtonId >= 0)
-            this.surface.updateTrigger (downButtonId, this.canScrollDown ? buttonOnColor : buttonOffColor);
-    }
-
-
-    /**
-     * Get the color of when the button should be off.
-     *
-     * @return The color ID
-     */
-    protected int getButtonOffColor ()
-    {
-        return this.model.getColorManager ().getColor (ColorManager.BUTTON_STATE_OFF);
-    }
-
-
-    /**
-     * Get the color of when the button should be on.
-     *
-     * @return The color ID
-     */
-    protected int getButtonOnColor ()
-    {
-        return this.model.getColorManager ().getColor (ColorManager.BUTTON_STATE_ON);
+        switch (this.direction)
+        {
+            case LEFT:
+                return this.canScrollLeft;
+            case RIGHT:
+                return this.canScrollRight;
+            case UP:
+                return this.canScrollUp;
+            case DOWN:
+                return this.canScrollDown;
+            default:
+                return false;
+        }
     }
 
 

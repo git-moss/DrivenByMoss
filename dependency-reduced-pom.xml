@@ -4,7 +4,7 @@
   <groupId>de.mossgrabers</groupId>
   <artifactId>DrivenByMoss</artifactId>
   <name>DrivenByMoss</name>
-  <version>7.60</version>
+  <version>8.50</version>
   <build>
     <plugins>
       <plugin>
@@ -32,8 +32,8 @@
         <configuration>
           <optimize>true</optimize>
           <fork>true</fork>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>12</source>
+          <target>12</target>
           <encoding>UTF-8</encoding>
           <maxmem>1024m</maxmem>
         </configuration>
@@ -133,7 +133,7 @@
     <dependency>
       <groupId>com.bitwig</groupId>
       <artifactId>extension-api</artifactId>
-      <version>7</version>
+      <version>10</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

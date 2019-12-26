@@ -4,7 +4,11 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
+import de.mossgrabers.bitwig.framework.daw.data.Util;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IProject;
+import de.mossgrabers.framework.daw.data.IParameter;
 
 import com.bitwig.extension.controller.api.Action;
 import com.bitwig.extension.controller.api.Application;
@@ -18,22 +22,29 @@ import com.bitwig.extension.controller.api.Project;
  */
 public class ProjectImpl implements IProject
 {
-    private Project     project;
-    private Application application;
+    private final Project     project;
+    private final Application application;
+    private final IParameter  cueVolumeParameter;
+    private final IParameter  cueMixParameter;
 
 
     /**
      * Constructor.
      *
+     * @param valueChanger The value changer
      * @param project The project
      * @param application The application
      */
-    public ProjectImpl (final Project project, final Application application)
+    public ProjectImpl (final IValueChanger valueChanger, final Project project, final Application application)
     {
         this.project = project;
         this.application = application;
 
         this.application.projectName ().markInterested ();
+
+        this.cueVolumeParameter = new ParameterImpl (valueChanger, this.project.cueVolume (), 0);
+        this.cueMixParameter = new ParameterImpl (valueChanger, this.project.cueMix (), 0);
+
     }
 
 
@@ -41,7 +52,10 @@ public class ProjectImpl implements IProject
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.application.projectName ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.application.projectName (), enable);
+
+        this.cueVolumeParameter.enableObservers (enable);
+        this.cueMixParameter.enableObservers (enable);
     }
 
 
@@ -84,5 +98,117 @@ public class ProjectImpl implements IProject
         final Action action = this.application.getAction ("Save");
         if (action != null)
             action.invoke ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getCueVolumeStr ()
+    {
+        return this.cueVolumeParameter.getDisplayedValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getCueVolumeStr (final int limit)
+    {
+        return this.cueVolumeParameter.getDisplayedValue (limit);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getCueVolume ()
+    {
+        return this.cueVolumeParameter.getValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeCueVolume (final int control)
+    {
+        this.cueVolumeParameter.changeValue (control);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setCueVolume (final int value)
+    {
+        this.cueVolumeParameter.setValue (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void resetCueVolume ()
+    {
+        this.cueVolumeParameter.resetValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void touchCueVolume (final boolean isBeingTouched)
+    {
+        this.cueVolumeParameter.touchValue (isBeingTouched);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getCueMixStr ()
+    {
+        return this.cueMixParameter.getDisplayedValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getCueMixStr (final int limit)
+    {
+        return this.cueMixParameter.getDisplayedValue (limit);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getCueMix ()
+    {
+        return this.cueMixParameter.getValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeCueMix (final int control)
+    {
+        this.cueMixParameter.changeValue (control);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setCueMix (final int value)
+    {
+        this.cueMixParameter.setValue (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void resetCueMix ()
+    {
+        this.cueMixParameter.resetValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void touchCueMix (final boolean isBeingTouched)
+    {
+        this.cueMixParameter.touchValue (isBeingTouched);
     }
 }

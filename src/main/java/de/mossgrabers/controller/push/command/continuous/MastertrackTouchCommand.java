@@ -7,6 +7,7 @@ package de.mossgrabers.controller.push.command.continuous;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -35,7 +36,7 @@ public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlS
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         final boolean isTouched = event == ButtonEvent.DOWN;
 
@@ -49,7 +50,7 @@ public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlS
 
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             masterTrack.resetVolume ();
             return;
         }

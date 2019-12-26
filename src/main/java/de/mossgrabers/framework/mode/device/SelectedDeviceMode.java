@@ -67,7 +67,7 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
 
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             item.resetValue ();
         }
         item.touchValue (isTouched);

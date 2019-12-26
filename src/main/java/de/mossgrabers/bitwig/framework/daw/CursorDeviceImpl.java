@@ -5,7 +5,8 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.DeviceImpl;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.bitwig.framework.daw.data.Util;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IChannelBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
@@ -115,19 +116,19 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
     {
         super.enableObservers (enable);
 
-        this.cursorDevice.isEnabled ().setIsSubscribed (enable);
-        this.cursorDevice.isPlugin ().setIsSubscribed (enable);
-        this.cursorDevice.hasPrevious ().setIsSubscribed (enable);
-        this.cursorDevice.hasNext ().setIsSubscribed (enable);
-        this.cursorDevice.isExpanded ().setIsSubscribed (enable);
-        this.cursorDevice.isRemoteControlsSectionVisible ().setIsSubscribed (enable);
-        this.cursorDevice.isWindowOpen ().setIsSubscribed (enable);
-        this.cursorDevice.isNested ().setIsSubscribed (enable);
-        this.cursorDevice.hasDrumPads ().setIsSubscribed (enable);
-        this.cursorDevice.hasLayers ().setIsSubscribed (enable);
-        this.cursorDevice.hasSlots ().setIsSubscribed (enable);
-        this.cursorDevice.isPinned ().setIsSubscribed (enable);
-        this.cursorDevice.slotNames ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.cursorDevice.isEnabled (), enable);
+        Util.setIsSubscribed (this.cursorDevice.isPlugin (), enable);
+        Util.setIsSubscribed (this.cursorDevice.hasPrevious (), enable);
+        Util.setIsSubscribed (this.cursorDevice.hasNext (), enable);
+        Util.setIsSubscribed (this.cursorDevice.isExpanded (), enable);
+        Util.setIsSubscribed (this.cursorDevice.isRemoteControlsSectionVisible (), enable);
+        Util.setIsSubscribed (this.cursorDevice.isWindowOpen (), enable);
+        Util.setIsSubscribed (this.cursorDevice.isNested (), enable);
+        Util.setIsSubscribed (this.cursorDevice.hasDrumPads (), enable);
+        Util.setIsSubscribed (this.cursorDevice.hasLayers (), enable);
+        Util.setIsSubscribed (this.cursorDevice.hasSlots (), enable);
+        Util.setIsSubscribed (this.cursorDevice.isPinned (), enable);
+        Util.setIsSubscribed (this.cursorDevice.slotNames (), enable);
 
         if (this.parameterBank != null)
         {

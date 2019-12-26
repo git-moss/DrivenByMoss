@@ -6,9 +6,10 @@ package de.mossgrabers.controller.push.view;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -41,31 +42,23 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
 
     /** {@inheritDoc} */
     @Override
-    public boolean usesButton (final int buttonID)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event)
     {
-        return true;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onScene (final int index, final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (!this.isActive ())
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.isActive ())
             return;
 
         if (this.surface.isShiftPressed ())
         {
             final ITrack selectedTrack = this.model.getSelectedTrack ();
             if (selectedTrack != null)
+            {
+                final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
                 this.onLowerScene (index);
+            }
             return;
         }
 
-        super.onScene (index, event);
+        super.onButton (buttonID, event);
     }
 
 
@@ -82,49 +75,31 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
 
     /** {@inheritDoc} */
     @Override
-    public void updateButtons ()
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_UP, this.scales.canScrollDrumOctaveUp () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-        this.surface.updateTrigger (PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, this.scales.canScrollDrumOctaveDown () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSceneButtons ()
-    {
-        if (!this.isActive ())
-        {
-            for (int i = PushControlSurface.PUSH_BUTTON_SCENE1; i <= PushControlSurface.PUSH_BUTTON_SCENE8; i++)
-                this.surface.updateTrigger (i, AbstractSequencerView.COLOR_RESOLUTION_OFF);
-            return;
-        }
-
-        final ColorManager colorManager = this.model.getColorManager ();
+        final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        if (scene < 0 || scene >= 8)
+            return AbstractMode.BUTTON_COLOR_OFF;
 
         if (this.surface.isShiftPressed ())
         {
-            final int colorOff = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
-            for (int i = 4; i < 8; i++)
-                this.surface.updateTrigger (this.surface.getSceneTrigger (i), colorOff);
-            this.updateLowerSceneButtons ();
-            return;
+            if (scene >= 4)
+                return AbstractSequencerView.COLOR_RESOLUTION_OFF;
+            return this.updateLowerSceneButtons (scene);
         }
 
-        final int colorResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION);
-        final int colorSelectedResolution = colorManager.getColor (AbstractSequencerView.COLOR_RESOLUTION_SELECTED);
-        for (int i = PushControlSurface.PUSH_BUTTON_SCENE1; i <= PushControlSurface.PUSH_BUTTON_SCENE8; i++)
-            this.surface.updateTrigger (i, i == PushControlSurface.PUSH_BUTTON_SCENE1 + this.selectedResolutionIndex ? colorSelectedResolution : colorResolution);
+        return super.getButtonColorID (buttonID);
     }
 
 
     /**
      * Update the lower scene button LEDs.
+     *
+     * @param scene The lower scene 0-3
+     * @return The color ID
      */
-    protected void updateLowerSceneButtons ()
+    protected String updateLowerSceneButtons (final int scene)
     {
-        final int colorOff = this.model.getColorManager ().getColor (AbstractSequencerView.COLOR_RESOLUTION_OFF);
-        for (int i = 0; i < 4; i++)
-            this.surface.updateTrigger (this.surface.getSceneTrigger (i), colorOff);
+        return AbstractSequencerView.COLOR_RESOLUTION_OFF;
     }
 }

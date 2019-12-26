@@ -137,7 +137,7 @@ public class MasterMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    protected void updateKnobLEDs ()
+    public void updateKnobLEDs ()
     {
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();

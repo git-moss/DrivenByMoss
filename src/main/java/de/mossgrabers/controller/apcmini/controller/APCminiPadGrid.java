@@ -30,7 +30,7 @@ public class APCminiPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    protected void sendNoteState (final int note, final int color)
+    protected void sendNoteState (final int channel, final int note, final int color)
     {
         this.output.sendNote (note, color);
     }
@@ -38,7 +38,7 @@ public class APCminiPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    protected void sendBlinkState (final int note, final int blinkColor, final boolean fast)
+    protected void sendBlinkState (final int channel, final int note, final int blinkColor, final boolean fast)
     {
         // Intentionally empty
     }
@@ -54,8 +54,12 @@ public class APCminiPadGrid extends PadGridImpl
 
     /** {@inheritDoc} */
     @Override
-    public int translateToController (final int note)
+    public int [] translateToController (final int note)
     {
-        return note - 36;
+        return new int []
+        {
+            0,
+            note - 36
+        };
     }
 }

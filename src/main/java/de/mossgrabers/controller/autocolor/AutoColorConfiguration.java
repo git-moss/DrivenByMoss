@@ -8,7 +8,8 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IHost;
 
 import java.util.EnumMap;
@@ -22,15 +23,15 @@ import java.util.Map;
  */
 public class AutoColorConfiguration extends AbstractConfiguration
 {
-    private static final String     CATEGORY_AUTO_COLOR = "Auto Color";
+    private static final String   CATEGORY_AUTO_COLOR = "Auto Color";
 
     /** ID for dis-/enabling the auto color setting. */
-    public static final Integer     ENABLE_AUTO_COLOR   = Integer.valueOf (50);
+    public static final Integer   ENABLE_AUTO_COLOR   = Integer.valueOf (50);
     /** First ID for all auto color settings. NOTE: All colors increase from that value! */
-    public static final Integer     COLOR_REGEX         = Integer.valueOf (100);
+    public static final Integer   COLOR_REGEX         = Integer.valueOf (100);
 
-    private boolean                 enableAutoColor;
-    private Map<NamedColor, String> colorRegEx          = new EnumMap<> (NamedColor.class);
+    private boolean               enableAutoColor;
+    private Map<DAWColor, String> colorRegEx          = new EnumMap<> (DAWColor.class);
 
 
     /**
@@ -58,10 +59,10 @@ public class AutoColorConfiguration extends AbstractConfiguration
             this.notifyObservers (AutoColorConfiguration.ENABLE_AUTO_COLOR);
         });
 
-        final NamedColor [] colors = NamedColor.values ();
+        final DAWColor [] colors = DAWColor.values ();
         for (int i = 0; i < colors.length; i++)
         {
-            final NamedColor color = colors[i];
+            final DAWColor color = colors[i];
             final IStringSetting setting = globalSettings.getStringSetting (color.getName (), CATEGORY_AUTO_COLOR, 256, "");
             final int index = i;
             setting.addValueObserver (value -> {
@@ -89,7 +90,7 @@ public class AutoColorConfiguration extends AbstractConfiguration
      * @param color The color
      * @return The regex
      */
-    public String getColorRegExValue (final NamedColor color)
+    public String getColorRegExValue (final DAWColor color)
     {
         return this.colorRegEx.get (color);
     }

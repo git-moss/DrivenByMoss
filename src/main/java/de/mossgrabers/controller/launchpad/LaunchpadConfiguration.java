@@ -7,7 +7,7 @@ package de.mossgrabers.controller.launchpad;
 import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefinition;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 
 

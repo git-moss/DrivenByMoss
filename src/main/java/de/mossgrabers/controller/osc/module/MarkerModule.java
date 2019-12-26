@@ -7,6 +7,7 @@ package de.mossgrabers.controller.osc.module;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMarkerBank;
 import de.mossgrabers.framework.daw.IModel;
@@ -105,8 +106,8 @@ public class MarkerModule extends AbstractModule
             final IMarker marker = markerBank.getItem (i);
             this.writer.sendOSC (markerAddress + "exists", marker.doesExist (), dump);
             this.writer.sendOSC (markerAddress + "name", marker.getName (), dump);
-            final double [] color = marker.getColor ();
-            this.writer.sendOSCColor (markerAddress + "color", color[0], color[1], color[2], dump);
+            final ColorEx color = marker.getColor ();
+            this.writer.sendOSCColor (markerAddress + "color", color.getRed (), color.getGreen (), color.getBlue (), dump);
         }
     }
 }

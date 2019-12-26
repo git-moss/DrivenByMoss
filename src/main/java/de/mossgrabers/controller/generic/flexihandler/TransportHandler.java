@@ -9,7 +9,7 @@ import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.WindCommand;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
@@ -142,7 +142,7 @@ public class TransportHandler extends AbstractHandler
         {
             // Transport: Play
             case TRANSPORT_PLAY:
-                this.playCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP);
+                this.playCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP, isButtonPressed ? 127 : 0);
                 break;
 
             // Transport: Stop
@@ -157,11 +157,11 @@ public class TransportHandler extends AbstractHandler
                 break;
 
             case TRANSPORT_REWIND:
-                this.rwdCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP);
+                this.rwdCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP, isButtonPressed ? 127 : 0);
                 break;
 
             case TRANSPORT_FAST_FORWARD:
-                this.ffwdCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP);
+                this.ffwdCommand.execute (isButtonPressed ? ButtonEvent.DOWN : ButtonEvent.UP, isButtonPressed ? 127 : 0);
                 break;
 
             // Transport: Toggle Repeat

@@ -4,11 +4,13 @@
 
 package de.mossgrabers.controller.push.mode.device;
 
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
@@ -71,20 +73,23 @@ public class DeviceChainsMode extends DeviceParamsMode
         }
 
         // LONG press - move upwards
-        this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_ROW1_1 + index);
+        this.surface.setTriggerConsumed (ButtonID.get (ButtonID.ROW1_1, index));
         this.moveUp ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        final int existsColor = this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_LO : PushColors.PUSH1_COLOR_YELLOW_LO;
-        final int offColor = this.isPush2 ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH1_COLOR_BLACK;
+        final int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
+            return super.getButtonColor (buttonID);
+
+        final int existsColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
+        final int offColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
         final String [] slotChains = this.model.getCursorDevice ().getSlotChains ();
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (20 + i, i < slotChains.length ? existsColor : offColor);
+        return index < slotChains.length ? existsColor : offColor;
     }
 
 
@@ -118,7 +123,7 @@ public class DeviceChainsMode extends DeviceParamsMode
             return;
 
         final String color = this.model.getCurrentTrackBank ().getSelectedChannelColorEntry ();
-        final double [] bottomMenuColor = DAWColors.getColorEntry (color);
+        final ColorEx bottomMenuColor = DAWColor.getColorEntry (color);
         final boolean hasPinning = this.model.getHost ().hasPinning ();
         final String [] slotChains = cd.getSlotChains ();
         for (int i = 0; i < 8; i++)

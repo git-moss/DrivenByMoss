@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.observer.ItemSelectionObserver;
 
@@ -49,8 +50,8 @@ public class ParameterPageBankImpl implements IParameterPageBank
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.remoteControls.selectedPageIndex ().setIsSubscribed (enable);
-        this.remoteControls.pageNames ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.remoteControls.selectedPageIndex (), enable);
+        Util.setIsSubscribed (this.remoteControls.pageNames (), enable);
     }
 
 

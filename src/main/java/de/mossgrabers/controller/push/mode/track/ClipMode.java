@@ -4,7 +4,7 @@
 
 package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.view.ColorView;
 import de.mossgrabers.controller.push.view.ColorView.SelectMode;
@@ -54,7 +54,7 @@ public class ClipMode extends AbstractTrackMode
 
         if (index == 7 && isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             final IClip clip = this.model.getClip ();
             if (clip.doesExist ())
                 clip.resetAccent ();
@@ -199,27 +199,28 @@ public class ClipMode extends AbstractTrackMode
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public int getButtonColor (final ButtonID buttonID)
+    {
+        final int index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            if (index == 7)
+                return this.displayMidiNotes ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH2_COLOR2_WHITE;
+            return PushColorManager.PUSH2_COLOR_BLACK;
+        }
+
+        return super.getButtonColor (buttonID);
+    }
+
+
     /**
      * Toggles the clip parameter with the piano roll display.
      */
     public void togglePianoRoll ()
     {
         this.displayMidiNotes = !this.displayMidiNotes;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSecondRow ()
-    {
-        this.surface.updateTrigger (102, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateTrigger (103, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateTrigger (104, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateTrigger (105, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateTrigger (106, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateTrigger (107, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateTrigger (108, PushColors.PUSH2_COLOR_BLACK);
-        this.surface.updateTrigger (109, this.displayMidiNotes ? PushColors.PUSH2_COLOR_BLACK : PushColors.PUSH2_COLOR2_WHITE);
     }
 
 

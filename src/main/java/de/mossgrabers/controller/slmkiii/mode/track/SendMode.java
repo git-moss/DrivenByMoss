@@ -4,10 +4,9 @@
 
 package de.mossgrabers.controller.slmkiii.mode.track;
 
-import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColors;
+import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
-import de.mossgrabers.framework.controller.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -54,17 +53,28 @@ public class SendMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
+    public int getKnobValue (final int index)
+    {
+        final ITrack t = this.model.getCurrentTrackBank ().getItem (index);
+        if (!t.doesExist ())
+            return 0;
+        final ISend send = t.getSendBank ().getItem (this.sendIndex);
+        return send.doesExist () ? send.getValue () : 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void updateDisplay ()
     {
         final SLMkIIIDisplay d = this.surface.getDisplay ();
         d.clear ();
         d.setCell (0, 8, "Send " + (this.sendIndex + 1));
 
-        final IValueChanger valueChanger = this.model.getValueChanger ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
         {
-            int color = SLMkIIIColors.SLMKIII_BLACK;
+            int color = SLMkIIIColorManager.SLMKIII_BLACK;
             final ITrack t = tb.getItem (i);
             if (t.doesExist ())
             {
@@ -72,8 +82,7 @@ public class SendMode extends AbstractTrackMode
                 if (send.doesExist ())
                 {
                     d.setCell (0, i, send.getName (9)).setCell (1, i, send.getDisplayedValue (9));
-                    this.surface.updateContinuous (SLMkIIIControlSurface.MKIII_KNOB_1 + i, valueChanger.toMidiValue (send.getValue ()));
-                    color = SLMkIIIColors.SLMKIII_YELLOW;
+                    color = SLMkIIIColorManager.SLMKIII_YELLOW;
                 }
             }
 
@@ -83,10 +92,16 @@ public class SendMode extends AbstractTrackMode
         final ITrack t = this.model.getSelectedTrack ();
         d.setCell (1, 8, t == null ? "" : StringUtils.fixASCII (t.getName (9)));
 
-        d.setPropertyColor (8, 0, SLMkIIIColors.SLMKIII_YELLOW);
-
         this.drawRow4 ();
         this.setButtonInfo (d);
         d.allDone ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getModeColor ()
+    {
+        return SLMkIIIColorManager.SLMKIII_YELLOW;
     }
 }

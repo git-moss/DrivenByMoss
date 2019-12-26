@@ -4,12 +4,8 @@
 
 package de.mossgrabers.framework.view;
 
-import de.mossgrabers.framework.command.ContinuousCommandID;
-import de.mossgrabers.framework.command.TriggerCommandID;
 import de.mossgrabers.framework.command.core.AftertouchCommand;
-import de.mossgrabers.framework.command.core.ContinuousCommand;
-import de.mossgrabers.framework.command.core.PitchbendCommand;
-import de.mossgrabers.framework.command.core.TriggerCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -42,84 +38,12 @@ public interface View
 
 
     /**
-     * Registers a command for this view.
+     * Get the color for a button, which is controlled by the view.
      *
-     * @param commandID The ID of the command
-     * @param command The command
+     * @param buttonID The ID of the button
+     * @return A color index
      */
-    void registerTriggerCommand (TriggerCommandID commandID, TriggerCommand command);
-
-
-    /**
-     * Execute a command which has been registered before.
-     *
-     * @param commandID The ID of the command
-     * @param event A button event which triggered the command
-     */
-    void executeTriggerCommand (TriggerCommandID commandID, ButtonEvent event);
-
-
-    /**
-     * Get a registered trigger command.
-     *
-     * @param commandID The ID of the command
-     * @return The command or null if not registered
-     */
-    TriggerCommand getTriggerCommand (TriggerCommandID commandID);
-
-
-    /**
-     * Registers a continuous command for this view.
-     *
-     * @param commandID The ID of the command
-     * @param command The command
-     */
-    void registerContinuousCommand (ContinuousCommandID commandID, ContinuousCommand command);
-
-
-    /**
-     * Get a registered continuous command.
-     *
-     * @param commandID The ID of the command.
-     * @return The command or null
-     */
-    ContinuousCommand getContinuousCommand (ContinuousCommandID commandID);
-
-
-    /**
-     * Execute a continuous command which has been registered before.
-     *
-     * @param commandID The ID of the command
-     * @param value The updated value
-     */
-    void executeContinuousCommand (ContinuousCommandID commandID, int value);
-
-
-    /**
-     * Registers a note (trigger) command for this view.
-     *
-     * @param commandID The ID of the command
-     * @param command The command
-     */
-    void registerNoteCommand (TriggerCommandID commandID, TriggerCommand command);
-
-
-    /**
-     * Execute a note (continuous) command which has been registered before.
-     *
-     * @param commandID The ID of the command
-     * @param value The updated value
-     */
-    void executeNoteCommand (TriggerCommandID commandID, int value);
-
-
-    /**
-     * Get a registered note command.
-     *
-     * @param commandID The ID of the command
-     * @return The command or null if not registered
-     */
-    TriggerCommand getNoteCommand (TriggerCommandID commandID);
+    int getButtonColor (ButtonID buttonID);
 
 
     /**
@@ -140,32 +64,6 @@ public interface View
 
 
     /**
-     * Registers the pitchbend command.
-     *
-     * @param command The command
-     */
-    void registerPitchbendCommand (PitchbendCommand command);
-
-
-    /**
-     * Execute the pitchbend command which has been registered before.
-     *
-     * @param channel The midi channel
-     * @param data1 The first pitchbend byte
-     * @param data2 The second pitchbend byte
-     */
-    void executePitchbendCommand (int channel, int data1, int data2);
-
-
-    /**
-     * Get the registered pitchbend command.
-     *
-     * @return The command or null if not registered
-     */
-    PitchbendCommand getPitchbendCommand ();
-
-
-    /**
      * Draw the pad grid.
      */
     void drawGrid ();
@@ -181,12 +79,6 @@ public interface View
 
 
     /**
-     * Hook to update all button LEDs, displays, etc.
-     */
-    void updateControlSurface ();
-
-
-    /**
      * Long press actions on grid pads
      *
      * @param note The long pressed note
@@ -195,12 +87,18 @@ public interface View
 
 
     /**
-     * Check if a specific button is used by this view.
+     * A button event occured.
      *
-     * @param buttonID The button ID to check
-     * @return True if the button is used
+     * @param buttonID The ID of the button
+     * @param event The button event
      */
-    boolean usesButton (int buttonID);
+    void onButton (ButtonID buttonID, ButtonEvent event);
+
+
+    /**
+     * Hook to update all button LEDs, displays, etc.
+     */
+    void updateControlSurface ();
 
 
     /**

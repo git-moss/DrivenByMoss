@@ -8,6 +8,7 @@ import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -45,7 +46,7 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.surface.isPressed (APCControlSurface.APC_BUTTON_SEND_A))
+        if (this.surface.isPressed (ButtonID.SEND1))
         {
             this.surface.getModeManager ().setActiveMode (Modes.get (Modes.SEND1, this.index));
             this.surface.getDisplay ().notify ("Send " + (this.index + 1));

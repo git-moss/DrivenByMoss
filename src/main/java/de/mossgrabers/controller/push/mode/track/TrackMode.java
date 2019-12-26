@@ -7,10 +7,12 @@ package de.mossgrabers.controller.push.mode.track;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -114,7 +116,7 @@ public class TrackMode extends AbstractTrackMode
         {
             if (isTouched && this.surface.isDeletePressed ())
             {
-                this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+                this.surface.setTriggerConsumed (ButtonID.DELETE);
                 switch (index)
                 {
                     case 0:
@@ -160,7 +162,7 @@ public class TrackMode extends AbstractTrackMode
 
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_DELETE);
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             switch (index)
             {
                 case 0:
@@ -276,7 +278,7 @@ public class TrackMode extends AbstractTrackMode
 
             // Channel info
             final String bottomMenu = t.doesExist () ? t.getName () : "";
-            final double [] bottomMenuColor = t.getColor ();
+            final ColorEx bottomMenuColor = t.getColor ();
             final boolean isBottomMenuOn = t.isSelected ();
 
             final IValueChanger valueChanger = this.model.getValueChanger ();

@@ -4,14 +4,18 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.bitwig.framework.daw.data.Util;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.constants.TransportConstants;
+import de.mossgrabers.framework.daw.data.empty.EmptyStepInfo;
 
 import com.bitwig.extension.controller.api.Clip;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.NoteStep;
 import com.bitwig.extension.controller.api.SettableColorValue;
-
-import java.util.Arrays;
 
 
 /**
@@ -21,17 +25,17 @@ import java.util.Arrays;
  */
 public class CursorClipImpl implements INoteClip
 {
-    private final ControllerHost host;
-    private IValueChanger        valueChanger;
-    private int                  numSteps;
-    private int                  numRows;
+    private final ControllerHost     host;
+    private IValueChanger            valueChanger;
+    private int                      numSteps;
+    private int                      numRows;
 
-    private final int [] []      launcherData;
-    private final int [] []      arrangerData;
-    private Clip                 launcherClip;
-    private Clip                 arrangerClip;
-    private int                  editPage = 0;
-    private double               stepLength;
+    private final IStepInfo [] [] [] launcherData;
+    private final IStepInfo [] [] [] arrangerData;
+    private Clip                     launcherClip;
+    private Clip                     arrangerClip;
+    private int                      editPage = 0;
+    private double                   stepLength;
 
 
     /**
@@ -44,31 +48,20 @@ public class CursorClipImpl implements INoteClip
      */
     public CursorClipImpl (final ControllerHost host, final IValueChanger valueChanger, final int numSteps, final int numRows)
     {
-        this.valueChanger = valueChanger;
         this.host = host;
+        this.valueChanger = valueChanger;
 
         this.numSteps = numSteps;
         this.numRows = numRows;
         this.stepLength = 1.0 / 4.0; // 16th
 
-        this.launcherData = new int [this.numSteps] [];
-        for (int step = 0; step < this.numSteps; step++)
-        {
-            this.launcherData[step] = new int [this.numRows];
-            Arrays.fill (this.launcherData[step], 0);
-        }
-
-        this.arrangerData = new int [this.numSteps] [];
-        for (int step = 0; step < this.numSteps; step++)
-        {
-            this.arrangerData[step] = new int [this.numRows];
-            Arrays.fill (this.arrangerData[step], 0);
-        }
+        this.launcherData = new IStepInfo [16] [this.numSteps] [];
+        this.arrangerData = new IStepInfo [16] [this.numSteps] [];
 
         // TODO Bugfix required: https://github.com/teotigraphix/Framework4Bitwig/issues/140
         this.launcherClip = host.createLauncherCursorClip (this.numSteps, this.numRows);
 
-        this.launcherClip.addStepDataObserver (this::handleStepData);
+        this.launcherClip.addNoteStepObserver (this::handleStepData);
 
         this.launcherClip.exists ().markInterested ();
         this.launcherClip.playingStep ().markInterested ();
@@ -85,7 +78,7 @@ public class CursorClipImpl implements INoteClip
 
         this.arrangerClip = host.createLauncherCursorClip (this.numSteps, this.numRows);
 
-        this.arrangerClip.addStepDataObserver (this::handleStepData);
+        this.arrangerClip.addNoteStepObserver (this::handleStepData);
 
         this.arrangerClip.exists ().markInterested ();
         this.arrangerClip.playingStep ().markInterested ();
@@ -106,31 +99,31 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.launcherClip.exists ().setIsSubscribed (enable);
-        this.launcherClip.playingStep ().setIsSubscribed (enable);
-        this.launcherClip.getPlayStart ().setIsSubscribed (enable);
-        this.launcherClip.getPlayStop ().setIsSubscribed (enable);
-        this.launcherClip.getLoopStart ().setIsSubscribed (enable);
-        this.launcherClip.getLoopLength ().setIsSubscribed (enable);
-        this.launcherClip.isLoopEnabled ().setIsSubscribed (enable);
-        this.launcherClip.getShuffle ().setIsSubscribed (enable);
-        this.launcherClip.getAccent ().setIsSubscribed (enable);
-        this.launcherClip.canScrollStepsBackwards ().setIsSubscribed (enable);
-        this.launcherClip.canScrollStepsForwards ().setIsSubscribed (enable);
-        this.launcherClip.color ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.launcherClip.exists (), enable);
+        Util.setIsSubscribed (this.launcherClip.playingStep (), enable);
+        Util.setIsSubscribed (this.launcherClip.getPlayStart (), enable);
+        Util.setIsSubscribed (this.launcherClip.getPlayStop (), enable);
+        Util.setIsSubscribed (this.launcherClip.getLoopStart (), enable);
+        Util.setIsSubscribed (this.launcherClip.getLoopLength (), enable);
+        Util.setIsSubscribed (this.launcherClip.isLoopEnabled (), enable);
+        Util.setIsSubscribed (this.launcherClip.getShuffle (), enable);
+        Util.setIsSubscribed (this.launcherClip.getAccent (), enable);
+        Util.setIsSubscribed (this.launcherClip.canScrollStepsBackwards (), enable);
+        Util.setIsSubscribed (this.launcherClip.canScrollStepsForwards (), enable);
+        Util.setIsSubscribed (this.launcherClip.color (), enable);
 
-        this.arrangerClip.exists ().setIsSubscribed (enable);
-        this.arrangerClip.playingStep ().setIsSubscribed (enable);
-        this.arrangerClip.getPlayStart ().setIsSubscribed (enable);
-        this.arrangerClip.getPlayStop ().setIsSubscribed (enable);
-        this.arrangerClip.getLoopStart ().setIsSubscribed (enable);
-        this.arrangerClip.getLoopLength ().setIsSubscribed (enable);
-        this.arrangerClip.isLoopEnabled ().setIsSubscribed (enable);
-        this.arrangerClip.getShuffle ().setIsSubscribed (enable);
-        this.arrangerClip.getAccent ().setIsSubscribed (enable);
-        this.arrangerClip.canScrollStepsBackwards ().setIsSubscribed (enable);
-        this.arrangerClip.canScrollStepsForwards ().setIsSubscribed (enable);
-        this.arrangerClip.color ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.arrangerClip.exists (), enable);
+        Util.setIsSubscribed (this.arrangerClip.playingStep (), enable);
+        Util.setIsSubscribed (this.arrangerClip.getPlayStart (), enable);
+        Util.setIsSubscribed (this.arrangerClip.getPlayStop (), enable);
+        Util.setIsSubscribed (this.arrangerClip.getLoopStart (), enable);
+        Util.setIsSubscribed (this.arrangerClip.getLoopLength (), enable);
+        Util.setIsSubscribed (this.arrangerClip.isLoopEnabled (), enable);
+        Util.setIsSubscribed (this.arrangerClip.getShuffle (), enable);
+        Util.setIsSubscribed (this.arrangerClip.getAccent (), enable);
+        Util.setIsSubscribed (this.arrangerClip.canScrollStepsBackwards (), enable);
+        Util.setIsSubscribed (this.arrangerClip.canScrollStepsForwards (), enable);
+        Util.setIsSubscribed (this.arrangerClip.color (), enable);
     }
 
 
@@ -144,23 +137,18 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void setColor (final double red, final double green, final double blue)
+    public void setColor (final ColorEx color)
     {
-        this.getClip ().color ().set ((float) red, (float) green, (float) blue);
+        this.getClip ().color ().set ((float) color.getRed (), (float) color.getGreen (), (float) color.getBlue ());
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public double [] getColor ()
+    public ColorEx getColor ()
     {
         final SettableColorValue color = this.getClip ().color ();
-        return new double []
-        {
-            color.red (),
-            color.green (),
-            color.blue ()
-        };
+        return new ColorEx (color.red (), color.green (), color.blue ());
     }
 
 
@@ -370,82 +358,6 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public int getStep (final int step, final int row)
-    {
-        return row < 0 ? 0 : this.getData ()[step][row];
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleStep (final int step, final int row, final int velocity)
-    {
-        this.getClip ().toggleStep (step, row, velocity);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setStep (final int step, final int row, final int velocity, final double duration)
-    {
-        this.getClip ().setStep (step, row, velocity, duration);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearStep (final int step, final int row)
-    {
-        this.getClip ().clearStep (step, row);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearRow (final int row)
-    {
-        this.getClip ().clearSteps (row);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasRowData (final int row)
-    {
-        final int [] [] data = this.getData ();
-        for (int step = 0; step < this.numSteps; step++)
-        {
-            if (data[step][row] > 0)
-                return true;
-        }
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getLowerRowWithData ()
-    {
-        for (int row = 0; row < this.numRows; row++)
-            if (this.hasRowData (row))
-                return row;
-        return -1;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getUpperRowWithData ()
-    {
-        for (int row = this.numRows - 1; row >= 0; row--)
-            if (this.hasRowData (row))
-                return row;
-        return -1;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void setStepLength (final double length)
     {
         this.stepLength = length;
@@ -459,6 +371,291 @@ public class CursorClipImpl implements INoteClip
     public double getStepLength ()
     {
         return this.stepLength;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IStepInfo getStep (final int channel, final int step, final int row)
+    {
+        final IStepInfo [] [] [] stepInfos = this.getStepInfos ();
+        try
+        {
+            if (stepInfos[channel][step] == null || stepInfos[channel][step][row] == null)
+                return EmptyStepInfo.INSTANCE;
+            return stepInfos[channel][step][row];
+        }
+        catch (final ArrayIndexOutOfBoundsException ex)
+        {
+            this.host.errorln (ex.getLocalizedMessage ());
+            return EmptyStepInfo.INSTANCE;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleStep (final int channel, final int step, final int row, final int velocity)
+    {
+        this.getClip ().toggleStep (channel, step, row, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setStep (final int channel, final int step, final int row, final int velocity, final double duration)
+    {
+        this.getClip ().setStep (channel, step, row, velocity, duration);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearStep (final int channel, final int step, final int row)
+    {
+        this.getClip ().clearStep (channel, step, row);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeStepDuration (final int channel, final int step, final int row, final int control)
+    {
+        final IStepInfo info = this.getStep (channel, step, row);
+        final double frac = this.valueChanger.isSlow () ? TransportConstants.INC_FRACTION_TIME_SLOW / 16.0 : TransportConstants.INC_FRACTION_TIME_SLOW;
+        this.updateStepDuration (channel, step, row, Math.max (0, info.getDuration () + this.valueChanger.calcKnobSpeed (control, frac)));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateStepDuration (final int channel, final int step, final int row, final double duration)
+    {
+        final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
+        stepInfo.setDuration (duration);
+        if (!stepInfo.isEditing ())
+            this.getClip ().getStep (channel, step, row).setDuration (duration);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeStepVelocity (final int channel, final int step, final int row, final int control)
+    {
+        final IStepInfo info = this.getStep (channel, step, row);
+        final double velocity = info.getVelocity () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        this.updateStepVelocity (channel, step, row, Math.min (1.0, Math.max (0, velocity)));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateStepVelocity (final int channel, final int step, final int row, final double velocity)
+    {
+        final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
+        stepInfo.setVelocity (velocity);
+        if (!stepInfo.isEditing ())
+            this.getClip ().getStep (channel, step, row).setVelocity (velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeStepReleaseVelocity (final int channel, final int step, final int row, final int control)
+    {
+        final IStepInfo info = this.getStep (channel, step, row);
+        final double velocity = info.getReleaseVelocity () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        this.updateStepReleaseVelocity (channel, step, row, Math.min (1.0, Math.max (0, velocity)));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateStepReleaseVelocity (final int channel, final int step, final int row, final double releaseVelocity)
+    {
+        final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
+        stepInfo.setReleaseVelocity (releaseVelocity);
+        if (!stepInfo.isEditing ())
+            this.getClip ().getStep (channel, step, row).setReleaseVelocity (releaseVelocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeStepPressure (final int channel, final int step, final int row, final int control)
+    {
+        final IStepInfo info = this.getStep (channel, step, row);
+        final double pressure = info.getPressure () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        this.updateStepPressure (channel, step, row, Math.min (1.0, Math.max (0, pressure)));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateStepPressure (final int channel, final int step, final int row, final double pressure)
+    {
+        final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
+        stepInfo.setPressure (pressure);
+        if (!stepInfo.isEditing ())
+            this.getClip ().getStep (channel, step, row).setPressure (pressure);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeStepTimbre (final int channel, final int step, final int row, final int control)
+    {
+        final IStepInfo info = this.getStep (channel, step, row);
+        final double timbre = info.getTimbre () + 2.0 * this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        this.updateStepTimbre (channel, step, row, Math.min (1.0, Math.max (-1.0, timbre)));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateStepTimbre (final int channel, final int step, final int row, final double timbre)
+    {
+        final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
+        stepInfo.setTimbre (timbre);
+        if (!stepInfo.isEditing ())
+            this.getClip ().getStep (channel, step, row).setTimbre (timbre);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeStepPan (final int channel, final int step, final int row, final int control)
+    {
+        final IStepInfo info = this.getStep (channel, step, row);
+        final double pan = info.getPan () + 2.0 * this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        this.updateStepPan (channel, step, row, Math.min (1.0, Math.max (-1.0, pan)));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateStepPan (final int channel, final int step, final int row, final double pan)
+    {
+        final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
+        stepInfo.setPan (pan);
+        if (!stepInfo.isEditing ())
+            this.getClip ().getStep (channel, step, row).setPan (pan);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeStepTranspose (final int channel, final int step, final int row, final int control)
+    {
+        final IStepInfo info = this.getStep (channel, step, row);
+        final double transpose = info.getTranspose () + this.valueChanger.calcKnobSpeed (control) / 8.0;
+        this.updateStepTranspose (channel, step, row, Math.min (24.0, Math.max (-24.0, transpose)));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateStepTranspose (final int channel, final int step, final int row, final double transpose)
+    {
+        final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
+        stepInfo.setTranspose (transpose);
+        if (!stepInfo.isEditing ())
+            this.getClip ().getStep (channel, step, row).setTranspose (transpose);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeStepGain (final int channel, final int step, final int row, final int control)
+    {
+        final IStepInfo info = this.getStep (channel, step, row);
+        final double gain = info.getGain () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        this.updateStepGain (channel, step, row, Math.min (1.0, Math.max (0, gain)));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateStepGain (final int channel, final int step, final int row, final double gain)
+    {
+        final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
+        stepInfo.setGain (gain);
+        if (!stepInfo.isEditing ())
+            this.getClip ().getStep (channel, step, row).setGain (gain);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearRow (final int channel, final int row)
+    {
+        this.getClip ().clearStepsAtY (channel, row);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasRowData (final int channel, final int row)
+    {
+        final IStepInfo [] [] [] data = this.getStepInfos ();
+        for (int step = 0; step < this.numSteps; step++)
+        {
+            if (data[channel] != null && data[channel][step] != null && data[channel][step][row] != null && data[channel][step][row].getState () > 0)
+                return true;
+        }
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getLowerRowWithData ()
+    {
+        int min = 128;
+        for (int channel = 0; channel < 16; channel++)
+        {
+            final int lower = this.getLowerRowWithData (channel);
+            if (lower >= 0 && lower < min)
+                min = lower;
+        }
+        return min == 128 ? -1 : min;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getUpperRowWithData ()
+    {
+        int max = -1;
+        for (int channel = 0; channel < 16; channel++)
+        {
+            final int upper = this.getUpperRowWithData (channel);
+            if (upper >= 0 && upper > max)
+                max = upper;
+        }
+        return max;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getLowerRowWithData (final int channel)
+    {
+        for (int row = 0; row < this.numRows; row++)
+            if (this.hasRowData (channel, row))
+                return row;
+        return -1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getUpperRowWithData (final int channel)
+    {
+        for (int row = this.numRows - 1; row >= 0; row--)
+            if (this.hasRowData (channel, row))
+                return row;
+        return -1;
     }
 
 
@@ -551,33 +748,120 @@ public class CursorClipImpl implements INoteClip
     }
 
 
-    private void handleStepData (final int col, final int row, final int state)
+    /** {@inheritDoc} */
+    @Override
+    public void edit (final int channel, final int step, final int row, final boolean enable)
     {
-        final int [] [] data = this.getData ();
-
-        if (col >= data.length)
+        final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
+        if (enable)
         {
-            this.host.errorln ("Step data was sent for column " + col + " (zero based) but only " + this.numSteps + " were requested.");
-            return;
-        }
-        if (row >= data[col].length)
-        {
-            this.host.errorln ("Step data was sent for row " + row + " (zero based) but only " + this.numRows + " were requested.");
+            stepInfo.setEditing (true);
+            this.delayedUpdate (channel, step, row);
             return;
         }
 
-        // state: step is empty (0) or a note continues playing (1) or starts playing (2)
-        data[col][row] = state;
+        this.sendClipData (channel, step, row);
+        stepInfo.setEditing (false);
     }
 
 
+    private void delayedUpdate (final int channel, final int step, final int row)
+    {
+        final IStepInfo stepInfo = this.getStep (channel, step, row);
+        if (!stepInfo.isEditing ())
+            return;
+        this.sendClipData (channel, step, row);
+        this.host.scheduleTask ( () -> this.delayedUpdate (channel, step, row), 100);
+    }
+
+
+    /**
+     * Update the locally changed step data in Bitwig.
+     *
+     * @param channel The MIDI channel
+     * @param step The step of the clip
+     * @param row The row of the clip
+     */
+    private void sendClipData (final int channel, final int step, final int row)
+    {
+        final NoteStep noteInfo = this.getClip ().getStep (channel, step, row);
+        if (noteInfo == null)
+            return;
+
+        final IStepInfo stepInfo = this.getStep (channel, step, row);
+        noteInfo.setDuration (stepInfo.getDuration ());
+        noteInfo.setVelocity (stepInfo.getVelocity ());
+        noteInfo.setReleaseVelocity (stepInfo.getReleaseVelocity ());
+        noteInfo.setPressure (stepInfo.getPressure ());
+        noteInfo.setTimbre (stepInfo.getTimbre ());
+        noteInfo.setPan (stepInfo.getPan ());
+        noteInfo.setTranspose (stepInfo.getTranspose ());
+        noteInfo.setGain (stepInfo.getGain ());
+    }
+
+
+    /**
+     * Update the step info with the incoming data from Bitwig if the note is not currently edited.
+     *
+     * @param noteStep The new data
+     */
+    private void handleStepData (final NoteStep noteStep)
+    {
+        final StepInfoImpl sinfo = this.getUpdateableStep (noteStep.channel (), noteStep.x (), noteStep.y ());
+        if (!sinfo.isEditing ())
+            sinfo.updateData (noteStep);
+    }
+
+
+    /**
+     * Get the step at the given position. If the position still contains the Empty Step Info object
+     * an updateable one is created.
+     *
+     * @param channel The midi channel
+     * @param step The step
+     * @param row The row
+     * @return The updateable step info
+     */
+    private StepInfoImpl getUpdateableStep (final int channel, final int step, final int row)
+    {
+        final IStepInfo [] [] [] stepInfos = this.getStepInfos ();
+        synchronized (stepInfos)
+        {
+            try
+            {
+                // Lazily create an updateable object and keep it
+                if (stepInfos[channel][step] == null)
+                    stepInfos[channel][step] = new IStepInfo [this.numRows];
+                if (stepInfos[channel][step][row] == null)
+                    stepInfos[channel][step][row] = new StepInfoImpl ();
+                return (StepInfoImpl) stepInfos[channel][step][row];
+            }
+            catch (final ArrayIndexOutOfBoundsException ex)
+            {
+                this.host.errorln (ex.getLocalizedMessage ());
+                return new StepInfoImpl ();
+            }
+        }
+    }
+
+
+    /**
+     * Get the launcher or arranger clip. Depending on which is active.
+     *
+     * @return The clip
+     */
     private Clip getClip ()
     {
         return this.launcherClip.exists ().get () ? this.launcherClip : this.arrangerClip;
     }
 
 
-    private int [] [] getData ()
+    /**
+     * Get the launcher or arranger step infos. Depending on which is active.
+     *
+     * @return The step infos
+     */
+    private IStepInfo [] [] [] getStepInfos ()
     {
         return this.launcherClip.exists ().get () ? this.launcherData : this.arrangerData;
     }

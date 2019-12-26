@@ -5,9 +5,8 @@
 package de.mossgrabers.controller.launchpad.view;
 
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.controller.launchpad.definition.LaunchpadProControllerDefinition;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -16,7 +15,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
-import de.mossgrabers.framework.view.SceneView;
 
 
 /**
@@ -24,7 +22,7 @@ import de.mossgrabers.framework.view.SceneView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PlayView extends AbstractPlayView<LaunchpadControlSurface, LaunchpadConfiguration> implements SceneView
+public class PlayView extends AbstractPlayView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     /**
      * Constructor.
@@ -62,86 +60,65 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
         super.onActivate ();
         this.initMaxVelocity ();
         this.surface.setLaunchpadToPrgMode ();
-        this.surface.scheduleTask (this::delayedUpdateArrowButtons, 150);
-    }
-
-
-    private void delayedUpdateArrowButtons ()
-    {
-        this.surface.setTrigger (this.surface.getTriggerId (ButtonID.SESSION), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        this.surface.setTrigger (this.surface.getTriggerId (ButtonID.NOTE), LaunchpadColors.LAUNCHPAD_COLOR_OCEAN_HI);
-        this.surface.setTrigger (this.surface.getTriggerId (ButtonID.DEVICE), LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO);
-        if (this.surface.isPro ())
-            this.surface.setTrigger (LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_USER, this.model.getHost ().hasUserParameters () ? LaunchpadColors.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public int getButtonColor (final ButtonID buttonID)
     {
         if (this.model.canSelectedTrackHoldNotes ())
         {
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, LaunchpadColors.LAUNCHPAD_COLOR_OCEAN_HI);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, LaunchpadColors.LAUNCHPAD_COLOR_OCEAN_HI);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_WHITE);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_OCEAN_HI);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_OCEAN_HI);
+            if (buttonID == ButtonID.SCENE1 || buttonID == ButtonID.SCENE2 || buttonID == ButtonID.SCENE7 || buttonID == ButtonID.SCENE8)
+                return LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI;
+
+            if (buttonID == ButtonID.SCENE6)
+                return LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE;
         }
-        else
-        {
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-            this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        }
+
+        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
             return;
         if (!this.model.canSelectedTrackHoldNotes ())
             return;
+
         final ITextDisplay display = this.surface.getTextDisplay ();
         String name;
-        switch (scene)
+
+        switch (buttonID)
         {
-            case 0:
+            case SCENE1:
                 this.scales.nextScaleLayout ();
                 name = this.scales.getScaleLayout ().getName ();
                 this.surface.getConfiguration ().setScaleLayout (name);
                 display.notify (name);
                 break;
-            case 1:
+            case SCENE2:
                 this.scales.prevScaleLayout ();
                 name = this.scales.getScaleLayout ().getName ();
                 this.surface.getConfiguration ().setScaleLayout (name);
                 display.notify (name);
                 break;
-            case 5:
+            case SCENE6:
                 this.scales.toggleChromatic ();
                 final boolean isChromatic = this.scales.isChromatic ();
                 this.surface.getConfiguration ().setScaleInKey (!isChromatic);
                 display.notify (isChromatic ? "Chromatic" : "In Key");
                 break;
-            case 6:
+            case SCENE7:
                 this.scales.setScaleOffset (this.scales.getScaleOffset () + 1);
                 name = Scales.BASES[this.scales.getScaleOffset ()];
                 this.surface.getConfiguration ().setScaleBase (name);
                 display.notify (name);
                 break;
-            case 7:
+            case SCENE8:
                 this.scales.setScaleOffset (this.scales.getScaleOffset () - 1);
                 name = Scales.BASES[this.scales.getScaleOffset ()];
                 this.surface.getConfiguration ().setScaleBase (name);

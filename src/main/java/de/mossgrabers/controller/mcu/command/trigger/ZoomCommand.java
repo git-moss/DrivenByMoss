@@ -32,7 +32,7 @@ public class ZoomCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCo
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event == ButtonEvent.DOWN)
             this.surface.getConfiguration ().toggleZoomState ();

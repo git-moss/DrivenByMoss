@@ -6,10 +6,11 @@ package de.mossgrabers.controller.apcmini.view;
 
 import de.mossgrabers.controller.apcmini.APCminiConfiguration;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
-import de.mossgrabers.framework.view.SceneView;
 
 
 /**
@@ -17,9 +18,9 @@ import de.mossgrabers.framework.view.SceneView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PlayView extends AbstractPlayView<APCminiControlSurface, APCminiConfiguration> implements APCminiView, SceneView
+public class PlayView extends AbstractPlayView<APCminiControlSurface, APCminiConfiguration> implements APCminiView
 {
-    private TrackButtons extensions;
+    private final TrackButtons trackButtons;
 
 
     /**
@@ -27,12 +28,13 @@ public class PlayView extends AbstractPlayView<APCminiControlSurface, APCminiCon
      *
      * @param surface The controller
      * @param model The model
+     * @param trackButtons The track button control
      */
-    public PlayView (final APCminiControlSurface surface, final IModel model)
+    public PlayView (final APCminiControlSurface surface, final IModel model, final TrackButtons trackButtons)
     {
         super (surface, model, false);
 
-        this.extensions = new TrackButtons (surface, model);
+        this.trackButtons = trackButtons;
     }
 
 
@@ -40,57 +42,61 @@ public class PlayView extends AbstractPlayView<APCminiControlSurface, APCminiCon
     @Override
     public void onSelectTrack (final int index, final ButtonEvent event)
     {
-        this.extensions.onSelectTrack (index, event);
+        this.trackButtons.onSelectTrack (index, event);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public int getTrackButtonColor (final int index)
     {
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, i == 2 ? APCminiControlSurface.APC_BUTTON_STATE_OFF : APCminiControlSurface.APC_BUTTON_STATE_ON);
-
-        this.extensions.updateTrackButtons ();
+        return this.trackButtons.getTrackButtonColor (index);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        if (event != ButtonEvent.DOWN)
+        return ButtonID.SCENE3 == buttonID ? ColorManager.BUTTON_STATE_OFF : ColorManager.BUTTON_STATE_ON;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    {
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
             return;
-        if (!this.model.canSelectedTrackHoldNotes ())
-            return;
-        switch (scene)
+
+        switch (buttonID)
         {
-            case 0:
+            case SCENE1:
                 this.scales.nextScaleLayout ();
                 this.updateScaleLayout ();
                 break;
-            case 1:
+            case SCENE2:
                 this.scales.prevScaleLayout ();
                 this.updateScaleLayout ();
                 break;
-            case 3:
+            case SCENE4:
                 this.scales.prevScale ();
                 this.updateScale ();
                 break;
-            case 4:
+            case SCENE5:
                 this.scales.nextScale ();
                 this.updateScale ();
                 break;
-            case 5:
+            case SCENE6:
                 this.scales.toggleChromatic ();
                 final boolean isChromatic = this.scales.isChromatic ();
                 this.surface.getConfiguration ().setScaleInKey (!isChromatic);
                 this.surface.getDisplay ().notify (isChromatic ? "Chromatic" : "In Key");
                 break;
-            case 6:
+            case SCENE7:
                 this.onOctaveUp (event);
                 break;
-            case 7:
+            case SCENE8:
                 this.onOctaveDown (event);
                 break;
             default:

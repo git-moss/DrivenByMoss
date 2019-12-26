@@ -37,7 +37,7 @@ public class StartClipCommand<S extends IControlSurface<C>, C extends Configurat
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         final ITrack selectedtrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (selectedtrack == null)

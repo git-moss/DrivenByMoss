@@ -20,5 +20,14 @@ public interface APCminiView
      * @param index The index of the button
      * @param event The event
      */
-    void onSelectTrack (final int index, final ButtonEvent event);
+    void onSelectTrack (int index, ButtonEvent event);
+
+
+    /**
+     * Get the track button color.
+     *
+     * @param index The index of the utton
+     * @return The color
+     */
+    int getTrackButtonColor (int index);
 }

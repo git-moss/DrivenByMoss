@@ -10,15 +10,20 @@ import de.mossgrabers.controller.hui.command.trigger.ZoomAndKeysCursorCommand;
 import de.mossgrabers.controller.hui.command.trigger.ZoomCommand;
 import de.mossgrabers.controller.hui.controller.HUIControlSurface;
 import de.mossgrabers.controller.hui.controller.HUIDisplay;
-import de.mossgrabers.controller.hui.controller.HUIMainDisplay;
 import de.mossgrabers.controller.hui.controller.HUISegmentDisplay;
+import de.mossgrabers.controller.hui.mode.track.AbstractTrackMode;
 import de.mossgrabers.controller.hui.mode.track.PanMode;
 import de.mossgrabers.controller.hui.mode.track.SendMode;
 import de.mossgrabers.controller.hui.mode.track.VolumeMode;
-import de.mossgrabers.framework.command.TriggerCommandID;
+import de.mossgrabers.framework.command.continuous.FaderAbsoluteCommand;
+import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
+import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
+import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
+import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.AutomationCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
+import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.SaveCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
@@ -31,6 +36,8 @@ import de.mossgrabers.framework.command.trigger.track.SelectCommand;
 import de.mossgrabers.framework.command.trigger.track.SoloCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.PunchInCommand;
+import de.mossgrabers.framework.command.trigger.transport.PunchOutCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
@@ -39,9 +46,16 @@ import de.mossgrabers.framework.command.trigger.transport.WindCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
-import de.mossgrabers.framework.controller.Relative4ValueChanger;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.hardware.IHwButton;
+import de.mossgrabers.framework.controller.hardware.IHwFader;
+import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
+import de.mossgrabers.framework.controller.valuechanger.Relative4ValueChanger;
+import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -54,14 +68,17 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ControlOnlyView;
-import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
 
 
 /**
@@ -98,6 +115,11 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         Arrays.fill (this.faderValues, -1);
 
         this.colorManager = new ColorManager ();
+        this.colorManager.registerColor (0, ColorEx.BLACK);
+        this.colorManager.registerColor (127, ColorEx.RED);
+        this.colorManager.registerColorIndex (AbstractMode.BUTTON_COLOR_OFF, 0);
+        this.colorManager.registerColorIndex (AbstractMode.BUTTON_COLOR_ON, 127);
+
         this.valueChanger = new Relative4ValueChanger (16384, 100, 10);
         this.configuration = new HUIConfiguration (host, this.valueChanger);
     }
@@ -110,6 +132,9 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         super.flush ();
 
         this.updateMode (this.getSurface ().getModeManager ().getActiveOrTempModeId ());
+
+        this.updateVUandFaders ();
+        this.updateSegmentDisplay ();
     }
 
 
@@ -145,8 +170,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         final HUIControlSurface surface = new HUIControlSurface (this.host, this.colorManager, this.configuration, output, input, this.model);
         this.surfaces.add (surface);
         surface.addTextDisplay (new HUIDisplay (this.host, output));
-        surface.addTextDisplay (new HUIMainDisplay (this.host, output));
-        surface.addTextDisplay (new HUISegmentDisplay (output));
+        surface.addTextDisplay (new HUISegmentDisplay (this.host, output));
         surface.getModeManager ().setDefaultMode (Modes.VOLUME);
     }
 
@@ -200,53 +224,57 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     {
         // Assignments to the main device
         final HUIControlSurface surface = this.getSurface ();
+        final ModeManager modeManager = surface.getModeManager ();
+        final ITransport t = this.model.getTransport ();
+        final IApplication application = this.model.getApplication ();
 
         // Channel commands
         for (int i = 0; i < 8; i++)
         {
-            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.FADER_TOUCH_1, i), HUIControlSurface.HUI_FADER1 + i * 8, new FaderTouchCommand (i, this.model, surface));
-            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW_SELECT_1, i), HUIControlSurface.HUI_SELECT1 + i * 8, new SelectCommand<> (i, this.model, surface));
-            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW4_1, i), HUIControlSurface.HUI_MUTE1 + i * 8, new MuteCommand<> (i, this.model, surface));
-            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW3_1, i), HUIControlSurface.HUI_SOLO1 + i * 8, new SoloCommand<> (i, this.model, surface));
+            this.addButtonHUI (ButtonID.get (ButtonID.FADER_TOUCH_1, i), "Fader " + (i + 1), new FaderTouchCommand (i, this.model, surface), HUIControlSurface.HUI_FADER1 + i * 8);
+            this.addButtonHUI (ButtonID.get (ButtonID.ROW_SELECT_1, i), "Select " + (i + 1), new SelectCommand<> (i, this.model, surface), HUIControlSurface.HUI_SELECT1 + i * 8, this.model.getCurrentTrackBank ().getItem (i)::isSelected);
+            this.addButtonHUI (ButtonID.get (ButtonID.ROW4_1, i), "Mute " + (i + 1), new MuteCommand<> (i, this.model, surface), HUIControlSurface.HUI_MUTE1 + i * 8, this.model.getCurrentTrackBank ().getItem (i)::isMute);
+            this.addButtonHUI (ButtonID.get (ButtonID.ROW3_1, i), "Solo " + (i + 1), new SoloCommand<> (i, this.model, surface), HUIControlSurface.HUI_SOLO1 + i * 8, this.model.getCurrentTrackBank ().getItem (i)::isSolo);
             // HUI_AUTO1, not supported
-            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW1_1, i), HUIControlSurface.HUI_VSELECT1 + i * 8, new ButtonRowModeCommand<> (0, i, this.model, surface));
-            // HUI_INSERT1, not supported
-            this.addTriggerCommand (TriggerCommandID.get (TriggerCommandID.ROW2_1, i), HUIControlSurface.HUI_ARM1 + i * 8, new RecArmCommand<> (i, this.model, surface));
+            this.addButtonHUI (ButtonID.get (ButtonID.ROW1_1, i), "VSelect " + (i + 1), new ButtonRowModeCommand<> (0, i, this.model, surface), HUIControlSurface.HUI_VSELECT1 + i * 8);
+            // HUI_INSERT1 is used on icon for selection
+            this.addButtonHUI (ButtonID.get (ButtonID.ROW5_1, i), "Insert " + (i + 1), new SelectCommand<> (i, this.model, surface), HUIControlSurface.HUI_INSERT1 + i * 8, this.model.getCurrentTrackBank ().getItem (i)::isSelected);
+            this.addButtonHUI (ButtonID.get (ButtonID.ROW2_1, i), "Arm " + (i + 1), new RecArmCommand<> (i, this.model, surface), HUIControlSurface.HUI_ARM1 + i * 8, this.model.getCurrentTrackBank ().getItem (i)::isRecArm);
         }
 
         // Key commands
-        this.addTriggerCommand (TriggerCommandID.CONTROL, HUIControlSurface.HUI_KEY_CTRL_CLT, NopCommand.INSTANCE);
-        this.addTriggerCommand (TriggerCommandID.SHIFT, HUIControlSurface.HUI_KEY_SHIFT_AD, NopCommand.INSTANCE);
+        this.addButtonHUI (ButtonID.CONTROL, "Control", NopCommand.INSTANCE, HUIControlSurface.HUI_KEY_CTRL_CLT);
+        this.addButtonHUI (ButtonID.SHIFT, "Shift", NopCommand.INSTANCE, HUIControlSurface.HUI_KEY_SHIFT_AD);
         // HUI_KEY_EDITMODE, not supported
-        this.addTriggerCommand (TriggerCommandID.UNDO, HUIControlSurface.HUI_KEY_UNDO, new UndoCommand<> (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.ALT, HUIControlSurface.HUI_KEY_ALT_FINE, NopCommand.INSTANCE);
-        this.addTriggerCommand (TriggerCommandID.SELECT, HUIControlSurface.HUI_KEY_OPTION_A, NopCommand.INSTANCE);
+        this.addButtonHUI (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), HUIControlSurface.HUI_KEY_UNDO);
+        this.addButtonHUI (ButtonID.ALT, "Alt", NopCommand.INSTANCE, HUIControlSurface.HUI_KEY_ALT_FINE);
+        this.addButtonHUI (ButtonID.SELECT, "Select", NopCommand.INSTANCE, HUIControlSurface.HUI_KEY_OPTION_A);
         // HUI_KEY_EDITTOOL, not supported
-        this.addTriggerCommand (TriggerCommandID.SAVE, HUIControlSurface.HUI_KEY_SAVE, new SaveCommand<> (this.model, surface));
+        this.addButtonHUI (ButtonID.SAVE, "Save", new SaveCommand<> (this.model, surface), HUIControlSurface.HUI_KEY_SAVE);
 
         // Window commands
-        this.addTriggerCommand (TriggerCommandID.MIXER, HUIControlSurface.HUI_WINDOW_MIX, new PaneCommand<> (PaneCommand.Panels.MIXER, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.NOTE_EDITOR, HUIControlSurface.HUI_WINDOW_EDIT, new PaneCommand<> (PaneCommand.Panels.NOTE, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.AUTOMATION_EDITOR, HUIControlSurface.HUI_WINDOW_TRANSPRT, new PaneCommand<> (PaneCommand.Panels.AUTOMATION, this.model, surface));
+        this.addButtonHUI (ButtonID.MIXER, "Mixer", new PaneCommand<> (PaneCommand.Panels.MIXER, this.model, surface), HUIControlSurface.HUI_WINDOW_MIX);
+        this.addButtonHUI (ButtonID.NOTE_EDITOR, "Note", new PaneCommand<> (PaneCommand.Panels.NOTE, this.model, surface), HUIControlSurface.HUI_WINDOW_EDIT);
+        this.addButtonHUI (ButtonID.AUTOMATION_EDITOR, "Automation", new PaneCommand<> (PaneCommand.Panels.AUTOMATION, this.model, surface), HUIControlSurface.HUI_WINDOW_TRANSPRT);
         // HUI_WINDOW_MEM_LOC, not supported
-        this.addTriggerCommand (TriggerCommandID.TOGGLE_DEVICE, HUIControlSurface.HUI_WINDOW_STATUS, new PaneCommand<> (PaneCommand.Panels.DEVICE, this.model, surface));
+        this.addButtonHUI (ButtonID.TOGGLE_DEVICE, "Device", new PanelLayoutCommand<> (this.model, surface), HUIControlSurface.HUI_WINDOW_STATUS);
         // HUI_WINDOW_ALT, not supported
 
         // Bank navigation
-        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_LEFT, HUIControlSurface.HUI_CHANL_LEFT, new ModeCursorCommand<> (Direction.LEFT, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.MOVE_BANK_LEFT, HUIControlSurface.HUI_BANK_LEFT, new ModeCursorCommand<> (Direction.DOWN, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.MOVE_TRACK_RIGHT, HUIControlSurface.HUI_CHANL_RIGHT, new ModeCursorCommand<> (Direction.RIGHT, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.MOVE_BANK_RIGHT, HUIControlSurface.HUI_BANK_RIGHT, new ModeCursorCommand<> (Direction.UP, this.model, surface));
+        this.addButtonHUI (ButtonID.MOVE_TRACK_LEFT, "Channel Left", new ModeCursorCommand<> (Direction.LEFT, this.model, surface), HUIControlSurface.HUI_CHANL_LEFT);
+        this.addButtonHUI (ButtonID.MOVE_BANK_LEFT, "Bank Left", new ModeCursorCommand<> (Direction.DOWN, this.model, surface), HUIControlSurface.HUI_BANK_LEFT);
+        this.addButtonHUI (ButtonID.MOVE_TRACK_RIGHT, "Channel Right", new ModeCursorCommand<> (Direction.RIGHT, this.model, surface), HUIControlSurface.HUI_CHANL_RIGHT);
+        this.addButtonHUI (ButtonID.MOVE_BANK_RIGHT, "Bank Right", new ModeCursorCommand<> (Direction.UP, this.model, surface), HUIControlSurface.HUI_BANK_RIGHT);
 
         // Assignment (mode selection)
         // HUI_ASSIGN1_OUTPUT, not supported
         // HUI_ASSIGN1_INPUT, not supported
-        this.addTriggerCommand (TriggerCommandID.PAN_SEND, HUIControlSurface.HUI_ASSIGN1_PAN, new ModeSelectCommand<> (this.model, surface, Modes.PAN));
-        this.addTriggerCommand (TriggerCommandID.SEND1, HUIControlSurface.HUI_ASSIGN1_SEND_A, new ModeSelectCommand<> (this.model, surface, Modes.SEND1));
-        this.addTriggerCommand (TriggerCommandID.SEND2, HUIControlSurface.HUI_ASSIGN1_SEND_B, new ModeSelectCommand<> (this.model, surface, Modes.SEND2));
-        this.addTriggerCommand (TriggerCommandID.SEND3, HUIControlSurface.HUI_ASSIGN1_SEND_C, new ModeSelectCommand<> (this.model, surface, Modes.SEND3));
-        this.addTriggerCommand (TriggerCommandID.SEND4, HUIControlSurface.HUI_ASSIGN1_SEND_D, new ModeSelectCommand<> (this.model, surface, Modes.SEND4));
-        this.addTriggerCommand (TriggerCommandID.SEND5, HUIControlSurface.HUI_ASSIGN1_SEND_E, new ModeSelectCommand<> (this.model, surface, Modes.SEND5));
+        this.addButtonHUI (ButtonID.PAN_SEND, "Panorama", new ModeSelectCommand<> (this.model, surface, Modes.PAN), HUIControlSurface.HUI_ASSIGN1_PAN, () -> modeManager.isActiveOrTempMode (Modes.PAN));
+        this.addButtonHUI (ButtonID.SEND1, "Send 1", new ModeSelectCommand<> (this.model, surface, Modes.SEND1), HUIControlSurface.HUI_ASSIGN1_SEND_A, () -> modeManager.isActiveOrTempMode (Modes.SEND1));
+        this.addButtonHUI (ButtonID.SEND2, "Send 2", new ModeSelectCommand<> (this.model, surface, Modes.SEND2), HUIControlSurface.HUI_ASSIGN1_SEND_B, () -> modeManager.isActiveOrTempMode (Modes.SEND2));
+        this.addButtonHUI (ButtonID.SEND3, "Send 3", new ModeSelectCommand<> (this.model, surface, Modes.SEND3), HUIControlSurface.HUI_ASSIGN1_SEND_C, () -> modeManager.isActiveOrTempMode (Modes.SEND3));
+        this.addButtonHUI (ButtonID.SEND4, "Send 4", new ModeSelectCommand<> (this.model, surface, Modes.SEND4), HUIControlSurface.HUI_ASSIGN1_SEND_D, () -> modeManager.isActiveOrTempMode (Modes.SEND4));
+        this.addButtonHUI (ButtonID.SEND5, "Send 5", new ModeSelectCommand<> (this.model, surface, Modes.SEND5), HUIControlSurface.HUI_ASSIGN1_SEND_E, () -> modeManager.isActiveOrTempMode (Modes.SEND5));
 
         // Assignment 2
         // HUI_ASSIGN2_ASSIGN, not supported
@@ -258,31 +286,42 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         // HUI_ASSIGN2_RECRDYAL, not supported
 
         // Cursor arrows
-        this.addTriggerCommand (TriggerCommandID.ARROW_DOWN, HUIControlSurface.HUI_CURSOR_DOWN, new ZoomAndKeysCursorCommand (Direction.DOWN, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.ARROW_LEFT, HUIControlSurface.HUI_CURSOR_LEFT, new ZoomAndKeysCursorCommand (Direction.LEFT, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.ZOOM, HUIControlSurface.HUI_CURSOR_MODE, new ZoomCommand (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.ARROW_RIGHT, HUIControlSurface.HUI_CURSOR_RIGHT, new ZoomAndKeysCursorCommand (Direction.RIGHT, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.ARROW_UP, HUIControlSurface.HUI_CURSOR_UP, new ZoomAndKeysCursorCommand (Direction.UP, this.model, surface));
+        this.addButtonHUI (ButtonID.ARROW_DOWN, "Down", new ZoomAndKeysCursorCommand (Direction.DOWN, this.model, surface), HUIControlSurface.HUI_CURSOR_DOWN);
+        this.addButtonHUI (ButtonID.ARROW_LEFT, "Left", new ZoomAndKeysCursorCommand (Direction.LEFT, this.model, surface), HUIControlSurface.HUI_CURSOR_LEFT);
+        this.addButtonHUI (ButtonID.ZOOM, "Toggle", new ZoomCommand (this.model, surface), HUIControlSurface.HUI_CURSOR_MODE, surface.getConfiguration ()::isZoomState);
+        this.addButtonHUI (ButtonID.ARROW_RIGHT, "Right", new ZoomAndKeysCursorCommand (Direction.RIGHT, this.model, surface), HUIControlSurface.HUI_CURSOR_RIGHT);
+        this.addButtonHUI (ButtonID.ARROW_UP, "Up", new ZoomAndKeysCursorCommand (Direction.UP, this.model, surface), HUIControlSurface.HUI_CURSOR_UP);
         // HUI_WHEEL_SCRUB, not supported
         // HUI_WHEEL_SHUTTLE, not supported
 
         // Navigation
         // HUI_TRANSPORT_TALKBACK, not supported
-        this.addTriggerCommand (TriggerCommandID.REWIND, HUIControlSurface.HUI_TRANSPORT_REWIND, new WindCommand<> (this.model, surface, false));
-        this.addTriggerCommand (TriggerCommandID.FORWARD, HUIControlSurface.HUI_TRANSPORT_FAST_FWD, new WindCommand<> (this.model, surface, true));
-        this.addTriggerCommand (TriggerCommandID.STOP, HUIControlSurface.HUI_TRANSPORT_STOP, new StopCommand<> (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.PLAY, HUIControlSurface.HUI_TRANSPORT_PLAY, new PlayCommand<> (this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.RECORD, HUIControlSurface.HUI_TRANSPORT_RECORD, new RecordCommand<> (this.model, surface));
-        // HUI_TRANSPORT_RETURN_TO_ZERO, not supported
+        final WindCommand<HUIControlSurface, HUIConfiguration> rewindCommand = new WindCommand<> (this.model, surface, false);
+        this.addButtonHUI (ButtonID.REWIND, "<<", rewindCommand, HUIControlSurface.HUI_TRANSPORT_REWIND, rewindCommand::isRewinding);
+        final WindCommand<HUIControlSurface, HUIConfiguration> forwardCommand = new WindCommand<> (this.model, surface, true);
+        this.addButtonHUI (ButtonID.FORWARD, ">>", forwardCommand, HUIControlSurface.HUI_TRANSPORT_FAST_FWD, forwardCommand::isForwarding);
+        this.addButtonHUI (ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_STOP, () -> !t.isPlaying ());
+        this.addButtonHUI (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_PLAY, t::isPlaying);
+        this.addButtonHUI (ButtonID.RECORD, "Record", new RecordCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_RECORD, t::isRecording);
+        this.addButtonHUI (ButtonID.RETURN_TO_ZERO, "Return to Zero", (event, velocity) -> {
+            if (event == ButtonEvent.DOWN)
+                t.setPosition (0);
+        }, HUIControlSurface.HUI_TRANSPORT_RETURN_TO_ZERO, () -> surface.getButton (ButtonID.RETURN_TO_ZERO).isPressed ());
         // HUI_TRANSPORT_TO_END, not supported
-        // HUI_TRANSPORT_ON_LINE, not supported
-        this.addTriggerCommand (TriggerCommandID.LOOP, HUIControlSurface.HUI_TRANSPORT_LOOP, new ToggleLoopCommand<> (this.model, surface));
-        // HUI_TRANSPORT_QICK_PUNCH, not supported
+        this.addButtonHUI (ButtonID.AUDIO_ENGINE, "Audio Engine", (event, velocity) -> {
+            if (event == ButtonEvent.DOWN)
+                application.toggleEngineActive ();
+        }, HUIControlSurface.HUI_TRANSPORT_ON_LINE, application::isEngineActive);
+
+        this.addButtonHUI (ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_LOOP, t::isLoop);
+        this.addButtonHUI (ButtonID.OVERDUB, "Quick Punch", new PunchInCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_QICK_PUNCH, t::isPunchInEnabled);
         // HUI_TRANSPORT_AUDITION, not supported
-        this.addTriggerCommand (TriggerCommandID.METRONOME, HUIControlSurface.HUI_TRANSPORT_PRE, new MetronomeCommand<> (this.model, surface));
-        // HUI_TRANSPORT_IN, not supported
-        // HUI_TRANSPORT_OUT, not supported
-        this.addTriggerCommand (TriggerCommandID.TAP_TEMPO, HUIControlSurface.HUI_TRANSPORT_POST, new TapTempoCommand<> (this.model, surface));
+        this.addButtonHUI (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_PRE, t::isMetronomeOn);
+        // Note: The following two punch commands should actually set the punch point, which is
+        // currently not possible with the Bitwig API
+        this.addButtonHUI (ButtonID.PUNCH_IN, "In", new PunchInCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_IN, t::isPunchInEnabled);
+        this.addButtonHUI (ButtonID.PUNCH_OUT, "Out", new PunchOutCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_OUT, t::isPunchOutEnabled);
+        this.addButtonHUI (ButtonID.TAP_TEMPO, "Tap Tempo", new TapTempoCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_POST, () -> false);
 
         // Control room
         // HUI_CONTROL_ROOM_INPUT_3, not supported
@@ -325,12 +364,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         // HUI_AUTO_ENABLE_MUTE, not supported
 
         // Automation modes
-        this.addTriggerCommand (TriggerCommandID.AUTOMATION_TRIM, HUIControlSurface.HUI_AUTO_MODE_TRIM, new AutomationCommand<> (2, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.AUTOMATION_LATCH, HUIControlSurface.HUI_AUTO_MODE_LATCH, new AutomationCommand<> (4, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.AUTOMATION_READ, HUIControlSurface.HUI_AUTO_MODE_READ, new AutomationCommand<> (0, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.AUTOMATION_READ, HUIControlSurface.HUI_AUTO_MODE_OFF, new AutomationCommand<> (0, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.AUTOMATION_WRITE, HUIControlSurface.HUI_AUTO_MODE_WRITE, new AutomationCommand<> (1, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.AUTOMATION_TOUCH, HUIControlSurface.HUI_AUTO_MODE_TOUCH, new AutomationCommand<> (3, this.model, surface));
+        this.addButtonHUI (ButtonID.AUTOMATION_TRIM, "Trim", new AutomationCommand<> (2, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TRIM, t::isWritingClipLauncherAutomation);
+        this.addButtonHUI (ButtonID.AUTOMATION_LATCH, "Latch", new AutomationCommand<> (4, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_LATCH, () -> t.isWritingArrangerAutomation () && TransportConstants.AUTOMATION_MODES_VALUES[0].equals (t.getAutomationWriteMode ()));
+        this.addButtonHUI (ButtonID.AUTOMATION_READ, "Read", new AutomationCommand<> (0, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_READ, () -> !t.isWritingArrangerAutomation ());
+        this.addButtonHUI (ButtonID.AUTOMATION_OFF, "Off", new AutomationCommand<> (0, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> !t.isWritingArrangerAutomation ());
+        this.addButtonHUI (ButtonID.AUTOMATION_WRITE, "Write", new AutomationCommand<> (1, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.isWritingArrangerAutomation () && TransportConstants.AUTOMATION_MODES_VALUES[2].equals (t.getAutomationWriteMode ()));
+        this.addButtonHUI (ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationCommand<> (3, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TOUCH, () -> t.isWritingArrangerAutomation () && TransportConstants.AUTOMATION_MODES_VALUES[1].equals (t.getAutomationWriteMode ()));
 
         // Status
         // HUI_STATUS_PHASE, not supported
@@ -349,14 +388,14 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         // HUI_EDIT_SEPARATE, not supported
 
         // Function keys
-        this.addTriggerCommand (TriggerCommandID.F1, HUIControlSurface.HUI_F1, new AssignableCommand (2, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.F2, HUIControlSurface.HUI_F2, new AssignableCommand (3, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.F3, HUIControlSurface.HUI_F3, new AssignableCommand (4, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.F4, HUIControlSurface.HUI_F4, new AssignableCommand (5, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.F5, HUIControlSurface.HUI_F5, new AssignableCommand (6, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.F6, HUIControlSurface.HUI_F6, new AssignableCommand (7, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.F7, HUIControlSurface.HUI_F7, new AssignableCommand (8, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.F8, HUIControlSurface.HUI_F8_ESC, new AssignableCommand (9, this.model, surface));
+        this.addButtonHUI (ButtonID.F1, "F1", new AssignableCommand (2, this.model, surface), HUIControlSurface.HUI_F1);
+        this.addButtonHUI (ButtonID.F2, "F2", new AssignableCommand (3, this.model, surface), HUIControlSurface.HUI_F2);
+        this.addButtonHUI (ButtonID.F3, "F3", new AssignableCommand (4, this.model, surface), HUIControlSurface.HUI_F3);
+        this.addButtonHUI (ButtonID.F4, "F4", new AssignableCommand (5, this.model, surface), HUIControlSurface.HUI_F4);
+        this.addButtonHUI (ButtonID.F5, "F5", new AssignableCommand (6, this.model, surface), HUIControlSurface.HUI_F5);
+        this.addButtonHUI (ButtonID.F6, "F6", new AssignableCommand (7, this.model, surface), HUIControlSurface.HUI_F6);
+        this.addButtonHUI (ButtonID.F7, "F7", new AssignableCommand (8, this.model, surface), HUIControlSurface.HUI_F7);
+        this.addButtonHUI (ButtonID.F8, "F8", new AssignableCommand (9, this.model, surface), HUIControlSurface.HUI_F8_ESC);
 
         // DSP Edit
         // HUI_DSP_EDIT_INS_PARA, not supported
@@ -369,8 +408,198 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         // HUI_DSP_EDIT_COMPARE, not supported
 
         // Footswitches
-        this.addTriggerCommand (TriggerCommandID.FOOTSWITCH1, HUIControlSurface.HUI_FS_RLAY1, new AssignableCommand (0, this.model, surface));
-        this.addTriggerCommand (TriggerCommandID.FOOTSWITCH2, HUIControlSurface.HUI_FS_RLAY2, new AssignableCommand (1, this.model, surface));
+        this.addButtonHUI (ButtonID.FOOTSWITCH1, "Footswitch 1", new AssignableCommand (0, this.model, surface), HUIControlSurface.HUI_FS_RLAY1);
+        this.addButtonHUI (ButtonID.FOOTSWITCH2, "Footswitch 2", new AssignableCommand (1, this.model, surface), HUIControlSurface.HUI_FS_RLAY2);
+    }
+
+
+    private void addButtonHUI (final ButtonID buttonID, final String label, final TriggerCommand command, final int huiControl)
+    {
+        this.addButtonHUI (buttonID, label, command, huiControl, (IntSupplier) null);
+    }
+
+
+    private void addButtonHUI (final ButtonID buttonID, final String label, final TriggerCommand command, final int huiControl, final BooleanSupplier supplier)
+    {
+        this.addButtonHUI (buttonID, label, command, huiControl, () -> supplier.getAsBoolean () ? 127 : 0);
+    }
+
+
+    private void addButtonHUI (final ButtonID buttonID, final String label, final TriggerCommand command, final int huiControl, final IntSupplier supplier)
+    {
+        final HUIControlSurface surface = this.getSurface ();
+        final IHwButton button = surface.createButton (buttonID, label);
+        button.bind (command);
+
+        this.getSurface ().addHuiButton (Integer.valueOf (huiControl), button);
+
+        final IntSupplier intSupplier = () -> button.isPressed () ? 127 : 0;
+        final IntSupplier supp = supplier == null ? intSupplier : supplier;
+        surface.createLight (null, supp, color -> surface.setTrigger (0, huiControl, color), state -> this.colorManager.getColor (state, buttonID), button);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void registerContinuousCommands ()
+    {
+        final HUIControlSurface surface = this.getSurface ();
+
+        for (int i = 0; i < 8; i++)
+        {
+            final IHwFader fader = surface.createFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), true);
+            fader.bind (new FaderAbsoluteCommand<> (i, this.model, surface));
+
+            final IHwRelativeKnob knob = surface.createRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1));
+            knob.bind (new KnobRowModeCommand<> (i, this.model, surface));
+        }
+        final IHwFader fader = surface.createFader (ContinuousID.FADER_MASTER, "Master", true);
+        fader.bind (new MasterFaderAbsoluteCommand<> (this.model, surface));
+
+        final IHwRelativeKnob jogKnob = surface.createRelativeKnob (ContinuousID.PLAY_POSITION, "Jog");
+        jogKnob.bind (new PlayPositionCommand<> (this.model, surface));
+
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void layoutControls ()
+    {
+        final HUIControlSurface surface = this.getSurface ();
+
+        surface.getButton (ButtonID.FADER_TOUCH_1).setBounds (12.75, 460.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW_SELECT_1).setBounds (12.75, 389.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW4_1).setBounds (12.75, 342.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW3_1).setBounds (12.75, 295.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW1_1).setBounds (12.75, 172.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW5_1).setBounds (12.75, 207.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW2_1).setBounds (12.75, 248.25, 65.0, 39.75);
+        surface.getButton (ButtonID.FADER_TOUCH_2).setBounds (87.25, 460.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW_SELECT_2).setBounds (87.25, 389.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW4_2).setBounds (87.25, 342.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW3_2).setBounds (87.25, 295.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW1_2).setBounds (87.25, 172.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW5_2).setBounds (87.25, 207.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW2_2).setBounds (87.25, 248.25, 65.0, 39.75);
+        surface.getButton (ButtonID.FADER_TOUCH_3).setBounds (163.75, 460.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW_SELECT_3).setBounds (163.75, 389.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW4_3).setBounds (163.75, 342.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW3_3).setBounds (163.75, 295.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW1_3).setBounds (163.75, 172.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW5_3).setBounds (163.75, 207.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW2_3).setBounds (163.75, 248.25, 65.0, 39.75);
+        surface.getButton (ButtonID.FADER_TOUCH_4).setBounds (237.0, 460.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW_SELECT_4).setBounds (237.0, 389.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW4_4).setBounds (237.0, 342.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW3_4).setBounds (237.0, 295.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW1_4).setBounds (237.0, 172.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW5_4).setBounds (237.0, 207.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW2_4).setBounds (237.0, 248.25, 65.0, 39.75);
+        surface.getButton (ButtonID.FADER_TOUCH_5).setBounds (311.25, 460.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW_SELECT_5).setBounds (311.25, 389.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW4_5).setBounds (311.25, 342.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW3_5).setBounds (311.25, 295.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW1_5).setBounds (311.25, 172.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW5_5).setBounds (311.25, 207.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW2_5).setBounds (311.25, 248.25, 65.0, 39.75);
+        surface.getButton (ButtonID.FADER_TOUCH_6).setBounds (386.5, 460.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW_SELECT_6).setBounds (386.5, 389.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW4_6).setBounds (386.5, 342.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW3_6).setBounds (386.5, 295.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW1_6).setBounds (386.5, 172.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW5_6).setBounds (386.5, 207.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW2_6).setBounds (386.5, 248.25, 65.0, 39.75);
+        surface.getButton (ButtonID.FADER_TOUCH_7).setBounds (459.0, 460.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW_SELECT_7).setBounds (459.0, 389.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW4_7).setBounds (459.0, 342.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW3_7).setBounds (459.0, 295.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW1_7).setBounds (459.0, 172.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW5_7).setBounds (459.0, 207.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW2_7).setBounds (459.0, 248.25, 65.0, 39.75);
+        surface.getButton (ButtonID.FADER_TOUCH_8).setBounds (532.25, 460.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW_SELECT_8).setBounds (532.25, 389.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW4_8).setBounds (532.25, 342.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW3_8).setBounds (532.25, 295.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ROW1_8).setBounds (532.25, 172.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW5_8).setBounds (532.25, 207.5, 65.0, 25.0);
+        surface.getButton (ButtonID.ROW2_8).setBounds (532.25, 248.25, 65.0, 39.75);
+        surface.getButton (ButtonID.CONTROL).setBounds (921.0, 637.5, 65.0, 39.75);
+        surface.getButton (ButtonID.SHIFT).setBounds (776.5, 637.5, 65.0, 39.75);
+        surface.getButton (ButtonID.UNDO).setBounds (849.25, 320.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ALT).setBounds (847.75, 637.5, 65.0, 39.75);
+        surface.getButton (ButtonID.SELECT).setBounds (703.75, 637.5, 65.0, 39.75);
+        surface.getButton (ButtonID.SAVE).setBounds (921.5, 320.25, 65.0, 39.75);
+        surface.getButton (ButtonID.MIXER).setBounds (921.5, 366.75, 65.0, 39.75);
+        surface.getButton (ButtonID.NOTE_EDITOR).setBounds (705.0, 366.75, 65.0, 39.75);
+        surface.getButton (ButtonID.AUTOMATION_EDITOR).setBounds (777.75, 366.75, 65.0, 39.75);
+        surface.getButton (ButtonID.TOGGLE_DEVICE).setBounds (849.25, 366.75, 65.0, 39.75);
+        surface.getButton (ButtonID.MOVE_TRACK_LEFT).setBounds (847.75, 542.0, 65.0, 39.75);
+        surface.getButton (ButtonID.MOVE_BANK_LEFT).setBounds (703.75, 542.0, 65.0, 39.75);
+        surface.getButton (ButtonID.MOVE_TRACK_RIGHT).setBounds (921.0, 542.0, 65.0, 39.75);
+        surface.getButton (ButtonID.MOVE_BANK_RIGHT).setBounds (776.5, 542.0, 65.0, 39.75);
+        surface.getButton (ButtonID.PAN_SEND).setBounds (632.5, 366.75, 65.0, 39.75);
+        surface.getButton (ButtonID.SEND1).setBounds (632.5, 414.0, 65.0, 39.75);
+        surface.getButton (ButtonID.SEND2).setBounds (705.0, 414.0, 65.0, 39.75);
+        surface.getButton (ButtonID.SEND3).setBounds (777.75, 414.0, 65.0, 39.75);
+        surface.getButton (ButtonID.SEND4).setBounds (849.25, 414.0, 65.0, 39.75);
+        surface.getButton (ButtonID.SEND5).setBounds (921.5, 414.0, 65.0, 39.75);
+        surface.getButton (ButtonID.ARROW_DOWN).setBounds (777.75, 797.0, 65.0, 39.75);
+        surface.getButton (ButtonID.ARROW_LEFT).setBounds (705.0, 750.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ZOOM).setBounds (777.75, 750.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ARROW_RIGHT).setBounds (849.0, 750.25, 65.0, 39.75);
+        surface.getButton (ButtonID.ARROW_UP).setBounds (777.75, 702.25, 65.0, 39.75);
+        surface.getButton (ButtonID.REWIND).setBounds (556.0, 942.0, 65.0, 39.75);
+        surface.getButton (ButtonID.FORWARD).setBounds (630.0, 942.0, 65.0, 39.75);
+        surface.getButton (ButtonID.STOP).setBounds (779.0, 942.0, 65.0, 39.75);
+        surface.getButton (ButtonID.PLAY).setBounds (850.25, 942.0, 65.0, 39.75);
+        surface.getButton (ButtonID.RECORD).setBounds (923.5, 942.0, 65.0, 39.75);
+        surface.getButton (ButtonID.RETURN_TO_ZERO).setBounds (399.75, 942.0, 65.0, 39.75);
+        surface.getButton (ButtonID.AUDIO_ENGINE).setBounds (705.0, 320.25, 65.0, 39.75);
+        surface.getButton (ButtonID.LOOP).setBounds (706.25, 942.0, 65.0, 39.75);
+        surface.getButton (ButtonID.OVERDUB).setBounds (703.75, 590.25, 65.0, 39.75);
+        surface.getButton (ButtonID.METRONOME).setBounds (921.0, 590.25, 65.0, 39.75);
+        surface.getButton (ButtonID.PUNCH_IN).setBounds (776.5, 590.25, 65.0, 39.75);
+        surface.getButton (ButtonID.PUNCH_OUT).setBounds (847.75, 590.25, 65.0, 39.75);
+        surface.getButton (ButtonID.TAP_TEMPO).setBounds (481.25, 942.0, 65.0, 39.75);
+        surface.getButton (ButtonID.AUTOMATION_TRIM).setBounds (777.75, 272.25, 65.0, 39.75);
+        surface.getButton (ButtonID.AUTOMATION_LATCH).setBounds (921.5, 272.25, 65.0, 39.75);
+        surface.getButton (ButtonID.AUTOMATION_READ).setBounds (667.25, 272.25, 30.25, 39.75);
+        surface.getButton (ButtonID.AUTOMATION_OFF).setBounds (632.5, 272.25, 30.25, 39.75);
+        surface.getButton (ButtonID.AUTOMATION_WRITE).setBounds (705.0, 272.25, 65.0, 39.75);
+        surface.getButton (ButtonID.AUTOMATION_TOUCH).setBounds (849.25, 272.25, 65.0, 39.75);
+        surface.getButton (ButtonID.F1).setBounds (632.5, 178.25, 65.0, 39.75);
+        surface.getButton (ButtonID.F2).setBounds (705.0, 178.25, 65.0, 39.75);
+        surface.getButton (ButtonID.F3).setBounds (777.75, 178.25, 65.0, 39.75);
+        surface.getButton (ButtonID.F4).setBounds (849.25, 178.25, 65.0, 39.75);
+        surface.getButton (ButtonID.F5).setBounds (921.5, 178.25, 65.0, 39.75);
+        surface.getButton (ButtonID.F6).setBounds (777.75, 225.5, 65.0, 39.75);
+        surface.getButton (ButtonID.F7).setBounds (849.25, 225.5, 65.0, 39.75);
+        surface.getButton (ButtonID.F8).setBounds (921.5, 225.5, 65.0, 39.75);
+        surface.getButton (ButtonID.FOOTSWITCH1).setBounds (12.5, 942.0, 77.75, 39.75);
+        surface.getButton (ButtonID.FOOTSWITCH2).setBounds (102.5, 942.0, 77.75, 39.75);
+
+        surface.getContinuous (ContinuousID.FADER1).setBounds (12.75, 501.5, 65.0, 419.0);
+        surface.getContinuous (ContinuousID.KNOB1).setBounds (12.25, 93.5, 72.0, 74.75);
+        surface.getContinuous (ContinuousID.FADER2).setBounds (87.25, 501.5, 65.0, 419.0);
+        surface.getContinuous (ContinuousID.KNOB2).setBounds (86.25, 93.5, 72.0, 74.75);
+        surface.getContinuous (ContinuousID.FADER3).setBounds (163.75, 501.5, 65.0, 419.0);
+        surface.getContinuous (ContinuousID.KNOB3).setBounds (160.0, 93.5, 72.0, 74.75);
+        surface.getContinuous (ContinuousID.FADER4).setBounds (237.0, 501.5, 65.0, 419.0);
+        surface.getContinuous (ContinuousID.KNOB4).setBounds (234.0, 93.5, 72.0, 74.75);
+        surface.getContinuous (ContinuousID.FADER5).setBounds (311.25, 501.5, 65.0, 419.0);
+        surface.getContinuous (ContinuousID.KNOB5).setBounds (308.0, 93.5, 72.0, 74.75);
+        surface.getContinuous (ContinuousID.FADER6).setBounds (386.5, 501.5, 65.0, 419.0);
+        surface.getContinuous (ContinuousID.KNOB6).setBounds (381.75, 93.5, 72.0, 74.75);
+        surface.getContinuous (ContinuousID.FADER7).setBounds (459.0, 501.5, 65.0, 419.0);
+        surface.getContinuous (ContinuousID.KNOB7).setBounds (455.75, 93.5, 72.0, 74.75);
+        surface.getContinuous (ContinuousID.FADER8).setBounds (532.25, 501.5, 65.0, 419.0);
+        surface.getContinuous (ContinuousID.KNOB8).setBounds (529.5, 93.5, 72.0, 74.75);
+        surface.getContinuous (ContinuousID.FADER_MASTER).setBounds (613.5, 501.5, 65.0, 419.0);
+        surface.getContinuous (ContinuousID.PLAY_POSITION).setBounds (859.5, 806.5, 115.25, 115.75);
+
+        surface.getTextDisplay (0).getHardwareDisplay ().setBounds (11.75, 11.75, 601.0, 73.25);
+        surface.getTextDisplay (1).getHardwareDisplay ().setBounds (699.0, 27.0, 229.0, 57.75);
     }
 
 
@@ -389,65 +618,8 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
 
     private void sendPing ()
     {
-        this.getSurface ().getOutput ().sendNote (0, 0);
+        this.getSurface ().getMidiOutput ().sendNote (0, 0);
         this.host.scheduleTask (this::sendPing, 1000);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateButtons ()
-    {
-        final HUIControlSurface surface = this.getSurface ();
-        final Modes mode = surface.getModeManager ().getActiveOrTempModeId ();
-        if (mode == null)
-            return;
-
-        this.updateVUandFaders ();
-        this.updateSegmentDisplay ();
-
-        // Set button states
-        final ITransport t = this.model.getTransport ();
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_PAN, Modes.PAN.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_A, Modes.SEND1.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_B, Modes.SEND2.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_C, Modes.SEND3.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_D, Modes.SEND4.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_ASSIGN1_SEND_E, Modes.SEND5.equals (mode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-
-        final String automationWriteMode = t.getAutomationWriteMode ();
-        final boolean writingArrangerAutomation = t.isWritingArrangerAutomation ();
-
-        surface.updateTrigger (HUIControlSurface.HUI_AUTO_MODE_OFF, !writingArrangerAutomation ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_AUTO_MODE_READ, !writingArrangerAutomation ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_AUTO_MODE_WRITE, writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[2].equals (automationWriteMode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_AUTO_MODE_TRIM, t.isWritingClipLauncherAutomation () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_AUTO_MODE_TOUCH, writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[1].equals (automationWriteMode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_AUTO_MODE_LATCH, writingArrangerAutomation && TransportConstants.AUTOMATION_MODES_VALUES[0].equals (automationWriteMode) ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-
-        final View view = surface.getViewManager ().getView (Views.CONTROL);
-        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_REWIND, ((WindCommand<?, ?>) view.getTriggerCommand (TriggerCommandID.REWIND)).isRewinding () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_FAST_FWD, ((WindCommand<?, ?>) view.getTriggerCommand (TriggerCommandID.FORWARD)).isForwarding () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_LOOP, t.isLoop () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_STOP, !t.isPlaying () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_PLAY, t.isPlaying () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_RECORD, t.isRecording () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-
-        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_PRE, t.isMetronomeOn () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        surface.updateTrigger (HUIControlSurface.HUI_TRANSPORT_POST, HUI_BUTTON_STATE_OFF);
-
-        surface.updateTrigger (HUIControlSurface.HUI_CURSOR_MODE, surface.getConfiguration ().isZoomState () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        for (int i = 0; i < 8; i++)
-        {
-            final ITrack track = tb.getItem (i);
-            final int offset = i * 8;
-            surface.updateTrigger (HUIControlSurface.HUI_SELECT1 + offset, track.isSelected () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-            surface.updateTrigger (HUIControlSurface.HUI_ARM1 + offset, track.isRecArm () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-            surface.updateTrigger (HUIControlSurface.HUI_SOLO1 + offset, track.isSolo () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-            surface.updateTrigger (HUIControlSurface.HUI_MUTE1 + offset, track.isMute () ? HUI_BUTTON_STATE_ON : HUI_BUTTON_STATE_OFF);
-        }
     }
 
 
@@ -459,7 +631,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         final ITransport t = this.model.getTransport ();
         String positionText = t.getPositionText ();
         positionText = positionText.substring (0, positionText.length () - 3);
-        this.getSurface ().getSegmentDisplay ().setTransportPositionDisplay (positionText);
+        this.getSurface ().getSegmentDisplay ().setRow (0, positionText);
     }
 
 
@@ -472,7 +644,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         IMidiOutput output;
         final HUIControlSurface surface = this.getSurface ();
-        output = surface.getOutput ();
+        output = surface.getMidiOutput ();
         for (int channel = 0; channel < 8; channel++)
         {
             final ITrack track = tb.getItem (channel);
@@ -515,10 +687,15 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     }
 
 
-    private void updateMode (final Modes mode)
+    private void updateMode (final Modes modeID)
     {
-        if (mode != null)
-            this.updateIndication (mode);
+        if (modeID == null)
+            return;
+
+        final Mode mode = this.getSurface ().getModeManager ().getMode (modeID);
+        if (mode instanceof AbstractTrackMode)
+            ((AbstractTrackMode) mode).updateKnobLEDs ();
+        this.updateIndication (modeID);
     }
 
 

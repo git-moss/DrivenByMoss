@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.push.mode;
 
+import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.Format;
@@ -12,6 +13,10 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -21,6 +26,19 @@ import de.mossgrabers.framework.daw.data.IParameter;
  */
 public class GrooveMode extends BaseMode
 {
+    private static final String [] MENU =
+    {
+        "Quantize",
+        "Groove",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " "
+    };
+
+
     /**
      * Constructor.
      *
@@ -53,10 +71,9 @@ public class GrooveMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        if (index == 0)
-            this.surface.getConfiguration ().changeQuantizeAmount (value);
-        else if (index > 1)
-            this.model.getGroove ().getParameters ()[index - 2].changeValue (value);
+        final IParameter [] parameters = this.model.getGroove ().getParameters ();
+        if (index > 1)
+            parameters[index - 2].changeValue (value);
     }
 
 
@@ -64,18 +81,37 @@ public class GrooveMode extends BaseMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
+        if (index < 2)
+            return;
+
         final IParameter [] parameters = this.model.getGroove ().getParameters ();
         if (isTouched && this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
-            if (index == 0)
-                this.surface.getConfiguration ().resetQuantizeAmount ();
-            else if (index > 1 && index - 2 < parameters.length)
-                parameters[index - 2].resetValue ();
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
+            parameters[index - 2].resetValue ();
         }
 
-        if (index > 1 && index - 2 < parameters.length)
-            parameters[index - 2].touchValue (isTouched);
+        parameters[index - 2].touchValue (isTouched);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onFirstRow (final int index, final ButtonEvent event)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onSecondRow (final int index, final ButtonEvent event)
+    {
+        if (event != ButtonEvent.UP)
+            return;
+
+        if (index == 0)
+            this.surface.getModeManager ().setActiveMode (Modes.REC_ARM);
     }
 
 
@@ -84,10 +120,14 @@ public class GrooveMode extends BaseMode
     public void updateDisplay1 (final ITextDisplay display)
     {
         final IParameter [] parameters = this.model.getGroove ().getParameters ();
-        final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
-        display.setCell (0, 0, "Quant Amnt").setCell (1, 0, quantizeAmount + "%").setCell (2, 0, quantizeAmount * 1023 / 100, Format.FORMAT_VALUE);
         for (int i = 0; i < parameters.length; i++)
-            display.setCell (0, 2 + i, parameters[i].getName (8)).setCell (1, 2 + i, parameters[i].getDisplayedValue (8)).setCell (2, 2 + i, parameters[i].getValue (), Format.FORMAT_VALUE);
+        {
+            display.setCell (0, 2 + i, parameters[i].getName (8));
+            display.setCell (1, 2 + i, parameters[i].getDisplayedValue (8));
+            display.setCell (2, 2 + i, parameters[i].getValue (), Format.FORMAT_VALUE);
+        }
+        display.setCell (0, 0, MENU[0]);
+        display.setCell (0, 1, Push1Display.SELECT_ARROW + MENU[1]);
     }
 
 
@@ -95,14 +135,31 @@ public class GrooveMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
+        display.addOptionElement ("", MENU[0], false, null, "", "", false, null, true);
+        display.addOptionElement ("", MENU[1], true, null, "", "", false, null, true);
+
         final IParameter [] parameters = this.model.getGroove ().getParameters ();
-        final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
-        display.addParameterElement ("Quant Amnt", quantizeAmount * 1023 / 100, quantizeAmount + "%", this.isKnobTouched[0], -1);
-        display.addOptionElement ("     Groove", "", false, "", "", false, false);
         for (int i = 0; i < parameters.length; i++)
-            display.addParameterElement (parameters[i].getName (10), parameters[i].getValue (), parameters[i].getDisplayedValue (8), this.isKnobTouched[i], -1);
-        for (int i = parameters.length; i < 6; i++)
-            display.addEmptyElement ();
+            display.addParameterElement (" ", false, "", (ChannelType) null, null, false, parameters[i].getName (10), parameters[i].getValue (), parameters[i].getDisplayedValue (8), this.isKnobTouched[i], -1);
+
+        for (int i = parameters.length + 2; i < 8; i++)
+            display.addEmptyElement (true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getButtonColorID (final ButtonID buttonID)
+    {
+        final int index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+        {
+            if (index == 0)
+                return AbstractMode.BUTTON_COLOR_ON;
+            if (index == 1)
+                return AbstractMode.BUTTON_COLOR_HI;
+        }
+        return AbstractMode.BUTTON_COLOR_OFF;
     }
 
 

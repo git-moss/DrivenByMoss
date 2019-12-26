@@ -11,6 +11,8 @@ import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FrameworkException;
 
@@ -67,7 +69,7 @@ public class ModelImpl extends AbstractModel
         this.application = new ApplicationImpl (app);
         final Project proj = controllerHost.getProject ();
         this.rootTrackGroup = proj.getRootTrackGroup ();
-        this.project = new ProjectImpl (proj, app);
+        this.project = new ProjectImpl (this.valueChanger, proj, app);
 
         final Arranger bwArranger = controllerHost.createArranger ();
         this.arranger = new ArrangerImpl (bwArranger);
@@ -132,6 +134,21 @@ public class ModelImpl extends AbstractModel
         this.masterTrackEqualsValue.markInterested ();
 
         this.currentTrackBank = this.trackBank;
+
+        controllerHost.scheduleTask (this::flushWorkaround, 4000);
+    }
+
+
+    /**
+     * Workaround for flush only happening if state changes since Bitwig 3.1 (which is intended and
+     * not a bug).
+     */
+    private void flushWorkaround ()
+    {
+        // There are enough flushs happening if playback is active
+        if (!this.getTransport ().isPlaying ())
+            this.controllerHost.requestFlush ();
+        this.controllerHost.scheduleTask (this::flushWorkaround, 100);
     }
 
 
@@ -207,6 +224,28 @@ public class ModelImpl extends AbstractModel
     public INoteClip getNoteClip (final int cols, final int rows)
     {
         return (INoteClip) this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipImpl (this.controllerHost, this.valueChanger, cols, rows));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void createNoteClip (final ITrack track, final ISlot slot, final int lengthInBeats, final boolean overdub)
+    {
+        track.createClip (slot.getIndex (), lengthInBeats);
+        slot.select ();
+        slot.launch ();
+        if (overdub)
+            this.transport.setLauncherOverdub (true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void recordNoteClip (final ITrack track, final ISlot slot)
+    {
+        if (!slot.isRecording ())
+            slot.record ();
+        slot.launch ();
     }
 
 

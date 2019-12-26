@@ -4,14 +4,13 @@
 
 package de.mossgrabers.framework.command.trigger.clip;
 
-import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.INoteInput;
+import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -41,32 +40,46 @@ public class NoteRepeatCommand<S extends IControlSurface<C>, C extends Configura
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
+    {
+        if (this.handleEditModeActivation (event))
+            return;
+
+        final INoteInput defaultNoteInput = this.surface.getMidiInput ().getDefaultNoteInput ();
+        if (defaultNoteInput == null)
+            return;
+
+        final INoteRepeat noteRepeat = defaultNoteInput.getNoteRepeat ();
+        noteRepeat.toggleActive ();
+        this.model.getHost ().scheduleTask ( () -> this.surface.getConfiguration ().setNoteRepeatActive (noteRepeat.isActive ()), 300);
+    }
+
+
+    /**
+     * Handle the de-/activation of the edit mode.
+     *
+     * @param event The event
+     * @return True to cancel further processing
+     */
+    protected boolean handleEditModeActivation (final ButtonEvent event)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         if (event == ButtonEvent.LONG || event == ButtonEvent.DOWN && this.surface.isShiftPressed ())
         {
             modeManager.setActiveMode (Modes.REPEAT_NOTE);
-            this.surface.setTriggerConsumed (PushControlSurface.PUSH_BUTTON_REPEAT);
-            return;
+            this.surface.setTriggerConsumed (ButtonID.REPEAT);
+            return true;
         }
 
         if (event != ButtonEvent.UP)
-            return;
+            return true;
 
         if (Modes.REPEAT_NOTE.equals (modeManager.getActiveOrTempModeId ()))
         {
             modeManager.restoreMode ();
-            return;
+            return true;
         }
 
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        if (selectedTrack == null)
-            return;
-
-        final INoteInput defaultNoteInput = this.surface.getInput ().getDefaultNoteInput ();
-        if (defaultNoteInput != null)
-            defaultNoteInput.getNoteRepeat ().toggleActive ();
+        return false;
     }
 }

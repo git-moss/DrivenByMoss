@@ -42,14 +42,14 @@ public class StartClipOrSceneCommand extends AbstractTriggerCommand<KontrolProto
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (this.surface.getModeManager ().isActiveMode (Modes.VOLUME))
         {
             if (this.surface.getConfiguration ().isFlipClipSceneNavigation ())
-                this.sceneCommand.execute (event);
+                this.sceneCommand.execute (event, velocity);
             else
-                this.clipCommand.execute (event);
+                this.clipCommand.execute (event, velocity);
             return;
         }
 

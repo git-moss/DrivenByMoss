@@ -28,4 +28,20 @@ public interface TransposeView
      * @param event The button event
      */
     void onOctaveUp (final ButtonEvent event);
+
+
+    /**
+     * Test if the up button is enabled.
+     *
+     * @return True if enabled
+     */
+    boolean isOctaveUpButtonOn ();
+
+
+    /**
+     * Test if the up button is enabled.
+     *
+     * @return True if enabled
+     */
+    boolean isOctaveDownButtonOn ();
 }

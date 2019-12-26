@@ -38,7 +38,7 @@ public class P2ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SL
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event != ButtonEvent.DOWN)
             return;

@@ -732,13 +732,8 @@ public class Kontrol1UsbDevice
     public void setButtonLED (final int buttonID, final int intensity)
     {
         final Integer pos = LED_MAPPING.get (Integer.valueOf (buttonID));
-        if (pos == null)
-        {
-            this.host.error ("Illegal button LED: " + buttonID);
-            return;
-        }
-
-        this.buttonStates[pos.intValue ()] = (byte) intensity;
+        if (pos != null)
+            this.buttonStates[pos.intValue ()] = (byte) intensity;
     }
 
 

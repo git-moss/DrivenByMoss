@@ -7,6 +7,7 @@ package de.mossgrabers.controller.kontrol.mki.mode.track;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1Display;
 import de.mossgrabers.controller.kontrol.mki.mode.AbstractKontrol1Mode;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -63,8 +64,7 @@ public class VolumeMode extends AbstractKontrol1Mode
             final ITrack t = tb.getItem (i);
             final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8).toUpperCase ();
             d.setCell (0, 1 + i, isSel ? ">" + n : n).setCell (1, 1 + i, getSecondLineText (t));
-
-            d.setBar (1 + i, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_1 + i) && t.doesExist (), t.getVolume ());
+            d.setBar (1 + i, this.surface.getContinuous (ContinuousID.get (ContinuousID.KNOB1, i)).isTouched () && t.doesExist (), t.getVolume ());
         }
         d.allDone ();
     }

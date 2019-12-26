@@ -78,7 +78,7 @@ public class MarkerMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    protected void updateKnobLEDs ()
+    public void updateKnobLEDs ()
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
         final IMarkerBank markerBank = this.model.getMarkerBank ();

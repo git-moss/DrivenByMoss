@@ -39,7 +39,7 @@ public class MastertrackCommand extends AbstractTriggerCommand<PushControlSurfac
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         // Avoid accidentally leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();

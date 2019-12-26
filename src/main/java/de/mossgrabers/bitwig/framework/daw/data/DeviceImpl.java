@@ -43,9 +43,9 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.device.exists ().setIsSubscribed (enable);
-        this.device.position ().setIsSubscribed (enable);
-        this.device.name ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.device.exists (), enable);
+        Util.setIsSubscribed (this.device.position (), enable);
+        Util.setIsSubscribed (this.device.name (), enable);
     }
 
 
@@ -101,8 +101,7 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
     @Override
     public void remove ()
     {
-        // TODO Requires API 9
-        // this.device.removeDevice ();
+        this.device.deleteObject ();
     }
 
 

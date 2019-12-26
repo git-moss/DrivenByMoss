@@ -4,10 +4,12 @@
 
 package de.mossgrabers.controller.kontrol.mki.mode.device;
 
-import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1Colors;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1Display;
 import de.mossgrabers.controller.kontrol.mki.mode.AbstractKontrol1Mode;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
+import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -64,7 +66,7 @@ public class ParamsMode extends AbstractKontrol1Mode
                 if (!name.isEmpty ())
                     d.setCell (0, 1 + i, name).setCell (1, 1 + i, checkForUpperCase (p.getDisplayedValue (8)));
 
-                d.setBar (1 + i, this.surface.isPressed (Kontrol1ControlSurface.TOUCH_ENCODER_1 + i) && p.doesExist (), p.getValue ());
+                d.setBar (1 + i, this.surface.getContinuous (ContinuousID.get (ContinuousID.KNOB1, i)).isTouched () && p.doesExist (), p.getValue ());
             }
         }
         else
@@ -75,33 +77,29 @@ public class ParamsMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void onKnobValue (final int index, final int value)
+    public String getButtonColorID (final ButtonID buttonID)
     {
-        this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+
+        switch (buttonID)
+        {
+            case MUTE:
+                return cursorDevice.isEnabled () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
+            case SOLO:
+                return cursorDevice.isParameterPageSectionVisible () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
+            case BROWSE:
+                return ColorManager.BUTTON_STATE_ON;
+            default:
+                return ColorManager.BUTTON_STATE_OFF;
+        }
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public void onKnobValue (final int index, final int value)
     {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        final boolean canScrollLeft = parameterBank.canScrollPageBackwards ();
-        final boolean canScrollRight = parameterBank.canScrollPageForwards ();
-        final boolean canScrollUp = cursorDevice.canSelectNextFX ();
-        final boolean canScrollDown = cursorDevice.canSelectPreviousFX ();
-
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, canScrollLeft ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, canScrollRight ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, canScrollUp ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, canScrollDown ? Kontrol1Colors.BUTTON_STATE_HI : Kontrol1Colors.BUTTON_STATE_ON);
-
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_BACK, cursorDevice.isEnabled () ? Kontrol1Colors.BUTTON_STATE_ON : Kontrol1Colors.BUTTON_STATE_OFF);
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_ENTER, cursorDevice.isParameterPageSectionVisible () ? Kontrol1Colors.BUTTON_STATE_ON : Kontrol1Colors.BUTTON_STATE_OFF);
-
-        this.surface.updateTrigger (Kontrol1ControlSurface.BUTTON_BROWSE, Kontrol1Colors.BUTTON_STATE_ON);
-
+        this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
     }
 
 

@@ -45,7 +45,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event != ButtonEvent.DOWN)
             return;
@@ -62,7 +62,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
 
             case 1:
                 this.surface.getModeManager ().setActiveMode (Modes.DEVICE_PARAMS);
-                this.surface.getDisplay ().notify ("Device Parameters");
+                this.model.getHost ().showNotification ("Device Parameters");
                 break;
 
             case 2:
@@ -123,7 +123,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
         final ModeManager modeManager = this.surface.getModeManager ();
         if (activateMode)
             modeManager.setActiveMode (Modes.TRACK);
-        this.surface.getDisplay ().notify (isEffect ? "Effects" : "Tracks");
+        this.model.getHost ().showNotification (isEffect ? "Effects" : "Tracks");
         if (this.model.getSelectedTrack () != null)
             return;
         final Mode activeMode = modeManager.getActiveOrTempMode ();
@@ -137,7 +137,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
         this.model.getMasterTrack ().select ();
         if (activateMode)
             this.surface.getModeManager ().setActiveMode (Modes.MASTER);
-        this.surface.getDisplay ().notify ("Master");
+        this.model.getHost ().showNotification ("Master");
     }
 
 

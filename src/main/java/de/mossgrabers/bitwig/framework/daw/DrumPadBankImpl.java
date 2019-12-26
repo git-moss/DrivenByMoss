@@ -5,8 +5,8 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.DrumPadImpl;
-import de.mossgrabers.framework.controller.IValueChanger;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IDrumPad;
@@ -84,8 +84,23 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, IDrumP
     {
         final ILayer sel = this.getSelectedItem ();
         if (sel == null)
-            return DAWColors.COLOR_OFF;
-        final double [] color = sel.getColor ();
-        return DAWColors.getColorIndex (color[0], color[1], color[2]);
+            return DAWColor.COLOR_OFF.name ();
+        return DAWColor.getColorIndex (sel.getColor ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearMute ()
+    {
+        this.bank.clearMutedPads ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearSolo ()
+    {
+        this.bank.clearSoloedPads ();
     }
 }

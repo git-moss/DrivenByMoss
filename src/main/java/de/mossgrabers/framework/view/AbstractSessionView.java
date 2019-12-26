@@ -8,8 +8,8 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.grid.PadGrid;
-import de.mossgrabers.framework.daw.DAWColors;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ISlotBank;
@@ -29,7 +29,7 @@ import de.mossgrabers.framework.utils.Pair;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractSessionView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements SceneView
+public abstract class AbstractSessionView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C>
 {
     /** The color for a scene. */
     public static final String COLOR_SCENE                = "COLOR_SCENE";
@@ -78,16 +78,17 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int sceneIndex, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
             return;
 
+        final int sceneIndex = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (sceneIndex);
 
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             scene.remove ();
             return;
         }
@@ -111,7 +112,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         // Delete selected clip
         if (this.surface.isDeletePressed ())
         {
-            this.surface.setTriggerConsumed (this.surface.getTriggerId (ButtonID.DELETE));
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
             slot.remove ();
             return;
         }
@@ -141,18 +142,12 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         switch (configuration.getActionForRecArmedPad ())
         {
             case 0:
-                // Record clip
-                if (!slot.isRecording ())
-                    slot.record ();
-                slot.launch ();
+                this.model.recordNoteClip (track, slot);
                 break;
 
             case 1:
-                // Execute new clip
-                this.model.createClip (slot, configuration.getNewClipLength ());
-                slot.select ();
-                slot.launch ();
-                this.model.getTransport ().setLauncherOverdub (true);
+                final int lengthInBeats = configuration.getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
+                this.model.createNoteClip (track, slot, lengthInBeats, true);
                 break;
 
             case 2:
@@ -261,7 +256,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         selX -= offsetX;
         selY -= offsetY;
 
-        final PadGrid padGrid = this.surface.getPadGrid ();
+        final IPadGrid padGrid = this.surface.getPadGrid ();
         for (int x = 0; x < this.columns; x++)
         {
             final SessionColor rowColor = x < maxX ? this.birdColorHasContent : this.clipColorHasNoContent;
@@ -316,8 +311,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
     protected SessionColor getPadColor (final ISlot slot, final boolean isArmed)
     {
-        final double [] slotColor = slot.getColor ();
-        final String colorIndex = DAWColors.getColorIndex (slotColor[0], slotColor[1], slotColor[2]);
+        final String colorIndex = DAWColor.getColorIndex (slot.getColor ());
         final ColorManager cm = this.model.getColorManager ();
 
         if (slot.isRecordingQueued ())
@@ -326,28 +320,28 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         if (slot.isRecording ())
         {
             if (this.useClipColor && colorIndex != null)
-                return new SessionColor (cm.getColor (colorIndex), this.clipColorIsRecording.getBlink (), this.clipColorIsRecording.isFast ());
+                return new SessionColor (cm.getColorIndex (colorIndex), this.clipColorIsRecording.getBlink (), this.clipColorIsRecording.isFast ());
             return this.clipColorIsRecording;
         }
 
         if (slot.isPlayingQueued ())
         {
             if (this.useClipColor && colorIndex != null)
-                return new SessionColor (cm.getColor (colorIndex), this.clipColorIsPlayingQueued.getBlink (), this.clipColorIsPlayingQueued.isFast ());
+                return new SessionColor (cm.getColorIndex (colorIndex), this.clipColorIsPlayingQueued.getBlink (), this.clipColorIsPlayingQueued.isFast ());
             return this.clipColorIsPlayingQueued;
         }
 
         if (slot.isPlaying ())
         {
             if (this.useClipColor && colorIndex != null)
-                return new SessionColor (cm.getColor (colorIndex), this.clipColorIsPlaying.getBlink (), this.clipColorIsPlaying.isFast ());
+                return new SessionColor (cm.getColorIndex (colorIndex), this.clipColorIsPlaying.getBlink (), this.clipColorIsPlaying.isFast ());
             return this.clipColorIsPlaying;
         }
 
         if (slot.hasContent ())
         {
             if (this.useClipColor && colorIndex != null)
-                return new SessionColor (cm.getColor (colorIndex), this.clipColorHasContent.getBlink (), this.clipColorHasContent.isFast ());
+                return new SessionColor (cm.getColorIndex (colorIndex), this.clipColorHasContent.getBlink (), this.clipColorHasContent.isFast ());
             return this.clipColorHasContent;
         }
 

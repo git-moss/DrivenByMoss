@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.apcmini.view;
 
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -37,34 +38,34 @@ public class TrackButtons
 
     /**
      * Update track button LEDs.
+     *
+     * @param index The index of the button
+     * @return The color
      */
-    public void updateTrackButtons ()
+    public int getTrackButtonColor (final int index)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int trackState = this.surface.getTrackState ();
-        for (int i = 0; i < 8; i++)
+        switch (trackState)
         {
-            switch (trackState)
-            {
-                case APCminiControlSurface.TRACK_STATE_CLIP_STOP:
-                    this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, this.surface.isPressed (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-                    break;
-                case APCminiControlSurface.TRACK_STATE_SOLO:
-                    this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getItem (i).isSolo () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-                    break;
-                case APCminiControlSurface.TRACK_STATE_REC_ARM:
-                    this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getItem (i).isRecArm () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-                    break;
-                case APCminiControlSurface.TRACK_STATE_MUTE:
-                    this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, !tb.getItem (i).isMute () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-                    break;
-                case APCminiControlSurface.TRACK_STATE_SELECT:
-                    this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, tb.getItem (i).isSelected () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF);
-                    break;
-                default:
-                    // Not used
-                    break;
-            }
+            case APCminiControlSurface.TRACK_STATE_CLIP_STOP:
+                return this.surface.isPressed (ButtonID.get (ButtonID.ROW_SELECT_1, index)) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
+
+            case APCminiControlSurface.TRACK_STATE_SOLO:
+                return tb.getItem (index).isSolo () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
+
+            case APCminiControlSurface.TRACK_STATE_REC_ARM:
+                return tb.getItem (index).isRecArm () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
+
+            case APCminiControlSurface.TRACK_STATE_MUTE:
+                return !tb.getItem (index).isMute () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
+
+            case APCminiControlSurface.TRACK_STATE_SELECT:
+                return tb.getItem (index).isSelected () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
+
+            default:
+                // Not used
+                return APCminiControlSurface.APC_BUTTON_STATE_OFF;
         }
     }
 

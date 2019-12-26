@@ -112,7 +112,7 @@ public class SendMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    protected void updateKnobLEDs ()
+    public void updateKnobLEDs ()
     {
         if (this.model.isEffectTrackBankActive ())
         {

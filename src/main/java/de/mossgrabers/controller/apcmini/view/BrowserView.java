@@ -5,14 +5,15 @@
 package de.mossgrabers.controller.apcmini.view;
 
 import de.mossgrabers.controller.apcmini.APCminiConfiguration;
-import de.mossgrabers.controller.apcmini.controller.APCminiColors;
+import de.mossgrabers.controller.apcmini.controller.APCminiColorManager;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
-import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
-import de.mossgrabers.framework.view.SceneView;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
@@ -22,18 +23,18 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConfiguration> implements SceneView, APCminiView
+public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConfiguration> implements APCminiView
 {
     private static final int [] COLUMN_COLORS =
     {
-        APCminiColors.APC_COLOR_GREEN,
-        APCminiColors.APC_COLOR_RED,
-        APCminiColors.APC_COLOR_GREEN,
-        APCminiColors.APC_COLOR_RED,
-        APCminiColors.APC_COLOR_GREEN,
-        APCminiColors.APC_COLOR_RED,
-        APCminiColors.APC_COLOR_BLACK,
-        APCminiColors.APC_COLOR_YELLOW,
+        APCminiColorManager.APC_COLOR_GREEN,
+        APCminiColorManager.APC_COLOR_RED,
+        APCminiColorManager.APC_COLOR_GREEN,
+        APCminiColorManager.APC_COLOR_RED,
+        APCminiColorManager.APC_COLOR_GREEN,
+        APCminiColorManager.APC_COLOR_RED,
+        APCminiColorManager.APC_COLOR_BLACK,
+        APCminiColorManager.APC_COLOR_YELLOW,
     };
 
 
@@ -53,15 +54,15 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
     @Override
     public void drawGrid ()
     {
-        final PadGrid padGrid = this.surface.getPadGrid ();
-        padGrid.light (36, APCminiColors.APC_COLOR_RED_BLINK);
-        padGrid.light (37, APCminiColors.APC_COLOR_BLACK);
+        final IPadGrid padGrid = this.surface.getPadGrid ();
+        padGrid.light (36, APCminiColorManager.APC_COLOR_RED_BLINK);
+        padGrid.light (37, APCminiColorManager.APC_COLOR_BLACK);
         for (int i = 38; i < 42; i++)
-            padGrid.light (i, APCminiColors.APC_COLOR_YELLOW);
-        padGrid.light (42, APCminiColors.APC_COLOR_BLACK);
-        padGrid.light (43, APCminiColors.APC_COLOR_GREEN_BLINK);
+            padGrid.light (i, APCminiColorManager.APC_COLOR_YELLOW);
+        padGrid.light (42, APCminiColorManager.APC_COLOR_BLACK);
+        padGrid.light (43, APCminiColorManager.APC_COLOR_GREEN_BLINK);
         for (int i = 44; i < 52; i++)
-            padGrid.light (i, APCminiColors.APC_COLOR_BLACK);
+            padGrid.light (i, APCminiColorManager.APC_COLOR_BLACK);
 
         for (int i = 52; i < 60; i++)
             padGrid.light (i, COLUMN_COLORS[i - 52]);
@@ -73,7 +74,7 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
             padGrid.light (i, COLUMN_COLORS[i - 76]);
 
         for (int i = 84; i < 100; i++)
-            padGrid.light (i, APCminiColors.APC_COLOR_BLACK);
+            padGrid.light (i, APCminiColorManager.APC_COLOR_BLACK);
     }
 
 
@@ -90,7 +91,7 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
             return;
         }
 
-        int n = this.surface.getPadGrid ().translateToController (note);
+        int n = this.surface.getPadGrid ().translateToController (note)[1];
         switch (n)
         {
             // Cancel
@@ -181,14 +182,6 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onSelectTrack (final int index, final ButtonEvent event)
     {
         // Intentionally empty
@@ -197,12 +190,16 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public int getTrackButtonColor (final int index)
     {
-        for (int i = 0; i < 8; i++)
-        {
-            this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, APCminiControlSurface.APC_BUTTON_STATE_OFF);
-            this.surface.updateTrigger (APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, APCminiControlSurface.APC_BUTTON_STATE_OFF);
-        }
+        return APCminiColorManager.APC_COLOR_BLACK;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getButtonColorID (final ButtonID buttonID)
+    {
+        return ColorManager.BUTTON_STATE_OFF;
     }
 }

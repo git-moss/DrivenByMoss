@@ -4,10 +4,11 @@
 
 package de.mossgrabers.controller.launchpad.view;
 
-import de.mossgrabers.controller.launchpad.controller.LaunchpadColors;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.grid.PadGrid;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
@@ -38,7 +39,7 @@ public class PianoView extends PlayView
     @Override
     public void drawGrid ()
     {
-        final PadGrid gridPad = this.surface.getPadGrid ();
+        final IPadGrid gridPad = this.surface.getPadGrid ();
         if (!this.model.canSelectedTrackHoldNotes ())
         {
             gridPad.turnOff ();
@@ -48,10 +49,10 @@ public class PianoView extends PlayView
         final ColorManager colorManager = this.model.getColorManager ();
         final boolean isRecording = this.model.hasRecordingState ();
         final ITrack track = this.model.getSelectedTrack ();
-        final int playKeyColor = colorManager.getColor (isRecording ? AbstractPlayView.COLOR_RECORD : AbstractPlayView.COLOR_PLAY);
-        final int whiteKeyColor = colorManager.getColor (Scales.SCALE_COLOR_NOTE);
-        final int blackKeyColor = colorManager.getColor (replaceOctaveColorWithTrackColor (track, Scales.SCALE_COLOR_OCTAVE));
-        final int offKeyColor = colorManager.getColor (Scales.SCALE_COLOR_OFF);
+        final int playKeyColor = colorManager.getColorIndex (isRecording ? AbstractPlayView.COLOR_RECORD : AbstractPlayView.COLOR_PLAY);
+        final int whiteKeyColor = colorManager.getColorIndex (Scales.SCALE_COLOR_NOTE);
+        final int blackKeyColor = colorManager.getColorIndex (replaceOctaveColorWithTrackColor (track, Scales.SCALE_COLOR_OCTAVE));
+        final int offKeyColor = colorManager.getColorIndex (Scales.SCALE_COLOR_OFF);
 
         for (int i = 0; i < 8; i++)
         {
@@ -114,7 +115,7 @@ public class PianoView extends PlayView
 
     /** {@inheritDoc} */
     @Override
-    public void onScene (final int scene, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event)
     {
         // Intentionally empty
     }
@@ -122,15 +123,8 @@ public class PianoView extends PlayView
 
     /** {@inheritDoc} */
     @Override
-    public void updateSceneButtons ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
-        this.surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColors.LAUNCHPAD_COLOR_BLACK);
+        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
     }
 }

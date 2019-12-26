@@ -4,7 +4,9 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.daw.IApplication;
+import de.mossgrabers.framework.daw.constants.RecordQuantization;
 
 import com.bitwig.extension.controller.api.Action;
 import com.bitwig.extension.controller.api.ActionCategory;
@@ -32,6 +34,8 @@ public class ApplicationImpl implements IApplication
 
         this.application.hasActiveEngine ().markInterested ();
         this.application.panelLayout ().markInterested ();
+        this.application.recordQuantizationGrid ().markInterested ();
+        this.application.recordQuantizeNoteLength ().markInterested ();
     }
 
 
@@ -39,8 +43,10 @@ public class ApplicationImpl implements IApplication
     @Override
     public void enableObservers (final boolean enable)
     {
-        this.application.hasActiveEngine ().setIsSubscribed (enable);
-        this.application.panelLayout ().setIsSubscribed (enable);
+        Util.setIsSubscribed (this.application.hasActiveEngine (), enable);
+        Util.setIsSubscribed (this.application.panelLayout (), enable);
+        Util.setIsSubscribed (this.application.recordQuantizationGrid (), enable);
+        Util.setIsSubscribed (this.application.recordQuantizeNoteLength (), enable);
     }
 
 
@@ -329,6 +335,48 @@ public class ApplicationImpl implements IApplication
     {
         // No track height increase method available
         this.invokeAction ("toggle_double_or_single_row_track_height");
+    }
+
+
+    /**
+     * Test if record quantization for note lengths is enabled.
+     *
+     * @return True if enabled
+     */
+    public boolean isRecordQuantizationNoteLength ()
+    {
+        return this.application.recordQuantizeNoteLength ().get ();
+    }
+
+
+    /**
+     * Toggle record quantization note length enablement.
+     */
+    public void toggleRecordQuantizationNoteLength ()
+    {
+        this.application.recordQuantizeNoteLength ().toggle ();
+    }
+
+
+    /**
+     * Get the record quantization grid.
+     *
+     * @return The record quantization grid resolution
+     */
+    public RecordQuantization getRecordQuantizationGrid ()
+    {
+        return RecordQuantization.getByValue (this.application.recordQuantizationGrid ().get ());
+    }
+
+
+    /**
+     * Set the record quantization grid.
+     *
+     * @param recordQuantization The record quantization grid resolution
+     */
+    public void setRecordQuantizationGrid (final RecordQuantization recordQuantization)
+    {
+        this.application.recordQuantizationGrid ().set (recordQuantization.getValue ());
     }
 
 

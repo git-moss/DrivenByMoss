@@ -4,16 +4,19 @@
 
 package de.mossgrabers.controller.push.mode.track;
 
-import de.mossgrabers.controller.push.controller.PushColors;
+import de.mossgrabers.controller.push.PushConfiguration;
+import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.controller.push.view.ColorView;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -35,6 +38,21 @@ public class TrackDetailsMode extends BaseMode
     public TrackDetailsMode (final PushControlSurface surface, final IModel model)
     {
         super ("Track details", surface, model);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobValue (final int index, final int value)
+    {
+        if (index < 6)
+            return;
+
+        final PushConfiguration configuration = this.surface.getConfiguration ();
+
+        final int speed = (int) this.model.getValueChanger ().calcKnobSpeed (value, 1);
+        configuration.setMidiEditChannel (configuration.getMidiEditChannel () + speed);
+
     }
 
 
@@ -132,23 +150,67 @@ public class TrackDetailsMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateFirstRow ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        final ITrack deviceChain = this.getSelectedTrack ();
-        if (deviceChain == null)
+        int index = this.isButtonRow (0, buttonID);
+        if (index >= 0)
         {
-            this.disableFirstRow ();
-            return;
+            final ITrack deviceChain = this.getSelectedTrack ();
+            if (deviceChain == null)
+                return super.getButtonColor (buttonID);
+
+            switch (index)
+            {
+                case 0:
+                    return deviceChain.isActivated () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_MD : PushColorManager.PUSH1_COLOR_YELLOW_MD : this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
+                case 1:
+                    return deviceChain.isRecArm () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_LO : PushColorManager.PUSH1_COLOR_RED_LO;
+                case 2:
+                    return deviceChain.isMute () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
+                case 3:
+                    return deviceChain.isSolo () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
+                case 4:
+                    return deviceChain.isMonitor () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO;
+                case 5:
+                    return deviceChain.isAutoMonitor () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO;
+                case 6:
+                    return this.model.isCursorTrackPinned () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO;
+                default:
+                case 7:
+                    return this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI;
+            }
         }
 
-        this.surface.updateTrigger (20, deviceChain.isActivated () ? this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_MD : PushColors.PUSH1_COLOR_YELLOW_MD : this.isPush2 ? PushColors.PUSH2_COLOR_YELLOW_LO : PushColors.PUSH1_COLOR_YELLOW_LO);
-        this.surface.updateTrigger (21, deviceChain.isRecArm () ? this.isPush2 ? PushColors.PUSH2_COLOR_RED_HI : PushColors.PUSH1_COLOR_RED_HI : this.isPush2 ? PushColors.PUSH2_COLOR_RED_LO : PushColors.PUSH1_COLOR_RED_LO);
-        this.surface.updateTrigger (22, deviceChain.isMute () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_LO : PushColors.PUSH1_COLOR_ORANGE_LO);
-        this.surface.updateTrigger (23, deviceChain.isSolo () ? this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_HI : PushColors.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColors.PUSH2_COLOR_ORANGE_LO : PushColors.PUSH1_COLOR_ORANGE_LO);
-        this.surface.updateTrigger (24, deviceChain.isMonitor () ? this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_HI : PushColors.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_LO : PushColors.PUSH1_COLOR_GREEN_LO);
-        this.surface.updateTrigger (25, deviceChain.isAutoMonitor () ? this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_HI : PushColors.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_LO : PushColors.PUSH1_COLOR_GREEN_LO);
-        this.surface.updateTrigger (26, this.model.isCursorTrackPinned () ? this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_HI : PushColors.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_LO : PushColors.PUSH1_COLOR_GREEN_LO);
-        this.surface.updateTrigger (27, this.isPush2 ? PushColors.PUSH2_COLOR_GREEN_HI : PushColors.PUSH1_COLOR_GREEN_HI);
+        index = this.isButtonRow (1, buttonID);
+        if (index >= 0)
+            return this.colorManager.getColorIndex (index < 6 ? AbstractMode.BUTTON_COLOR_OFF : AbstractMode.BUTTON_COLOR_ON);
+
+        return this.colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_OFF);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onSecondRow (final int index, final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final PushConfiguration configuration = this.surface.getConfiguration ();
+        switch (index)
+        {
+            case 6:
+                configuration.setMidiEditChannel (configuration.getMidiEditChannel () - 1);
+                break;
+
+            case 7:
+                configuration.setMidiEditChannel (configuration.getMidiEditChannel () + 1);
+                break;
+
+            default:
+                // Not used
+                break;
+        }
     }
 
 
@@ -180,6 +242,9 @@ public class TrackDetailsMode extends BaseMode
         display.setCell (2, 6, hasPinning ? "Pin Trck" : "");
         display.setCell (3, 6, hasPinning ? this.model.isCursorTrackPinned () ? "On" : "Off" : "");
         display.setCell (2, 7, "Select").setCell (3, 7, "Color");
+
+        display.setCell (0, 5, "Midi Ins");
+        display.setBlock (0, 3, "/Edit Channel: " + (this.surface.getConfiguration ().getMidiEditChannel () + 1));
     }
 
 
@@ -199,10 +264,10 @@ public class TrackDetailsMode extends BaseMode
         display.addOptionElement ("", "", false, "", "Mute", track.isMute (), false);
         display.addOptionElement ("", "", false, "", "Solo", track.isSolo (), false);
         display.addOptionElement ("", "", false, "", "Monitor", track.isMonitor (), false);
-        display.addOptionElement ("", "", false, "", "Auto Monitor", track.isAutoMonitor (), false);
+        display.addOptionElement ("Midi Insert/Edit Channel:", "", false, "", "Auto Monitor", track.isAutoMonitor (), false);
         final boolean hasPinning = this.model.getHost ().hasPinning ();
         display.addOptionElement ("", "", false, "", hasPinning ? "Pin Track" : "", hasPinning && this.model.isCursorTrackPinned (), false);
-        display.addOptionElement ("", "", false, "", "Select Color", false, false);
+        display.addOptionElement ("        " + (this.surface.getConfiguration ().getMidiEditChannel () + 1), "", false, "", "Select Color", false, false);
     }
 
 

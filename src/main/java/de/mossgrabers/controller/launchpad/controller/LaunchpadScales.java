@@ -4,7 +4,7 @@
 
 package de.mossgrabers.controller.launchpad.controller;
 
-import de.mossgrabers.framework.controller.IValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.scale.Scales;
 
 

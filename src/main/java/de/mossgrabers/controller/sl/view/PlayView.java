@@ -9,6 +9,7 @@ import de.mossgrabers.controller.sl.command.trigger.ButtonRowSelectCommand;
 import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
@@ -232,80 +233,108 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
         if (Modes.VOLUME.equals (activeModeId))
         {
-            new P2ButtonCommand (isUp, this.model, this.surface).execute (event);
+            new P2ButtonCommand (isUp, this.model, this.surface).execute (ButtonEvent.DOWN, 127);
             return;
         }
 
         if (Modes.TRACK.equals (activeModeId) || Modes.MASTER.equals (activeModeId))
         {
-            new ButtonRowSelectCommand<> (3, this.model, this.surface).execute (event);
+            new ButtonRowSelectCommand<> (3, this.model, this.surface).execute (ButtonEvent.DOWN, 127);
             return;
         }
 
         if (Modes.PLAY_OPTIONS.equals (activeModeId))
             return;
 
-        final ModeManager modeManager = this.surface.getModeManager ();
+        final DeviceParamsMode mode = (DeviceParamsMode) this.surface.getModeManager ().getMode (Modes.DEVICE_PARAMS);
         if (isUp)
-            ((DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS)).nextPage ();
+            mode.nextPage ();
         else
-            ((DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS)).previousPage ();
+            mode.previousPage ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateButtons ()
+    public int getButtonColor (final ButtonID buttonID)
     {
+        final int buttonIDOrdinal = buttonID.ordinal ();
+
         // Button row 1: Launch Scene
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW1_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
+        if (buttonIDOrdinal >= ButtonID.ROW1_1.ordinal () && buttonIDOrdinal <= ButtonID.ROW1_8.ordinal ())
+            return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
         // Button row 2: Track toggles
-        for (int i = 0; i < 8; i++)
-            this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW2_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
-
-        // LED indications for device parameters
-        ((DeviceParamsMode) this.surface.getModeManager ().getMode (Modes.DEVICE_PARAMS)).setLEDs ();
+        if (buttonIDOrdinal >= ButtonID.ROW2_1.ordinal () && buttonIDOrdinal <= ButtonID.ROW2_8.ordinal ())
+            return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
         // Transport buttons
         if (this.surface.isTransportActive ())
         {
-            for (int i = 0; i < 8; i++)
-                this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW3_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
+            if (buttonIDOrdinal >= ButtonID.ROW3_1.ordinal () && buttonIDOrdinal <= ButtonID.ROW3_8.ordinal ())
+                return SLControlSurface.MKII_BUTTON_STATE_OFF;
+
+            final Modes mode = this.surface.getModeManager ().getActiveOrTempModeId ();
+            final boolean isSession = Modes.SESSION == mode;
+            final boolean isDevice = Modes.DEVICE_PARAMS == mode;
+            final boolean isPlayOptions = Modes.PLAY_OPTIONS == mode;
+            final boolean isTrack = Modes.TRACK == mode;
+            final boolean isMaster = Modes.MASTER == mode;
+            final boolean isVolume = Modes.VOLUME == mode;
             final ITransport transport = this.model.getTransport ();
-            this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW4_3, !transport.isPlaying () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
-            this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW4_4, transport.isPlaying () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
-            this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW4_5, transport.isLoop () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
-            this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW4_6, transport.isRecording () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
-        }
-        else
-        {
-            // Draw sequencer
-            this.drawDrumGrid ();
+
+            switch (buttonID)
+            {
+                case ROW4_3:
+                    return !transport.isPlaying () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                case ROW4_4:
+                    return transport.isPlaying () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                case ROW4_5:
+                    return transport.isLoop () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                case ROW4_6:
+                    return transport.isRecording () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+
+                case ROW_SELECT_1:
+                    return isSession ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                case ROW_SELECT_2:
+                    return isDevice ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                case ROW_SELECT_3:
+                    return isPlayOptions ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                case ROW_SELECT_4:
+                    return isTrack || isMaster ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                case ROW_SELECT_6:
+                    return isVolume ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                case ROW_SELECT_7:
+                    return SLControlSurface.MKII_BUTTON_STATE_OFF;
+
+                default:
+                    return 0;
+            }
         }
 
-        final Modes mode = this.surface.getModeManager ().getActiveOrTempModeId ();
-        final boolean isSession = Modes.SESSION == mode;
-        final boolean isDevice = Modes.DEVICE_PARAMS == mode;
-        final boolean isPlayOptions = Modes.PLAY_OPTIONS == mode;
-        final boolean isTrack = Modes.TRACK == mode;
-        final boolean isMaster = Modes.MASTER == mode;
-        final boolean isVolume = Modes.VOLUME == mode;
-        this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROWSEL1, isSession ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
-        this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROWSEL2, isDevice ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
-        this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROWSEL3, isPlayOptions ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
-        this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROWSEL4, isTrack || isMaster ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
-        this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROWSEL6, isVolume ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF);
-        this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROWSEL7, SLControlSurface.MKII_BUTTON_STATE_OFF);
+        // Draw sequencer
+        return this.drawDrumGrid (buttonIDOrdinal);
     }
 
 
     /**
      * 'Draw' the drum grid sequencer.
+     *
+     * @param buttonIDOrdinal The ordinal number of the button
+     * @return The colo for the step
      */
-    public void drawDrumGrid ()
+    public int drawDrumGrid (final int buttonIDOrdinal)
     {
+        final boolean isRow3 = buttonIDOrdinal >= ButtonID.ROW3_1.ordinal () && buttonIDOrdinal <= ButtonID.ROW3_8.ordinal ();
+        final int index = isRow3 ? buttonIDOrdinal - ButtonID.ROW3_1.ordinal () : buttonIDOrdinal - ButtonID.ROW4_1.ordinal ();
+        final int x = index;
+        final int y;
+        if (this.isPlayMode)
+            y = isRow3 ? 1 : 0;
+        else
+            y = isRow3 ? 0 : 1;
+        final int col = 8 * y + x;
+
         if (this.isPlayMode)
         {
             final ICursorDevice primary = this.model.getInstrumentDevice ();
@@ -323,29 +352,11 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
                     }
                 }
             }
-            for (int y = 0; y < 2; y++)
-            {
-                for (int x = 0; x < 8; x++)
-                {
-                    final int index = 8 * y + x;
-                    final int color = this.getPadColor (index, primary, isSoloed);
-                    if (y == 0)
-                        this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW4_1 + x, color);
-                    else
-                        this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW3_1 + x, color);
-                }
-            }
-            return;
+            return this.getPadColor (col, primary, isSoloed);
         }
 
         if (!this.isActive ())
-        {
-            for (int i = 0; i < 8; i++)
-                this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW3_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
-            for (int i = 0; i < 8; i++)
-                this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW4_1 + i, SLControlSurface.MKII_BUTTON_STATE_OFF);
-            return;
-        }
+            return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
         final INoteClip clip = this.getClip ();
         final boolean exists = clip.doesExist ();
@@ -353,18 +364,14 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % PlayView.NUM_DISPLAY_COLS : -1;
         final int offsetY = this.scales.getDrumOffset ();
-        for (int col = 0; col < PlayView.NUM_DISPLAY_COLS; col++)
-        {
-            final int isSet = clip.getStep (col, offsetY + this.selectedPad);
-            final boolean hilite = col == hiStep;
-            final int x = col % 8;
-            final double y = col / 8.0;
-            final int color = exists && (isSet > 0 || hilite) ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
-            if (y == 0)
-                this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW3_1 + x, color);
-            else
-                this.surface.updateTrigger (SLControlSurface.MKII_BUTTON_ROW4_1 + x, color);
-        }
+        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+
+        if (col >= PlayView.NUM_DISPLAY_COLS)
+            return SLControlSurface.MKII_BUTTON_STATE_OFF;
+
+        final int isSet = clip.getStep (editMidiChannel, col, offsetY + this.selectedPad).getState ();
+        final boolean hilite = col == hiStep;
+        return exists && (isSet > 0 || hilite) ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
     }
 
 
@@ -404,7 +411,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         else
         {
             if (velocity != 0)
-                this.getClip ().toggleStep (index < 8 ? index + 8 : index - 8, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                this.getClip ().toggleStep (this.surface.getConfiguration ().getMidiEditChannel (), index < 8 ? index + 8 : index - 8, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
         }
     }
 
@@ -466,14 +473,6 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     /** {@inheritDoc} */
     @Override
     public void onGridNote (final int note, final int velocity)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateSceneButtons ()
     {
         // Intentionally empty
     }

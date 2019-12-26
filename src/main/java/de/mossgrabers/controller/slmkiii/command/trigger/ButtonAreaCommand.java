@@ -46,11 +46,11 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<SLMkIIIControlSurf
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (this.surface.isMuteSolo ())
-            this.command1.execute (event);
+            this.command1.execute (event, velocity);
         else
-            this.command2.execute (event);
+            this.command2.execute (event, velocity);
     }
 }

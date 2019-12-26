@@ -231,7 +231,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
      */
     public MidiMonitorControlSurface (final IHost host, final MidiMonitorConfiguration configuration, final IMidiInput input)
     {
-        super (host, configuration, null, null, input, null);
+        super (host, configuration, null, null, input, null, 10, 10);
 
         this.input.setSysexCallback (this::handleSysEx);
     }

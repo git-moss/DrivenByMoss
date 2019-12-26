@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.controller.color;
 
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.daw.DAWColor;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,13 +19,14 @@ import java.util.Map;
 public class ColorManager
 {
     /** ID for color when button is turned off. */
-    public static final String         BUTTON_STATE_OFF = "BUTTON_STATE_OFF";
+    public static final String            BUTTON_STATE_OFF = "BUTTON_STATE_OFF";
     /** ID for color when button is turned on. */
-    public static final String         BUTTON_STATE_ON  = "BUTTON_STATE_ON";
+    public static final String            BUTTON_STATE_ON  = "BUTTON_STATE_ON";
     /** ID for color when button is highlighted. */
-    public static final String         BUTTON_STATE_HI  = "BUTTON_STATE_HI";
+    public static final String            BUTTON_STATE_HI  = "BUTTON_STATE_HI";
 
-    private final Map<String, Integer> colors           = new HashMap<> ();
+    protected final Map<String, Integer>  colorIndexByKey  = new HashMap<> ();
+    protected final Map<Integer, ColorEx> colorByIndex     = new HashMap<> ();
 
 
     /**
@@ -31,11 +35,23 @@ public class ColorManager
      * @param key The key under which to register the color index
      * @param colorIndex The color index
      */
-    public void registerColor (final String key, final int colorIndex)
+    public void registerColorIndex (final String key, final int colorIndex)
     {
-        if (this.colors.containsKey (key))
+        if (this.colorIndexByKey.containsKey (key))
             throw new ColorIndexException ("Color for key " + key + " is already registered!");
-        this.colors.put (key, Integer.valueOf (colorIndex));
+        this.colorIndexByKey.put (key, Integer.valueOf (colorIndex));
+    }
+
+
+    /**
+     * Registers a a color index. An exception is thrown if the color index is already registered.
+     *
+     * @param dawColor The daw color key under which to register the color index
+     * @param colorIndex The color index
+     */
+    public void registerColorIndex (final DAWColor dawColor, final int colorIndex)
+    {
+        this.registerColorIndex (dawColor.name (), colorIndex);
     }
 
 
@@ -45,11 +61,43 @@ public class ColorManager
      * @param key The key
      * @return The color index
      */
-    public int getColor (final String key)
+    public int getColorIndex (final String key)
     {
-        final Integer colorIndex = this.colors.get (key);
+        final Integer colorIndex = this.colorIndexByKey.get (key);
         if (colorIndex == null)
             throw new ColorIndexException ("Color for key " + key + " is not registered!");
         return colorIndex.intValue ();
+    }
+
+
+    /**
+     * Registers the real RGB color which is represented by the given color index.
+     *
+     * @param colorIndex The color index
+     * @param color The RGB color to map to the given key
+     */
+    public void registerColor (final int colorIndex, final ColorEx color)
+    {
+        if (colorIndex < 0 || colorIndex > 127)
+            throw new ColorIndexException ("Color index must be in the range of 0..127!");
+        this.colorByIndex.put (Integer.valueOf (colorIndex), color);
+    }
+
+
+    /**
+     * Get the color index which is registered with the given key.
+     *
+     * @param colorIndex The color index
+     * @param buttonID The ID of the button in case button LEDs have a different color range
+     * @return The color index
+     */
+    public ColorEx getColor (final int colorIndex, final ButtonID buttonID)
+    {
+        if (colorIndex < 0)
+            return ColorEx.BLACK;
+        final ColorEx color = this.colorByIndex.get (Integer.valueOf (colorIndex));
+        if (color == null)
+            throw new ColorIndexException ("Color for index " + colorIndex + " is not registered!");
+        return color;
     }
 }
