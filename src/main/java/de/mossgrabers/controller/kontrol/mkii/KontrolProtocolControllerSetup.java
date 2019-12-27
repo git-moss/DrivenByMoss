@@ -122,7 +122,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
         final ITrackBank bank = this.model.getCurrentTrackBank ();
 
-        final boolean hasSolo = this.model.hasSolo ();
+        final boolean hasSolo = this.model.getProject ().hasSolo ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = bank.getItem (i);

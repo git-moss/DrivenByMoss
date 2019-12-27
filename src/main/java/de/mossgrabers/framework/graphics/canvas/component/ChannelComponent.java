@@ -394,8 +394,6 @@ public class ChannelComponent extends ChannelSelectComponent
             return false;
         if (Double.doubleToLongBits (this.vuValueLeft) != Double.doubleToLongBits (other.vuValueLeft))
             return false;
-        if (Double.doubleToLongBits (this.vuValueRight) != Double.doubleToLongBits (other.vuValueRight))
-            return false;
-        return true;
+        return Double.doubleToLongBits (this.vuValueRight) == Double.doubleToLongBits (other.vuValueRight);
     }
 }

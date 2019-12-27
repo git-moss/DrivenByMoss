@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.mcu.controller;
 
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
-import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -24,7 +23,6 @@ public class MCUDisplay extends AbstractTextDisplay
     private static final String         SYSEX_DISPLAY_HEADER2 = "F0 00 00 67 15 13 ";
 
     private boolean                     isFirst;
-    private int                         charactersOfCell;
     private boolean                     hasMaster;
 
     private final LatestTaskExecutor [] executors             = new LatestTaskExecutor [4];
@@ -45,57 +43,9 @@ public class MCUDisplay extends AbstractTextDisplay
 
         this.isFirst = isFirst;
         this.hasMaster = hasMaster;
-        this.charactersOfCell = this.noOfCharacters / this.noOfCells;
 
         for (int i = 0; i < 4; i++)
             this.executors[i] = new LatestTaskExecutor ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ITextDisplay clearRow (final int row)
-    {
-        for (int i = 0; i < this.noOfCells; i++)
-            this.clearCell (row, i);
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ITextDisplay clearCell (final int row, final int cell)
-    {
-        this.cells[row * this.noOfCells + cell] = "         ".substring (0, this.charactersOfCell);
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ITextDisplay setBlock (final int row, final int block, final String value)
-    {
-        final int cell = 2 * block;
-        if (value.length () >= this.charactersOfCell)
-        {
-            this.cells[row * this.noOfCells + cell] = StringUtils.pad (value.substring (0, this.charactersOfCell), this.charactersOfCell);
-            this.cells[row * this.noOfCells + cell + 1] = StringUtils.pad (value.substring (this.charactersOfCell), this.charactersOfCell);
-        }
-        else
-        {
-            this.setCell (row, cell, value);
-            this.clearCell (row, cell + 1);
-        }
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ITextDisplay setCell (final int row, final int column, final int value, final Format format)
-    {
-        this.cells[row * this.noOfCells + column] = StringUtils.pad (Integer.toString (value), this.charactersOfCell - 1) + " ";
-        return this;
     }
 
 

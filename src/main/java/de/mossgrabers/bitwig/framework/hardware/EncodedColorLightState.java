@@ -89,8 +89,6 @@ public class EncodedColorLightState extends InternalHardwareLightState
         if (this.getClass () != obj.getClass ())
             return false;
         final EncodedColorLightState other = (EncodedColorLightState) obj;
-        if (this.encodedColorState != other.encodedColorState)
-            return false;
-        return true;
+        return this.encodedColorState == other.encodedColorState;
     }
 }

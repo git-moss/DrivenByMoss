@@ -5,8 +5,6 @@
 package de.mossgrabers.controller.hui.controller;
 
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
-import de.mossgrabers.framework.controller.display.Format;
-import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.LatestTaskExecutor;
@@ -24,8 +22,6 @@ public class HUIDisplay extends AbstractTextDisplay
 {
     private static final String      SYSEX_DISPLAY_HEADER = "F0 00 00 66 05 00 10 ";
 
-    private int                      charactersOfCell;
-
     private final LatestTaskExecutor executor             = new LatestTaskExecutor ();
 
 
@@ -39,71 +35,6 @@ public class HUIDisplay extends AbstractTextDisplay
     public HUIDisplay (final IHost host, final IMidiOutput output)
     {
         super (host, output, 1 /* No of rows */, 9 /* No of cells */, 36);
-
-        this.charactersOfCell = this.noOfCharacters / this.noOfCells;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ITextDisplay clearRow (final int row)
-    {
-        for (int i = 0; i < this.noOfCells; i++)
-            this.clearCell (row, i);
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ITextDisplay clearCell (final int row, final int cell)
-    {
-        this.cells[row * this.noOfCells + cell] = "         ".substring (0, this.charactersOfCell);
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ITextDisplay setBlock (final int row, final int block, final String value)
-    {
-        final int cell = 2 * block;
-        if (value.length () >= this.charactersOfCell)
-        {
-            this.cells[row * this.noOfCells + cell] = StringUtils.pad (value.substring (0, this.charactersOfCell), this.charactersOfCell);
-            this.cells[row * this.noOfCells + cell + 1] = StringUtils.pad (value.substring (this.charactersOfCell), this.charactersOfCell);
-        }
-        else
-        {
-            this.setCell (row, cell, value);
-            this.clearCell (row, cell + 1);
-        }
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ITextDisplay setCell (final int row, final int column, final int value, final Format format)
-    {
-        this.cells[row * this.noOfCells + column] = StringUtils.pad (Integer.toString (value), this.charactersOfCell);
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ITextDisplay setCell (final int row, final int column, final String value)
-    {
-        try
-        {
-            this.cells[row * this.noOfCells + column] = StringUtils.pad (value, this.charactersOfCell);
-        }
-        catch (final ArrayIndexOutOfBoundsException ex)
-        {
-            this.host.error ("Display array index out of bounds.", ex);
-        }
-        return this;
     }
 
 

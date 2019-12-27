@@ -107,6 +107,7 @@ public class TrackModule extends AbstractModule
         final ITrack selectedTrack = trackBank.getSelectedItem ();
         this.flushTrack (this.writer, "/track/selected/", selectedTrack == null ? EmptyTrack.INSTANCE : selectedTrack, dump);
         this.writer.sendOSC ("/track/toggleBank", this.model.isEffectTrackBankActive () ? 1 : 0, dump);
+        this.writer.sendOSC ("/track/hasParent", trackBank.hasParent (), dump);
     }
 
 

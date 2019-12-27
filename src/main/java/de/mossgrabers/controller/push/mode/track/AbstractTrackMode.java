@@ -264,14 +264,20 @@ public abstract class AbstractTrackMode extends BaseMode
                     case 2:
                         return modeManager.isActiveOrTempMode (Modes.CROSSFADER) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 4:
-                        return modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.SEND5 : Modes.SEND1) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        final Modes sendMode1 = sendsAreToggled ? Modes.SEND5 : Modes.SEND1;
+                        return modeManager.isActiveOrTempMode (sendMode1) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 5:
-                        return modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.SEND6 : Modes.SEND2) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        final Modes sendMode2 = sendsAreToggled ? Modes.SEND6 : Modes.SEND2;
+                        return modeManager.isActiveOrTempMode (sendMode2) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 6:
-                        return modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.SEND7 : Modes.SEND3) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        final Modes sendMode3 = sendsAreToggled ? Modes.SEND7 : Modes.SEND3;
+                        return modeManager.isActiveOrTempMode (sendMode3) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 7:
                         if (this.surface.isShiftPressed ())
-                            return modeManager.isActiveOrTempMode (sendsAreToggled ? Modes.SEND8 : Modes.SEND4) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        {
+                            final Modes sendMode4 = sendsAreToggled ? Modes.SEND8 : Modes.SEND4;
+                            return modeManager.isActiveOrTempMode (sendMode4) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        }
                         return tb.hasParent () ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     default:
                     case 3:

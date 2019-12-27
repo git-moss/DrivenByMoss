@@ -195,7 +195,6 @@ public class NoteMode extends BaseMode
         {
             final double noteGain = stepInfo.getGain ();
             final int parameterGainValue = Math.min (1023, valueChanger.fromNormalizedValue (noteGain));
-            // TODO Format as dB
             display.setCell (0, 3, "Gain").setCell (1, 3, formatPercentage (noteGain)).setCell (2, 3, parameterGainValue, Format.FORMAT_VALUE);
         }
         if (this.host.canEdit (EditCapability.NOTE_EDIT_PANORAMA))
@@ -254,7 +253,6 @@ public class NoteMode extends BaseMode
         if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
         {
             final double noteGain = stepInfo.getGain ();
-            // TODO Format as dB
             final int parameterGainValue = Math.min (1023, valueChanger.fromNormalizedValue (noteGain));
             display.addParameterElement ("Gain", parameterGainValue, formatPercentage (noteGain), this.isKnobTouched[3], parameterGainValue);
         }

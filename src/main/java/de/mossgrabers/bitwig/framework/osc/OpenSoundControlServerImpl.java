@@ -8,9 +8,6 @@ import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 
 import com.bitwig.extension.api.opensoundcontrol.OscServer;
 
-// Requires API 9
-// import com.bitwig.extension.api.opensoundcontrol.OscServer;
-
 import java.io.IOException;
 
 

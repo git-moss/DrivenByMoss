@@ -40,13 +40,10 @@ import java.util.Map;
  */
 public class ModelImpl extends AbstractModel
 {
-    private static final int               ALL_TRACKS = 1000;
-
     private final ControllerHost           controllerHost;
     private final CursorTrack              cursorTrack;
     private final BooleanValue             masterTrackEqualsValue;
     private final Map<Integer, ISceneBank> sceneBanks = new HashMap<> (1);
-    private final TrackBank                muteSoloTrackBank;
 
     private Track                          rootTrackGroup;
 
@@ -105,10 +102,6 @@ public class ModelImpl extends AbstractModel
         this.trackBank = new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numTracks, numScenes, numSends);
         final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numTracks, numScenes);
         this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numTracks, numScenes, this.trackBank);
-
-        this.muteSoloTrackBank = controllerHost.createTrackBank (ALL_TRACKS, 0, 0, true);
-        for (int i = 0; i < ALL_TRACKS; i++)
-            this.muteSoloTrackBank.getItemAt (i).solo ().markInterested ();
 
         final int numParams = this.modelSetup.getNumParams ();
         final int numDeviceLayers = this.modelSetup.getNumDeviceLayers ();
@@ -185,37 +178,6 @@ public class ModelImpl extends AbstractModel
             tb.followCursorTrack (this.cursorTrack);
             return new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, 1, numScenes, 0).getSceneBank ();
         });
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasSolo ()
-    {
-        for (int i = 0; i < ALL_TRACKS; i++)
-        {
-            if (this.muteSoloTrackBank.getItemAt (i).solo ().get ())
-                return true;
-        }
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearSolo ()
-    {
-        for (int i = 0; i < ALL_TRACKS; i++)
-            this.muteSoloTrackBank.getItemAt (i).solo ().set (false);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearMute ()
-    {
-        for (int i = 0; i < ALL_TRACKS; i++)
-            this.muteSoloTrackBank.getItemAt (i).mute ().set (false);
     }
 
 

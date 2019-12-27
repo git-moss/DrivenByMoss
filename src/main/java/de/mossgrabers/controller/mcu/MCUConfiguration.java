@@ -195,6 +195,7 @@ public class MCUConfiguration extends AbstractConfiguration
         profileSetting.addValueObserver (value -> {
             switch (value)
             {
+                case DEVICE_MACKIE_MCU_PRO:
                 case DEVICE_BEHRINGER_X_TOUCH_ONE:
                     this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
                     this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
@@ -226,18 +227,6 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
-                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
-                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
-                    this.setVUMetersEnabled (true);
-                    break;
-
-                case DEVICE_MACKIE_MCU_PRO:
-                    this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
-                    this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
-                    this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
-                    this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
                     this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);

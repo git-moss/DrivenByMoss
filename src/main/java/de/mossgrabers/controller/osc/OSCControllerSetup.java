@@ -157,6 +157,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         this.keyManager = new KeyManager (this.model, surface.getPadGrid ());
 
         // Send OSC messages
+        // TODO Bugfix required: https://github.com/teotigraphix/Framework4Bitwig/issues/245
         final IOpenSoundControlClient oscClient = this.host.connectToOSCServer (this.configuration.getSendHost (), this.configuration.getSendPort ());
         this.writer = new OSCWriter (this.host, this.model, oscClient, this.configuration);
 

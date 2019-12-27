@@ -155,4 +155,32 @@ public interface IProject extends ObserverManagement
      * @param isBeingTouched True if touched
      */
     void touchCueMix (boolean isBeingTouched);
+
+
+    /**
+     * Check if any of the tracks is soloed.
+     *
+     * @return True if there is at least one soloed track
+     */
+    boolean hasSolo ();
+
+
+    /**
+     * Check if any of the tracks is muted.
+     *
+     * @return True if there is at least one muted track
+     */
+    boolean hasMute ();
+
+
+    /**
+     * Deactivate all solo states of all tracks.
+     */
+    void clearSolo ();
+
+
+    /**
+     * Deactivate all mute states of all tracks.
+     */
+    void clearMute ();
 }

@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.sl.controller;
 
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
-import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.hardware.IHwTextDisplay;
 import de.mossgrabers.framework.daw.IHost;
@@ -38,7 +37,7 @@ public class SLDisplay extends AbstractTextDisplay
      */
     public SLDisplay (final IHost host, final IMidiOutput output, final IHwTextDisplay hwTextDisplay1, final IHwTextDisplay hwTextDisplay2)
     {
-        super (host, output, 4 /* No of rows */, 8 /* No of cells */, 8);
+        super (host, output, 4 /* No of rows */, 8 /* No of cells */, 8 * 8);
 
         this.hwTextDisplay1 = hwTextDisplay1;
         this.hwTextDisplay2 = hwTextDisplay2;
@@ -64,9 +63,9 @@ public class SLDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public ITextDisplay clearCell (final int row, final int cell)
+    public ITextDisplay clearCell (final int row, final int column)
     {
-        this.cells[row * this.noOfCells + cell] = "         ";
+        this.cells[row * this.noOfCells + column] = "         ";
         return this;
     }
 
@@ -86,15 +85,6 @@ public class SLDisplay extends AbstractTextDisplay
             this.cells[row * 8 + cell] = StringUtils.pad (value, 9);
             this.clearCell (row, cell + 1);
         }
-        return this;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public ITextDisplay setCell (final int row, final int column, final int value, final Format format)
-    {
-        this.cells[row * this.noOfCells + column] = StringUtils.pad (Integer.toString (value), 8) + " ";
         return this;
     }
 

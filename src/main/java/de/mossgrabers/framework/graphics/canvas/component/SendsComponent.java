@@ -181,8 +181,6 @@ public class SendsComponent extends ChannelSelectComponent
             return false;
         if (this.isSendActive != other.isSendActive)
             return false;
-        if (!Arrays.equals (this.sendData, other.sendData))
-            return false;
-        return true;
+        return Arrays.equals (this.sendData, other.sendData);
     }
 }

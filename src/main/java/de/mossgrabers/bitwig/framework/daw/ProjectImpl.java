@@ -42,9 +42,11 @@ public class ProjectImpl implements IProject
 
         this.application.projectName ().markInterested ();
 
+        this.project.hasSoloedTracks ().markInterested ();
+        this.project.hasMutedTracks ().markInterested ();
+
         this.cueVolumeParameter = new ParameterImpl (valueChanger, this.project.cueVolume (), 0);
         this.cueMixParameter = new ParameterImpl (valueChanger, this.project.cueMix (), 0);
-
     }
 
 
@@ -53,6 +55,9 @@ public class ProjectImpl implements IProject
     public void enableObservers (final boolean enable)
     {
         Util.setIsSubscribed (this.application.projectName (), enable);
+
+        Util.setIsSubscribed (this.project.hasSoloedTracks (), enable);
+        Util.setIsSubscribed (this.project.hasMutedTracks (), enable);
 
         this.cueVolumeParameter.enableObservers (enable);
         this.cueMixParameter.enableObservers (enable);
@@ -210,5 +215,37 @@ public class ProjectImpl implements IProject
     public void touchCueMix (final boolean isBeingTouched)
     {
         this.cueMixParameter.touchValue (isBeingTouched);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasSolo ()
+    {
+        return this.project.hasSoloedTracks ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasMute ()
+    {
+        return this.project.hasMutedTracks ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearSolo ()
+    {
+        this.project.unsoloAll ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearMute ()
+    {
+        this.project.unmuteAll ();
     }
 }

@@ -126,14 +126,8 @@ public class HUIConfiguration extends AbstractConfiguration
         profileSetting.addValueObserver (value -> {
             switch (value)
             {
-                case DEVICE_ICON_QCON_PRO_X:
-                    this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
-                    this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
-                    this.setVUMetersEnabled (true);
-                    break;
-
                 case DEVICE_MACKIE_HUI:
+                case DEVICE_ICON_QCON_PRO_X:
                     this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
                     this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);

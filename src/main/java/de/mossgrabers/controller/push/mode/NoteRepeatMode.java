@@ -139,6 +139,10 @@ public class NoteRepeatMode extends BaseMode
                     if (this.host.canEdit (EditCapability.NOTE_REPEAT_SWING))
                         this.model.getGroove ().getParameters ()[1].resetValue ();
                     break;
+
+                default:
+                    // Unused
+                    break;
             }
         }
     }

@@ -7,6 +7,7 @@ package de.mossgrabers.framework.controller.display;
 import de.mossgrabers.framework.controller.hardware.IHwTextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -25,11 +26,13 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     protected int            noOfLines;
     protected int            noOfCells;
     protected int            noOfCharacters;
+    protected int            charactersOfCell;
 
     protected final String   emptyLine;
     protected String         notificationMessage;
     protected boolean        isNotificationActive;
 
+    private final String     emptyCell;
     protected String []      currentMessage;
     protected String []      message;
     protected String []      cells;
@@ -54,6 +57,9 @@ public abstract class AbstractTextDisplay implements ITextDisplay
         this.noOfLines = noOfLines;
         this.noOfCells = noOfCells;
         this.noOfCharacters = noOfCharacters;
+        this.charactersOfCell = this.noOfCharacters / this.noOfCells;
+
+        this.emptyCell = "                                                                     ".substring (0, this.charactersOfCell);
 
         final StringBuilder sb = new StringBuilder (this.noOfCharacters);
         for (int i = 0; i < this.noOfCharacters; i++)
@@ -116,8 +122,8 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     @Override
     public ITextDisplay clearRow (final int row)
     {
-        for (int i = 0; i < 4; i++)
-            this.clearBlock (row, i);
+        for (int i = 0; i < this.noOfCells; i++)
+            this.clearCell (row, i);
         return this;
     }
 
@@ -169,7 +175,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     @Override
     public ITextDisplay clearCell (final int row, final int column)
     {
-        // TODO Provide a meaningful default implementation
+        this.cells[row * this.noOfCells + column] = this.emptyCell;
         return this;
     }
 
@@ -178,7 +184,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     @Override
     public ITextDisplay setCell (final int row, final int column, final int value, final Format format)
     {
-        // TODO Provide a meaningful default implementation
+        this.setCell (row, column, Integer.toString (value));
         return this;
     }
 
@@ -187,7 +193,14 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     @Override
     public ITextDisplay setCell (final int row, final int column, final String value)
     {
-        // TODO Provide a meaningful default implementation
+        try
+        {
+            this.cells[row * this.noOfCells + column] = StringUtils.pad (value, this.charactersOfCell);
+        }
+        catch (final ArrayIndexOutOfBoundsException ex)
+        {
+            this.host.error ("Display array index out of bounds.", ex);
+        }
         return this;
     }
 
@@ -196,7 +209,17 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     @Override
     public ITextDisplay setBlock (final int row, final int block, final String value)
     {
-        // TODO Provide a meaningful default implementation
+        final int cell = 2 * block;
+        if (value.length () >= this.charactersOfCell)
+        {
+            this.cells[row * this.noOfCells + cell] = StringUtils.pad (value.substring (0, this.charactersOfCell), this.charactersOfCell);
+            this.cells[row * this.noOfCells + cell + 1] = StringUtils.pad (value.substring (this.charactersOfCell), this.charactersOfCell);
+        }
+        else
+        {
+            this.setCell (row, cell, value);
+            this.clearCell (row, cell + 1);
+        }
         return this;
     }
 

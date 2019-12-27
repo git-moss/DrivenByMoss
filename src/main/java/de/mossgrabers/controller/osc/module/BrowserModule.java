@@ -52,74 +52,69 @@ public class BrowserModule extends AbstractModule
     @Override
     public void execute (final String command, final LinkedList<String> path, final Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException
     {
-        switch (command)
+        if (!"browser".equals (command))
+            throw new UnknownCommandException (command);
+
+        final String subCommand = getSubCommand (path);
+        final IBrowser browser = this.model.getBrowser ();
+        switch (subCommand)
         {
-            case "browser":
-                final String subCommand = getSubCommand (path);
-                final IBrowser browser = this.model.getBrowser ();
-                switch (subCommand)
-                {
-                    case "preset":
-                        browser.replace (this.model.getCursorDevice ());
-                        break;
+            case "preset":
+                browser.replace (this.model.getCursorDevice ());
+                break;
 
-                    case "tab":
-                        if (!browser.isActive ())
-                            return;
-                        final String subCmd = getSubCommand (path);
-                        if ("+".equals (subCmd))
-                            browser.nextContentType ();
-                        else if ("-".equals (subCmd))
-                            browser.previousContentType ();
-                        break;
+            case "tab":
+                if (!browser.isActive ())
+                    return;
+                final String subCmd = getSubCommand (path);
+                if ("+".equals (subCmd))
+                    browser.nextContentType ();
+                else if ("-".equals (subCmd))
+                    browser.previousContentType ();
+                break;
 
-                    case "device":
-                        final String insertLocation = path.isEmpty () ? null : path.removeFirst ();
-                        if (insertLocation == null || "after".equals (insertLocation))
-                            browser.insertAfterCursorDevice ();
-                        else
-                            browser.insertBeforeCursorDevice ();
-                        break;
+            case "device":
+                final String insertLocation = path.isEmpty () ? null : path.removeFirst ();
+                if (insertLocation == null || "after".equals (insertLocation))
+                    browser.insertAfterCursorDevice ();
+                else
+                    browser.insertBeforeCursorDevice ();
+                break;
 
-                    case "commit":
-                        browser.stopBrowsing (true);
-                        break;
+            case "commit":
+                browser.stopBrowsing (true);
+                break;
 
-                    case "cancel":
-                        browser.stopBrowsing (false);
-                        break;
+            case "cancel":
+                browser.stopBrowsing (false);
+                break;
 
-                    case "filter":
-                        final String indexCmd = getSubCommand (path);
-                        int column = Integer.parseInt (indexCmd);
-                        if (column < 1 || column > 6)
-                            return;
-                        column = column - 1;
-                        if (!browser.isActive ())
-                            return;
+            case "filter":
+                final String indexCmd = getSubCommand (path);
+                int column = Integer.parseInt (indexCmd);
+                if (column < 1 || column > 6)
+                    return;
+                column = column - 1;
+                if (!browser.isActive ())
+                    return;
 
-                        final String cmd = getSubCommand (path);
-                        if ("+".equals (cmd))
-                            browser.selectNextFilterItem (column);
-                        else if ("-".equals (cmd))
-                            browser.selectPreviousFilterItem (column);
-                        else if ("reset".equals (cmd))
-                            browser.getFilterColumn (column).resetFilter ();
-                        break;
+                final String cmd = getSubCommand (path);
+                if ("+".equals (cmd))
+                    browser.selectNextFilterItem (column);
+                else if ("-".equals (cmd))
+                    browser.selectPreviousFilterItem (column);
+                else if ("reset".equals (cmd))
+                    browser.getFilterColumn (column).resetFilter ();
+                break;
 
-                    case "result":
-                        if (!browser.isActive ())
-                            return;
-                        final String direction = path.isEmpty () ? "+" : path.removeFirst ();
-                        if ("+".equals (direction))
-                            browser.selectNextResult ();
-                        else
-                            browser.selectPreviousResult ();
-                        break;
-
-                    default:
-                        throw new UnknownCommandException (command);
-                }
+            case "result":
+                if (!browser.isActive ())
+                    return;
+                final String direction = path.isEmpty () ? "+" : path.removeFirst ();
+                if ("+".equals (direction))
+                    browser.selectNextResult ();
+                else
+                    browser.selectPreviousResult ();
                 break;
 
             default:

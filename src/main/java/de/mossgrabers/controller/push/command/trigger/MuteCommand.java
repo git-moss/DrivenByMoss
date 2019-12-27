@@ -45,7 +45,7 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
         if (this.surface.isSelectPressed ())
         {
             if (event == ButtonEvent.UP)
-                this.model.clearMute ();
+                this.model.getProject ().clearMute ();
             return;
         }
 

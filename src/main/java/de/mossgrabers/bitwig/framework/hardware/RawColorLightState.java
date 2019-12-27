@@ -65,8 +65,6 @@ public class RawColorLightState extends InternalHardwareLightState
         if (this.getClass () != obj.getClass ())
             return false;
         final RawColorLightState other = (RawColorLightState) obj;
-        if (this.colorState.encode () != other.colorState.encode ())
-            return false;
-        return true;
+        return this.colorState.encode () == other.colorState.encode ();
     }
 }

@@ -123,9 +123,7 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
             final int i = index;
             final ITrack track = tb.getItem (index);
             track.addNameObserver (name -> this.autoColor.matchTrackName (i, name));
-            track.addColorObserver (name -> {
-                this.autoColor.matchTrackName (i, track.getName ());
-            });
+            track.addColorObserver (name -> this.autoColor.matchTrackName (i, track.getName ()));
         }
     }
 

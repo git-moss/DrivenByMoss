@@ -239,7 +239,9 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
 
     private static Object convertBooleanToInt (final Object value)
     {
-        return value instanceof Boolean ? Integer.valueOf (((Boolean) value).booleanValue () ? 1 : 0) : value;
+        if (!(value instanceof Boolean))
+            return value;
+        return Integer.valueOf (((Boolean) value).booleanValue () ? 1 : 0);
     }
 
 

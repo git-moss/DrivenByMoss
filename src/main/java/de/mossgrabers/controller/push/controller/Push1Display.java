@@ -80,9 +80,9 @@ public class Push1Display extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public ITextDisplay clearCell (final int row, final int cell)
+    public ITextDisplay clearCell (final int row, final int column)
     {
-        this.cells[row * 8 + cell] = cell % 2 == 0 ? "         " : "        ";
+        this.cells[row * this.noOfCells + column] = column % 2 == 0 ? "         " : "        ";
         return this;
     }
 

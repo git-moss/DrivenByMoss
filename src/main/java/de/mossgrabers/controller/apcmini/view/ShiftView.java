@@ -396,6 +396,9 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 return Modes.isSendMode (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
             case 7:
                 return Modes.DEVICE_PARAMS.equals (mode) ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
+            default:
+                // Never reached
+                break;
         }
 
         return APCminiColorManager.APC_COLOR_BLACK;
