@@ -21,6 +21,7 @@ import de.mossgrabers.controller.push.command.trigger.PageLeftCommand;
 import de.mossgrabers.controller.push.command.trigger.PageRightCommand;
 import de.mossgrabers.controller.push.command.trigger.PanSendCommand;
 import de.mossgrabers.controller.push.command.trigger.PushBrowserCommand;
+import de.mossgrabers.controller.push.command.trigger.PushCursorCommand;
 import de.mossgrabers.controller.push.command.trigger.PushQuantizeCommand;
 import de.mossgrabers.controller.push.command.trigger.RasteredKnobCommand;
 import de.mossgrabers.controller.push.command.trigger.ScalesCommand;
@@ -102,7 +103,6 @@ import de.mossgrabers.framework.command.trigger.clip.NoteRepeatCommand;
 import de.mossgrabers.framework.command.trigger.clip.StopAllClipsCommand;
 import de.mossgrabers.framework.command.trigger.device.AddEffectCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
-import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.KnobRowTouchModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
@@ -127,6 +127,7 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
@@ -154,7 +155,8 @@ import de.mossgrabers.framework.view.Views;
  */
 public class PushControllerSetup extends AbstractControllerSetup<PushControlSurface, PushConfiguration>
 {
-    protected final boolean isPush2;
+    private final boolean isPush2;
+    private ISceneBank    sceneBank64;
 
 
     /**
@@ -169,10 +171,11 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     public PushControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final boolean isPush2)
     {
         super (factory, host, globalSettings, documentSettings);
+
         this.isPush2 = isPush2;
         this.colorManager = new PushColorManager (isPush2);
         this.valueChanger = new DefaultValueChanger (1024, 10, 1);
-        this.configuration = new PushConfiguration (host, this.valueChanger, isPush2);
+        this.configuration = new PushConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), isPush2);
     }
 
 
@@ -204,6 +207,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         ms.setNumMarkers (8);
         ms.setHasFlatTrackList (false);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.sceneBank64 = this.model.createSceneBank (64);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
@@ -316,7 +320,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         else
             modeManager.registerMode (Modes.CONFIGURATION, new ConfigurationMode (surface, this.model));
 
-        modeManager.registerMode (Modes.SESSION, new SessionMode (surface, this.model));
+        modeManager.registerMode (Modes.SESSION, new SessionMode (surface, this.model, this.sceneBank64));
         modeManager.registerMode (Modes.SESSION_VIEW_SELECT, new SessionViewSelectMode (surface, this.model));
 
         modeManager.registerMode (Modes.REPEAT_NOTE, new NoteRepeatMode (surface, this.model));
@@ -392,6 +396,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, () -> this.valueChanger.setSlowFractionValue (this.configuration.getKnobSpeedSlow ()));
 
         this.createScaleObservers (this.configuration);
+        this.createNoteRepeatObservers (this.configuration, surface);
     }
 
 
@@ -414,7 +419,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         viewManager.registerView (Views.DRUM4, new DrumView4 (surface, this.model));
         viewManager.registerView (Views.DRUM8, new DrumView8 (surface, this.model));
         viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
-        viewManager.registerView (Views.SCENE_PLAY, new ScenePlayView (surface, this.model));
+        viewManager.registerView (Views.SCENE_PLAY, new ScenePlayView (surface, this.model, this.sceneBank64));
 
         viewManager.registerView (Views.DRUM64, new DrumView64 (surface, this.model));
     }
@@ -503,13 +508,13 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addButton (ButtonID.ADD_TRACK, "Add Track", new AddTrackCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_ADD_TRACK);
         this.addButton (ButtonID.NOTE, "Note", new SelectPlayViewCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_NOTE, () -> !Views.isSessionView (viewManager.getActiveViewId ()));
 
-        final CursorCommand<PushControlSurface, PushConfiguration> cursorDownCommand = new CursorCommand<> (Direction.DOWN, this.model, surface);
+        final PushCursorCommand cursorDownCommand = new PushCursorCommand (this.sceneBank64, Direction.DOWN, this.model, surface);
         this.addButton (ButtonID.ARROW_DOWN, "Down", cursorDownCommand, PushControlSurface.PUSH_BUTTON_DOWN, cursorDownCommand::canScroll, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        final CursorCommand<PushControlSurface, PushConfiguration> cursorUpCommand = new CursorCommand<> (Direction.UP, this.model, surface);
+        final PushCursorCommand cursorUpCommand = new PushCursorCommand (this.sceneBank64, Direction.UP, this.model, surface);
         this.addButton (ButtonID.ARROW_UP, "Up", cursorUpCommand, PushControlSurface.PUSH_BUTTON_UP, cursorUpCommand::canScroll, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        final CursorCommand<PushControlSurface, PushConfiguration> cursorLeftCommand = new CursorCommand<> (Direction.LEFT, this.model, surface);
+        final PushCursorCommand cursorLeftCommand = new PushCursorCommand (this.sceneBank64, Direction.LEFT, this.model, surface);
         this.addButton (ButtonID.ARROW_LEFT, "Left", cursorLeftCommand, PushControlSurface.PUSH_BUTTON_LEFT, cursorLeftCommand::canScroll, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        final CursorCommand<PushControlSurface, PushConfiguration> cursorRightCommand = new CursorCommand<> (Direction.RIGHT, this.model, surface);
+        final PushCursorCommand cursorRightCommand = new PushCursorCommand (this.sceneBank64, Direction.RIGHT, this.model, surface);
         this.addButton (ButtonID.ARROW_RIGHT, "Right", cursorRightCommand, PushControlSurface.PUSH_BUTTON_RIGHT, cursorRightCommand::canScroll, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
         this.addButton (ButtonID.OCTAVE_DOWN, "Octave Down", new OctaveCommand (false, this.model, surface), PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, () -> {
@@ -541,8 +546,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.addButton (ButtonID.STOP_CLIP, "Stop Clip", new StopAllClipsCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_STOP_CLIP, () -> surface.isPressed (ButtonID.STOP_CLIP), PushColorManager.PUSH_BUTTON_STATE_STOP_ON, PushColorManager.PUSH_BUTTON_STATE_STOP_HI);
         this.addButton (ButtonID.SESSION, "Session", new SelectSessionViewCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_SESSION, () -> Views.isSessionView (viewManager.getActiveViewId ()));
-        this.addButton (ButtonID.REPEAT, "Repeat", new NoteRepeatCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_REPEAT, surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ()::isActive);
-
+        this.addButton (ButtonID.REPEAT, "Repeat", new NoteRepeatCommand<> (this.model, surface, true), PushControlSurface.PUSH_BUTTON_REPEAT, this.configuration::isNoteRepeatActive);
         this.addButton (ButtonID.FOOTSWITCH2, "Foot Controller", new FootswitchCommand<> (this.model, surface), PushControlSurface.PUSH_FOOTSWITCH2);
     }
 

@@ -91,7 +91,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         this.colorManager = new LaunchkeyMiniMk3ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new LaunchkeyMiniMk3Configuration (host, this.valueChanger);
+        this.configuration = new LaunchkeyMiniMk3Configuration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
 

@@ -165,38 +165,17 @@ public class NoteRepeatImpl implements INoteRepeat
     @Override
     public ArpeggiatorMode getMode ()
     {
-        return NoteRepeatModes.lookup (this.noteRepeat.mode ().get ());
+        final String v = this.noteRepeat.mode ().get ();
+        return ArpeggiatorMode.valueOf (v.toUpperCase ().replace ('-', '_'));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public ArpeggiatorMode [] getModes ()
+    public void setMode (final ArpeggiatorMode mode)
     {
-        return NoteRepeatModes.getArpeggiatorModes ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setMode (final String modeValue)
-    {
-        this.noteRepeat.mode ().set (modeValue);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void changeMode (final boolean increase)
-    {
-        final ArpeggiatorMode mode = this.getMode ();
-        if (mode == null)
-            return;
-
-        final int index = mode.getIndex ();
-        final ArpeggiatorMode [] modes = NoteRepeatModes.getArpeggiatorModes ();
-        final int newIndex = Math.max (0, Math.min (modes.length - 1, index + (increase ? 1 : -1)));
-        this.setMode (modes[newIndex].getValue ());
+        final String v = mode.name ().toLowerCase ().replace ('_', '-');
+        this.noteRepeat.mode ().set (v);
     }
 
 

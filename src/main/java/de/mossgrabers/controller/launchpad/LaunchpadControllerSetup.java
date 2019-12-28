@@ -39,6 +39,7 @@ import de.mossgrabers.controller.launchpad.view.DrumView8;
 import de.mossgrabers.controller.launchpad.view.PanView;
 import de.mossgrabers.controller.launchpad.view.PianoView;
 import de.mossgrabers.controller.launchpad.view.PlayView;
+import de.mossgrabers.controller.launchpad.view.PolySequencerView;
 import de.mossgrabers.controller.launchpad.view.RaindropsView;
 import de.mossgrabers.controller.launchpad.view.SendsView;
 import de.mossgrabers.controller.launchpad.view.SequencerView;
@@ -120,7 +121,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.definition = definition;
         this.colorManager = new LaunchpadColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new LaunchpadConfiguration (host, this.valueChanger, definition);
+        this.configuration = new LaunchpadConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), definition);
     }
 
 
@@ -162,8 +163,12 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     @Override
     protected void createObservers ()
     {
-        this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
+        final LaunchpadControlSurface surface = this.getSurface ();
+
+        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
+
         this.createScaleObservers (this.configuration);
+        this.createNoteRepeatObservers (this.configuration, surface);
     }
 
 
@@ -202,6 +207,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
         viewManager.registerView (Views.TRACK_SENDS, new SendsView (surface, this.model));
         viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
+        viewManager.registerView (Views.POLY_SEQUENCER, new PolySequencerView (surface, this.model, true));
         viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
         viewManager.registerView (Views.TRACK_VOLUME, new VolumeView (surface, this.model));
         viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
@@ -243,6 +249,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
             if (viewManager.isActiveView (Views.SEQUENCER))
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE;
+
+            if (viewManager.isActiveView (Views.POLY_SEQUENCER))
+                return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_ORCHID;
 
             if (viewManager.isActiveView (Views.RAINDROPS))
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
@@ -657,6 +666,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         if (viewManager.isActiveView (Views.SEQUENCER))
             return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE;
+
+        if (viewManager.isActiveView (Views.POLY_SEQUENCER))
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_ORCHID;
 
         if (viewManager.isActiveView (Views.DEVICE))
             return LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER;

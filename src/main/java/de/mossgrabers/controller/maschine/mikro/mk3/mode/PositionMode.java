@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.maschine.mikro.mk3.mode;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 
 
@@ -15,9 +16,6 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public class PositionMode extends BaseMode
 {
-    private boolean isSlow = false;
-
-
     /**
      * Constructor.
      *
@@ -34,25 +32,8 @@ public class PositionMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final double speed = this.model.getValueChanger ().calcKnobSpeed (value);
-        this.model.getTransport ().changePosition (speed > 0, this.isSlow);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobTouch (final int index, final boolean isTouched)
-    {
-        if (isTouched)
-            this.toggleSpeed ();
-    }
-
-
-    /**
-     * Toggle the scroll speed.
-     */
-    public void toggleSpeed ()
-    {
-        this.isSlow = !this.isSlow;
+        final IValueChanger valueChanger = this.model.getValueChanger ();
+        final double speed = valueChanger.calcKnobSpeed (value);
+        this.model.getTransport ().changePosition (speed > 0, valueChanger.isSlow ());
     }
 }

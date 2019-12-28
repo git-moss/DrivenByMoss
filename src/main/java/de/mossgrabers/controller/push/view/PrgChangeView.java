@@ -104,14 +104,12 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
         final int black = isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
 
         final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        if (scene < 0 || scene >= 8)
+        if (scene < 0 || scene >= 8 || this.bankNumber != scene)
             return black;
 
-        // TODO Create constants, create a generic AbstractPrgChangeView
-
-        final int green = isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_GREEN : PushColorManager.PUSH1_COLOR_SCENE_GREEN;
-        final int yellow = isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_YELLOW : PushColorManager.PUSH1_COLOR_SCENE_YELLOW;
-        return this.bankNumber == scene ? this.isToggled ? yellow : green : black;
+        if (this.isToggled)
+            return isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_YELLOW : PushColorManager.PUSH1_COLOR_SCENE_YELLOW;
+        return isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_GREEN : PushColorManager.PUSH1_COLOR_SCENE_GREEN;
     }
 
 

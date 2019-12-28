@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.DataSetup;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -54,5 +55,13 @@ public class BitwigSetupFactory implements ISetupFactory
     public IMidiAccess createMidiAccess ()
     {
         return new MidiDeviceImpl (this.controllerHost);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ArpeggiatorMode [] getArpeggiatorModes ()
+    {
+        return ArpeggiatorMode.values ();
     }
 }

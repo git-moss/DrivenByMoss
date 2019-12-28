@@ -121,7 +121,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         this.colorManager.registerColorIndex (AbstractMode.BUTTON_COLOR_ON, 127);
 
         this.valueChanger = new Relative4ValueChanger (16384, 100, 10);
-        this.configuration = new HUIConfiguration (host, this.valueChanger);
+        this.configuration = new HUIConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
 

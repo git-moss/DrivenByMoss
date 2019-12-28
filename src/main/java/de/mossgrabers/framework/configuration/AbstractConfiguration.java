@@ -7,7 +7,9 @@ package de.mossgrabers.framework.configuration;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.observer.SettingObserver;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
@@ -95,8 +97,12 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      NOTEREPEAT_PERIOD                 = Integer.valueOf (32);
     /** The note repeat length. */
     public static final Integer      NOTEREPEAT_LENGTH                 = Integer.valueOf (33);
+    /** The note repeat mode. */
+    public static final Integer      NOTEREPEAT_MODE                   = Integer.valueOf (34);
+    /** The note repeat octave. */
+    public static final Integer      NOTEREPEAT_OCTAVE                 = Integer.valueOf (35);
     /** The MIDI channel to use for editing sequencer notes. */
-    public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (34);
+    public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (36);
 
     // Implementation IDs start at 50
 
@@ -275,6 +281,8 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                             noteRepeatActiveSetting;
     private IEnumSetting                             noteRepeatPeriodSetting;
     private IEnumSetting                             noteRepeatLengthSetting;
+    private IEnumSetting                             noteRepeatModeSetting;
+    private IEnumSetting                             noteRepeatOctaveSetting;
     private IEnumSetting                             midiEditChannelSetting;
 
     private final Map<Integer, Set<SettingObserver>> observers                   = new HashMap<> ();
@@ -316,10 +324,15 @@ public abstract class AbstractConfiguration implements Configuration
     };
     private int                                      knobSpeedNormal             = 10;
     private int                                      knobSpeedSlow               = 1;
+
     private boolean                                  noteRepeatActive            = false;
     private Resolution                               noteRepeatPeriod            = Resolution.RES_1_8;
     private Resolution                               noteRepeatLength            = Resolution.RES_1_8;
+    private ArpeggiatorMode                          noteRepeatMode;
+    private int                                      noteRepeatOctave            = 0;
+
     private int                                      midiEditChannel             = 0;
+    private final ArpeggiatorMode []                 arpeggiatorModes;
 
 
     /**
@@ -327,12 +340,15 @@ public abstract class AbstractConfiguration implements Configuration
      *
      * @param host The DAW host
      * @param valueChanger The value changer
+     * @param arpeggiatorModes The available arpeggiator modes
      */
-    public AbstractConfiguration (final IHost host, final IValueChanger valueChanger)
+    public AbstractConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
     {
-        this.valueChanger = valueChanger;
-
         this.host = host;
+        this.valueChanger = valueChanger;
+        this.arpeggiatorModes = arpeggiatorModes;
+        this.noteRepeatMode = arpeggiatorModes[0];
+
         Views.init (host);
     }
 
@@ -709,6 +725,14 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
+    public void toggleNoteRepeatActive ()
+    {
+        this.setNoteRepeatActive (!this.isNoteRepeatActive ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public Resolution getNoteRepeatPeriod ()
     {
         return this.noteRepeatPeriod;
@@ -736,6 +760,39 @@ public abstract class AbstractConfiguration implements Configuration
     public void setNoteRepeatLength (final Resolution noteRepeatLength)
     {
         this.noteRepeatLengthSetting.set (noteRepeatLength.getName ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ArpeggiatorMode getNoteRepeatMode ()
+    {
+        return this.noteRepeatMode;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setNoteRepeatMode (final ArpeggiatorMode arpMode)
+    {
+        this.noteRepeatModeSetting.set (arpMode.getName ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNoteRepeatOctave ()
+    {
+        return this.noteRepeatOctave;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setNoteRepeatOctave (final int octave)
+    {
+        final int o = Math.max (0, Math.min (8, octave));
+        this.noteRepeatOctaveSetting.set (Integer.toString (o));
     }
 
 
@@ -1168,11 +1225,50 @@ public abstract class AbstractConfiguration implements Configuration
             this.noteRepeatPeriod = Resolution.getByName (value);
             this.notifyObservers (AbstractConfiguration.NOTEREPEAT_PERIOD);
         });
-        this.noteRepeatLengthSetting = settingsUI.getEnumSetting ("Length", CATEGORY_NOTEREPEAT, names, names[4]);
-        this.noteRepeatLengthSetting.addValueObserver (value -> {
-            this.noteRepeatLength = Resolution.getByName (value);
-            this.notifyObservers (AbstractConfiguration.NOTEREPEAT_LENGTH);
-        });
+
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+        {
+            this.noteRepeatLengthSetting = settingsUI.getEnumSetting ("Length", CATEGORY_NOTEREPEAT, names, names[4]);
+            this.noteRepeatLengthSetting.addValueObserver (value -> {
+                this.noteRepeatLength = Resolution.getByName (value);
+                this.notifyObservers (AbstractConfiguration.NOTEREPEAT_LENGTH);
+            });
+        }
+
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+        {
+            final String [] arpModeNames = new String [this.arpeggiatorModes.length];
+            for (int i = 0; i < this.arpeggiatorModes.length; i++)
+                arpModeNames[i] = this.arpeggiatorModes[i].getName ();
+
+            this.noteRepeatModeSetting = settingsUI.getEnumSetting ("Mode", CATEGORY_NOTEREPEAT, arpModeNames, arpModeNames[1]);
+            this.noteRepeatModeSetting.addValueObserver (value -> {
+                this.noteRepeatMode = ArpeggiatorMode.lookupByName (value);
+                this.notifyObservers (AbstractConfiguration.NOTEREPEAT_MODE);
+            });
+        }
+
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+        {
+            final String [] octaves =
+            {
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8"
+            };
+
+            this.noteRepeatOctaveSetting = settingsUI.getEnumSetting ("Octave", CATEGORY_NOTEREPEAT, octaves, octaves[0]);
+            this.noteRepeatOctaveSetting.addValueObserver (value -> {
+                this.noteRepeatOctave = Integer.parseInt (value);
+                this.notifyObservers (AbstractConfiguration.NOTEREPEAT_OCTAVE);
+            });
+        }
     }
 
 
@@ -1216,5 +1312,26 @@ public abstract class AbstractConfiguration implements Configuration
     public static String getNewClipLengthValue (final int index)
     {
         return NEW_CLIP_LENGTH_VALUES[index];
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int lookupArpeggiatorModeIndex (final ArpeggiatorMode arpMode)
+    {
+        for (int i = 0; i < this.arpeggiatorModes.length; i++)
+        {
+            if (this.arpeggiatorModes[i] == arpMode)
+                return i;
+        }
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ArpeggiatorMode [] getArpeggiatorModes ()
+    {
+        return this.arpeggiatorModes;
     }
 }

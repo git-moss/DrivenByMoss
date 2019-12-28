@@ -20,6 +20,7 @@ import de.mossgrabers.controller.maschine.mikro.mk3.mode.TempoMode;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.ClipView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.DrumView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.MuteView;
+import de.mossgrabers.controller.maschine.mikro.mk3.view.NoteRepeatView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.ParameterView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.PlayView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.SceneView;
@@ -41,7 +42,6 @@ import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
 import de.mossgrabers.framework.command.trigger.transport.WriteArrangerAutomationCommand;
 import de.mossgrabers.framework.command.trigger.transport.WriteClipLauncherAutomationCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
-import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -56,12 +56,11 @@ import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.daw.midi.INoteRepeat;
+import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
@@ -109,8 +108,8 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
     {
         super (factory, host, globalSettings, documentSettings);
         this.colorManager = new MaschineMikroMk3ColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new MaschineMikroMk3Configuration (host, this.valueChanger);
+        this.valueChanger = new DefaultValueChanger (128, 8, 1);
+        this.configuration = new MaschineMikroMk3Configuration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
 
@@ -162,13 +161,8 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
         surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
 
-        final INoteRepeat noteRepeat = this.getSurface ().getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
-
-        this.configuration.addSettingObserver (AbstractConfiguration.NOTEREPEAT_ACTIVE, () -> noteRepeat.setActive (this.configuration.isNoteRepeatActive ()));
-        this.configuration.addSettingObserver (AbstractConfiguration.NOTEREPEAT_PERIOD, () -> noteRepeat.setPeriod (this.configuration.getNoteRepeatPeriod ().getValue ()));
-        this.configuration.addSettingObserver (AbstractConfiguration.NOTEREPEAT_LENGTH, () -> noteRepeat.setNoteLength (this.configuration.getNoteRepeatLength ().getValue ()));
-
         this.createScaleObservers (this.configuration);
+        this.createNoteRepeatObservers (this.configuration, surface);
     }
 
 
@@ -213,6 +207,8 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         viewManager.registerView (Views.TRACK_SELECT, new SelectView (surface, this.model));
         viewManager.registerView (Views.TRACK_SOLO, new SoloView (surface, this.model));
         viewManager.registerView (Views.TRACK_MUTE, new MuteView (surface, this.model));
+
+        viewManager.registerView (Views.REPEAT_NOTE, new NoteRepeatView (surface, this.model));
     }
 
 
@@ -238,21 +234,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         this.addButton (ButtonID.NEW, "New", new NewCommand<> (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_GROUP);
         this.addButton (ButtonID.AUTOMATION, "Automation", new WriteClipLauncherAutomationCommand<> (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_AUTO, t::isWritingClipLauncherAutomation);
         this.addButton (ButtonID.AUTOMATION_WRITE, "Write", new WriteArrangerAutomationCommand<> (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_LOCK, t::isWritingArrangerAutomation);
-
-        final NoteRepeatCommand<?, ?> cmd = new NoteRepeatCommand<> (this.model, surface)
-        {
-            /** {@inheritDoc} */
-            @Override
-            protected boolean handleEditModeActivation (final ButtonEvent event)
-            {
-                if (event != ButtonEvent.UP)
-                    return true;
-                // TODO add an edit mode, like on Launchpad
-
-                return false;
-            }
-        };
-        this.addButton (ButtonID.REPEAT, "Repeat", cmd, MaschineMikroMk3ControlSurface.MIKRO_3_NOTE_REPEAT, surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ()::isActive);
+        this.addButton (ButtonID.REPEAT, "Repeat", new NoteRepeatCommand<> (this.model, surface, false), MaschineMikroMk3ControlSurface.MIKRO_3_NOTE_REPEAT, this.configuration::isNoteRepeatActive);
 
         // Ribbon
         this.addButton (ButtonID.F1, "Pitch", new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_UP, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP), MaschineMikroMk3ControlSurface.MIKRO_3_PITCH, () -> surface.getConfiguration ().getRibbonMode () <= MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP);
@@ -260,44 +242,13 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         this.addButton (ButtonID.F3, "Perform", new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_CC_11), MaschineMikroMk3ControlSurface.MIKRO_3_PERFORM, () -> surface.getConfiguration ().getRibbonMode () == MaschineMikroMk3Configuration.RIBBON_MODE_CC_11);
         this.addButton (ButtonID.F4, "Notes", new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME), MaschineMikroMk3ControlSurface.MIKRO_3_NOTES, () -> surface.getConfiguration ().getRibbonMode () == MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME);
 
-        this.addButton (ButtonID.FADER_TOUCH_1, "Encoder Push", (event, velocity) -> {
+        this.addButton (ButtonID.FADER_TOUCH_1, "Encoder Press", (event, velocity) -> {
 
             if (event != ButtonEvent.DOWN)
                 return;
 
-            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-            final Modes activeModeID = modeManager.getActiveModeId ();
             switch (modeManager.getActiveOrTempModeId ())
             {
-                case VOLUME:
-                    if (selectedTrack != null)
-                        selectedTrack.resetVolume ();
-                    break;
-                case PAN:
-                    if (selectedTrack != null)
-                        selectedTrack.resetPan ();
-                    break;
-                case SEND1:
-                    if (selectedTrack == null)
-                        return;
-                    final int sendIndex = activeModeID.ordinal () - Modes.SEND1.ordinal ();
-                    selectedTrack.getSendBank ().getItem (sendIndex).resetValue ();
-                    break;
-
-                case DEVICE_PARAMS:
-                    final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-                    if (cursorDevice == null)
-                        return;
-                    final int selectedParameter = ((SelectedDeviceMode<?, ?>) modeManager.getMode (Modes.DEVICE_PARAMS)).getSelectedParameter ();
-                    final IParameter item = cursorDevice.getParameterBank ().getItem (selectedParameter);
-                    if (item.doesExist ())
-                        item.resetValue ();
-                    break;
-
-                case POSITION:
-                    ((PositionMode) modeManager.getMode (Modes.POSITION)).toggleSpeed ();
-                    break;
-
                 case TEMPO:
                     t.tapTempo ();
                     break;
@@ -308,11 +259,19 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
                     break;
 
                 default:
-                    // Intentionally empty
+                    this.valueChanger.setSpeed (!this.valueChanger.isSlow ());
                     break;
             }
 
         }, MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER_PUSH);
+
+        this.addButton (ButtonID.KNOB1_TOUCH, "Encoder Touch", (event, velocity) -> {
+
+            final Mode mode = modeManager.getActiveOrTempMode ();
+            if (mode != null)
+                mode.onKnobTouch (0, event == ButtonEvent.DOWN);
+
+        }, MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER_TOUCH);
 
         // Encoder Modes
         this.addButton (ButtonID.VOLUME, "Volume", new VolumePanSendCommand (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_VOLUME, () -> Modes.isTrackMode (modeManager.getActiveOrTempModeId ()));

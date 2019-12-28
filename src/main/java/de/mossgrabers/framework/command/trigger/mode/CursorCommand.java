@@ -8,7 +8,6 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.mode.Mode;
 
 
@@ -39,10 +38,9 @@ public class CursorCommand<S extends IControlSurface<C>, C extends Configuration
     @Override
     protected void updateArrowStates ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ISceneBank sceneBank = tb.getSceneBank ();
-        this.canScrollUp = sceneBank.canScrollPageBackwards ();
-        this.canScrollDown = sceneBank.canScrollPageForwards ();
+        final ISceneBank sceneBank = this.getSceneBank ();
+        this.canScrollUp = sceneBank.canScrollPageForwards ();
+        this.canScrollDown = sceneBank.canScrollPageBackwards ();
 
         final Mode mode = this.surface.getModeManager ().getActiveOrTempMode ();
         final boolean shiftPressed = this.surface.isShiftPressed ();
@@ -57,11 +55,11 @@ public class CursorCommand<S extends IControlSurface<C>, C extends Configuration
     @Override
     protected void scrollUp ()
     {
-        final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
+        final ISceneBank sceneBank = this.getSceneBank ();
         if (this.surface.isShiftPressed ())
-            sceneBank.selectPreviousPage ();
+            sceneBank.selectNextPage ();
         else
-            sceneBank.scrollBackwards ();
+            sceneBank.scrollForwards ();
     }
 
 
@@ -71,10 +69,21 @@ public class CursorCommand<S extends IControlSurface<C>, C extends Configuration
     @Override
     protected void scrollDown ()
     {
-        final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
+        final ISceneBank sceneBank = this.getSceneBank ();
         if (this.surface.isShiftPressed ())
-            sceneBank.selectNextPage ();
+            sceneBank.selectPreviousPage ();
         else
-            sceneBank.scrollForwards ();
+            sceneBank.scrollBackwards ();
+    }
+
+
+    /**
+     * Get the scene bank to use for up/down.
+     *
+     * @return The scene bank
+     */
+    protected ISceneBank getSceneBank ()
+    {
+        return this.model.getCurrentTrackBank ().getSceneBank ();
     }
 }

@@ -132,6 +132,8 @@ public class UserParamsMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
+        final String [] userPageNames = this.surface.getConfiguration ().getUserPageNames ();
+
         // Row 1 & 2
         final IParameterBank bank = this.model.getUserParameterBank ();
         for (int i = 0; i < 8; i++)
@@ -146,7 +148,7 @@ public class UserParamsMode extends BaseMode
         // Row 4
         final int selectedPage = bank.getScrollPosition () / bank.getPageSize ();
         for (int i = 0; i < bank.getPageSize (); i++)
-            display.setCell (3, i, (i == selectedPage ? Push1Display.SELECT_ARROW : "") + "Page " + (i + 1));
+            display.setCell (3, i, (i == selectedPage ? Push1Display.SELECT_ARROW : "") + userPageNames[i]);
     }
 
 
@@ -156,6 +158,7 @@ public class UserParamsMode extends BaseMode
     {
         final ColorEx bottomMenuColor = ColorEx.WHITE;
         final IValueChanger valueChanger = this.model.getValueChanger ();
+        final String [] userPageNames = this.surface.getConfiguration ().getUserPageNames ();
         final IParameterBank bank = this.model.getUserParameterBank ();
         final int selectedPage = bank.getScrollPosition () / bank.getPageSize ();
         for (int i = 0; i < bank.getPageSize (); i++)
@@ -170,7 +173,7 @@ public class UserParamsMode extends BaseMode
             final boolean parameterIsActive = this.isKnobTouched[i];
             final int parameterModulatedValue = valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1);
 
-            display.addParameterElement ("", false, "Page " + (i + 1), "USER", bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+            display.addParameterElement ("", false, userPageNames[i], "USER", bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
     }
 

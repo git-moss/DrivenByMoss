@@ -6,6 +6,7 @@ package de.mossgrabers.framework.configuration;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration.BehaviourOnStop;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.observer.SettingObserver;
 
 
@@ -296,6 +297,23 @@ public interface Configuration
 
 
     /**
+     * Get all supported Arpeggiator modes.
+     *
+     * @return The modes
+     */
+    ArpeggiatorMode [] getArpeggiatorModes ();
+
+
+    /**
+     * Lookup the index of the given arpeggiator mode among the available ones.
+     *
+     * @param arpMode The arp mode to look up
+     * @return The index
+     */
+    int lookupArpeggiatorModeIndex (ArpeggiatorMode arpMode);
+
+
+    /**
      * Is note repeat active?
      *
      * @return True if active
@@ -309,6 +327,12 @@ public interface Configuration
      * @param active True to set active
      */
     void setNoteRepeatActive (boolean active);
+
+
+    /**
+     * Toggle note repeat de-/active.
+     */
+    void toggleNoteRepeatActive ();
 
 
     /**
@@ -336,11 +360,43 @@ public interface Configuration
 
 
     /**
+     * Get the note repeat mode.
+     *
+     * @return The note repeat mode
+     */
+    ArpeggiatorMode getNoteRepeatMode ();
+
+
+    /**
      * Set the note repeat length.
      *
      * @param noteRepeatLength The note repeat length
      */
     void setNoteRepeatLength (Resolution noteRepeatLength);
+
+
+    /**
+     * Get the note repeat octave.
+     *
+     * @return The note repeat octave
+     */
+    int getNoteRepeatOctave ();
+
+
+    /**
+     * Set the note repeat octave.
+     *
+     * @param octave The note repeat octave
+     */
+    void setNoteRepeatOctave (int octave);
+
+
+    /**
+     * Set the note repeat mode.
+     *
+     * @param arpMode The note repeat mode
+     */
+    void setNoteRepeatMode (ArpeggiatorMode arpMode);
 
 
     /**

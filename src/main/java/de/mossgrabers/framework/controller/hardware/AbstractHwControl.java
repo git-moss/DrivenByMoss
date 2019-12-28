@@ -33,19 +33,16 @@ public abstract class AbstractHwControl implements IHwControl
 
     /** {@index} */
     @Override
-    public void update ()
-    {
-        // Intentionally empty, overwrite for update functionality
-    }
-
-
-    /**
-     * Get the label.
-     *
-     * @return The label
-     */
     public String getLabel ()
     {
         return this.label;
+    }
+
+
+    /** {@index} */
+    @Override
+    public void update ()
+    {
+        // Intentionally empty, overwrite for update functionality
     }
 }

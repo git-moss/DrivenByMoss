@@ -103,7 +103,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
 
         this.colorManager = new SLMkIIIColorManager ();
         this.valueChanger = new DefaultValueChanger (1024, 8, 1);
-        this.configuration = new SLMkIIIConfiguration (host, this.valueChanger);
+        this.configuration = new SLMkIIIConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
 

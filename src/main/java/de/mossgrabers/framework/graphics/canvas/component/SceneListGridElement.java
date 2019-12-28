@@ -12,7 +12,7 @@ import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 import de.mossgrabers.framework.graphics.IGraphicsInfo;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -23,7 +23,10 @@ import java.util.List;
  */
 public class SceneListGridElement implements IComponent
 {
-    private final List<IScene> scenes;
+    private final ColorEx [] colors;
+    private final String []  names;
+    private final boolean [] exists;
+    private final boolean [] isSelecteds;
 
 
     /**
@@ -33,7 +36,21 @@ public class SceneListGridElement implements IComponent
      */
     public SceneListGridElement (final List<IScene> scenes)
     {
-        this.scenes = new ArrayList<> (scenes);
+        final int size = scenes.size ();
+
+        this.colors = new ColorEx [size];
+        this.names = new String [size];
+        this.exists = new boolean [size];
+        this.isSelecteds = new boolean [size];
+
+        for (int i = 0; i < size; i++)
+        {
+            final IScene scene = scenes.get (i);
+            this.colors[i] = scene.getColor ();
+            this.names[i] = scene.getName ();
+            this.exists[i] = scene.doesExist ();
+            this.isSelecteds[i] = scene.isSelected ();
+        }
     }
 
 
@@ -51,7 +68,7 @@ public class SceneListGridElement implements IComponent
         final double separatorSize = dimensions.getSeparatorSize ();
         final double inset = dimensions.getInset ();
 
-        final int size = this.scenes.size ();
+        final int size = this.colors.length;
         final double itemLeft = left + separatorSize;
         final double itemWidth = width - separatorSize;
         final double itemHeight = height / size;
@@ -63,12 +80,11 @@ public class SceneListGridElement implements IComponent
         {
             final double itemTop = i * itemHeight;
 
-            final IScene scene = this.scenes.get (i);
-            final ColorEx backgroundColor = scene.getColor ();
+            final ColorEx backgroundColor = this.colors[i];
             gc.fillRectangle (itemLeft, itemTop + separatorSize, itemWidth, itemHeight - 2 * separatorSize, backgroundColor);
-            if (scene.doesExist ())
-                gc.drawTextInBounds (scene.getName (), itemLeft + inset, itemTop - 1, itemWidth - 2 * inset, itemHeight, Align.LEFT, ColorEx.calcContrastColor (backgroundColor), itemHeight / 2);
-            gc.strokeRectangle (itemLeft, itemTop + separatorSize, itemWidth, itemHeight - 2 * separatorSize, scene.isSelected () ? textColor : borderColor, scene.isSelected () ? 2 : 1);
+            if (this.exists[i])
+                gc.drawTextInBounds (this.names[i], itemLeft + inset, itemTop - 1, itemWidth - 2 * inset, itemHeight, Align.LEFT, ColorEx.calcContrastColor (backgroundColor), itemHeight / 2);
+            gc.strokeRectangle (itemLeft, itemTop + separatorSize, itemWidth, itemHeight - 2 * separatorSize, this.isSelecteds[i] ? textColor : borderColor, this.isSelecteds[i] ? 2 : 1);
         }
     }
 
@@ -79,7 +95,10 @@ public class SceneListGridElement implements IComponent
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (this.scenes == null ? 0 : this.scenes.hashCode ());
+        result = prime * result + Arrays.hashCode (this.colors);
+        result = prime * result + Arrays.hashCode (this.exists);
+        result = prime * result + Arrays.hashCode (this.isSelecteds);
+        result = prime * result + Arrays.hashCode (this.names);
         return result;
     }
 
@@ -92,16 +111,15 @@ public class SceneListGridElement implements IComponent
             return true;
         if (obj == null)
             return false;
-        if (this.getClass () != obj.getClass ())
+        if (getClass () != obj.getClass ())
             return false;
-        final SceneListGridElement other = (SceneListGridElement) obj;
-        if (this.scenes == null)
-        {
-            if (other.scenes != null)
-                return false;
-        }
-        else if (!this.scenes.equals (other.scenes))
+        SceneListGridElement other = (SceneListGridElement) obj;
+        if (!Arrays.equals (this.colors, other.colors))
             return false;
-        return true;
+        if (!Arrays.equals (this.exists, other.exists))
+            return false;
+        if (!Arrays.equals (this.isSelecteds, other.isSelecteds))
+            return false;
+        return Arrays.equals (this.names, other.names);
     }
 }

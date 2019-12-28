@@ -11,6 +11,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
@@ -120,8 +121,8 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         padGrid.light (54, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         padGrid.light (59, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
-        padGrid.light (60, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN);
-        padGrid.light (61, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING);
+        padGrid.light (60, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE);
+        padGrid.light (61, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_ORCHID);
 
         padGrid.light (62, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         padGrid.light (67, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
@@ -132,13 +133,14 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         padGrid.light (70, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         padGrid.light (75, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
-        padGrid.light (76, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN);
+        padGrid.light (76, LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA);
+        padGrid.light (77, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
         padGrid.light (78, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         padGrid.light (83, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
-        padGrid.light (84, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN);
-        padGrid.light (85, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING);
+        padGrid.light (84, LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER);
+        padGrid.light (85, LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_YELLOW);
 
         padGrid.light (86, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
@@ -160,6 +162,8 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         if (velocity == 0)
             return;
 
+        final LaunchpadConfiguration configuration = this.surface.getConfiguration ();
+
         switch (note)
         {
             case 36:
@@ -171,14 +175,13 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
             case 42:
             case 43:
                 final int newClipLength = note - 36;
-                this.surface.getConfiguration ().setNewClipLength (newClipLength);
+                configuration.setNewClipLength (newClipLength);
                 this.surface.getDisplay ().notify ("New clip length: " + AbstractConfiguration.getNewClipLengthValue (newClipLength));
                 break;
 
             case 87:
-                final INoteRepeat noteRepeat = this.surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
-                noteRepeat.toggleActive ();
-                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify ("Note Repeat: " + (noteRepeat.isActive () ? "Active" : "Off")), 100);
+                configuration.toggleNoteRepeatActive ();
+                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify ("Note Repeat: " + (configuration.isNoteRepeatActive () ? "Active" : "Off")), 100);
                 break;
 
             case 79:
@@ -252,42 +255,55 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         {
             case 92:
                 this.executeNormal (ButtonID.METRONOME, ButtonEvent.DOWN);
+                this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Metronome: " + (this.model.getTransport ().isMetronomeOn () ? "On" : "Off")), 100);
                 break;
             case 93:
                 this.executeShifted (ButtonID.METRONOME, ButtonEvent.DOWN);
+                this.surface.getDisplay ().notify ("Tap Tempo");
                 break;
             case 84:
-                this.executeNormal (ButtonID.UNDO, ButtonEvent.DOWN);
+                this.executeNormal (ButtonID.UNDO, ButtonEvent.UP);
+                this.surface.getDisplay ().notify ("Undo");
                 break;
             case 85:
-                this.executeShifted (ButtonID.UNDO, ButtonEvent.DOWN);
+                this.executeShifted (ButtonID.UNDO, ButtonEvent.UP);
+                this.surface.getDisplay ().notify ("Redo");
                 break;
             case 76:
                 this.executeNormal (ButtonID.DELETE, ButtonEvent.UP);
+                this.surface.getDisplay ().notify ("Delete");
                 break;
             case 68:
                 this.executeNormal (ButtonID.QUANTIZE, ButtonEvent.DOWN);
+                this.surface.getDisplay ().notify ("Quantize");
                 break;
             case 60:
                 this.executeNormal (ButtonID.DUPLICATE, ButtonEvent.UP);
+                this.surface.getDisplay ().notify ("Duplicate");
                 break;
             case 61:
                 this.executeShifted (ButtonID.DUPLICATE, ButtonEvent.DOWN);
+                this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Arrangement Loop: " + (this.model.getTransport ().isLoop () ? "On" : "Off")), 100);
                 break;
             case 52:
                 this.executeNormal (ButtonID.DOUBLE, ButtonEvent.DOWN);
+                this.surface.getDisplay ().notify ("Play");
                 break;
             case 53:
                 this.executeShifted (ButtonID.DOUBLE, ButtonEvent.DOWN);
+                this.surface.getDisplay ().notify ("New");
                 break;
             case 44:
                 this.executeNormal (ButtonID.RECORD, ButtonEvent.UP);
+                this.surface.getDisplay ().notify ("Arranger record");
                 break;
             case 45:
                 this.executeShifted (ButtonID.RECORD, ButtonEvent.UP);
+                this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Overdub launcher clips: " + (this.model.getTransport ().isLauncherOverdub () ? "On" : "Off")), 100);
                 break;
             case 51:
                 this.model.getCurrentTrackBank ().stop ();
+                this.surface.getDisplay ().notify ("Stop");
                 break;
             default:
                 // Not used
@@ -378,30 +394,30 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
 
     private void setPeriod (final int index)
     {
-        final INoteRepeat noteRepeat = this.surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
-        noteRepeat.setPeriod (Resolution.getValueAt (index));
-        this.surface.getDisplay ().notify ("Period: " + Resolution.getNameAt (index));
+        this.surface.getConfiguration ().setNoteRepeatPeriod (Resolution.values ()[index]);
+        this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Period: " + Resolution.getNameAt (index)), 100);
     }
 
 
     private void setNoteLength (final int index)
     {
-        final INoteRepeat noteRepeat = this.surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
-        noteRepeat.setNoteLength (Resolution.getValueAt (index));
-        this.surface.getDisplay ().notify ("Note Length: " + Resolution.getNameAt (index));
+        this.surface.getConfiguration ().setNoteRepeatLength (Resolution.values ()[index]);
+        this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Note Length: " + Resolution.getNameAt (index)), 100);
     }
 
 
     @SuppressWarnings("rawtypes")
     private void executeNormal (final ButtonID buttonID, final ButtonEvent event)
     {
-        ((AbstractTriggerCommand) this.surface.getButton (buttonID).getCommand ()).executeNormal (event);
+        final IHwButton button = this.surface.getButton (buttonID);
+        ((AbstractTriggerCommand) button.getCommand ()).executeNormal (event);
     }
 
 
     @SuppressWarnings("rawtypes")
     private void executeShifted (final ButtonID buttonID, final ButtonEvent event)
     {
-        ((AbstractTriggerCommand) this.surface.getButton (buttonID).getCommand ()).executeShifted (event);
+        final IHwButton button = this.surface.getButton (buttonID);
+        ((AbstractTriggerCommand) button.getCommand ()).executeShifted (event);
     }
 }

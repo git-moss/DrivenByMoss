@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
 
 /**
@@ -43,11 +44,13 @@ public class SLConfiguration extends AbstractConfiguration
      *
      * @param host The DAW host
      * @param valueChanger The value changer
+     * @param arpeggiatorModes The available arpeggiator modes
      * @param isMkII Is MkI or MkII?
      */
-    public SLConfiguration (final IHost host, final IValueChanger valueChanger, final boolean isMkII)
+    public SLConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes, final boolean isMkII)
     {
-        super (host, valueChanger);
+        super (host, valueChanger, arpeggiatorModes);
+
         this.isMkII = isMkII;
     }
 

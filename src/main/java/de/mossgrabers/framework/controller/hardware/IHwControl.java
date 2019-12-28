@@ -12,6 +12,14 @@ package de.mossgrabers.framework.controller.hardware;
 public interface IHwControl
 {
     /**
+     * Get the label.
+     *
+     * @return The label
+     */
+    String getLabel ();
+
+
+    /**
      * Update the state of the control (e.g. light, fader position).
      */
     void update ();

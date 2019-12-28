@@ -37,7 +37,7 @@ public class UndoCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.UP)
             this.model.getApplication ().undo ();
     }
 
@@ -46,7 +46,7 @@ public class UndoCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.UP)
             this.model.getApplication ().redo ();
     }
 }

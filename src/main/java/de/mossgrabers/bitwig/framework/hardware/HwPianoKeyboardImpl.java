@@ -54,4 +54,12 @@ public class HwPianoKeyboardImpl implements IHwPianoKeyboard
     {
         // Intentionally empty
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getLabel ()
+    {
+        return "Keybaord";
+    }
 }

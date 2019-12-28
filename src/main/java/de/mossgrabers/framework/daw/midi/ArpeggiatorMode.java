@@ -5,40 +5,59 @@
 package de.mossgrabers.framework.daw.midi;
 
 /**
- * A arpeggiator mode.
+ * An arpeggiator mode.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ArpeggiatorMode
+public enum ArpeggiatorMode
 {
-    private final int    index;
+    /** All mode. */
+    ALL("All"),
+    /** Up mode. */
+    UP("Up"),
+    /** Up/Down mode. */
+    UP_DOWN("Up/Down"),
+    /** Up then down mode. */
+    UP_THEN_DOWN("Up then Down"),
+    /** Down mode. */
+    DOWN("Down"),
+    /** Down/Up mode. */
+    DOWN_UP("Down/Up"),
+    /** Down then up mode. */
+    DOWN_THEN_UP("Down then Up"),
+    /** Flow mode. */
+    FLOW("Flow"),
+    /** Random mode. */
+    RANDOM("Random"),
+    /** Converge up mode. */
+    CONVERGE_UP("Converge Up"),
+    /** Converge down mode. */
+    CONVERGE_DOWN("Converge Down"),
+    /** Diverge up mode. */
+    DIVERGE_UP("Diverge Up"),
+    /** Diverge down mode. */
+    DIVERGE_DOWN("Diverge Down"),
+    /** Thumb up mode. */
+    THUMB_UP("Thumb Up"),
+    /** Thumb down mode. */
+    THUMB_DOWN("Thumb Down"),
+    /** Pikny up mode. */
+    PINKY_UP("Pinky UP"),
+    /** Pinky down mode. */
+    PINKY_DOWN("Pinky Down");
+
+
     private final String name;
-    private final String value;
 
 
     /**
      * Constructor.
      *
-     * @param index The index of the mode
      * @param name The name of the mode
-     * @param value The value of the mode
      */
-    public ArpeggiatorMode (final int index, final String name, final String value)
+    private ArpeggiatorMode (final String name)
     {
-        this.index = index;
         this.name = name;
-        this.value = value;
-    }
-
-
-    /**
-     * Get the index.
-     *
-     * @return The index
-     */
-    public int getIndex ()
-    {
-        return this.index;
     }
 
 
@@ -54,12 +73,31 @@ public class ArpeggiatorMode
 
 
     /**
-     * Get the value.
+     * Lookup an arpeggiator mode.
      *
-     * @return The value
+     * @param value The value of the mode
+     * @return The mode
      */
-    public String getValue ()
+    public static ArpeggiatorMode lookup (final String value)
     {
-        return this.value;
+        return ArpeggiatorMode.valueOf (value);
+    }
+
+
+    /**
+     * Lookup an arpeggiator mode.
+     *
+     * @param name The name of the mode
+     * @return The mode
+     */
+    public static ArpeggiatorMode lookupByName (final String name)
+    {
+        final ArpeggiatorMode [] values = ArpeggiatorMode.values ();
+        for (final ArpeggiatorMode mode: values)
+        {
+            if (mode.getName ().equals (name))
+                return mode;
+        }
+        return values[0];
     }
 }

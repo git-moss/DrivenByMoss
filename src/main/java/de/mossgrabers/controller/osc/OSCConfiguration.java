@@ -10,6 +10,7 @@ import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.osc.AbstractOpenSoundControlConfiguration;
 
 
@@ -62,10 +63,11 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
      *
      * @param host The DAW host
      * @param valueChanger The value changer
+     * @param arpeggiatorModes The available arpeggiator modes
      */
-    public OSCConfiguration (final IHost host, final IValueChanger valueChanger)
+    public OSCConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
     {
-        super (host, valueChanger);
+        super (host, valueChanger, arpeggiatorModes);
     }
 
 

@@ -32,7 +32,7 @@ public class MidiMonitorConfiguration extends AbstractConfiguration
      */
     public MidiMonitorConfiguration (final IHost host, final IValueChanger valueChanger)
     {
-        super (host, valueChanger);
+        super (host, valueChanger, null);
     }
 
 

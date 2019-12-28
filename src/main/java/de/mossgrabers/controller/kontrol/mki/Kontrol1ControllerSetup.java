@@ -84,7 +84,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         this.modelIndex = modelIndex;
         this.valueChanger = new DefaultValueChanger (1024, 10, 1);
         this.colorManager = new Kontrol1ColorManager ();
-        this.configuration = new Kontrol1Configuration (host, this.valueChanger);
+        this.configuration = new Kontrol1Configuration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
 

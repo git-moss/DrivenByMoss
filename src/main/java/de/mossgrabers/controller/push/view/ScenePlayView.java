@@ -33,12 +33,13 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
      *
      * @param surface The surface
      * @param model The model
+     * @param sceneBank The scene bank to monitor
      */
-    public ScenePlayView (final PushControlSurface surface, final IModel model)
+    public ScenePlayView (final PushControlSurface surface, final IModel model, final ISceneBank sceneBank)
     {
         super ("Scene Play", surface, model);
 
-        this.sceneBank = model.createSceneBank (64);
+        this.sceneBank = sceneBank;
     }
 
 

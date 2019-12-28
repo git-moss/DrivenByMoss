@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
 
 /**
@@ -26,11 +27,13 @@ public class LaunchpadConfiguration extends AbstractConfiguration
      *
      * @param host The DAW host
      * @param valueChanger The value changer
+     * @param arpeggiatorModes The available arpeggiator modes
      * @param definition The Launchpad definition
      */
-    public LaunchpadConfiguration (final IHost host, final IValueChanger valueChanger, final ILaunchpadControllerDefinition definition)
+    public LaunchpadConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes, final ILaunchpadControllerDefinition definition)
     {
-        super (host, valueChanger);
+        super (host, valueChanger, arpeggiatorModes);
+
         this.definition = definition;
     }
 
@@ -46,6 +49,11 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         this.activateScaleBaseSetting (documentSettings);
         this.activateScaleInScaleSetting (documentSettings);
         this.activateScaleLayoutSetting (documentSettings);
+
+        ///////////////////////////
+        // Note Repeat
+
+        this.activateNoteRepeatSetting (documentSettings);
 
         ///////////////////////////
         // Play and Sequence

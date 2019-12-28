@@ -20,6 +20,8 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
@@ -1060,6 +1062,20 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
             this.scales.setScaleLayoutByName (conf.getScaleLayout ());
             this.updateViewNoteMapping ();
         });
+    }
+
+
+    protected void createNoteRepeatObservers (final C conf, final S surface)
+    {
+        final INoteRepeat noteRepeat = surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
+        conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_ACTIVE, () -> noteRepeat.setActive (conf.isNoteRepeatActive ()));
+        conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_PERIOD, () -> noteRepeat.setPeriod (conf.getNoteRepeatPeriod ().getValue ()));
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+            conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_LENGTH, () -> noteRepeat.setNoteLength (conf.getNoteRepeatLength ().getValue ()));
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+            conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_MODE, () -> noteRepeat.setMode (conf.getNoteRepeatMode ()));
+        if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+            conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_OCTAVE, () -> noteRepeat.setOctaves (conf.getNoteRepeatOctave ()));
     }
 
 

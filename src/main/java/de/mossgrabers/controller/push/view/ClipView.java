@@ -108,7 +108,14 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
         final int green = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH1_COLOR2_GREEN;
         final int off = isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
         for (int pad = 0; pad < 64; pad++)
-            this.surface.getPadGrid ().lightEx (pad % 8, pad / 8, pad >= loopStartPad && pad < loopEndPad ? pad == currentMeasure ? green : white : off, -1, false);
+        {
+            final int color;
+            if (pad >= loopStartPad && pad < loopEndPad)
+                color = pad == currentMeasure ? green : white;
+            else
+                color = off;
+            this.surface.getPadGrid ().lightEx (pad % 8, pad / 8, color, -1, false);
+        }
     }
 
 

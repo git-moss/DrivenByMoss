@@ -80,7 +80,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
         this.colorManager = new BeatstepColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new BeatstepConfiguration (host, this.valueChanger);
+        this.configuration = new BeatstepConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
 

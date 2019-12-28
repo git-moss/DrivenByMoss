@@ -108,7 +108,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.isMkII = isMkII;
         this.colorManager = new APCColorManager (isMkII);
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
-        this.configuration = new APCConfiguration (host, this.valueChanger);
+        this.configuration = new APCConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
 

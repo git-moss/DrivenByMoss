@@ -125,27 +125,11 @@ public interface INoteRepeat extends ObserverManagement
 
 
     /**
-     * Get the available arpeggiator modes.
-     *
-     * @return The modes
-     */
-    ArpeggiatorMode [] getModes ();
-
-
-    /**
      * Set the arpeggiator mode.
      *
      * @param mode The mode
      */
-    void setMode (String mode);
-
-
-    /**
-     * Change the arpeggiator mode.
-     *
-     * @param increase True to increase otherwise descrease
-     */
-    void changeMode (boolean increase);
+    void setMode (ArpeggiatorMode mode);
 
 
     /**

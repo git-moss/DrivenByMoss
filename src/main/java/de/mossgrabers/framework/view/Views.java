@@ -73,7 +73,9 @@ public enum Views
     /** View for controlling values. */
     CONTROL,
     /** View for shift options. */
-    SHIFT;
+    SHIFT,
+    /** View for note repeat options. */
+    REPEAT_NOTE;
 
 
     /** The name of the play view. */

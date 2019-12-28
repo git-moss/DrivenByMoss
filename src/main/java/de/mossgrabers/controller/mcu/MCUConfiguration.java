@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
 import java.util.Arrays;
 
@@ -139,10 +140,12 @@ public class MCUConfiguration extends AbstractConfiguration
      *
      * @param host The DAW host
      * @param valueChanger The value changer
+     * @param arpeggiatorModes The available arpeggiator modes
      */
-    public MCUConfiguration (final IHost host, final IValueChanger valueChanger)
+    public MCUConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
     {
-        super (host, valueChanger);
+        super (host, valueChanger, arpeggiatorModes);
+
         Arrays.fill (this.assignableFunctions, 0);
     }
 

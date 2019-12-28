@@ -89,7 +89,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         this.version = version;
         this.colorManager = new KontrolProtocolColorManager ();
         this.valueChanger = new DefaultValueChanger (1024, 4, 1);
-        this.configuration = new KontrolProtocolConfiguration (host, this.valueChanger);
+        this.configuration = new KontrolProtocolConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
 

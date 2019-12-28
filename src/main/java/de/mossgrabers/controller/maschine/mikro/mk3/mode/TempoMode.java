@@ -34,13 +34,4 @@ public class TempoMode extends BaseMode
         final double speed = this.model.getValueChanger ().calcKnobSpeed (value);
         this.model.getTransport ().changeTempo (speed > 0);
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobTouch (final int index, final boolean isTouched)
-    {
-        if (isTouched)
-            this.model.getTransport ().tapTempo ();
-    }
 }
