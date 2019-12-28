@@ -27,7 +27,7 @@ public class Kontrol1LightGuide extends LightGuideImpl
      */
     public Kontrol1LightGuide (final ColorManager colorManager, final Kontrol1UsbDevice usbDevice)
     {
-        super (colorManager, null);
+        super (0, 88, colorManager, null);
 
         this.usbDevice = usbDevice;
     }
