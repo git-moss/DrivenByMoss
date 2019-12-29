@@ -28,7 +28,7 @@ public class PlayView extends AbstractPlayView<MaschineMikroMk3ControlSurface, M
      */
     public PlayView (final MaschineMikroMk3ControlSurface surface, final IModel model)
     {
-        super (surface, model, false);
+        super (surface, model, true);
 
         final Configuration configuration = this.surface.getConfiguration ();
         configuration.addSettingObserver (AbstractConfiguration.ACTIVATE_FIXED_ACCENT, this::initMaxVelocity);

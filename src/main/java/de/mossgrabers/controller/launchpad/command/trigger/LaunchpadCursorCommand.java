@@ -8,6 +8,7 @@ import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.launchpad.view.DrumView;
 import de.mossgrabers.controller.launchpad.view.DrumView64;
+import de.mossgrabers.controller.launchpad.view.PolySequencerView;
 import de.mossgrabers.controller.launchpad.view.RaindropsView;
 import de.mossgrabers.controller.launchpad.view.SequencerView;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
@@ -103,7 +104,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
-        if (viewManager.isActiveView (Views.SEQUENCER) || viewManager.isActiveView (Views.RAINDROPS))
+        if (viewManager.isActiveView (Views.SEQUENCER) || viewManager.isActiveView (Views.RAINDROPS) || viewManager.isActiveView (Views.POLY_SEQUENCER))
         {
             final INoteClip clip = ((AbstractSequencerView<?, ?>) viewManager.getActiveView ()).getClip ();
             final int octave = this.model.getScales ().getOctave ();
@@ -284,6 +285,12 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             return;
         }
 
+        if (viewManager.isActiveView (Views.POLY_SEQUENCER))
+        {
+            ((PolySequencerView) viewManager.getView (Views.POLY_SEQUENCER)).onOctaveUp (ButtonEvent.DOWN);
+            return;
+        }
+
         if (viewManager.isActiveView (Views.RAINDROPS))
         {
             ((RaindropsView) viewManager.getView (Views.RAINDROPS)).onOctaveUp (ButtonEvent.DOWN);
@@ -331,6 +338,12 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (viewManager.isActiveView (Views.SEQUENCER))
         {
             ((SequencerView) viewManager.getView (Views.SEQUENCER)).onOctaveDown (ButtonEvent.DOWN);
+            return;
+        }
+
+        if (viewManager.isActiveView (Views.POLY_SEQUENCER))
+        {
+            ((PolySequencerView) viewManager.getView (Views.POLY_SEQUENCER)).onOctaveDown (ButtonEvent.DOWN);
             return;
         }
 
