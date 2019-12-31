@@ -17,6 +17,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IProject;
+import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -145,15 +146,25 @@ public class MasterMode extends BaseMode
     {
         final IMasterTrack master = this.model.getMasterTrack ();
         final IProject project = this.model.getProject ();
+        final boolean canEditCueVolume = this.model.getHost ().canEdit (EditCapability.CUE_VOLUME);
 
-        display.setCell (0, 0, "Volume").setCell (0, 1, "Pan").setCell (0, 2, "Volume").setCell (0, 3, "Mix").setCell (0, 6, "Project:");
-        display.setCell (1, 0, master.getVolumeStr (8)).setCell (1, 1, master.getPanStr (8)).setCell (1, 2, project.getCueVolumeStr (8)).setCell (1, 3, project.getCueMixStr (8));
+        display.setCell (0, 0, "Volume").setCell (0, 1, "Pan");
+        if (canEditCueVolume)
+            display.setCell (0, 2, "Volume").setCell (0, 3, "Mix");
+        display.setCell (0, 6, "Project:");
+        display.setCell (1, 0, master.getVolumeStr (8)).setCell (1, 1, master.getPanStr (8));
+        if (canEditCueVolume)
+            display.setCell (1, 2, project.getCueVolumeStr (8)).setCell (1, 3, project.getCueMixStr (8));
         display.setBlock (1, 2, "Audio Engine").setBlock (1, 3, this.model.getProject ().getName ());
         display.setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : master.getVolume (), Format.FORMAT_VALUE);
         display.setCell (2, 1, master.getPan (), Format.FORMAT_PAN);
-        display.setCell (2, 2, project.getCueVolume (), Format.FORMAT_VALUE);
-        display.setCell (2, 3, project.getCueMix (), Format.FORMAT_VALUE);
-        display.setCell (3, 0, master.getName ()).setCell (3, 2, "Cue").setCell (3, 4, this.model.getApplication ().isEngineActive () ? "Active" : "Off");
+        if (canEditCueVolume)
+        {
+            display.setCell (2, 2, project.getCueVolume (), Format.FORMAT_VALUE);
+            display.setCell (2, 3, project.getCueMix (), Format.FORMAT_VALUE);
+            display.setCell (3, 0, master.getName ()).setCell (3, 2, "Cue");
+        }
+        display.setCell (3, 4, this.model.getApplication ().isEngineActive () ? "Active" : "Off");
         display.setCell (3, 6, "Previous").setCell (3, 7, "Next");
     }
 
@@ -173,8 +184,16 @@ public class MasterMode extends BaseMode
         display.addChannelElement ("Volume", false, master.getName (), ChannelType.MASTER, master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", vuL, vuR, master.isMute (), master.isSolo (), master.isRecArm (), master.isActivated (), 0);
         display.addChannelSelectorElement ("Pan", false, "", null, ColorEx.BLACK, false, master.isActivated ());
 
-        display.addChannelElement ("Cue Volume", false, "Cue", ChannelType.MASTER, ColorEx.GRAY, false, valueChanger.toDisplayValue (project.getCueVolume ()), -1, this.isKnobTouched[2] ? project.getCueVolumeStr (8) : "", valueChanger.toDisplayValue (project.getCueMix ()), -1, this.isKnobTouched[3] ? project.getCueMixStr (8) : "", 0, 0, false, false, false, true, 0);
-        display.addChannelSelectorElement ("Cue Mix", false, "", null, ColorEx.BLACK, false, true);
+        if (this.model.getHost ().canEdit (EditCapability.CUE_VOLUME))
+        {
+            display.addChannelElement ("Cue Volume", false, "Cue", ChannelType.MASTER, ColorEx.GRAY, false, valueChanger.toDisplayValue (project.getCueVolume ()), -1, this.isKnobTouched[2] ? project.getCueVolumeStr (8) : "", valueChanger.toDisplayValue (project.getCueMix ()), -1, this.isKnobTouched[3] ? project.getCueMixStr (8) : "", 0, 0, false, false, false, true, 0);
+            display.addChannelSelectorElement ("Cue Mix", false, "", null, ColorEx.BLACK, false, true);
+        }
+        else
+        {
+            display.addOptionElement ("", "", false, "", "", false, false);
+            display.addOptionElement ("", "", false, "", "", false, false);
+        }
 
         display.addOptionElement ("", "", false, "Audio Engine", this.model.getApplication ().isEngineActive () ? "Active" : "Off", false, false);
         display.addOptionElement ("", "", false, "", "", false, false);

@@ -43,5 +43,8 @@ public enum EditCapability
     /** The API provides support quantizing the note lengths of MIDI input. */
     QUANTIZE_INPUT_NOTE_LENGTH,
     /** The API provides support quantizing notes by an amount percentage. */
-    QUANTIZE_AMOUNT
+    QUANTIZE_AMOUNT,
+
+    /** The API provides support chaning the cue/preview volume. */
+    CUE_VOLUME
 }

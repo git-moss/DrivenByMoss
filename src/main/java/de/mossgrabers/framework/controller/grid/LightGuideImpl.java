@@ -17,7 +17,7 @@ public class LightGuideImpl extends PadGridImpl
 {
     /**
      * Constructor.
-     * 
+     *
      * @param startNote The first note
      * @param keys The mnumber of keys
      * @param colorManager The color manager for accessing specific colors to use

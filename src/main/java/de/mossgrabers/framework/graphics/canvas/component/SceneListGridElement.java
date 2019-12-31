@@ -111,9 +111,9 @@ public class SceneListGridElement implements IComponent
             return true;
         if (obj == null)
             return false;
-        if (getClass () != obj.getClass ())
+        if (this.getClass () != obj.getClass ())
             return false;
-        SceneListGridElement other = (SceneListGridElement) obj;
+        final SceneListGridElement other = (SceneListGridElement) obj;
         if (!Arrays.equals (this.colors, other.colors))
             return false;
         if (!Arrays.equals (this.exists, other.exists))

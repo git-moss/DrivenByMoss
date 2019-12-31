@@ -135,6 +135,9 @@ public class HostImpl implements IHost
             case QUANTIZE_INPUT_NOTE_LENGTH:
             case QUANTIZE_AMOUNT:
                 return true;
+
+            case CUE_VOLUME:
+                return true;
         }
         return false;
     }

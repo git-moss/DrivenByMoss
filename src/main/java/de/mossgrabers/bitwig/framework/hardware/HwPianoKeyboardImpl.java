@@ -60,6 +60,6 @@ public class HwPianoKeyboardImpl implements IHwPianoKeyboard
     @Override
     public String getLabel ()
     {
-        return "Keybaord";
+        return "Keyboard";
     }
 }

@@ -65,7 +65,7 @@ public class ParameterView extends BaseView
             else
             {
                 message.append (selectedPage).append (": ");
-                final IParameter item = cursorDevice.getParameterBank ().getItem (padIndex);
+                final IParameter item = cursorDevice.getParameterBank ().getItem (selectedParameter);
                 if (item.doesExist ())
                     message.append (item.getName ());
                 else

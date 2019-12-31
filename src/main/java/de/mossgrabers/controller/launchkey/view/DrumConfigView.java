@@ -46,23 +46,27 @@ public class DrumConfigView extends AbstractView<LaunchkeyMiniMk3ControlSurface,
         final int col = index % 8;
 
         final DrumView view = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
-        if (index / 8 == 0)
+        if (index / 8 == 1)
         {
             view.setResolutionIndex (col);
             return;
         }
 
+        INoteClip clip = view.getClip ();
         switch (col)
         {
             case 0:
-                view.getClip ().scrollStepsPageBackwards ();
+                clip.scrollStepsPageBackwards ();
+                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify ("Edit page: " + (clip.getEditPage () + 1)), 100);
                 break;
             case 1:
-                view.getClip ().scrollStepsPageForward ();
+                clip.scrollStepsPageForward ();
+                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify ("Edit page: " + (clip.getEditPage () + 1)), 100);
                 break;
 
             case 3:
                 this.model.getTransport ().toggleMetronome ();
+                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify ("Metronome: " + (this.model.getTransport ().isMetronomeOn () ? "On" : "Off")), 100);
                 break;
 
             case 6:
