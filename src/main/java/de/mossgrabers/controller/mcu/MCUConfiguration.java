@@ -35,14 +35,16 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final Integer    HAS_ASSIGNMENT_DISPLAY                  = Integer.valueOf (55);
     /** Has motor faders. */
     public static final Integer    HAS_MOTOR_FADERS                        = Integer.valueOf (56);
+    /** Has only 1 fader. */
+    public static final Integer    HAS_ONLY_1_FADER                        = Integer.valueOf (57);
     /** Display track names in 1st display. */
-    public static final Integer    DISPLAY_TRACK_NAMES                     = Integer.valueOf (57);
+    public static final Integer    DISPLAY_TRACK_NAMES                     = Integer.valueOf (58);
     /** Replace the vertical zoom withmode change. */
-    public static final Integer    USE_VERT_ZOOM_FOR_MODES                 = Integer.valueOf (58);
+    public static final Integer    USE_VERT_ZOOM_FOR_MODES                 = Integer.valueOf (59);
     /** Use the faders like the editing knobs. */
-    public static final Integer    USE_FADERS_AS_KNOBS                     = Integer.valueOf (59);
+    public static final Integer    USE_FADERS_AS_KNOBS                     = Integer.valueOf (60);
     /** Select the channel when touching it's fader. */
-    private static final Integer   TOUCH_CHANNEL                           = Integer.valueOf (60);
+    private static final Integer   TOUCH_CHANNEL                           = Integer.valueOf (61);
 
     /** Use a Function button to switch to previous mode. */
     public static final int        FOOTSWITCH_2_PREV_MODE                  = 15;
@@ -117,6 +119,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private IEnumSetting           hasSegmentDisplaySetting;
     private IEnumSetting           hasAssignmentDisplaySetting;
     private IEnumSetting           hasMotorFadersSetting;
+    private IEnumSetting           hasOnly1FaderSetting;
     private IEnumSetting           displayTrackNamesSetting;
     private IEnumSetting           useVertZoomForModesSetting;
     private IEnumSetting           useFadersAsKnobsSetting;
@@ -128,6 +131,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                hasSegmentDisplay;
     private boolean                hasAssignmentDisplay;
     private boolean                hasMotorFaders;
+    private boolean                hasOnly1Fader;
     private boolean                displayTrackNames;
     private boolean                useVertZoomForModes;
     private boolean                useFadersAsKnobs;
@@ -199,12 +203,25 @@ public class MCUConfiguration extends AbstractConfiguration
             switch (value)
             {
                 case DEVICE_MACKIE_MCU_PRO:
+                    this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
+                    this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
+                    this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
+                    this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
+                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
+                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
+                    this.setVUMetersEnabled (true);
+                    break;
+
                 case DEVICE_BEHRINGER_X_TOUCH_ONE:
                     this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
                     this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
                     this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
                     this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasOnly1FaderSetting.set (ON_OFF_OPTIONS[1]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
                     this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
@@ -217,6 +234,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[1]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
@@ -229,6 +247,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
                     this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
@@ -241,6 +260,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[0]);
+                    this.hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[1]);
@@ -282,6 +302,12 @@ public class MCUConfiguration extends AbstractConfiguration
         this.hasMotorFadersSetting.addValueObserver (value -> {
             this.hasMotorFaders = "On".equals (value);
             this.notifyObservers (HAS_MOTOR_FADERS);
+        });
+
+        this.hasOnly1FaderSetting = settingsUI.getEnumSetting ("Has only 1 fader", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.hasOnly1FaderSetting.addValueObserver (value -> {
+            this.hasOnly1Fader = "On".equals (value);
+            this.notifyObservers (HAS_ONLY_1_FADER);
         });
 
         this.displayTrackNamesSetting = settingsUI.getEnumSetting ("Display track names in 1st display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
@@ -403,7 +429,7 @@ public class MCUConfiguration extends AbstractConfiguration
     /**
      * Returns true if it has a main display.
      *
-     * @return True if it has a main display.
+     * @return True if it has a main display
      */
     public boolean hasDisplay1 ()
     {
@@ -414,7 +440,7 @@ public class MCUConfiguration extends AbstractConfiguration
     /**
      * Returns true if it has a secondary display.
      *
-     * @return True if it has a secondary display.
+     * @return True if it has a secondary display
      */
     public boolean hasDisplay2 ()
     {
@@ -425,7 +451,7 @@ public class MCUConfiguration extends AbstractConfiguration
     /**
      * Returns true if it has a segment display for tempo and position.
      *
-     * @return True if it has a segment display.
+     * @return True if it has a segment display
      */
     public boolean hasSegmentDisplay ()
     {
@@ -436,7 +462,7 @@ public class MCUConfiguration extends AbstractConfiguration
     /**
      * Returns true if it has an assignment display for modes.
      *
-     * @return True if it has an assignment display.
+     * @return True if it has an assignment display
      */
     public boolean hasAssignmentDisplay ()
     {
@@ -447,7 +473,7 @@ public class MCUConfiguration extends AbstractConfiguration
     /**
      * Returns true if it has motor faders.
      *
-     * @return True if it has motor faders.
+     * @return True if it has motor faders
      */
     public boolean hasMotorFaders ()
     {
@@ -456,9 +482,20 @@ public class MCUConfiguration extends AbstractConfiguration
 
 
     /**
+     * Returns true if it has only 1 fader.
+     *
+     * @return True if it has only 1 fader
+     */
+    public boolean hasOnly1Fader ()
+    {
+        return this.hasOnly1Fader;
+    }
+
+
+    /**
      * Returns true if the display names should be written in the 1st display.
      *
-     * @return True if the display names should be written in the 1st display.
+     * @return True if the display names should be written in the 1st display
      */
     public boolean isDisplayTrackNames ()
     {
@@ -478,7 +515,7 @@ public class MCUConfiguration extends AbstractConfiguration
     /**
      * Returns true if vertical zoom buttons should be used to change modes.
      *
-     * @return True if vertical zoom buttons should be used to change modes.
+     * @return True if vertical zoom buttons should be used to change modes
      */
     public boolean useVertZoomForModes ()
     {
@@ -489,7 +526,7 @@ public class MCUConfiguration extends AbstractConfiguration
     /**
      * Returns true if faders should be used like the editing knobs.
      *
-     * @return True if faders should be used like the editing knobs.
+     * @return True if faders should be used like the editing knobs
      */
     public boolean useFadersAsKnobs ()
     {
@@ -521,7 +558,7 @@ public class MCUConfiguration extends AbstractConfiguration
     /**
      * Returns true if touching the channel fader should select the track.
      *
-     * @return True if touching the channel fader should select the track.
+     * @return True if touching the channel fader should select the track
      */
     public boolean isTouchChannel ()
     {

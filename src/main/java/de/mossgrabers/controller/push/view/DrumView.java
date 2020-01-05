@@ -6,10 +6,13 @@ package de.mossgrabers.controller.push.view;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -62,6 +65,38 @@ public class DrumView extends DrumViewBase
         }
 
         super.handleButtonCombinations (playedPad);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNoteLongPress (final int note)
+    {
+        if (!this.isActive ())
+            return;
+
+        final int index = note - DRUM_START_KEY;
+        this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
+
+        final int y = index / GRID_COLUMNS;
+
+        // Sequencer steps?
+        if (y < this.playLines)
+            return;
+
+        final int x = index % GRID_COLUMNS;
+        final int stepX = GRID_COLUMNS * (this.allLines - 1 - y) + x;
+        final int stepY = this.scales.getDrumOffset () + this.selectedPad;
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final INoteClip clip = this.getClip ();
+        final int state = clip.getStep (editMidiChannel, stepX, stepY).getState ();
+        if (state != IStepInfo.NOTE_START)
+            return;
+
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
+        noteMode.setValues (clip, editMidiChannel, stepX, stepY);
+        modeManager.setActiveMode (Modes.NOTE);
     }
 
 

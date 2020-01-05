@@ -22,15 +22,29 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class RibbonMode extends BaseMode
 {
-    private static final int []    MIDI_CCS        =
+    private static final int []    MIDI_CCS          =
     {
         1,
         11,
         7,
         64
     };
-    private static final String [] CC_QUICK_SELECT =
+
+    private static final String [] TOP_HEADERS       =
     {
+        "CC",
+        "Quick Select",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+    };
+
+    private static final String [] CC_SELECT         =
+    {
+        "",
         "Modulation",
         "Expression",
         "Volume",
@@ -39,17 +53,32 @@ public class RibbonMode extends BaseMode
         "",
         ""
     };
-    private static final String [] FUNCTION        =
+
+    private static final String [] BOTTOM_HEADERS    =
+    {
+        "Function",
+        "",
+        "",
+        "",
+        "",
+        "Note Repeat",
+        "",
+        ""
+    };
+
+    private static final String [] FUNCTION_NAMES    =
     {
         "Pitchbend",
         "CC",
         "CC/Pitch",
         "Pitch/CC",
         "Fader",
-        "",
-        ""
+        "Off",
+        "Period",
+        "Length"
     };
-    private static final int []    FUNCTION_IDS    =
+
+    private static final int []    FUNCTION_IDS      =
     {
         PushConfiguration.RIBBON_MODE_PITCH,
         PushConfiguration.RIBBON_MODE_CC,
@@ -57,6 +86,15 @@ public class RibbonMode extends BaseMode
         PushConfiguration.RIBBON_MODE_PB_CC,
         PushConfiguration.RIBBON_MODE_FADER
     };
+
+    private static final String [] NOTE_REPEAT_NAMES =
+    {
+        "Off",
+        "Period",
+        "Length"
+    };
+
+    private PushConfiguration      configuration;
 
 
     /**
@@ -68,6 +106,8 @@ public class RibbonMode extends BaseMode
     public RibbonMode (final PushControlSurface surface, final IModel model)
     {
         super ("Ribbon", surface, model);
+
+        this.configuration = this.surface.getConfiguration ();
     }
 
 
@@ -75,11 +115,8 @@ public class RibbonMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        if (index == 7)
-        {
-            final PushConfiguration config = this.surface.getConfiguration ();
-            config.setRibbonModeCC (this.model.getValueChanger ().changeValue (value, config.getRibbonModeCCVal (), 1, 128));
-        }
+        if (index == 0)
+            this.configuration.setRibbonModeCC (this.model.getValueChanger ().changeValue (value, this.configuration.getRibbonModeCCVal (), 1, 128));
     }
 
 
@@ -98,9 +135,9 @@ public class RibbonMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
         if (index < 5)
-            this.surface.getConfiguration ().setRibbonMode (index);
+            this.configuration.setRibbonMode (index);
         else
-            this.surface.getModeManager ().restoreMode ();
+            this.configuration.setRibbonNoteRepeat (index - 5);
     }
 
 
@@ -111,16 +148,16 @@ public class RibbonMode extends BaseMode
         int index = this.isButtonRow (0, buttonID);
         if (index >= 0)
         {
-            final int ribbonMode = this.surface.getConfiguration ().getRibbonMode ();
             if (index < 5)
-                return ribbonMode == PushConfiguration.RIBBON_MODE_PITCH + index ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON;
-            return AbstractMode.BUTTON_COLOR_OFF;
+                return this.configuration.getRibbonMode () == PushConfiguration.RIBBON_MODE_PITCH + index ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON;
+
+            return this.configuration.getRibbonNoteRepeat () == index - 5 ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON;
         }
 
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
         {
-            if (index < 4)
+            if (index > 0 && index < 5)
                 return this.isPush2 ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR2_ON;
             return AbstractMode.BUTTON_COLOR_OFF;
         }
@@ -135,8 +172,8 @@ public class RibbonMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        if (index < 4)
-            this.surface.getConfiguration ().setRibbonModeCC (RibbonMode.MIDI_CCS[index]);
+        if (index > 0 && index < 5)
+            this.surface.getConfiguration ().setRibbonModeCC (RibbonMode.MIDI_CCS[index - 1]);
         else
             this.surface.getModeManager ().restoreMode ();
     }
@@ -146,11 +183,20 @@ public class RibbonMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final PushConfiguration config = this.surface.getConfiguration ();
-        final String ribbonModeCC = Integer.toString (config.getRibbonModeCCVal ());
-        final int ribbonMode = config.getRibbonMode ();
+        final String ribbonModeCC = Integer.toString (this.configuration.getRibbonModeCCVal ());
+        final int ribbonMode = this.configuration.getRibbonMode ();
+        final int noteRepeat = this.configuration.getRibbonNoteRepeat ();
+
         display.setCell (0, 0, "Modulatn").setCell (0, 1, "Expressn").setCell (0, 2, "Volume").setCell (0, 3, "Sustain").setCell (0, 7, "Midi CC");
-        display.setCell (1, 7, ribbonModeCC).setCell (3, 0, (ribbonMode == PushConfiguration.RIBBON_MODE_PITCH ? Push1Display.SELECT_ARROW : "") + "Pitchbd").setCell (3, 1, (ribbonMode == PushConfiguration.RIBBON_MODE_CC ? Push1Display.SELECT_ARROW : "") + "CC").setCell (3, 2, (ribbonMode == PushConfiguration.RIBBON_MODE_CC_PB ? Push1Display.SELECT_ARROW : "") + "CC/Pitch").setCell (3, 3, (ribbonMode == PushConfiguration.RIBBON_MODE_PB_CC ? Push1Display.SELECT_ARROW : "") + "Pitch/CC").setCell (3, 4, (ribbonMode == PushConfiguration.RIBBON_MODE_FADER ? Push1Display.SELECT_ARROW : "") + "Fader");
+        display.setCell (1, 7, ribbonModeCC);
+        display.setCell (3, 0, (ribbonMode == PushConfiguration.RIBBON_MODE_PITCH ? Push1Display.SELECT_ARROW : "") + "Pitchbd");
+        display.setCell (3, 1, (ribbonMode == PushConfiguration.RIBBON_MODE_CC ? Push1Display.SELECT_ARROW : "") + "CC");
+        display.setCell (3, 2, (ribbonMode == PushConfiguration.RIBBON_MODE_CC_PB ? Push1Display.SELECT_ARROW : "") + "CC/Pitch");
+        display.setCell (3, 3, (ribbonMode == PushConfiguration.RIBBON_MODE_PB_CC ? Push1Display.SELECT_ARROW : "") + "Pitch/CC");
+        display.setCell (3, 4, (ribbonMode == PushConfiguration.RIBBON_MODE_FADER ? Push1Display.SELECT_ARROW : "") + "Fader");
+
+        for (int i = 0; i < 3; i++)
+            display.setCell (3, 5 + i, (noteRepeat == i ? Push1Display.SELECT_ARROW : "") + NOTE_REPEAT_NAMES[i]);
     }
 
 
@@ -158,12 +204,14 @@ public class RibbonMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final PushConfiguration config = this.surface.getConfiguration ();
-        final String ribbonModeCC = Integer.toString (config.getRibbonModeCCVal ());
-        final int ribbonMode = config.getRibbonMode ();
+        final String ribbonModeCC = Integer.toString (this.configuration.getRibbonModeCCVal ());
+        final int ribbonMode = this.configuration.getRibbonMode ();
+        final int ribbonNoteRepeat = this.configuration.getRibbonNoteRepeat ();
 
-        for (int i = 0; i < 7; i++)
-            display.addOptionElement (i == 0 ? "CC Quick Select" : "", RibbonMode.CC_QUICK_SELECT[i], false, i == 0 ? "Function" : "", RibbonMode.FUNCTION[i], i < RibbonMode.FUNCTION_IDS.length && ribbonMode == RibbonMode.FUNCTION_IDS[i], false);
-        display.addParameterElement ("Midi CC", -1, ribbonModeCC, this.isKnobTouched[5], -1);
+        for (int i = 0; i < 5; i++)
+            display.addOptionElement (TOP_HEADERS[i], i == 0 ? ribbonModeCC : CC_SELECT[i], i == 0, BOTTOM_HEADERS[i], FUNCTION_NAMES[i], i < RibbonMode.FUNCTION_IDS.length && ribbonMode == RibbonMode.FUNCTION_IDS[i], false);
+
+        for (int i = 0; i < 3; i++)
+            display.addOptionElement ("", "", false, BOTTOM_HEADERS[5 + i], NOTE_REPEAT_NAMES[i], ribbonNoteRepeat == i, false);
     }
 }

@@ -11,31 +11,43 @@ package de.mossgrabers.controller.push.controller;
  */
 public class PaletteEntry
 {
+    enum State
+    {
+        INIT,
+        READ,
+        WRITE,
+        OK
+    }
+
+
+    /** The maximumnumber of read/write attempts. */
+    public static final int  MAX_NUMBER_OF_RETRIES  = 10;
+
     private static final int PALETTE_MESSAGE_OUT_ID = 0x03;
     private static final int PALETTE_MESSAGE_IN_ID  = 0x04;
 
     private static final int MESSAGE_LENGTH         = 17;
-    private static final int MAX_NUMBER_OF_RETRIES  = 10;
 
     private int              red                    = -1;
     private int              green                  = -1;
     private int              blue                   = -1;
     private int              white                  = -1;
 
-    private int              retries                = 0;
+    private State            state                  = State.INIT;
+    private int              readRetries            = 0;
+    private int              writeRetries           = 0;
 
 
     /**
      * Constructor.
      *
-     * @param data The SysEx data of a received color palette entry. Must be 17 characters long.
+     * @param color The default palette color consisting of three integers for red, green and blue
      */
-    public PaletteEntry (final int [] data)
+    public PaletteEntry (final int [] color)
     {
-        this.red = data[8] + (data[9] << 7);
-        this.green = data[10] + (data[11] << 7);
-        this.blue = data[12] + (data[13] << 7);
-        this.white = data[14] + (data[15] << 7);
+        this.red = color[0];
+        this.green = color[1];
+        this.blue = color[2];
     }
 
 
@@ -52,24 +64,55 @@ public class PaletteEntry
 
 
     /**
-     * Update the color data in this object and increases the number of retries. Does not change the
-     * white value.
+     * Test if the received data is the same as the already stored one.
      *
-     * @param color The color consisting of three integers for red, green and blue
+     * @param data The SysEx data of a received color palette entry. Must be 17 characters long.
      * @return True if the given color is different than the color already stored in this object
      */
-    public boolean update (final int [] color)
+    public boolean requiresUpdate (final int [] data)
     {
-        if (color[0] == this.red && color[1] == this.green && color[2] == this.blue)
-            return false;
+        this.white = data[14] + (data[15] << 7);
+        return this.red != data[8] + (data[9] << 7) || this.green != data[10] + (data[11] << 7) || this.blue != data[12] + (data[13] << 7);
+    }
 
-        this.red = color[0];
-        this.green = color[1];
-        this.blue = color[2];
 
-        this.retries++;
+    /**
+     * Increase the number of read attempts.
+     */
+    public void incReadRetries ()
+    {
+        this.readRetries++;
+        this.state = State.READ;
+    }
 
-        return true;
+
+    /**
+     * Increase the number of write attempts.
+     */
+    public void incWriteRetries ()
+    {
+        this.writeRetries++;
+        this.state = State.WRITE;
+    }
+
+
+    /**
+     * Set the entry to be OK, which means identical to the device.
+     */
+    public void setOK ()
+    {
+        this.state = State.OK;
+    }
+
+
+    /**
+     * Check if the read request should be sent
+     *
+     * @return True if it needs to be send
+     */
+    public boolean requiresRead ()
+    {
+        return this.state == State.INIT || this.state == State.READ;
     }
 
 
@@ -99,14 +142,37 @@ public class PaletteEntry
 
 
     /**
-     * Test if the maximum number of retries to send the color to the device has already been
+     * Test if the maximum number of read retries to send the color to the device has already been
      * reached.
      *
      * @return True if number of retries has exceeded
      */
-    public boolean hasMaxNumberOfRetriesReached ()
+    public boolean hasMaxNumberOfReadRetriesReached ()
     {
-        return this.retries > MAX_NUMBER_OF_RETRIES;
+        return this.readRetries > MAX_NUMBER_OF_RETRIES;
+    }
+
+
+    /**
+     * Test if the maximum number of write retries to send the color to the device has already been
+     * reached.
+     *
+     * @return True if number of retries has exceeded
+     */
+    public boolean hasMaxNumberOfWriteRetriesReached ()
+    {
+        return this.writeRetries > MAX_NUMBER_OF_RETRIES;
+    }
+
+
+    /**
+     * Get the current numner of attempts to read the value on the device.
+     *
+     * @return The number of retries
+     */
+    public int getReadRetries ()
+    {
+        return this.readRetries;
     }
 
 
@@ -115,8 +181,8 @@ public class PaletteEntry
      *
      * @return The number of retries
      */
-    public int getRetries ()
+    public int getWriteRetries ()
     {
-        return this.retries;
+        return this.writeRetries;
     }
 }

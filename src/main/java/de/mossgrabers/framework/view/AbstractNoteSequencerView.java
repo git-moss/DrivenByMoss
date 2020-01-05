@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
@@ -98,8 +99,12 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final INoteClip clip = this.getClip ();
         if (y < this.numSequencerRows)
         {
-            if (velocity != 0)
-                clip.toggleStep (this.surface.getConfiguration ().getMidiEditChannel (), x, this.keyManager.map (y), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+            // Toggle the note on up, so we can intercept the long presses
+            if (velocity == 0)
+            {
+                final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
+                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), x, this.keyManager.map (y), vel);
+            }
             return;
         }
 
@@ -156,7 +161,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final INoteClip clip = this.getClip ();
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % this.numDisplayCols : -1;
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         for (int x = 0; x < this.numDisplayCols; x++)
         {
             for (int y = 0; y < this.numSequencerRows; y++)

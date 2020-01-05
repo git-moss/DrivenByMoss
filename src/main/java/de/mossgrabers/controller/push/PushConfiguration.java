@@ -45,29 +45,33 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     public static final Integer     RIBBON_MODE                     = Integer.valueOf (50);
     /** Setting for the ribbon mode midi CC. */
     public static final Integer     RIBBON_MODE_CC_VAL              = Integer.valueOf (51);
-    /** Setting for the velocity curve. */
-    public static final Integer     VELOCITY_CURVE                  = Integer.valueOf (52);
-    /** Setting for the pad threshold. */
-    public static final Integer     PAD_THRESHOLD                   = Integer.valueOf (53);
+    /** Setting for the ribbon mode note repeat. */
+    public static final Integer     RIBBON_MODE_NOTE_REPEAT         = Integer.valueOf (52);
 
+    /** Setting for the velocity curve. */
+    public static final Integer     VELOCITY_CURVE                  = Integer.valueOf (54);
+    /** Setting for the pad threshold. */
+    public static final Integer     PAD_THRESHOLD                   = Integer.valueOf (55);
     /** Setting for the display brightness. */
-    public static final Integer     DISPLAY_BRIGHTNESS              = Integer.valueOf (54);
+    public static final Integer     DISPLAY_BRIGHTNESS              = Integer.valueOf (56);
     /** Setting for the pad LED brightness. */
-    public static final Integer     LED_BRIGHTNESS                  = Integer.valueOf (55);
+    public static final Integer     LED_BRIGHTNESS                  = Integer.valueOf (57);
     /** Setting for the pad sensitivity. */
-    public static final Integer     PAD_SENSITIVITY                 = Integer.valueOf (56);
+    public static final Integer     PAD_SENSITIVITY                 = Integer.valueOf (58);
     /** Setting for the pad gain. */
-    public static final Integer     PAD_GAIN                        = Integer.valueOf (57);
+    public static final Integer     PAD_GAIN                        = Integer.valueOf (59);
     /** Setting for the pad dynamics. */
-    public static final Integer     PAD_DYNAMICS                    = Integer.valueOf (58);
+    public static final Integer     PAD_DYNAMICS                    = Integer.valueOf (60);
+
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer     STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (59);
+    public static final Integer     STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (61);
     /** Setting for the default note view. */
-    public static final Integer     DEFAULT_NOTE_VIEW               = Integer.valueOf (60);
+    public static final Integer     DEFAULT_NOTE_VIEW               = Integer.valueOf (62);
     /** Mode debug. */
-    public static final Integer     DEBUG_MODE                      = Integer.valueOf (61);
+    public static final Integer     DEBUG_MODE                      = Integer.valueOf (63);
     /** Push 2 display debug window. */
-    public static final Integer     DEBUG_WINDOW                    = Integer.valueOf (62);
+    public static final Integer     DEBUG_WINDOW                    = Integer.valueOf (64);
+
     /** Background color of an element. */
     public static final Integer     COLOR_BACKGROUND                = Integer.valueOf (70);
     /** Border color of an element. */
@@ -90,6 +94,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     public static final Integer     COLOR_BACKGROUND_DARKER         = Integer.valueOf (79);
     /** Background color lighter of an element. */
     public static final Integer     COLOR_BACKGROUND_LIGHTER        = Integer.valueOf (80);
+
     /** Session view options. */
     public static final Integer     SESSION_VIEW                    = Integer.valueOf (81);
     /** Display scenes or clips. */
@@ -106,6 +111,13 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     /** Use ribbon as volume fader. */
     public static final int         RIBBON_MODE_FADER               = 4;
 
+    /** Use ribbon not for note repeat settings. */
+    public static final int         NOTE_REPEAT_OFF                 = 0;
+    /** Use ribbon for changing the note repeat period. */
+    public static final int         NOTE_REPEAT_PERIOD              = 1;
+    /** Use ribbon for changing the note repeat length. */
+    public static final int         NOTE_REPEAT_LENGTH              = 2;
+
     private static final String     CATEGORY_RIBBON                 = "Ribbon";
     private static final String     CATEGORY_COLORS                 = "Display Colors";
 
@@ -116,6 +128,13 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         "CC/Pitch",
         "Pitch/CC",
         "Fader"
+    };
+
+    private static final String []  RIBBON_NOTE_REPEAT_VALUES       =
+    {
+        "Off",
+        "Period",
+        "Length"
     };
 
     private static final String []  SESSION_VIEW_OPTIONS            =
@@ -146,6 +165,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         DEBUG_MODES.add (Modes.MASTER);
         DEBUG_MODES.add (Modes.MASTER_TEMP);
         DEBUG_MODES.add (Modes.DEVICE_PARAMS);
+        DEBUG_MODES.add (Modes.DEVICE_CHAINS);
         DEBUG_MODES.add (Modes.DEVICE_LAYER);
         DEBUG_MODES.add (Modes.DEVICE_LAYER_VOLUME);
         DEBUG_MODES.add (Modes.DEVICE_LAYER_PAN);
@@ -163,6 +183,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         DEBUG_MODES.add (Modes.NOTE);
         DEBUG_MODES.add (Modes.FRAME);
         DEBUG_MODES.add (Modes.GROOVE);
+        DEBUG_MODES.add (Modes.REC_ARM);
         DEBUG_MODES.add (Modes.ACCENT);
         DEBUG_MODES.add (Modes.SCALES);
         DEBUG_MODES.add (Modes.SCALE_LAYOUT);
@@ -171,12 +192,13 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         DEBUG_MODES.add (Modes.VIEW_SELECT);
         DEBUG_MODES.add (Modes.AUTOMATION);
         DEBUG_MODES.add (Modes.TRANSPORT);
-        DEBUG_MODES.add (Modes.CONFIGURATION);
+        DEBUG_MODES.add (Modes.MARKERS);
+        DEBUG_MODES.add (Modes.USER);
         DEBUG_MODES.add (Modes.SETUP);
         DEBUG_MODES.add (Modes.INFO);
-        DEBUG_MODES.add (Modes.SESSION_VIEW_SELECT);
+        DEBUG_MODES.add (Modes.CONFIGURATION);
         DEBUG_MODES.add (Modes.SESSION);
-        DEBUG_MODES.add (Modes.MARKERS);
+        DEBUG_MODES.add (Modes.SESSION_VIEW_SELECT);
         DEBUG_MODES.add (Modes.REPEAT_NOTE);
     }
 
@@ -191,6 +213,8 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     /** What does the ribbon send? **/
     private int             ribbonMode                  = RIBBON_MODE_PITCH;
     private int             ribbonModeCCVal             = 1;
+    private int             ribbonModeNoteRepeat        = NOTE_REPEAT_PERIOD;
+
     private boolean         stopAutomationOnKnobRelease = false;
     private TrackState      trackState                  = TrackState.MUTE;
     private Modes           debugMode                   = Modes.TRACK;
@@ -225,6 +249,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private IIntegerSetting ledBrightnessSetting;
     private IEnumSetting    ribbonModeSetting;
     private IIntegerSetting ribbonModeCCSetting;
+    private IEnumSetting    ribbonModeNoteRepeatSetting;
     private IIntegerSetting padSensitivitySetting;
     private IIntegerSetting padGainSetting;
     private IIntegerSetting padDynamicsSetting;
@@ -402,6 +427,28 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     public int getRibbonModeCCVal ()
     {
         return this.ribbonModeCCVal;
+    }
+
+
+    /**
+     * Set the ribbon mode note repeat.
+     *
+     * @param mode The functionality for the ribbon in note repeat mode
+     */
+    public void setRibbonNoteRepeat (final int mode)
+    {
+        this.ribbonModeNoteRepeatSetting.set (RIBBON_NOTE_REPEAT_VALUES[mode]);
+    }
+
+
+    /**
+     * Get the ribbon mode note repeat.
+     *
+     * @return The functionality for the ribbon in note repeat mode
+     */
+    public int getRibbonNoteRepeat ()
+    {
+        return this.ribbonModeNoteRepeat;
     }
 
 
@@ -1038,6 +1085,12 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.ribbonModeCCSetting.addValueObserver (value -> {
             this.ribbonModeCCVal = value.intValue ();
             this.notifyObservers (RIBBON_MODE_CC_VAL);
+        });
+
+        this.ribbonModeNoteRepeatSetting = settingsUI.getEnumSetting ("Function if Note Repeat is active", CATEGORY_RIBBON, RIBBON_NOTE_REPEAT_VALUES, RIBBON_NOTE_REPEAT_VALUES[1]);
+        this.ribbonModeNoteRepeatSetting.addValueObserver (value -> {
+            this.ribbonModeNoteRepeat = lookupIndex (RIBBON_NOTE_REPEAT_VALUES, value);
+            this.notifyObservers (RIBBON_MODE_NOTE_REPEAT);
         });
     }
 

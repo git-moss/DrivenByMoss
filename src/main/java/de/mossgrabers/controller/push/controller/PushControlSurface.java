@@ -444,6 +444,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     };
 
     private final PaletteEntry []  colorPalette                  = new PaletteEntry [128];
+    private boolean                colorPaletteHasUpdate         = false;
 
     private int                    ribbonMode                    = -1;
     private int                    ribbonValue                   = -1;
@@ -467,6 +468,9 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     public PushControlSurface (final IHost host, final ColorManager colorManager, final PushConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
         super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output), 200, 156);
+
+        for (int i = 0; i < this.colorPalette.length; i++)
+            this.colorPalette[i] = new PaletteEntry (PushColorManager.getPaletteColorRGB (i));
 
         this.input.setSysexCallback (this::handleSysEx);
     }
@@ -537,6 +541,9 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
                     break;
                 case PUSH_RIBBON_PAN:
                     status = 17;
+                    break;
+                case PUSH_RIBBON_DISCRETE:
+                    status = 9;
                     break;
                 default:
                     break;
@@ -805,57 +812,6 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     }
 
 
-    /**
-     * Handle a color palette message.
-     *
-     * @param data The message data
-     */
-    private void handleColorPaletteMessage (final int [] data)
-    {
-        int index = data[7];
-
-        synchronized (this.colorPalette)
-        {
-            // First try?
-            if (this.colorPalette[index] == null)
-            {
-                // Store the color and the white calibration values
-                this.colorPalette[index] = new PaletteEntry (data);
-            }
-
-            // Already set?
-            if (this.colorPalette[index].update (PushColorManager.getPaletteColorRGB (index)))
-            {
-                if (this.colorPalette[index].hasMaxNumberOfRetriesReached ())
-                {
-                    this.host.error ("Failed writing color palette entry #" + index + ". Gave up after 10 retries.");
-                    return;
-                }
-
-                // No
-                this.sendPush2SysEx (this.colorPalette[index].createUpdateMessage (index));
-
-                // Request the value to confirm it was written
-                this.sendColorPaletteRequest (index);
-
-                return;
-            }
-
-            final int retries = this.colorPalette[index].getRetries ();
-            if (retries > 1)
-                this.host.println ("Success writing color palette entry #" + index + " after " + retries + " attempts.");
-        }
-
-        index++;
-
-        if (index == 128)
-            // Re-apply the color palette
-            this.output.sendSysex ("F0 00 21 1D 01 01 05 F7");
-        else
-            this.sendColorPaletteRequest (index);
-    }
-
-
     private static boolean isPush2Data (final int [] data)
     {
         if (data.length + 1 < SYSEX_HEADER.length)
@@ -993,28 +949,91 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
 
     /**
+     * Handle a color palette message.
+     *
+     * @param data The message data
+     */
+    private void handleColorPaletteMessage (final int [] data)
+    {
+        synchronized (this.colorPalette)
+        {
+            final int index = data[7];
+
+            // Is an update necessary?
+            if (this.colorPalette[index].requiresUpdate (data))
+            {
+                this.colorPaletteHasUpdate = true;
+
+                if (this.colorPalette[index].hasMaxNumberOfWriteRetriesReached ())
+                {
+                    // Cancel the whole process
+                    this.host.error ("Failed writing color palette entry #" + index + ". Gave up after " + PaletteEntry.MAX_NUMBER_OF_RETRIES + " retries. Check selected MIDI in-/outputs.");
+                    return;
+                }
+
+                this.colorPalette[index].incWriteRetries ();
+                this.sendPush2SysEx (this.colorPalette[index].createUpdateMessage (index));
+            }
+            else
+            {
+                this.colorPalette[index].setOK ();
+
+                final int retries = this.colorPalette[index].getWriteRetries ();
+                if (retries > 1)
+                    this.host.println ("Success writing color palette entry #" + index + " after " + retries + " attempts.");
+            }
+
+            if (index < 127)
+            {
+                this.sendColorPaletteRequest (index + 1);
+                return;
+            }
+        }
+
+        // Re-apply the color palette, if necessary
+        if (this.colorPaletteHasUpdate)
+        {
+            this.host.scheduleTask ( () -> this.output.sendSysex ("F0 00 21 1D 01 01 05 F7"), 1000);
+
+            // Request all values again to confirm it was written
+            this.sendColorPaletteRequest (0);
+        }
+    }
+
+
+    /**
      * Send a request to the Push 2 to send the values of an entry of the current color palette.
      *
      * @param paletteEntry The index of the entry 0-127
      */
     private void sendColorPaletteRequest (final int paletteEntry)
     {
-        this.sendPush2SysEx (new int []
+        synchronized (this.colorPalette)
         {
-            0x04,
-            paletteEntry
-        });
+            this.sendPush2SysEx (new int []
+            {
+                0x04,
+                paletteEntry
+            });
+            this.colorPalette[paletteEntry].incReadRetries ();
+        }
 
         // If there was no answer after 1s, retry...
         this.scheduleTask ( () -> {
 
             synchronized (this.colorPalette)
             {
-                if (this.colorPalette[paletteEntry] == null)
+                if (!this.colorPalette[paletteEntry].requiresRead ())
+                    return;
+
+                if (this.colorPalette[paletteEntry].hasMaxNumberOfReadRetriesReached ())
                 {
-                    this.host.println ("Resending color palette entry #" + paletteEntry + " request.");
-                    this.sendColorPaletteRequest (paletteEntry);
+                    this.host.error ("Failed reading color palette entry #" + paletteEntry + ". Gave up after " + PaletteEntry.MAX_NUMBER_OF_RETRIES + " retries. Check selected MIDI in-/outputs.");
+                    return;
                 }
+
+                this.host.println ("Resending color palette entry #" + paletteEntry + " request.");
+                this.sendColorPaletteRequest (paletteEntry);
             }
 
         }, 1000);

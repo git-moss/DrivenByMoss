@@ -77,6 +77,9 @@ public class NoteRepeatMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
+        if (index != 7 && !this.increaseKnobMovement ())
+            return;
+
         final PushConfiguration configuration = this.surface.getConfiguration ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
         switch (index)

@@ -81,7 +81,7 @@ public class DeviceParamsMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final IParameter param = parameterBank.getItem (extenderOffset + i);
-            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, param.doesExist () ? param.getValue () : 0, upperBound);
+            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_SINGLE_DOT, param.doesExist () ? Math.max (1, param.getValue ()) : 0, upperBound);
         }
     }
 

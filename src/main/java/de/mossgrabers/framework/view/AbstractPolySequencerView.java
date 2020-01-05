@@ -160,7 +160,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
 
         final INoteClip clip = this.getClip ();
         final int col = GRID_COLUMNS * (NUM_LINES - 1 - y) + x;
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         if (this.getStep (clip, col) > 0)
         {
             for (int row = 0; row < 128; row++)
@@ -244,7 +244,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     protected int getStep (final INoteClip clip, final int col)
     {
         int result = IStepInfo.NOTE_OFF;
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         for (int row = 0; row < 128; row++)
         {
             result = clip.getStep (editMidiChannel, col, row).getState ();

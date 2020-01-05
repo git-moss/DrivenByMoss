@@ -253,6 +253,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final PushControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
+        modeManager.registerMode (Modes.TRACK, new TrackMode (surface, this.model));
+        modeManager.registerMode (Modes.TRACK_DETAILS, new TrackDetailsMode (surface, this.model));
         modeManager.registerMode (Modes.VOLUME, new VolumeMode (surface, this.model));
         modeManager.registerMode (Modes.PAN, new PanMode (surface, this.model));
         modeManager.registerMode (Modes.CROSSFADER, new CrossfaderMode (surface, this.model));
@@ -270,33 +272,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.MASTER, new MasterMode (surface, this.model, false));
         modeManager.registerMode (Modes.MASTER_TEMP, new MasterMode (surface, this.model, true));
 
-        modeManager.registerMode (Modes.TRACK, new TrackMode (surface, this.model));
-        modeManager.registerMode (Modes.TRACK_DETAILS, new TrackDetailsMode (surface, this.model));
-        modeManager.registerMode (Modes.DEVICE_LAYER_DETAILS, new LayerDetailsMode (surface, this.model));
-        modeManager.registerMode (Modes.CLIP, new ClipMode (surface, this.model));
-        modeManager.registerMode (Modes.NOTE, new NoteMode (surface, this.model));
-        modeManager.registerMode (Modes.FRAME, new FrameMode (surface, this.model));
-        modeManager.registerMode (Modes.SCALES, new ScalesMode (surface, this.model));
-        modeManager.registerMode (Modes.SCALE_LAYOUT, new ScaleLayoutMode (surface, this.model));
-        modeManager.registerMode (Modes.ACCENT, new AccentMode (surface, this.model));
-        modeManager.registerMode (Modes.FIXED, new FixedMode (surface, this.model));
-        modeManager.registerMode (Modes.RIBBON, new RibbonMode (surface, this.model));
-
-        modeManager.registerMode (Modes.GROOVE, new GrooveMode (surface, this.model));
-        modeManager.registerMode (Modes.REC_ARM, new QuantizeMode (surface, this.model));
-
-        modeManager.registerMode (Modes.VIEW_SELECT, new NoteViewSelectMode (surface, this.model));
-        modeManager.registerMode (Modes.MARKERS, new MarkersMode (surface, this.model));
-
-        modeManager.registerMode (Modes.AUTOMATION, new AutomationMode (surface, this.model));
-        modeManager.registerMode (Modes.TRANSPORT, new TransportMode (surface, this.model));
-
         modeManager.registerMode (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
         modeManager.registerMode (Modes.DEVICE_CHAINS, new DeviceChainsMode (surface, this.model));
         modeManager.registerMode (Modes.DEVICE_LAYER, new DeviceLayerMode ("Layer", surface, this.model));
-
-        modeManager.registerMode (Modes.BROWSER, new DeviceBrowserMode (surface, this.model));
-
         modeManager.registerMode (Modes.DEVICE_LAYER_VOLUME, new DeviceLayerModeVolume (surface, this.model));
         modeManager.registerMode (Modes.DEVICE_LAYER_PAN, new DeviceLayerModePan (surface, this.model));
         final DeviceLayerModeSend modeLayerSend = new DeviceLayerModeSend (surface, this.model);
@@ -308,6 +286,27 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.DEVICE_LAYER_SEND6, modeLayerSend);
         modeManager.registerMode (Modes.DEVICE_LAYER_SEND7, modeLayerSend);
         modeManager.registerMode (Modes.DEVICE_LAYER_SEND8, modeLayerSend);
+        modeManager.registerMode (Modes.DEVICE_LAYER_DETAILS, new LayerDetailsMode (surface, this.model));
+        modeManager.registerMode (Modes.BROWSER, new DeviceBrowserMode (surface, this.model));
+
+        modeManager.registerMode (Modes.CLIP, new ClipMode (surface, this.model));
+        modeManager.registerMode (Modes.NOTE, new NoteMode (surface, this.model));
+        modeManager.registerMode (Modes.FRAME, new FrameMode (surface, this.model));
+
+        modeManager.registerMode (Modes.GROOVE, new GrooveMode (surface, this.model));
+        modeManager.registerMode (Modes.REC_ARM, new QuantizeMode (surface, this.model));
+        modeManager.registerMode (Modes.ACCENT, new AccentMode (surface, this.model));
+
+        modeManager.registerMode (Modes.SCALES, new ScalesMode (surface, this.model));
+        modeManager.registerMode (Modes.SCALE_LAYOUT, new ScaleLayoutMode (surface, this.model));
+        modeManager.registerMode (Modes.FIXED, new FixedMode (surface, this.model));
+        modeManager.registerMode (Modes.RIBBON, new RibbonMode (surface, this.model));
+        modeManager.registerMode (Modes.VIEW_SELECT, new NoteViewSelectMode (surface, this.model));
+
+        modeManager.registerMode (Modes.AUTOMATION, new AutomationMode (surface, this.model));
+        modeManager.registerMode (Modes.TRANSPORT, new TransportMode (surface, this.model));
+
+        modeManager.registerMode (Modes.MARKERS, new MarkersMode (surface, this.model));
 
         if (this.host.hasUserParameters ())
             modeManager.registerMode (Modes.USER, new UserParamsMode (surface, this.model));
@@ -359,6 +358,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.onViewChange ());
 
         this.configuration.addSettingObserver (PushConfiguration.RIBBON_MODE, this::updateRibbonMode);
+        this.configuration.addSettingObserver (PushConfiguration.RIBBON_MODE_NOTE_REPEAT, this::updateRibbonMode);
+        this.configuration.addSettingObserver (AbstractConfiguration.NOTEREPEAT_ACTIVE, this::updateRibbonMode);
         this.configuration.addSettingObserver (PushConfiguration.DEBUG_MODE, () -> {
             final ModeManager modeManager = surface.getModeManager ();
             final Modes debugMode = this.configuration.getDebugMode ();
@@ -446,7 +447,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         }, PushColorManager.PUSH_BUTTON_STATE_REC_ON, PushColorManager.PUSH_BUTTON_STATE_REC_HI, PushColorManager.PUSH_BUTTON_STATE_OVR_ON, PushColorManager.PUSH_BUTTON_STATE_OVR_HI);
 
         this.addButton (ButtonID.NEW, "New", new NewCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_NEW);
-        this.addButton (ButtonID.FIXED_LENGTH, "Fixed Length", new FixedLengthCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, () -> modeManager.isActiveOrTempMode (Modes.VOLUME, Modes.FIXED));
+        this.addButton (ButtonID.FIXED_LENGTH, "Fixed Length", new FixedLengthCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, () -> modeManager.isActiveOrTempMode (Modes.FIXED));
         this.addButton (ButtonID.DUPLICATE, "Duplicate", new DuplicateCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_DUPLICATE);
         this.addButton (ButtonID.QUANTIZE, "Quantize", new PushQuantizeCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_QUANTIZE);
         this.addButton (ButtonID.DELETE, "Delete", new DeleteCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_DELETE);
@@ -983,17 +984,18 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final PushControlSurface surface = this.getSurface ();
         surface.setRibbonValue (0);
 
-        switch (this.configuration.getRibbonMode ())
+        final int ribbonNoteRepeat = this.configuration.getRibbonNoteRepeat ();
+        if (this.configuration.isNoteRepeatActive () && ribbonNoteRepeat > PushConfiguration.NOTE_REPEAT_OFF)
         {
-            case PushConfiguration.RIBBON_MODE_CC:
-            case PushConfiguration.RIBBON_MODE_FADER:
-                surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_VOLUME);
-                break;
-
-            default:
-                surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_PITCHBEND);
-                break;
+            surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_DISCRETE);
+            return;
         }
+
+        final int ribbonMode = this.configuration.getRibbonMode ();
+        if (ribbonMode == PushConfiguration.RIBBON_MODE_CC || ribbonMode == PushConfiguration.RIBBON_MODE_FADER)
+            surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_VOLUME);
+        else
+            surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_PITCHBEND);
     }
 
 

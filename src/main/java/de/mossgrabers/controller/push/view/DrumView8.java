@@ -4,9 +4,14 @@
 
 package de.mossgrabers.controller.push.view;
 
-import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.mode.NoteMode;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.Views;
 
@@ -37,18 +42,53 @@ public class DrumView8 extends DrumViewBase
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.model.canSelectedTrackHoldNotes () || velocity == 0)
+        if (!this.model.canSelectedTrackHoldNotes ())
             return;
 
-        final int index = note - 36;
+        // Toggle the note on up, so we can intercept the long presses
+        if (velocity != 0)
+            return;
+
+        final int index = note - DRUM_START_KEY;
         final int x = index % 8;
         final int y = index / 8;
 
         final int sound = y + this.soundOffset;
         final int col = x;
 
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
-        this.getClip ().toggleStep (editMidiChannel, col, this.scales.getDrumOffset () + this.selectedPad + sound, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
+        this.getClip ().toggleStep (editMidiChannel, col, this.scales.getDrumOffset () + this.selectedPad + sound, vel);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNoteLongPress (final int note)
+    {
+        if (!this.isActive ())
+            return;
+
+        final int index = note - DRUM_START_KEY;
+        this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
+
+        final int x = index % 8;
+        final int y = index / 8;
+
+        final int sound = y + this.soundOffset;
+        final int stepX = x;
+        final int stepY = this.scales.getDrumOffset () + this.selectedPad + sound;
+
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final INoteClip clip = this.getClip ();
+        final int state = clip.getStep (editMidiChannel, stepX, stepY).getState ();
+        if (state != IStepInfo.NOTE_START)
+            return;
+
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
+        noteMode.setValues (clip, editMidiChannel, stepX, stepY);
+        modeManager.setActiveMode (Modes.NOTE);
     }
 
 
@@ -56,7 +96,7 @@ public class DrumView8 extends DrumViewBase
     @Override
     public void drawGrid ()
     {
-        if (!this.model.canSelectedTrackHoldNotes ())
+        if (!this.model.canSelectedTrackHoldNotes () || !this.isActive ())
         {
             this.surface.getPadGrid ().turnOff ();
             return;
@@ -66,14 +106,9 @@ public class DrumView8 extends DrumViewBase
         final int step = this.getClip ().getCurrentStep ();
 
         // Paint the sequencer steps
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
-        final int blueHi = isPush2 ? PushColorManager.PUSH2_COLOR2_BLUE_HI : PushColorManager.PUSH1_COLOR2_BLUE_HI;
-        final int greenLo = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN_LO : PushColorManager.PUSH1_COLOR2_GREEN_LO;
-        final int greenHi = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN_HI : PushColorManager.PUSH1_COLOR2_GREEN_HI;
-        final int off = isPush2 ? PushColorManager.PUSH2_COLOR2_BLACK : PushColorManager.PUSH1_COLOR2_BLACK;
         final int hiStep = this.isInXRange (step) ? step % DrumView8.NUM_DISPLAY_COLS : -1;
         final int offsetY = this.scales.getDrumOffset ();
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         for (int sound = 0; sound < 8; sound++)
         {
             for (int col = 0; col < DrumView8.NUM_DISPLAY_COLS; col++)
@@ -83,7 +118,7 @@ public class DrumView8 extends DrumViewBase
                 final int x = col % 8;
                 int y = col / 8;
                 y += sound;
-                this.surface.getPadGrid ().lightEx (x, 7 - y, isSet > 0 ? hilite ? greenLo : blueHi : hilite ? greenHi : off, -1, false);
+                this.surface.getPadGrid ().lightEx (x, 7 - y, this.getStepColor (isSet, hilite));
             }
         }
     }

@@ -364,7 +364,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % PlayView.NUM_DISPLAY_COLS : -1;
         final int offsetY = this.scales.getDrumOffset ();
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
 
         if (col >= PlayView.NUM_DISPLAY_COLS)
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
@@ -411,7 +411,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         else
         {
             if (velocity != 0)
-                this.getClip ().toggleStep (this.surface.getConfiguration ().getMidiEditChannel (), index < 8 ? index + 8 : index - 8, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), index < 8 ? index + 8 : index - 8, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
         }
     }
 

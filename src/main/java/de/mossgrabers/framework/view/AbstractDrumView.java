@@ -121,10 +121,12 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final INoteClip clip = this.getClip ();
         if (y >= this.playLines)
         {
-            if (this.isActive () && velocity != 0)
+            // Toggle the note on up, so we can intercept the long presses
+            if (this.isActive () && velocity == 0)
             {
                 final int col = GRID_COLUMNS * (this.allLines - 1 - y) + x;
-                clip.toggleStep (this.surface.getConfiguration ().getMidiEditChannel (), col, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
+                clip.toggleStep (this.configuration.getMidiEditChannel (), col, offsetY + this.selectedPad, vel);
             }
             return;
         }
@@ -381,7 +383,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         this.surface.setTriggerConsumed (ButtonID.DELETE);
         this.updateNoteMapping ();
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         this.getClip ().clearRow (editMidiChannel, this.scales.getDrumOffset () + playedPad);
     }
 
@@ -460,7 +462,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
         // Paint the sequencer steps
         final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         for (int col = 0; col < this.sequencerSteps; col++)
         {
             final int isSet = clip.getStep (editMidiChannel, col, this.scales.getDrumOffset () + this.selectedPad).getState ();

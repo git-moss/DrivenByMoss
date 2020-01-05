@@ -94,7 +94,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final INoteClip clip = this.getClip ();
         final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.selectedResolutionIndex));
         final int distance = this.getNoteDistance (this.keyManager.map (x), length);
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         clip.clearRow (editMidiChannel, this.keyManager.map (x));
         if (distance == -1 || distance != (y == 0 ? 1 : y * 2))
         {
@@ -214,7 +214,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     {
         int step;
         final INoteClip clip = this.getClip ();
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         for (step = 0; step < length; step++)
         {
             if (clip.getStep (editMidiChannel, step, row).getState () > 0)
@@ -238,7 +238,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         int step = start;
         int counter = 0;
         final INoteClip clip = this.getClip ();
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         do
         {
             if (clip.getStep (editMidiChannel, step, row).getState () > 0)
@@ -260,7 +260,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         int step = s;
         int counter = 0;
         final INoteClip clip = this.getClip ();
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         do
         {
             if (clip.getStep (editMidiChannel, step, row).getState () > 0)

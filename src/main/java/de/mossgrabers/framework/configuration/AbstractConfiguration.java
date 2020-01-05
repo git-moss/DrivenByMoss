@@ -347,7 +347,7 @@ public abstract class AbstractConfiguration implements Configuration
         this.host = host;
         this.valueChanger = valueChanger;
         this.arpeggiatorModes = arpeggiatorModes;
-        this.noteRepeatMode = arpeggiatorModes[0];
+        this.noteRepeatMode = arpeggiatorModes == null ? null : arpeggiatorModes[0];
 
         Views.init (host);
     }

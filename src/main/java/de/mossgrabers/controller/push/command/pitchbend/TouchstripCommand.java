@@ -8,7 +8,9 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -51,6 +53,23 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
             return;
 
         final PushConfiguration config = this.surface.getConfiguration ();
+        final double scaled = data2 / 127.0;
+
+        // Check if Note Repeat is active and its settings should be changed
+        final int ribbonNoteRepeat = config.getRibbonNoteRepeat ();
+        if (config.isNoteRepeatActive () && ribbonNoteRepeat > PushConfiguration.NOTE_REPEAT_OFF)
+        {
+            final Resolution [] values = Resolution.values ();
+            final int index = (int) Math.round (scaled * (values.length - 1));
+            final double value = values[values.length - 1 - index].getValue ();
+            final INoteRepeat noteRepeat = this.surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
+            if (ribbonNoteRepeat == PushConfiguration.NOTE_REPEAT_PERIOD)
+                noteRepeat.setPeriod (value);
+            else
+                noteRepeat.setNoteLength (value);
+            return;
+        }
+
         switch (config.getRibbonMode ())
         {
             case PushConfiguration.RIBBON_MODE_PITCH:
@@ -112,6 +131,19 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
         }
 
         final PushConfiguration config = this.surface.getConfiguration ();
+
+        // Check if Note Repeat is active and its settings should be changed
+        final int ribbonNoteRepeat = config.getRibbonNoteRepeat ();
+        if (config.isNoteRepeatActive () && ribbonNoteRepeat > PushConfiguration.NOTE_REPEAT_OFF)
+        {
+            final Resolution [] values = Resolution.values ();
+            final INoteRepeat noteRepeat = this.surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
+            final double value = ribbonNoteRepeat == PushConfiguration.NOTE_REPEAT_PERIOD ? noteRepeat.getPeriod () : noteRepeat.getNoteLength ();
+            final int index = Resolution.getMatch (value);
+            this.surface.setRibbonValue (127 - (int) Math.round (index * 127.0 / (values.length - 1)));
+            return;
+        }
+
         switch (config.getRibbonMode ())
         {
             case PushConfiguration.RIBBON_MODE_CC:

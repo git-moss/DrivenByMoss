@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
+import de.mossgrabers.framework.view.AbstractPlayView;
 
 
 /**
@@ -42,6 +43,8 @@ public class Kontrol1ColorManager extends ColorManager
         this.registerColorIndex (Scales.SCALE_COLOR_OCTAVE, SCALE_COLOR_OCTAVE);
         this.registerColorIndex (Scales.SCALE_COLOR_NOTE, SCALE_COLOR_NOTE);
         this.registerColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, SCALE_COLOR_OUT_OF_SCALE);
+
+        this.registerColorIndex (AbstractPlayView.COLOR_OFF, 0);
 
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_PLAY, COLOR_PLAY);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, COLOR_RECORD);

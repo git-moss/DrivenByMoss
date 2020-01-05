@@ -276,7 +276,10 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      */
     public void setKnobLED (final int index, final int knobLEDMode, final int value, final int maxValue)
     {
-        final int rescale = (int) Math.round (value * 11.0 / maxValue);
+        // value = 0 turns the LEDs off, value range is 1-11, center is 6
+        int rescale = (int) Math.round (value * 11.0 / maxValue);
+        if (value > 0 && rescale == 0)
+            rescale = 1;
         int v = knobLEDMode << 4;
         v += rescale;
 

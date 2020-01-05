@@ -52,7 +52,7 @@ public class DrumConfigView extends AbstractView<LaunchkeyMiniMk3ControlSurface,
             return;
         }
 
-        INoteClip clip = view.getClip ();
+        final INoteClip clip = view.getClip ();
         switch (col)
         {
             case 0:

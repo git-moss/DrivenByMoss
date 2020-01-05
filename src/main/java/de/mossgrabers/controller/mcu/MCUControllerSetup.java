@@ -162,7 +162,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         Arrays.fill (this.masterVuValues, -1);
 
         this.colorManager = new MCUColorManager ();
-        this.valueChanger = new DefaultValueChanger (16241 + 1, 100, 10);
+        this.valueChanger = new DefaultValueChanger (16241 + 1, 500, 20);
         this.configuration = new MCUConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -173,20 +173,21 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     {
         super.flush ();
 
-        final MCUControlSurface surface = this.getSurface ();
-        final ModeManager modeManager = surface.getModeManager ();
-        final Modes mode = modeManager.getActiveOrTempModeId ();
-        this.updateMode (mode);
+        this.surfaces.forEach (surface -> {
+            final ModeManager modeManager = surface.getModeManager ();
+            final Modes mode = modeManager.getActiveOrTempModeId ();
+            this.updateMode (mode);
 
-        if (mode == null)
-            return;
+            if (mode == null)
+                return;
 
-        this.updateVUandFaders (surface.isShiftPressed ());
-        this.updateSegmentDisplay ();
+            this.updateVUandFaders (surface.isShiftPressed ());
+            this.updateSegmentDisplay ();
 
-        final Mode activeOrTempMode = modeManager.getActiveOrTempMode ();
-        if (activeOrTempMode instanceof BaseMode)
-            ((BaseMode) activeOrTempMode).updateKnobLEDs ();
+            final Mode activeOrTempMode = modeManager.getActiveOrTempMode ();
+            if (activeOrTempMode instanceof BaseMode)
+                ((BaseMode) activeOrTempMode).updateKnobLEDs ();
+        });
     }
 
 
@@ -357,11 +358,12 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.addButton (ButtonID.SELECT, "Option", NopCommand.INSTANCE, MCUControlSurface.MCU_OPTION);
         this.addButton (ButtonID.PUNCH_IN, "Punch In", new PunchInCommand<> (this.model, surface), MCUControlSurface.MCU_F6, t::isPunchInEnabled);
         this.addButton (ButtonID.PUNCH_OUT, "Punch Out", new PunchOutCommand<> (this.model, surface), MCUControlSurface.MCU_F7, t::isPunchOutEnabled);
-        this.addButton (ButtonID.F1, "F1", new AssignableCommand (2, this.model, surface), MCUControlSurface.MCU_F1);
-        this.addButton (ButtonID.F2, "F2", new AssignableCommand (3, this.model, surface), MCUControlSurface.MCU_F2);
-        this.addButton (ButtonID.F3, "F3", new AssignableCommand (4, this.model, surface), MCUControlSurface.MCU_F3);
-        this.addButton (ButtonID.F4, "F4", new AssignableCommand (5, this.model, surface), MCUControlSurface.MCU_F4);
-        this.addButton (ButtonID.F5, "F5", new AssignableCommand (6, this.model, surface), MCUControlSurface.MCU_F5);
+
+        for (int i = 0; i < 5; i++)
+        {
+            final AssignableCommand command = new AssignableCommand (2 + i, this.model, surface);
+            this.addButton (ButtonID.get (ButtonID.F1, i), "F" + (i + 1), command, MCUControlSurface.MCU_F1 + i, command::isActive);
+        }
 
         final MoveTrackBankCommand<MCUControlSurface, MCUConfiguration> moveTrackBankLeftCommand = new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, true);
         final MoveTrackBankCommand<MCUControlSurface, MCUConfiguration> moveTrackBankRightCommand = new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, false);

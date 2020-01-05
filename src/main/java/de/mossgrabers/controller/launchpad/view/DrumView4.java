@@ -47,7 +47,7 @@ public class DrumView4 extends DrumViewBase
         final int sound = y % 4 + this.soundOffset;
         final int col = 8 * (1 - y / 4) + x;
 
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         this.getClip ().toggleStep (editMidiChannel, col, this.scales.getDrumOffset () + this.selectedPad + sound, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
     }
 
@@ -70,7 +70,7 @@ public class DrumView4 extends DrumViewBase
         // Paint the sequencer steps
         final int hiStep = this.isInXRange (step) ? step % DrumView4.NUM_DISPLAY_COLS : -1;
         final int offsetY = this.scales.getDrumOffset ();
-        final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
         for (int sound = 0; sound < 4; sound++)
         {
             for (int col = 0; col < DrumView4.NUM_DISPLAY_COLS; col++)
@@ -82,7 +82,7 @@ public class DrumView4 extends DrumViewBase
                 if (col < 8)
                     y += 5;
                 y += sound;
-                padGrid.lightEx (x, 8 - y, isSet > 0 ? hilite ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : hilite ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+                padGrid.lightEx (x, 8 - y, this.getStepColor (isSet, hilite));
             }
         }
     }
