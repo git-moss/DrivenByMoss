@@ -5,8 +5,10 @@
 package de.mossgrabers.controller.maschine.mikro.mk3.command.trigger;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
+import de.mossgrabers.controller.maschine.mikro.mk3.command.continuous.TouchstripCommand;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -60,21 +62,6 @@ public class RibbonCommand extends AbstractTriggerCommand<MaschineMikroMk3Contro
         this.surface.getDisplay ().notify (MaschineMikroMk3Configuration.RIBBON_MODE_VALUES[m]);
         configuration.setRibbonMode (m);
 
-        // Setting the LED strip does not work but keep it anyway...
-        switch (m)
-        {
-            case MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP:
-                this.surface.getMidiOutput ().sendCC (MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP, 64);
-                break;
-
-            case MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME:
-                this.surface.getMidiOutput ().sendCC (MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP, this.model.getValueChanger ().toMidiValue (this.model.getMasterTrack ().getVolume ()));
-                break;
-
-            default:
-                this.surface.getMidiOutput ().sendCC (MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP, 0);
-                break;
-        }
-
+        ((TouchstripCommand) this.surface.getContinuous (ContinuousID.CROSSFADER).getTouchCommand ()).resetRibbonValue (m);
     }
 }

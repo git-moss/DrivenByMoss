@@ -7,6 +7,7 @@ package de.mossgrabers.controller.maschine.mikro.mk3.view;
 import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ColorManager;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
@@ -14,6 +15,9 @@ import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.mode.BrowserActivator;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -24,6 +28,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ClipView extends BaseView
 {
+    private final BrowserActivator<MaschineMikroMk3ControlSurface, MaschineMikroMk3Configuration> browserModeActivator;
+
+
     /**
      * Constructor.
      *
@@ -33,6 +40,8 @@ public class ClipView extends BaseView
     public ClipView (final MaschineMikroMk3ControlSurface surface, final IModel model)
     {
         super ("Clip", surface, model);
+
+        this.browserModeActivator = new BrowserActivator<> (Modes.BROWSER, model, surface);
     }
 
 
@@ -40,22 +49,80 @@ public class ClipView extends BaseView
     @Override
     protected void executeFunction (final int padIndex)
     {
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedTrack == null)
+        final ITrack track = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (track == null)
             return;
-        final ISlot slot = selectedTrack.getSlotBank ().getItem (padIndex);
+        final ISlot slot = track.getSlotBank ().getItem (padIndex);
 
         final MaschineMikroMk3Configuration configuration = this.surface.getConfiguration ();
-        if (configuration.isDuplicateEnabled ())
+        if (this.surface.isPressed (ButtonID.DUPLICATE))
         {
-            slot.duplicate ();
-            this.disableDuplicate ();
+            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
+            if (track.doesExist ())
+                slot.duplicate ();
+            return;
+        }
+
+        // Stop clip
+        if (this.surface.isPressed (ButtonID.STOP))
+        {
+            this.surface.setTriggerConsumed (ButtonID.STOP);
+            track.stop ();
+            return;
+        }
+
+        // Browse for clips
+        if (this.surface.isPressed (ButtonID.BROWSE))
+        {
+            this.surface.setTriggerConsumed (ButtonID.BROWSE);
+            if (!track.doesExist ())
+                return;
+            this.model.getBrowser ().replace (slot);
+            final ModeManager modeManager = this.surface.getModeManager ();
+            if (!modeManager.isActiveOrTempMode (Modes.BROWSER))
+                this.browserModeActivator.activate ();
+            return;
+        }
+
+        // Delete selected clip
+        if (this.surface.isDeletePressed ())
+        {
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
+            slot.remove ();
             return;
         }
 
         if (configuration.isSelectClipOnLaunch ())
             slot.select ();
-        slot.launch ();
+
+        if (!track.isRecArm ())
+        {
+            slot.launch ();
+            return;
+        }
+
+        if (slot.hasContent ())
+        {
+            slot.launch ();
+            return;
+        }
+
+        switch (configuration.getActionForRecArmedPad ())
+        {
+            case 0:
+                this.model.recordNoteClip (track, slot);
+                break;
+
+            case 1:
+                final int lengthInBeats = configuration.getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
+                this.model.createNoteClip (track, slot, lengthInBeats, true);
+                break;
+
+            case 2:
+            default:
+                // Do nothing
+                break;
+        }
     }
 
 
@@ -118,6 +185,8 @@ public class ClipView extends BaseView
                     padGrid.lightEx (x, y, MaschineMikroMk3ColorManager.COLOR_GREEN_LO);
                 else if (item.isPlaying ())
                     padGrid.lightEx (x, y, MaschineMikroMk3ColorManager.COLOR_GREEN);
+                else if (item.isStopQueued ())
+                    padGrid.lightEx (x, y, MaschineMikroMk3ColorManager.COLOR_GREEN_LO);
                 else
                     padGrid.lightEx (x, y, DAWColor.getColorIndex (item.getColor ()));
             }

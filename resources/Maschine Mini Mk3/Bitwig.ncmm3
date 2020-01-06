@@ -313,20 +313,19 @@
         <min>0</min>
         <max>127</max>
         <ledPattern>0</ledPattern>
-        <behavior onIfDown="on">none</behavior>
+        <behavior>none</behavior>
       </knob>
       <button version="1" id="TouchstripCap">
-        <disabled />
-        <polyat>2</polyat>
+        <controller>2</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
-        <behavior onIfDown="on">toggle</behavior>
+        <behavior onIfDown="on">gate</behavior>
         <reaction>ondown</reaction>
       </button>
       <led version="1" id="TouchstripIDX">
         <display type="0">
-          <unit color-type="1" color-mode="0" color-on-index="2" color-off-index="1" />
+          <unit color-type="1" color-mode="0" color-on-index="18" color-off-index="1" />
         </display>
         <controller>1</controller>
         <channel>0</channel>

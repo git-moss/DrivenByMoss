@@ -6,17 +6,18 @@ package de.mossgrabers.controller.maschine.mikro.mk3.command.trigger;
 
 import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
-import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command for toggling the duplicate button.
+ * Command handle the stop button.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ToggleDuplicateButtonCommand extends AbstractTriggerCommand<MaschineMikroMk3ControlSurface, MaschineMikroMk3Configuration>
+public class MaschineStopCommand extends StopCommand<MaschineMikroMk3ControlSurface, MaschineMikroMk3Configuration>
 {
     /**
      * Constructor.
@@ -24,7 +25,7 @@ public class ToggleDuplicateButtonCommand extends AbstractTriggerCommand<Maschin
      * @param model The model
      * @param surface The surface
      */
-    public ToggleDuplicateButtonCommand (final IModel model, final MaschineMikroMk3ControlSurface surface)
+    public MaschineStopCommand (final IModel model, final MaschineMikroMk3ControlSurface surface)
     {
         super (model, surface);
     }
@@ -32,13 +33,14 @@ public class ToggleDuplicateButtonCommand extends AbstractTriggerCommand<Maschin
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event, final int velocity)
+    public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
-
-        final MaschineMikroMk3Configuration configuration = this.surface.getConfiguration ();
-        configuration.setDuplicateEnabled (!configuration.isDuplicateEnabled ());
-        this.surface.getDisplay ().notify ("Duplicate enabled. Press a pad...");
+        final ITransport transport = this.model.getTransport ();
+        if (transport.isPlaying ())
+            this.handleStopOptions ();
+        else
+            transport.stopAndRewind ();
     }
 }

@@ -20,35 +20,40 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 public class MaschineMikroMk3Configuration extends AbstractConfiguration
 {
     /** Setting for the ribbon mode. */
-    public static final Integer   RIBBON_MODE               = Integer.valueOf (50);
+    public static final Integer   RIBBON_MODE                    = Integer.valueOf (50);
 
     /** Use ribbon for pitch bend down. */
-    public static final int       RIBBON_MODE_PITCH_DOWN    = 0;
+    public static final int       RIBBON_MODE_PITCH_DOWN         = 0;
     /** Use ribbon for pitch bend up. */
-    public static final int       RIBBON_MODE_PITCH_UP      = 1;
+    public static final int       RIBBON_MODE_PITCH_UP           = 1;
     /** Use ribbon for pitch bend down/up. */
-    public static final int       RIBBON_MODE_PITCH_DOWN_UP = 2;
+    public static final int       RIBBON_MODE_PITCH_DOWN_UP      = 2;
     /** Use ribbon for midi CC 1. */
-    public static final int       RIBBON_MODE_CC_1          = 3;
+    public static final int       RIBBON_MODE_CC_1               = 3;
     /** Use ribbon for midi CC 11. */
-    public static final int       RIBBON_MODE_CC_11         = 4;
+    public static final int       RIBBON_MODE_CC_11              = 4;
     /** Use ribbon for master volume. */
-    public static final int       RIBBON_MODE_MASTER_VOLUME = 5;
+    public static final int       RIBBON_MODE_MASTER_VOLUME      = 5;
+    /** Use ribbon for note repeat period. */
+    public static final int       RIBBON_MODE_NOTE_REPEAT_PERIOD = 6;
+    /** Use ribbon for note repeat length. */
+    public static final int       RIBBON_MODE_NOTE_REPEAT_LENGTH = 7;
 
     /** The ribbon mode names. */
-    public static final String [] RIBBON_MODE_VALUES        =
+    public static final String [] RIBBON_MODE_VALUES             =
     {
         "Pitch Down",
         "Pitch Up",
         "Pitch Down/Up",
         "Modulation (CC 1)",
         "Expression (CC 11)",
-        "Master Volume"
+        "Master Volume",
+        "Note Repeat: Period",
+        "Note Repeat: Length"
     };
 
     /** What does the ribbon send? **/
-    private int                   ribbonMode                = RIBBON_MODE_PITCH_DOWN;
-    private boolean               duplicateEnabled;
+    private int                   ribbonMode                     = RIBBON_MODE_PITCH_DOWN;
 
     private IEnumSetting          ribbonModeSetting;
 
@@ -103,9 +108,14 @@ public class MaschineMikroMk3Configuration extends AbstractConfiguration
         });
 
         ///////////////////////////
-        // Workflow
+        // Session
 
         this.activateSelectClipOnLaunchSetting (globalSettings);
+        this.activateActionForRecArmedPad (globalSettings);
+
+        ///////////////////////////
+        // Workflow
+
         this.activateNewClipLengthSetting (globalSettings);
     }
 
@@ -129,27 +139,5 @@ public class MaschineMikroMk3Configuration extends AbstractConfiguration
     public int getRibbonMode ()
     {
         return this.ribbonMode;
-    }
-
-
-    /**
-     * Returns true if duplicate is enabled.
-     *
-     * @return True if duplicate is enabled
-     */
-    public boolean isDuplicateEnabled ()
-    {
-        return this.duplicateEnabled;
-    }
-
-
-    /**
-     * Set if duplicate is enabled.
-     *
-     * @param duplicateEnabled True to enable
-     */
-    public void setDuplicateEnabled (final boolean duplicateEnabled)
-    {
-        this.duplicateEnabled = duplicateEnabled;
     }
 }

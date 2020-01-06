@@ -22,53 +22,56 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<MaschineMikroMk3Configuration>
 {
     // Midi CC
-    public static final int MIKRO_3_TOUCHSTRIP    = 1;
+    public static final int MIKRO_3_TOUCHSTRIP       = 1;
+    public static final int MIKRO_3_TOUCHSTRIP_TOUCH = 2;
 
-    public static final int MIKRO_3_ENCODER       = 7;
-    public static final int MIKRO_3_ENCODER_PUSH  = 8;
-    public static final int MIKRO_3_ENCODER_TOUCH = 9;
+    public static final int MIKRO_3_ENCODER          = 7;
+    public static final int MIKRO_3_ENCODER_PUSH     = 8;
+    public static final int MIKRO_3_ENCODER_TOUCH    = 9;
 
-    public static final int MIKRO_3_GROUP         = 34;
-    public static final int MIKRO_3_AUTO          = 35;
-    public static final int MIKRO_3_LOCK          = 36;
-    public static final int MIKRO_3_NOTE_REPEAT   = 37;
+    public static final int MIKRO_3_GROUP            = 34;
+    public static final int MIKRO_3_AUTO             = 35;
+    public static final int MIKRO_3_LOCK             = 36;
+    public static final int MIKRO_3_NOTE_REPEAT      = 37;
 
-    public static final int MIKRO_3_PROJECT       = 38;
-    public static final int MIKRO_3_FAVORITES     = 39;
-    public static final int MIKRO_3_BROWSER       = 40;
+    public static final int MIKRO_3_PROJECT          = 38;
+    public static final int MIKRO_3_FAVORITES        = 39;
+    public static final int MIKRO_3_BROWSER          = 40;
 
-    public static final int MIKRO_3_VOLUME        = 44;
-    public static final int MIKRO_3_PLUGIN        = 45;
-    public static final int MIKRO_3_SWING         = 46;
-    public static final int MIKRO_3_SAMPLING      = 47;
-    public static final int MIKRO_3_TEMPO         = 48;
+    public static final int MIKRO_3_VOLUME           = 44;
+    public static final int MIKRO_3_PLUGIN           = 45;
+    public static final int MIKRO_3_SWING            = 46;
+    public static final int MIKRO_3_SAMPLING         = 47;
+    public static final int MIKRO_3_TEMPO            = 48;
 
-    public static final int MIKRO_3_PITCH         = 49;
-    public static final int MIKRO_3_MOD           = 50;
-    public static final int MIKRO_3_PERFORM       = 51;
-    public static final int MIKRO_3_NOTES         = 52;
+    public static final int MIKRO_3_PITCH            = 49;
+    public static final int MIKRO_3_MOD              = 50;
+    public static final int MIKRO_3_PERFORM          = 51;
+    public static final int MIKRO_3_NOTES            = 52;
 
-    public static final int MIKRO_3_RESTART       = 53;
-    public static final int MIKRO_3_ERASE         = 54;
-    public static final int MIKRO_3_TAP_METRO     = 55;
-    public static final int MIKRO_3_FOLLOW        = 56;
-    public static final int MIKRO_3_PLAY          = 57;
-    public static final int MIKRO_3_REC           = 58;
-    public static final int MIKRO_3_STOP          = 59;
+    public static final int MIKRO_3_RESTART          = 53;
+    public static final int MIKRO_3_ERASE            = 54;
+    public static final int MIKRO_3_TAP_METRO        = 55;
+    public static final int MIKRO_3_FOLLOW           = 56;
+    public static final int MIKRO_3_PLAY             = 57;
+    public static final int MIKRO_3_REC              = 58;
+    public static final int MIKRO_3_STOP             = 59;
 
-    public static final int MIKRO_3_FIXED_VEL     = 80;
-    public static final int MIKRO_3_PAD_MODE      = 81;
-    public static final int MIKRO_3_KEYBOARD      = 82;
-    public static final int MIKRO_3_CHORDS        = 84;
-    public static final int MIKRO_3_STEP          = 83;
-    public static final int MIKRO_3_SCENE         = 85;
-    public static final int MIKRO_3_PATTERN       = 86;
-    public static final int MIKRO_3_EVENTS        = 87;
-    public static final int MIKRO_3_VARIATION     = 88;
-    public static final int MIKRO_3_DUPLICATE     = 89;
-    public static final int MIKRO_3_SELECT        = 90;
-    public static final int MIKRO_3_SOLO          = 91;
-    public static final int MIKRO_3_MUTE          = 92;
+    public static final int MIKRO_3_FIXED_VEL        = 80;
+    public static final int MIKRO_3_PAD_MODE         = 81;
+    public static final int MIKRO_3_KEYBOARD         = 82;
+    public static final int MIKRO_3_CHORDS           = 84;
+    public static final int MIKRO_3_STEP             = 83;
+    public static final int MIKRO_3_SCENE            = 85;
+    public static final int MIKRO_3_PATTERN          = 86;
+    public static final int MIKRO_3_EVENTS           = 87;
+    public static final int MIKRO_3_VARIATION        = 88;
+    public static final int MIKRO_3_DUPLICATE        = 89;
+    public static final int MIKRO_3_SELECT           = 90;
+    public static final int MIKRO_3_SOLO             = 91;
+    public static final int MIKRO_3_MUTE             = 92;
+
+    private int             ribbonValue              = -1;
 
 
     /**
@@ -91,5 +94,19 @@ public class MaschineMikroMk3ControlSurface extends AbstractControlSurface<Masch
     public void setTrigger (final int channel, final int cc, final int state)
     {
         this.output.sendCCEx (channel, cc, state);
+    }
+
+
+    /**
+     * Set the display value of the ribbon on the controller.
+     *
+     * @param value The value to set
+     */
+    public void setRibbonValue (final int value)
+    {
+        if (this.ribbonValue == value)
+            return;
+        this.ribbonValue = value;
+        this.output.sendCC (1, value);
     }
 }

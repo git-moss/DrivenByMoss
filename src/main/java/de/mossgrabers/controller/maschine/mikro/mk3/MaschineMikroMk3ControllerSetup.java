@@ -7,9 +7,9 @@ package de.mossgrabers.controller.maschine.mikro.mk3;
 import de.mossgrabers.controller.maschine.mikro.mk3.command.continuous.TouchstripCommand;
 import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.AddDeviceCommand;
 import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.GridButtonCommand;
+import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.MaschineStopCommand;
 import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.ProjectButtonCommand;
 import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.RibbonCommand;
-import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.ToggleDuplicateButtonCommand;
 import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.ToggleFixedVelCommand;
 import de.mossgrabers.controller.maschine.mikro.mk3.command.trigger.VolumePanSendCommand;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ColorManager;
@@ -27,6 +27,7 @@ import de.mossgrabers.controller.maschine.mikro.mk3.view.SceneView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.SelectView;
 import de.mossgrabers.controller.maschine.mikro.mk3.view.SoloView;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
+import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
@@ -37,7 +38,6 @@ import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
-import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
 import de.mossgrabers.framework.command.trigger.transport.WriteArrangerAutomationCommand;
 import de.mossgrabers.framework.command.trigger.transport.WriteClipLauncherAutomationCommand;
@@ -49,6 +49,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
@@ -224,7 +225,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         // Transport
         this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_PLAY, t::isPlaying);
         this.addButton (ButtonID.RECORD, "Record", new RecordCommand<> (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_REC, t::isRecording);
-        this.addButton (ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_STOP, () -> !t.isPlaying ());
+        this.addButton (ButtonID.STOP, "Stop", new MaschineStopCommand (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_STOP, () -> !t.isPlaying ());
         this.addButton (ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_RESTART, t::isLoop);
         this.addButton (ButtonID.DELETE, "Erase", new UndoCommand<> (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_ERASE);
         this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_TAP_METRO, t::isMetronomeOn);
@@ -237,10 +238,10 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         this.addButton (ButtonID.REPEAT, "Repeat", new NoteRepeatCommand<> (this.model, surface, false), MaschineMikroMk3ControlSurface.MIKRO_3_NOTE_REPEAT, this.configuration::isNoteRepeatActive);
 
         // Ribbon
-        this.addButton (ButtonID.F1, "Pitch", new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_UP, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP), MaschineMikroMk3ControlSurface.MIKRO_3_PITCH, () -> surface.getConfiguration ().getRibbonMode () <= MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP);
-        this.addButton (ButtonID.F2, "Mod", new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_CC_1), MaschineMikroMk3ControlSurface.MIKRO_3_MOD, () -> surface.getConfiguration ().getRibbonMode () == MaschineMikroMk3Configuration.RIBBON_MODE_CC_1);
-        this.addButton (ButtonID.F3, "Perform", new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_CC_11), MaschineMikroMk3ControlSurface.MIKRO_3_PERFORM, () -> surface.getConfiguration ().getRibbonMode () == MaschineMikroMk3Configuration.RIBBON_MODE_CC_11);
-        this.addButton (ButtonID.F4, "Notes", new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME), MaschineMikroMk3ControlSurface.MIKRO_3_NOTES, () -> surface.getConfiguration ().getRibbonMode () == MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME);
+        this.addButton (ButtonID.F1, "Pitch", new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_UP, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP), MaschineMikroMk3ControlSurface.MIKRO_3_PITCH, () -> this.isRibbonMode (MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_DOWN_UP, MaschineMikroMk3Configuration.RIBBON_MODE_PITCH_UP));
+        this.addButton (ButtonID.F2, "Mod", new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_CC_1, MaschineMikroMk3Configuration.RIBBON_MODE_CC_11), MaschineMikroMk3ControlSurface.MIKRO_3_MOD, () -> this.isRibbonMode (MaschineMikroMk3Configuration.RIBBON_MODE_CC_1, MaschineMikroMk3Configuration.RIBBON_MODE_CC_11));
+        this.addButton (ButtonID.F3, "Perform", new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME), MaschineMikroMk3ControlSurface.MIKRO_3_PERFORM, () -> this.isRibbonMode (MaschineMikroMk3Configuration.RIBBON_MODE_MASTER_VOLUME));
+        this.addButton (ButtonID.F4, "Notes", new RibbonCommand (this.model, surface, MaschineMikroMk3Configuration.RIBBON_MODE_NOTE_REPEAT_PERIOD, MaschineMikroMk3Configuration.RIBBON_MODE_NOTE_REPEAT_LENGTH), MaschineMikroMk3ControlSurface.MIKRO_3_NOTES, () -> this.isRibbonMode (MaschineMikroMk3Configuration.RIBBON_MODE_NOTE_REPEAT_PERIOD, MaschineMikroMk3Configuration.RIBBON_MODE_NOTE_REPEAT_LENGTH));
 
         this.addButton (ButtonID.FADER_TOUCH_1, "Encoder Press", (event, velocity) -> {
 
@@ -264,14 +265,6 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
             }
 
         }, MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER_PUSH);
-
-        this.addButton (ButtonID.KNOB1_TOUCH, "Encoder Touch", (event, velocity) -> {
-
-            final Mode mode = modeManager.getActiveOrTempMode ();
-            if (mode != null)
-                mode.onKnobTouch (0, event == ButtonEvent.DOWN);
-
-        }, MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER_TOUCH);
 
         // Encoder Modes
         this.addButton (ButtonID.VOLUME, "Volume", new VolumePanSendCommand (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_VOLUME, () -> Modes.isTrackMode (modeManager.getActiveOrTempModeId ()));
@@ -301,7 +294,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         this.addButton (ButtonID.CLIP, "Pattern", new ViewMultiSelectCommand<> (this.model, surface, true, Views.CLIP), MaschineMikroMk3ControlSurface.MIKRO_3_PATTERN, () -> viewManager.isActiveView (Views.CLIP));
         this.addButton (ButtonID.NOTE, "Events", new ViewMultiSelectCommand<> (this.model, surface, true, Views.PLAY, Views.DRUM), MaschineMikroMk3ControlSurface.MIKRO_3_EVENTS, () -> viewManager.isActiveView (Views.PLAY) || viewManager.isActiveView (Views.DRUM));
         this.addButton (ButtonID.TOGGLE_DEVICE, "Variation", new ViewMultiSelectCommand<> (this.model, surface, true, Views.DEVICE), MaschineMikroMk3ControlSurface.MIKRO_3_VARIATION, () -> viewManager.isActiveView (Views.DEVICE));
-        this.addButton (ButtonID.DUPLICATE, "Duplicate", new ToggleDuplicateButtonCommand (this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_DUPLICATE, this.configuration::isDuplicateEnabled);
+        this.addButton (ButtonID.DUPLICATE, "Duplicate", NopCommand.INSTANCE, MaschineMikroMk3ControlSurface.MIKRO_3_DUPLICATE);
 
         this.addButton (ButtonID.TRACK, "Select", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SELECT), MaschineMikroMk3ControlSurface.MIKRO_3_SELECT, () -> viewManager.isActiveView (Views.TRACK_SELECT));
         this.addButton (ButtonID.SOLO, "Solo", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SOLO), MaschineMikroMk3ControlSurface.MIKRO_3_SOLO, () -> viewManager.isActiveView (Views.TRACK_SOLO));
@@ -319,9 +312,18 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
     protected void registerContinuousCommands ()
     {
         final MaschineMikroMk3ControlSurface surface = this.getSurface ();
+        final ModeManager modeManager = surface.getModeManager ();
 
-        this.addRelativeKnob (ContinuousID.KNOB1, "Encoder", new KnobRowModeCommand<> (0, this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER);
-        this.addFader (ContinuousID.CROSSFADER, "Touchstrip", new TouchstripCommand (this.model, surface), BindType.CC, MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP, false);
+        final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.KNOB1, "Encoder", new KnobRowModeCommand<> (0, this.model, surface), MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER);
+        knob.bindTouch ( (event, velocity) -> {
+            final Mode mode = modeManager.getActiveOrTempMode ();
+            if (mode != null)
+                mode.onKnobTouch (0, event == ButtonEvent.DOWN);
+        }, surface.getMidiInput (), BindType.CC, MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER_TOUCH);
+
+        final TouchstripCommand touchstripCommand = new TouchstripCommand (this.model, surface);
+        this.addFader (ContinuousID.CROSSFADER, "Touchstrip", touchstripCommand, BindType.CC, MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP, false);
+        surface.getContinuous (ContinuousID.CROSSFADER).bindTouch (touchstripCommand, surface.getMidiInput (), BindType.CC, MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP_TOUCH);
     }
 
 
@@ -400,6 +402,18 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void flush ()
+    {
+        super.flush ();
+
+        final TouchstripCommand command = (TouchstripCommand) this.getSurface ().getContinuous (ContinuousID.CROSSFADER).getCommand ();
+        if (command != null)
+            command.updateValue ();
+    }
+
+
     private void updateMode (final Modes mode)
     {
         final Modes m = mode == null ? this.getSurface ().getModeManager ().getActiveOrTempModeId () : mode;
@@ -475,5 +489,17 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
             viewManager.getView (Views.DRUM).updateNoteMapping ();
 
         this.updateIndication (this.currentMode);
+    }
+
+
+    private boolean isRibbonMode (int... modes)
+    {
+        final int ribbonMode = this.configuration.getRibbonMode ();
+        for (int i = 0; i < modes.length; i++)
+        {
+            if (ribbonMode == modes[i])
+                return true;
+        }
+        return false;
     }
 }

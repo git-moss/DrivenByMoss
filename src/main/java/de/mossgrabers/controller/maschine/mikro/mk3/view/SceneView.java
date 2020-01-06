@@ -4,9 +4,9 @@
 
 package de.mossgrabers.controller.maschine.mikro.mk3.view;
 
-import de.mossgrabers.controller.maschine.mikro.mk3.MaschineMikroMk3Configuration;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ColorManager;
 import de.mossgrabers.controller.maschine.mikro.mk3.controller.MaschineMikroMk3ControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
@@ -41,11 +41,17 @@ public class SceneView extends BaseView
     {
         final IScene scene = this.model.getSceneBank ().getItem (padIndex);
 
-        final MaschineMikroMk3Configuration configuration = this.surface.getConfiguration ();
-        if (configuration.isDuplicateEnabled ())
+        if (this.surface.isPressed (ButtonID.DUPLICATE))
         {
+            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
             scene.duplicate ();
-            this.disableDuplicate ();
+            return;
+        }
+
+        if (this.surface.isDeletePressed ())
+        {
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
+            scene.remove ();
             return;
         }
 
